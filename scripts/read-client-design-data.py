@@ -74,7 +74,7 @@ def outside_client(path, client):
     return resolved
 
 
-def parse_index(directory):
+def parse_index(directory, bundled_directory=None):
     candidates = list(directory.glob('DesignV_*.bytes'))
     verified = [path for path in candidates
                 if hashlib.sha256(path.read_bytes()).hexdigest() == INDEX_SHA256]
@@ -96,7 +96,12 @@ def parse_index(directory):
         position += 36
         if total > 200000 or position + 16 * total + 3 > len(data):
             raise ValueError('设计数据记录数量或范围非法')
-        chunk = {'index': index, 'file': str(directory / (md5 + '.bytes')),
+        file = directory / (md5 + '.bytes')
+        if not file.exists() and bundled_directory is not None:
+            candidate = bundled_directory / file.name
+            if candidate.is_file():
+                file = candidate
+        chunk = {'index': index, 'file': str(file),
                  'declaredMD5': md5, 'base': base, 'size': size, 'count': total}
         for _ in range(total):
             key = data[position:position + 8].hex()
@@ -147,7 +152,8 @@ def extract(args):
     if (prefix, suffix) != ('BakedConfig/', '.bytes'):
         raise ValueError('原生 JSON 路径转换交叉核对失败')
     directory = client / 'StarRail_Data/Persistent/DesignData/Windows'
-    index_path, chunks, index = parse_index(directory)
+    bundled_directory = client / 'StarRail_Data/StreamingAssets/DesignData/Windows'
+    index_path, chunks, index = parse_index(directory, bundled_directory)
     results, writes, verified_chunks = [], [], {}
     for path in paths:
         baked = prefix + str(path.with_suffix('')) + suffix
@@ -202,6 +208,9 @@ def extract(args):
               'verifiedChunks': {file: {key: value for key, value in row.items() if key != 'signature'}
                                  for file, row in verified_chunks.items()},
               'missingChunks': [row['index'] for row in chunks if not Path(row['file']).is_file()],
+              'bundledChunks': [row['index'] for row in chunks if Path(row['file']).parent == bundled_directory],
+              'missingCoreChunks': [row['index'] for row in chunks if not row['locale'] and not Path(row['file']).is_file()],
+              'missingLocaleChunks': [row['index'] for row in chunks if row['locale'] and not Path(row['file']).is_file()],
               'pathLiteralEvidence': evidence['stringLiteralSlots'], 'records': results}
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

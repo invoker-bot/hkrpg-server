@@ -263,7 +263,7 @@
       "name": "4.6 内容包目录与登录初始化",
       "status": "partial",
       "evidence": "src/main/java/org/hkrpg/server/protocol/ContentPackage46.java",
-      "gap": "只报告 Init 初始状态，不强制全部完成；剧情条件、当前内容、持久化状态与转移待实现"
+      "gap": "只报告 Init 初始状态，不强制全部完成；剧情条件、当前内容、持久化状态与转移待实现 只读设计数据定位补入游戏自带目录回退，更新目录优先且损坏不绕过；本机20个非语言块均可定位，13个语言块缺失。两个未知路径记录仅验证原始字节读取，完整解析与玩法验收仍待完成，见docs/client-design-data-4.6.md。"
     },
     {
       "id": "resource-provenance",
