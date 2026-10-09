@@ -17,6 +17,7 @@ public final class RogueBaseOtherModifierEvents46 {
 
   /** Known GEHAPKHIMNE projection, distinct from the destruction payload hierarchy. */
   public static class FadeFinished {
+    public Object eventManager;
     public Object modifier, effects, sourceEntity;
 
     public FadeFinished(Object modifier, Object effects, Object sourceEntity) {

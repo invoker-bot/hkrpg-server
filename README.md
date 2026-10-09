@@ -1,3 +1,5 @@
+4.6 效果淡出单效果载荷、发布与回收控制已补入Java，见 [效果淡出说明](docs/rogue-attach-effect-fade-4.6.md)。实际事件调度和世界绑定继续待完成。
+
 4.6 其他修饰器销毁与效果淡出回调已接到共享活动状态，见 [其他修饰器事件说明](docs/rogue-base-other-modifier-events-4.6.md)。虚效果处理与实际世界继续待完成。
 
 4.6 单监听数组查询的校验与默认比较器转发已接到多播撤回，见 [数组查询说明](docs/rogue-event-single-array-search-4.6.md)。比较器内部与实际世界继续待完成。
