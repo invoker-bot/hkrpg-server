@@ -9,11 +9,18 @@ import emu.lunarcore.server.packet.send.PacketStartChallengeScRsp;
 import java.io.IOException;
 import java.util.*;
 import org.hkrpg.server.gameplay.ChallengeLeave;
+import org.hkrpg.server.gameplay.StoryChallengeCatalog;
 import us.hebi.quickbuf.RepeatedInt;
 
-/** Formal-avatar memory subset; the 4.2 ext_info schema cannot parse 4.6 stage_info. */
+/** Formal-avatar memory and original Normal story subset with strict 4.6 stage-info parsing. */
 public final class MemoryChallenge46 {
-  record Request(int challenge, List<Integer> first, List<Integer> second) {
+  record Request(
+      int challenge,
+      List<Integer> first,
+      List<Integer> second,
+      int firstBuff,
+      int secondBuff,
+      boolean story) {
     Request {
       first = List.copyOf(first);
       second = List.copyOf(second);
@@ -50,14 +57,22 @@ public final class MemoryChallenge46 {
       if (request != null) {
         var excel = GameData.getChallengeExcelMap().get(request.challenge());
         if (excel == null
-            || excel.getType() != ChallengeType.MEMORY
+            || excel.getType() != ChallengeType.MEMORY && !StoryChallengeCatalog.supports(excel)
             || excel.getStageNum() < 1
             || excel.getStageNum() > 2) code = Retcode.CHALLENGE_NOT_EXIST;
+        else if (request.story() != (excel.getType() == ChallengeType.STORY)
+            || request.story()
+                && (!StoryChallengeCatalog.accepts(excel, request.firstBuff(), request.secondBuff())
+                    || request.first().stream().anyMatch(request.second()::contains)))
+          code = Retcode.REQ_PARA_INVALID;
         else if (player.isInBattle()) code = Retcode.IN_BATTLE_NOW;
         else if (player.getInstance() != null) code = Retcode.CHALLENGE_ALREADY;
         else if (player.getGameplay().getStoryLines().getCurrentId() == 0
             && !player.getGameplay().getStoryLines().isTransitionPending()
             && !player.getGameplay().getRogue().isInside()
+            && player.getGameplay().getClockPark().getActive() == null
+            && player.getGameplay().getRhythm().getActiveLevel() == 0
+            && player.getGameplay().getParkour().getActiveLevel() == 0
             && !player.getGameplay().getParkourVenue().inside()
             && player.getGameplay().getCurrentMissionRaid() == 0
             && player.getGameplay().getTrialRun() == null
@@ -70,7 +85,10 @@ public final class MemoryChallenge46 {
           var second = RepeatedInt.newEmptyInstance();
           request.first().forEach(first::add);
           request.second().forEach(second::add);
-          player.getChallengeManager().startChallenge(request.challenge(), first, second, 0, 0);
+          player
+              .getChallengeManager()
+              .startChallenge(
+                  request.challenge(), first, second, request.firstBuff(), request.secondBuff());
           return true;
         }
       }
@@ -80,7 +98,7 @@ public final class MemoryChallenge46 {
   }
 
   // Honey fe00bdb: Challenge.star/id/taken_reward and ChallengeGroup.taken_stars_count_reward.
-  // Unsupported challenge modes never travel through the lite ext_info schema.
+  // Story support requires a matched original Normal-mode catalog; other modes stay excluded.
   private static void query(GameSession session) {
     var player = session.getPlayer();
     synchronized (player) {
@@ -93,7 +111,7 @@ public final class MemoryChallenge46 {
           GameData.getChallengeExcelMap().values().stream()
               .filter(
                   row ->
-                      row.getType() == ChallengeType.MEMORY
+                      (row.getType() == ChallengeType.MEMORY || StoryChallengeCatalog.supports(row))
                           && row.getStageNum() >= 1
                           && row.getStageNum() <= 2)
               .sorted(Comparator.comparingInt(emu.lunarcore.data.excel.ChallengeExcel::getId))
@@ -105,6 +123,11 @@ public final class MemoryChallenge46 {
                 || history.getStars() < 0
                 || history.getStars() > 7
                 || history.getScore() < 0
+                || history.isStoryScoresRecorded()
+                    && (history.getStoryScoreOne() < 0
+                        || history.getStoryScoreTwo() < 0
+                        || (long) history.getStoryScoreOne() + history.getStoryScoreTwo()
+                            != history.getScore())
                 || history.getTakenReward() < 0)) {
           Gameplay46.send(
               session, "GetChallengeScRsp", Map.of("retcode", Retcode.PLAYER_DATA_ERROR.getVal()));
@@ -114,7 +137,9 @@ public final class MemoryChallenge46 {
         Gameplay46.set(row, "challenge_id", excel.getId());
         if (history != null) {
           Gameplay46.set(row, "star", history.getStars());
-          Gameplay46.set(row, "score_id", history.getScore());
+          boolean split = excel.getType() == ChallengeType.STORY && history.isStoryScoresRecorded();
+          Gameplay46.set(row, "score_id", split ? history.getStoryScoreOne() : history.getScore());
+          if (split) Gameplay46.set(row, "score_two", history.getStoryScoreTwo());
           Gameplay46.set(row, "taken_reward", history.getTakenReward());
         }
         Gameplay46.add(response, "challenge_list", row.build());
@@ -142,8 +167,9 @@ public final class MemoryChallenge46 {
       var packedSecond = new ArrayList<Integer>();
       var modernFirst = new ArrayList<Integer>();
       var modernSecond = new ArrayList<Integer>();
-      int challenge = 0, tag;
+      int challenge = 0, tag, firstBuff = 0, secondBuff = 0;
       boolean seen = false;
+      boolean story = false;
       while ((tag = input.readTag()) != 0) {
         int field = tag >>> 3, wire = tag & 7;
         if (field == 3) {
@@ -166,6 +192,23 @@ public final class MemoryChallenge46 {
           var target = field == 11 ? modernFirst : modernSecond;
           target.add(avatar(input.readByteArray()));
           if (target.size() > 4) return null;
+        } else if (field == 14) {
+          if (wire != 2 || story) return null;
+          var info = CodedInputStream.newInstance(input.readByteArray());
+          if (info.readTag() != (13 << 3 | 2)) return null;
+          var buffs = CodedInputStream.newInstance(info.readByteArray());
+          if (!info.isAtEnd()) return null;
+          var fields = new HashSet<Integer>();
+          int buffTag;
+          while ((buffTag = buffs.readTag()) != 0) {
+            int bf = buffTag >>> 3;
+            if ((buffTag & 7) != 0 || !fields.add(bf)) return null;
+            if (bf == 7) firstBuff = positive(buffs);
+            else if (bf == 13) secondBuff = positive(buffs);
+            else return null;
+          }
+          if (!buffs.isAtEnd() || firstBuff <= 0 || secondBuff <= 0) return null;
+          story = true;
         } else return null;
       }
       if (!seen
@@ -177,7 +220,7 @@ public final class MemoryChallenge46 {
       if (first.isEmpty()
           || new HashSet<>(first).size() != first.size()
           || new HashSet<>(second).size() != second.size()) return null;
-      return new Request(challenge, first, second);
+      return new Request(challenge, first, second, firstBuff, secondBuff, story);
     } catch (IOException | IllegalArgumentException invalid) {
       return null;
     }

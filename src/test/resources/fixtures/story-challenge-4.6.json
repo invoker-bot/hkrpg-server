@@ -1,0 +1,248 @@
+{
+  "sourceURL": "https://github.com/Dimbreath/TurnBasedGameData",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "inputs": [
+    {
+      "path": "ExcelOutput/ChallengeStoryMazeConfig.json",
+      "blobSHA256": "64dbee0cfae34b24c151cbb1f32458ac8e9218f3dc0bec2d14d95a10e7ff5fe7",
+      "rows": [
+        {
+          "ID": 20011,
+          "Name": {
+            "Hash": 3413375142382921872
+          },
+          "GroupID": 2001,
+          "MapEntranceID": 3000205,
+          "MapEntranceID2": 3000205,
+          "Floor": 1,
+          "RewardID": 101401,
+          "DamageType1": [
+            "Thunder",
+            "Imaginary"
+          ],
+          "DamageType2": [
+            "Ice",
+            "Wind"
+          ],
+          "ChallengeTargetID": [
+            2001,
+            2002,
+            2003
+          ],
+          "StageNum": 2,
+          "MonsterID1": [],
+          "MonsterID2": [],
+          "MazeGroupID1": 6,
+          "ConfigList1": [
+            200001
+          ],
+          "NpcMonsterIDList1": [
+            1023010
+          ],
+          "EventIDList1": [
+            30019011
+          ],
+          "MazeGroupID2": 7,
+          "ConfigList2": [
+            200001
+          ],
+          "NpcMonsterIDList2": [
+            2023020
+          ],
+          "EventIDList2": [
+            30019012
+          ],
+          "MazeBuffID": 3031001
+        }
+      ]
+    },
+    {
+      "path": "ExcelOutput/ChallengeStoryMazeExtra.json",
+      "blobSHA256": "e8d10f9892b2ab59267bcc3366f12cbceaf4acb3c5ed8fef3b2f2d00df6395a4",
+      "rows": [
+        {
+          "ID": 20011,
+          "TurnLimit": 5,
+          "BattleTargetID": [
+            2001,
+            2002
+          ],
+          "ClearScore": 30000
+        }
+      ]
+    },
+    {
+      "path": "ExcelOutput/ChallengeStoryGroupConfig.json",
+      "blobSHA256": "d550025ab62e8ca3d1701e4c6b911afea9e63780488bf5967c01775217904bce",
+      "rows": [
+        {
+          "GroupID": 2001,
+          "GroupName": {
+            "Hash": 16470015507639752765
+          },
+          "RewardLineGroupID": 2000,
+          "PreMissionID": 4020103,
+          "ScheduleDataID": 202001,
+          "MazeBuffID": 3031001,
+          "BackGroundPath": "",
+          "TabPicPath": "SpriteOutput/TabIcon/Abyss/ChallengeThemeTabIcon_2001.png",
+          "TabPicSelectPath": "SpriteOutput/TabIcon/Abyss/ChallengeThemeTabIcon_2001.png",
+          "ChallengeGroupType": "Story",
+          "ThemePicPath": "SpriteOutput/DailyMission/Banner/ChallengeThemeBanner_2001.png"
+        }
+      ]
+    },
+    {
+      "path": "ExcelOutput/ChallengeStoryGroupExtra.json",
+      "blobSHA256": "745b62b51fd7b61f018e0231e292db769e206f078f487646736dcb2ec10868cb",
+      "rows": [
+        {
+          "GroupID": 2001,
+          "ThemeToastPicPath": "SpriteOutput/ChallengeTheme/ThemePic/ChallengeThemePic_2001.png",
+          "ThemeIconPicPath": "SpriteOutput/ChallengeTheme/ThemeIcon/ChallengeThemeIcon_2001.png",
+          "ThemePosterEffectPrefabPath": "UI/Abyss/ChallengeStoryPosterEffThemePanel/ChallengeStoryAlternationPanelEff_2001.prefab",
+          "ThemePosterBgPicPath": "SpriteOutput/ChallengeTheme/ThemeBg/ChallengeThemeBg_2001.png",
+          "ThemePosterTabPicPath": "SpriteOutput/Quest/TabIcon/BtnChallengeStoryAlternation_2001.png",
+          "ThemeID": 1,
+          "SubMazeBuffList": [],
+          "StoryType": "Normal",
+          "BuffList": [
+            3031301,
+            3031302,
+            3031303
+          ]
+        }
+      ]
+    },
+    {
+      "path": "ExcelOutput/MazeBuff.json",
+      "blobSHA256": "868d024877b21a91036ff73a98328b4fe26c53dad1121429d248f21568267d7e",
+      "rows": [
+        {
+          "ID": 3031301,
+          "BuffSeries": 1,
+          "BuffRarity": 1,
+          "Lv": 1,
+          "LvMax": 1,
+          "ModifierName": "ADV_StageAbility_3031301",
+          "InBattleBindingType": "StageAbilityAfterCharacterBorn",
+          "InBattleBindingKey": "FantasticStory_PlusAbility_0011",
+          "ParamList": [],
+          "BuffIcon": "SpriteOutput/BuffIcon/ActivityFantasticStoryBuff/ActivityBattleBuff103.png",
+          "BuffName": {
+            "Hash": 13601088041295294986
+          },
+          "BuffDesc": {
+            "Hash": 12975168445819328898
+          },
+          "BuffDescBattle": {
+            "Hash": 12975168445819328898
+          },
+          "BuffEffect": "",
+          "MazeBuffType": "Level",
+          "MazeBuffIconType": "Buff",
+          "DisplayType": "Fixed",
+          "IsDisplayEnvInLevel": true
+        },
+        {
+          "ID": 3031302,
+          "BuffSeries": 1,
+          "BuffRarity": 1,
+          "Lv": 1,
+          "LvMax": 1,
+          "ModifierName": "ADV_StageAbility_3031302",
+          "InBattleBindingType": "StageAbilityAfterCharacterBorn",
+          "InBattleBindingKey": "FantasticStory_PlusAbility_0012",
+          "ParamList": [
+            {
+              "Value": 0.8
+            }
+          ],
+          "BuffIcon": "SpriteOutput/BuffIcon/ActivityFantasticStoryBuff/ActivityBattleBuff116.png",
+          "BuffName": {
+            "Hash": 2799844068662754088
+          },
+          "BuffDesc": {
+            "Hash": 6095857343186440699
+          },
+          "BuffDescBattle": {
+            "Hash": 6095857343186440699
+          },
+          "BuffEffect": "",
+          "MazeBuffType": "Level",
+          "MazeBuffIconType": "Buff",
+          "DisplayType": "Fixed",
+          "IsDisplayEnvInLevel": true
+        },
+        {
+          "ID": 3031303,
+          "BuffSeries": 1,
+          "BuffRarity": 1,
+          "Lv": 1,
+          "LvMax": 1,
+          "ModifierName": "ADV_StageAbility_3031303",
+          "InBattleBindingType": "StageAbilityAfterCharacterBorn",
+          "InBattleBindingKey": "FantasticStory_PlusAbility_0013",
+          "ParamList": [
+            {
+              "Value": 0.15
+            },
+            {
+              "Value": 20
+            }
+          ],
+          "BuffIcon": "SpriteOutput/BuffIcon/ActivityFantasticStoryBuff/ActivityBattleBuff102.png",
+          "BuffName": {
+            "Hash": 16439510304128978970
+          },
+          "BuffDesc": {
+            "Hash": 9225224596665319977
+          },
+          "BuffDescBattle": {
+            "Hash": 9225224596665319977
+          },
+          "BuffEffect": "",
+          "MazeBuffType": "Level",
+          "MazeBuffIconType": "Buff",
+          "DisplayType": "Fixed",
+          "IsDisplayEnvInLevel": true
+        },
+        {
+          "ID": 3031001,
+          "BuffSeries": 1,
+          "BuffRarity": 1,
+          "Lv": 1,
+          "LvMax": 1,
+          "ModifierName": "ADV_StageAbility_3031001",
+          "InBattleBindingType": "StageAbilityBeforeCharacterBorn",
+          "InBattleBindingKey": "FantasticStory_BaseAbility_0010",
+          "ParamList": [
+            {
+              "Value": 0.6
+            },
+            {
+              "Value": 6
+            }
+          ],
+          "BuffIcon": "SpriteOutput/BuffIcon/Inlevel/IconBuffCommon.png",
+          "BuffName": {
+            "Hash": 5498557729683232828
+          },
+          "BuffDesc": {
+            "Hash": 16263463986445589457
+          },
+          "BuffDescBattle": {
+            "Hash": 16263463986445589457
+          },
+          "BuffEffect": "",
+          "MazeBuffType": "Level",
+          "MazeBuffIconType": "Buff",
+          "DisplayType": "Fixed",
+          "IsDisplayEnvInLevel": true
+        }
+      ]
+    }
+  ],
+  "referenceCommit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083",
+  "clientGameplayVerified": false
+}

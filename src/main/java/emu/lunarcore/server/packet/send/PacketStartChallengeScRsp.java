@@ -44,7 +44,8 @@ public class PacketStartChallengeScRsp extends BasePacket {
 
                 info.getMutableFirstNode();
                 info.getMutableSecondNode();
-            } else if (challenge.getType() == ChallengeType.STORY) {
+            } else if (challenge.getType() == ChallengeType.STORY
+                    && (player.getSession() == null || !player.getSession().getProtocol().experimental())) {
                 data.getMutableExtInfo().getMutableBossInfo();
             }
         } else {

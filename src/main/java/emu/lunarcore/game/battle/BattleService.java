@@ -356,7 +356,7 @@ public class BattleService extends BaseGameService {
             var active = player.getBattle();
             if (active == null || active.getId() != battleId || active.getStage().getId() != stageId
                     || result != BattleEndStatus.BATTLE_END_WIN && result != BattleEndStatus.BATTLE_END_LOSE && result != BattleEndStatus.BATTLE_END_QUIT
-                    || stats == null || !validStats(active, stats) || monsters == null || monsters.size() > 1024
+                    || stats == null || !validStats(active, stats) || !org.hkrpg.server.gameplay.StoryChallengeReports.valid(active, result, stats) || monsters == null || monsters.size() > 1024
                     || active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend && !legend.accepts(stats)
                     || monsters.stream().anyMatch(java.util.Objects::isNull)
                     || !org.hkrpg.server.gameplay.RogueResonance.validReport(active, energies)

@@ -307,6 +307,7 @@ public final class GameplayDefinitions {
   public static final Map<Integer, World> worlds = new HashMap<>();
 
   public static void load(Path root) {
+    StoryChallengeCatalog.load(root);
     LocalLegendCatalog.load(root);
     LocalLegendAccess.load(root);
     DiceRollQuests.load(root);

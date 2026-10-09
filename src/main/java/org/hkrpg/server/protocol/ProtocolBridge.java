@@ -64,6 +64,7 @@ public final class ProtocolBridge {
           Map.entry("ChallengeSettleNotify.reward_list", "reward"),
           // Honey ChallengeStoryInstance/BossInstance serialize ScoreStage1 as ScoreId.
           Map.entry("ChallengeInfo.score", "score_id"),
+          Map.entry("ChallengeInfo.ext_info", "stage_info"),
           Map.entry("Challenge.stars", "star"),
           Map.entry("Challenge.score", "score_id"),
           Map.entry("BattleAvatar.avatar_enhance_id", "enhanced_id"),

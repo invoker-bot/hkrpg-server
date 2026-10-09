@@ -889,3 +889,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 经典小鸟摆放先保存位置，再向任务管理器发送服务端确认事件；仅五个完整原始定义消费该事件，不以摆放存档回溯完成无回溯目标，见[小鸟剧情说明](match-three-bird-position-4.6.md)。
 
 宇宙祝福领奖在改变菜单、持有和图鉴前，核对所选ID/等级的当前战斗资源及未重复持有；缺失或错配时保留整个待选菜单，详见 [4.6 祝福领取校验](rogue-blessing-selection-4.6.md)。
+
+4.6 传统虚构叙事已接入两半场选择与累计计分，见 [入口与结算说明](story-challenge-4.6.md)。Fever、Tierce 和客户端验收继续待完成。

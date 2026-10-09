@@ -26,6 +26,9 @@ public class ChallengeHistory {
     private int takenReward;
     private int stars;
     private int score;
+    @Setter(AccessLevel.NONE) private boolean storyScoresRecorded;
+    @Setter(AccessLevel.NONE) private int storyScoreOne;
+    @Setter(AccessLevel.NONE) private int storyScoreTwo;
 
     @Setter(AccessLevel.NONE)
     private ChallengeExtraHistory extraData;
@@ -53,6 +56,17 @@ public class ChallengeHistory {
 
     public void setScore(int score) {
         this.score = score;
+        this.storyScoresRecorded = false;
+        this.storyScoreOne = 0;
+        this.storyScoreTwo = 0;
+    }
+
+    public void setStoryScores(int first, int second) {
+        if (first < 0 || second < 0 || (long) first + second != this.score)
+            throw new IllegalArgumentException("Story half scores must match the stored total");
+        this.storyScoreOne = first;
+        this.storyScoreTwo = second;
+        this.storyScoresRecorded = true;
     }
 
     public ChallengeExtraHistory getExtraData() {

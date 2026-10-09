@@ -121,7 +121,7 @@ public class ChallengeInstance extends PlayerGameInstance {
         // Add story battle targets
         if (this.getExcel().getType() == ChallengeType.STORY) {
             // Add base score counter
-            battle.addBattleTarget(1, 10001, this.getTotalScore());
+            battle.addBattleTarget(1, nativeStory() ? 10003 : 10001, this.getTotalScore());
             // Add battle targets from story excel
             for (int id : getExcel().getStoryExcel().getBattleTargetID()) {
                 battle.addBattleTarget(5, id, this.getTotalScore());
@@ -136,9 +136,9 @@ public class ChallengeInstance extends PlayerGameInstance {
     @Override
     public void onBattleFinish(Battle battle, BattleEndStatus result, BattleStatistics stats) {
         // Add challenge score
-        if (this.isStory()) {
+        if (this.isStory() && result != BattleEndStatus.BATTLE_END_QUIT) {
             // Calculate score for current stage
-            int stageScore = stats.getChallengeScore() - this.getTotalScore();
+            int stageScore = stats.getChallengeScore() - (this.getCurrentStage() == 1 ? 0 : this.getScoreStage1());
             // Set score
             if (this.getCurrentStage() == 1) {
                 this.scoreStage1 = stageScore;
@@ -183,6 +183,11 @@ public class ChallengeInstance extends PlayerGameInstance {
             default:
                 // Determine challenge result
                 if (this.isStory() && stats.getEndReason() == BattleEndReason.BATTLE_END_REASON_TURN_LIMIT) {
+                    int group = this.currentStage == 1 ? excel.getMazeGroupID1() : excel.getMazeGroupID2();
+                    // Expired encounters are removed without publishing monster-defeat events.
+                    for (var entity : java.util.List.copyOf(this.getScene().getEntities().values()))
+                        if (entity instanceof EntityMonster monster && monster.getGroupId() == group)
+                            this.getScene().removeEntity(monster);
                     this.advanceStage();
                 } else {
                     // Fail challenge
@@ -276,8 +281,13 @@ public class ChallengeInstance extends PlayerGameInstance {
         switch (this.getType()) {
             case STORY -> {
                 if (this.getBuffs() != null) {
-                    int buffId = this.getBuffs().getInt(this.getCurrentStage() - 1);
-                    proto.getMutableExtInfo().getMutableCurStoryBuffs().addBuffList(buffId);
+                    if (nativeStory()) {
+                        for (int buffId : this.getBuffs())
+                            proto.getMutableExtInfo().getMutableCurStoryBuffs().addBuffList(buffId);
+                    } else {
+                        int buffId = this.getBuffs().getInt(this.getCurrentStage() - 1);
+                        proto.getMutableExtInfo().getMutableCurStoryBuffs().addBuffList(buffId);
+                    }
                 }
             }
             case BOSS -> {
@@ -297,5 +307,9 @@ public class ChallengeInstance extends PlayerGameInstance {
     @Override
     public void onLeave() {
 
+    }
+
+    private boolean nativeStory() {
+        return this.isStory() && getPlayer().getSession() != null && getPlayer().getSession().getProtocol().experimental();
     }
 }

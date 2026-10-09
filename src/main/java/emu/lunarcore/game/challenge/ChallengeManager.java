@@ -210,6 +210,11 @@ public class ChallengeManager extends BasePlayerManager {
         // Set
         info.setStars(stars);
         info.setScore(score);
+        if (getPlayer().getInstance() instanceof ChallengeInstance challenge
+                && challenge.isStory() && challenge.getChallengeId() == challengeId
+                && challenge.isWin() && challenge.getTotalScore() == score) {
+            info.setStoryScores(challenge.getScoreStage1(), challenge.getScoreStage2());
+        }
         info.save();
     }
 
