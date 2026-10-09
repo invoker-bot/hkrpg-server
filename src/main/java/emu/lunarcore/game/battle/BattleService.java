@@ -31,11 +31,19 @@ public class BattleService extends BaseGameService {
         super(server);
     }
 
+    private static boolean activityBlocksBattle(Player player) {
+        var state = player.getGameplay();
+        return state.getStoryLines().isTransitionPending()
+                || state.getClockPark().getActive() != null
+                || state.getRhythm().getActiveLevel() != 0
+                || state.getParkour().getActiveLevel() != 0;
+    }
+
     public void attack(Player player, int casterId, int attackedGroupId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
         synchronized (player) { attackLocked(player,casterId,attackedGroupId,castedSkill,hitTargets,assistMonsters); }
     }
     private void attackLocked(Player player, int casterId, int attackedGroupId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
-        if (player.getGameplay().getStoryLines().isTransitionPending()) {
+        if (activityBlocksBattle(player)) {
             player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.SYSTEM_BUSY));
             return;
         }
@@ -209,6 +217,7 @@ public class BattleService extends BaseGameService {
     }
     public Battle startEventBattle(Player player, int eventId) {
         synchronized (player) {
+            if (player.isInBattle() || activityBlocksBattle(player)) return null;
             if (org.hkrpg.server.gameplay.StageEventDifficultySettings.applies(player, eventId)) {
                 var plan = org.hkrpg.server.gameplay.StageEventDifficultySettings.plan(player, eventId);
                 if (plan == null) return null;
@@ -226,7 +235,7 @@ public class BattleService extends BaseGameService {
     }
     private Battle startBattleLocked(Player player,int stageId,int worldLevel,boolean eventOnly) {
         // Sanity check to make sure player isnt in a battle
-        if (player.isInBattle() || player.getGameplay().getStoryLines().isTransitionPending()) {
+        if (player.isInBattle() || activityBlocksBattle(player)) {
             return null;
         }
 
@@ -261,7 +270,7 @@ public class BattleService extends BaseGameService {
     }
     private Battle startCocoonLocked(Player player,int cocoonId,int worldLevel,int wave) {
         // Sanity check to make sure player isnt in a battle
-        if (player.isInBattle() || player.getGameplay().getStoryLines().isTransitionPending()) {
+        if (player.isInBattle() || activityBlocksBattle(player)) {
             return null;
         }
 
@@ -507,7 +516,7 @@ public class BattleService extends BaseGameService {
     }
     private void reEnterBattleLocked(Player player,int stageId) {
         // Sanity check to make sure player isnt in a battle
-        if (player.isInBattle()) {
+        if (player.isInBattle() || activityBlocksBattle(player)) {
             player.sendPacket(new PacketReEnterLastElementStageScRsp());
             return;
         }
