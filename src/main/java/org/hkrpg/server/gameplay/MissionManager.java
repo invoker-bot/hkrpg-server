@@ -1097,6 +1097,14 @@ public final class MissionManager {
         1);
   }
 
+  public void onStoryChallengeSettlement(emu.lunarcore.game.battle.Battle battle) {
+    synchronized (player) {
+      var targets = StoryChallengeSettlementGoals.completed(player, battle);
+      if (targets.isEmpty()) return;
+      event(config -> StoryChallengeSettlementGoals.matches(targets, config), 1);
+    }
+  }
+
   public void onChallengeVictory(emu.lunarcore.game.battle.Battle battle) {
     synchronized (player) {
       var context = battle.getMissionChallengeWin();

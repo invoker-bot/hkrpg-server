@@ -505,6 +505,7 @@ public class BattleService extends BaseGameService {
         if (player.getInstance() != null) {
             player.getInstance().onBattleFinish(battle, result, stats);
         }
+        player.getMissionManager().onStoryChallengeSettlement(battle);
         player.getMissionManager().onChallengeVictory(battle);
         player.getDailyManager().onChallengeVictory(battle);
 

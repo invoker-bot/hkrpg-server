@@ -324,3 +324,5 @@ Java 原始祝福表读取器保留三份完整表的 4,019 行和 8,215 个定�
 4.6 传统虚构叙事已接入两半场选择与累计计分，见 [入口与结算说明](docs/story-challenge-4.6.md)。Fever、Tierce 和客户端验收继续待完成。
 
 原生虚构叙事战斗冻结入战范围，并拒绝无遇敌上下文的直接入口，见 [战斗范围核验](docs/story-challenge-battle-scope-4.6.md)。
+
+原始虚构叙事教程的已接取目标由实际完成结算推进，见 [教程结算与入口动作](docs/story-challenge-settlement-goal-4.6.md)。
