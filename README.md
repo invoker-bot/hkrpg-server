@@ -1,3 +1,5 @@
+4.6 单监听数组查询的校验与默认比较器转发已接到多播撤回，见 [数组查询说明](docs/rogue-event-single-array-search-4.6.md)。比较器内部与实际世界继续待完成。
+
 4.6 普通多播委托撤回已与基类监听收尾联合验证，见 [委托撤回说明](docs/rogue-event-delegate-removal-4.6.md)。销毁事件内部与实际世界继续待完成。
 
 4.6 实体事件键与桶链查询已接到监听撤回，见 [事件字典说明](docs/rogue-event-dictionary-lookup-4.6.md)。运行时注册与完整玩法验收继续待完成。
