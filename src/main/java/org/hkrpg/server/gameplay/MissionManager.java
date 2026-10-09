@@ -855,6 +855,10 @@ public final class MissionManager {
         1);
   }
 
+  public void onMatchThreeBirdPosition(int bird, int position) {
+    event(c -> matchesPlace(c) && MatchThreeBirdPlacement.matches(player, c, bird, position), 1);
+  }
+
   public Set<Integer> matchThreeTargets(int id, int mode) {
     var targets = new HashSet<Integer>();
     for (var state : player.getGameplay().getSubMissions().values()) {

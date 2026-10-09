@@ -45,6 +45,15 @@ public final class MatchThreeManager {
       if (!open()
           || !birdUnlocked(id)
           || player.isInBattle()
+          || player.getInstance() != null
+          || player.getGameplay().getClockPark().getActive() != null
+          || player.getGameplay().getStoryLines().getCurrentId() != 0
+          || player.getGameplay().getStoryLines().isTransitionPending()
+          || player.getGameplay().getRhythm().getActiveLevel() != 0
+          || player.getGameplay().getParkour().getActiveLevel() != 0
+          || player.getGameplay().getParkourVenue().inside()
+          || player.getGameplay().getCurrentMissionRaid() != 0
+          || player.getGameplay().getRogue().isInside()
           || gate < 0
           || (gate != 0 && !new MusicComposition(player).subFinished(gate)))
         return Retcode.REQ_PARA_INVALID;
@@ -59,6 +68,7 @@ public final class MatchThreeManager {
         record.position(position);
         player.save();
       }
+      player.getMissionManager().onMatchThreeBirdPosition(id, position);
       return Retcode.SUCC;
     }
   }
@@ -110,6 +120,10 @@ public final class MatchThreeManager {
         var level = MatchThreeCatalog.levels.get(levelKey);
         if (!open()
             || player.isInBattle()
+            || player.getInstance() != null
+            || player.getGameplay().getClockPark().getActive() != null
+            || player.getGameplay().getStoryLines().getCurrentId() != 0
+            || player.getGameplay().getStoryLines().isTransitionPending()
             || player.getGameplay().getRhythm().getActiveLevel() != 0
             || player.getGameplay().getParkour().getActiveLevel() != 0
             || player.getGameplay().getParkourVenue().inside()
