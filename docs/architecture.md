@@ -1,3 +1,5 @@
+4.6 效果淡出列表容量设置控制已补入Java，见 [淡出列表容量说明](rogue-fade-list-capacity-4.6.md)。实际数组运行时与世界登记继续待完成。
+
 4.6 池化事件回调列表的构造和处理器转发已补入Java，见 [池化回调说明](rogue-event-pooled-callbacks-4.6.md)。具体处理器与实际世界登记继续待完成。
 
 4.6 事件执行列表FIFO队列、环形扩容与归还已补入Java，见 [执行队列说明](rogue-event-execute-queue-4.6.md)。内层集合和实际世界登记继续待完成。
