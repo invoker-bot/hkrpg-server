@@ -30,6 +30,7 @@ public final class RogueEventListenerWithdrawal46 {
 
   public static final class State {
     public Dictionary entityEvents;
+    public RogueEventFire46.ExecuteQueue executeListPool;
   }
 
   public interface World {
