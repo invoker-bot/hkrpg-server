@@ -897,3 +897,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 原始虚构叙事教程的已接取目标由实际完成结算推进，见 [教程结算与入口动作](story-challenge-settlement-goal-4.6.md)。
 
 原生虚构叙事按原始关卡采用四或五回合限制，见 [关卡回合限制核验](story-challenge-round-limit-4.6.md)。
+
+第一季拳击俱乐部的原始五关目录接入4.6原生查询，见 [目录核验](boxing-club-catalog-4.6.md)。

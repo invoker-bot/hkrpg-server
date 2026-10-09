@@ -328,3 +328,5 @@ Java 原始祝福表读取器保留三份完整表的 4,019 行和 8,215 个定�
 原始虚构叙事教程的已接取目标由实际完成结算推进，见 [教程结算与入口动作](docs/story-challenge-settlement-goal-4.6.md)。
 
 原生虚构叙事按原始关卡采用四或五回合限制，见 [关卡回合限制核验](docs/story-challenge-round-limit-4.6.md)。
+
+第一季拳击俱乐部的原始五关目录接入4.6原生查询，见 [目录核验](docs/boxing-club-catalog-4.6.md)。
