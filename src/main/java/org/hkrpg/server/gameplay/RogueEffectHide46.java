@@ -12,6 +12,8 @@ public final class RogueEffectHide46 {
 
   public static final class Behavior {
     public int hideReason;
+    public Object ownerMonoBehavior;
+    public boolean effectInited;
   }
 
   public static final class SkillClosure {

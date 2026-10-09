@@ -24,6 +24,7 @@ public final class RogueMutexAttach46 {
 
   public static final class MonoEffect {
     public long cachedPointer;
+    public boolean isActive;
     public int instanceId;
     public Object behavior;
     public TriggerParameters triggerParams;
