@@ -1,3 +1,5 @@
+4.6 其他修饰器双事件载荷与默认效果列表构造已补入Java，见 [事件载荷说明](docs/rogue-other-event-payload-4.6.md)。范围插入与实际世界登记继续待完成。
+
 4.6 效果淡出列表容量设置控制已补入Java，见 [淡出列表容量说明](docs/rogue-fade-list-capacity-4.6.md)。实际数组运行时与世界登记继续待完成。
 
 4.6 池化事件回调列表的构造和处理器转发已补入Java，见 [池化回调说明](docs/rogue-event-pooled-callbacks-4.6.md)。具体处理器与实际世界登记继续待完成。
