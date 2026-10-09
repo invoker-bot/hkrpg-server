@@ -81,7 +81,7 @@ public class ChallengeInstance extends PlayerGameInstance {
     }
 
     private int getRoundsElapsed() {
-        return getExcel().getChallengeCountDown() - this.roundsLeft;
+        return nativeStory() ? this.roundsLeft : getExcel().getChallengeCountDown() - this.roundsLeft;
     }
 
     public int getTotalScore() {

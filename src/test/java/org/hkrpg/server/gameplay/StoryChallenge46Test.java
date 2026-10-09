@@ -68,12 +68,13 @@ class StoryChallenge46Test {
 
   static class StoryPlayer extends MissionChallengeWinTest.Challenger {
     @dev.morphia.annotations.Transient final Session nativeSession = new Session(this);
+    @dev.morphia.annotations.Transient boolean nativeProtocol = true;
     boolean began;
     int firstBuff, secondBuff, error = -1;
     List<Integer> first, second;
 
     public GameSession getSession() {
-      return nativeSession;
+      return nativeProtocol ? nativeSession : super.getSession();
     }
 
     public emu.lunarcore.game.avatar.GameAvatar getAvatarById(int id) {
@@ -501,6 +502,8 @@ class StoryChallenge46Test {
 
   @Test
   void backwardsScoreReportPreservesBattleForAValidRetry() {
+    // Native encounter scope and retries use original rows in StoryChallengeScope46Test.
+    player.nativeProtocol = false;
     var instance = instance();
     instance.setScoreStage1(12000);
     fixture.monster(player, 6, 200001);

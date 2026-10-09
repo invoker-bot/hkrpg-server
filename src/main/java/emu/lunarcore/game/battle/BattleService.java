@@ -164,6 +164,11 @@ public class BattleService extends BaseGameService {
                 return;
             }
 
+            if (battle.getStoryChallengeBinding().required() && battle.getStoryChallengeBinding().context() == null) {
+                player.sendPacket(new PacketSceneCastSkillScRsp());
+                return;
+            }
+
             // Add buffs to battle
             if (castingAvatar != null) {
                 // The player is the one attacking
@@ -217,7 +222,8 @@ public class BattleService extends BaseGameService {
     }
     public Battle startEventBattle(Player player, int eventId) {
         synchronized (player) {
-            if (player.isInBattle() || activityBlocksBattle(player)) return null;
+            if (player.isInBattle() || activityBlocksBattle(player)
+                || org.hkrpg.server.gameplay.StoryChallengeScope.isNativeStory(player)) return null;
             if (org.hkrpg.server.gameplay.StageEventDifficultySettings.applies(player, eventId)) {
                 var plan = org.hkrpg.server.gameplay.StageEventDifficultySettings.plan(player, eventId);
                 if (plan == null) return null;
@@ -235,7 +241,8 @@ public class BattleService extends BaseGameService {
     }
     private Battle startBattleLocked(Player player,int stageId,int worldLevel,boolean eventOnly) {
         // Sanity check to make sure player isnt in a battle
-        if (player.isInBattle() || activityBlocksBattle(player)) {
+        if (player.isInBattle() || activityBlocksBattle(player)
+                || org.hkrpg.server.gameplay.StoryChallengeScope.isNativeStory(player)) {
             return null;
         }
 
@@ -270,7 +277,8 @@ public class BattleService extends BaseGameService {
     }
     private Battle startCocoonLocked(Player player,int cocoonId,int worldLevel,int wave) {
         // Sanity check to make sure player isnt in a battle
-        if (player.isInBattle() || activityBlocksBattle(player)) {
+        if (player.isInBattle() || activityBlocksBattle(player)
+                || org.hkrpg.server.gameplay.StoryChallengeScope.isNativeStory(player)) {
             return null;
         }
 
@@ -516,7 +524,8 @@ public class BattleService extends BaseGameService {
     }
     private void reEnterBattleLocked(Player player,int stageId) {
         // Sanity check to make sure player isnt in a battle
-        if (player.isInBattle() || activityBlocksBattle(player)) {
+        if (player.isInBattle() || activityBlocksBattle(player)
+                || org.hkrpg.server.gameplay.StoryChallengeScope.isNativeStory(player)) {
             player.sendPacket(new PacketReEnterLastElementStageScRsp());
             return;
         }

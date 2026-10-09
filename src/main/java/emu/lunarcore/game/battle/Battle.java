@@ -67,6 +67,7 @@ public class Battle {
     @Setter private org.hkrpg.server.gameplay.MissionBattleKills.Context missionBattleKills;
     @Setter private org.hkrpg.server.gameplay.MissionBattleCustomValues.Context missionBattleCustomValues;
     @Setter private org.hkrpg.server.gameplay.MissionChallengeWin.Context missionChallengeWin;
+    private org.hkrpg.server.gameplay.StoryChallengeScope.Binding storyChallengeBinding;
     @Setter private org.hkrpg.server.gameplay.DailyWeaknessEntries.Context dailyWeaknessEntry;
     private org.hkrpg.server.gameplay.MissionStageWins.Context missionStageWins;
     @Setter private List<org.hkrpg.server.gameplay.MissionBattleKills.Monster> reportedMonsters = List.of();
@@ -102,6 +103,7 @@ public class Battle {
             this.loadStage(stage);
         }
         this.missionStageWins = org.hkrpg.server.gameplay.MissionStageWins.capture(player, this);
+        this.storyChallengeBinding = org.hkrpg.server.gameplay.StoryChallengeScope.capture(player, this);
     }
 
     public Battle(Player player, PlayerLineup lineup, List<? extends BattleStage> stages) {
@@ -112,6 +114,7 @@ public class Battle {
             this.loadStage(stage);
         }
         this.missionStageWins = org.hkrpg.server.gameplay.MissionStageWins.capture(player, this);
+        this.storyChallengeBinding = org.hkrpg.server.gameplay.StoryChallengeScope.capture(player, this);
     }
 
     public Battle(Player player, PlayerLineup lineup, Collection<EntityMonster> npcMonsters) {
@@ -162,6 +165,7 @@ public class Battle {
         // The base constructor runs before NPCs are loaded. Bind actual combatants only now.
         player.getUniverseManager().onBattlePrepared(this);
         this.missionStageWins = org.hkrpg.server.gameplay.MissionStageWins.capture(player, this);
+        this.storyChallengeBinding = org.hkrpg.server.gameplay.StoryChallengeScope.capture(player, this);
     }
 
     private void loadStage(BattleStage stage) {

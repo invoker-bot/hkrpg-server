@@ -891,3 +891,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 宇宙祝福领奖在改变菜单、持有和图鉴前，核对所选ID/等级的当前战斗资源及未重复持有；缺失或错配时保留整个待选菜单，详见 [4.6 祝福领取校验](rogue-blessing-selection-4.6.md)。
 
 4.6 传统虚构叙事已接入两半场选择与累计计分，见 [入口与结算说明](story-challenge-4.6.md)。Fever、Tierce 和客户端验收继续待完成。
+
+原生虚构叙事战斗冻结入战范围，并拒绝无遇敌上下文的直接入口，见 [战斗范围核验](story-challenge-battle-scope-4.6.md)。
