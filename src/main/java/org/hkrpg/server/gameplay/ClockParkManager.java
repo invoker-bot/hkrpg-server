@@ -250,6 +250,7 @@ public final class ClockParkManager {
     var next = new ClockParkState(state);
     var completed = next.completeEnding();
     var saved = commit(state, next);
+    if (saved.code() == Retcode.SUCC) player.getMissionManager().onClockParkProgress();
     return saved.code() == Retcode.SUCC ? new Result(Retcode.SUCC, completed, items, first) : saved;
   }
 

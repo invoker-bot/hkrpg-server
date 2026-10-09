@@ -101,7 +101,8 @@ public final class MissionManager {
           return Retcode.SUCC;
         }
         if (!MissionStateRecords.mainDoing(player, id)
-            || !DailyMissionExpiry.current(player, id, clock.instant())) return Retcode.MISSION_NOT_DOING;
+            || !DailyMissionExpiry.current(player, id, clock.instant()))
+          return Retcode.MISSION_NOT_DOING;
         if (DailyCommissionAcceptance.record(player, id, clock.instant())) player.save();
         return Retcode.SUCC;
       }
@@ -120,8 +121,11 @@ public final class MissionManager {
       player.getMissionTrialManager().reconcile();
       var oldSfx = new MusicComposition(player).unlockedSfxSongs();
       var assignmentTime = clock.instant();
-      boolean changed = DailyMissionAssignment.assign(
-          player, assignmentTime, id -> eligible(GameData.getMainMissionExcelMap().get(id), true));
+      boolean changed =
+          DailyMissionAssignment.assign(
+              player,
+              assignmentTime,
+              id -> eligible(GameData.getMainMissionExcelMap().get(id), true));
       boolean pass;
       do {
         pass = false;
@@ -225,10 +229,8 @@ public final class MissionManager {
           new MissionRewards(player).settle(rewardKey, state);
           continue;
         }
-        var result =
-            player.getRewardLedger().claim(rewardKey, config.getRewardID());
-        if (result.retcode() == Retcode.SUCC
-            || player.getRewardLedger().granted(rewardKey)) {
+        var result = player.getRewardLedger().claim(rewardKey, config.getRewardID());
+        if (result.retcode() == Retcode.SUCC || player.getRewardLedger().granted(rewardKey)) {
           state.reserveReward();
           state.closeReward();
           player.save();
@@ -388,8 +390,7 @@ public final class MissionManager {
         return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
       if (config.getLevelFloorID() != 0 && config.getLevelFloorID() != player.getFloorId())
         return Retcode.MISSION_SCENE_NOT_MATCH;
-      if (!MissionTalkScriptGates.allows(player, id))
-        return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+      if (!MissionTalkScriptGates.allows(player, id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
       var customUpdates = new HashMap<String, Integer>();
       var main = GameData.getMissionInfos().get(config.getMainMissionID());
       for (var entry : values.entrySet()) {
@@ -688,46 +689,48 @@ public final class MissionManager {
                       || battle.getMissionStageWins() != null
                           && battle.getMissionStageWins().matches(player, battle, c)
                       || battle.getMissionBattleCustomValues() != null
-                          && battle.getMissionBattleCustomValues().matchesStageWin(player, battle, c)
+                          && battle
+                              .getMissionBattleCustomValues()
+                              .matchesStageWin(player, battle, c)
                   : "KillMonsterInBattle".equals(c.getFinishType())
                       ? battle.getMissionBattleKills() != null
                           && battle.getMissionBattleKills().matches(player, battle, c)
-                  : "BattleWinWithCustomValue".equals(c.getFinishType())
-                      ? battle.getMissionBattleCustomValues() != null
-                          && battle.getMissionBattleCustomValues().matches(player, battle, c)
-                      : c.getProgress() == 1
-                          && c.getParamInt1() == 0
-                          && c.getParamInt2() == 0
-                          && c.getParamInt3() == 0
-                          && c.getParamStr1() != null
-                          && c.getParamStr1().isBlank()
-                          && c.getParamItemList() != null
-                          && c.getParamItemList().isEmpty()
-                          && c.getParamIntList() != null
-                          && matchesPlace(c)
-                          && switch (Objects.toString(c.getFinishType(), "")) {
-                            case "CocoonFinish" ->
-                                cocoonWon
-                                    && "ListContain".equals(c.getParamType())
-                                    && c.getParamIntList().length > 0
-                                    && Arrays.stream(c.getParamIntList())
-                                        .allMatch(id -> id != null && id > 0)
-                                    && new HashSet<>(Arrays.asList(c.getParamIntList())).size()
-                                        == c.getParamIntList().length
-                                    && Arrays.asList(c.getParamIntList())
-                                        .contains(battle.getCocoonId());
-                            case "AnyFarmElementFinish" ->
-                                farmWon
-                                    && "NoPara".equals(c.getParamType())
-                                    && c.getParamIntList().length == 0;
-                            case "AnyCocoonFinish" ->
-                                category.isPresent()
-                                    && CocoonCategories.categories(
-                                        c.getParamType(),
-                                        Arrays.asList(c.getParamIntList()),
-                                        category.get().category());
-                            default -> false;
-                          },
+                      : "BattleWinWithCustomValue".equals(c.getFinishType())
+                          ? battle.getMissionBattleCustomValues() != null
+                              && battle.getMissionBattleCustomValues().matches(player, battle, c)
+                          : c.getProgress() == 1
+                              && c.getParamInt1() == 0
+                              && c.getParamInt2() == 0
+                              && c.getParamInt3() == 0
+                              && c.getParamStr1() != null
+                              && c.getParamStr1().isBlank()
+                              && c.getParamItemList() != null
+                              && c.getParamItemList().isEmpty()
+                              && c.getParamIntList() != null
+                              && matchesPlace(c)
+                              && switch (Objects.toString(c.getFinishType(), "")) {
+                                case "CocoonFinish" ->
+                                    cocoonWon
+                                        && "ListContain".equals(c.getParamType())
+                                        && c.getParamIntList().length > 0
+                                        && Arrays.stream(c.getParamIntList())
+                                            .allMatch(id -> id != null && id > 0)
+                                        && new HashSet<>(Arrays.asList(c.getParamIntList())).size()
+                                            == c.getParamIntList().length
+                                        && Arrays.asList(c.getParamIntList())
+                                            .contains(battle.getCocoonId());
+                                case "AnyFarmElementFinish" ->
+                                    farmWon
+                                        && "NoPara".equals(c.getParamType())
+                                        && c.getParamIntList().length == 0;
+                                case "AnyCocoonFinish" ->
+                                    category.isPresent()
+                                        && CocoonCategories.categories(
+                                            c.getParamType(),
+                                            Arrays.asList(c.getParamIntList()),
+                                            category.get().category());
+                                default -> false;
+                              },
           1);
     }
   }
@@ -1081,6 +1084,15 @@ public final class MissionManager {
     event(c -> type.equals(c.getFinishType()) && predicate.test(c), amount);
   }
 
+  public void onClockParkProgress() {
+    event(
+        c ->
+            "ClockParkProgress".equals(c.getFinishType())
+                && matchesPlace(c)
+                && ClockParkMissionProgress.satisfied(player, c),
+        1);
+  }
+
   public void onChallengeVictory(emu.lunarcore.game.battle.Battle battle) {
     synchronized (player) {
       var context = battle.getMissionChallengeWin();
@@ -1128,9 +1140,11 @@ public final class MissionManager {
 
   private boolean currentCondition(MissionInfo.SubMissionInfo c) {
     return switch (Objects.toString(c.getFinishType(), "")) {
-      case "GetTrialAvatar", "GetTrialAvatarList" -> TrialAvatarMissionConditions.satisfied(player, c);
+      case "GetTrialAvatar", "GetTrialAvatarList" ->
+          TrialAvatarMissionConditions.satisfied(player, c);
       case "DelTrialAvatar" -> MissionTrialRemovals.satisfied(player, c);
       case "RogueExploreScore" -> RogueExploreScoreMission.satisfied(player, c);
+      case "ClockParkProgress" -> matchesPlace(c) && ClockParkMissionProgress.satisfied(player, c);
       case "StoryLineAddTrialAvatar" -> StoryTrialReplacement.apply(player, c);
       case "EnterRaidScene" -> new MissionRaid(player).transfer(c);
       case "RaidFinishCnt", "RaidFinishedAndTransfer" ->
@@ -1349,8 +1363,8 @@ public final class MissionManager {
     if (group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Atmosphere)
       return AtmosphereGroups.allowed(player, group, scene);
     boolean deferred = DeferredMissionGroups.tracks(group, scene);
-    if (group.getCategory() != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission && !deferred)
-      return true;
+    if (group.getCategory() != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission
+        && !deferred) return true;
     if (group.getOwnerMainMissionID() != 0) {
       int owner = group.getOwnerMainMissionID();
       var config = GameData.getMainMissionExcelMap().get(owner);
@@ -1364,11 +1378,15 @@ public final class MissionManager {
     if (deferred && DeferredMissionGroups.retains(group, scene)) return true;
     boolean load =
         group.getLoadCondition() == null
-            ? group.isLoadOnInitial() && (group.getOwnerMainMissionID() != 0
-                || group.getCategory() != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission)
+            ? group.isLoadOnInitial()
+                && (group.getOwnerMainMissionID() != 0
+                    || group.getCategory()
+                        != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission)
             : conditions(group.getLoadCondition());
-    if (deferred) return load && MissionGroupConditions.evaluate(player, group.getUnloadCondition())
-        == MissionGroupConditions.Result.NO_MATCH;
+    if (deferred)
+      return load
+          && MissionGroupConditions.evaluate(player, group.getUnloadCondition())
+              == MissionGroupConditions.Result.NO_MATCH;
     return load && (group.getUnloadCondition() == null || !conditions(group.getUnloadCondition()));
   }
 
