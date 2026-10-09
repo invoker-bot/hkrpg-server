@@ -895,3 +895,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 原生虚构叙事战斗冻结入战范围，并拒绝无遇敌上下文的直接入口，见 [战斗范围核验](story-challenge-battle-scope-4.6.md)。
 
 原始虚构叙事教程的已接取目标由实际完成结算推进，见 [教程结算与入口动作](story-challenge-settlement-goal-4.6.md)。
+
+原生虚构叙事按原始关卡采用四或五回合限制，见 [关卡回合限制核验](story-challenge-round-limit-4.6.md)。

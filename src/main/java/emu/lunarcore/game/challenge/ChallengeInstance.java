@@ -55,7 +55,7 @@ public class ChallengeInstance extends PlayerGameInstance {
         this.startPos = new Position();
         this.startRot = new Position();
         this.currentStage = 1;
-        this.roundsLeft = getExcel().isStory() ? 5 : excel.getChallengeCountDown();
+        this.roundsLeft = getExcel().isStory() && !nativeStory() ? 5 : excel.getChallengeCountDown();
         this.setStatus(ChallengeStatus.CHALLENGE_DOING);
         this.setCurrentExtraLineup(ExtraLineupType.LINEUP_CHALLENGE);
     }
