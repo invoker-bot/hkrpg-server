@@ -54,6 +54,7 @@ public final class QuestManager extends BasePlayerManager {
         observed |= org.hkrpg.server.gameplay.RogueChestKillQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.LocalLegendQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.DiceRollQuests.refresh(getPlayer());
+        observed |= org.hkrpg.server.gameplay.BoxingClubResidentQuests.refresh(getPlayer());
         collectionChanged |= observed;
         changed |= observed;
         pass |= observed;
@@ -87,6 +88,12 @@ public final class QuestManager extends BasePlayerManager {
     synchronized (getPlayer()) {
       if (org.hkrpg.server.gameplay.DiceRollQuests.hasRolls(getPlayer())
           && refreshUnlocksInternal()) sync();
+    }
+  }
+
+  public void onBoxingClubProgress() {
+    synchronized (getPlayer()) {
+      if (refreshUnlocksInternal()) sync();
     }
   }
 
@@ -263,6 +270,8 @@ public final class QuestManager extends BasePlayerManager {
         state = org.hkrpg.server.gameplay.LocalLegendQuests.state(getPlayer(), questId);
       if (org.hkrpg.server.gameplay.DiceRollQuests.belongs(definition))
         state = org.hkrpg.server.gameplay.DiceRollQuests.state(getPlayer(), questId);
+      if (org.hkrpg.server.gameplay.BoxingClubResidentQuests.belongs(definition))
+        state = org.hkrpg.server.gameplay.BoxingClubResidentQuests.state(getPlayer(), questId);
       if (state == null) return new Claim(Retcode.QUEST_NOT_ACCEPT, List.of());
       if (state.getPhase() == QuestState.Phase.CLOSED)
         return new Claim(Retcode.QUEST_REWARD_ALREADY_TAKEN, List.of());
@@ -297,6 +306,7 @@ public final class QuestManager extends BasePlayerManager {
     synchronized (getPlayer()) {
       getPlayer().getDailyManager().ensureDay();
       refreshUnlocks();
+      var boxing = org.hkrpg.server.gameplay.BoxingClubResidentQuests.states(getPlayer());
       var states =
           new ArrayList<>(
               getPlayer().getQuestStates().values().stream()
@@ -321,7 +331,9 @@ public final class QuestManager extends BasePlayerManager {
                             && (!org.hkrpg.server.gameplay.LocalLegendQuests.belongs(definition)
                                 || org.hkrpg.server.gameplay.LocalLegendQuests.state(getPlayer(), q.getQuestId()) == q)
                             && (!org.hkrpg.server.gameplay.DiceRollQuests.belongs(definition)
-                                || org.hkrpg.server.gameplay.DiceRollQuests.state(getPlayer(), q.getQuestId()) == q);
+                                || org.hkrpg.server.gameplay.DiceRollQuests.state(getPlayer(), q.getQuestId()) == q)
+                            && (!org.hkrpg.server.gameplay.BoxingClubResidentQuests.belongs(definition)
+                                || boxing.get(q.getQuestId()) == q);
                       })
                   .toList());
       states.addAll(new ParkourQuests(getPlayer()).states());

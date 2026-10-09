@@ -1062,6 +1062,21 @@ for _boxing_request46 in (
     _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_resonance_tests46))
     _boxing_row46["gap"] = _boxing_resonance_gap46 + " 历史批次：" + _boxing_row46["gap"]
 
+_boxing_resident_tests46 = [
+    "src/test/java/org/hkrpg/server/gameplay/BoxingClubResidentQuests46Test.java",
+    "scripts/tests/test_boxing_club_resident_quest_sources.py",
+    "scripts/smoke-boxing-club-resident-quests.py", "docs/boxing-club-resident-quests-4.6.md",
+]
+for _boxing_request46 in (
+    "GetQuestDataCsReq", "TakeQuestRewardCsReq", "GetBoxingClubInfoCsReq",
+    "MatchBoxingClubOpponentCsReq", "StartBoxingClubBattleCsReq",
+    "GiveUpBoxingClubChallengeCsReq", "SetBoxingClubResonanceCsReq",
+    "ChooseBoxingClubResonanceCsReq", "ChooseBoxingClubStageOptionalBuffCsReq",
+):
+    _boxing_row46 = REVIEWED[_boxing_request46]
+    _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_resident_tests46))
+    _boxing_row46["gap"] = "第二季32项常驻目标、四组原始奖励与防重按真实三轮/最佳回合复算，实际复用结束条件和73条完整来源核对；零上限为本服无额外限制规则。69项Java/4项Python、正常重启/原生边界见docs/boxing-club-resident-quests-4.6.md；限时任务/完整电话剧情/UI与权威动作和崩溃对账仍待完成。历史批次：" + _boxing_row46["gap"]
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}

@@ -143,6 +143,7 @@ public final class BoxingClubResonanceBattle extends Battle {
             || claim.retcode() == emu.lunarcore.server.packet.Retcode.QUEST_REWARD_ALREADY_TAKEN)
           org.hkrpg.server.protocol.BoxingClub46.reward(
               p, run.challenge(), finished.rounds(), claim.items());
+        p.getQuestManager().onBoxingClubProgress();
       } else if (result == BattleEndStatus.BATTLE_END_WIN)
         org.hkrpg.server.protocol.BoxingClub46.update(p, run.challenge());
       return this;

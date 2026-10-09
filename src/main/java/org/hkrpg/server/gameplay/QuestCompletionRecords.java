@@ -15,7 +15,8 @@ public final class QuestCompletionRecords {
       var rule = GameData.getFinishWayExcelMap().get(definition.getFinishWayID());
       var state = LocalLegendQuests.belongs(definition)
           ? LocalLegendQuests.state(player, id) : DiceRollQuests.belongs(definition)
-              ? DiceRollQuests.state(player, id) : player.getQuestStates().get(id);
+              ? DiceRollQuests.state(player, id) : BoxingClubResidentQuests.belongs(definition)
+                  ? BoxingClubResidentQuests.state(player, id) : player.getQuestStates().get(id);
       return rule != null
           && rule.getId() == definition.getFinishWayID()
           && MissionStateRecords.completed(state, id, rule.getProgress());
