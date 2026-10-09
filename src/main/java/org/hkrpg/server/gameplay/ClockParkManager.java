@@ -160,9 +160,13 @@ public final class ClockParkManager {
       if (!open() || !MissionStateRecords.subCompleted(player, script.prerequisiteId()))
         return rejected(Retcode.FUNC_CHECK_FAILED);
       if (state.getActive() != null
+          || player.getGameplay().getStoryLines().getCurrentId() != 0
+          || player.getGameplay().getStoryLines().isTransitionPending()
           || player.isInBattle()
+          || player.getInstance() != null
           || player.getGameplay().getCurrentMissionRaid() != 0
           || player.getGameplay().getParkourVenue().inside()
+          || player.getGameplay().getParkour().getActiveLevel() != 0
           || player.getGameplay().getRhythm().getActiveLevel() != 0
           || player.getGameplay().getRogue().getPhase() == GameplayState.RogueRun.Phase.EXPLORING)
         return rejected(Retcode.SYSTEM_BUSY);

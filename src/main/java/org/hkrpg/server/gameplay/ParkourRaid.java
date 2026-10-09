@@ -75,9 +75,11 @@ public final class ParkourRaid {
         return Retcode.ACTIVITY_RAID_NOT_OPEN;
       var team = player.getCurrentLineup();
       if (player.isInBattle()
+          || player.getInstance() != null
           || player.getGameplay().getStoryLines().getCurrentId() != 0
           || player.getGameplay().getStoryLines().isTransitionPending()
           || player.getGameplay().getRogue().isInside()
+          || player.getGameplay().getClockPark().getActive() != null
           || player.getGameplay().getRhythm().getActiveLevel() != 0
           || player.getGameplay().getParkour().getActiveLevel() != 0
           || team == null

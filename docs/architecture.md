@@ -881,3 +881,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 `RogueResonanceClassicEvents46` 将九条经典事件的原始参数和默认声明提供为不可变定义，显式上下文求值及独立模板由调用方选择。DLC1、智识的布局与选中能力证明见[九条参数目录](rogue-resonance-classic-events-4.6.md)；该目录尚未执行祝福查询、修饰器任务或创建战斗事件。
 
 `RogueResonanceMazeQueries46` 在调用方显式提供原始行与上下文时，顺序执行九条经典目录的 74 项查询：初始化缺省等级 1、精确 ID/等级/从 1 起索引、来源失败继续与目标写失败停止，并沿用已有变量容器的裁剪/通知。该层的生命周期与原始转交验证见[祝福查询说明](rogue-resonance-maze-query-4.6.md)，在线持有祝福、表加载策略、战斗事件、修饰器与 IFix 仍待接入。
+
+宇宙、钟表、音游、跑酷和剧情的新入口在冻结奖励、替换队伍与保存返回地点之前检查对方占用。独立跑酷快照和旧副本实例也参与拒绝，不清理既有重叠存档；见[入口占用说明](activity-entry-exclusion-4.6.md)。

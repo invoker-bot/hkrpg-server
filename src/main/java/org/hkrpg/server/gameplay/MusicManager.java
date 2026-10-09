@@ -82,8 +82,14 @@ public final class MusicManager {
       if (!GameplayDefinitions.musicLevels.containsKey(id)) return Retcode.MUSIC_NOT_EXIST;
       if (!unlocked(id)
           || player.isInBattle()
+          || player.getInstance() != null
           || player.getGameplay().getParkourVenue().inside()
           || player.getGameplay().getCurrentMissionRaid() != 0
+          || player.getGameplay().getClockPark().getActive() != null
+          || player.getGameplay().getRogue().isInside()
+          || player.getGameplay().getStoryLines().getCurrentId() != 0
+          || player.getGameplay().getStoryLines().isTransitionPending()
+          || player.getGameplay().getParkour().getActiveLevel() != 0
           || player.getGameplay().getRhythm().getActiveLevel() != 0) return Retcode.MUSIC_LOCKED;
       var config = GameplayDefinitions.musicLevels.get(id);
       if (config.StarRewardIDList() == null || config.StarRewardIDList().size() != 3)

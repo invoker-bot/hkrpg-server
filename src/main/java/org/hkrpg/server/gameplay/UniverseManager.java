@@ -57,8 +57,8 @@ public final class UniverseManager {
     if (combatWaves.size() != battle.getWaves().size()) return false;
     for (int i = 0; i < combatWaves.size(); i++) {
       var saved = combatWaves.get(i);
-      if (saved.wave() != battle.getWaves().get(i) || saved.level() != saved.wave().getCustomLevel())
-        return false;
+      if (saved.wave() != battle.getWaves().get(i)
+          || saved.level() != saved.wave().getCustomLevel()) return false;
     }
     return true;
   }
@@ -88,9 +88,13 @@ public final class UniverseManager {
       if (prior.getPhase() == EXPLORING
           || prior.isInside()
           || player.isInBattle()
+          || player.getInstance() != null
           || player.getGameplay().getStoryLines().getCurrentId() != 0
           || player.getGameplay().getStoryLines().isTransitionPending()
           || player.getGameplay().getParkourVenue().inside()
+          || player.getGameplay().getParkour().getActiveLevel() != 0
+          || player.getGameplay().getRhythm().getActiveLevel() != 0
+          || player.getGameplay().getClockPark().getActive() != null
           || player.getGameplay().getCurrentMissionRaid() != 0)
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       if (GameplayDefinitions.rogueConstants.containsKey("Start_Rogue_Coin_Base")
@@ -194,9 +198,13 @@ public final class UniverseManager {
       var run = player.getGameplay().getRogue();
       if (run.getPhase() != EXPLORING
           || player.isInBattle()
+          || player.getInstance() != null
           || player.getGameplay().getStoryLines().getCurrentId() != 0
           || player.getGameplay().getStoryLines().isTransitionPending()
           || player.getGameplay().getParkourVenue().inside()
+          || player.getGameplay().getParkour().getActiveLevel() != 0
+          || player.getGameplay().getRhythm().getActiveLevel() != 0
+          || player.getGameplay().getClockPark().getActive() != null
           || player.getGameplay().getCurrentMissionRaid() != 0)
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       if (area != run.getAreaId()) return Retcode.ROGUE_AREA_INVALID;
@@ -865,7 +873,8 @@ public final class UniverseManager {
             || monster.getExcel()
                 != emu.lunarcore.data.GameData.getNpcMonsterExcelMap().get(row.NpcMonsterID())
             || monster.getEventId() != row.EventID()
-            || monster.getCustomLevel() != RogueBossEncounters.level(run, room, monster.getGroupId())
+            || monster.getCustomLevel()
+                != RogueBossEncounters.level(run, room, monster.getGroupId())
             || monster.getCustomStage() == null
             || monster.getCustomStage()
                 != emu.lunarcore.data.GameData.getStageExcelMap().get(row.EventID())) return;
@@ -882,11 +891,13 @@ public final class UniverseManager {
         int waveCount = monster.getCustomStage().getMonsterWaves().size();
         for (int i = 0; i < waveCount; i++) {
           if (waveIndex >= battle.getWaves().size()
-              || battle.getWaves().get(waveIndex++).getCustomLevel() != monster.getCustomLevel()) return;
+              || battle.getWaves().get(waveIndex++).getCustomLevel() != monster.getCustomLevel())
+            return;
         }
       }
       if (waveIndex != battle.getWaves().size()) return;
-      combatWaves = battle.getWaves().stream().map(w -> new CombatWave(w, w.getCustomLevel())).toList();
+      combatWaves =
+          battle.getWaves().stream().map(w -> new CombatWave(w, w.getCustomLevel())).toList();
       try {
         int unit =
             20
@@ -932,7 +943,8 @@ public final class UniverseManager {
   /** Resolve a resource-bound loss before the battle service performs defeat side effects. */
   public void onBattleKillOutcome(Battle battle) {
     synchronized (player) {
-      if (boundBattle == battle && battleKills != null && combatLevelsMatch(battle)) battleKills.commit(battle);
+      if (boundBattle == battle && battleKills != null && combatLevelsMatch(battle))
+        battleKills.commit(battle);
     }
   }
 

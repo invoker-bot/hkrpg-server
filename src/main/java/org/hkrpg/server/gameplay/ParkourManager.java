@@ -73,6 +73,10 @@ public final class ParkourManager {
           || !unlocked(id)
           || !ballAllowed(level, ball)
           || player.isInBattle()
+          || player.getInstance() != null
+          || player.getGameplay().getClockPark().getActive() != null
+          || player.getGameplay().getStoryLines().getCurrentId() != 0
+          || player.getGameplay().getStoryLines().isTransitionPending()
           || player.getGameplay().getRhythm().getActiveLevel() != 0
           || player.getGameplay().getRogue().isInside()) return Retcode.REQ_PARA_INVALID;
       if (state.getActiveLevel() != 0) return Retcode.SYSTEM_BUSY;

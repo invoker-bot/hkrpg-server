@@ -291,6 +291,9 @@ public final class StoryLineManager {
         && player.getInstance() == null
         && !player.getGameplay().getRogue().isInside()
         && !player.getGameplay().getParkourVenue().inside()
+        && player.getGameplay().getClockPark().getActive() == null
+        && player.getGameplay().getParkour().getActiveLevel() == 0
+        && player.getGameplay().getRhythm().getActiveLevel() == 0
         && player.getGameplay().getCurrentMissionRaid() == 0
         && !state().isTransitionPending()
         && player.getScene() != null

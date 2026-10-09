@@ -251,6 +251,7 @@ public final class MissionRaid {
           || player.getGameplay().getStoryLines().getCurrentId() != 0
           || player.getGameplay().getStoryLines().isTransitionPending()
           || player.getGameplay().getRogue().isInside()
+          || player.getGameplay().getClockPark().getActive() != null
           || player.getGameplay().getRhythm().getActiveLevel() != 0
           || player.getGameplay().getParkour().getActiveLevel() != 0
           || team == null
@@ -295,8 +296,11 @@ public final class MissionRaid {
         return Retcode.RAID_AVATAR_NOT_MATCH;
       var previous = player.getGameplay().getMissionRaids().get(raid);
       int main = previous == null ? row.MainMissionIDList().getFirst() : previous.getMainMission();
-      boolean finishedRetry = previous != null && MissionRaidPayout.required(row)
-          && payout(previous, row) && MissionRaidSequence.finished(player, previous, main);
+      boolean finishedRetry =
+          previous != null
+              && MissionRaidPayout.required(row)
+              && payout(previous, row)
+              && MissionRaidSequence.finished(player, previous, main);
       if (!parent(row) || !finishedRetry && !player.getMissionManager().canAcceptInRaid(main))
         return Retcode.MISSION_NOT_DOING;
       if (!ordinary(new GameplayState.RogueReturn(player))) return Retcode.SCENE_ENTRY_ID_NOT_MATCH;
@@ -350,8 +354,7 @@ public final class MissionRaid {
           if (previous == null) {
             trial = player.getRaidTrialManager().prepare(teamPlan, selected);
             RaidEntryRecovery.initialize(row, trial);
-          }
-          else {
+          } else {
             if (selected.stream()
                     .anyMatch(
                         choice ->
@@ -457,9 +460,11 @@ public final class MissionRaid {
 
   private boolean objectivesCompleted(GameplayState.MissionRaidRun run) {
     var row = run == null ? null : resource(run.getRaidId(), run.getWorldLevel());
-    if (row == null || !RaidTeams.matches(run, row) || !sequence(run, row) || !payout(run, row)) return false;
+    if (row == null || !RaidTeams.matches(run, row) || !sequence(run, row) || !payout(run, row))
+      return false;
     if (run.getSequence() != null) return run.getSequence().completed(player, run, row);
-    if (MissionRaidPayout.required(row)) return MissionRaidSequence.finished(player, run, run.getMainMission());
+    if (MissionRaidPayout.required(row))
+      return MissionRaidSequence.finished(player, run, run.getMainMission());
     int main = run.getMainMission();
     var state = player.getGameplay().getMainMissions().get(main);
     if (!valid(state, main)
