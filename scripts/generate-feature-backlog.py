@@ -1077,6 +1077,20 @@ for _boxing_request46 in (
     _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_resident_tests46))
     _boxing_row46["gap"] = "第二季32项常驻目标、四组原始奖励与防重按真实三轮/最佳回合复算，实际复用结束条件和73条完整来源核对；零上限为本服无额外限制规则。69项Java/4项Python、正常重启/原生边界见docs/boxing-club-resident-quests-4.6.md；限时任务/完整电话剧情/UI与权威动作和崩溃对账仍待完成。历史批次：" + _boxing_row46["gap"]
 
+_boxing_activity_tests46 = [
+    "src/test/java/org/hkrpg/server/gameplay/BoxingClubActivityQuests46Test.java",
+    "scripts/tests/test_boxing_club_activity_quest_sources.py",
+    "scripts/smoke-boxing-club-activity-quests.py", "docs/boxing-club-activity-quests-4.6.md",
+]
+for _boxing_request46 in (
+    "GetQuestDataCsReq", "TakeQuestRewardCsReq", "GetBoxingClubInfoCsReq",
+    "MatchBoxingClubOpponentCsReq", "StartBoxingClubBattleCsReq", "GiveUpBoxingClubChallengeCsReq",
+    "SetBoxingClubResonanceCsReq", "ChooseBoxingClubResonanceCsReq", "ChooseBoxingClubStageOptionalBuffCsReq",
+):
+    _boxing_row46 = REVIEWED[_boxing_request46]
+    _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_activity_tests46))
+    _boxing_row46["gap"] = "两季50项非周期限时目标、隐藏前置与原始领奖按拥有窗口证明的实际通关复算，日期/明确重开不重置领取；129项Java/5项Python和原生/重启边界见docs/boxing-club-activity-quests-4.6.md。缺窗口证明的历史成绩不自动迁入，未关联6000399不开放；完整电话剧情/UI、权威动作和崩溃对账仍待完成。历史批次：" + _boxing_row46["gap"]
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}

@@ -81,6 +81,11 @@ public final class BoxingClubResonanceState {
     }
   }
 
+  boolean validCompletion(BoxingClubResonanceRules rules, Run run, int uid) {
+    try { return validRun(rules, run, uid, true); }
+    catch (RuntimeException invalid) { return false; }
+  }
+
   private boolean validRun(BoxingClubResonanceRules rules, Run run, int uid, boolean finished) {
     if (run == null
         || !SOURCE.equals(run.source)

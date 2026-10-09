@@ -15,12 +15,19 @@ public final class BoxingClubManager {
   public record Member(int id, int type) {}
 
   static void save(Player p, BoxingClubState next) {
+    save(p, next, p.getGameplay().getBoxingClubActivityQuests());
+  }
+
+  static void save(Player p, BoxingClubState next, BoxingClubActivityQuestState activity) {
     var old = p.getGameplay().getBoxingClub();
+    var oldActivity = p.getGameplay().getBoxingClubActivityQuests();
     p.getGameplay().boxingClub(next);
+    p.getGameplay().boxingClubActivityQuests(activity);
     try {
       p.save();
     } catch (RuntimeException failure) {
       p.getGameplay().boxingClub(old);
+      p.getGameplay().boxingClubActivityQuests(oldActivity);
       throw failure;
     }
   }

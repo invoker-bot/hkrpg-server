@@ -52,6 +52,17 @@ public class GameplayState {
 
   private LocalLegendProgress localLegendProgress = new LocalLegendProgress();
 
+  private BoxingClubActivityQuestState boxingClubActivityQuests = new BoxingClubActivityQuestState();
+
+  public BoxingClubActivityQuestState getBoxingClubActivityQuests() {
+    if (boxingClubActivityQuests == null) boxingClubActivityQuests = new BoxingClubActivityQuestState();
+    return boxingClubActivityQuests;
+  }
+
+  void boxingClubActivityQuests(BoxingClubActivityQuestState value) {
+    boxingClubActivityQuests = java.util.Objects.requireNonNull(value);
+  }
+
   public LocalLegendProgress getLocalLegendProgress() {
     if (localLegendProgress == null) localLegendProgress = new LocalLegendProgress();
     return localLegendProgress;

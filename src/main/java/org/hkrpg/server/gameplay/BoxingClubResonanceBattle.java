@@ -123,7 +123,12 @@ public final class BoxingClubResonanceBattle extends Battle {
         finished = next.win(event, source.getId(), getId(), stats.getRoundCnt(), reward);
       } else next.cancel();
       try {
-        BoxingClubResonanceManager.save(p, next);
+        BoxingClubResonanceManager.save(
+            p,
+            next,
+            finished == null
+                ? p.getGameplay().getBoxingClubActivityQuests()
+                : BoxingClubActivityQuests.record(p, null, finished, Instant.now()));
       } catch (RuntimeException failure) {
         // No progress or inventory operation committed. The exact admitted battle can retry.
         resonanceSettlementStarted = false;

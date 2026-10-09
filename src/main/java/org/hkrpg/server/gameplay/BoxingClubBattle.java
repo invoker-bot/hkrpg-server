@@ -124,7 +124,12 @@ public final class BoxingClubBattle extends Battle {
         finished = next.win(event, source.getId(), getId(), stats.getRoundCnt(), reward);
       } else next.cancel();
       try {
-        BoxingClubManager.save(p, next);
+        BoxingClubManager.save(
+            p,
+            next,
+            finished == null
+                ? p.getGameplay().getBoxingClubActivityQuests()
+                : BoxingClubActivityQuests.record(p, finished, null, Instant.now()));
       } catch (RuntimeException failure) {
         // No progress or inventory operation committed. The exact admitted battle can retry.
         boxingSettlementStarted = false;
@@ -143,6 +148,7 @@ public final class BoxingClubBattle extends Battle {
             || claim.retcode() == emu.lunarcore.server.packet.Retcode.QUEST_REWARD_ALREADY_TAKEN)
           org.hkrpg.server.protocol.BoxingClub46.reward(
               p, run.challenge(), finished.rounds(), claim.items());
+        p.getQuestManager().onBoxingClubProgress();
       } else if (result == BattleEndStatus.BATTLE_END_WIN)
         org.hkrpg.server.protocol.BoxingClub46.update(p, run.challenge());
       return this;

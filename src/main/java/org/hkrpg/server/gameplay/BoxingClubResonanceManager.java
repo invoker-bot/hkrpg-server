@@ -13,12 +13,19 @@ public final class BoxingClubResonanceManager {
   public record Entry(Retcode retcode, BoxingClubResonanceBattle battle) {}
 
   static void save(Player p, BoxingClubResonanceState next) {
+    save(p, next, p.getGameplay().getBoxingClubActivityQuests());
+  }
+
+  static void save(Player p, BoxingClubResonanceState next, BoxingClubActivityQuestState activity) {
     var old = p.getGameplay().getBoxingClubResonance();
+    var oldActivity = p.getGameplay().getBoxingClubActivityQuests();
     p.getGameplay().boxingClubResonance(next);
+    p.getGameplay().boxingClubActivityQuests(activity);
     try {
       p.save();
     } catch (RuntimeException failure) {
       p.getGameplay().boxingClubResonance(old);
+      p.getGameplay().boxingClubActivityQuests(oldActivity);
       throw failure;
     }
   }

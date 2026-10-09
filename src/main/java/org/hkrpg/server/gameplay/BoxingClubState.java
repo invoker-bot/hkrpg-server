@@ -85,6 +85,11 @@ public final class BoxingClubState {
     return active == null || validRun(rules, active, uid, false);
   }
 
+  boolean validCompletion(BoxingClubRules rules, Run run, int uid) {
+    try { return validRun(rules, run, uid, true); }
+    catch (RuntimeException invalid) { return false; }
+  }
+
   private boolean validRun(BoxingClubRules rules, Run run, int uid, boolean finished) {
     if (run == null
         || !SOURCE.equals(run.source)
