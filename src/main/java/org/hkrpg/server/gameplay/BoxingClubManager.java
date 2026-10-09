@@ -57,6 +57,7 @@ public final class BoxingClubManager {
         instance.setPlayer(p);
         p.setInstance(instance);
       }
+      BoxingClubResonanceManager.restore(p);
     }
   }
 
@@ -74,6 +75,7 @@ public final class BoxingClubManager {
     synchronized (p) {
       var g = p.getGameplay();
       if (g.getBoxingClub().getActive() != null
+          || g.getBoxingClubResonance().getActive() != null
           || p.isInBattle()
           || p.getInstance() != null
           || g.getCurrentMissionRaid() != 0

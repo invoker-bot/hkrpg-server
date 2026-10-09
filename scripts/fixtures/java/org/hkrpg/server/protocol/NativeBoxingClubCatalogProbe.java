@@ -80,8 +80,8 @@ public final class NativeBoxingClubCatalogProbe {
   private void checkCatalog(DynamicMessage reply) {
     require(number(reply, "retcode") == 0, "Original catalog rejected");
     var rows = (List<?>) field(reply, "challenge_list");
-    require(rows.size() == 5, "Missing first-season challenges");
-    for (int i = 0; i < 5; i++) {
+    require(rows.size() == 12, "Missing original season challenges");
+    for (int i = 0; i < 12; i++) {
       var row = (DynamicMessage) rows.get(i);
       require(number(row, "challenge_id") == i + 1, "Wrong original identity");
       for (String key :

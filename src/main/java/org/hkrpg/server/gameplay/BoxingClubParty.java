@@ -80,11 +80,9 @@ final class BoxingClubParty extends PlayerLineup {
             || p.getAvatars().getTempAvatars().containsKey(id)
             || GameData.getAvatarExcelMap().get(a.getExcelId()) != a.getExcel()) return null;
       } else {
-        var trials = BoxingClubTrials.load();
-        if (trials == null
-            || !trials.available(p, challenge, now)
-            || p.getAvatars().getTempAvatars().containsKey(id)) return null;
-        var row = trials.row(p, challenge, id);
+        if (!trialAvailable(p, challenge, now) || p.getAvatars().getTempAvatars().containsKey(id))
+          return null;
+        var row = trialRow(p, challenge, id);
         if (row == null) return null;
         a = p.getTrialManager().buildTrialAvatar(id);
         if (!(a instanceof TrialAvatar trial)
@@ -123,10 +121,8 @@ final class BoxingClubParty extends PlayerLineup {
     for (int i = 0; i < actors.size(); i++) {
       var a = actors.get(i);
       if (a instanceof TrialAvatar trial) {
-        var source = BoxingClubTrials.load();
-        if (source == null
-            || !source.available(p, challenge, Instant.now())
-            || source.row(p, challenge, roster.get(i)) != trial.getSpecialAvatarExcel()
+        if (!trialAvailable(p, challenge, Instant.now())
+            || trialRow(p, challenge, roster.get(i)) != trial.getSpecialAvatarExcel()
             || p.getAvatars().getTempAvatars().containsKey(roster.get(i))) return false;
         var fresh = p.getTrialManager().buildTrialAvatar(roster.get(i));
         if (fresh == null
@@ -149,5 +145,24 @@ final class BoxingClubParty extends PlayerLineup {
     } catch (java.io.IOException impossible) {
       throw new IllegalStateException(impossible);
     }
+  }
+
+  private static boolean trialAvailable(Player p, int challenge, Instant now) {
+    if (challenge >= 6) {
+      var source = BoxingClubResonanceTrials.load();
+      return source != null && source.available(p, challenge, now);
+    }
+    var source = BoxingClubTrials.load();
+    return source != null && source.available(p, challenge, now);
+  }
+
+  private static emu.lunarcore.data.excel.SpecialAvatarExcel trialRow(
+      Player p, int challenge, int id) {
+    if (challenge >= 6) {
+      var source = BoxingClubResonanceTrials.load();
+      return source == null ? null : source.row(p, challenge, id);
+    }
+    var source = BoxingClubTrials.load();
+    return source == null ? null : source.row(p, challenge, id);
   }
 }

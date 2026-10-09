@@ -34,6 +34,7 @@ public class BattleService extends BaseGameService {
     private static boolean activityBlocksBattle(Player player) {
         var state = player.getGameplay();
         return state.getBoxingClub().getActive() != null
+                || state.getBoxingClubResonance().getActive() != null
                 || state.getStoryLines().isTransitionPending()
                 || state.getClockPark().getActive() != null
                 || state.getRhythm().getActiveLevel() != 0
@@ -381,6 +382,7 @@ public class BattleService extends BaseGameService {
                     || stats == null || !validStats(active, stats) || !org.hkrpg.server.gameplay.StoryChallengeReports.valid(active, result, stats) || monsters == null || monsters.size() > 1024
                     || active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend && !legend.accepts(stats)
                     || active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing && !boxing.accepts(result, stats)
+                    || active instanceof org.hkrpg.server.gameplay.BoxingClubResonanceBattle resonance && !resonance.accepts(result, stats)
                     || monsters.stream().anyMatch(java.util.Objects::isNull)
                     || !org.hkrpg.server.gameplay.RogueResonance.validReport(active, energies)
                     || active.getRaidDifficultyScope() != null && !active.getRaidDifficultyScope().matches(player)
@@ -391,6 +393,8 @@ public class BattleService extends BaseGameService {
             active.setReportedMonsters(result == BattleEndStatus.BATTLE_END_WIN ? List.copyOf(monsters) : List.of());
             if (active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing)
                 return boxing.finish(result, stats);
+            if (active instanceof org.hkrpg.server.gameplay.BoxingClubResonanceBattle resonance)
+                return resonance.finish(result, stats);
             if (active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend)
                 return legend.finish(result, stats);
             return settleBattle(player, result, stats);

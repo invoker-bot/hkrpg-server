@@ -39,6 +39,17 @@ public class GameplayState {
 
   void boxingClub(BoxingClubState value) { boxingClub = java.util.Objects.requireNonNull(value); }
 
+  private BoxingClubResonanceState boxingClubResonance = new BoxingClubResonanceState();
+
+  public BoxingClubResonanceState getBoxingClubResonance() {
+    if (boxingClubResonance == null) boxingClubResonance = new BoxingClubResonanceState();
+    return boxingClubResonance;
+  }
+
+  void boxingClubResonance(BoxingClubResonanceState value) {
+    boxingClubResonance = java.util.Objects.requireNonNull(value);
+  }
+
   private LocalLegendProgress localLegendProgress = new LocalLegendProgress();
 
   public LocalLegendProgress getLocalLegendProgress() {

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Original first-season identities; a catalog query cannot fabricate a played fight. */
+/** Both original season identities; a catalog query cannot fabricate a played fight. */
 class BoxingClubCatalog46Test {
   @TempDir Path root;
   String previous;
@@ -65,8 +65,8 @@ class BoxingClubCatalog46Test {
     query(new byte[0]);
     assertEquals(0, InitialData46Test.field(session.response, "retcode"));
     var field = session.response.getDescriptorForType().findFieldByName("challenge_list");
-    assertEquals(5, session.response.getRepeatedFieldCount(field));
-    for (int i = 0; i < 5; i++) {
+    assertEquals(12, session.response.getRepeatedFieldCount(field));
+    for (int i = 0; i < 12; i++) {
       var row = (DynamicMessage) session.response.getRepeatedField(field, i);
       assertEquals(i + 1, InitialData46Test.field(row, "challenge_id"));
       for (String name :

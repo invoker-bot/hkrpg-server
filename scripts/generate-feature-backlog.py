@@ -1042,6 +1042,26 @@ for _boxing_request46 in (
 ):
     REVIEWED[_boxing_request46] = {"tests": _boxing_tests46 + ["src/test/java/org/hkrpg/server/gameplay/BoxingClubTrials46Test.java", "src/test/java/org/hkrpg/server/gameplay/BoxingClubSettlementRetry46Test.java", "scripts/tests/test_boxing_club_trial_sources.py", "scripts/smoke-boxing-club-trials.py", "docs/boxing-club-trials-4.6.md"], "gap": "首季原始试用/正式混队、独立试用窗口和成员类型恢复接入；进度保存失败可重试。35档配置及六份技能预设逐项核对；实际66项Java/3项Python与原生/H2边界见docs/boxing-club-trials-4.6.md，完整玩法和UI仍待完成。历史批次：" + _boxing_gap46}
 
+_boxing_resonance_tests46 = [
+    "src/test/java/org/hkrpg/server/gameplay/BoxingClubResonance46Test.java",
+    "src/test/java/org/hkrpg/server/gameplay/BoxingClubResonanceTrials46Test.java",
+    "scripts/tests/test_boxing_club_resonance_sources.py",
+    "scripts/smoke-boxing-club-resonance.py", "docs/boxing-club-resonance-4.6.md",
+]
+_boxing_resonance_gap46 = "第二季七关共鸣、逐轮可选祝福、三轮实际结算、原始空奖励与98档试用混队接入，独立状态保存及正常重启恢复；原始335项绑定、前置主线和本机字段核对。192项新增Java/4项Python与原生网络边界见docs/boxing-club-resonance-4.6.md；实际UI/动作输入、完整电话/任务链、true放弃及跨文档崩溃恢复待完成。"
+for _boxing_request46 in (
+    "SetBoxingClubResonanceCsReq", "ChooseBoxingClubResonanceCsReq",
+    "ChooseBoxingClubStageOptionalBuffCsReq",
+):
+    REVIEWED[_boxing_request46] = {"tests": _boxing_resonance_tests46, "gap": _boxing_resonance_gap46}
+for _boxing_request46 in (
+    "GetBoxingClubInfoCsReq", "MatchBoxingClubOpponentCsReq",
+    "StartBoxingClubBattleCsReq", "GiveUpBoxingClubChallengeCsReq",
+):
+    _boxing_row46 = REVIEWED[_boxing_request46]
+    _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_resonance_tests46))
+    _boxing_row46["gap"] = _boxing_resonance_gap46 + " 历史批次：" + _boxing_row46["gap"]
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
