@@ -15,6 +15,8 @@ public final class RogueEventFire46 {
   /** Known closed Queue&lt;PooledList&lt;OnEventCallBack&gt;&gt; count projection. */
   public static final class ExecuteQueue {
     public int count;
+    public PooledCallbacks[] entries;
+    public int head, tail, version;
     public Object context;
   }
 

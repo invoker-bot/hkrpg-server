@@ -1,3 +1,5 @@
+4.6 事件执行列表FIFO队列、环形扩容与归还已补入Java，见 [执行队列说明](docs/rogue-event-execute-queue-4.6.md)。内层集合和实际世界登记继续待完成。
+
 4.6 事件分发与独立执行列表归还控制已补入Java，见 [事件分发说明](docs/rogue-event-fire-4.6.md)。闭包集合原语和真实世界登记继续待完成。
 
 4.6 效果淡出单效果载荷、发布与回收控制已补入Java，见 [效果淡出说明](docs/rogue-attach-effect-fade-4.6.md)。实际事件调度和世界绑定继续待完成。
