@@ -88,6 +88,9 @@ final class BoxingClubActivityQuestRules {
 
   static synchronized BoxingClubActivityQuestRules load() {
     try {
+      // The domain requires all 50 source definitions. Skip resource reads in unrelated catalogs.
+      if (GameData.getQuestExcelMap().get(6000060) == null
+          || GameData.getQuestExcelMap().get(6000397) == null) return null;
       var root = Path.of(LunarCore.getConfig().getResourceDir()).toAbsolutePath().normalize();
       var files = new TreeMap<String, String>();
       var texts = new TreeMap<String, String>();

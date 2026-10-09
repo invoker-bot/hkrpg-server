@@ -176,6 +176,10 @@ public final class BoxingClubState {
       return challenge;
     }
 
+    long sequence() {
+      return sequence;
+    }
+
     public int group() {
       return group;
     }

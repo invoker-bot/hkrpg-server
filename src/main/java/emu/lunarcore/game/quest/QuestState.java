@@ -8,38 +8,73 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class QuestState {
-    public enum Phase { DOING, FINISHED, CLAIMING, CLOSED }
-    private int questId;
-    private int progress;
-    private long finishTime;
-    private Phase phase = Phase.DOING;
+  public enum Phase {
+    DOING,
+    FINISHED,
+    CLAIMING,
+    CLOSED
+  }
 
-    protected QuestState() {}
-    public QuestState(int id) {
-        if (id <= 0) throw new IllegalArgumentException("Quest id must be positive");
-        this.questId = id;
+  private int questId;
+  private int progress;
+  private long finishTime;
+  private Phase phase = Phase.DOING;
+  // Allocated only when a server action freezes this particular acceptance as an observer.
+  private String observationKey;
+
+  protected QuestState() {}
+
+  public QuestState(int id) {
+    if (id <= 0) throw new IllegalArgumentException("Quest id must be positive");
+    this.questId = id;
+  }
+
+  public String captureObservationKey() {
+    if (phase != Phase.DOING || finishTime != 0)
+      throw new IllegalStateException("Acceptance is not doing");
+    if (observationKey == null) observationKey = java.util.UUID.randomUUID().toString();
+    if (!java.util.UUID.fromString(observationKey).toString().equals(observationKey))
+      throw new IllegalStateException("Invalid acceptance observation key");
+    return observationKey;
+  }
+
+  public void restoreObservationKey(String expected, String previous) {
+    if (!java.util.Objects.equals(observationKey, expected))
+      throw new IllegalStateException("Acceptance changed during reservation");
+    observationKey = previous;
+  }
+
+  public boolean advance(int amount, int goal, long now) {
+    if (amount <= 0 || goal <= 0 || phase != Phase.DOING) return false;
+    progress = (int) Math.min((long) goal, (long) progress + amount);
+    if (progress == goal) {
+      phase = Phase.FINISHED;
+      finishTime = now;
     }
-    public boolean advance(int amount, int goal, long now) {
-        if (amount <= 0 || goal <= 0 || phase != Phase.DOING) return false;
-        progress = (int) Math.min((long) goal, (long) progress + amount);
-        if (progress == goal) { phase = Phase.FINISHED; finishTime = now; }
-        return true;
-    }
-    public boolean reserveReward() {
-        if (phase != Phase.FINISHED) return false;
-        phase = Phase.CLAIMING;
-        return true;
-    }
-    public void closeReward() {
-        if (phase != Phase.CLAIMING) throw new IllegalStateException("Reward was not reserved");
-        phase = Phase.CLOSED;
-    }
-    public Quest toProto() {
-        return Quest.newInstance().setId(questId).setProgress(progress).setFinishTime(finishTime)
-            .setStatus(switch (phase) {
-                case DOING -> QuestStatus.QUEST_DOING;
-                case FINISHED, CLAIMING -> QuestStatus.QUEST_FINISH;
-                case CLOSED -> QuestStatus.QUEST_CLOSE;
+    return true;
+  }
+
+  public boolean reserveReward() {
+    if (phase != Phase.FINISHED) return false;
+    phase = Phase.CLAIMING;
+    return true;
+  }
+
+  public void closeReward() {
+    if (phase != Phase.CLAIMING) throw new IllegalStateException("Reward was not reserved");
+    phase = Phase.CLOSED;
+  }
+
+  public Quest toProto() {
+    return Quest.newInstance()
+        .setId(questId)
+        .setProgress(progress)
+        .setFinishTime(finishTime)
+        .setStatus(
+            switch (phase) {
+              case DOING -> QuestStatus.QUEST_DOING;
+              case FINISHED, CLAIMING -> QuestStatus.QUEST_FINISH;
+              case CLOSED -> QuestStatus.QUEST_CLOSE;
             });
-    }
+  }
 }

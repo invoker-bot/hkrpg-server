@@ -21,6 +21,7 @@ public final class BoxingClubResonanceBattle extends Battle {
   private final Map<Integer, Integer> reward;
   private final emu.lunarcore.game.scene.Scene scene;
   private final emu.lunarcore.game.player.PlayerGameInstance instance;
+  private final BoxingClubMissionGoals.Context missionGoals;
   private boolean resonanceSettlementStarted;
 
   @Override
@@ -49,6 +50,7 @@ public final class BoxingClubResonanceBattle extends Battle {
             rules.reward(rules.catalog.challenges().get(run.challenge()).reward()));
     scene = p.getScene();
     instance = p.getInstance();
+    missionGoals = BoxingClubMissionGoals.capture(p, null, run);
     setRoundsLimit(rules.catalog.challenges().get(run.challenge()).turnLimit() - run.rounds());
   }
 
@@ -149,6 +151,7 @@ public final class BoxingClubResonanceBattle extends Battle {
           org.hkrpg.server.protocol.BoxingClub46.reward(
               p, run.challenge(), finished.rounds(), claim.items());
         p.getQuestManager().onBoxingClubProgress();
+        p.getMissionManager().onBoxingClubCompletion(missionGoals, null, finished);
       } else if (result == BattleEndStatus.BATTLE_END_WIN)
         org.hkrpg.server.protocol.BoxingClub46.update(p, run.challenge());
       return this;

@@ -1091,6 +1091,19 @@ for _boxing_request46 in (
     _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_activity_tests46))
     _boxing_row46["gap"] = "两季50项非周期限时目标、隐藏前置与原始领奖按拥有窗口证明的实际通关复算，日期/明确重开不重置领取；129项Java/5项Python和原生/重启边界见docs/boxing-club-activity-quests-4.6.md。缺窗口证明的历史成绩不自动迁入，未关联6000399不开放；完整电话剧情/UI、权威动作和崩溃对账仍待完成。历史批次：" + _boxing_row46["gap"]
 
+_boxing_story_tests46 = [
+    "src/test/java/org/hkrpg/server/gameplay/BoxingClubMissionGoals46Test.java",
+    "scripts/tests/test_boxing_club_mission_goal_sources.py",
+    "scripts/smoke-boxing-club-mission-goals.py", "docs/boxing-club-mission-goals-4.6.md",
+]
+for _boxing_request46 in (
+    "GetMissionStatusCsReq", "FinishTalkMissionCsReq",
+    "GetBoxingClubInfoCsReq", "StartBoxingClubBattleCsReq",
+):
+    _boxing_row46 = REVIEWED[_boxing_request46]
+    _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_story_tests46))
+    _boxing_row46["gap"] = "两季七个原始剧情通关目标、四个缺省接取起始目标与BoxClub2Hide动作接入；第二季冻结接取绑定随真实三轮通关保存，避免旧成绩/替换任务借用，并支持已存通关后的目标恢复。20份Git原件/26个完整对象、126项Java/5项Python及原生/重启边界见docs/boxing-club-mission-goals-4.6.md。完整电话/NPC/演出脚本、官方入场、动作输入及游戏UI仍待完成。历史批次：" + _boxing_row46["gap"]
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}

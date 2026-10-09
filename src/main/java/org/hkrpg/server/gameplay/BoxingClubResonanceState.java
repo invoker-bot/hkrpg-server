@@ -10,6 +10,7 @@ public final class BoxingClubResonanceState {
   private long sequence;
   private Run active;
   private Map<Integer, Run> completed = new TreeMap<>();
+  private Map<Integer, Run> missionCompletions = new TreeMap<>();
 
   public Run getActive() {
     return active;
@@ -19,11 +20,17 @@ public final class BoxingClubResonanceState {
     return Map.copyOf(completed);
   }
 
+  Map<Integer, Run> getMissionCompletions() {
+    return missionCompletions == null ? Map.of() : Map.copyOf(missionCompletions);
+  }
+
   public BoxingClubResonanceState copy() {
     var next = new BoxingClubResonanceState();
     next.sequence = sequence;
     next.active = active == null ? null : new Run(active);
     completed.forEach((id, run) -> next.completed.put(id, new Run(run)));
+    if (missionCompletions == null) next.missionCompletions = null;
+    else missionCompletions.forEach((id, run) -> next.missionCompletions.put(id, new Run(run)));
     return next;
   }
 
@@ -60,6 +67,9 @@ public final class BoxingClubResonanceState {
     if (active.wins.size() != 3) return null;
     active.reward = new TreeMap<>(reward);
     var finished = new Run(active);
+    if (finished.missionTargetsReady && finished.missionTargets != null) {
+      for (int id : finished.missionTargets.keySet()) missionCompletions.put(id, new Run(finished));
+    }
     var prior = completed.get(finished.challenge);
     if (prior == null || finished.rounds() < prior.rounds())
       completed.put(finished.challenge, finished);
@@ -75,6 +85,17 @@ public final class BoxingClubResonanceState {
             || e.getValue() == null
             || e.getKey() != e.getValue().challenge
             || !validRun(rules, e.getValue(), uid, true)) return false;
+      if (missionCompletions == null || missionCompletions.size() > 2) return false;
+      for (var e : missionCompletions.entrySet())
+        if (e.getKey() == null
+            || e.getValue() == null
+            || !Set.of(801520101, 801520301).contains(e.getKey())
+            || !e.getValue().missionTargetsReady
+            || e.getValue().missionTargets == null
+            || !e.getValue().missionTargets.containsKey(e.getKey())
+            || e.getValue().plane != 10102
+            || e.getValue().floor != 10102004
+            || !validRun(rules, e.getValue(), uid, true)) return false;
       return active == null || validRun(rules, active, uid, false);
     } catch (RuntimeException invalid) {
       return false;
@@ -82,8 +103,11 @@ public final class BoxingClubResonanceState {
   }
 
   boolean validCompletion(BoxingClubResonanceRules rules, Run run, int uid) {
-    try { return validRun(rules, run, uid, true); }
-    catch (RuntimeException invalid) { return false; }
+    try {
+      return validRun(rules, run, uid, true);
+    } catch (RuntimeException invalid) {
+      return false;
+    }
   }
 
   private boolean validRun(BoxingClubResonanceRules rules, Run run, int uid, boolean finished) {
@@ -109,6 +133,9 @@ public final class BoxingClubResonanceState {
         || finished && run.wins.size() != 3
         || !finished && run.wins.size() > 2
         || run.rounds() < 0) return false;
+    if (run.missionTargetsReady
+        ? run.challenge != 12 || !BoxingClubMissionGoals.validBindings(run.missionTargets)
+        : run.missionTargets != null && !run.missionTargets.isEmpty()) return false;
     var c = rules.catalog.challenges().get(run.challenge);
     if (c == null || run.rounds() > c.turnLimit() || !finished && run.rounds() >= c.turnLimit())
       return false;
@@ -162,6 +189,8 @@ public final class BoxingClubResonanceState {
         options = new ArrayList<>();
     private List<Win> wins = new ArrayList<>();
     private Map<Integer, Integer> reward = new TreeMap<>();
+    private boolean missionTargetsReady;
+    private Map<Integer, String> missionTargets = new TreeMap<>();
 
     private Run() {}
 
@@ -181,10 +210,42 @@ public final class BoxingClubResonanceState {
       options = new ArrayList<>(r.options);
       wins = new ArrayList<>(r.wins);
       reward = new TreeMap<>(r.reward);
+      missionTargetsReady = r.missionTargetsReady;
+      missionTargets = r.missionTargets == null ? null : new TreeMap<>(r.missionTargets);
     }
 
     public int challenge() {
       return challenge;
+    }
+
+    long sequence() {
+      return sequence;
+    }
+
+    int plane() {
+      return plane;
+    }
+
+    int floor() {
+      return floor;
+    }
+
+    boolean missionTargetsReady() {
+      return missionTargetsReady;
+    }
+
+    Map<Integer, String> missionTargets() {
+      return missionTargets == null ? null : Map.copyOf(missionTargets);
+    }
+
+    void freezeMissionTargets(Map<Integer, String> targets) {
+      if (missionTargetsReady
+          || challenge != 12
+          || index() != 2
+          || !BoxingClubMissionGoals.validBindings(targets))
+        throw new IllegalStateException("Invalid final-round story targets");
+      missionTargets = new TreeMap<>(targets);
+      missionTargetsReady = true;
     }
 
     public int group() {

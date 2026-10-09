@@ -253,6 +253,7 @@ public final class MissionManager {
   }
 
   private boolean subEligible(MissionInfo.SubMissionInfo config) {
+    if (BoxingClubMissionGoals.declaredStart(config)) return true;
     if ("Auto".equals(config.getTakeType())) return true;
     if ("CustomValue".equals(config.getTakeType())) return customGate(config);
     if (config.getTakeParamIntList().length == 0) return false;
@@ -1152,6 +1153,7 @@ public final class MissionManager {
 
   private boolean currentCondition(MissionInfo.SubMissionInfo c) {
     return switch (Objects.toString(c.getFinishType(), "")) {
+      case "BoxingClubAccomplish" -> BoxingClubMissionGoals.satisfied(player, c);
       case "GetTrialAvatar", "GetTrialAvatarList" ->
           TrialAvatarMissionConditions.satisfied(player, c);
       case "DelTrialAvatar" -> MissionTrialRemovals.satisfied(player, c);
@@ -1338,6 +1340,16 @@ public final class MissionManager {
         && (sub(id) == null || MissionStateRecords.subAccepted(player, id))
         && !player.getGameplay().getCancelledSubs().contains(id)
         && !player.getGameplay().getCancelledMissions().contains(c.getMainMissionID());
+  }
+
+  public void onBoxingClubCompletion(
+      BoxingClubMissionGoals.Context context,
+      BoxingClubState.Run first,
+      BoxingClubResonanceState.Run second) {
+    synchronized (player) {
+      if (context != null) event(c -> context.matches(player, c, first, second), 1);
+      refresh();
+    }
   }
 
   Retcode finishFromAction(int id) {

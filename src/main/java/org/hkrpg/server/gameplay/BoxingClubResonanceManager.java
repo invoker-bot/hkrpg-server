@@ -166,6 +166,7 @@ public final class BoxingClubResonanceManager {
       var party = BoxingClubParty.prepare(p, id, run.members(), time);
       if (stage == null || party == null || !rules.buffsValid(run.buffs()))
         return new Entry(Retcode.REQ_PARA_INVALID, null);
+      run = BoxingClubMissionGoals.prepare(p, run);
       var battle = new BoxingClubResonanceBattle(p, rules, run, event, stage, party);
       p.setBattle(battle);
       return new Entry(Retcode.SUCC, battle);
