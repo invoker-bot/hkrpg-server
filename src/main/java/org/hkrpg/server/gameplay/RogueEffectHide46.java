@@ -25,6 +25,10 @@ public final class RogueEffectHide46 {
   public static final class TimerComponent {
     public long cachedPointer;
     public Object timer;
+    public boolean initialized, stopFollowOnFadeOut;
+    public int fadeOutLerp;
+    public String fadeOutAudioEffectName;
+    public MonoEffect ownerEffect;
   }
 
   public record Binding(Object methodInfo, long methodPointer, long trampoline) {}
