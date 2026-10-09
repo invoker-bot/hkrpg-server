@@ -16,6 +16,7 @@ public final class RogueMutexAttach46 {
 
   public static final class Effect {
     public String effectPath;
+    public boolean autoHideInSkill;
     public int instanceId, instancePadding, reuseRefCount;
     public MonoEffect instance;
     public TriggerParameters parameters;

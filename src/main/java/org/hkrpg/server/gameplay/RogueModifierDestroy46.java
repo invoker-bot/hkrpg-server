@@ -16,6 +16,7 @@ public final class RogueModifierDestroy46 {
     public final RogueModifierCleanup46.State cleanup;
     public int deathSource;
     public boolean effectUnload;
+    public boolean effectHide, effectPriorityHide, effectAutoHideInSkill;
     public Object preshowEntity;
     public Children children;
 
