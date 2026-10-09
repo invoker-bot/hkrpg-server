@@ -15,7 +15,8 @@ public final class RogueBaseModifierDestroy46 {
   public static final class Callback {
     public long methodPointer, invokePointer, trampolineRva;
     public Object methodInfo;
-    public RogueModifierDestroy46.State target, methodCodeTarget;
+    public RogueModifierDestroy46.State target;
+    public Object methodCodeTarget;
     public CallbackData data;
     public Callback[] delegates;
   }
