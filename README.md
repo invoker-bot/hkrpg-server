@@ -1,3 +1,5 @@
+4.6 互斥效果重新挂载与异步完成闭包已补入Java，见 [互斥挂载说明](docs/rogue-mutex-attach-4.6.md)。实例与真实世界连接继续待完成。
+
 4.6 效果列表集合与迭代范围插入已补入Java，见 [效果列表范围说明](docs/rogue-effect-list-range-4.6.md)。共享泛型登记与真实世界连接继续待完成。
 
 4.6 其他修饰器双事件载荷与默认效果列表构造已补入Java，见 [事件载荷说明](docs/rogue-other-event-payload-4.6.md)。范围插入与实际世界登记继续待完成。
