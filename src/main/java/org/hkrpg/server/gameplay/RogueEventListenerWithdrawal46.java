@@ -17,11 +17,14 @@ public final class RogueEventListenerWithdrawal46 {
   }
 
   public static final class Entry {
+    public int hashCode, next;
     public Key key;
     public PooledCallbacks callbacks;
   }
 
   public static final class Dictionary {
+    public int[] buckets;
+    public Object comparer;
     public Entry[] entries;
   }
 
