@@ -21,6 +21,14 @@ public final class BoxingClubBattle extends Battle {
   private final Map<Integer, Integer> reward;
   private final emu.lunarcore.game.scene.Scene scene;
   private final emu.lunarcore.game.player.PlayerGameInstance instance;
+  private boolean boxingSettlementStarted;
+
+  @Override
+  public boolean beginSettlement() {
+    if (boxingSettlementStarted) return false;
+    boxingSettlementStarted = true;
+    return true;
+  }
 
   BoxingClubBattle(
       Player p,
@@ -115,7 +123,13 @@ public final class BoxingClubBattle extends Battle {
       if (result == BattleEndStatus.BATTLE_END_WIN) {
         finished = next.win(event, source.getId(), getId(), stats.getRoundCnt(), reward);
       } else next.cancel();
-      BoxingClubManager.save(p, next);
+      try {
+        BoxingClubManager.save(p, next);
+      } catch (RuntimeException failure) {
+        // No progress or inventory operation committed. The exact admitted battle can retry.
+        boxingSettlementStarted = false;
+        throw failure;
+      }
       setResult(result);
       setStats(stats);
       p.setBattle(null);

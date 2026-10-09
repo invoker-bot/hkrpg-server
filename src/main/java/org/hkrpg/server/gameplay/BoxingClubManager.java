@@ -12,6 +12,8 @@ import java.util.*;
 public final class BoxingClubManager {
   public record Entry(Retcode retcode, BoxingClubBattle battle) {}
 
+  public record Member(int id, int type) {}
+
   static void save(Player p, BoxingClubState next) {
     var old = p.getGameplay().getBoxingClub();
     p.getGameplay().boxingClub(next);
@@ -59,6 +61,16 @@ public final class BoxingClubManager {
   }
 
   public static Retcode match(Player p, int id, List<Integer> roster, Instant time) {
+    return matchMembers(
+        p,
+        id,
+        roster == null
+            ? null
+            : roster.stream().map(n -> n == null ? null : new Member(n, 1)).toList(),
+        time);
+  }
+
+  public static Retcode matchMembers(Player p, int id, List<Member> members, Instant time) {
     synchronized (p) {
       var g = p.getGameplay();
       if (g.getBoxingClub().getActive() != null
@@ -80,7 +92,7 @@ public final class BoxingClubManager {
           || !rules.available(p, challenge, time)
           || challenge.previous() > 0
               && !g.getBoxingClub().getCompleted().containsKey(challenge.previous())
-          || BoxingClubParty.prepare(p, roster) == null) return Retcode.REQ_PARA_INVALID;
+          || BoxingClubParty.prepare(p, id, members, time) == null) return Retcode.REQ_PARA_INVALID;
       var groups =
           challenge.groups().stream()
               .map(rules.catalog::group)
@@ -114,7 +126,8 @@ public final class BoxingClubManager {
           p.getEntryId(),
           challenge,
           group,
-          roster);
+          members.stream().map(Member::id).toList(),
+          members.stream().map(Member::type).toList());
       save(p, next);
       restore(p);
       return Retcode.SUCC;
@@ -139,7 +152,7 @@ public final class BoxingClubManager {
       var group = rules.catalog.group(run.group());
       int event = group.events().get(run.index());
       var stage = rules.stage(event, run.world());
-      var party = BoxingClubParty.prepare(p, run.roster());
+      var party = BoxingClubParty.prepare(p, id, run.members(), time);
       var buffIDs = new ArrayList<Integer>();
       buffIDs.add(challenge.buff());
       buffIDs.addAll(run.buffs(rules.catalog));

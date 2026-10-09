@@ -52,7 +52,8 @@ public final class BoxingClub46 {
         int id = req == null ? 0 : number(req, "challenge_id");
         if (req != null && only(req, "challenge_id", "avatar_list", "OOJOMKDMBBM")) {
           var roster = roster(req);
-          if (roster != null) code = BoxingClubManager.match(p, id, roster, Instant.now()).getVal();
+          if (roster != null)
+            code = BoxingClubManager.matchMembers(p, id, roster, Instant.now()).getVal();
         }
         if (code == 0) set(response, "OCDLPDDMCLP", progress(s, catalog, id));
       } else if (name.equals("StartBoxingClubBattleCsReq")) {
@@ -97,23 +98,35 @@ public final class BoxingClub46 {
     }
   }
 
-  private static List<Integer> roster(DynamicMessage req) {
+  private static List<BoxingClubManager.Member> roster(DynamicMessage req) {
     var legacy = new ArrayList<Integer>();
     for (var id : (List<?>) value(req, "avatar_list")) legacy.add((Integer) id);
-    var modern = new ArrayList<Integer>();
+    var modern = new ArrayList<BoxingClubManager.Member>();
     for (var object : (List<?>) value(req, "OOJOMKDMBBM")) {
       var member = (DynamicMessage) object;
       var type = (Descriptors.EnumValueDescriptor) value(member, "avatar_type");
-      if (!only(member, "avatar_id", "avatar_type")
-          || !type.getName().equals("AvatarType_AvatarFormalType")) return null;
-      modern.add(number(member, "avatar_id"));
+      if (!only(member, "avatar_id", "avatar_type")) return null;
+      int kind =
+          switch (type.getName()) {
+            case "AvatarType_AvatarFormalType" -> 1;
+            case "AvatarType_AvatarTrialType" -> 3;
+            default -> 0;
+          };
+      if (kind == 0) return null;
+      modern.add(new BoxingClubManager.Member(number(member, "avatar_id"), kind));
     }
-    if (!legacy.isEmpty() && !modern.isEmpty() && !legacy.equals(modern)) return null;
-    var selected = modern.isEmpty() ? legacy : modern;
+    if (!legacy.isEmpty()
+        && !modern.isEmpty()
+        && !legacy.equals(modern.stream().map(BoxingClubManager.Member::id).toList())) return null;
+    var selected =
+        modern.isEmpty()
+            ? legacy.stream().map(id -> new BoxingClubManager.Member(id, 1)).toList()
+            : modern;
     return selected.isEmpty()
             || selected.size() > 4
-            || selected.stream().anyMatch(id -> id <= 0)
-            || new HashSet<>(selected).size() != selected.size()
+            || selected.stream().anyMatch(m -> m.id() <= 0)
+            || selected.stream().map(BoxingClubManager.Member::id).distinct().count()
+                != selected.size()
         ? null
         : List.copyOf(selected);
   }
@@ -133,12 +146,20 @@ public final class BoxingClub46 {
       set(row, "stage_index", run.index());
       set(row, "EAFICCLCLLA", run.rounds());
       for (int buff : run.buffs(catalog)) add(row, "EJEFDFEFOMH", buff);
-      for (int avatar : run.roster()) {
+      for (var actor : run.members()) {
+        int avatar = actor.id();
         add(row, "avatar_list", avatar);
         var member = builder(s, "FLLJIHLMKDI");
         set(member, "avatar_id", avatar);
         var field = member.getDescriptorForType().findFieldByName("avatar_type");
-        member.setField(field, field.getEnumType().findValueByName("AvatarType_AvatarFormalType"));
+        member.setField(
+            field,
+            field
+                .getEnumType()
+                .findValueByName(
+                    actor.type() == 3
+                        ? "AvatarType_AvatarTrialType"
+                        : "AvatarType_AvatarFormalType"));
         add(row, "OOJOMKDMBBM", member.build());
       }
     }

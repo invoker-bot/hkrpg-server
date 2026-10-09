@@ -35,7 +35,8 @@ public final class BoxingClubState {
       int entry,
       BoxingClubCatalog.Challenge challenge,
       BoxingClubCatalog.Group group,
-      List<Integer> roster) {
+      List<Integer> roster,
+      List<Integer> rosterTypes) {
     var run = new Run();
     run.source = SOURCE;
     run.sequence = ++sequence;
@@ -47,6 +48,7 @@ public final class BoxingClubState {
     run.challenge = challenge.id();
     run.group = group.id();
     run.roster = new ArrayList<>(roster);
+    run.rosterTypes = new ArrayList<>(rosterTypes);
     active = run;
   }
 
@@ -97,6 +99,10 @@ public final class BoxingClubState {
         || run.roster.size() > 4
         || run.roster.stream().anyMatch(id -> id == null || id <= 0)
         || new HashSet<>(run.roster).size() != run.roster.size()
+        || run.rosterTypes != null
+            && !run.rosterTypes.isEmpty()
+            && (run.rosterTypes.size() != run.roster.size()
+                || run.rosterTypes.stream().anyMatch(t -> t == null || t != 1 && t != 3))
         || run.wins == null
         || finished && run.wins.size() != 4
         || !finished && run.wins.size() > 3) return false;
@@ -109,6 +115,9 @@ public final class BoxingClubState {
         || run.rounds() < 0
         || run.rounds() > challenge.turnLimit()
         || !finished && run.rounds() >= challenge.turnLimit()) return false;
+    for (var member : run.members())
+      if (member.type() == 3 && !BoxingClubTrials.declared(run.challenge, member.id()))
+        return false;
     var battleIDs = new HashSet<Integer>();
     for (int i = 0; i < run.wins.size(); i++) {
       var win = run.wins.get(i);
@@ -135,6 +144,8 @@ public final class BoxingClubState {
     private long sequence;
     private int uid, world, plane, floor, entry, challenge, group;
     private List<Integer> roster = new ArrayList<>();
+    // Empty in older v1 formal-only records; no migration creates a trial member.
+    private List<Integer> rosterTypes = new ArrayList<>();
     private List<Win> wins = new ArrayList<>();
     private Map<Integer, Integer> reward = new TreeMap<>();
 
@@ -151,6 +162,7 @@ public final class BoxingClubState {
       challenge = r.challenge;
       group = r.group;
       roster = new ArrayList<>(r.roster);
+      rosterTypes = r.rosterTypes == null ? new ArrayList<>() : new ArrayList<>(r.rosterTypes);
       wins = new ArrayList<>(r.wins);
       reward = new TreeMap<>(r.reward);
     }
@@ -179,6 +191,16 @@ public final class BoxingClubState {
 
     public List<Integer> roster() {
       return List.copyOf(roster);
+    }
+
+    public List<BoxingClubManager.Member> members() {
+      var members = new ArrayList<BoxingClubManager.Member>();
+      for (int i = 0; i < roster.size(); i++)
+        members.add(
+            new BoxingClubManager.Member(
+                roster.get(i),
+                rosterTypes == null || rosterTypes.isEmpty() ? 1 : rosterTypes.get(i)));
+      return List.copyOf(members);
     }
 
     public List<Integer> buffs(BoxingClubCatalog catalog) {

@@ -1040,7 +1040,7 @@ for _boxing_request46 in (
     "GetBoxingClubInfoCsReq", "MatchBoxingClubOpponentCsReq",
     "StartBoxingClubBattleCsReq", "GiveUpBoxingClubChallengeCsReq",
 ):
-    REVIEWED[_boxing_request46] = {"tests": _boxing_tests46, "gap": _boxing_gap46}
+    REVIEWED[_boxing_request46] = {"tests": _boxing_tests46 + ["src/test/java/org/hkrpg/server/gameplay/BoxingClubTrials46Test.java", "src/test/java/org/hkrpg/server/gameplay/BoxingClubSettlementRetry46Test.java", "scripts/tests/test_boxing_club_trial_sources.py", "scripts/smoke-boxing-club-trials.py", "docs/boxing-club-trials-4.6.md"], "gap": "首季原始试用/正式混队、独立试用窗口和成员类型恢复接入；进度保存失败可重试。35档配置及六份技能预设逐项核对；实际66项Java/3项Python与原生/H2边界见docs/boxing-club-trials-4.6.md，完整玩法和UI仍待完成。历史批次：" + _boxing_gap46}
 
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))

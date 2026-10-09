@@ -30,7 +30,7 @@ class BoxingClubSources(unittest.TestCase):
 
     def test_all_305_runtime_fingerprints_match_complete_original_binding_rows(self):
         source = (ROOT / 'src/main/java/org/hkrpg/server/gameplay/BoxingClubSourceHashes.java').read_text('utf-8')
-        actual = dict(re.findall(r'Map\.entry\("([^"]+)",\s*"([a-f0-9]{64})"\)', source))
+        actual = dict(re.findall(r'Map\.entry\(\s*"([^"]+)"\s*,\s*"([a-f0-9]{64})"\)', source))
         expected = {}
         keys = {'PlaneEvent': ('EventID', 'WorldLevel'), 'StageConfig': ('StageID', None), 'MazeBuff': ('ID', 'Lv'), 'RewardData': ('RewardID', None), 'ActivityPanel': ('PanelID', None), 'ActivityConfig': ('ActivityID', None)}
         for entry in self.fixture['inputs']:
