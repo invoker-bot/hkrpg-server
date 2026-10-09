@@ -1,0 +1,11 @@
+# 4.6 地图入口任务完成证明
+
+SceneMap46的EnterSceneCsReq原先把子任务“阶段不是DOING”视为完成，空阶段、零完成时间、错误进度或编号也能通过FinishSubMissionList。现在入口复用StoryLineConditions.finished及已有MissionStateRecords，核对实际子任务定义、有效父任务、保存键/编号、明确FINISHED/CLAIMING/CLOSED、正完成时间和有效目标进度，取消或孤立记录不能授权传送。
+
+检查仍在既有玩家锁内、实际enterScene调用之前。失败返回MISSION_NOT_FINISH，不发送成功场景标识、不调用传送、不保存或修补任务记录。正常三个奖励阶段均允许进入，原有Progress=0取有效目标1的历史兼容保留。主任务前置继续使用既有严格完成检查；没有改变协议字段、版本常量、资源入口或其他玩法的状态。
+
+fixtures/scene-entrance-missions-4.6.json保留五条完整原件、五份固定源文件路径/SHA/Git原件SHA，来源TurnBasedGameData提交724b139d8c9c32d12552eb95745a4fee72bfe48b。使用原始1020101入口、10201平面、1020201主任务和其最终102020110子任务。入口原始要求主任务1020201与子任务102020110完成。测试只加载最终子任务子集，完成历史和物理传送是明确替身；没有实际执行整个1020201剧情或传送到游戏场景。
+
+新增31项Java检查，正确使用生产资源解析器处理PlaneName.Hash后，原始运行有13项AssertionFailedError先失败，build/entrance3679-original-red.xml留证。最初普通Gson不能读取原始哈希对象的31项设置失败不计回归。修复后覆盖七种损坏完成记录、缺失/错编号/负目标/不同父任务定义、取消/缺失父任务、正常奖励阶段、历史零目标、24次原生处理入口并发以及实际Player文档两次Morphia恢复。异常回包、无传送调用及保存状态不变均有断言。
+
+本批是冻结4.6报文的进程内处理入口验证，没有新增坏存档UDP/KCP、真实地图加载、完整官方前置任务、热修或游戏UI验收。正常内存数据库恢复不能证明断电原子性。最终全量3710项Java、15项Python、151份冻结协议和独立源码构建，以build/entrance-3710-source-verification.json的passed为准。此前87项支线网络验证保持3679批次证据，不称当前jar重复运行；全部剧情、宇宙活动与客户端接受继续待完成。

@@ -1,0 +1,324 @@
+{
+  "passed": true,
+  "clientExecutableStarted": false,
+  "clientModified": false,
+  "clientGameplayVerified": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "recoveryTaskTypes": [
+    {
+      "typeIndex": 20180,
+      "name": "AdventureModifyTeamPlayerHP",
+      "fields": [
+        {
+          "fieldIndex": 91968,
+          "name": "AddRatio",
+          "nativeTypeIndex": 487213,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "fieldIndex": 91969,
+          "name": "MinRatio",
+          "nativeTypeIndex": 487213,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "fieldIndex": 91970,
+          "name": "ModifyFunction",
+          "nativeTypeIndex": 513517,
+          "nativeType": {
+            "kind": 17,
+            "typeIndex": 15640,
+            "name": "PropertyModifyFunction"
+          }
+        },
+        {
+          "fieldIndex": 91971,
+          "name": "ModifyValue",
+          "nativeTypeIndex": 487213,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "fieldIndex": 91972,
+          "name": "SpecifyTargetType",
+          "nativeTypeIndex": 501063,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 23744,
+            "name": "TargetEvaluator"
+          }
+        },
+        {
+          "fieldIndex": 91973,
+          "name": "ClientUseGMCommand",
+          "nativeTypeIndex": 451898,
+          "nativeType": {
+            "kind": 2
+          }
+        },
+        {
+          "fieldIndex": 91974,
+          "name": "TriggerCommonEffect",
+          "nativeTypeIndex": 451898,
+          "nativeType": {
+            "kind": 2
+          }
+        }
+      ],
+      "constructor": {
+        "index": 118432,
+        "rva": "0x1d39c840",
+        "instructions": [
+          "1d39c840: mov dword ptr [rcx + 0x28], 2",
+          "1d39c847: mov byte ptr [rcx + 0x41], 1",
+          "1d39c84b: mov byte ptr [rcx + 0x10], 1",
+          "1d39c84f: ret "
+        ]
+      }
+    },
+    {
+      "typeIndex": 20181,
+      "name": "AdventureModifyTeamPlayerSP",
+      "fields": [
+        {
+          "fieldIndex": 91975,
+          "name": "AddRatio",
+          "nativeTypeIndex": 487213,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "fieldIndex": 91976,
+          "name": "ModifyFunction",
+          "nativeTypeIndex": 513517,
+          "nativeType": {
+            "kind": 17,
+            "typeIndex": 15640,
+            "name": "PropertyModifyFunction"
+          }
+        },
+        {
+          "fieldIndex": 91977,
+          "name": "ModifyValue",
+          "nativeTypeIndex": 487213,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "fieldIndex": 91978,
+          "name": "SpecifyTargetType",
+          "nativeTypeIndex": 501063,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 23744,
+            "name": "TargetEvaluator"
+          }
+        },
+        {
+          "fieldIndex": 91979,
+          "name": "ClientUseGMCommand",
+          "nativeTypeIndex": 451898,
+          "nativeType": {
+            "kind": 2
+          }
+        }
+      ],
+      "constructor": {
+        "index": 118435,
+        "rva": "0x1d39cbf0",
+        "instructions": [
+          "1d39cbf0: mov dword ptr [rcx + 0x20], 2",
+          "1d39cbf7: mov byte ptr [rcx + 0x10], 1",
+          "1d39cbfb: ret "
+        ]
+      }
+    }
+  ],
+  "modifyFunctionEnum": {
+    "Unknow": 0,
+    "Set": 1,
+    "Add": 2,
+    "Mul": 3,
+    "MinSet": 4,
+    "MaxSet": 5
+  },
+  "dynamicValueReadEnum": {
+    "None": 0,
+    "SkillParam": 1,
+    "SkillTreeParam": 2,
+    "SkillEquip": 3,
+    "SkillRank": 4,
+    "SkillRelic": 5,
+    "BattleEvent": 6,
+    "StageBattleEvent": 7,
+    "FloorCustomData": 8,
+    "Activity": 9,
+    "GridFight": 10,
+    "ClientOnly": 11
+  },
+  "readInfoType": {
+    "typeIndex": 10847,
+    "name": "MFDEBKGHEIO",
+    "methods": [
+      {
+        "index": 74748,
+        "name": "KICKOCALNHC",
+        "rva": "0x1d128c40",
+        "typeIndex": 10847,
+        "typeName": "MFDEBKGHEIO"
+      }
+    ],
+    "fields": [
+      {
+        "fieldIndex": 47140,
+        "name": "GMPGDEINODK",
+        "nativeTypeIndex": 490503,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 10843,
+          "name": "DynamicValueReadType"
+        }
+      },
+      {
+        "fieldIndex": 47141,
+        "name": "AIBNIIADGOA",
+        "nativeTypeIndex": 451674,
+        "nativeType": {
+          "kind": 14
+        }
+      },
+      {
+        "fieldIndex": 47142,
+        "name": "GMDBHJKEAEI",
+        "nativeTypeIndex": 451621,
+        "nativeType": {
+          "kind": 8
+        }
+      }
+    ]
+  },
+  "valueRecordType": {
+    "typeIndex": 10844,
+    "name": "NBLCBLIPBNB",
+    "methods": [],
+    "fields": [
+      {
+        "fieldIndex": 47123,
+        "name": "MJMEEOIEMMM",
+        "nativeTypeIndex": 490494,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 10875,
+          "name": "StringHash"
+        }
+      },
+      {
+        "fieldIndex": 47124,
+        "name": "MNDFOPKBHKP",
+        "nativeTypeIndex": 486349,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 9939,
+          "name": "FixPoint"
+        }
+      },
+      {
+        "fieldIndex": 47125,
+        "name": "EFNAJMADAHM",
+        "nativeTypeIndex": 486349,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 9939,
+          "name": "FixPoint"
+        }
+      },
+      {
+        "fieldIndex": 47126,
+        "name": "NKAACMGNNPK",
+        "nativeTypeIndex": 486349,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 9939,
+          "name": "FixPoint"
+        }
+      },
+      {
+        "fieldIndex": 47127,
+        "name": "CDOFGJDCOIL",
+        "nativeTypeIndex": 490495,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 10847,
+          "name": "MFDEBKGHEIO"
+        }
+      }
+    ]
+  },
+  "characterEntries": [
+    {
+      "avatarId": 8001,
+      "bodyName": "NPC_Avatar_Lad_PlayerBoy_00",
+      "file": "C:\\Users\\InvokerBot\\AppData\\Local\\hoyo\\hkrpg\\versions\\current\\StarRail_Data\\Persistent\\DesignData\\Windows\\7707e972d9afb983df824274f7ae0ce1.bytes",
+      "chunkSHA256": "3f8c0a2375be589b337a5733250d30c531b86ef98c521c5a2c34547d6be59a4e",
+      "entry": {
+        "key": "bbb9b9e3b22a3663",
+        "length": 1435,
+        "offset": 32000244
+      },
+      "entrySHA256": "eef74de5e45a55a1e5968aa98497551ad12e1949a3d174167bb8494867f990a6",
+      "recordPosition": 1289,
+      "recordHex": "8deed7aa060000000109536b696c6c4d617a6500"
+    },
+    {
+      "avatarId": 8002,
+      "bodyName": "NPC_Avatar_Miss_PlayerGirl_00",
+      "file": "C:\\Users\\InvokerBot\\AppData\\Local\\hoyo\\hkrpg\\versions\\current\\StarRail_Data\\Persistent\\DesignData\\Windows\\7707e972d9afb983df824274f7ae0ce1.bytes",
+      "chunkSHA256": "3f8c0a2375be589b337a5733250d30c531b86ef98c521c5a2c34547d6be59a4e",
+      "entry": {
+        "key": "99510c1a2f4b5c89",
+        "length": 1451,
+        "offset": 32001679
+      },
+      "entrySHA256": "ca859ab9162ca4ad0c11946a62ff884c16731536bf5923d420d36931daf38c1c",
+      "recordPosition": 1304,
+      "recordHex": "8deed7aa060000000109536b696c6c4d617a6500"
+    }
+  ],
+  "scopedBinding": {
+    "hash": -850066311,
+    "readType": "SkillParam",
+    "triggerKey": "SkillMaze",
+    "index": 0,
+    "avatarSkills": {
+      "8001": 800107,
+      "8002": 800207
+    },
+    "inference": true
+  },
+  "completeCharacterBinaryDecoderVerified": false,
+  "nativeDynamicExpressionInterpreterVerified": false,
+  "hpRoundingMatchesNativeVerified": false,
+  "nativeTaskDispatchAndDefaultClientFlagVerified": false,
+  "spAbsoluteEnergyConversionVerified": false,
+  "originalOuterAbilityVerified": false
+}

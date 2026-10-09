@@ -1,0 +1,3505 @@
+syntax = "proto2";
+package legacy;
+
+message ActivateFarmElementCsReq {
+  optional uint32 world_level = 1;
+  optional uint32 entity_id = 8;
+}
+
+message ActivateFarmElementScRsp {
+  optional uint32 retcode = 4;
+  optional uint32 entity_id = 9;
+  optional uint32 world_level = 11;
+}
+
+message ActivityScheduleInfo {
+  optional int64 begin_time = 6;
+  optional int64 end_time = 12;
+  optional uint32 activity_id = 11;
+  optional uint32 module_id = 15;
+}
+
+message ApplyFriendCsReq {
+  optional uint32 uid = 15;
+  optional .legacy.FriendApplySource source = 8;
+}
+
+message ArchiveData {
+  repeated uint32 GLHNOAKHHPD = 2;
+  repeated uint32 archive_equipment_id_list = 7;
+  repeated uint32 OOICHLFIHLF = 12;
+  repeated .legacy.MonsterArchive monster_list = 6;
+  repeated .legacy.RelicArchive relic_list = 8;
+}
+
+message AssistMonsterWave {
+  repeated uint32 entity_id_list = 2;
+}
+
+message AssistSimpleInfo {
+  optional uint32 pos = 2;
+  optional uint32 avatar_id = 3;
+  optional uint32 dressed_skin_id = 9;
+  optional uint32 level = 15;
+}
+
+message AvatarBattleInfo {
+  optional uint32 id = 2;
+  optional uint32 avatar_level = 3;
+  optional uint32 avatar_rank = 4;
+  optional uint32 avatar_promotion = 5;
+  optional .legacy.AvatarType avatar_type = 1;
+  optional .legacy.AvatarProperty avatar_status = 6;
+}
+
+message AvatarExpUpCsReq {
+  optional uint32 base_avatar_id = 3;
+  optional .legacy.ItemCostList item_cost_list = 9;
+}
+
+message AvatarExpUpScRsp {
+  optional uint32 retcode = 14;
+  repeated .legacy.PileItem return_item_list = 6;
+}
+
+message Avatar {
+  optional uint64 first_met_timestamp = 2;
+  optional uint32 promotion = 3;
+  optional uint32 level = 8;
+  optional uint32 base_avatar_id = 9;
+  optional uint32 changed_avatar_type = 13;
+  optional uint32 exp = 14;
+  optional bool is_marked = 5;
+  repeated uint32 taken_rewards = 12;
+}
+
+message AvatarPathChangedNotify {
+  optional uint32 base_avatar_id = 5;
+  optional .legacy.MultiPathAvatarType changed_avatar_type = 7;
+}
+
+message AvatarPathInfo {
+  optional uint64 first_met_timestamp = 12;
+  optional uint32 avatar_skin = 8;
+  optional uint32 avatar_id = 10;
+  optional uint32 rank = 11;
+  optional uint32 path_equipment_id = 13;
+  optional uint32 enhance_id = 14;
+  repeated .legacy.AvatarPathSkillTree skilltree_list = 1;
+  repeated .legacy.EquipRelic equip_relic_list = 9;
+}
+
+message AvatarPathSkillTree {
+  optional uint32 anchor_point_id = 6;
+  optional uint32 level = 7;
+}
+
+message AvatarProperty {
+  optional double max_hp = 1;
+  optional double attack = 2;
+  optional double defence = 3;
+  optional double speed = 4;
+  optional double left_hp = 5;
+  optional double left_sp = 6;
+  optional double max_sp = 7;
+}
+
+message AvatarReccomendData {
+}
+
+message AvatarSkillTree {
+  optional uint32 point_id = 1;
+  optional uint32 level = 2;
+}
+
+message AvatarSync {
+  repeated .legacy.Avatar avatar_list = 6;
+  repeated .legacy.AvatarPathInfo avatar_path_info_list = 14;
+}
+
+enum AvatarType {
+  AVATAR_TYPE_NONE = 0;
+  AVATAR_TRIAL_TYPE = 1;
+  AVATAR_LIMIT_TYPE = 2;
+  AVATAR_FORMAL_TYPE = 3;
+  AVATAR_ASSIST_TYPE = 4;
+  AVATAR_AETHER_DIVIDE_TYPE = 5;
+  AVATAR_UPGRADE_AVAILABLE_TYPE = 6;
+  AVATAR_GRID_FIGHT_TYPE = 7;
+  AVATAR_UNKNOWN_TYPE_1 = 8;
+}
+
+message BattleAvatar {
+  optional uint32 id = 2;
+  optional uint32 level = 3;
+  optional uint32 rank = 4;
+  optional uint32 index = 5;
+  optional uint32 hp = 8;
+  optional uint32 promotion = 10;
+  optional uint32 world_level = 12;
+  optional uint32 assist_uid = 13;
+  optional uint32 avatar_enhance_id = 19;
+  optional .legacy.AvatarType avatar_type = 1;
+  optional .legacy.SpBarInfo sp_bar = 16;
+  repeated .legacy.AvatarSkillTree skilltree_list = 6;
+  repeated .legacy.BattleEquipment equipment_list = 7;
+  repeated .legacy.BattleRelic relic_list = 11;
+}
+
+message BattleBuff {
+  optional uint32 id = 1;
+  optional uint32 level = 2;
+  optional uint32 owner_id = 3;
+  optional uint32 wave_flag = 4;
+  repeated uint32 target_index_list = 5;
+  repeated .legacy.BattleBuff.DynamicValuesEntry dynamic_values = 6;
+  message DynamicValuesEntry {
+    optional float value = 2;
+    optional string key = 1;
+  }
+}
+
+enum BattleEndReason {
+  BATTLE_END_REASON_NONE = 0;
+  BATTLE_END_REASON_ALL_DIE = 1;
+  BATTLE_END_REASON_TURN_LIMIT = 2;
+}
+
+enum BattleEndStatus {
+  BATTLE_END_NONE = 0;
+  BATTLE_END_WIN = 1;
+  BATTLE_END_LOSE = 2;
+  BATTLE_END_QUIT = 3;
+}
+
+message BattleEquipment {
+  optional uint32 id = 1;
+  optional uint32 level = 2;
+  optional uint32 promotion = 3;
+  optional uint32 rank = 4;
+}
+
+message BattleEventBattleInfo {
+  optional uint32 battle_event_id = 1;
+  optional .legacy.BattleEventInitedData status = 2;
+}
+
+message BattleEventInitedData {
+  optional .legacy.SpBarInfo sp_bar = 2;
+}
+
+message BattleOp {
+  optional uint32 turn_counter = 1;
+  optional uint32 state = 2;
+  optional uint32 action_entity_id = 3;
+  optional uint32 target_entity_id = 4;
+  optional uint32 op_type = 5;
+  optional uint32 skill_index = 6;
+  optional uint32 operation_counter = 7;
+}
+
+message BattlePassInfoNotify {
+  optional uint64 taken_premium_reward2 = 3;
+  optional uint64 taken_premium_optional_reward = 7;
+  optional uint64 taken_free_extended_reward = 8;
+  optional uint64 taken_premium_extended_optional_reward = 9;
+  optional uint64 taken_premium_extended_reward2 = 11;
+  optional uint64 taken_premium_extended_reward = 13;
+  optional uint64 taken_premium_reward1 = 14;
+  optional uint64 taken_free_reward = 15;
+  optional uint32 exp = 1;
+  optional uint32 cur_bp_id = 6;
+  optional uint32 cur_week_add_exp_sum = 10;
+  optional uint32 level = 12;
+  optional .legacy.BattlePassInfoNotify.BpTierType bp_tier_type = 5;
+  enum BpTierType {
+    BP_TIER_TYPE_NONE = 0;
+    BP_TIER_TYPE_FREE = 1;
+    BP_TIER_TYPE_PREMIUM_1 = 2;
+    BP_TIER_TYPE_PREMIUM_2 = 3;
+  }
+}
+
+message BattleRecord1Info {
+  optional uint32 battle_record_stars = 6;
+  optional uint32 round_count = 8;
+  optional uint32 level = 12;
+  repeated .legacy.BattleRecordAvatars battle_record_avatars = 11;
+}
+
+message BattleRecord1 {
+  optional uint32 record_id = 9;
+  optional .legacy.BattleRecord1Info record_info = 1;
+}
+
+message BattleRecordAvatar {
+  optional uint32 level = 4;
+  optional uint32 index = 14;
+  optional uint32 id = 15;
+  optional .legacy.AvatarType avatar_type = 1;
+}
+
+message BattleRecordAvatars {
+  repeated .legacy.BattleRecordAvatar avatar_list = 7;
+}
+
+message BattleRecordType2 {
+  optional uint32 record_id = 3;
+  optional .legacy.BattleRecordType2.RecordType2 record = 7;
+  message RecordDisplayAvatar {
+    optional uint32 level = 1;
+    optional uint32 slot = 3;
+    optional uint32 id = 5;
+    optional .legacy.AvatarType avatar_type = 2;
+  }
+  message RecordDisplayInfo {
+    repeated uint32 unk_repeated = 8;
+    repeated .legacy.BattleRecordType2.RecordDisplayAvatar avatar_list = 5;
+  }
+  message RecordType2 {
+    optional uint32 score = 9;
+    optional uint32 int2 = 1131;
+    optional uint32 int1 = 1911;
+    optional bool is_win = 4;
+    optional .legacy.BattleRecordType2.RecordDisplayInfo display_info = 5;
+  }
+}
+
+message BattleRelic {
+  optional uint32 id = 1;
+  optional uint32 level = 2;
+  optional uint32 main_affix_id = 3;
+  optional uint32 unique_id = 5;
+  repeated .legacy.RelicAffix sub_affix_list = 4;
+}
+
+message BattleSkillInfo {
+  optional double damage = 4;
+  optional uint32 skill_id = 1;
+}
+
+message BattleStatistics {
+  optional double total_delay_cumulate = 5;
+  optional double cost_time = 6;
+  optional uint32 total_battle_turns = 1;
+  optional uint32 total_auto_turns = 2;
+  optional uint32 ultra_cnt = 4;
+  optional uint32 round_cnt = 9;
+  optional uint32 cocoon_dead_wave = 10;
+  optional uint32 avatar_battle_turns = 11;
+  optional uint32 monster_battle_turns = 12;
+  optional uint32 challenge_score = 14;
+  optional .legacy.BattleEndReason end_reason = 19;
+  repeated uint32 avatar_id_list = 3;
+  repeated .legacy.AvatarBattleInfo battle_avatar_list = 7;
+  repeated .legacy.BattleStatistics.CustomValuesEntry custom_values = 13;
+  repeated .legacy.BattleStatistics.BattleTargetInfoEntry battle_target_info = 28;
+  message CustomValuesEntry {
+    optional float value = 2;
+    optional string key = 1;
+  }
+  message BattleTargetInfoEntry {
+    optional uint32 key = 1;
+    optional .legacy.BattleTargetList value = 2;
+  }
+}
+
+message BattleTargetList {
+  repeated .legacy.BattleTarget battle_target_list = 1;
+}
+
+message BattleTarget {
+  optional uint32 id = 1;
+  optional uint32 progress = 2;
+  optional uint32 total_progress = 3;
+}
+
+enum BigDataRecommendType {
+  BIG_DATA_RECOMMEND_TYPE_NONE = 0;
+  BIG_DATA_RECOMMEND_TYPE_EQUIPMENT = 1;
+  BIG_DATA_RECOMMEND_TYPE_RELIC_SUIT = 2;
+  BIG_DATA_RECOMMEND_TYPE_RELIC_AVATAR = 3;
+  BIG_DATA_RECOMMEND_TYPE_AVATAR_RELIC = 4;
+}
+
+message BlackInfo {
+  optional int64 begin_time = 1;
+  optional int64 end_time = 2;
+  optional uint32 limit_level = 3;
+  optional uint32 ban_type = 4;
+}
+
+message BoardDataSync {
+  optional .legacy.HeadIconFrameInfo head_icon_frame_info = 7;
+  optional string signature = 1;
+  repeated uint32 unlocked_head_icon_frame_id_list = 15;
+  repeated .legacy.HeadIcon unlocked_head_icon_list = 3;
+}
+
+message BuffInfo {
+  optional uint64 add_time_ms = 6;
+  optional float life_time = 14;
+  optional uint32 count = 2;
+  optional uint32 buff_id = 4;
+  optional uint32 level = 9;
+  optional uint32 base_avatar_id = 15;
+  repeated .legacy.BuffInfo.DynamicValuesEntry dynamic_values = 10;
+  message DynamicValuesEntry {
+    optional float value = 2;
+    optional string key = 1;
+  }
+}
+
+message BuyGoodsCsReq {
+  optional uint32 goods_id = 5;
+  optional uint32 server_entity_id = 6;
+  optional uint32 goods_num = 8;
+  optional uint32 item_id = 13;
+  optional uint32 shop_id = 15;
+}
+
+message BuyGoodsScRsp {
+  optional uint32 goods_id = 3;
+  optional uint32 goods_buy_times = 4;
+  optional uint32 retcode = 7;
+  optional uint32 shop_id = 11;
+  optional .legacy.ItemList return_item_list = 6;
+}
+
+message ChallengeBossBuffInfo {
+  repeated uint32 buff_list = 13;
+}
+
+message ChallengeBossInfo {
+  optional .legacy.ChallengeBossSingleNodeInfo first_node = 2;
+  optional .legacy.ChallengeBossSingleNodeInfo second_node = 11;
+  repeated uint32 first_half_lineup = 6;
+  repeated uint32 second_half_lineup = 13;
+}
+
+message ChallengeBossPhaseSettleNotify {
+  optional uint32 challenge_score = 3;
+  optional uint32 DBDDGFJGGGB = 4;
+  optional uint32 challenge_id = 6;
+  optional uint32 stars = 9;
+  optional uint32 phase = 12;
+  optional uint32 score_two = 14;
+  optional bool unkbool1 = 7;
+  optional bool is_win = 10;
+  optional bool unkbool2 = 13;
+  repeated .legacy.BattleTarget HJAALLNAFOO = 8;
+}
+
+message ChallengeBossSingleNodeInfo {
+  optional uint32 max_score = 3;
+  optional uint32 buff_id = 8;
+  optional bool is_win = 4;
+  optional bool has_been_challenged = 7;
+}
+
+message ChallengeDevelopmentInfo {
+  optional uint32 challenge_id = 14;
+}
+
+message ChallengeExtInfo {
+  optional .legacy.ChallengeBossInfo boss_info = 11;
+}
+
+message ChallengeInfo {
+  optional uint32 round_count = 1;
+  optional uint32 score = 5;
+  optional uint32 challenge_id = 9;
+  optional uint32 score_two = 13;
+  optional .legacy.ExtraLineupType extra_lineup_type = 4;
+  optional .legacy.ChallengeStatus status = 8;
+  optional .legacy.ChallengeStoryInfo ext_info = 2;
+}
+
+message ChallengeLineupNotify {
+  optional .legacy.ExtraLineupType extra_lineup_type = 15;
+}
+
+message Challenge {
+  optional uint32 score_two = 1;
+  optional uint32 taken_reward = 6;
+  optional uint32 score = 8;
+  optional uint32 challenge_id = 9;
+  optional uint32 stars = 14;
+  optional .legacy.ChallengeExtInfo ext_info = 10;
+}
+
+message ChallengePeakGroupDataUpdateScNotify {
+  optional .legacy.ChallengePeakGroupInfo challenge_peak_group = 2;
+}
+
+message ChallengePeakGroupInfo {
+  optional uint32 challenge_peak_group_id = 2;
+  optional uint32 KEEKPJHCMFN = 3;
+  optional uint32 KKAGEMJCIOC = 14;
+  optional bool JPKKFEJLOJN = 10;
+  repeated uint32 GCCENBCIINL = 13;
+  repeated .legacy.ChallengePeakLevelInfo challenge_peak_level_list = 6;
+}
+
+message ChallengePeakLevelInfo {
+  optional uint32 challenge_peak_id = 3;
+  optional uint32 GGICFFIOOGP = 11;
+  optional bool FGEGDFGKDNB = 7;
+  repeated uint32 NKGLPNJHEON = 6;
+  repeated uint32 challenge_avatar_id_list = 12;
+}
+
+message ChallengePeakMobLineupInfo {
+  optional uint32 challenge_peak_id = 3;
+  repeated uint32 challenge_avatar_id_list = 12;
+}
+
+message ChallengePeakSettleScNotify {
+  optional uint32 challenge_peak_id = 6;
+  optional uint32 LBGCPOKPKBB = 7;
+  optional uint32 GGICFFIOOGP = 10;
+  optional bool LBOJBLCKAJF = 2;
+  optional bool KJFCNFOGCHP = 3;
+  optional bool GEKPDLJNOHA = 8;
+  optional bool CMGKJJKNCNB = 11;
+  optional bool is_win = 13;
+  optional bool IIJODHANFDC = 15;
+  repeated uint32 NKGLPNJHEON = 5;
+}
+
+message ChallengeReward {
+  optional uint64 taken_challenge_reward = 14;
+  optional uint32 group_id = 3;
+}
+
+message ChallengeSettleNotify {
+  optional uint32 challenge_id = 1;
+  optional uint32 stars = 4;
+  optional uint32 challenge_score = 14;
+  optional uint32 score_two = 15;
+  optional bool is_win = 12;
+  optional .legacy.ItemList reward_list = 10;
+  optional .legacy.ChallengeInfo challenge_info = 11;
+  repeated uint32 challenge_id_list = 9;
+}
+
+enum ChallengeStatus {
+  CHALLENGE_UNKNOWN = 0;
+  CHALLENGE_DOING = 1;
+  CHALLENGE_FINISH = 2;
+  CHALLENGE_FAILED = 3;
+}
+
+message ChallengeStoryBuffInfo {
+  repeated uint32 buff_list = 15;
+}
+
+message ChallengeStoryInfo {
+  optional .legacy.ChallengeBossBuffInfo cur_boss_buffs = 2;
+  optional .legacy.ChallengeStoryBuffInfo cur_story_buffs = 6;
+}
+
+message ChangeLineupLeaderCsReq {
+  optional uint32 slot = 3;
+}
+
+message ChangeLineupLeaderScRsp {
+  optional uint32 slot = 13;
+  optional uint32 retcode = 14;
+}
+
+message ChangePropTimelineInfoCsReq {
+  optional uint32 prop_entity_id = 3;
+  optional .legacy.PropTimelineInfo prop_timeline_info = 11;
+}
+
+message ChangePropTimelineInfoScRsp {
+  optional uint32 prop_entity_id = 3;
+  optional uint32 retcode = 12;
+}
+
+message ChargerInfo {
+  optional uint32 unk_int = 5;
+  optional uint32 group_id = 6;
+}
+
+message ChatContentInfo {
+  optional .legacy.MsgType msg_type = 1;
+  optional .legacy.ChatMsgInfo chat_msg = 2;
+}
+
+message ChatHeaderInfo {
+  optional uint32 uid = 11;
+}
+
+message ChatInfo {
+  optional uint64 sent_time = 4;
+  optional .legacy.ChatHeaderInfo chat_header = 8;
+  repeated .legacy.ChatContentInfo chat_content_list = 9;
+}
+
+message ChatMsgInfo {
+  optional uint32 emote_id = 104;
+  optional string chat_text = 103;
+}
+
+enum ChatType {
+  CHAT_TYPE_NONE = 0;
+  CHAT_TYPE_PRIVATE = 1;
+  CHAT_TYPE_GROUP = 2;
+}
+
+message ClientMailAttachmentItem {
+  optional uint32 mail_id = 6;
+  optional uint32 item_id = 8;
+}
+
+message ClientMail {
+  optional int64 time = 1;
+  optional int64 expire_time = 7;
+  optional uint32 id = 2;
+  optional uint32 template_id = 10;
+  optional bool is_read = 3;
+  optional .legacy.ItemList attachment = 15;
+  optional string content = 4;
+  optional string sender = 11;
+  optional string title = 12;
+  repeated string para_list = 6;
+}
+
+message ComposeItemCsReq {
+  optional uint32 compose_id = 6;
+  optional uint32 count = 12;
+  optional .legacy.ItemCostList compose_item_list = 13;
+}
+
+message ComposeItemScRsp {
+  optional uint32 count = 1;
+  optional uint32 retcode = 4;
+  optional uint32 compose_id = 13;
+  optional .legacy.ItemList return_item_list = 5;
+}
+
+message ComposeSelectedRelicCsReq {
+  optional uint32 compose_relic_id = 1;
+  optional uint32 count = 2;
+  optional uint32 compose_id = 3;
+  optional uint32 main_affix_id = 11;
+  repeated uint32 compose_sub_affix_list = 12;
+}
+
+message ComposeSelectedRelicScRsp {
+  optional uint32 compose_id = 2;
+  optional uint32 retcode = 8;
+  optional .legacy.ItemList return_item_list = 10;
+}
+
+message ContentPackageData {
+  optional uint32 cur_content_id = 13;
+  repeated .legacy.ContentPackageInfo content_package_list = 14;
+}
+
+message ContentPackageGetDataScRsp {
+  optional uint32 retcode = 14;
+  optional .legacy.ContentPackageData data = 3;
+}
+
+message ContentPackageInfo {
+  optional uint32 content_id = 1;
+  optional .legacy.ContentPackageStatus status = 15;
+}
+
+enum ContentPackageStatus {
+  ContentPackageStatus_None = 0;
+  ContentPackageStatus_Init = 1;
+  ContentPackageStatus_Doing = 2;
+  ContentPackageStatus_Finished = 3;
+  ContentPackageStatus_Release = 4;
+}
+
+message CurPetChangedScNotify {
+  optional uint32 cur_pet_id = 9;
+}
+
+message CurTrialActivityScNotify {
+  optional uint32 trial_stage_id = 14;
+  optional .legacy.TrialActivityStatus status = 3;
+}
+
+message DailyActiveInfoNotify {
+  optional uint32 daily_active_point = 14;
+  repeated uint32 daily_active_quest_id_list = 15;
+  repeated .legacy.DailyActivityInfo daily_active_level_list = 6;
+}
+
+message DailyActivityInfo {
+  optional uint32 level = 5;
+  optional uint32 world_level = 7;
+  optional uint32 daily_active_point = 10;
+  optional bool is_has_taken = 6;
+}
+
+message DeactivateFarmElementCsReq {
+  optional uint32 entity_id = 13;
+}
+
+message DeactivateFarmElementScRsp {
+  optional uint32 retcode = 3;
+  optional uint32 entity_id = 8;
+}
+
+message DeleteFriendCsReq {
+  optional uint32 uid = 11;
+}
+
+message DeleteSocialEventServerCacheCsReq {
+  repeated uint32 delete_cache = 2;
+}
+
+message DeleteSocialEventServerCacheScRsp {
+  optional uint32 retcode = 13;
+  repeated uint32 ret_delete_cache = 15;
+}
+
+message DelMailCsReq {
+  repeated uint32 id_list = 10;
+}
+
+message DelMailScRsp {
+  optional uint32 retcode = 8;
+  repeated uint32 id_list = 1;
+}
+
+message DeployRotaterCsReq {
+  optional .legacy.RotaterData rotater_data = 7;
+}
+
+message DeployRotaterScRsp {
+  optional uint32 retcode = 1;
+  optional .legacy.RotaterData rotater_data = 11;
+  optional .legacy.RotatorEnergyInfo energy_info = 13;
+}
+
+message DestroyItemCsReq {
+  optional uint32 item_count = 8;
+  optional uint32 item_id = 12;
+  optional uint32 cur_item_count = 14;
+}
+
+enum DevelopmentType {
+  DEVELOPMENT_NONE = 0;
+  DEVELOPMENT_ROGUE_COSMOS = 1;
+  DEVELOPMENT_ROGUE_CHESS = 2;
+  DEVELOPMENT_ROGUE_CHESS_NOUS = 3;
+  DEVELOPMENT_MEMORY_CHALLENGE = 4;
+  DEVELOPMENT_STORY_CHALLENGE = 5;
+  DEVELOPMENT_UNLOCK_AVATAR = 6;
+  DEVELOPMENT_UNLOCK_EQUIPMENT = 7;
+  DEVELOPMENT_ACTIVITY_START = 8;
+  DEVELOPMENT_ACTIVITY_END = 9;
+  DEVELOPMENT_BOSS_CHALLENGE = 10;
+  DEVELOPMENT_ROGUE_TOURN = 11;
+  DEVELOPMENT_ROGUE_TOURN_WEEK = 12;
+  DEVELOPMENT_ROGUE_MAGIC = 13;
+}
+
+message DialogueResult {
+  optional uint32 HFHKBMGBJAN = 2;
+  optional .legacy.ItemList item_result = 13;
+  repeated uint32 event_ids = 10;
+}
+
+message DiscardRelicCsReq {
+  optional bool is_discard = 6;
+  repeated uint32 relic_id_list = 7;
+}
+
+message DispatchRegionData {
+  optional uint32 retcode = 1;
+  optional string msg = 2;
+  optional string top_sever_region_name = 3;
+  optional string stop_desc = 5;
+  repeated .legacy.RegionEntry region_list = 4;
+}
+
+message DispatchToken {
+  optional uint32 time = 4;
+  optional uint32 unk_uint_1 = 5;
+  optional uint32 account_id = 6;
+  optional bool unk_bool_1 = 1;
+  optional bool unk_bool_2 = 7;
+  optional string unk_string_1 = 2;
+  optional string unk_string_2 = 3;
+  optional string region = 8;
+  optional string country_code = 13;
+}
+
+message DisplayAvatarDetailInfo {
+  optional uint32 dressed_skin_id = 1;
+  optional uint32 rank = 2;
+  optional uint32 pos = 5;
+  optional uint32 level = 7;
+  optional uint32 exp = 8;
+  optional uint32 avatar_id = 14;
+  optional uint32 promotion = 15;
+  optional .legacy.DisplayEquipmentInfo equipment = 12;
+  repeated .legacy.AvatarSkillTree skilltree_list = 11;
+  repeated .legacy.DisplayRelicInfo relic_list = 13;
+}
+
+message DisplayAvatar {
+  optional uint32 pos = 2;
+  optional uint32 avatar_id = 14;
+}
+
+message DisplayAvatarVec {
+  optional bool is_display = 1;
+  repeated .legacy.DisplayAvatar display_avatar_list = 7;
+}
+
+message DisplayEquipmentInfo {
+  optional uint32 exp = 2;
+  optional uint32 rank = 8;
+  optional uint32 level = 9;
+  optional uint32 tid = 11;
+  optional uint32 promotion = 13;
+}
+
+enum DisplayRecordType {
+  BATTLE_RECORD_NONE = 0;
+  BATTLE_RECORD_CHALLENGE = 1;
+  BATTLE_RECORD_ROGUE = 2;
+}
+
+message DisplayRelicInfo {
+  optional uint32 level = 2;
+  optional uint32 exp = 3;
+  optional uint32 main_affix_id = 5;
+  optional uint32 tid = 7;
+  optional uint32 slot = 15;
+  repeated .legacy.RelicAffix sub_affix_list = 13;
+}
+
+message DoGachaCsReq {
+  optional uint32 gacha_random = 2;
+  optional uint32 simulate_magic = 10;
+  optional uint32 gacha_id = 12;
+  optional uint32 gacha_num = 15;
+}
+
+message DoGachaScRsp {
+  optional uint32 gacha_id = 2;
+  optional uint32 retcode = 3;
+  optional uint32 gacha_num = 10;
+  optional uint32 ceiling_num = 13;
+  repeated .legacy.GachaItem gacha_item_list = 11;
+}
+
+message DressAvatarCsReq {
+  optional uint32 equipment_unique_id = 2;
+  optional uint32 avatar_id = 9;
+}
+
+message DressAvatarSkinCsReq {
+  optional uint32 avatar_id = 2;
+  optional uint32 avatar_skin_id = 8;
+}
+
+message DressRelicAvatarCsReq {
+  optional uint32 avatar_id = 6;
+  repeated .legacy.RelicParam param_list = 10;
+}
+
+message EnteredSceneInfo {
+  optional uint32 plane_id = 7;
+  optional uint32 floor_id = 8;
+}
+
+message EnterMapRotationRegionCsReq {
+  optional .legacy.MotionInfo motion = 15;
+}
+
+message EnterMapRotationRegionScRsp {
+  optional uint32 client_pos_version = 6;
+  optional uint32 retcode = 7;
+  optional .legacy.MotionInfo motion = 13;
+}
+
+message EnterSceneByServerScNotify {
+  optional .legacy.EnterSceneReason reason = 12;
+  optional .legacy.LineupInfo lineup = 3;
+  optional .legacy.SceneInfo scene = 9;
+}
+
+message EnterSceneCsReq {
+  optional uint32 entry_id = 4;
+  optional uint32 teleport_id = 6;
+}
+
+enum EnterSceneReason {
+  ENTER_SCENE_REASON_NONE = 0;
+  ENTER_SCENE_REASON_CHALLENGE_TIMEOUT = 1;
+  ENTER_SCENE_REASON_ROGUE_TIMEOUT = 2;
+}
+
+message EntityBuffChangeInfo {
+  optional uint32 entity_id = 3;
+  optional uint32 remove_buff_id = 14;
+  optional .legacy.BuffInfo add_buff_info = 11;
+}
+
+message EntityBuffInfo {
+  optional uint32 entity_id = 10;
+  repeated .legacy.BuffInfo buff_list = 4;
+}
+
+message EntityMotion {
+  optional uint32 map_layer = 10;
+  optional uint32 entity_id = 12;
+  optional .legacy.MotionInfo motion = 4;
+}
+
+message Equipment {
+  optional uint32 promotion = 3;
+  optional uint32 equip_avatar_id = 4;
+  optional uint32 exp = 5;
+  optional uint32 level = 7;
+  optional uint32 rank = 10;
+  optional uint32 unique_id = 11;
+  optional uint32 tid = 12;
+  optional bool is_protected = 8;
+}
+
+message EquipRelic {
+  optional uint32 slot = 8;
+  optional uint32 relic_unique_id = 11;
+}
+
+message ExchangeGachaCeilingCsReq {
+  optional uint32 avatar_id = 2;
+  optional uint32 gacha_type = 14;
+}
+
+message ExchangeGachaCeilingScRsp {
+  optional uint32 retcode = 2;
+  optional uint32 gacha_type = 8;
+  optional uint32 avatar_id = 9;
+  optional .legacy.ItemList transfer_item_list = 3;
+  optional .legacy.GachaCeiling gacha_ceiling = 6;
+}
+
+message ExchangeHcoinCsReq {
+  optional uint32 num = 4;
+}
+
+message ExchangeHcoinScRsp {
+  optional uint32 num = 10;
+  optional uint32 retcode = 11;
+}
+
+message ExpUpEquipmentCsReq {
+  optional uint32 equipment_unique_id = 9;
+  optional .legacy.ItemCostList item_cost_list = 10;
+}
+
+message ExpUpEquipmentScRsp {
+  optional uint32 retcode = 13;
+  repeated .legacy.PileItem return_item_list = 2;
+}
+
+message ExpUpRelicCsReq {
+  optional uint32 relic_unique_id = 1;
+  optional .legacy.ItemCostList item_cost_list = 2;
+}
+
+message ExpUpRelicScRsp {
+  optional uint32 retcode = 12;
+  repeated .legacy.PileItem return_item_list = 10;
+}
+
+enum ExtraLineupType {
+  LINEUP_NONE = 0;
+  LINEUP_CHALLENGE = 1;
+  LINEUP_ROGUE = 2;
+  LINEUP_CHALLENGE_2 = 3;
+  LINEUP_CHALLENGE_3 = 4;
+  LINEUP_ROGUE_CHALLENGE = 5;
+  LINEUP_STAGE_TRIAL = 6;
+  LINEUP_ROGUE_TRIAL = 7;
+  LINEUP_ACTIVITY = 8;
+  LINEUP_BOXING_CLUB = 9;
+  LINEUP_TREASURE_DUNGEON = 11;
+  LINEUP_CHESS_ROGUE = 12;
+  LINEUP_HELIOBUS = 13;
+  LINEUP_TOURN_ROGUE = 14;
+  LINEUP_RELIC_ROGUE = 15;
+  LINEUP_ARCADE_ROGUE = 16;
+  LINEUP_MAGIC_ROGUE = 17;
+  LINEUP_FATE = 18;
+  LINEUP_GRID_FIGHT = 19;
+}
+
+message FarmStageGachaInfo {
+  optional int64 begin_time = 8;
+  optional int64 end_time = 11;
+  optional uint32 gacha_id = 4;
+}
+
+message FeatureSwitchInfo {
+  optional .legacy.FeatureSwitchType type = 1;
+  optional bool is_all_closed = 3;
+  repeated .legacy.FeatureSwitchParam switch_list = 2;
+}
+
+message FeatureSwitchParam {
+  repeated uint32 switch_id = 1;
+}
+
+enum FeatureSwitchType {
+  FEATURE_SWITCH_NONE = 0;
+  FEATURE_SWITCH_SHOP = 1;
+  FEATURE_SWITCH_LINEUP_NAME = 2;
+  FEATURE_SWITCH_RECHARGE_SHOP = 3;
+  FEATURE_SWITCH_NICKNAME = 4;
+  FEATURE_SWITCH_SIGNATURE = 5;
+  FEATURE_SWITCH_BATTLEPASS = 6;
+  FEATURE_SWITCH_PUNK_LORD = 7;
+  FEATURE_SWITCH_MONTHCARD_DAILY = 8;
+  FEATURE_SWITCH_PICTURE_SHARE = 9;
+  FEATURE_SWITCH_ROGUE = 10;
+  FEATURE_SWITCH_CHALLENGE = 11;
+  FEATURE_SWITCH_COCOON = 12;
+  FEATURE_SWITCH_RAID = 13;
+  FEATURE_SWITCH_MAZE_PLANE_EVENT = 14;
+  FEATURE_SWITCH_ACTIVITY_PANEL = 15;
+  FEATURE_SWITCH_MAILBOX = 16;
+  FEATURE_SWITCH_QUEST = 17;
+  FEATURE_SWITCH_GACHA = 18;
+  FEATURE_SWITCH_CHAT = 19;
+  FEATURE_SWITCH_MODIFY_FRIEND_ALIAS = 20;
+  FEATURE_SWITCH_USE_ITEM = 21;
+  FEATURE_SWITCH_ACTIVITY_SCHEDULE = 22;
+  FEATURE_SWITCH_FARM_ELEMENT = 23;
+  FEATURE_SWITCH_ACHIEVEMENT_LEVEL = 24;
+  FEATURE_SWITCH_DAILY_ACTIVE_LEVEL = 25;
+  FEATURE_SWITCH_PLAYER_RETURN = 26;
+  FEATURE_SWITCH_FIRST_SET_NICKNAME = 27;
+  FEATURE_SWITCH_MAIN_MISSION_REWARD = 28;
+  FEATURE_SWITCH_SUB_MISSION_REWARD = 29;
+  FEATURE_SWITCH_PAM_MISSION = 30;
+  FEATURE_SWITCH_DESTROY_ITEM = 32;
+  FEATURE_SWITCH_CONSUME_ITEM_TURN = 33;
+  FEATURE_SWITCH_ROGUE_MODIFIER = 34;
+  FEATURE_SWITCH_CHESS_ROGUE = 35;
+  FEATURE_SWITCH_CHESS_ROGUE_BOARD = 36;
+  FEATURE_SWITCH_ROLL_SHOP = 37;
+  FEATURE_SWITCH_H5_RETURN = 38;
+  FEATURE_SWITCH_OFFERING = 39;
+  FEATURE_SWITCH_SERVER_RED_POINT = 40;
+  FEATURE_SWITCH_MONOPOLY_OPTION_RATIO = 41;
+  FEATURE_SWITCH_MONOPOLY_GET_RAFFLE_TICKET = 42;
+  FEATURE_SWITCH_MONOPOLY_TAKE_RAFFLE_REWARD = 43;
+  FEATURE_SWITCH_CHALLENGE_RECOMMEND_LINEUP = 44;
+  FEATURE_SWITCH_PSN_MEMBER_SHIP_CHECK = 45;
+  FEATURE_SWITCH_PLAYER_BOARD_DEVELOPMENT = 46;
+  FEATURE_SWITCH_PVP = 47;
+  FEATURE_SWITCH_ROGUE_MODE = 48;
+  FEATURE_SWITCH_ROGUE_TOURN_UGC = 49;
+  FEATURE_SWITCH_RELIC_FILTER_PLAN_NAME = 50;
+  FEATURE_SWITCH_MAZE_ITEM_USE_BUFF_DROP = 51;
+  FEATURE_SWITCH_RED_DOT = 52;
+  FEATURE_SWITCH_GAME_STATE_SERVICE = 53;
+  FEATURE_SWITCH_BENEFIT_INDEX = 54;
+  FEATURE_SWITCH_ROGUE_TOURN_BUILD_REF = 55;
+  FEATURE_SWITCH_PRE_AVATAR_SET_GROWTH_TARGET = 56;
+  FEATURE_SWITCH_IMPORT_RELIC_FILTER_PLAN = 58;
+  FEATURE_SWITCH_GACHA_DECIDE_ITEM = 59;
+  FEATURE_SWITCH_ITEM_SYNC = 60;
+  FEATURE_SWITCH_RECHARGE_BENEFIT = 61;
+  FEATURE_SWITCH_RECHARGE_GIFT = 62;
+  FEATURE_SWITCH_ROGUE_TOURN_BUILD_REF_SHARE_CODE = 63;
+  FEATURE_SWITCH_GACHA_AVATAR_TOAST = 64;
+  FEATURE_SWITCH_ROGUE_TOURN_BUILD_REF_SHARE_CODE_RENAME = 65;
+  FEATURE_SWITCH_RELIC_SMART_DISCARD = 66;
+  FEATURE_SWITCH_PLANETFES_SOCIAL = 67;
+  FEATURE_SWITCH_RELIC_REFORGE = 68;
+  FEATURE_SWITCH_RELIC_COMPOSE = 69;
+  FEATURE_SWITCH_RELIC_DECOMPOSE = 70;
+  FEATURE_SWITCH_ROGUE_TOURN_COCOON = 71;
+  FEATURE_SWITCH_ITEM_COMPOSE = 72;
+  FEATURE_SWITCH_GROW_MATERIAL_AUTO_COMPLETE = 73;
+  FEATURE_SWITCH_SKIP_PERFORMANCE = 74;
+  FEATURE_SWITCH_FATE = 75;
+  FEATURE_SWITCH_FATE_AVATAR_HANDBOOK = 76;
+  FEATURE_SWITCH_ELF_RESTAURANT = 77;
+  FEATURE_SWITCH_BATTLE_TIMEOUT_LEGAL = 78;
+  FEATURE_SWITCH_HIPPLEN = 79;
+  FEATURE_SWITCH_HIPPLEN_EFFECT = 80;
+  FEATURE_SWITCH_REPLAY_PERFORMANCE = 81;
+  FEATURE_SWITCH_GRID_FIGHT_REF = 82;
+  FEATURE_SWITCH_RELIC_BOX = 83;
+  FEATURE_SWITCH_GRID_FIGHT_START_GAME_PLAY = 84;
+  FEATURE_SWITCH_GRID_FIGHT_BAN_AUGMENT = 85;
+  FEATURE_SWITCH_GRID_FIGHT_BAN_PORTAL_BUFF = 86;
+}
+
+message FinishQuestCsReq {
+  optional uint32 prop_id = 9;
+  optional uint32 group_id = 14;
+  optional uint32 quest_id = 15;
+}
+
+message FinishQuestScRsp {
+  optional uint32 retcode = 12;
+}
+
+message FinishTutorialGuideCsReq {
+  optional uint32 group_id = 6;
+}
+
+message FinishTutorialGuideScRsp {
+  optional uint32 retcode = 10;
+  optional .legacy.ItemList reward = 1;
+  optional .legacy.TutorialGuide tutorial_guide = 7;
+}
+
+message FirstNpcTalkInfo {
+  optional uint32 npc_id = 12;
+}
+
+message FriendApplyInfo {
+  optional .legacy.PlayerSimpleInfo simple_info = 14;
+}
+
+enum FriendApplySource {
+  FRIEND_APPLY_SOURCE_NONE = 0;
+  FRIEND_APPLY_SOURCE_SEARCH = 1;
+  FRIEND_APPLY_SOURCE_RECOMMEND = 2;
+  FRIEND_APPLY_SOURCE_ASSIST = 3;
+  FRIEND_APPLY_SOURCE_RECOMMEND_ASSIST = 4;
+  FRIEND_APPLY_SOURCE_PSN_FRIEND = 5;
+}
+
+message FriendBattleRecordType1 {
+  optional uint32 star_cnt = 6;
+  optional uint32 group_id = 11;
+  optional .legacy.BattleRecord1 record1 = 2026;
+}
+
+message FriendBattleRecordType2 {
+  optional .legacy.BattleRecordType2 record_type2 = 1722;
+}
+
+message FriendChallengeInfo {
+  optional uint32 battle_record_stars = 8;
+  optional uint32 score = 11;
+  optional .legacy.PlayerSimpleInfo friend_simple_info = 7;
+  repeated .legacy.BattleRecordAvatars battle_record_avatars = 2;
+}
+
+message FriendDevelopmentInfo {
+  optional int64 time = 4;
+  optional uint32 MEOJDPFCEOI = 149;
+  optional uint32 avatar_id = 710;
+  optional uint32 EMIDNFOLJDJ = 1496;
+  optional .legacy.DevelopmentType development_type = 12;
+  optional .legacy.ChallengeDevelopmentInfo challenge_development_info = 120;
+}
+
+message FriendListInfo {
+  optional .legacy.PlayingState playing_state = 11;
+  optional bool is_marked = 9;
+  optional .legacy.PlayerSimpleInfo simple_info = 1;
+  optional string remark_name = 7;
+}
+
+enum FriendOnlineStatus {
+  FRIEND_ONLINE_STATUS_OFFLINE = 0;
+  FRIEND_ONLINE_STATUS_ONLINE = 1;
+}
+
+message FriendRecommendInfo {
+  optional .legacy.PlayerSimpleInfo simple_info = 7;
+}
+
+message GachaCeilingAvatar {
+  optional uint32 repeated_cnt = 5;
+  optional uint32 avatar_id = 14;
+}
+
+message GachaCeiling {
+  optional uint32 ceiling_num = 11;
+  optional bool is_claimed = 15;
+  repeated .legacy.GachaCeilingAvatar avatar_list = 8;
+}
+
+message GachaInfo {
+  optional int64 end_time = 2;
+  optional int64 begin_time = 3;
+  optional uint32 gacha_id = 7;
+  optional .legacy.GachaCeiling gacha_ceiling = 15;
+  optional string detail_url = 10;
+  optional string history_url = 12;
+  repeated uint32 featured = 6;
+  repeated uint32 up_info = 9;
+  repeated uint32 PIAIMLOHFGF = 11;
+}
+
+message GachaItem {
+  optional bool is_new = 6;
+  optional .legacy.ItemList token_item = 7;
+  optional .legacy.ItemList transfer_item_list = 12;
+  optional .legacy.Item gacha_item = 13;
+}
+
+message Gateserver {
+  optional uint32 port = 7;
+  optional bool unk1 = 10;
+  optional bool unk2 = 15;
+  optional bool unk3 = 67;
+  optional bool unk4 = 79;
+  optional bool unk5 = 184;
+  optional bool unk6 = 200;
+  optional bool unk7 = 235;
+  optional bool unk8 = 454;
+  optional bool unk9 = 529;
+  optional string ip = 3;
+  optional string lua_url = 6;
+  optional string region_name = 9;
+  optional string ex_resource_url = 11;
+  optional string asset_bundle_url = 12;
+  optional string login_white_msg = 43;
+  optional string client_secret_key = 721;
+  optional string ifix_version = 1178;
+  optional string mdk_res_version = 1238;
+  optional string base_asset_bundle_url = 1417;
+  optional string ifix_url = 1488;
+}
+
+enum Gender {
+  GenderNone = 0;
+  GenderMan = 1;
+  GenderWoman = 2;
+}
+
+message GetActivityScheduleConfigScRsp {
+  optional uint32 retcode = 9;
+  repeated .legacy.ActivityScheduleInfo activity_schedule_list = 7;
+}
+
+message GetAllLineupDataScRsp {
+  optional uint32 retcode = 6;
+  optional uint32 cur_index = 11;
+  repeated .legacy.LineupInfo lineup_list = 10;
+}
+
+message GetArchiveDataScRsp {
+  optional uint32 retcode = 3;
+  optional .legacy.ArchiveData archive_data = 12;
+}
+
+message GetAssistHistoryScRsp {
+}
+
+message GetAvatarDataCsReq {
+  optional bool is_get_all = 3;
+  repeated uint32 base_avatar_id_list = 2;
+}
+
+message GetAvatarDataScRsp {
+  optional uint32 retcode = 8;
+  optional bool is_get_all = 7;
+  optional .legacy.PlayerOutfitInfo player_outfit_data = 1;
+  repeated uint32 owned_skin_list = 6;
+  repeated uint32 basic_type_id_list = 11;
+  repeated .legacy.AvatarPathInfo avatar_path_info_list = 12;
+  repeated .legacy.Avatar avatar_list = 14;
+}
+
+message GetBagScRsp {
+  optional uint32 retcode = 11;
+  repeated uint32 pet_list = 14;
+  repeated .legacy.Equipment equipment_list = 1;
+  repeated .legacy.Relic relic_list = 12;
+  repeated .legacy.Material material_list = 15;
+}
+
+message GetBasicInfoScRsp {
+  optional int64 next_recover_time = 8;
+  optional int64 last_set_nickname_time = 14;
+  optional uint32 gender = 4;
+  optional uint32 cur_day = 7;
+  optional uint32 gameplay_birthday = 10;
+  optional uint32 week_cocoon_finished_count = 11;
+  optional uint32 exchange_times = 12;
+  optional uint32 retcode = 13;
+  optional bool is_gender_set = 2;
+  optional .legacy.PlayerSettingInfo player_setting_info = 5;
+}
+
+message GetBigDataAllRecommendCsReq {
+  optional .legacy.BigDataRecommendType recommend_type = 1;
+}
+
+message GetBigDataAllRecommendScRsp {
+  optional uint32 retcode = 5;
+  optional .legacy.BigDataRecommendType recommend_type = 2;
+  optional .legacy.AvatarReccomendData avatar_reccomend_data = 4;
+  optional .legacy.RelicReccomendData relic_reccomend_data = 15;
+}
+
+message GetBigDataRecommendCsReq {
+  optional uint32 trailblazer_path_id = 9;
+  optional .legacy.BigDataRecommendType recommend_type = 2;
+}
+
+message GetBigDataRecommendScRsp {
+  optional uint32 trailblazer_path_id = 4;
+  optional uint32 retcode = 7;
+  optional .legacy.BigDataRecommendType recommend_type = 15;
+  optional bool do_enable = 6;
+}
+
+message GetChallengeGroupStatisticsCsReq {
+  optional uint32 group_id = 12;
+}
+
+message GetChallengeGroupStatisticsScRsp {
+  optional uint32 retcode = 2;
+  optional uint32 group_id = 14;
+  optional .legacy.BattleRecord1 record1 = 13;
+}
+
+message GetChallengePeakDataScRsp {
+  optional uint32 cur_challenge_peak_group_id = 4;
+  optional uint32 retcode = 12;
+  repeated .legacy.ChallengePeakGroupInfo challenge_peak_list = 11;
+}
+
+message GetChallengeScRsp {
+  optional uint32 retcode = 11;
+  repeated .legacy.Challenge challenge_list = 4;
+  repeated .legacy.ChallengeReward challenge_reward_list = 8;
+}
+
+message GetCrossInfoScRsp {
+  optional uint32 retcode = 8;
+}
+
+message GetCurChallengeScRsp {
+  optional uint32 retcode = 11;
+  optional .legacy.ChallengeInfo challenge_info = 1;
+}
+
+message GetCurLineupDataScRsp {
+  optional uint32 retcode = 11;
+  optional .legacy.LineupInfo lineup = 1;
+}
+
+message GetCurSceneInfoScRsp {
+  optional uint32 retcode = 7;
+  optional .legacy.SceneInfo scene = 3;
+}
+
+message GetDailyActiveInfoScRsp {
+  optional uint32 retcode = 2;
+  optional uint32 daily_active_point = 14;
+  repeated uint32 daily_active_quest_id_list = 10;
+  repeated .legacy.DailyActivityInfo daily_active_level_list = 9;
+}
+
+message GetEnteredSceneScRsp {
+  optional uint32 retcode = 7;
+  repeated .legacy.EnteredSceneInfo entered_scene_info = 5;
+}
+
+message GetExpeditionDataScRsp {
+  optional uint32 team_count = 7;
+  optional uint32 retcode = 9;
+  repeated uint32 rint2 = 11;
+  repeated uint32 unlocked_expedition_id_list = 13;
+  repeated uint32 unlocked_activity_expedition_id_list = 15;
+}
+
+message GetFarmStageGachaInfoCsReq {
+  repeated uint32 farm_stage_gacha_id_list = 6;
+}
+
+message GetFarmStageGachaInfoScRsp {
+  optional uint32 retcode = 9;
+  repeated .legacy.FarmStageGachaInfo farm_stage_gacha_info_list = 3;
+}
+
+message GetFirstTalkByPerformanceNpcCsReq {
+  repeated uint32 npc_talk_list = 10;
+}
+
+message GetFirstTalkByPerformanceNpcScRsp {
+  optional uint32 retcode = 15;
+  repeated .legacy.NpcTalkInfo npc_talk_info_list = 10;
+}
+
+message GetFirstTalkNpcCsReq {
+  repeated uint32 npc_id_list = 4;
+}
+
+message GetFirstTalkNpcScRsp {
+  optional uint32 retcode = 10;
+  repeated .legacy.FirstNpcTalkInfo npc_talk_info_list = 4;
+}
+
+message GetFriendApplyListInfoScRsp {
+  optional uint32 retcode = 3;
+  repeated .legacy.FriendApplyInfo friend_apply_list = 11;
+}
+
+message GetFriendBattleRecordDetailCsReq {
+  optional uint32 uid = 2;
+  optional uint32 group_id = 9992;
+  optional .legacy.DisplayRecordType type = 9991;
+}
+
+message GetFriendBattleRecordDetailScRsp {
+  optional uint32 retcode = 5;
+  optional uint32 uid = 14;
+  optional .legacy.FriendBattleRecordType1 with_group = 9991;
+  optional .legacy.FriendBattleRecordType2 no_group = 9992;
+}
+
+message GetFriendChallengeLineupCsReq {
+  optional uint32 challenge_id = 9;
+}
+
+message GetFriendChallengeLineupScRsp {
+  optional uint32 retcode = 13;
+  optional bool b11 = 10;
+  repeated .legacy.FriendChallengeInfo friend_challenge_infos = 8;
+}
+
+message GetFriendDevelopmentInfoCsReq {
+  optional uint32 uid = 9;
+}
+
+message GetFriendDevelopmentInfoScRsp {
+  optional uint32 uid = 1;
+  optional uint32 retcode = 11;
+  repeated .legacy.FriendDevelopmentInfo development_info_list = 10;
+}
+
+message GetFriendListInfoScRsp {
+  optional uint32 retcode = 6;
+  repeated .legacy.FriendListInfo friend_list = 15;
+}
+
+message GetFriendLoginInfoScRsp {
+  optional uint32 retcode = 2;
+  repeated uint32 friend_uid_list = 13;
+}
+
+message GetFriendRecommendListInfoScRsp {
+  optional uint32 retcode = 4;
+  repeated .legacy.FriendRecommendInfo friend_recommend_list = 11;
+}
+
+message GetGachaCeilingCsReq {
+  optional uint32 gacha_type = 9;
+}
+
+message GetGachaCeilingScRsp {
+  optional uint32 gacha_type = 2;
+  optional uint32 retcode = 4;
+  optional .legacy.GachaCeiling gacha_ceiling = 5;
+}
+
+message GetGachaInfoScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 gacha_random = 6;
+  repeated .legacy.GachaInfo gacha_info_list = 3;
+}
+
+message GetJukeboxDataCsReq {
+}
+
+message GetJukeboxDataScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 playing_id = 14;
+  repeated .legacy.UnlockedMusic music_list = 8;
+}
+
+message GetLineupAvatarDataScRsp {
+  optional uint32 retcode = 14;
+  repeated .legacy.LineupAvatarData lineup_avatar_data_list = 3;
+}
+
+message GetMailScRsp {
+  optional uint32 start = 1;
+  optional uint32 total_num = 8;
+  optional uint32 retcode = 14;
+  optional bool is_end = 9;
+  repeated .legacy.ClientMail mail_list = 7;
+  repeated .legacy.ClientMail notice_mail_list = 10;
+}
+
+message GetMainMissionCustomValueCsReq {
+  repeated uint32 main_mission_id_list = 4;
+}
+
+message GetMainMissionCustomValueScRsp {
+  optional uint32 retcode = 10;
+  repeated .legacy.MainMissionData main_mission_list = 6;
+}
+
+message GetMarkChestScRsp {
+  optional uint32 retcode = 11;
+  repeated .legacy.MarkChestInfo chest_group_list = 1;
+}
+
+message GetMissionDataScRsp {
+  optional uint32 retcode = 8;
+  optional uint32 cur_mission_id = 13;
+  repeated .legacy.MainMissionData main_mission_list = 1;
+  repeated .legacy.Mission mission_list = 9;
+}
+
+message GetMissionEventDataScRsp {
+  optional uint32 challenge_event_id = 5;
+  optional uint32 retcode = 12;
+  repeated .legacy.Mission mission_event_list = 13;
+}
+
+message GetMissionStatusCsReq {
+  repeated uint32 main_mission_id_list = 5;
+  repeated uint32 sub_mission_id_list = 13;
+}
+
+message GetMissionStatusScRsp {
+  optional uint32 retcode = 14;
+  repeated uint32 curversion_finished_main_mission_id_list = 1;
+  repeated uint32 disabled_main_mission_id_list = 6;
+  repeated uint32 unfinished_main_mission_id_list = 7;
+  repeated uint32 finished_main_mission_id_list = 9;
+  repeated .legacy.Mission sub_mission_status_list = 2;
+  repeated .legacy.MainMissionCustomValue main_mission_mcv_list = 11;
+}
+
+message GetNpcTakenRewardCsReq {
+  optional uint32 npc_id = 12;
+}
+
+message GetNpcTakenRewardScRsp {
+  optional uint32 retcode = 3;
+  optional uint32 npc_id = 15;
+}
+
+message GetOfferingInfoCsReq {
+  repeated uint32 offering_id_list = 12;
+}
+
+message GetOfferingInfoScRsp {
+  optional uint32 retcode = 2;
+  repeated .legacy.OfferingInfo offering_info_list = 3;
+}
+
+message GetPamSkinDataScRsp {
+  optional uint32 retcode = 2;
+  optional uint32 current_pam_skin_id = 6;
+  repeated uint32 unlocked_pam_skins = 10;
+}
+
+message GetPetDataScRsp {
+  optional uint32 cur_pet_id = 1;
+  optional uint32 retcode = 11;
+  repeated uint32 pet_id_list = 6;
+}
+
+message GetPhoneDataCsReq {
+}
+
+message GetPhoneDataScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 cur_phone_case = 3;
+  optional uint32 cur_phone_theme = 5;
+  optional uint32 cur_chat_bubble = 9;
+  repeated uint32 owned_chat_bubbles = 2;
+  repeated uint32 owned_phone_cases = 7;
+  repeated uint32 owned_phone_themes = 8;
+}
+
+message GetPlayerBoardDataScRsp {
+  optional uint32 current_head_icon_id = 2;
+  optional uint32 retcode = 8;
+  optional .legacy.DisplayAvatarVec display_avatar_vec = 15;
+  optional string signature = 6;
+  repeated uint32 display_support_avatar_vec = 7;
+  repeated .legacy.HeadIcon unlocked_head_icon_list = 9;
+}
+
+message GetPlayerDetailInfoCsReq {
+  optional uint32 uid = 15;
+}
+
+message GetPlayerDetailInfoScRsp {
+  optional uint32 retcode = 5;
+  optional .legacy.PlayerDetailInfo player_detail_info = 9;
+}
+
+message GetPrivateChatHistoryCsReq {
+  optional uint32 sender_uid = 2;
+  optional uint32 to_uid = 5;
+}
+
+message GetPrivateChatHistoryScRsp {
+  optional uint32 to_uid = 2;
+  optional uint32 sender_uid = 4;
+  optional uint32 retcode = 9;
+  repeated .legacy.ChatInfo chat_list = 13;
+}
+
+message GetQuestDataScRsp {
+  optional uint32 retcode = 3;
+  optional uint32 total_achievement_exp = 14;
+  repeated .legacy.Quest quest_list = 5;
+}
+
+message GetRechargeGiftInfoScRsp {
+  optional uint32 retcode = 1;
+}
+
+message GetSceneMapInfoCsReq {
+  repeated .legacy.SceneIdentifierInfo scene_identifier_list = 2;
+}
+
+message GetSceneMapInfoScRsp {
+  optional uint32 retcode = 11;
+  repeated .legacy.SceneMapInfo scene_map_info_list = 7;
+}
+
+message GetShopListCsReq {
+  optional uint32 shop_type = 6;
+}
+
+message GetShopListScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 shop_type = 3;
+  repeated .legacy.Shop shop_list = 15;
+}
+
+message GetSocialEventServerCacheScRsp {
+  optional uint32 retcode = 12;
+  repeated .legacy.SocialEventServerCache social_event = 6;
+}
+
+message GetTutorialGuideScRsp {
+  optional uint32 retcode = 2;
+  repeated .legacy.TutorialGuide tutorial_guide_list = 10;
+}
+
+message GetTutorialScRsp {
+  optional uint32 retcode = 10;
+  repeated .legacy.Tutorial tutorial_list = 1;
+}
+
+message GetUnlockTeleportCsReq {
+  repeated uint32 entry_id_list = 15;
+}
+
+message GetUnlockTeleportScRsp {
+  optional uint32 retcode = 10;
+  repeated uint32 unlocked_teleport_list = 2;
+}
+
+message Goods {
+  optional int64 end_time = 1;
+  optional int64 begin_time = 9;
+  optional uint32 buy_times = 10;
+  optional uint32 goods_id = 13;
+  optional uint32 item_id = 14;
+}
+
+message GroupStateChangeCsReq {
+  optional .legacy.GroupStateInfo group_info = 11;
+}
+
+message GroupStateChangeScNotify {
+  optional .legacy.GroupStateInfo group_info = 4;
+}
+
+message GroupStateChangeScRsp {
+  optional uint32 retcode = 13;
+  optional .legacy.GroupStateInfo group_info = 12;
+}
+
+message GroupStateInfo {
+  optional uint32 entry_id = 4;
+  optional uint32 player_uid = 8;
+  optional uint32 group_id = 11;
+  optional uint32 group_state = 13;
+}
+
+message HandleFriendCsReq {
+  optional uint32 uid = 12;
+  optional bool handle_result = 8;
+}
+
+message HandleFriendScRsp {
+  optional uint32 retcode = 2;
+  optional uint32 uid = 12;
+  optional bool handle_result = 3;
+  optional .legacy.FriendListInfo handle_friend_info = 14;
+}
+
+message HeadIconFrameInfo {
+  optional uint32 head_icon_frame_id = 9;
+}
+
+message HeadIcon {
+  optional uint32 id = 4;
+}
+
+message HeroBasicTypeInfo {
+  optional uint32 rank = 14;
+  optional .legacy.HeroBasicType basic_type = 4;
+  repeated .legacy.AvatarSkillTree skill_tree_list = 6;
+}
+
+enum HeroBasicType {
+  None = 0;
+  BoyWarrior = 8001;
+  GirlWarrior = 8002;
+  BoyKnight = 8003;
+  GirlKnight = 8004;
+  BoyRogue = 8005;
+  GirlRogue = 8006;
+  BoyMage = 8007;
+  GirlMage = 8008;
+  BoyShaman = 8009;
+  GirlShaman = 8010;
+  BoyWarlock = 8011;
+  GirlWarlock = 8012;
+  BoyPriest = 8013;
+  GirlPriest = 8014;
+}
+
+message InteractChargerCsReq {
+  optional .legacy.ChargerInfo charger_info = 1;
+}
+
+message InteractChargerScRsp {
+  optional uint32 retcode = 14;
+  optional .legacy.RotatorEnergyInfo energy_info = 12;
+  optional .legacy.ChargerInfo charger_info = 15;
+}
+
+message InteractPropCsReq {
+  optional uint32 prop_entity_id = 8;
+  optional uint32 interact_id = 15;
+}
+
+message InteractPropScRsp {
+  optional uint32 prop_state = 5;
+  optional uint32 prop_entity_id = 11;
+  optional uint32 retcode = 13;
+}
+
+message ItemCostList {
+  repeated .legacy.ItemCost item_list = 14;
+}
+
+message ItemCost {
+  optional uint32 equipment_unique_id = 8;
+  optional uint32 relic_unique_id = 13;
+  optional .legacy.PileItem pile_item = 11;
+}
+
+message ItemList {
+  repeated .legacy.Item item_list = 1;
+}
+
+message Item {
+  optional uint32 rank = 1;
+  optional uint32 level = 3;
+  optional uint32 unique_id = 5;
+  optional uint32 item_id = 9;
+  optional uint32 promotion = 12;
+  optional uint32 num = 13;
+  optional uint32 main_affix_id = 14;
+}
+
+message JoinLineupCsReq {
+  optional uint32 index = 1;
+  optional uint32 plane_id = 8;
+  optional uint32 slot = 13;
+  optional uint32 base_avatar_id = 14;
+  optional .legacy.AvatarType avatar_type = 4;
+  optional .legacy.ExtraLineupType extra_lineup_type = 10;
+  optional bool is_virtual = 7;
+}
+
+enum LanguageType {
+  LANGUAGE_NONE = 0;
+  LANGUAGE_SC = 1;
+  LANGUAGE_TC = 2;
+  LANGUAGE_EN = 3;
+  LANGUAGE_KR = 4;
+  LANGUAGE_JP = 5;
+  LANGUAGE_FR = 6;
+  LANGUAGE_DE = 7;
+  LANGUAGE_ES = 8;
+  LANGUAGE_PT = 9;
+  LANGUAGE_RU = 10;
+  LANGUAGE_TH = 11;
+  LANGUAGE_VI = 12;
+  LANGUAGE_ID = 13;
+}
+
+message LineupAvatarData {
+  optional uint32 hp = 2;
+  optional uint32 id = 6;
+  optional .legacy.AvatarType avatar_type = 9;
+}
+
+message LineupAvatar {
+  optional uint32 slot = 4;
+  optional uint32 id = 6;
+  optional uint32 hp = 9;
+  optional uint32 satiety = 11;
+  optional .legacy.AvatarType avatar_type = 12;
+  optional .legacy.SpBarInfo sp_bar = 15;
+}
+
+message LineupInfo {
+  optional uint32 max_mp = 4;
+  optional uint32 mp = 6;
+  optional uint32 index = 8;
+  optional uint32 leader_slot = 14;
+  optional uint32 plane_id = 15;
+  optional .legacy.ExtraLineupType extra_lineup_type = 9;
+  optional bool is_virtual = 7;
+  optional string name = 11;
+  repeated .legacy.LineupAvatar avatar_list = 2;
+}
+
+message LineupSlotData {
+  optional uint32 slot = 3;
+  optional uint32 id = 7;
+  optional .legacy.AvatarType avatar_type = 4;
+}
+
+message LockEquipmentCsReq {
+  optional bool is_protected = 4;
+  repeated uint32 equipment_id_list = 13;
+}
+
+message LockEquipmentScRsp {
+  optional uint32 retcode = 1;
+}
+
+message LockRelicCsReq {
+  optional bool is_protected = 9;
+  repeated uint32 relic_id_list = 1;
+}
+
+message LockRelicScRsp {
+  optional uint32 retcode = 7;
+}
+
+enum MailType {
+  MAIL_TYPE_NORMAL = 0;
+  MAIL_TYPE_STAR = 1;
+}
+
+message MainMissionCustomValue {
+  optional uint32 main_mission_id = 3;
+  optional .legacy.MissionStatus status = 10;
+  repeated .legacy.MissionCustomValueData custom_value_list = 2;
+}
+
+message MainMissionData {
+  optional uint32 id = 2;
+  optional .legacy.MissionStatus status = 5;
+  repeated .legacy.MissionCustomValueData custom_value_list = 12;
+}
+
+enum MapInfoChestType {
+  MAP_INFO_CHEST_TYPE_NONE = 0;
+  MAP_INFO_CHEST_TYPE_NORMAL = 101;
+  MAP_INFO_CHEST_TYPE_CHALLENGE = 102;
+  MAP_INFO_CHEST_TYPE_PUZZLE = 104;
+}
+
+message MapInfoGroup {
+  optional int64 modify_time = 15;
+  optional uint32 group_id = 4;
+  optional bool is_need_refresh = 6;
+  repeated uint32 destory_monster_config_id_list = 11;
+  repeated .legacy.MapInfoGroup.PropertyMapEntry property_map = 12;
+  message PropertyMapEntry {
+    optional sint32 value = 2;
+    optional string key = 1;
+  }
+}
+
+message MapPropDefInfo {
+  optional uint32 config_id = 2;
+  optional uint32 plane_id = 4;
+  optional uint32 floor_id = 5;
+  optional uint32 group_id = 8;
+}
+
+message MapPropInfo {
+  optional uint32 config_id = 8;
+  optional uint32 state = 11;
+  optional uint32 group_id = 13;
+  optional .legacy.PropExtraInfo extra_info = 9;
+}
+
+message MarkAvatarCsReq {
+  optional uint32 avatar_id = 9;
+  optional bool is_marked = 1;
+}
+
+message MarkAvatarScRsp {
+  optional uint32 avatar_id = 9;
+  optional uint32 retcode = 11;
+  optional bool is_marked = 10;
+}
+
+message MarkChestChangedScNotify {
+  repeated .legacy.MarkChestInfo chest_group_list = 6;
+}
+
+message MarkChestInfo {
+  optional uint32 func_id = 7;
+  repeated .legacy.MapPropDefInfo chest_prop_def_list = 3;
+}
+
+message MarkReadMailCsReq {
+  optional uint32 id = 14;
+}
+
+message MarkReadMailScRsp {
+  optional uint32 id = 14;
+  optional uint32 retcode = 15;
+}
+
+message Material {
+  optional uint32 tid = 11;
+  optional uint32 num = 12;
+}
+
+message MaterialSubmitInfo {
+  optional uint32 activity_id = 10;
+  optional uint32 belobog_shop_id = 15;
+  optional bool completed = 7;
+  optional bool is_first_reward_taken = 8;
+}
+
+message MazeChest {
+  optional uint32 total_amount_list = 12;
+  optional uint32 unlocked_amount_list = 14;
+  optional .legacy.MapInfoChestType map_info_chest_type = 10;
+}
+
+message MissionCustomValueData {
+  optional uint32 custom_value = 4;
+  optional uint32 index = 15;
+}
+
+message Mission {
+  optional uint32 id = 5;
+  optional uint32 progress = 14;
+  optional .legacy.MissionStatus status = 12;
+}
+
+message MissionStatusBySceneInfo {
+  repeated uint32 disabled_main_mission_id_list = 9;
+  repeated uint32 finished_main_mission_id_list = 13;
+  repeated uint32 unfinished_main_mission_id_list = 14;
+  repeated .legacy.MainMissionCustomValue main_mission_mcv_list = 3;
+  repeated .legacy.Mission sub_mission_status_list = 15;
+}
+
+enum MissionStatus {
+  MISSION_NONE = 0;
+  MISSION_DOING = 1;
+  MISSION_FINISH = 2;
+  MISSION_PREPARED = 3;
+}
+
+message MissionSync {
+  repeated uint32 main_mission_id = 1;
+  repeated .legacy.Mission mission_list = 5;
+}
+
+message MonsterArchive {
+  optional uint32 num = 3;
+  optional uint32 monster_id = 11;
+}
+
+message MotionInfo {
+  optional .legacy.Vector pos = 7;
+  optional .legacy.Vector rot = 8;
+}
+
+enum MsgType {
+  MSG_TYPE_NONE = 0;
+  MSG_TYPE_CUSTOM_TEXT = 1;
+  MSG_TYPE_EMOJI = 2;
+}
+
+message MultiPathAvatarInfo {
+  optional uint32 rank = 1;
+  optional uint32 enhance_id = 10;
+  optional uint32 path_equipment_id = 15;
+  optional .legacy.MultiPathAvatarType avatar_id = 4;
+  repeated .legacy.EquipRelic equip_relic_list = 13;
+  repeated .legacy.AvatarSkillTree multi_path_skill_tree = 14;
+}
+
+enum MultiPathAvatarType {
+  MultiPathAvatarTypeNone = 0;
+  Mar_7thKnightType = 1001;
+  Mar_7thRogueType = 1224;
+  BoyWarriorType = 8001;
+  GirlWarriorType = 8002;
+  BoyKnightType = 8003;
+  GirlKnightType = 8004;
+  BoyShamanType = 8005;
+  GirlShamanType = 8006;
+  BoyMemoryType = 8007;
+  GirlMemoryType = 8008;
+  BoyElationType = 8009;
+  GirlElationType = 8010;
+}
+
+message NewMailScNotify {
+  repeated uint32 mail_id_list = 8;
+}
+
+message NpcDialogueEventParam {
+  optional uint32 rogue_dialogue_event_id = 11;
+  optional uint32 arg_id = 14;
+}
+
+message NpcExtraInfo {
+}
+
+message NpcTalkInfo {
+  optional uint32 npc_talk_id = 8;
+}
+
+message OfferingInfo {
+  optional uint32 total_submitted_num = 8;
+  optional uint32 offering_level = 12;
+  optional uint32 offering_id = 13;
+  optional uint32 submitted_num = 15;
+  optional .legacy.OfferingState offering_state = 6;
+  repeated uint32 taken_reward_level_list = 9;
+}
+
+enum OfferingState {
+  OFFERING_STATE_NONE = 0;
+  OFFERING_STATE_LOCK = 1;
+  OFFERING_STATE_OPEN = 2;
+}
+
+message PileItem {
+  optional uint32 item_id = 2;
+  optional uint32 item_num = 5;
+}
+
+enum PlatformType {
+  EDITOR = 0;
+  IOS = 1;
+  ANDROID = 2;
+  PC = 3;
+  WEB = 4;
+  WAP = 5;
+  PS4 = 6;
+  NINTENDO = 7;
+  CLOUD_ANDROID = 8;
+  CLOUD_PC = 9;
+  CLOUD_IOS = 10;
+  PS5 = 11;
+  MAC = 12;
+  CLOUD_MAC = 13;
+  CLOUD_WEB_ANDROID = 20;
+  CLOUD_WEB_IOS = 21;
+  CLOUD_WEB_PC = 22;
+  CLOUD_WEB_MAC = 23;
+  CLOUD_WEB_TOUCH = 24;
+  CLOUD_WEB_KEYBOARD = 25;
+}
+
+message PlayBackGroundMusicCsReq {
+  optional uint32 play_music_id = 10;
+}
+
+message PlayBackGroundMusicScRsp {
+  optional uint32 play_music_id = 7;
+  optional uint32 playing_id = 12;
+  optional uint32 retcode = 13;
+}
+
+message PlayerBasicInfo {
+  optional uint32 level = 2;
+  optional uint32 exp = 3;
+  optional uint32 stamina = 4;
+  optional uint32 mcoin = 5;
+  optional uint32 hcoin = 6;
+  optional uint32 scoin = 7;
+  optional uint32 world_level = 8;
+  optional string nickname = 1;
+}
+
+message PlayerChallengeDetailInfo {
+  optional .legacy.PlayerChallengeDetailInfo.KIEEFAOCOCC unk_info = 11;
+  message KIEEFAOCOCC {
+    optional .legacy.PlayerChallengeDetailInfo.CGLILDEBBIH unk_info = 1;
+  }
+  message CGLILDEBBIH {
+    optional .legacy.PlayerChallengeDetailInfo.CEGOPFBELBL unk_info = 3;
+  }
+  message CEGOPFBELBL {
+    optional uint32 KKFBLJNMDFJ = 7;
+    optional uint32 KBFDOPNODBL = 15;
+    repeated uint32 PGKLOMAJMDC = 11;
+  }
+}
+
+message PlayerCollectionInfo {
+  optional uint32 NCCNLKFCAKM = 1;
+  optional uint32 KJNOOOJDGDN = 3;
+  optional uint32 ONEEHDCGMOH = 5;
+  optional uint32 DGJKPAAINFI = 7;
+  optional uint32 JMGKJKDLIFI = 14;
+}
+
+message PlayerDetailInfo {
+  optional uint32 head_icon = 2;
+  optional uint32 level = 6;
+  optional uint32 uid = 10;
+  optional uint32 world_level = 15;
+  optional .legacy.PlatformType platform_type = 13;
+  optional bool is_banned = 12;
+  optional bool show_display_avatars = 14;
+  optional .legacy.PlayerRecordInfo record_info = 3;
+  optional .legacy.PlayerOutfitInfo player_outfit_data = 831;
+  optional .legacy.HeadIconFrameInfo head_icon_frame_info = 1012;
+  optional .legacy.PlayerChallengeDetailInfo challenge_detail = 1039;
+  optional .legacy.PlayerDisplaySettings display_settings = 1052;
+  optional string nickname = 5;
+  optional string signature = 11;
+  optional string unk_detail = 1966;
+  repeated .legacy.DisplayAvatarDetailInfo display_avatar_list = 8;
+  repeated .legacy.DisplayAvatarDetailInfo assist_avatar_list = 1809;
+}
+
+message PlayerDisplayInfo {
+  optional uint32 lightcone_count = 1;
+  optional uint32 int2 = 2;
+  optional uint32 su_world = 3;
+  optional uint32 int5 = 5;
+  optional uint32 character_count = 7;
+  optional uint32 phonograph_count = 12;
+  optional uint32 book_count = 13;
+  optional uint32 achievement_count = 15;
+  optional .legacy.PlayerMocDisplayInfo moc_display_info = 4;
+}
+
+message PlayerDisplaySettings {
+  optional bool unk5 = 2;
+  optional bool unk3 = 3;
+  optional bool unk1 = 6;
+  optional bool unk2 = 13;
+  optional bool unk4 = 14;
+}
+
+message PlayerGetTokenCsReq {
+  optional uint32 platform_type = 10;
+  optional string account_uid = 2;
+  optional string token = 7;
+}
+
+message PlayerGetTokenScRsp {
+  optional uint64 secret_key_seed = 8;
+  optional uint32 retcode = 7;
+  optional uint32 uid = 11;
+  optional .legacy.BlackInfo black_info = 14;
+  optional string msg = 1;
+}
+
+message PlayerHeartBeatCsReq {
+  optional uint64 client_time_ms = 3;
+}
+
+message PlayerHeartBeatScRsp {
+  optional uint64 client_time_ms = 9;
+  optional uint64 server_time_ms = 14;
+  optional uint32 retcode = 8;
+}
+
+message PlayerLoginScRsp {
+  optional uint64 login_random = 4;
+  optional uint64 server_timestamp_ms = 8;
+  optional uint32 stamina = 7;
+  optional uint32 retcode = 9;
+  optional sint32 cur_timezone = 11;
+  optional .legacy.PlayerBasicInfo basic_info = 1;
+}
+
+message PlayerMocDisplayInfo {
+  optional uint32 int1 = 1;
+  optional uint32 int3 = 3;
+  optional uint32 star_count = 6;
+  optional uint32 floor_num = 14;
+  optional uint32 season_id = 15;
+}
+
+message PlayerOutfitInfo {
+  repeated uint32 outfit_id_list = 1;
+}
+
+message PlayerRecordInfo {
+  optional uint32 MMFGIPPNEEF = 3;
+  optional uint32 LCEEKBAJPHA = 4;
+  optional uint32 KEBOJOIBOKE = 6;
+  optional uint32 LBKCIEBGMAJ = 9;
+  optional uint32 GPJGLLANPIF = 11;
+  optional uint32 KHDJDCELNPF = 12;
+  optional uint32 MIMIPDMIPNO = 13;
+  optional uint32 MPNIKBAFPEM = 14;
+  optional .legacy.PlayerCollectionInfo collection_info = 10;
+}
+
+message PlayerSettingInfo {
+  optional bool COIGOCJHBOP = 2;
+  optional bool CHCNEDNCIDJ = 4;
+  optional bool LPEPIDNJDEM = 7;
+  optional bool BKDCFBDMNIJ = 8;
+  optional bool PFJMEECGJMM = 9;
+  optional bool MFCPDJGGCMO = 10;
+  optional bool CCNGHBADHBL = 11;
+  optional bool FIJNAPNICJF = 12;
+  optional bool NHLKFBOBDOM = 13;
+  optional bool CPOGDKALGOM = 14;
+  optional bool LENKIEBIIHP = 151;
+  optional bool EJDGNLEOBCN = 197;
+  optional bool KFBLHCCGEPO = 1219;
+  optional bool BMEHFMDNKLE = 1557;
+  optional .legacy.PlayerSettingInfo.OEEEAEJBENB unk2 = 5;
+  optional .legacy.PlayerSettingInfo.NECGMCGFANN unk1 = 524;
+  message NECGMCGFANN {
+    optional bool INAHILAHIIJ = 1;
+    optional bool LDHNPCIMLCJ = 2;
+    optional bool FCNGHNPFJLN = 3;
+  }
+  message OEEEAEJBENB {
+    optional uint32 APOFJCCELFM = 8;
+    optional bool JLPHFLLOEAJ = 2;
+    optional bool ODEJNPJBJAJ = 6;
+  }
+}
+
+message PlayerSimpleInfo {
+  optional int64 logout_time = 9;
+  optional uint32 uid = 5;
+  optional uint32 personal_card = 8;
+  optional uint32 chat_bubble = 11;
+  optional uint32 head_icon = 12;
+  optional uint32 level = 14;
+  optional .legacy.PlatformType platform = 7;
+  optional .legacy.FriendOnlineStatus online_status = 10;
+  optional bool is_banned = 13;
+  optional string nickname = 1;
+  optional string signature = 2;
+  optional string platform_uuid = 3;
+  optional string platform_nick = 6;
+  repeated .legacy.AssistSimpleInfo assist_info_list = 15;
+}
+
+message PlayerSyncScNotify {
+  optional uint32 total_achievement_exp = 1013;
+  optional .legacy.AvatarSync avatar_sync = 1;
+  optional .legacy.PlayerBasicInfo basic_info = 14;
+  optional .legacy.MissionSync mission_sync = 220;
+  optional .legacy.PlayerOutfitInfo player_outfit_data = 1170;
+  optional .legacy.BoardDataSync board_data_sync = 1335;
+  repeated uint32 del_equipment_list = 7;
+  repeated uint32 del_relic_list = 10;
+  repeated .legacy.Relic relic_list = 5;
+  repeated .legacy.Equipment equipment_list = 6;
+  repeated .legacy.Material material_list = 12;
+}
+
+enum PlayingState {
+  PLAYING_STATE_NONE = 0;
+  PLAYING_ROGUE_COSMOS = 1;
+  PLAYING_ROGUE_CHESS = 2;
+  PLAYING_ROGUE_CHESS_NOUS = 3;
+  PLAYING_CHALLENGE_MEMORY = 4;
+  PLAYING_CHALLENGE_STORY = 5;
+  PLAYING_CHALLENGE_BOSS = 6;
+  PLAYING_ROGUE_TOURN = 7;
+  PLAYING_ROGUE_MAGIC = 8;
+}
+
+message Product {
+  optional int64 begin_time = 3;
+  optional int64 end_time = 6;
+  optional uint32 max_buy_times = 4;
+  optional uint32 buy_times = 7;
+  optional .legacy.Product.ProductGiftType product_gift_type = 13;
+  optional bool is_first_recharge = 14;
+  optional string product_id = 2;
+  optional string price_tier = 11;
+  enum ProductGiftType {
+    PRODUCT_GIFT_NONE = 0;
+    PRODUCT_GIFT_COIN = 1;
+    PRODUCT_GIFT_MONTH_CARD = 2;
+    PRODUCT_GIFT_BP_68 = 3;
+    PRODUCT_GIFT_BP_128 = 4;
+    PRODUCT_GIFT_BP68_UPGRADE_128 = 5;
+    PRODUCT_GIFT_POINT_CARD = 6;
+    PRODUCT_GIFT_PS_PRE_ORDER_1 = 7;
+    PRODUCT_GIFT_PS_PRE_ORDER_2 = 8;
+    PRODUCT_GIFT_GOOGLE_POINTS_100 = 9;
+    PRODUCT_GIFT_GOOGLE_POINTS_150 = 10;
+    PRODUCT_GIFT_PS_POINT_CARD_030 = 11;
+    PRODUCT_GIFT_PS_POINT_CARD_050 = 12;
+    PRODUCT_GIFT_PS_POINT_CARD_100 = 13;
+    PRODUCT_GIFT_PSN_PLUS = 14;
+    PRODUCT_GIFT_SINGLE_6 = 15;
+    PRODUCT_GIFT_DAILY_LOGIN_30 = 16;
+    PRODUCT_GIFT_APPLE_GIFT_CARD = 17;
+    PRODUCT_GIFT_FTC_UP_GACHA_TICKET_1 = 18;
+    PRODUCT_GIFT_FTC_UP_GACHA_TICKET_10 = 19;
+    PRODUCT_GIFT_FTC_NORMAL_GACHA_TICKET_1 = 20;
+    PRODUCT_GIFT_FTC_NORMAL_GACHA_TICKET_10 = 21;
+    PRODUCT_GIFT_TICKET_10 = 22;
+  }
+}
+
+message PromoteAvatarCsReq {
+  optional uint32 base_avatar_id = 15;
+  repeated .legacy.ItemCost item_list = 1;
+}
+
+message PromoteEquipmentCsReq {
+  optional uint32 equipment_unique_id = 13;
+  optional .legacy.ItemCostList item_cost_list = 5;
+}
+
+message PropExtraInfo {
+  optional .legacy.PropTimelineInfo prop_timeline_info = 12;
+}
+
+message PropTimelineInfo {
+  optional bool KBFLIKKFOEG = 3;
+  optional bytes COOGIPJIPIA = 12;
+}
+
+message PVEBattleResultCsReq {
+  optional uint32 cost_time = 4;
+  optional uint32 client_res_version = 12;
+  optional uint32 stage_id = 14;
+  optional uint32 battle_id = 15;
+  optional .legacy.BattleEndStatus end_status = 8;
+  optional bool is_ai_consider_ultra_skill = 9;
+  optional .legacy.BattleStatistics stt = 3;
+  optional bytes turn_snapshot_hash = 13;
+  repeated .legacy.BattleOp op_list = 2;
+}
+
+message PVEBattleResultScRsp {
+  optional uint32 stage_id = 3;
+  optional uint32 mismatch_turn_count = 10;
+  optional uint32 event_id = 12;
+  optional uint32 battle_id = 13;
+  optional uint32 retcode = 14;
+  optional .legacy.BattleEndStatus end_status = 4;
+  optional bool check_identical = 8;
+  optional .legacy.ItemList drop_data = 5;
+  optional .legacy.ItemList extra_drop_data = 6;
+  optional .legacy.ItemList unk_item_list_2 = 7;
+  optional .legacy.ItemList unk_item_list_3 = 460;
+  optional string res_version = 2;
+  optional string bin_version = 15;
+  repeated .legacy.BattleAvatar battle_avatar_list = 9;
+}
+
+message QueryProductInfoScRsp {
+  optional uint64 month_card_outdate_time = 11;
+  optional uint32 retcode = 6;
+  optional uint32 gift_coin_bought_history_version = 7;
+  optional uint32 gift_coin_cur_version = 12;
+  repeated .legacy.Product product_list = 10;
+}
+
+message Quest {
+  optional int64 finish_time = 3;
+  optional uint32 progress = 2;
+  optional uint32 id = 13;
+  optional .legacy.QuestStatus status = 8;
+  repeated uint32 params = 1;
+}
+
+enum QuestStatus {
+  QUEST_NONE = 0;
+  QUEST_DOING = 1;
+  QUEST_FINISH = 2;
+  QUEST_CLOSE = 3;
+  QUEST_DELETE = 4;
+}
+
+message QuickStartCocoonStageCsReq {
+  optional uint32 world_level = 2;
+  optional uint32 wave = 4;
+  optional uint32 wave_count = 5;
+  optional uint32 cocoon_id = 12;
+}
+
+message QuickStartCocoonStageScRsp {
+  optional uint32 cocoon_id = 3;
+  optional uint32 wave = 4;
+  optional uint32 wave_count = 7;
+  optional uint32 retcode = 14;
+  optional .legacy.SceneBattleInfo battle_info = 5;
+}
+
+message QuickStartFarmElementCsReq {
+  optional uint32 wave_count = 2;
+  optional uint32 world_level = 9;
+  optional uint32 farm_element_id = 15;
+}
+
+message QuickStartFarmElementScRsp {
+  optional uint32 world_level = 6;
+  optional uint32 farm_element_id = 7;
+  optional uint32 retcode = 14;
+  optional .legacy.SceneBattleInfo battle_info = 9;
+}
+
+message QuitLineupCsReq {
+  optional uint32 plane_id = 3;
+  optional uint32 index = 6;
+  optional uint32 base_avatar_id = 9;
+  optional .legacy.ExtraLineupType extra_lineup_type = 8;
+  optional .legacy.AvatarType avatar_type = 13;
+  optional bool is_virtual = 4;
+}
+
+message RankUpAvatarCsReq {
+  optional uint32 avatar_id = 2;
+  optional uint32 rank = 3;
+  optional .legacy.ItemCostList item_cost_list = 4;
+}
+
+message RankUpEquipmentCsReq {
+  optional uint32 equipment_unique_id = 15;
+  optional .legacy.ItemCostList item_cost_list = 12;
+}
+
+message RecallPetCsReq {
+  optional uint32 summoned_pet_id = 5;
+}
+
+message RecallPetScRsp {
+  optional uint32 cur_pet_id = 4;
+  optional uint32 retcode = 9;
+  optional uint32 new_pet_id = 10;
+}
+
+message ReEnterLastElementStageCsReq {
+  optional uint32 stage_id = 15;
+}
+
+message ReEnterLastElementStageScRsp {
+  optional uint32 stage_id = 13;
+  optional uint32 retcode = 15;
+  optional .legacy.SceneBattleInfo battle_info = 3;
+}
+
+message RefreshTriggerByClientCsReq {
+  optional uint32 trigger_entity_id = 7;
+  optional .legacy.MotionInfo trigger_motion = 13;
+  optional string trigger_name = 5;
+  repeated uint32 trigger_target_id_list = 2;
+}
+
+message RefreshTriggerByClientScNotify {
+  optional uint32 trigger_entity_id = 5;
+  optional string trigger_name = 1;
+  repeated uint32 trigger_target_id_list = 3;
+}
+
+message RefreshTriggerByClientScRsp {
+  optional uint32 retcode = 8;
+  optional uint32 trigger_entity_id = 10;
+  optional bool refresh_trigger = 13;
+  optional string trigger_name = 9;
+}
+
+message RegionEntry {
+  optional string name = 1;
+  optional string title = 2;
+  optional string dispatch_url = 3;
+  optional string env_type = 4;
+  optional string display_name = 5;
+  optional string msg = 6;
+}
+
+message RelicAffix {
+  optional uint32 affix_id = 1;
+  optional uint32 cnt = 2;
+  optional uint32 step = 3;
+}
+
+message RelicArchive {
+  optional uint32 relic_id = 9;
+  optional uint32 slot = 12;
+}
+
+message Relic {
+  optional uint32 equip_avatar_id = 5;
+  optional uint32 level = 7;
+  optional uint32 tid = 8;
+  optional uint32 main_affix_id = 9;
+  optional uint32 unique_id = 10;
+  optional uint32 reforge_block_sub_affix_id = 12;
+  optional uint32 exp = 13;
+  optional bool is_discarded = 2;
+  optional bool is_protected = 6;
+  repeated .legacy.RelicAffix reforge_sub_affix_list = 1;
+  repeated .legacy.RelicAffix sub_affix_list = 3;
+  repeated .legacy.RelicAffix preview_sub_affix_list = 4;
+}
+
+message RelicParam {
+  optional uint32 relic_unique_id = 2;
+  optional uint32 slot = 11;
+}
+
+message RelicReccomendData {
+}
+
+message RelicReforgeConfirmCsReq {
+  optional uint32 relic_unique_id = 11;
+  optional bool keep_old_affixes = 9;
+}
+
+message RelicReforgeCsReq {
+  optional uint32 reforge_block_sub_affix_id = 6;
+  optional uint32 relic_unique_id = 15;
+}
+
+message RelicSmartSuitPlan {
+  optional uint32 avatar_id = 7;
+  optional uint32 unique_id = 14;
+}
+
+message RelicSmartWearGetPinRelicCsReq {
+  optional uint32 avatar_id = 10;
+}
+
+message RelicSmartWearGetPinRelicScRsp {
+  optional uint32 retcode = 8;
+  optional uint32 avatar_id = 15;
+  repeated uint32 plan_ids = 12;
+}
+
+message RelicSmartWearGetPlanCsReq {
+  optional uint32 avatar_id = 4;
+}
+
+message RelicSmartWearGetPlanScRsp {
+  optional uint32 avatar_id = 3;
+  optional uint32 retcode = 4;
+  repeated .legacy.RelicSmartSuitPlan plan_list = 11;
+}
+
+message RemoveRotaterCsReq {
+  optional .legacy.RotaterData rotater_data = 2;
+}
+
+message RemoveRotaterScRsp {
+  optional uint32 retcode = 3;
+  optional .legacy.RotaterData rotater_data = 6;
+  optional .legacy.RotatorEnergyInfo energy_info = 9;
+}
+
+message ReplaceLineupCsReq {
+  optional uint32 leader_slot = 1;
+  optional uint32 index = 8;
+  optional uint32 plane_id = 14;
+  optional .legacy.ExtraLineupType extra_lineup_type = 15;
+  optional bool is_virtual = 9;
+  repeated .legacy.LineupSlotData slots = 11;
+}
+
+message ReserveStaminaExchangeCsReq {
+  optional uint32 num = 12;
+}
+
+message ReserveStaminaExchangeScRsp {
+  optional uint32 num = 3;
+  optional uint32 retcode = 6;
+}
+
+message RevcMsgScNotify {
+  optional uint32 to_uid = 9;
+  optional .legacy.ChatType chat_type = 5;
+  optional .legacy.ChatInfo msg = 15;
+}
+
+message RotateMapCsReq {
+  optional uint32 unk_int = 5;
+  optional uint32 group_id = 12;
+  optional .legacy.RotateMapCsReq.NewMapRot rogue_map = 9;
+  optional .legacy.MotionInfo motion = 13;
+  message Vector4 {
+    optional float z = 4;
+    optional float w = 8;
+    optional float x = 9;
+    optional float y = 14;
+  }
+  message NewMapRot {
+    optional .legacy.RotateMapCsReq.Vector4 vector4 = 8;
+    optional .legacy.Vector vector3 = 11;
+  }
+}
+
+message RotateMapScRsp {
+  optional uint32 retcode = 4;
+  optional uint32 client_pos_version = 9;
+  optional .legacy.MotionInfo motion = 6;
+}
+
+message RotaterData {
+  optional float APDIFCCFAGG = 10;
+  optional uint32 group_id = 12;
+  optional uint32 unk_int = 15;
+}
+
+message RotatorEnergyInfo {
+  optional uint32 cur_num = 11;
+  optional uint32 max_num = 12;
+}
+
+message SceneActorInfo {
+  optional uint32 map_layer = 4;
+  optional uint32 uid = 7;
+  optional uint32 base_avatar_id = 14;
+  optional .legacy.AvatarType avatar_type = 15;
+}
+
+message SceneBattleInfo {
+  optional uint32 battle_id = 1;
+  optional uint32 stage_id = 2;
+  optional uint32 world_level = 6;
+  optional uint32 logic_random_seed = 8;
+  optional uint32 rounds_limit = 14;
+  repeated .legacy.SceneMonsterWave monster_wave_list = 4;
+  repeated .legacy.BattleAvatar battle_avatar_list = 9;
+  repeated .legacy.BattleBuff buff_list = 13;
+  repeated .legacy.BattleEventBattleInfo event_battle_info_list = 234;
+  repeated .legacy.SceneBattleInfo.BattleTargetInfoEntry battle_target_info = 761;
+  message BattleTargetInfoEntry {
+    optional uint32 key = 1;
+    optional .legacy.BattleTargetList value = 2;
+  }
+}
+
+message SceneCastSkillCostMpCsReq {
+  optional uint32 caster_id = 8;
+  optional uint32 skill_index = 9;
+  optional uint32 attacked_group_id = 15;
+}
+
+message SceneCastSkillCostMpScRsp {
+  optional uint32 attacked_group_id = 8;
+  optional uint32 retcode = 10;
+}
+
+message SceneCastSkillCsReq {
+  optional uint32 caster_id = 2;
+  optional uint32 attacked_group_id = 5;
+  optional uint32 skill_index = 8;
+  optional .legacy.MotionInfo target_motion = 7;
+  repeated uint32 hit_target_entity_id_list = 9;
+  repeated .legacy.AssistMonsterWave assist_monster_wave_list = 3;
+}
+
+message SceneCastSkillMpUpdateScNotify {
+  optional uint32 attacked_group_id = 3;
+  optional uint32 mp = 9;
+}
+
+enum SceneCastSkill {
+  SCENE_CAST_SKILL_NONE = 0;
+  SCENE_CAST_SKILL_PROJECTILE_HIT = 1;
+  SCENE_CAST_SKILL_PROJECTILE_LIFETIME_FINISH = 2;
+}
+
+message SceneCastSkillScRsp {
+  optional uint32 attacked_group_id = 4;
+  optional uint32 retcode = 6;
+  optional .legacy.SceneBattleInfo battle_info = 1;
+}
+
+message SceneEnterStageCsReq {
+  optional uint32 stage_id = 9;
+}
+
+message SceneEnterStageScRsp {
+  optional uint32 retcode = 14;
+  optional .legacy.SceneBattleInfo battle_info = 1;
+}
+
+message SceneEntityGroupInfo {
+  optional uint32 group_id = 2;
+  optional uint32 state = 15;
+  repeated .legacy.SceneEntityGroupInfo.GroupPropertyMapEntry group_property_map = 8;
+  repeated .legacy.SceneEntityInfo entity_list = 12;
+  message GroupPropertyMapEntry {
+    optional sint32 value = 2;
+    optional string key = 1;
+  }
+}
+
+message SceneEntityInfo {
+  optional uint32 inst_id = 4;
+  optional uint32 group_id = 13;
+  optional uint32 entity_id = 14;
+  optional .legacy.SceneActorInfo actor = 1;
+  optional .legacy.ScenePropInfo prop = 3;
+  optional .legacy.SceneNpcInfo npc = 8;
+  optional .legacy.SceneNpcMonsterInfo npc_monster = 9;
+  optional .legacy.SceneSummonUnitInfo summon_unit = 11;
+  optional .legacy.MotionInfo motion = 12;
+}
+
+message SceneEntityMoveCsReq {
+  optional uint32 entry_id = 3;
+  repeated .legacy.EntityMotion entity_motion_list = 10;
+}
+
+message SceneEntityMoveScNotify {
+  optional uint32 entry_id = 5;
+  optional uint32 entity_id = 13;
+  optional uint32 client_pos_version = 15;
+  optional .legacy.MotionInfo motion = 4;
+}
+
+message SceneEntityRefreshInfo {
+  optional uint32 del_entity = 12;
+  optional .legacy.SceneEntityInfo add_entity = 14;
+}
+
+message SceneEntityTeleportCsReq {
+  optional uint32 entry_id = 14;
+  optional .legacy.EntityMotion entity_motion = 6;
+}
+
+message SceneEntityTeleportScRsp {
+  optional uint32 retcode = 2;
+  optional uint32 client_pos_version = 13;
+  optional .legacy.EntityMotion entity_motion = 3;
+}
+
+message SceneGroupRefreshInfo {
+  optional uint32 group_id = 9;
+  optional uint32 state = 13;
+  optional .legacy.SceneGroupRefreshType group_refresh_type = 8;
+  optional .legacy.SceneEntityGroupInfo entity_group_info = 1;
+  repeated .legacy.SceneEntityRefreshInfo refresh_entity = 12;
+}
+
+message SceneGroupRefreshScNotify {
+  optional uint32 floor_id = 11;
+  repeated .legacy.SceneGroupRefreshInfo group_refresh_info = 2;
+}
+
+enum SceneGroupRefreshType {
+  SCENE_GROUP_REFRESH_TYPE_NONE = 0;
+  SCENE_GROUP_REFRESH_TYPE_LOADED = 1;
+  SCENE_GROUP_REFRESH_TYPE_UNLOAD = 2;
+}
+
+message SceneGroupState {
+  optional uint32 group_id = 4;
+  optional uint32 state = 5;
+  optional bool is_default = 10;
+}
+
+message SceneIdentifierInfo {
+  optional uint32 floor_id = 2;
+  optional uint32 game_id = 6;
+  optional uint32 content_id = 14;
+}
+
+message SceneInfo {
+  optional uint32 game_mode_type = 1;
+  optional uint32 client_pos_version = 4;
+  optional uint32 plane_id = 5;
+  optional uint32 floor_id = 10;
+  optional uint32 entry_id = 12;
+  optional uint32 leader_entity_id = 13;
+  optional uint32 world_id = 15;
+  optional uint32 game_id = 602;
+  optional uint32 content_id = 986;
+  optional .legacy.SceneIdentifierInfo scene_identifier = 1947;
+  repeated .legacy.SceneEntityInfo entity_list = 9;
+  repeated .legacy.SceneInfo.FloorSavedValueMapEntry floor_saved_value_map = 680;
+  repeated .legacy.SceneEntityGroupInfo entity_group_list = 1153;
+  repeated .legacy.SceneGroupState group_state_list = 1553;
+  message FloorSavedValueMapEntry {
+    optional sint32 value = 2;
+    optional string key = 1;
+  }
+}
+
+message SceneMapInfo {
+  optional uint32 entry_id = 1;
+  optional uint32 chest_monster_num = 3;
+  optional uint32 floor_id = 7;
+  optional uint32 dimension_id = 9;
+  optional uint32 retcode = 14;
+  optional .legacy.SceneIdentifierInfo scene_identifier = 383;
+  repeated uint32 lighten_section_list = 11;
+  repeated uint32 unlock_teleport_list = 13;
+  repeated .legacy.SceneMapInfo.FloorSavedValueMapEntry floor_saved_value_map = 2;
+  repeated .legacy.MapInfoGroup group_list = 5;
+  repeated .legacy.MapPropInfo map_info_prop_list = 6;
+  repeated .legacy.MazeChest chest_list = 12;
+  message FloorSavedValueMapEntry {
+    optional sint32 value = 2;
+    optional string key = 1;
+  }
+}
+
+message SceneMonsterExtraInfo {
+}
+
+message SceneMonster {
+  optional uint32 max_hp = 7;
+  optional uint32 cur_hp = 11;
+  optional uint32 monster_id = 15;
+  optional .legacy.SceneMonsterExtraInfo extra_info = 8;
+}
+
+message SceneMonsterWave {
+  optional uint32 stage_id = 3;
+  optional uint32 wave_id = 14;
+  optional .legacy.SceneMonsterWaveParam wave_param = 12;
+  repeated .legacy.SceneMonster monster_list = 6;
+  repeated .legacy.ItemList drop_list = 9;
+}
+
+message SceneMonsterWaveParam {
+  optional uint32 level = 14;
+}
+
+message SceneNpcInfo {
+  optional uint32 npc_id = 3;
+  optional .legacy.NpcExtraInfo extra_info = 12;
+}
+
+message SceneNpcMonsterInfo {
+  optional uint32 world_level = 7;
+  optional uint32 monster_id = 11;
+  optional uint32 event_id = 13;
+}
+
+message ScenePlaneEventScNotify {
+  optional .legacy.ItemList get_item_list = 5;
+}
+
+message ScenePropInfo {
+  optional uint64 create_time_ms = 12;
+  optional uint32 life_time_ms = 1;
+  optional uint32 prop_state = 2;
+  optional uint32 prop_id = 15;
+  optional .legacy.PropExtraInfo extra_info = 9;
+  repeated string trigger_name_list = 6;
+}
+
+message SceneSummonUnitInfo {
+  optional uint64 create_time_ms = 5;
+  optional uint32 caster_entity_id = 1;
+  optional uint32 attach_entity_id = 8;
+  optional uint32 summon_unit_id = 15;
+  optional sint32 life_time_ms = 7;
+  repeated string trigger_name_list = 3;
+}
+
+message SearchPlayerCsReq {
+  repeated uint32 search_uid_list = 7;
+}
+
+message SearchPlayerScRsp {
+  optional uint32 retcode = 12;
+  repeated .legacy.PlayerSimpleInfo search_result_list = 7;
+}
+
+message SelectChatBubbleCsReq {
+  optional uint32 bubble_id = 6;
+}
+
+message SelectChatBubbleScRsp {
+  optional uint32 retcode = 14;
+  optional uint32 cur_chat_bubble = 15;
+}
+
+message SelectInclinationTextCsReq {
+  optional uint32 inclination_text_id = 9;
+}
+
+message SelectInclinationTextScRsp {
+  optional uint32 inclination_text_id = 9;
+  optional uint32 retcode = 15;
+}
+
+message SelectPamSkinCsReq {
+  optional uint32 pam_skin_id = 8;
+}
+
+message SelectPamSkinScRsp {
+  optional uint32 select_pam_skin_id = 3;
+  optional uint32 current_pam_skin_id = 4;
+  optional uint32 retcode = 15;
+}
+
+message SelectPhoneThemeCsReq {
+  optional uint32 theme_id = 12;
+}
+
+message SelectPhoneThemeScRsp {
+  optional uint32 cur_phone_theme = 6;
+  optional uint32 retcode = 8;
+}
+
+message SellItemCsReq {
+  optional bool to_material = 10;
+  optional .legacy.ItemCostList item_cost_list = 14;
+}
+
+message SellItemScRsp {
+  optional uint32 retcode = 5;
+  optional .legacy.ItemList return_item_list = 6;
+}
+
+message SendMsgCsReq {
+  optional .legacy.ChatType chat_type = 13;
+  optional .legacy.ChatContentInfo chat_content = 8;
+  repeated uint32 to_uid_list = 9;
+}
+
+message ServerAnnounceNotify {
+  repeated .legacy.ServerAnnounceNotify.AnnounceData announce_data_list = 2;
+  message AnnounceData {
+    optional int64 end_time = 2;
+    optional int64 begin_time = 8;
+    optional uint32 config_id = 7;
+    optional uint32 CCOCHKOLEPN = 11;
+    optional uint32 MAMIBMNFJKJ = 12;
+    optional bool is_center_system_last_5_every_minutes = 10;
+    optional string NPIBJLGALPA = 13;
+    optional string JENBMJAJLAK = 14;
+    optional string KICNNEODFGD = 15;
+  }
+}
+
+message ServerPrefs {
+  optional uint32 server_prefs_id = 8;
+  optional bytes data = 10;
+}
+
+message SetAssistAvatarCsReq {
+  optional uint32 avatar_id = 11;
+  repeated uint32 avatar_id_list = 2;
+}
+
+message SetAssistAvatarScRsp {
+  optional uint32 retcode = 7;
+  optional uint32 avatar_id = 9;
+  repeated uint32 avatar_id_list = 6;
+}
+
+message SetAvatarEnhancedIdCsReq {
+  optional uint32 avatar_enhance_id = 1;
+  optional uint32 avatar_id = 4;
+}
+
+message SetAvatarEnhancedIdScRsp {
+  optional uint32 retcode = 6;
+  optional uint32 enhance_id = 11;
+}
+
+message SetAvatarPathCsReq {
+  optional .legacy.MultiPathAvatarType avatar_id = 12;
+}
+
+message SetAvatarPathScRsp {
+  optional uint32 retcode = 9;
+  optional .legacy.MultiPathAvatarType avatar_id = 12;
+}
+
+message SetChallengePeakMobLineupAvatarCsReq {
+  optional uint32 challenge_peak_group_id = 8;
+  repeated .legacy.ChallengePeakMobLineupInfo lineup_list = 2;
+}
+
+message SetChallengePeakMobLineupAvatarScRsp {
+  optional uint32 retcode = 14;
+}
+
+message SetClientPausedCsReq {
+  optional bool paused = 10;
+}
+
+message SetClientPausedScRsp {
+  optional uint32 retcode = 10;
+  optional bool paused = 6;
+}
+
+message SetDisplayAvatarCsReq {
+  repeated .legacy.DisplayAvatar display_avatar_list = 14;
+}
+
+message SetDisplayAvatarScRsp {
+  optional uint32 retcode = 1;
+  repeated .legacy.DisplayAvatar display_avatar_list = 7;
+}
+
+message SetFriendMarkCsReq {
+  optional uint32 uid = 8;
+  optional bool is_set_mark = 6;
+}
+
+message SetFriendMarkScRsp {
+  optional uint32 uid = 3;
+  optional uint32 retcode = 8;
+  optional bool is_set_mark = 4;
+}
+
+message SetGameplayBirthdayCsReq {
+  optional uint32 birthday = 4;
+}
+
+message SetGameplayBirthdayScRsp {
+  optional uint32 retcode = 12;
+  optional uint32 birthday = 13;
+}
+
+message SetGroupCustomSaveDataCsReq {
+  optional uint32 entry_id = 9;
+  optional uint32 group_id = 13;
+  optional string group_save_data = 8;
+}
+
+message SetGroupCustomSaveDataScRsp {
+  optional uint32 entry_id = 4;
+  optional uint32 group_id = 11;
+  optional uint32 retcode = 15;
+}
+
+message SetHeadIconCsReq {
+  optional uint32 id = 9;
+}
+
+message SetHeadIconScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 current_head_icon_id = 14;
+}
+
+message SetHeroBasicTypeCsReq {
+  optional .legacy.HeroBasicType basic_type = 3;
+}
+
+message SetHeroBasicTypeScRsp {
+  optional uint32 retcode = 11;
+  optional .legacy.HeroBasicType basic_type = 13;
+}
+
+message SetLineupNameCsReq {
+  optional uint32 index = 5;
+  optional string name = 10;
+}
+
+message SetLineupNameScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 index = 11;
+  optional string name = 10;
+}
+
+message SetNicknameCsReq {
+  optional string nickname = 3;
+}
+
+message SetPlayerOutfitCsReq {
+  optional .legacy.PlayerOutfitInfo player_outfit_data = 2;
+}
+
+message SetSignatureCsReq {
+  optional string signature = 13;
+}
+
+message SetSignatureScRsp {
+  optional uint32 retcode = 5;
+  optional string signature = 15;
+}
+
+message SetTrainWorldIdCsReq {
+  optional uint32 train_world_id = 13;
+}
+
+message SetTrainWorldIdScRsp {
+  optional uint32 train_world_id = 7;
+  optional uint32 retcode = 10;
+}
+
+message Shop {
+  optional int64 end_time = 4;
+  optional int64 begin_time = 13;
+  optional uint64 city_taken_level_reward = 7;
+  optional uint32 city_exp = 2;
+  optional uint32 shop_id = 8;
+  optional uint32 city_level = 14;
+  repeated .legacy.Goods goods_list = 1;
+}
+
+message SimpleAvatarInfo {
+  optional uint32 id = 2;
+  optional .legacy.AvatarType avatar_type = 1;
+}
+
+message SocialEventServerCache {
+  optional uint32 add_coin = 6;
+  optional uint32 src_uid = 7;
+  optional uint32 sub_coin = 11;
+  optional uint32 id = 12;
+}
+
+message SpBarInfo {
+  optional uint32 cur_sp = 1;
+  optional uint32 max_sp = 2;
+}
+
+message StageMergedInfo {
+  optional uint32 stage_merged_id = 11;
+  optional bool bool7 = 2;
+  optional bool bool10 = 6;
+  repeated uint32 stage_periods = 15;
+}
+
+message StaminaInfoScNotify {
+  optional int64 next_reserve_time = 4;
+  optional int64 next_recover_time = 7;
+  optional uint32 stamina = 6;
+  optional uint32 reserve_stamina = 8;
+}
+
+message StartChallengeCsReq {
+  optional uint32 challenge_id = 5;
+  optional .legacy.StartChallengeStoryInfo ext_info = 8;
+  repeated uint32 second_half_lineup = 10;
+  repeated uint32 first_half_lineup = 11;
+}
+
+message StartChallengePeakCsReq {
+  optional uint32 challenge_peak_id = 3;
+  optional uint32 challenge_peak_buff_id = 6;
+  repeated uint32 challenge_avatar_id_list = 15;
+}
+
+message StartChallengeScRsp {
+  optional uint32 retcode = 9;
+  optional .legacy.ChallengeExtInfo ext_info = 2;
+  optional .legacy.ChallengeInfo challenge_info = 3;
+  optional .legacy.SceneInfo scene = 15;
+  repeated .legacy.LineupInfo lineup_list = 13;
+}
+
+message StartChallengeStoryBuffInfo {
+  optional uint32 story_buff_two = 7;
+  optional uint32 story_buff_one = 12;
+}
+
+message StartChallengeStoryInfo {
+  optional .legacy.StartNewChallengeStoryBuffInfo new_story_buff_info = 11;
+  optional .legacy.StartChallengeStoryBuffInfo story_buff_info = 14;
+}
+
+message StartCocoonStageCsReq {
+  optional uint32 world_level = 2;
+  optional uint32 wave_count = 5;
+  optional uint32 prop_entity_id = 12;
+  optional uint32 wave = 14;
+  optional uint32 cocoon_id = 15;
+}
+
+message StartCocoonStageScRsp {
+  optional uint32 wave = 4;
+  optional uint32 retcode = 5;
+  optional uint32 prop_entity_id = 6;
+  optional uint32 cocoon_id = 14;
+  optional .legacy.SceneBattleInfo battle_info = 11;
+}
+
+message StartNewChallengeStoryBuffInfo {
+  optional uint32 first_half = 2;
+  optional uint32 second_half = 10;
+}
+
+message StartPartialChallengeCsReq {
+  optional uint32 buff_id = 4;
+  optional uint32 challenge_id = 11;
+  optional bool is_first_half = 5;
+}
+
+message StartPartialChallengeScRsp {
+  optional uint32 retcode = 8;
+  optional .legacy.LineupInfo lineup = 1;
+  optional .legacy.ChallengeInfo challenge_info = 6;
+  optional .legacy.SceneInfo scene = 9;
+}
+
+message StartTrialActivityCsReq {
+  optional uint32 stage_id = 4;
+}
+
+message StartTrialActivityScRsp {
+  optional uint32 retcode = 11;
+  optional uint32 stage_id = 12;
+}
+
+message SummonPetCsReq {
+  optional uint32 summoned_pet_id = 11;
+}
+
+message SummonPetScRsp {
+  optional uint32 new_pet_id = 13;
+  optional uint32 retcode = 14;
+  optional uint32 cur_pet_id = 15;
+}
+
+message SwapLineupCsReq {
+  optional uint32 dst_slot = 2;
+  optional uint32 index = 10;
+  optional uint32 plane_id = 11;
+  optional uint32 src_slot = 15;
+  optional .legacy.ExtraLineupType extra_lineup_type = 13;
+  optional bool is_virtual = 1;
+}
+
+message SwitchHandData {
+  optional uint32 MPOHFMFDLAB = 4;
+  optional uint32 promotion = 11;
+  optional uint32 JEAHPAAOAOM = 12;
+  optional .legacy.MotionInfo JNAMJNFMNAM = 2;
+  optional bytes JOEKOGCLFAA = 14;
+}
+
+message SwitchHandFinishScRsp {
+  optional uint32 retcode = 10;
+  optional .legacy.SwitchHandData cur_hand_data = 9;
+}
+
+message SwitchHandOpData {
+  optional uint32 group_id = 5;
+  optional .legacy.SwitchHandOpPropType op_type = 6;
+}
+
+enum SwitchHandOpPropType {
+  SWITCH_HAND_OP_PROP_TYPE_NONE = 0;
+  SWITCH_HAND_OP_PROP_TYPE_CATCH = 1;
+  SWITCH_HAND_OP_PROP_TYPE_LIFT = 2;
+}
+
+message SwitchHandUpdateCsReq {
+  optional .legacy.SwitchHandData hand_data = 10;
+  optional .legacy.SwitchHandOpData op_data = 14;
+}
+
+message SwitchHandUpdateScRsp {
+  optional uint32 retcode = 1;
+  optional .legacy.SwitchHandData cur_hand_data = 10;
+  optional .legacy.SwitchHandOpData op_data = 11;
+}
+
+message SwitchLineupIndexCsReq {
+  optional uint32 index = 6;
+}
+
+message SwitchLineupIndexScRsp {
+  optional uint32 retcode = 6;
+  optional uint32 index = 10;
+}
+
+message SyncApplyFriendScNotify {
+  optional .legacy.FriendApplyInfo friend_apply_info = 15;
+}
+
+message SyncClientResVersionCsReq {
+  optional uint32 client_res_version = 8;
+}
+
+message SyncClientResVersionScRsp {
+  optional uint32 client_res_version = 3;
+  optional uint32 retcode = 7;
+}
+
+message SyncDeleteFriendScNotify {
+  optional uint32 uid = 14;
+}
+
+message SyncEntityBuffChangeListScNotify {
+  repeated .legacy.EntityBuffChangeInfo entity_buff_info_list = 10;
+}
+
+message SyncHandleFriendScNotify {
+  optional uint32 uid = 8;
+  optional bool handle_result = 13;
+  optional .legacy.FriendListInfo handle_friend_info = 3;
+}
+
+message SyncLineupNotify {
+  optional .legacy.LineupInfo lineup = 2;
+  repeated .legacy.SyncLineupReason reason_list = 9;
+}
+
+enum SyncLineupReason {
+  SYNC_REASON_NONE = 0;
+  SYNC_REASON_MP_ADD = 1;
+  SYNC_REASON_MP_ADD_PROP_HIT = 2;
+  SYNC_REASON_HP_ADD = 3;
+  SYNC_REASON_HP_ADD_PROP_HIT = 4;
+}
+
+message TakeChallengeRewardCsReq {
+  optional uint32 group_id = 1;
+}
+
+message TakeChallengeRewardScRsp {
+  optional uint32 retcode = 5;
+  optional uint32 group_id = 6;
+  repeated .legacy.TakenChallengeRewardInfo taken_reward_list = 7;
+}
+
+message TakeMailAttachmentCsReq {
+  optional uint32 optional_reward_id = 12;
+  repeated uint32 mail_id_list = 13;
+}
+
+message TakeMailAttachmentScRsp {
+  optional uint32 retcode = 1;
+  optional .legacy.ItemList attachment = 7;
+  repeated uint32 succ_mail_id_list = 10;
+}
+
+message TakenChallengeRewardInfo {
+  optional uint32 star_count = 8;
+  optional .legacy.ItemList reward_list = 5;
+}
+
+message TakeOffAvatarSkinCsReq {
+  optional uint32 avatar_id = 14;
+}
+
+message TakeOffEquipmentCsReq {
+  optional uint32 avatar_id = 2;
+}
+
+message TakeOffRelicCsReq {
+  optional uint32 avatar_id = 6;
+  repeated uint32 slot_list = 4;
+}
+
+message TakePromotionRewardCsReq {
+  optional uint32 base_avatar_id = 8;
+  optional uint32 promotion = 10;
+}
+
+message TakePromotionRewardScRsp {
+  optional uint32 retcode = 5;
+  optional .legacy.ItemList reward_list = 1;
+}
+
+message TextJoinInfo {
+  optional uint32 text_item_id = 12;
+  optional uint32 text_item_config_id = 15;
+}
+
+message TextJoinQueryCsReq {
+  repeated uint32 text_join_id_list = 4;
+}
+
+message TextJoinQueryScRsp {
+  optional uint32 retcode = 12;
+  repeated .legacy.TextJoinInfo text_join_list = 9;
+}
+
+enum TrialActivityStatus {
+  TRIAL_ACTIVITY_STATUS_NONE = 0;
+  TRIAL_ACTIVITY_STATUS_FINISH = 1;
+}
+
+message TutorialGuide {
+  optional uint32 id = 13;
+  optional .legacy.TutorialStatus status = 9;
+}
+
+message Tutorial {
+  optional uint32 id = 3;
+  optional .legacy.TutorialStatus status = 2;
+}
+
+enum TutorialStatus {
+  TUTORIAL_NONE = 0;
+  TUTORIAL_UNLOCK = 1;
+  TUTORIAL_FINISH = 2;
+}
+
+message UnlockAvatarPathCsReq {
+  optional .legacy.MultiPathAvatarType avatar_id = 12;
+}
+
+message UnlockAvatarPathScRsp {
+  optional uint32 retcode = 12;
+  optional .legacy.MultiPathAvatarType avatar_id = 2;
+  optional .legacy.ItemList reward_list = 9;
+  repeated uint32 basic_type_id_list = 8;
+}
+
+message UnlockAvatarSkinScNotify {
+  optional uint32 avatar_skin_id = 3;
+}
+
+message UnlockBackGroundMusicCsReq {
+  repeated uint32 unlock_ids = 5;
+}
+
+message UnlockBackGroundMusicScRsp {
+  optional uint32 retcode = 4;
+  repeated uint32 unlocked_ids = 5;
+  repeated .legacy.UnlockedMusic music_list = 8;
+}
+
+message UnlockChatBubbleScNotify {
+  optional uint32 bubble_id = 6;
+}
+
+message UnlockedMusic {
+  optional uint32 id = 8;
+  optional uint32 group_id = 15;
+  optional bool unkbool = 10;
+}
+
+message UnlockHeroBasicTypeCsReq {
+  optional .legacy.HeroBasicType basic_type = 10;
+}
+
+message UnlockHeroBasicTypeScRsp {
+  optional uint32 retcode = 3;
+  optional .legacy.HeroBasicType basic_type = 8;
+  optional .legacy.ItemList reward = 1;
+  repeated uint32 unlocked_basic_types = 12;
+}
+
+message UnlockPhoneCaseScNotify {
+  optional uint32 phone_case_id = 9;
+}
+
+message UnlockPhoneThemeScNotify {
+  optional uint32 theme_id = 8;
+}
+
+message UnlockSkilltreeCsReq {
+  optional uint32 point_id = 2;
+  optional uint32 level = 12;
+  repeated .legacy.ItemCost item_list = 7;
+}
+
+message UnlockSkilltreeScRsp {
+  optional uint32 point_id = 3;
+  optional uint32 level = 8;
+  optional uint32 retcode = 11;
+}
+
+message UnlockTutorialCsReq {
+  optional uint32 tutorial_id = 11;
+}
+
+message UnlockTutorialScRsp {
+  optional uint32 retcode = 1;
+  optional .legacy.Tutorial tutorial = 14;
+}
+
+message UpdateEnergyScNotify {
+  optional .legacy.RotatorEnergyInfo energy_info = 14;
+}
+
+message UpdateFeatureSwitchScNotify {
+  repeated .legacy.FeatureSwitchInfo switch_info_list = 5;
+}
+
+message UpdateGroupPropertyCsReq {
+  optional uint32 group_id = 6;
+  optional uint32 floor_id = 15;
+  optional sint32 property_value = 5;
+  optional string property_name = 7;
+}
+
+message UpdateGroupPropertyScRsp {
+  optional uint32 retcode = 10;
+  optional uint32 PJMIHPLBCEM = 11;
+  optional uint32 floor_id = 13;
+  optional uint32 group_id = 15;
+  optional sint32 cur_property_value = 6;
+  optional sint32 BNINLHOKICO = 7;
+  optional string property_name = 4;
+}
+
+message UpdateMarkChestCsReq {
+  optional uint32 mark_avatar_id = 10;
+  optional uint32 func_id = 15;
+  repeated .legacy.MapPropDefInfo chest_prop_def_list = 8;
+}
+
+message UpdateMarkChestScRsp {
+  optional uint32 retcode = 1;
+  optional uint32 mark_avatar_id = 8;
+  optional uint32 func_id = 14;
+  repeated .legacy.MarkChestInfo chest_group_list = 6;
+}
+
+message UpdateServerPrefsDataCsReq {
+  optional .legacy.ServerPrefs server_prefs = 13;
+}
+
+message UpdateServerPrefsDataScRsp {
+  optional uint32 retcode = 11;
+  optional uint32 server_prefs_id = 13;
+}
+
+message UseItemCsReq {
+  optional uint32 optional_reward_id = 4;
+  optional uint32 use_item_count = 7;
+  optional uint32 base_avatar_id = 9;
+  optional uint32 use_item_id = 14;
+  optional .legacy.AvatarType use_avatar_type = 5;
+}
+
+message UseItemScRsp {
+  optional uint32 retcode = 3;
+  optional uint32 use_item_count = 5;
+  optional uint32 use_item_id = 10;
+  optional .legacy.ItemList return_data = 6;
+}
+
+message Vector {
+  optional sint32 x = 1;
+  optional sint32 y = 2;
+  optional sint32 z = 3;
+}

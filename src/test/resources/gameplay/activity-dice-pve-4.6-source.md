@@ -1,0 +1,9 @@
+# 骰子 PVE 任务结算测试夹具
+
+来源：TurnBasedGameData@724b139d8c9c32d12552eb95745a4fee72bfe48b。仅摘取关卡1001、奖励8014100和子任务105400302的原始字段，用作测试，不作为运行时依赖。
+
+- ExcelOutput/ActivityDiceStageConfig.json SHA256 f13dbc059b310aaef3ce9b27b353c4cd353bcc6b72156402aafe41ae3baffa2e
+- ExcelOutput/RewardData.json SHA256 f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619
+- Config/Level/Mission/1054003/MissionInfo_1054003.partial.json SHA256 6b2a93c0ec1c1ca02c85cb4806f59c54432933e0f85d7949ae1402bb7f9b470b
+
+夹具验证客户端上报胜利后的任务与首胜账本，不证明骰面、伤害、回合或官方客户端实际战斗；未识别字段不被用作战斗判定。

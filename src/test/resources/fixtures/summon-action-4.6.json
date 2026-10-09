@@ -1,0 +1,1734 @@
+[
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Aglaea_00_Ability.json",
+    "sha256": "66eef98f663859f75fa81ef29d4273dedf6cd60493014272a161ace33744d89b",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      2,
+      "SuccessTaskList",
+      9
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 14021,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 5
+        }
+      }
+    },
+    "abilityName": "LocalPlayer_Aglaea_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 17,
+    "row": {
+      "ID": 14021,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Aglaea_00_Config.json",
+      "DestroyOnEnterBattle": true,
+      "RemoveMazeBuffOnDestroy": true,
+      "MaxSummonCount": 1
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Aglaea_00_Config.json",
+    "configSHA256": "ef32cc4d646633c27201297fc2c7555435dd1f002c494e3ca13dc3f7fa7d6351",
+    "config": {
+      "GroupConfigName": "FollowField",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.DebugLog",
+          "Level": "Warn",
+          "Message": "=============OnCreate====================="
+        }
+      ],
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "HitNpcMonsterTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UpperBound": 3.5,
+            "LowerBound": -1,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "DontExitAfterEnter": true,
+            "ColliderRelativePath": "Trigger",
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AddMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 140202,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 500
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitNpcMonsterTriggerEffect",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UpperBound": 3.5,
+            "LowerBound": -1,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "ColliderRelativePath": "Trigger",
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AddAdventureModifier",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ModifierName": "ADV_StageAbility_Maze_Aglaea_Hit",
+                "Count": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              }
+            ],
+            "OnTriggerExit": [
+              {
+                "$type": "RPG.GameCore.RemoveAdventureModifier",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ModifierName": "ADV_StageAbility_Maze_Aglaea_Hit"
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitPropTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "Prop"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByIsPropLockable",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "DontExitAfterEnter": true,
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitProp",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ClientMode": "PreShow"
+              },
+              {
+                "$type": "RPG.GameCore.TriggerEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Aglaea_00/Eff_Avatar_Aglaea_00_MazeSkill01_Hit01.prefab",
+                "AttachPoint": "SelectRoot",
+                "ForceSimulateImmediately": false
+              }
+            ],
+            "OnTriggerExit": [],
+            "OnTriggerEnterRollback": [
+              {
+                "$type": "RPG.GameCore.PropDestructReset",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                }
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitNPCTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPC"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByTargetHitBoxActive",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitTarget",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "HitConfig": {
+                  "HitAnimation": "Hit",
+                  "HitEffect": "Effects/Eff_Prefab/Eff_Avatar/Eff_Aglaea_00/Eff_Avatar_Aglaea_00_MazeSkill01_Hit01.prefab",
+                  "HitEffectHeight": 1
+                }
+              }
+            ],
+            "OnTriggerExit": []
+          }
+        ]
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Aglaea_00_Ability.json",
+    "sha256": "66eef98f663859f75fa81ef29d4273dedf6cd60493014272a161ace33744d89b",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      2,
+      "FailedTaskList",
+      8
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 14021,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 5
+        }
+      }
+    },
+    "abilityName": "LocalPlayer_Aglaea_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 17,
+    "row": {
+      "ID": 14021,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Aglaea_00_Config.json",
+      "DestroyOnEnterBattle": true,
+      "RemoveMazeBuffOnDestroy": true,
+      "MaxSummonCount": 1
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Aglaea_00_Config.json",
+    "configSHA256": "ef32cc4d646633c27201297fc2c7555435dd1f002c494e3ca13dc3f7fa7d6351",
+    "config": {
+      "GroupConfigName": "FollowField",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.DebugLog",
+          "Level": "Warn",
+          "Message": "=============OnCreate====================="
+        }
+      ],
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "HitNpcMonsterTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UpperBound": 3.5,
+            "LowerBound": -1,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "DontExitAfterEnter": true,
+            "ColliderRelativePath": "Trigger",
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AddMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 140202,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 500
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitNpcMonsterTriggerEffect",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UpperBound": 3.5,
+            "LowerBound": -1,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "ColliderRelativePath": "Trigger",
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AddAdventureModifier",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ModifierName": "ADV_StageAbility_Maze_Aglaea_Hit",
+                "Count": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              }
+            ],
+            "OnTriggerExit": [
+              {
+                "$type": "RPG.GameCore.RemoveAdventureModifier",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ModifierName": "ADV_StageAbility_Maze_Aglaea_Hit"
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitPropTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "Prop"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByIsPropLockable",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "DontExitAfterEnter": true,
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitProp",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ClientMode": "PreShow"
+              },
+              {
+                "$type": "RPG.GameCore.TriggerEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Aglaea_00/Eff_Avatar_Aglaea_00_MazeSkill01_Hit01.prefab",
+                "AttachPoint": "SelectRoot",
+                "ForceSimulateImmediately": false
+              }
+            ],
+            "OnTriggerExit": [],
+            "OnTriggerEnterRollback": [
+              {
+                "$type": "RPG.GameCore.PropDestructReset",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                }
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitNPCTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "UseVerticalBound": true,
+            "UseSummonerAsCheckSource": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPC"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByTargetHitBoxActive",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitTarget",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "HitConfig": {
+                  "HitAnimation": "Hit",
+                  "HitEffect": "Effects/Eff_Prefab/Eff_Avatar/Eff_Aglaea_00/Eff_Avatar_Aglaea_00_MazeSkill01_Hit01.prefab",
+                  "HitEffectHeight": 1
+                }
+              }
+            ],
+            "OnTriggerExit": []
+          }
+        ]
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Feixiao_00_Ability.json",
+    "sha256": "717291e7868eadc07c463f4ea52cb40749ecb8f600c65b733645a5af26070da0",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      1,
+      "SuccessTaskList",
+      5
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 12202,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Distance": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 4
+        }
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 0.5
+        }
+      },
+      "PosAdaption": {
+        "Option": "RayCastCheck",
+        "AvoidanceRadius": 0.5
+      },
+      "ForbidSkillMsg": true,
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.LookAt",
+          "TargetType": "CustomTarget",
+          "CustomTargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "ParamEntity"
+          },
+          "Duration": 0.015
+        },
+        {
+          "$type": "RPG.GameCore.VCameraConfigChange",
+          "CameraConfig": {
+            "Freelook3rdConfig": {
+              "ZoomChangeParam": {
+                "Time": 0.2
+              },
+              "AxisYChangeParam": {
+                "TargetValue": 0.5,
+                "Time": 0.2
+              }
+            }
+          }
+        }
+      ]
+    },
+    "abilityName": "LocalPlayer_Feixiao_00_NormalAtk01",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 6,
+    "row": {
+      "ID": 12202,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Feixiao_00_MazeSkill_Config.json",
+      "IsClient": true,
+      "DestroyOnEnterBattle": true,
+      "MaxSummonCount": 1
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Feixiao_00_MazeSkill_Config.json",
+    "configSHA256": "0123bf08793cbab931a29bff9ab5c158df31981a7609c84222ac9d639c7f05e5",
+    "config": {
+      "GroupConfigName": "StaticUnit",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "GatheringRange",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 12
+              }
+            },
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "OnTriggerEnter": []
+          },
+          {
+            "TriggerName": "AttackRange",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 4
+              }
+            },
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "OnTriggerEnter": []
+          }
+        ]
+      },
+      "GatherConfig": {
+        "RegionOffset": -5,
+        "RegionRadius": 3,
+        "ConstraintRadius": 12,
+        "UpdateOnce": true,
+        "DampSmoothTime": 0,
+        "CentripetalSpeedCurve": "Camera/BlendCurve/BlendCut_1220_MazeCentripetalSpeed.asset",
+        "CentripetalFactorX": 12,
+        "CentripetalFactorY": 50,
+        "TangentSpeedCurve": "Camera/BlendCurve/BlendCut_1220_MazeTangentSpeed.asset",
+        "TangentSpeedFactorX": 40,
+        "TangentSpeedFactorY": 6,
+        "MaxRadius": 2,
+        "RingCount": 3,
+        "IsClockwise": true,
+        "UpdateDirection": false,
+        "CollideIgnorePlayer": true,
+        "ForAttack": true,
+        "FilterModifiers": [
+          "ADV_StageAbility_Maze_Feixiao_GatheredEnemy"
+        ]
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Harscyline_00_Ability.json",
+    "sha256": "bfb09d34c0d5403bbda9d0b52f0d737b7f8ad7cdafc28845b5d689c3a8323ad4",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      1,
+      "SuccessTaskList",
+      3
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 14101,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Distance": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 2
+        }
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 20
+        }
+      },
+      "PosAdaption": {
+        "Option": 69,
+        "NavMeshEdgeAvoidanceRadius": 1.2
+      }
+    },
+    "abilityName": "LocalPlayer_Harscyline_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 24,
+    "row": {
+      "ID": 14101,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Harscyline_00_Config.json",
+      "DestroyOnEnterBattle": true,
+      "MaxSummonCount": 1,
+      "UniqueGroup": "TeamField"
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Harscyline_00_Config.json",
+    "configSHA256": "fa5e370f02cb82653e72b33dcdd11da05fe93d51ea6ee307479092858878825f",
+    "config": {
+      "GroupConfigName": "Field",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "ResidentEffects": [
+        {
+          "$type": "RPG.GameCore.TriggerEffect",
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_01.prefab",
+          "Delay": 0.09,
+          "ForceSimulateImmediately": false
+        },
+        {
+          "$type": "RPG.GameCore.TriggerEffect",
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_fish.prefab",
+          "Delay": 0.77,
+          "ForceSimulateImmediately": false
+        }
+      ],
+      "FadeoutTime": 1.2,
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.AdvMarkAsTauntProxy",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "CasterSummoner"
+          },
+          "ProxyTargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          }
+        },
+        {
+          "$type": "RPG.GameCore.WaitSecond",
+          "WaitTime": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 0.835
+            }
+          }
+        },
+        {
+          "$type": "RPG.GameCore.SetTargetDirMove",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "Speed": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 1.5
+            }
+          },
+          "Duration": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 10
+            }
+          },
+          "PosAdaption": {
+            "Option": 69,
+            "NavMeshEdgeAvoidanceRadius": 1.2,
+            "SmoothTime": 1
+          }
+        }
+      ],
+      "OnDestroy": [
+        {
+          "$type": "RPG.GameCore.RemoveMazeBuff",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvAllNPCMonsters"
+          },
+          "ID": 141001
+        },
+        {
+          "$type": "RPG.GameCore.WaitSecond",
+          "WaitTime": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 0.9
+            }
+          }
+        },
+        {
+          "$type": "RPG.GameCore.RemoveEffect",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_fish.prefab",
+          "ForceImmediateFadeOut": false
+        },
+        {
+          "$type": "RPG.GameCore.RemoveEffect",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_01.prefab",
+          "ForceImmediateFadeOut": false
+        }
+      ],
+      "OnBeReplaced": [
+        {
+          "$type": "RPG.GameCore.RemoveMazeBuff",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvAllNPCMonsters"
+          },
+          "ID": 141002
+        }
+      ],
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "AttractNpcMonsterTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 6
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AddMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141001,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 500
+                  }
+                }
+              },
+              {
+                "$type": "RPG.GameCore.AddMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141002,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 500
+                  }
+                }
+              }
+            ],
+            "OnTriggerExit": [
+              {
+                "$type": "RPG.GameCore.RemoveMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141001
+              },
+              {
+                "$type": "RPG.GameCore.RefreshMazeBuffTime",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141002,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1.5
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "DynamicValues": {
+        "Floats": {}
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Harscyline_00_Ability.json",
+    "sha256": "bfb09d34c0d5403bbda9d0b52f0d737b7f8ad7cdafc28845b5d689c3a8323ad4",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      1,
+      "FailedTaskList",
+      2
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 14101,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Distance": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 2
+        }
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 20
+        }
+      },
+      "PosAdaption": {
+        "Option": 69,
+        "AvoidanceRadius": 1.2
+      }
+    },
+    "abilityName": "LocalPlayer_Harscyline_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 24,
+    "row": {
+      "ID": 14101,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Harscyline_00_Config.json",
+      "DestroyOnEnterBattle": true,
+      "MaxSummonCount": 1,
+      "UniqueGroup": "TeamField"
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Harscyline_00_Config.json",
+    "configSHA256": "fa5e370f02cb82653e72b33dcdd11da05fe93d51ea6ee307479092858878825f",
+    "config": {
+      "GroupConfigName": "Field",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "ResidentEffects": [
+        {
+          "$type": "RPG.GameCore.TriggerEffect",
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_01.prefab",
+          "Delay": 0.09,
+          "ForceSimulateImmediately": false
+        },
+        {
+          "$type": "RPG.GameCore.TriggerEffect",
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_fish.prefab",
+          "Delay": 0.77,
+          "ForceSimulateImmediately": false
+        }
+      ],
+      "FadeoutTime": 1.2,
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.AdvMarkAsTauntProxy",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "CasterSummoner"
+          },
+          "ProxyTargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          }
+        },
+        {
+          "$type": "RPG.GameCore.WaitSecond",
+          "WaitTime": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 0.835
+            }
+          }
+        },
+        {
+          "$type": "RPG.GameCore.SetTargetDirMove",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "Speed": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 1.5
+            }
+          },
+          "Duration": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 10
+            }
+          },
+          "PosAdaption": {
+            "Option": 69,
+            "NavMeshEdgeAvoidanceRadius": 1.2,
+            "SmoothTime": 1
+          }
+        }
+      ],
+      "OnDestroy": [
+        {
+          "$type": "RPG.GameCore.RemoveMazeBuff",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvAllNPCMonsters"
+          },
+          "ID": 141001
+        },
+        {
+          "$type": "RPG.GameCore.WaitSecond",
+          "WaitTime": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 0.9
+            }
+          }
+        },
+        {
+          "$type": "RPG.GameCore.RemoveEffect",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_fish.prefab",
+          "ForceImmediateFadeOut": false
+        },
+        {
+          "$type": "RPG.GameCore.RemoveEffect",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Harscyline_00/Eff_Avatar_Harscyline_00_MazeSkill01_01.prefab",
+          "ForceImmediateFadeOut": false
+        }
+      ],
+      "OnBeReplaced": [
+        {
+          "$type": "RPG.GameCore.RemoveMazeBuff",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvAllNPCMonsters"
+          },
+          "ID": 141002
+        }
+      ],
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "AttractNpcMonsterTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 6
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AddMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141001,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 500
+                  }
+                }
+              },
+              {
+                "$type": "RPG.GameCore.AddMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141002,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 500
+                  }
+                }
+              }
+            ],
+            "OnTriggerExit": [
+              {
+                "$type": "RPG.GameCore.RemoveMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141001
+              },
+              {
+                "$type": "RPG.GameCore.RefreshMazeBuffTime",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 141002,
+                "LifeTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1.5
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "DynamicValues": {
+        "Floats": {}
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Mydeimos_00_Ability.json",
+    "sha256": "7c6dec1ef63e283bea554981b7fe195ff841438e9832b8af8d13290a311657e4",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      1
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 14041,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Distance": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 4
+        }
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 3
+        }
+      },
+      "ForbidSkillMsg": true,
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.LookAt",
+          "TargetType": "CustomTarget",
+          "CustomTargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "ParamEntity"
+          },
+          "Duration": 0.015
+        }
+      ]
+    },
+    "abilityName": "LocalPlayer_Mydeimos_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 18,
+    "row": {
+      "ID": 14041,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Mydeimos_00_Config.json",
+      "DestroyOnEnterBattle": true,
+      "MaxSummonCount": 1
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Mydeimos_00_Config.json",
+    "configSHA256": "8092fc70b0b6834449009bba0ee1f30ca1f2724d2f51c73002ea5e92445b63ef",
+    "config": {
+      "GroupConfigName": "StaticUnit",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "GatheringRange",
+            "DefaultEnable": false,
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 10
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedNavmeshCheck": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "DontExitAfterEnter": true,
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitTarget",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "HitConfig": {
+                  "HitAnimation": "Hit_H",
+                  "HitEffect": "Effects/Eff_Prefab/Eff_Avatar/Eff_Mydeimos_00/Eff_Avatar_Mydeimos_00_MazeSkill_Hit.prefab",
+                  "HitEffectHeight": 1.2
+                },
+                "OnlyHitClientTarget": false
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitPropTrigger",
+            "DefaultEnable": false,
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 10
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "Prop"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByIsPropLockable",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "DontExitAfterEnter": true,
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitProp",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ClientMode": "PreShow",
+                "HitConfig": {
+                  "HitAnimation": "Hit",
+                  "HitEffect": "Effects/Eff_Prefab/Eff_Avatar/Eff_Mydeimos_00/Eff_Avatar_Mydeimos_00_MazeSkill_Hit.prefab",
+                  "HitEffectHeight": 1
+                }
+              }
+            ],
+            "OnTriggerExit": [],
+            "OnTriggerEnterRollback": [
+              {
+                "$type": "RPG.GameCore.PropDestructReset",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "GatherConfig": {
+        "RegionOffset": -4,
+        "RegionRadius": 4,
+        "UpdateOnce": true,
+        "DampSmoothTime": 0,
+        "CentripetalSpeedCurve": "Camera/BlendCurve/BlendCut_1220_MazeCentripetalSpeed.asset",
+        "CentripetalFactorX": 12,
+        "CentripetalFactorY": 100,
+        "TangentSpeedCurve": "Camera/BlendCurve/BlendCut_1220_MazeTangentSpeed.asset",
+        "TangentSpeedFactorX": 40,
+        "MinRadius": 1,
+        "MaxRadius": 2,
+        "RingCount": 2,
+        "IsClockwise": true,
+        "UpdateDirection": false,
+        "CollideIgnorePlayer": true,
+        "ForAttack": true
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Phainon_00_Ability.json",
+    "sha256": "c4c9a2ca0c83ed2ffab41f09bb9b9e7e1431240ad48c21e44bc20dc7db8490c1",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      2
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 14082,
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Distance": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 8
+        }
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 2
+        }
+      },
+      "ForbidSkillMsg": true
+    },
+    "abilityName": "LocalPlayer_Phainon_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 23,
+    "row": {
+      "ID": 14082,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Phainon_00_MazeSkill_Config.json",
+      "DestroyOnEnterBattle": true,
+      "MaxSummonCount": 1
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Phainon_00_MazeSkill_Config.json",
+    "configSHA256": "0dc2237f8b476bc7ab1b9c3da1d881c57dcb00819328d583671ef8e613ea07b6",
+    "config": {
+      "GroupConfigName": "FollowField",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "ResidentEffects": [
+        {
+          "$type": "RPG.GameCore.TriggerEffect",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_Mask.prefab",
+          "ForceSimulateImmediately": false
+        },
+        {
+          "$type": "RPG.GameCore.TriggerEffect",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_Camera.prefab",
+          "ForceSimulateImmediately": false
+        }
+      ],
+      "AttachPoint": "Origin",
+      "OnDestroy": [],
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "PhainonFieldTrigger_Monster",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 9
+              }
+            },
+            "NeedRaycast": true,
+            "ForceSyncTargetToSever": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "ColliderRelativePath": "Trigger",
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.PredicateTaskList",
+                "Predicate": {
+                  "$type": "RPG.GameCore.ByAllowInstantKill",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetAlias",
+                    "Alias": "TaskActionTarget"
+                  }
+                },
+                "SuccessTaskList": [
+                  {
+                    "$type": "RPG.GameCore.AddMazeBuff",
+                    "TargetType": {
+                      "$type": "RPG.GameCore.TargetAlias",
+                      "Alias": "TaskActionTarget"
+                    },
+                    "ID": 140802
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.TargetTimeSlow",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "TimeScale": 0.1,
+                "UnscaledDuration": 1,
+                "FadeInTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0.3
+                  }
+                },
+                "SlowKey": "Phainon_00_MazeSkill"
+              }
+            ],
+            "OnTriggerExit": [
+              {
+                "$type": "RPG.GameCore.ClearTargetTimeSlow",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "SlowKey": "Phainon_00_MazeSkill",
+                "FadeOut": false
+              },
+              {
+                "$type": "RPG.GameCore.RemoveMazeBuff",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ID": 140802
+              }
+            ]
+          },
+          {
+            "TriggerName": "PhainonFieldTrigger_Monster_TriggerHit",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 9
+              }
+            },
+            "NeedRaycast": true,
+            "ForceSyncTargetToSever": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "ColliderRelativePath": "Trigger",
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.PredicateTaskList",
+                "Predicate": {
+                  "$type": "RPG.GameCore.AdvByIsEliteMonster",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetAlias",
+                    "Alias": "TaskActionTarget"
+                  }
+                },
+                "SuccessTaskList": [
+                  {
+                    "$type": "RPG.GameCore.AddAdventureModifier",
+                    "TargetType": {
+                      "$type": "RPG.GameCore.TargetAlias",
+                      "Alias": "TaskActionTarget"
+                    },
+                    "ModifierName": "ADV_StageAbility_Maze_Phainon_00_Hit",
+                    "LifeTime": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 2
+                      }
+                    },
+                    "Count": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                ],
+                "FailedTaskList": [
+                  {
+                    "$type": "RPG.GameCore.AddAdventureModifier",
+                    "TargetType": {
+                      "$type": "RPG.GameCore.TargetAlias",
+                      "Alias": "TaskActionTarget"
+                    },
+                    "ModifierName": "ADV_StageAbility_Maze_Phainon_00_Confine",
+                    "LifeTime": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 2
+                      }
+                    },
+                    "Count": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitPropTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 9
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "Prop"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByIsPropLockable",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_Die.prefab",
+                "ForceSimulateImmediately": false,
+                "TowardTarget": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "Caster"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerHitProp",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ClientMode": "PreShow"
+              }
+            ],
+            "OnTriggerExit": [],
+            "OnTriggerEnterRollback": [
+              {
+                "$type": "RPG.GameCore.PropDestructReset",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Rappa_00_Ability.json",
+    "sha256": "7e89fb88d92a7ebab4cd757d9c10f2b623212333f902a96c75b90f838add0187",
+    "path": [
+      "AbilityList",
+      5,
+      "OnStart",
+      6
+    ],
+    "task": {
+      "$type": "RPG.GameCore.CreateSummonUnit",
+      "SummonUnitID": 13171,
+      "AttachTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "AdvLocalPlayer"
+      },
+      "PosTarget": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "Distance": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 1
+        }
+      },
+      "Duration": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 25
+        }
+      }
+    },
+    "abilityName": "LocalPlayer_Rappa_00_MazeSkill",
+    "tableSource": "references/TurnBasedGameData/ExcelOutput/SummonUnitData.json",
+    "tableSHA256": "3d49311126e83a32b7c6d89dc6b5ee3a3f13ecb8203081c43987a016289c2b09",
+    "tableIndex": 15,
+    "row": {
+      "ID": 13171,
+      "JsonPath": "Config/ConfigSummonUnit/SummonUnit_Rappa_00_Config.json",
+      "DestroyOnEnterBattle": true,
+      "RemoveMazeBuffOnDestroy": true,
+      "MaxSummonCount": 1
+    },
+    "configSource": "references/TurnBasedGameData/Config/ConfigSummonUnit/SummonUnit_Rappa_00_Config.json",
+    "configSHA256": "5f411b46218c9c8a58405aa370b7e510b00f6fe2c8dfeeecfefe4488f65685c9",
+    "config": {
+      "GroupConfigName": "FollowField",
+      "ConfigEntityPath": "Config/ConfigEntity/SummonUnit/SummonUnit_Common_TeamField_Entity.json",
+      "AttachPoint": "Origin",
+      "OnCreate": [
+        {
+          "$type": "RPG.GameCore.DisableMazeLockTarget",
+          "Target": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvLocalPlayer"
+          }
+        },
+        {
+          "$type": "RPG.GameCore.WaitSecond",
+          "WaitTime": {
+            "IsDynamic": false,
+            "FixedValue": {
+              "Value": 19.5
+            }
+          }
+        },
+        {
+          "$type": "RPG.GameCore.SetSummonUnitTriggerEnable",
+          "SummonUnit": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "TriggerNames": [
+            "HitNpcMonsterTrigger"
+          ]
+        }
+      ],
+      "OnDestroy": [
+        {
+          "$type": "RPG.GameCore.DisableMazeLockTarget",
+          "Target": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvLocalPlayer"
+          },
+          "Disable": false
+        },
+        {
+          "$type": "RPG.GameCore.RemoveMazeBuff",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "AdvLocalPlayer"
+          },
+          "ID": 131702
+        }
+      ],
+      "TriggerConfig": {
+        "CustomTriggers": [
+          {
+            "TriggerName": "HitNpcMonsterTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 2.1
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPCMonster"
+            ],
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.AdventureTriggerTargetAbility",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "CasterSummoner"
+                },
+                "SkillType": "MazeSkill",
+                "AbilityName": "LocalPlayer_Rappa_00_MazeSkill_TriggerHitMonster",
+                "AbilityTargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                }
+              }
+            ]
+          },
+          {
+            "TriggerName": "HitNPCTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 2.1
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "NPC"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByTargetHitBoxActive",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitTarget",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "HitConfig": {
+                  "HitAnimation": "Hit",
+                  "HitEffect": "Effects/Eff_Prefab/Eff_Avatar/Eff_Rappa_00/Eff_Avatar_Rappa_00_MazeSkill01_Hit01.prefab",
+                  "HitEffectHeight": 1
+                }
+              }
+            ],
+            "OnTriggerExit": []
+          },
+          {
+            "TriggerName": "HitPropTrigger",
+            "Radius": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 2.1
+              }
+            },
+            "UseVerticalBound": true,
+            "NeedRaycast": true,
+            "TargetTypes": [
+              "Prop"
+            ],
+            "TargetFilter": {
+              "$type": "RPG.GameCore.ByIsPropLockable",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "OnTriggerEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerHitProp",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                },
+                "ClientMode": "PreShow",
+                "HitConfig": {
+                  "HitAnimation": "Hit",
+                  "HitEffect": "Effects/Eff_Prefab/Eff_Avatar/Eff_Rappa_00/Eff_Avatar_Rappa_00_MazeSkill01_Hit01.prefab",
+                  "HitEffectHeight": 1
+                }
+              }
+            ],
+            "OnTriggerExit": [],
+            "OnTriggerEnterRollback": [
+              {
+                "$type": "RPG.GameCore.PropDestructReset",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "TaskActionTarget"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_SilverWolf999_00_Ability.json",
+    "sha256": "ca2ac3cc963753d7a97c0f9947be135cb806e129e28e31258284df98179d869b",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      0,
+      "SuccessTaskList",
+      0
+    ],
+    "task": {
+      "$type": "RPG.GameCore.DestroySummonUnit",
+      "SummonUnit": {
+        "$type": "RPG.GameCore.TargetFetchSummonUnit",
+        "Summoner": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "SummonUnitID": 15061
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  }
+]

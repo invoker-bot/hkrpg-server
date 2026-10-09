@@ -1,0 +1,109 @@
+{
+  "nativeFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "nativeMethods": [
+    {
+      "index": 74820,
+      "name": "get_Val",
+      "rva": "0x1cd81b00",
+      "typeIndex": 10854,
+      "typeName": "NKDKGFGBPNL",
+      "endRva": "0x1cd81c68",
+      "unwindRva": "0x8e7461c",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "565755534883ec284889ce803d4b6ba7ec000f84d8000000488b46384885c00f84e9000000488b0d94045eec488b104839ca74230fb6a9b40000004038aab40000000f82c6000000488b526848394ceaf80f85b7000000488b78204885ff0f84aa000000488b5e40488b0d19fa5dec80b9b7000000000f849f0000008b2d6e415cec803dc8db57ec000f85a4000000488b0d6aa45dec80b9b7000000000f84b50000004889d94889fa4189e8e83f1f4aee4889442420488b5630488d4c2420e80ce83800488b7c24204889f1e88ffcffff4889c34889f1e8d4fdffff4889f94889da4989c0e816fef40048894658eb22b98d130000e8f614fbe6c6055c6aa7ec01488b46384885c00f8517ffffff488b46584883c4285b5d5f5ec3e860a1fae68b2dca405cec803d24db57ec000f845cffffffb981c70700e8d31b66f94885c074204889c14889fa4989d84189e9e8cd1136f9e959ffffffe823a1fae6e941ffffffe8e963f4e6cc",
+      "sha256": "da919b53122545ede68cf2af1fca2e0e6d2752b464c6ac8660a1e3c24c89ca46"
+    },
+    {
+      "index": 508325,
+      "name": "GetDynamicValueByKey",
+      "rva": "0xe4c4ca0",
+      "typeIndex": 54404,
+      "typeName": "AbilityStatic",
+      "endRva": "0xe4c4df1",
+      "unwindRva": "0x5bd8508",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "555657534883ec58488d6c245048c745f8feffffff4489c389d64889cf48c745d800000000803da9a4e3fa007571488b0db373e9fa80b9b7000000000f84850000004889f989f24189d8e8e1e8ffff4885c0747d488b08488b5020488955e048897820488bb9f8000000f681ba00000004488945f0745f4c8d45d8488b4df089f24531c9ffd7488b45d8488b4de0488b55f048894a204883c4585b5f5e5dc3b9a5c10700e8c7eaf1074885c074784889c14889fa4189f04189d94883c4585b5f5e5de91941c107e8147086f5e971ffffffe8da3280f5f681b80000000e740cba07000000e8275486f5eb8c488b4160b9235f4c4b33481883c107488b05d75d62fbba52cd69c70390600100004863c2480305ca5d62fb4863c98b0c88e86ffb86f5e951ffffffe8853280f5488b45f0488b4de04889482048837de800750731c0e951ffffff488b4de831d2e8503280f5cc",
+      "sha256": "296e4fd2522d6ebd2de0ed002a39b69a8033f53bc45cef1435a2698b060985e3"
+    },
+    {
+      "index": 509825,
+      "name": "RPG.GameCore.IAliasEvaluator.EvaluateAlias",
+      "rva": "0xe779e80",
+      "typeIndex": 54774,
+      "typeName": "TaskContext",
+      "endRva": "0xe779ef2",
+      "unwindRva": "0x5bffcf4",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "5657534883ec204489c64889d74889cb803dba58b8fa007525488b0d6021befa80b9b700000000743c4889f94889da4189f04883c4205b5f5ee9329caafcb981c70700e84899c6074885c0741f4889c14889da4989f84189f14883c4205b5f5ee93b8f9607e8961e5bf5ebbde85fe154f5cc",
+      "sha256": "f10992da48bea79945b505ec0eba3ca9d081d10ab64a260ad6340c4ddf082730"
+    }
+  ],
+  "nativeBytes": 811,
+  "lookupTypeFields": {
+    "typeIndex": 10850,
+    "name": "ENEIHJJPNPI",
+    "fields": [
+      {
+        "fieldIndex": 47145,
+        "name": "CBPIHFNFPLD",
+        "nativeTypeIndex": 490509,
+        "nativeType": {
+          "kind": 21,
+          "attributes": 6
+        },
+        "isStatic": false,
+        "instanceOffset": 16
+      },
+      {
+        "fieldIndex": 47146,
+        "name": "CAOOBPKAPEO",
+        "nativeTypeIndex": 490510,
+        "nativeType": {
+          "kind": 21,
+          "attributes": 38
+        },
+        "isStatic": false,
+        "instanceOffset": 24
+      },
+      {
+        "fieldIndex": 47147,
+        "name": "<AliasEvaluator>k__BackingField",
+        "nativeTypeIndex": 490511,
+        "nativeType": {
+          "kind": 18,
+          "attributes": 1,
+          "typeIndex": 10849,
+          "name": "GGMPKKNCLHF"
+        },
+        "isStatic": false,
+        "instanceOffset": 32
+      }
+    ]
+  },
+  "bindingFieldOffset": 32,
+  "readVirtualSlot": 7,
+  "bindingOrder": [
+    "select lookup",
+    "save previous evaluator",
+    "bind current context",
+    "read numeric value",
+    "restore previous evaluator"
+  ],
+  "explicitContextAliasBindingImplemented": true,
+  "restoresPreviousBindingOnReturn": true,
+  "restoresPreviousBindingOnFailure": true,
+  "sameLookupConcurrentContextsSerialized": true,
+  "actualTaskConfigurationDecoded": false,
+  "nativeAliasTaskSequenceImplemented": false,
+  "liveBattleContextAttached": false,
+  "actualParameterValuesResolved": false,
+  "liveCasterPropertiesRead": false,
+  "originalTaskBranchesExecutedInBattle": false,
+  "abilityExecutionVerified": false,
+  "clientGameplayVerified": false,
+  "allResonanceAbilitiesImplemented": false,
+  "extendedCellsImplemented": false
+}

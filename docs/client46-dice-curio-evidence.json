@@ -1,0 +1,1212 @@
+{
+  "passed": true,
+  "clientModified": false,
+  "clientExecutableStarted": false,
+  "clientGameplayVerified": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "nativeReplacementOneof1957AndFields1And14Verified": true,
+  "methods": {
+    "consumer": {
+      "clientModified": false,
+      "clientExecutableStarted": false,
+      "clientGameplayVerified": false,
+      "dllSHA256": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+      "requestedRVA": "0x15d78250",
+      "rva": "0x15d78250",
+      "unwindEndRVA": "0x15d789c3",
+      "byteSHA256": "2180d09d121caedad236050de54cf0e32b4dea994f250ff33c12234f48e8f10f",
+      "fullUnwindRangeCovered": true,
+      "instructions": [
+        "15d78250: push r14",
+        "15d78252: push rsi",
+        "15d78253: push rdi",
+        "15d78254: push rbp",
+        "15d78255: push rbx",
+        "15d78256: sub rsp, 0x30",
+        "15d7825a: mov rdi, rdx",
+        "15d7825d: mov rsi, rcx",
+        "15d78260: cmp byte ptr [rip - 0xca5e997], 0",
+        "15d78267: jne 0x195d787b3",
+        "15d7826d: test rdi, rdi",
+        "15d78270: je 0x195d787de",
+        "15d78276: mov eax, dword ptr [rdi + 0x20]",
+        "15d78279: cmp eax, 0x37e",
+        "15d7827e: jne 0x195d782fd",
+        "15d78280: mov rcx, qword ptr [rdi + 0x18]",
+        "15d78284: test rcx, rcx",
+        "15d78287: je 0x195d782fd",
+        "15d78289: mov rdx, qword ptr [rip - 0xc9be808]",
+        "15d78290: cmp qword ptr [rcx], rdx",
+        "15d78293: jne 0x195d787ae",
+        "15d78299: test rsi, rsi",
+        "15d7829c: je 0x195d787a2",
+        "15d782a2: mov rbx, qword ptr [rcx + 0x18]",
+        "15d782a6: mov r8, qword ptr [rip - 0xca04955]",
+        "15d782ad: mov rcx, qword ptr [rsi]",
+        "15d782b0: movzx eax, word ptr [rcx + 0xb2]",
+        "15d782b7: test rax, rax",
+        "15d782ba: je 0x195d782e3",
+        "15d782bc: mov rdx, qword ptr [rcx + 0x50]",
+        "15d782c0: shl rax, 4",
+        "15d782c4: xor ebp, ebp",
+        "15d782c6: nop word ptr cs:[rax + rax]",
+        "15d782d0: cmp qword ptr [rdx + rbp], r8",
+        "15d782d4: je 0x195d78390",
+        "15d782da: add rbp, 0x10",
+        "15d782de: cmp rax, rbp",
+        "15d782e1: jne 0x195d782d0",
+        "15d782e3: lea rcx, [rsp + 0x20]",
+        "15d782e8: mov rdx, rsi",
+        "15d782eb: xor r9d, r9d",
+        "15d782ee: call 0x183d29610",
+        "15d782f3: mov rbp, qword ptr [rsp + 0x28]",
+        "15d782f8: jmp 0x195d783c4",
+        "15d782fd: test rsi, rsi",
+        "15d78300: sete r14b",
+        "15d78304: cmp eax, 0x5b2",
+        "15d78309: jne 0x195d783e0",
+        "15d7830f: mov rcx, qword ptr [rdi + 0x18]",
+        "15d78313: test rcx, rcx",
+        "15d78316: je 0x195d787a2",
+        "15d7831c: mov rdx, qword ptr [rip - 0xc9be893]",
+        "15d78323: cmp qword ptr [rcx], rdx",
+        "15d78326: jne 0x195d787ae",
+        "15d7832c: test r14b, r14b",
+        "15d7832f: jne 0x195d787a2",
+        "15d78335: mov ebx, dword ptr [rcx + 0x18]",
+        "15d78338: mov r8, qword ptr [rip - 0xca049e7]",
+        "15d7833f: mov rcx, qword ptr [rsi]",
+        "15d78342: movzx eax, word ptr [rcx + 0xb2]",
+        "15d78349: test rax, rax",
+        "15d7834c: je 0x195d78373",
+        "15d7834e: mov rdx, qword ptr [rcx + 0x50]",
+        "15d78352: shl rax, 4",
+        "15d78356: xor ebp, ebp",
+        "15d78358: nop dword ptr [rax + rax]",
+        "15d78360: cmp qword ptr [rdx + rbp], r8",
+        "15d78364: je 0x195d78470",
+        "15d7836a: add rbp, 0x10",
+        "15d7836e: cmp rax, rbp",
+        "15d78371: jne 0x195d78360",
+        "15d78373: lea rcx, [rsp + 0x20]",
+        "15d78378: mov rdx, rsi",
+        "15d7837b: mov r9d, 1",
+        "15d78381: call 0x183d29610",
+        "15d78386: mov rbp, qword ptr [rsp + 0x28]",
+        "15d7838b: jmp 0x195d784a6",
+        "15d78390: mov edx, dword ptr [rdx + rbp + 8]",
+        "15d78394: mov rbp, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7839c: mov qword ptr [rsp + 0x28], rbp",
+        "15d783a1: test byte ptr [rcx + 0xba], 4",
+        "15d783a8: je 0x195d787e3",
+        "15d783ae: movzx eax, word ptr [rcx + 0xb0]",
+        "15d783b5: add eax, edx",
+        "15d783b7: mov rax, qword ptr [rcx + rax*8 + 0xc0]",
+        "15d783bf: mov qword ptr [rsp + 0x20], rax",
+        "15d783c4: xor r14d, r14d",
+        "15d783c7: mov rcx, rsi",
+        "15d783ca: mov rdx, rbx",
+        "15d783cd: xor r8d, r8d",
+        "15d783d0: call rbp",
+        "15d783d2: mov eax, dword ptr [rdi + 0x20]",
+        "15d783d5: cmp eax, 0x5b2",
+        "15d783da: je 0x195d7830f",
+        "15d783e0: cmp eax, 0x241",
+        "15d783e5: jne 0x195d784be",
+        "15d783eb: mov rcx, qword ptr [rdi + 0x18]",
+        "15d783ef: test rcx, rcx",
+        "15d783f2: je 0x195d787a2",
+        "15d783f8: mov rdx, qword ptr [rip - 0xc9c2377]",
+        "15d783ff: cmp qword ptr [rcx], rdx",
+        "15d78402: jne 0x195d787ae",
+        "15d78408: test r14b, r14b",
+        "15d7840b: jne 0x195d787a2",
+        "15d78411: mov rbx, qword ptr [rcx + 0x18]",
+        "15d78415: mov r8, qword ptr [rip - 0xca04ac4]",
+        "15d7841c: mov rcx, qword ptr [rsi]",
+        "15d7841f: movzx eax, word ptr [rcx + 0xb2]",
+        "15d78426: test rax, rax",
+        "15d78429: je 0x195d78453",
+        "15d7842b: mov rdx, qword ptr [rcx + 0x50]",
+        "15d7842f: shl rax, 4",
+        "15d78433: xor ebp, ebp",
+        "15d78435: nop word ptr cs:[rax + rax]",
+        "15d78440: cmp qword ptr [rdx + rbp], r8",
+        "15d78444: je 0x195d78550",
+        "15d7844a: add rbp, 0x10",
+        "15d7844e: cmp rax, rbp",
+        "15d78451: jne 0x195d78440",
+        "15d78453: lea rcx, [rsp + 0x20]",
+        "15d78458: mov rdx, rsi",
+        "15d7845b: mov r9d, 2",
+        "15d78461: call 0x183d29610",
+        "15d78466: mov rbp, qword ptr [rsp + 0x28]",
+        "15d7846b: jmp 0x195d78587",
+        "15d78470: mov edx, dword ptr [rdx + rbp + 8]",
+        "15d78474: inc edx",
+        "15d78476: mov rbp, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7847e: mov qword ptr [rsp + 0x28], rbp",
+        "15d78483: test byte ptr [rcx + 0xba], 4",
+        "15d7848a: je 0x195d787f6",
+        "15d78490: movzx eax, word ptr [rcx + 0xb0]",
+        "15d78497: add edx, eax",
+        "15d78499: mov rax, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d784a1: mov qword ptr [rsp + 0x20], rax",
+        "15d784a6: mov rcx, rsi",
+        "15d784a9: mov edx, ebx",
+        "15d784ab: xor r8d, r8d",
+        "15d784ae: call rbp",
+        "15d784b0: mov eax, dword ptr [rdi + 0x20]",
+        "15d784b3: cmp eax, 0x241",
+        "15d784b8: je 0x195d783eb",
+        "15d784be: cmp eax, 0x562",
+        "15d784c3: jne 0x195d785a0",
+        "15d784c9: mov rcx, qword ptr [rdi + 0x18]",
+        "15d784cd: test rcx, rcx",
+        "15d784d0: je 0x195d787a2",
+        "15d784d6: mov rdx, qword ptr [rip - 0xc9f5665]",
+        "15d784dd: cmp qword ptr [rcx], rdx",
+        "15d784e0: jne 0x195d787ae",
+        "15d784e6: test r14b, r14b",
+        "15d784e9: jne 0x195d787a2",
+        "15d784ef: mov rbx, qword ptr [rcx + 0x10]",
+        "15d784f3: mov r8, qword ptr [rip - 0xca04ba2]",
+        "15d784fa: mov rcx, qword ptr [rsi]",
+        "15d784fd: movzx eax, word ptr [rcx + 0xb2]",
+        "15d78504: test rax, rax",
+        "15d78507: je 0x195d78533",
+        "15d78509: mov rdx, qword ptr [rcx + 0x50]",
+        "15d7850d: shl rax, 4",
+        "15d78511: xor ebp, ebp",
+        "15d78513: nop word ptr cs:[rax + rax]",
+        "15d78520: cmp qword ptr [rdx + rbp], r8",
+        "15d78524: je 0x195d78630",
+        "15d7852a: add rbp, 0x10",
+        "15d7852e: cmp rax, rbp",
+        "15d78531: jne 0x195d78520",
+        "15d78533: lea rcx, [rsp + 0x20]",
+        "15d78538: mov rdx, rsi",
+        "15d7853b: mov r9d, 2",
+        "15d78541: call 0x183d29610",
+        "15d78546: mov rbp, qword ptr [rsp + 0x28]",
+        "15d7854b: jmp 0x195d78667",
+        "15d78550: mov edx, dword ptr [rdx + rbp + 8]",
+        "15d78554: add edx, 2",
+        "15d78557: mov rbp, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7855f: mov qword ptr [rsp + 0x28], rbp",
+        "15d78564: test byte ptr [rcx + 0xba], 4",
+        "15d7856b: je 0x195d78809",
+        "15d78571: movzx eax, word ptr [rcx + 0xb0]",
+        "15d78578: add edx, eax",
+        "15d7857a: mov rax, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d78582: mov qword ptr [rsp + 0x20], rax",
+        "15d78587: mov rcx, rsi",
+        "15d7858a: mov rdx, rbx",
+        "15d7858d: xor r8d, r8d",
+        "15d78590: call rbp",
+        "15d78592: mov eax, dword ptr [rdi + 0x20]",
+        "15d78595: cmp eax, 0x562",
+        "15d7859a: je 0x195d784c9",
+        "15d785a0: cmp eax, 0x174",
+        "15d785a5: jne 0x195d78680",
+        "15d785ab: mov rcx, qword ptr [rdi + 0x18]",
+        "15d785af: test rcx, rcx",
+        "15d785b2: je 0x195d787a2",
+        "15d785b8: mov rdx, qword ptr [rip - 0xc9ece6f]",
+        "15d785bf: cmp qword ptr [rcx], rdx",
+        "15d785c2: jne 0x195d787ae",
+        "15d785c8: test r14b, r14b",
+        "15d785cb: jne 0x195d787a2",
+        "15d785d1: mov rbx, qword ptr [rcx + 0x10]",
+        "15d785d5: mov r8, qword ptr [rip - 0xca04c84]",
+        "15d785dc: mov rcx, qword ptr [rsi]",
+        "15d785df: movzx eax, word ptr [rcx + 0xb2]",
+        "15d785e6: test rax, rax",
+        "15d785e9: je 0x195d78613",
+        "15d785eb: mov rdx, qword ptr [rcx + 0x50]",
+        "15d785ef: shl rax, 4",
+        "15d785f3: xor ebp, ebp",
+        "15d785f5: nop word ptr cs:[rax + rax]",
+        "15d78600: cmp qword ptr [rdx + rbp], r8",
+        "15d78604: je 0x195d7870c",
+        "15d7860a: add rbp, 0x10",
+        "15d7860e: cmp rax, rbp",
+        "15d78611: jne 0x195d78600",
+        "15d78613: lea rcx, [rsp + 0x20]",
+        "15d78618: mov rdx, rsi",
+        "15d7861b: mov r9d, 2",
+        "15d78621: call 0x183d29610",
+        "15d78626: mov rbp, qword ptr [rsp + 0x28]",
+        "15d7862b: jmp 0x195d78743",
+        "15d78630: mov edx, dword ptr [rdx + rbp + 8]",
+        "15d78634: add edx, 2",
+        "15d78637: mov rbp, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7863f: mov qword ptr [rsp + 0x28], rbp",
+        "15d78644: test byte ptr [rcx + 0xba], 4",
+        "15d7864b: je 0x195d7885a",
+        "15d78651: movzx eax, word ptr [rcx + 0xb0]",
+        "15d78658: add edx, eax",
+        "15d7865a: mov rax, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d78662: mov qword ptr [rsp + 0x20], rax",
+        "15d78667: mov rcx, rsi",
+        "15d7866a: mov rdx, rbx",
+        "15d7866d: xor r8d, r8d",
+        "15d78670: call rbp",
+        "15d78672: mov eax, dword ptr [rdi + 0x20]",
+        "15d78675: cmp eax, 0x174",
+        "15d7867a: je 0x195d785ab",
+        "15d78680: cmp eax, 0x7a5",
+        "15d78685: jne 0x195d787a2",
+        "15d7868b: mov rcx, qword ptr [rdi + 0x18]",
+        "15d7868f: test rcx, rcx",
+        "15d78692: je 0x195d787a2",
+        "15d78698: mov rdx, qword ptr [rip - 0xc9bebff]",
+        "15d7869f: cmp qword ptr [rcx], rdx",
+        "15d786a2: jne 0x195d787ae",
+        "15d786a8: test r14b, r14b",
+        "15d786ab: jne 0x195d787a2",
+        "15d786b1: mov ebp, dword ptr [rcx + 0x20]",
+        "15d786b4: mov rbx, qword ptr [rcx + 0x10]",
+        "15d786b8: mov r8, qword ptr [rip - 0xca04d67]",
+        "15d786bf: mov rcx, qword ptr [rsi]",
+        "15d786c2: movzx eax, word ptr [rcx + 0xb2]",
+        "15d786c9: test rax, rax",
+        "15d786cc: je 0x195d786ef",
+        "15d786ce: mov rdx, qword ptr [rcx + 0x50]",
+        "15d786d2: shl rax, 4",
+        "15d786d6: xor edi, edi",
+        "15d786d8: nop dword ptr [rax + rax]",
+        "15d786e0: cmp qword ptr [rdx + rdi], r8",
+        "15d786e4: je 0x195d7875e",
+        "15d786e6: add rdi, 0x10",
+        "15d786ea: cmp rax, rdi",
+        "15d786ed: jne 0x195d786e0",
+        "15d786ef: lea rcx, [rsp + 0x20]",
+        "15d786f4: mov rdx, rsi",
+        "15d786f7: mov r9d, 3",
+        "15d786fd: call 0x183d29610",
+        "15d78702: mov rdi, qword ptr [rsp + 0x28]",
+        "15d78707: jmp 0x195d78795",
+        "15d7870c: mov edx, dword ptr [rdx + rbp + 8]",
+        "15d78710: add edx, 2",
+        "15d78713: mov rbp, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7871b: mov qword ptr [rsp + 0x28], rbp",
+        "15d78720: test byte ptr [rcx + 0xba], 4",
+        "15d78727: je 0x195d788ab",
+        "15d7872d: movzx eax, word ptr [rcx + 0xb0]",
+        "15d78734: add edx, eax",
+        "15d78736: mov rax, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7873e: mov qword ptr [rsp + 0x20], rax",
+        "15d78743: mov rcx, rsi",
+        "15d78746: mov rdx, rbx",
+        "15d78749: xor r8d, r8d",
+        "15d7874c: call rbp",
+        "15d7874e: mov eax, dword ptr [rdi + 0x20]",
+        "15d78751: cmp eax, 0x7a5",
+        "15d78756: je 0x195d7868b",
+        "15d7875c: jmp 0x195d787a2",
+        "15d7875e: mov edx, dword ptr [rdx + rdi + 8]",
+        "15d78762: add edx, 3",
+        "15d78765: mov rdi, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d7876d: mov qword ptr [rsp + 0x28], rdi",
+        "15d78772: test byte ptr [rcx + 0xba], 4",
+        "15d78779: je 0x195d788fc",
+        "15d7877f: movzx eax, word ptr [rcx + 0xb0]",
+        "15d78786: add edx, eax",
+        "15d78788: mov rax, qword ptr [rcx + rdx*8 + 0xc0]",
+        "15d78790: mov qword ptr [rsp + 0x20], rax",
+        "15d78795: mov rcx, rsi",
+        "15d78798: mov edx, ebp",
+        "15d7879a: mov r8, rbx",
+        "15d7879d: xor r9d, r9d",
+        "15d787a0: call rdi",
+        "15d787a2: nop ",
+        "15d787a3: add rsp, 0x30",
+        "15d787a7: pop rbx",
+        "15d787a8: pop rbp",
+        "15d787a9: pop rdi",
+        "15d787aa: pop rsi",
+        "15d787ab: pop r14",
+        "15d787ad: ret ",
+        "15d787ae: call 0x183cc82a0",
+        "15d787b3: mov ecx, 0x96900",
+        "15d787b8: call 0x1963e3810",
+        "15d787bd: test rax, rax",
+        "15d787c0: je 0x195d789bd",
+        "15d787c6: mov rcx, rax",
+        "15d787c9: mov rdx, rsi",
+        "15d787cc: mov r8, rdi",
+        "15d787cf: add rsp, 0x30",
+        "15d787d3: pop rbx",
+        "15d787d4: pop rbp",
+        "15d787d5: pop rdi",
+        "15d787d6: pop rsi",
+        "15d787d7: pop r14",
+        "15d787d9: jmp 0x195eefbd0",
+        "15d787de: call 0x183cc8050",
+        "15d787e3: test byte ptr [rcx + 0xb8], 0xe",
+        "15d787ea: je 0x195d78820",
+        "15d787ec: call 0x183d2a1b0",
+        "15d787f1: jmp 0x195d783bf",
+        "15d787f6: test byte ptr [rcx + 0xb8], 0xe",
+        "15d787fd: je 0x195d78871",
+        "15d787ff: call 0x183d2a1b0",
+        "15d78804: jmp 0x195d784a1",
+        "15d78809: test byte ptr [rcx + 0xb8], 0xe",
+        "15d78810: je 0x195d788c2",
+        "15d78816: call 0x183d2a1b0",
+        "15d7881b: jmp 0x195d78582",
+        "15d78820: mov rax, qword ptr [rcx + 0x60]",
+        "15d78824: mov ecx, 0x4b4c5f23",
+        "15d78829: xor ecx, dword ptr [rax + 0x18]",
+        "15d7882c: add ecx, edx",
+        "15d7882e: mov rax, qword ptr [rip - 0xc28dcbd]",
+        "15d78835: mov edx, 0xc769cd52",
+        "15d7883a: add edx, dword ptr [rax + 0x160]",
+        "15d78840: movsxd rax, edx",
+        "15d78843: add rax, qword ptr [rip - 0xc28dcca]",
+        "15d7884a: movsxd rcx, ecx",
+        "15d7884d: mov ecx, dword ptr [rax + rcx*4]",
+        "15d78850: call 0x183d34930",
+        "15d78855: jmp 0x195d783bf",
+        "15d7885a: test byte ptr [rcx + 0xb8], 0xe",
+        "15d78861: je 0x195d7890f",
+        "15d78867: call 0x183d2a1b0",
+        "15d7886c: jmp 0x195d78662",
+        "15d78871: mov rax, qword ptr [rcx + 0x60]",
+        "15d78875: mov ecx, 0x4b4c5f23",
+        "15d7887a: xor ecx, dword ptr [rax + 0x18]",
+        "15d7887d: add ecx, edx",
+        "15d7887f: mov rax, qword ptr [rip - 0xc28dd0e]",
+        "15d78886: mov edx, 0xc769cd52",
+        "15d7888b: add edx, dword ptr [rax + 0x160]",
+        "15d78891: movsxd rax, edx",
+        "15d78894: add rax, qword ptr [rip - 0xc28dd1b]",
+        "15d7889b: movsxd rcx, ecx",
+        "15d7889e: mov ecx, dword ptr [rax + rcx*4]",
+        "15d788a1: call 0x183d34930",
+        "15d788a6: jmp 0x195d784a1",
+        "15d788ab: test byte ptr [rcx + 0xb8], 0xe",
+        "15d788b2: je 0x195d78949",
+        "15d788b8: call 0x183d2a1b0",
+        "15d788bd: jmp 0x195d7873e",
+        "15d788c2: mov rax, qword ptr [rcx + 0x60]",
+        "15d788c6: mov ecx, 0x4b4c5f23",
+        "15d788cb: xor ecx, dword ptr [rax + 0x18]",
+        "15d788ce: add ecx, edx",
+        "15d788d0: mov rax, qword ptr [rip - 0xc28dd5f]",
+        "15d788d7: mov edx, 0xc769cd52",
+        "15d788dc: add edx, dword ptr [rax + 0x160]",
+        "15d788e2: movsxd rax, edx",
+        "15d788e5: add rax, qword ptr [rip - 0xc28dd6c]",
+        "15d788ec: movsxd rcx, ecx",
+        "15d788ef: mov ecx, dword ptr [rax + rcx*4]",
+        "15d788f2: call 0x183d34930",
+        "15d788f7: jmp 0x195d78582",
+        "15d788fc: test byte ptr [rcx + 0xb8], 0xe",
+        "15d78903: je 0x195d78983",
+        "15d78905: call 0x183d2a1b0",
+        "15d7890a: jmp 0x195d78790",
+        "15d7890f: mov rax, qword ptr [rcx + 0x60]",
+        "15d78913: mov ecx, 0x4b4c5f23",
+        "15d78918: xor ecx, dword ptr [rax + 0x18]",
+        "15d7891b: add ecx, edx",
+        "15d7891d: mov rax, qword ptr [rip - 0xc28ddac]",
+        "15d78924: mov edx, 0xc769cd52",
+        "15d78929: add edx, dword ptr [rax + 0x160]",
+        "15d7892f: movsxd rax, edx",
+        "15d78932: add rax, qword ptr [rip - 0xc28ddb9]",
+        "15d78939: movsxd rcx, ecx",
+        "15d7893c: mov ecx, dword ptr [rax + rcx*4]",
+        "15d7893f: call 0x183d34930",
+        "15d78944: jmp 0x195d78662",
+        "15d78949: mov rax, qword ptr [rcx + 0x60]",
+        "15d7894d: mov ecx, 0x4b4c5f23",
+        "15d78952: xor ecx, dword ptr [rax + 0x18]",
+        "15d78955: add ecx, edx",
+        "15d78957: mov rax, qword ptr [rip - 0xc28dde6]",
+        "15d7895e: mov edx, 0xc769cd52",
+        "15d78963: add edx, dword ptr [rax + 0x160]",
+        "15d78969: movsxd rax, edx",
+        "15d7896c: add rax, qword ptr [rip - 0xc28ddf3]",
+        "15d78973: movsxd rcx, ecx",
+        "15d78976: mov ecx, dword ptr [rax + rcx*4]",
+        "15d78979: call 0x183d34930",
+        "15d7897e: jmp 0x195d7873e",
+        "15d78983: mov rax, qword ptr [rcx + 0x60]",
+        "15d78987: mov ecx, 0x4b4c5f23",
+        "15d7898c: xor ecx, dword ptr [rax + 0x18]",
+        "15d7898f: add ecx, edx",
+        "15d78991: mov rax, qword ptr [rip - 0xc28de20]",
+        "15d78998: mov edx, 0xc769cd52",
+        "15d7899d: add edx, dword ptr [rax + 0x160]",
+        "15d789a3: movsxd rax, edx",
+        "15d789a6: add rax, qword ptr [rip - 0xc28de2d]",
+        "15d789ad: movsxd rcx, ecx",
+        "15d789b0: mov ecx, dword ptr [rax + rcx*4]",
+        "15d789b3: call 0x183d34930",
+        "15d789b8: jmp 0x195d78790",
+        "15d789bd: call 0x183cc8050",
+        "15d789c2: int3 "
+      ]
+    },
+    "model": {
+      "clientModified": false,
+      "clientExecutableStarted": false,
+      "clientGameplayVerified": false,
+      "dllSHA256": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+      "requestedRVA": "0xdf3bc90",
+      "rva": "0xdf3bc90",
+      "unwindEndRVA": "0xdf3bd41",
+      "byteSHA256": "72062fc10d57c92862ae00f9a315f747d1a0d2fc7837596a26d3c11022b9332b",
+      "fullUnwindRangeCovered": true,
+      "instructions": [
+        "df3bc90: push rsi",
+        "df3bc91: push rdi",
+        "df3bc92: push rbx",
+        "df3bc93: sub rsp, 0x20",
+        "df3bc97: mov rsi, r8",
+        "df3bc9a: mov edi, edx",
+        "df3bc9c: mov rbx, rcx",
+        "df3bc9f: cmp byte ptr [rip - 0x4c2209a], 0",
+        "df3bca6: jne 0x18df3bceb",
+        "df3bca8: test rsi, rsi",
+        "df3bcab: je 0x18df3bce2",
+        "df3bcad: mov rcx, rbx",
+        "df3bcb0: mov edx, edi",
+        "df3bcb2: call 0x18df3bb70",
+        "df3bcb7: test rax, rax",
+        "df3bcba: je 0x18df3bce2",
+        "df3bcbc: mov rdi, rax",
+        "df3bcbf: cmp byte ptr [rip - 0x4c220f4], 0",
+        "df3bcc6: jne 0x18df3bd12",
+        "df3bcc8: mov edx, dword ptr [rsi + 0x20]",
+        "df3bccb: mov r8d, dword ptr [rsi + 0x18]",
+        "df3bccf: mov r9d, dword ptr [rsi + 0x1c]",
+        "df3bcd3: mov rcx, rdi",
+        "df3bcd6: add rsp, 0x20",
+        "df3bcda: pop rbx",
+        "df3bcdb: pop rdi",
+        "df3bcdc: pop rsi",
+        "df3bcdd: jmp 0x18df39010",
+        "df3bce2: nop ",
+        "df3bce3: add rsp, 0x20",
+        "df3bce7: pop rbx",
+        "df3bce8: pop rdi",
+        "df3bce9: pop rsi",
+        "df3bcea: ret ",
+        "df3bceb: mov ecx, 0x96c3c",
+        "df3bcf0: call 0x1963e3810",
+        "df3bcf5: test rax, rax",
+        "df3bcf8: je 0x18df3bd36",
+        "df3bcfa: mov rcx, rax",
+        "df3bcfd: mov rdx, rbx",
+        "df3bd00: mov r8d, edi",
+        "df3bd03: mov r9, rsi",
+        "df3bd06: add rsp, 0x20",
+        "df3bd0a: pop rbx",
+        "df3bd0b: pop rdi",
+        "df3bd0c: pop rsi",
+        "df3bd0d: jmp 0x195f37910",
+        "df3bd12: mov ecx, 0x96c02",
+        "df3bd17: call 0x1963e3810",
+        "df3bd1c: test rax, rax",
+        "df3bd1f: je 0x18df3bd3b",
+        "df3bd21: mov rcx, rax",
+        "df3bd24: mov rdx, rdi",
+        "df3bd27: mov r8, rsi",
+        "df3bd2a: add rsp, 0x20",
+        "df3bd2e: pop rbx",
+        "df3bd2f: pop rdi",
+        "df3bd30: pop rsi",
+        "df3bd31: jmp 0x195eefbd0",
+        "df3bd36: call 0x183cc8050",
+        "df3bd3b: call 0x183cc8050",
+        "df3bd40: int3 "
+      ]
+    },
+    "writer": {
+      "clientModified": false,
+      "clientExecutableStarted": false,
+      "clientGameplayVerified": false,
+      "dllSHA256": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+      "requestedRVA": "0x1e74c1f0",
+      "rva": "0x1e74c1f0",
+      "unwindEndRVA": "0x1e74c2c7",
+      "byteSHA256": "b673188cf24d069b82ee29f4772b73a44f57b457c41fc696e7f2aa81a7fb594a",
+      "fullUnwindRangeCovered": true,
+      "instructions": [
+        "1e74c1f0: push rsi",
+        "1e74c1f1: push rdi",
+        "1e74c1f2: sub rsp, 0x28",
+        "1e74c1f6: mov rsi, rdx",
+        "1e74c1f9: mov rdi, rcx",
+        "1e74c1fc: cmp dword ptr [rcx + 0x20], 0",
+        "1e74c200: je 0x19e74c248",
+        "1e74c202: test rsi, rsi",
+        "1e74c205: je 0x19e74c2b2",
+        "1e74c20b: mov eax, dword ptr [rsi + 0x24]",
+        "1e74c20e: cmp eax, dword ptr [rsi + 0x28]",
+        "1e74c211: jne 0x19e74c21e",
+        "1e74c213: mov rcx, rsi",
+        "1e74c216: call 0x19b832b20",
+        "1e74c21b: mov eax, dword ptr [rsi + 0x24]",
+        "1e74c21e: mov rcx, qword ptr [rsi + 0x10]",
+        "1e74c222: lea edx, [rax + 1]",
+        "1e74c225: mov dword ptr [rsi + 0x24], edx",
+        "1e74c228: test rcx, rcx",
+        "1e74c22b: je 0x19e74c2b7",
+        "1e74c231: cmp eax, dword ptr [rcx + 0x18]",
+        "1e74c234: jae 0x19e74c2ad",
+        "1e74c236: cdqe ",
+        "1e74c238: mov byte ptr [rcx + rax + 0x20], 8",
+        "1e74c23d: mov edx, dword ptr [rdi + 0x20]",
+        "1e74c240: mov rcx, rsi",
+        "1e74c243: call 0x19b831f30",
+        "1e74c248: cmp qword ptr [rdi + 0x10], 0",
+        "1e74c24d: je 0x19e74c28e",
+        "1e74c24f: test rsi, rsi",
+        "1e74c252: je 0x19e74c2bc",
+        "1e74c254: mov eax, dword ptr [rsi + 0x24]",
+        "1e74c257: cmp eax, dword ptr [rsi + 0x28]",
+        "1e74c25a: jne 0x19e74c267",
+        "1e74c25c: mov rcx, rsi",
+        "1e74c25f: call 0x19b832b20",
+        "1e74c264: mov eax, dword ptr [rsi + 0x24]",
+        "1e74c267: mov rcx, qword ptr [rsi + 0x10]",
+        "1e74c26b: lea edx, [rax + 1]",
+        "1e74c26e: mov dword ptr [rsi + 0x24], edx",
+        "1e74c271: test rcx, rcx",
+        "1e74c274: je 0x19e74c2c1",
+        "1e74c276: cmp eax, dword ptr [rcx + 0x18]",
+        "1e74c279: jae 0x19e74c2ad",
+        "1e74c27b: cdqe ",
+        "1e74c27d: mov byte ptr [rcx + rax + 0x20], 0x72",
+        "1e74c282: mov rdx, qword ptr [rdi + 0x10]",
+        "1e74c286: mov rcx, rsi",
+        "1e74c289: call 0x19b8326a0",
+        "1e74c28e: mov rcx, qword ptr [rdi + 0x18]",
+        "1e74c292: test rcx, rcx",
+        "1e74c295: je 0x19e74c2a5",
+        "1e74c297: mov rdx, rsi",
+        "1e74c29a: add rsp, 0x28",
+        "1e74c29e: pop rdi",
+        "1e74c29f: pop rsi",
+        "1e74c2a0: jmp 0x19b86f270",
+        "1e74c2a5: nop ",
+        "1e74c2a6: add rsp, 0x28",
+        "1e74c2aa: pop rdi",
+        "1e74c2ab: pop rsi",
+        "1e74c2ac: ret ",
+        "1e74c2ad: call 0x183cc7dc0",
+        "1e74c2b2: call 0x183cc8050",
+        "1e74c2b7: call 0x183cc8050",
+        "1e74c2bc: call 0x183cc8050",
+        "1e74c2c1: call 0x183cc8050",
+        "1e74c2c6: int3 "
+      ]
+    }
+  },
+  "typeInfoSlots": [
+    {
+      "slot": "0x9373958",
+      "pairIndex": 703376,
+      "typeIndex": 67272,
+      "typeName": "IRogueMiracleInfo"
+    },
+    {
+      "slot": "0x93b9aa0",
+      "pairIndex": 718289,
+      "typeIndex": 32868,
+      "typeName": "JLHJICBCHMO"
+    }
+  ],
+  "nativeConstantTypes": [
+    {
+      "typeIndex": 32868,
+      "name": "JLHJICBCHMO",
+      "fields": [
+        {
+          "fieldIndex": 148579,
+          "name": "CHLCMCKIGKG",
+          "nativeTypeIndex": 553426,
+          "nativeType": {
+            "kind": 21
+          }
+        },
+        {
+          "fieldIndex": 148580,
+          "name": "LAKPCNHMJGI",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 378419,
+          "constantValue": 14
+        },
+        {
+          "fieldIndex": 148581,
+          "name": "EDLEPLCOGIO",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 378423,
+          "constantValue": 1
+        },
+        {
+          "fieldIndex": 148582,
+          "name": "PIAHDMALDKO",
+          "nativeTypeIndex": 553398,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 32856,
+            "name": "KOFMGCNIMIN"
+          }
+        },
+        {
+          "fieldIndex": 148583,
+          "name": "DHHIJOGAOFI",
+          "nativeTypeIndex": 469430,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 5414,
+            "name": "UnknownFieldSet"
+          }
+        },
+        {
+          "fieldIndex": 148584,
+          "name": "EBKNDOHMFHN",
+          "nativeTypeIndex": 451805,
+          "nativeType": {
+            "kind": 9
+          }
+        }
+      ]
+    },
+    {
+      "typeIndex": 33048,
+      "name": "PKHKEEKIODC",
+      "fields": [
+        {
+          "fieldIndex": 149207,
+          "name": "CHLCMCKIGKG",
+          "nativeTypeIndex": 554092,
+          "nativeType": {
+            "kind": 21
+          }
+        },
+        {
+          "fieldIndex": 149208,
+          "name": "LLCIHFMGEKN",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379103,
+          "constantValue": 15
+        },
+        {
+          "fieldIndex": 149209,
+          "name": "IHFLCAAJNFM",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379107,
+          "constantValue": 5
+        },
+        {
+          "fieldIndex": 149210,
+          "name": "BNOOFBJPEAB",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379111,
+          "constantValue": 976
+        },
+        {
+          "fieldIndex": 149211,
+          "name": "AMCFKAKFHIL",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379115,
+          "constantValue": 1483
+        },
+        {
+          "fieldIndex": 149212,
+          "name": "AFDPBLAPDOM",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379119,
+          "constantValue": 894
+        },
+        {
+          "fieldIndex": 149213,
+          "name": "BEGFOJNOKGG",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379123,
+          "constantValue": 1458
+        },
+        {
+          "fieldIndex": 149214,
+          "name": "IPFPAGDEEJP",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379127,
+          "constantValue": 577
+        },
+        {
+          "fieldIndex": 149215,
+          "name": "KADJMPFGCOE",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379131,
+          "constantValue": 372
+        },
+        {
+          "fieldIndex": 149216,
+          "name": "FDBFJIMJHDC",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379135,
+          "constantValue": 1957
+        },
+        {
+          "fieldIndex": 149217,
+          "name": "HFKNHKJGFBO",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379139,
+          "constantValue": 1378
+        },
+        {
+          "fieldIndex": 149218,
+          "name": "DNNBLDNHHNA",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379143,
+          "constantValue": 1229
+        },
+        {
+          "fieldIndex": 149219,
+          "name": "EECONMPFJAE",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379147,
+          "constantValue": 1531
+        },
+        {
+          "fieldIndex": 149220,
+          "name": "IPPCLECAKMP",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379151,
+          "constantValue": 979
+        },
+        {
+          "fieldIndex": 149221,
+          "name": "MIMJBHLKGNH",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379155,
+          "constantValue": 48
+        },
+        {
+          "fieldIndex": 149222,
+          "name": "LPAMAINLOKK",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379159,
+          "constantValue": 1646
+        },
+        {
+          "fieldIndex": 149223,
+          "name": "JHBPMOPFPEM",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379163,
+          "constantValue": 1897
+        },
+        {
+          "fieldIndex": 149224,
+          "name": "IMIHMDLLNMK",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379167,
+          "constantValue": 1995
+        },
+        {
+          "fieldIndex": 149225,
+          "name": "KAJAGLANNNA",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379171,
+          "constantValue": 2009
+        },
+        {
+          "fieldIndex": 149226,
+          "name": "OEHBPNJDBDL",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379175,
+          "constantValue": 440
+        },
+        {
+          "fieldIndex": 149227,
+          "name": "LLHGCPPIKAL",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379179,
+          "constantValue": 1622
+        },
+        {
+          "fieldIndex": 149228,
+          "name": "DKNFEOLOHDE",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379183,
+          "constantValue": 1047
+        },
+        {
+          "fieldIndex": 149229,
+          "name": "OMJHODNBKIJ",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379187,
+          "constantValue": 1634
+        },
+        {
+          "fieldIndex": 149230,
+          "name": "JOJBBOEOFGL",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379191,
+          "constantValue": 1209
+        },
+        {
+          "fieldIndex": 149231,
+          "name": "KFDCIKEFGHJ",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379195,
+          "constantValue": 475
+        },
+        {
+          "fieldIndex": 149232,
+          "name": "DPCDBLKGLBP",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379199,
+          "constantValue": 724
+        },
+        {
+          "fieldIndex": 149233,
+          "name": "PHIGJONNCCE",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379203,
+          "constantValue": 1365
+        },
+        {
+          "fieldIndex": 149234,
+          "name": "HGLCPGMOCAA",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379207,
+          "constantValue": 1233
+        },
+        {
+          "fieldIndex": 149235,
+          "name": "FACGOICHPPJ",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379211,
+          "constantValue": 117
+        },
+        {
+          "fieldIndex": 149236,
+          "name": "AKMHOHJDMLC",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379215,
+          "constantValue": 1954
+        },
+        {
+          "fieldIndex": 149237,
+          "name": "DINKOFGCFLP",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379219,
+          "constantValue": 1675
+        },
+        {
+          "fieldIndex": 149238,
+          "name": "PDJLJLPGKLA",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379223,
+          "constantValue": 677
+        },
+        {
+          "fieldIndex": 149239,
+          "name": "IMMDALAKKAO",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379227,
+          "constantValue": 863
+        },
+        {
+          "fieldIndex": 149240,
+          "name": "NGBGHJOJHCH",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379231,
+          "constantValue": 1635
+        },
+        {
+          "fieldIndex": 149241,
+          "name": "CHGEEPKBJKP",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379235,
+          "constantValue": 62
+        },
+        {
+          "fieldIndex": 149242,
+          "name": "JMNBLAHCJCF",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379239,
+          "constantValue": 1037
+        },
+        {
+          "fieldIndex": 149243,
+          "name": "LBHKMFOFKIH",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379243,
+          "constantValue": 676
+        },
+        {
+          "fieldIndex": 149244,
+          "name": "IFAFBLEBCGI",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379247,
+          "constantValue": 498
+        },
+        {
+          "fieldIndex": 149245,
+          "name": "CDOINCNDCEO",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379251,
+          "constantValue": 1040
+        },
+        {
+          "fieldIndex": 149246,
+          "name": "IHIMMHFCCDM",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379255,
+          "constantValue": 1890
+        },
+        {
+          "fieldIndex": 149247,
+          "name": "ANICGOJALOP",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379259,
+          "constantValue": 649
+        },
+        {
+          "fieldIndex": 149248,
+          "name": "IKNKJCKDHPG",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379263,
+          "constantValue": 1272
+        },
+        {
+          "fieldIndex": 149249,
+          "name": "BOPCCOCDLDO",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379267,
+          "constantValue": 1590
+        },
+        {
+          "fieldIndex": 149250,
+          "name": "KHOCBHOEGBJ",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8
+          },
+          "constantType": 71,
+          "constantDataOffset": 379271,
+          "constantValue": 1179
+        },
+        {
+          "fieldIndex": 149251,
+          "name": "DHHIJOGAOFI",
+          "nativeTypeIndex": 469430,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 5414,
+            "name": "UnknownFieldSet"
+          }
+        },
+        {
+          "fieldIndex": 149252,
+          "name": "JEFEMOPFJOP",
+          "nativeTypeIndex": 451883,
+          "nativeType": {
+            "kind": 28
+          }
+        },
+        {
+          "fieldIndex": 149253,
+          "name": "NPIBMNININN",
+          "nativeTypeIndex": 554093,
+          "nativeType": {
+            "kind": 17,
+            "typeIndex": 33049,
+            "name": "FHPOBLJBLPI"
+          }
+        }
+      ]
+    }
+  ],
+  "frozenProtocolSHA256": "1ce09bfa8400054471c559c0e3c08e3d6639937e426bc9ba35ffb1c9604ee65b",
+  "officialReplacementPoolBindingVerified": false,
+  "completeHotfixPathVerified": false,
+  "legacyDecodedConstantEvidenceSHA256": "67a16210155d18711cb4c12af1d22925f7e336e4e64971fe67b1189f4f7ccab1"
+}

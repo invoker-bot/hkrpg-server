@@ -1,0 +1,460 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "files": {
+    "ExcelOutput/ActivityPanel.json": {
+      "gitBlob": "dd594913b571ce03b783731a8e3c5bb067bbe55d",
+      "sourceSha256": "b7f4bb0360b20dfe1f6769e8a1a27ac719f8b4d359f4eebfe8432a04a79bd46b",
+      "installedSha256": "80a899976fbc5d61fe81483b9e5dd35679c96eed7eb3ef6285c008b475fbc1e4",
+      "sourceBytes": 215640
+    },
+    "ExcelOutput/MainMission.json": {
+      "gitBlob": "255406dd60de8d13fa6e40303e769b74c13b41ba",
+      "sourceSha256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+      "installedSha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+      "sourceBytes": 1112486
+    },
+    "ExcelOutput/QuestData.json": {
+      "gitBlob": "27e37f6f0d2fca59d6cbca808ff79e1f5946a821",
+      "sourceSha256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+      "installedSha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+      "sourceBytes": 1279066
+    },
+    "ExcelOutput/FinishWay.json": {
+      "gitBlob": "5bbb56e70ae97aa9ed20b6acd32cc906d6f18f4d",
+      "sourceSha256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+      "installedSha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+      "sourceBytes": 1321149
+    },
+    "Config/Level/Mission/8017101/MissionInfo_8017101.json": {
+      "gitBlob": "c2238a1682909bce1ae13802ce8be3bd5582cc26",
+      "sourceSha256": "e840618cd895a76de8840ed45911031c5d979fb324bc73fc04decb29707e7e97",
+      "installedSha256": "214fae439c51c6bfaee06fc96c076813b13c3ecdbaf05a6ea0578969e750c34f",
+      "sourceBytes": 155
+    },
+    "Config/Level/Mission/8017101/MissionInfo_8017101.partial.json": {
+      "gitBlob": "19d6979bc95f59a2440a83a9696e27a12fb3265c",
+      "sourceSha256": "e754a2136aa846bbe50d2428fd4e27ab3001992bdc31363569dc4d67b7145379",
+      "installedSha256": "ed9caf76735f5753abdee752c842ef9da99599008406cd90a1612604e868b4d6",
+      "sourceBytes": 3715
+    },
+    "Config/Level/Mission/8017101/Mission_801710102.json": {
+      "gitBlob": "ccc38b53f9c5659839938086008032f27c09c330",
+      "sourceSha256": "f7834370242171a50f4d2ee3c842cc797a72feebc3fb6c9ca654cd961e2207c0",
+      "installedSha256": "88086c236fb255aea5e6193e845c0033dbe30811c02101d62f43cce2b253beb9",
+      "sourceBytes": 1367
+    }
+  },
+  "records": {
+    "ExcelOutput/ActivityPanel.json": [
+      {
+        "PanelID": 10025,
+        "UIPrefab": "UI/Quest/Widget/QuestAbyssPanel.prefab",
+        "UnlockConditions": "[QuestClose:3000018]",
+        "SortWeight": 2000,
+        "TabName": {
+          "Hash": 16322715748833785014
+        },
+        "TitleName": {
+          "Hash": 17808186525817236065
+        },
+        "PanelDesc": {
+          "Hash": 2413407491557653451
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnAbyssReward_1207.png",
+        "TagDesc": {
+          "Hash": 16858696276197602106
+        },
+        "IntroDesc": {
+          "Hash": 12351922264388026192
+        },
+        "DisplayItemList": [],
+        "ActivityThemeID": 1002,
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10061,
+        "UIPrefab": "UI/Quest/Widget/QuestChallengeBoss.prefab",
+        "UnlockConditions": "[FinishMainMission:4020103]|[FinishMainMission:4010106]|[FinishSubMission:801710102]",
+        "SortWeight": 2002,
+        "TabName": {
+          "Hash": 1810258419384036598
+        },
+        "TitleName": {
+          "Hash": 17134728875326032727
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnAbyssAlternation.png",
+        "TagDesc": {
+          "Hash": 17207892370118712825
+        },
+        "IntroDesc": {
+          "Hash": 8513659939764471866
+        },
+        "DisplayItemList": [
+          {
+            "ItemID": 1,
+            "ItemNum": 800
+          },
+          {
+            "ItemID": 262,
+            "ItemNum": 600
+          },
+          {
+            "ItemID": 213,
+            "ItemNum": 24
+          },
+          {
+            "ItemID": 223,
+            "ItemNum": 12
+          },
+          {
+            "ItemID": 233,
+            "ItemNum": 24
+          },
+          {
+            "ItemID": 261,
+            "ItemNum": 96
+          },
+          {
+            "ItemID": 2,
+            "ItemNum": 360000
+          }
+        ],
+        "ActivityThemeID": 1002,
+        "FinishConditions": ""
+      }
+    ],
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 4010106,
+        "Type": "Branch",
+        "SubType": "System",
+        "DisplayPriority": 4010106,
+        "NextMainMissionList": [],
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 4010105
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 4020103,
+        "Type": "Main",
+        "DisplayPriority": 1000092,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 2960076863783292287
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "PlayerLevel",
+            "Value": 40
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010403
+          }
+        ],
+        "TrackWeight": 100,
+        "RewardID": 14020103,
+        "DisplayRewardID": 14020103,
+        "ChapterID": 100000,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 8017101,
+        "Type": "Branch",
+        "SubType": "System",
+        "DisplayPriority": 8017101,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 6100026485397259861
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1021501
+          },
+          {
+            "Type": "MultiSequence",
+            "Value": 4020103
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "TrackWeight": 10,
+        "RewardID": 18017101,
+        "DisplayRewardID": 18017101,
+        "SubRewardList": []
+      }
+    ],
+    "ExcelOutput/QuestData.json": [
+      {
+        "QuestID": 3000018,
+        "QuestType": 1,
+        "QuestTitle": {
+          "Hash": 5476052419680302905
+        },
+        "ImagePath": "",
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 23000018,
+        "FinishWayID": 3000018
+      }
+    ],
+    "ExcelOutput/FinishWay.json": [
+      {
+        "ID": 3000018,
+        "FinishType": "ChallengeFinish",
+        "ParamType": "Equal",
+        "ParamInt1": 3,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 1
+      }
+    ],
+    "Config/Level/Mission/8017101/MissionInfo_8017101.json": [
+      {
+        "MainMissionID": 8017101,
+        "StartSubMissionList": [
+          801710101
+        ],
+        "FinishSubMissionList": [
+          801710104
+        ],
+        "MissionCustomValueList": []
+      }
+    ],
+    "Config/Level/Mission/8017101/MissionInfo_8017101.partial.json": [
+      {
+        "SubMissionList": [
+          {
+            "ID": 801710101,
+            "MainMissionID": 8017101,
+            "MissionJsonPath": "Config/Level/Mission/8017101/Mission_801710101.json",
+            "LevelPlaneID": 10202,
+            "LevelFloorID": 10202001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              8017101
+            ],
+            "FinishType": "MessageSectionFinish",
+            "ParamType": "Equal",
+            "ParamInt1": 1301400,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsTrackByMessage": true,
+            "MessageGroupID": 13014,
+            "IsGotoUIPage": true,
+            "GotoID": 4000,
+            "GotoParam": [
+              13014
+            ],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 801710102,
+            "MainMissionID": 8017101,
+            "MissionJsonPath": "Config/Level/Mission/8017101/Mission_801710102.json",
+            "LevelPlaneID": 10202,
+            "LevelFloorID": 10202001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              801710101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_801710102",
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              171,
+              172
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShowStartHint": "New",
+            "WayPointType": "Prop",
+            "WayPointFloorID": 10202001,
+            "WayPointGroupID": 171,
+            "WayPointEntityID": 300004
+          },
+          {
+            "ID": 801710103,
+            "MainMissionID": 8017101,
+            "MissionJsonPath": "Config/Level/Mission/8017101/Mission_801710103.json",
+            "LevelPlaneID": 10202,
+            "LevelFloorID": 10202001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              801710102
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              801710105
+            ],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              172,
+              171,
+              177
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 10202001,
+            "WayPointGroupID": 171,
+            "WayPointEntityID": 300004
+          },
+          {
+            "ID": 801710104,
+            "MainMissionID": 8017101,
+            "MissionJsonPath": "Config/Level/Mission/8017101/Mission_801710104.json",
+            "LevelPlaneID": 10202,
+            "LevelFloorID": 10202001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              801710103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_801710104",
+            "FinishActionList": [
+              {
+                "FinishActionType": "SetFloorSavedValue",
+                "FinishActionParaString": [
+                  "10202",
+                  "10202001",
+                  "ChallengeStoryEntrance",
+                  "1"
+                ]
+              }
+            ],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              173
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShowFinishEffect": 1
+          },
+          {
+            "ID": 801710105,
+            "MainMissionID": 8017101,
+            "MissionJsonPath": "Config/Level/Mission/8017101/Mission_801710105.json",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              801710101
+            ],
+            "FinishType": "ChallengeStorySettleCnt",
+            "ParamType": "NoPara",
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false
+          }
+        ]
+      }
+    ],
+    "Config/Level/Mission/8017101/Mission_801710102.json": [
+      {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "IsLoop": true,
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Talk_801710102"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_801710102"
+              }
+            ]
+          },
+          {
+            "IsLoop": true,
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "challengeshow"
+                },
+                "GoNextImmediately": true
+              },
+              {
+                "$type": "RPG.GameCore.VerifyInteractingEntity",
+                "GroupID": 172,
+                "ConfigID": 300001
+              },
+              {
+                "$type": "RPG.GameCore.ShowUI",
+                "Name": "Ui.ChallengeStory.Entrance.ChallengeStoryMainPage",
+                "WaitForExit": true,
+                "OnUIEnter": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "showui"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "IsLoop": true,
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.TriggerCustomString",
+                "CustomString": {
+                  "Value": "npcshow"
+                }
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    ]
+  },
+  "scope": "原始10025关闭Quest和10061三分支解锁；目标完成状态为隔离夹具，完整活动玩法未完成",
+  "clientGameplayVerified": false
+}

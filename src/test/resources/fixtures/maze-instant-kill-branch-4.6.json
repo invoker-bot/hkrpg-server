@@ -1,0 +1,423 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "file": "Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Phainon_00_Ability.json",
+  "resourceSHA256": "c4c9a2ca0c83ed2ffab41f09bb9b9e7e1431240ad48c21e44bc20dc7db8490c1",
+  "originalBlobSHA256": "170a26225e693f6e523ec8af7fc49ae24a7bce575697d8498e6a8ce54b93a470",
+  "abilityPath": [
+    "AbilityList",
+    1
+  ],
+  "ability": {
+    "OnAbort": [
+      {
+        "$type": "RPG.GameCore.GlobalMainIntensityEffect",
+        "IsRevert": true,
+        "FadeDuration": 1
+      },
+      {
+        "$type": "RPG.GameCore.RadialBlurEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 14082
+        },
+        "Active": false
+      },
+      {
+        "$type": "RPG.GameCore.RPGColorGradingCurveEffect",
+        "Active": false,
+        "CustomLUT": "Effects/Eff_Texture/Avatar/Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_LUT.exr",
+        "TransitionDuration": 0.05,
+        "CurveName": "ColorGradingCurveHQ"
+      },
+      {
+        "$type": "RPG.GameCore.UnLockCamera"
+      },
+      {
+        "$type": "RPG.GameCore.VCameraConfigChange",
+        "CameraConfig": {
+          "Freelook3rdConfig": {
+            "FOVChangeParam": {
+              "RecoveryTime": 1,
+              "RecoveryCurvePath": "Camera/BlendCurve/Blend_EasyInOut_ChallengStory.asset",
+              "RecoveryToDefaultValue": true
+            },
+            "ZoomChangeParam": {
+              "RecoveryTime": 1,
+              "RecoveryCurvePath": "Camera/BlendCurve/Blend_EasyInOut_ChallengStory.asset",
+              "RecoveryToDefaultValue": true
+            },
+            "AxisYChangeParam": {
+              "RecoveryTime": 1,
+              "RecoveryCurvePath": "Camera/BlendCurve/Blend_EasyInOut_ChallengStory.asset",
+              "RecoveryToDefaultValue": true
+            },
+            "LookAtOffsetChangeParam": {
+              "RecoveryTime": 1,
+              "RecoveryCurvePath": "Camera/BlendCurve/Blend_EasyInOut_ChallengStory.asset",
+              "RecoveryToDefaultValue": true
+            }
+          }
+        }
+      }
+    ],
+    "Name": "LocalPlayer_Phainon_00_MazeSkill",
+    "TargetInfo": {
+      "TargetType": "SkillPointEntityOrNone"
+    },
+    "OnStart": [
+      {
+        "$type": "RPG.GameCore.GlobalMainIntensityEffect",
+        "TargetIntensity": 0.3,
+        "FadeDuration": 0.1
+      },
+      {
+        "$type": "RPG.GameCore.PredicateTaskList",
+        "Predicate": {
+          "$type": "RPG.GameCore.ByHaveAbilityTarget"
+        },
+        "SuccessTaskList": [
+          {
+            "$type": "RPG.GameCore.LookAt",
+            "TargetType": "AbilityTargetEntity",
+            "Duration": 0
+          }
+        ]
+      },
+      {
+        "$type": "RPG.GameCore.CreateSummonUnit",
+        "SummonUnitID": 14082,
+        "PosTarget": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "Distance": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 8
+          }
+        },
+        "Duration": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 2
+          }
+        },
+        "ForbidSkillMsg": true
+      },
+      {
+        "$type": "RPG.GameCore.AddAdventureModifier",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "ModifierName": "ADV_StageAbility_Maze_Phainon_Invincible",
+        "LifeTime": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 2
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.VCameraConfigChange",
+        "CameraConfig": {
+          "ShakeTemplateName": "2.4LevelShake",
+          "OverrideShakeConfigV2": {
+            "ShakeScale": 3,
+            "ShakeTime": 1
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.RadialBlurEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 14082
+        },
+        "BlurRadius": 1,
+        "Iteration": 4,
+        "BlurStart": 0.3,
+        "BlurFeather": 0.3
+      },
+      {
+        "$type": "RPG.GameCore.AdventureTriggerAnimStateWithMove",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "AdvLocalPlayer"
+        },
+        "AnimLogicState": "MazeSkill",
+        "AnimStateName": "MazeSkill",
+        "StopWhenHitOthers": false
+      },
+      {
+        "$type": "RPG.GameCore.AdventureTriggerMoveApplyRunSpeed",
+        "MoveEntityType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "AdvLocalPlayer"
+        },
+        "MaxDuration": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.4
+          }
+        },
+        "MaxSpeed": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 8
+          }
+        },
+        "MinSpeed": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0
+          }
+        },
+        "SpeedCurve": "Camera/BlendCurve/BlendCut_1310_MazeSkill_End_Speed.asset",
+        "MaxSteerSpeed": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "MazeSkill",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.237
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.RPGColorGradingCurveEffect",
+        "CustomLUT": "Effects/Eff_Texture/Avatar/Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_LUT.exr",
+        "TransitionDuration": 0.05,
+        "CustomLUTIntensityBegin": 1,
+        "CustomLUTIntensityEnd": 1,
+        "StartRadiusBegin": 0.2,
+        "StartRadiusEnd": 1,
+        "BlendRadiusBegin": -0.48,
+        "BlendRadiusEnd": -0.48,
+        "CurveName": "ColorGradingCurveHQ"
+      },
+      {
+        "$type": "RPG.GameCore.RadialBlurEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 14082
+        },
+        "Duration": 0.2,
+        "BlurY": 0.4,
+        "BlurRadius": 1,
+        "Iteration": 4,
+        "BlurStart": 0.005,
+        "BlurFeather": 0.01
+      },
+      {
+        "$type": "RPG.GameCore.AdventureTriggerAttack",
+        "AttackTargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "AllEnemy"
+        },
+        "TriggerBattleDelay": 0.1,
+        "SummonUnitTriggerAttackDetectConfig": {
+          "SummonUnitID": 14082,
+          "DetectSummonUnitTriggerName": "PhainonFieldTrigger_Monster"
+        },
+        "AttackDetectConfig": {
+          "$type": "RPG.GameCore.AdventureAttackDetectCircleConfig",
+          "MaxRadius": 4,
+          "FanAngle": 360,
+          "Hight": 2,
+          "Offset": {
+            "X": 0,
+            "Y": 0,
+            "Z": 4
+          }
+        },
+        "HitConfig": {
+          "HitAnimation": "Hit"
+        },
+        "OnAttack": [
+          {
+            "$type": "RPG.GameCore.TriggerEffect",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "ParamEntity"
+            },
+            "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_Sword_Hit.prefab",
+            "ForceSimulateImmediately": false
+          },
+          {
+            "$type": "RPG.GameCore.PredicateTaskList",
+            "Predicate": {
+              "$type": "RPG.GameCore.ByAllowInstantKill",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetAlias",
+                "Alias": "ParamEntity"
+              }
+            },
+            "SuccessTaskList": [
+              {
+                "$type": "RPG.GameCore.AdventureSetAttackTargetMonsterDie",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetAlias",
+                  "Alias": "ParamEntity"
+                },
+                "DyingStyleParam": {
+                  "DyingStyle": "Freeze",
+                  "FreezeDuration": 0.5
+                }
+              }
+            ]
+          }
+        ],
+        "OnBattle": [
+          {
+            "$type": "RPG.GameCore.AddMazeBuff",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "ParamEntity"
+            },
+            "ID": 140801,
+            "LifeTime": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 1
+              }
+            }
+          }
+        ],
+        "EnterBattleSelectTargetType": "AllHitTarget"
+      },
+      {
+        "$type": "RPG.GameCore.VCameraConfigChange",
+        "CameraConfig": {
+          "ShakeTemplateName": "Impact_Heavier",
+          "OverrideShakeConfigV2": {
+            "ShakeScale": 1.5,
+            "ShakeTime": 0.6,
+            "ShakeDir": {
+              "X": 0,
+              "Y": 0.6,
+              "Z": 0.3
+            }
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.SetSummonUnitTriggerEnable",
+        "SummonUnit": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 14082
+        },
+        "TriggerNames": [
+          "PhainonFieldTrigger_Monster",
+          "PhainonFieldTrigger_Monster_TriggerHit",
+          "HitPropTrigger"
+        ]
+      },
+      {
+        "$type": "RPG.GameCore.TriggerEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 14082
+        },
+        "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_Mask02.prefab",
+        "ForceSimulateImmediately": false
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "MazeSkill",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.252
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.RemoveAdventureModifier",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "ModifierName": "ADV_StageAbility_Maze_Phainon_Invincible"
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "MazeSkill",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.28
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.GlobalMainIntensityEffect",
+        "IsRevert": true,
+        "FadeDuration": 1
+      },
+      {
+        "$type": "RPG.GameCore.RPGColorGradingCurveEffect",
+        "Active": false,
+        "CustomLUT": "Effects/Eff_Texture/Avatar/Phainon_00/Eff_Avatar_Phainon_00_MazeSkill01_LUT.exr",
+        "TransitionDuration": 1,
+        "CurveName": "ColorGradingCurveHQ"
+      }
+    ]
+  },
+  "attackPath": [
+    "OnStart",
+    11
+  ],
+  "predicatePath": [
+    "OnStart",
+    11,
+    "OnAttack",
+    1,
+    "Predicate"
+  ],
+  "completeOriginalAbilityVerified": false,
+  "attackDetectionAndSummonTriggerVerified": false,
+  "dyingStyleAnimationVerified": false,
+  "additionalCharacterConfigTagsVerified": false,
+  "nativeOfficialPredicateEvaluationVerified": false,
+  "clientGameplayVerified": false
+}

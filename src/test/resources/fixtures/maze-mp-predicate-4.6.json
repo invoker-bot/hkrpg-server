@@ -1,0 +1,35 @@
+{
+  "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_SilverWolf999_00_Ability.json",
+  "sha256": "ca2ac3cc963753d7a97c0f9947be135cb806e129e28e31258284df98179d869b",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceBlobSHA256": "99480febe81e417137b6c953d92d205510aab61dd53b3c0a96662d4db37ed932",
+  "path": [
+    "GlobalModifiers",
+    "ADV_StageAbility_Maze_SilverWolf999_00",
+    "OnStage",
+    0
+  ],
+  "task": {
+    "$type": "RPG.GameCore.PredicateTaskList",
+    "Predicate": {
+      "$type": "RPG.GameCore.AdventureByCompareMP",
+      "CompareType": "LessEqual"
+    },
+    "SuccessTaskList": [
+      {
+        "$type": "RPG.GameCore.DestroySummonUnit",
+        "SummonUnit": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 15061
+        },
+        "SyncToServer": true
+      }
+    ]
+  },
+  "completeAbilityChainVerified": false,
+  "modifierListenerDispatchVerified": false
+}

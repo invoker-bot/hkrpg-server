@@ -1,0 +1,73 @@
+[
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Feixiao_00_Ability.json",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      0
+    ],
+    "name": "LocalPlayer_Feixiao_00_NormalAtk01_RemoveMazebuff",
+    "task": {
+      "$type": "RPG.GameCore.RemoveMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 122001
+    },
+    "sha256": "717291e7868eadc07c463f4ea52cb40749ecb8f600c65b733645a5af26070da0",
+    "sourceTaskLeafOnly": true,
+    "wholeAbilityConditionChainVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Moze_00_Ability.json",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      1,
+      "SuccessTaskList",
+      0,
+      "SuccessTaskList",
+      3
+    ],
+    "name": "LocalPlayer_Moze_NormalAtk01",
+    "task": {
+      "$type": "RPG.GameCore.RemoveMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 122302
+    },
+    "sha256": "7fbfa38abceffc222d7efc92e6c63553847d390e8c590291685b141917f4c82e",
+    "sourceTaskLeafOnly": true,
+    "wholeAbilityConditionChainVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Seele_00_Ability.json",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      1,
+      "SuccessTaskList",
+      0,
+      "SuccessTaskList",
+      4
+    ],
+    "name": "LocalPlayer_Seele_NormalAtk01",
+    "task": {
+      "$type": "RPG.GameCore.RemoveMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 110202
+    },
+    "sha256": "7584df39c92807574f62956178929cd0ab737fca913795cfd02549c65f7ffde6",
+    "sourceTaskLeafOnly": true,
+    "wholeAbilityConditionChainVerified": false
+  }
+]

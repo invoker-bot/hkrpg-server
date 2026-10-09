@@ -1,0 +1,237 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "files": {
+    "ExcelOutput/RaidConfig.json": {
+      "sourceSha256": "21cd8e8bd7404912be043c994e365c6778585ad34956a2de27eecca695cf86a9",
+      "installedSha256": "6db69c1a08548df913399689804d7ea63c3d40acf2414e1ac28cf4863966ca5e",
+      "gitBlob": "df82a60b5ab017f88b3a134fc4c46d4b15065bd5"
+    },
+    "ExcelOutput/DifficultyAdjustmentStage.json": {
+      "sourceSha256": "063f124684f3c84f5aa11f71053d1224199de3c151148ca5681755b3302c74dd",
+      "installedSha256": "b90caf3ba0508d27277972fd206dc8454be46ae40b1c0e89f2e46940c4283c49",
+      "gitBlob": "23288f28f7cabf6adf6530b226928b29ca3ba894"
+    },
+    "ExcelOutput/PlaneEvent.json": {
+      "sourceSha256": "133580d75081d9cb6d4e5358fe841ee3ba96dc3ba2089309a05c6497b52e7755",
+      "installedSha256": "5dfc9c2509bbf1455f0286a77c26a903d33a9c39442b523e006d33d8ac803922",
+      "gitBlob": "11a9bfad6114a76ae239e4e2bffa152d1df1cf04"
+    },
+    "ExcelOutput/StageConfig.json": {
+      "sourceSha256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+      "installedSha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+      "gitBlob": "f4d97b8ee2f533bafe7ef43b60a3603c3feba21a"
+    },
+    "ExcelOutput/SpecialAvatar.json": {
+      "sourceSha256": "1c5b658b175d5a8de31b90eabae4c859e4e472d521b0af618776245039278601",
+      "installedSha256": "8a86827c8c36b2ca4048f735d6cde2d41c056c792f56673a95fda20da3b625d4",
+      "gitBlob": "0a527017b07de333f9206ec0596394b66b44b674"
+    }
+  },
+  "records": {
+    "ExcelOutput/RaidConfig.json": [
+      {
+        "RaidID": 43306,
+        "RaidTagList": [],
+        "UnlockWorldLevel": [],
+        "Type": "Mission",
+        "MonsterList": [],
+        "MonsterHideList": [
+          803401001
+        ],
+        "DisplayEventID": 20321050,
+        "RaidName": {
+          "Hash": 2970393281304986706
+        },
+        "RaidDesc": {
+          "Hash": 10070039259340274915
+        },
+        "FinishEntranceID": 2031101,
+        "BuffParamList": [],
+        "TeamLimitIDList": [],
+        "LimitIDList": [],
+        "RecoverType": [
+          "Unknown"
+        ],
+        "RewardList": [],
+        "TeamType": "Player",
+        "TrialAvatarList": [],
+        "MainMissionIDList": [
+          1032201,
+          1031901
+        ],
+        "MainMissionIDBefore": 1031801,
+        "MainMissionIDAfter": 1031801,
+        "SkipRewardOnFinish": true,
+        "EntrancePageBGImagePath": "SpriteOutput/FarmCocoonPic/43306001.png",
+        "AutoObtainDamageType": true,
+        "DamageType": [],
+        "RaidTargetID": [],
+        "DifficultyAdjustmentType": 1
+      }
+    ],
+    "ExcelOutput/DifficultyAdjustmentStage.json": [
+      {
+        "ID": 20321050,
+        "EventIDs": [
+          20321050
+        ]
+      }
+    ],
+    "ExcelOutput/PlaneEvent.json": [
+      {
+        "EventID": 20321050,
+        "StageID": 203210500,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      },
+      {
+        "EventID": 20321050,
+        "WorldLevel": 1,
+        "StageID": 203210501,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    ],
+    "ExcelOutput/StageConfig.json": [
+      {
+        "StageID": 203210500,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 3103099071630854495
+        },
+        "HardLevelGroup": 1,
+        "Level": 24,
+        "EliteGroup": 2110,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [
+          "StageAbility_SetFullHP"
+        ],
+        "SubLevelGraphs": [
+          {
+            "BFLIFKBEOPJ": "_DefaultSubStage",
+            "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_103220103.json",
+            "EOAHMJFOLHD": "",
+            "MEDEFCIKNLA": "",
+            "APNFMFEMPNI": "",
+            "LGNKFIIEICM": "",
+            "BIEJJCIFBGA": ""
+          }
+        ],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_BGM",
+            "MNDFOPKBHKP": "State_Penocony_Combat_Aventurine_Common"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 803401001
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [
+          "[CDT_WaitCustomString:Level_SpecialWin]"
+        ],
+        "ForbidAutoBattle": true,
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "ResetBattleSpeed": true,
+        "TrialAvatarList": []
+      },
+      {
+        "StageID": 203210501,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 3103099071630854495
+        },
+        "HardLevelGroup": 1,
+        "Level": 32,
+        "EliteGroup": 2111,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [
+          "StageAbility_SetFullHP"
+        ],
+        "SubLevelGraphs": [
+          {
+            "BFLIFKBEOPJ": "_DefaultSubStage",
+            "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_103220103.json",
+            "EOAHMJFOLHD": "",
+            "MEDEFCIKNLA": "",
+            "APNFMFEMPNI": "",
+            "LGNKFIIEICM": "",
+            "BIEJJCIFBGA": ""
+          }
+        ],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_BGM",
+            "MNDFOPKBHKP": "State_Penocony_Combat_Aventurine_Common"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 803401001
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [
+          "[CDT_WaitCustomString:Level_SpecialWin]"
+        ],
+        "ForbidAutoBattle": true,
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "ResetBattleSpeed": true,
+        "TrialAvatarList": []
+      }
+    ],
+    "ExcelOutput/SpecialAvatar.json": [
+      {
+        "SpecialAvatarID": 1021304,
+        "WorldLevel": 1,
+        "IsUseWorldLevel": true,
+        "PlayerID": 1304,
+        "AvatarID": 1304,
+        "Type": "TYPE_PLOT",
+        "LevelAreaPrefab": "",
+        "AnchorName": "",
+        "Level": 40,
+        "Promotion": 2,
+        "OverrideProperty": [],
+        "HaveActionDelay": true,
+        "SkillTreeTemplate": "TYPE_CUSTOM",
+        "CustomSkillTreeKey": "W1_Standard_30-40",
+        "EquipmentID": 21002,
+        "EquipmentLevel": 40,
+        "EquipmentPromotion": 2,
+        "EquipmentRank": 1,
+        "RelicPropertyType": 410302,
+        "RelicMainValue": 5305302,
+        "RelicSubValue": 302,
+        "AbilityNameList": [],
+        "PlayerJsonPath": "",
+        "JsonPath": "",
+        "AIPath": ""
+      }
+    ]
+  }
+}

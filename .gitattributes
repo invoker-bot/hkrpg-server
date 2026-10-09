@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.jar binary
+*.pb binary
+# 保留上游协议原始字节，校验值不受检出平台换行转换影响。
+/protocols/4.6/* -text whitespace=-blank-at-eol
+# 费用表夹具用于校验来源字节身份，保留原始 CRLF 和重复映射键。
+/src/test/resources/gameplay/activity-dice-const-4.6.json -text

@@ -1,0 +1,7 @@
+# 剧情副本试用角色夹具
+
+来源：TurnBasedGameData，提交724b139d8c9c32d12552eb95745a4fee72bfe48b，OSPRODWin4.6.0_D16707949_A16704710_L16700845。摘取原始SpecialAvatar1011209的世界等级0、正式演员1209、所有对应行迹、光锥23012及其配置和W1_Standard_30-40行迹模板；字段未改写。原表SHA记录在JSON中。
+
+与raid-trial-or-player-4.6.json的40235/IncludeAvatar3配合，单元测试的地图和父任务仍使用隔离场景。配置涉及试用遗器属性的原字段保留，但尚未证明遗器属性计算或客户端输入/演出，不把提供试用队伍当成完整副本或4.6验收。
+
+追加原始AvatarPromotionConfig演员1209与EquipmentPromotionConfig光锥23012的七档突破行及各自原表SHA，以资源上限验证冻结等级/突破/星魂/叠影。仍不核算遗器属性或重演官方输入。

@@ -1,0 +1,109 @@
+[
+  {
+    "kind": "ActivityConfig",
+    "source": "ExcelOutput/ActivityConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sourceSHA256": "a94d11500502e07789cc38a28211fb3f6cef69400de1be988cc6b8d9634afd3e",
+    "row": {
+      "ActivityID": 50070,
+      "ActivityPanelID": 50070,
+      "ResidentModuleList": [
+        5007007
+      ],
+      "ActivityModuleIDList": [
+        5007000,
+        5007001,
+        5007002,
+        5007003,
+        5007004,
+        5007005
+      ],
+      "EarlyAccessContentID": 150070
+    }
+  },
+  {
+    "kind": "ActivityPanel",
+    "source": "ExcelOutput/ActivityPanel.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sourceSHA256": "80a899976fbc5d61fe81483b9e5dd35679c96eed7eb3ef6285c008b475fbc1e4",
+    "row": {
+      "PanelID": 50070,
+      "IsSocialShow": 1,
+      "UIPrefab": "UI/Quest/Widget/QuestLocalLegendPanel.prefab",
+      "UnlockConditions": "[PlayerLevel:21]",
+      "SortWeight": 6002,
+      "TabName": {
+        "Hash": 2011424153139510462
+      },
+      "TitleName": {
+        "Hash": 9169014149406526135
+      },
+      "PanelDesc": {
+        "Hash": 18259561069008679525
+      },
+      "PanelBrief": {
+        "Hash": 676402354613315621
+      },
+      "ActivityTagList": [
+        3
+      ],
+      "TabIcon": "SpriteOutput/Quest/TabIcon/BtnLocalLegend.png",
+      "TagDesc": {
+        "Hash": 16953594646558454192
+      },
+      "IntroDesc": {
+        "Hash": 3982436946326073539
+      },
+      "DisplayItemList": [
+        {
+          "ItemID": 1
+        },
+        {
+          "ItemID": 241
+        },
+        {
+          "ItemID": 213
+        },
+        {
+          "ItemID": 235
+        },
+        {
+          "ItemID": 232
+        },
+        {
+          "ItemID": 110222
+        },
+        {
+          "ItemID": 2
+        }
+      ],
+      "DailyHint": true,
+      "FinishType": "HideRedDot",
+      "FinishConditions": "[QuestClose:6072113],[QuestClose:6072114],[QuestClose:6072115],[QuestClose:6072116],[QuestClose:6072117],[QuestClose:6072118],[QuestClose:6072119],[QuestClose:6072120],[QuestClose:6072121],[QuestClose:6072122],[QuestClose:6072123],[QuestClose:6072124],[QuestClose:6072125],[QuestClose:6072126],[QuestClose:6072127],[QuestClose:6072128],[QuestClose:6072129],[QuestClose:6072130],[QuestClose:6072131],[QuestClose:6072132],[QuestClose:6072137],[QuestClose:6072146],[QuestClose:6072147],[QuestClose:6072148],[QuestClose:6072149],[QuestClose:6072150],[QuestClose:6072151],[QuestClose:6072152],[QuestClose:6072153],[QuestClose:6072154],[QuestClose:6072155],[QuestClose:6072156],[QuestClose:6072157],[QuestClose:6072158],[QuestClose:6072159],[QuestClose:6072160]"
+    }
+  },
+  {
+    "kind": "ActivityPanelCondition",
+    "source": "ExcelOutput/ActivityPanelCondition.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sourceSHA256": "d46595284bf5382361ade68715e327e225e80d43d02f1b0bd60f4b4761292dce",
+    "row": {
+      "PanelID": 50070,
+      "PreConditions": [
+        {
+          "Type": "FinishMainMission",
+          "Param": "1040416"
+        }
+      ],
+      "GuideGoto": 6288,
+      "GuideConditions": [
+        {
+          "Type": "FinishMainMission",
+          "Param": "8038203"
+        }
+      ],
+      "ActivityGoto": 6290,
+      "ActivityGotoStoryLineRestore": true
+    }
+  }
+]

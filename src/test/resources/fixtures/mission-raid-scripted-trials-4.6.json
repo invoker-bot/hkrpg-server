@@ -1,0 +1,1362 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceFiles": {
+    "ExcelOutput/RaidConfig.json": "21cd8e8bd7404912be043c994e365c6778585ad34956a2de27eecca695cf86a9",
+    "ExcelOutput/MainMission.json": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "ExcelOutput/MazePlane.json": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+    "ExcelOutput/MapEntrance.json": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+    "Config/Level/Mission/1036004/MissionInfo_1036004.json": "08a13bdebe32ba8012f245f7317085a8984a835de12f12fa199939473e22f287",
+    "Config/Level/Mission/1036004/MissionInfo_1036004.partial.json": "7dfd559a33ec6b9609c8f7fcce529770903f8061fc8009641ae353d7d51acb24",
+    "Config/Level/Mission/1040212/MissionInfo_1040212.json": "4b37ab91be2c403c83c2196ed5720fe524f8d2335db8c3f939d5fb5d9ed80b42",
+    "Config/Level/Mission/1040212/MissionInfo_1040212.partial.json": "271cf6ef3d5a62cfe802f2fd604567c0d724aed64afd2801be784d0953d0a0c1"
+  },
+  "records": {
+    "ExcelOutput/RaidConfig.json": [
+      {
+        "RaidID": 40301,
+        "RaidTagList": [],
+        "UnlockWorldLevel": [],
+        "Type": "Mission",
+        "MonsterList": [],
+        "MonsterHideList": [],
+        "RaidName": {
+          "Hash": 7563186607846699938
+        },
+        "RaidDesc": {
+          "Hash": 12697400564494326384
+        },
+        "FinishEntranceID": 1030101,
+        "BuffParamList": [],
+        "TeamLimitIDList": [],
+        "LimitIDList": [],
+        "RecoverType": [
+          "Unknown"
+        ],
+        "RewardList": [],
+        "TeamType": "Player",
+        "TrialAvatarList": [],
+        "MainMissionIDList": [
+          1036004
+        ],
+        "MainMissionIDBefore": 1036003,
+        "MainMissionIDAfter": 1036003,
+        "SkipRewardOnFinish": true,
+        "EntrancePageBGImagePath": "",
+        "DamageType": [],
+        "RaidTargetID": [],
+        "EnterType": "SkipUI"
+      },
+      {
+        "RaidID": 40414,
+        "RaidTagList": [],
+        "UnlockWorldLevel": [],
+        "Type": "Mission",
+        "MonsterList": [],
+        "MonsterHideList": [],
+        "RaidName": {
+          "Hash": 6802157539560402471
+        },
+        "RaidDesc": {
+          "Hash": 2831530430725053936
+        },
+        "BuffParamList": [],
+        "TeamLimitIDList": [],
+        "LimitIDList": [],
+        "RecoverType": [
+          "Unknown"
+        ],
+        "RewardList": [],
+        "TeamType": "Player",
+        "TrialAvatarList": [],
+        "MainMissionIDList": [
+          1040212
+        ],
+        "MainMissionIDBefore": 1040211,
+        "MainMissionIDAfter": 1040211,
+        "SkipRewardOnFinish": true,
+        "EntrancePageBGImagePath": "",
+        "AutoObtainDamageType": true,
+        "DamageType": [],
+        "RaidTargetID": [],
+        "EnterType": "SkipUI"
+      }
+    ],
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1036003,
+        "Type": "Main",
+        "WorldID": 401,
+        "DisplayPriority": 1036003,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 7152228369195953884
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1036002
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1036102,
+        "TrackWeight": 100,
+        "RewardID": 11036003,
+        "DisplayRewardID": 11036003,
+        "ChapterID": 103006,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1036004,
+        "Type": "Main",
+        "WorldID": 401,
+        "DisplayPriority": 1036004,
+        "IsInRaid": true,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 12567609022168782018
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "Manual"
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "DisplayRewardID": 11036003,
+        "ChapterID": 103006,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1040211,
+        "Type": "Main",
+        "WorldID": 501,
+        "DisplayPriority": 1040211,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 16989055536016863856
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1040209
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1040213,
+        "TrackWeight": 100,
+        "RewardID": 11040211,
+        "DisplayRewardID": 11040211,
+        "ChapterID": 104002,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1040212,
+        "Type": "Main",
+        "WorldID": 501,
+        "DisplayPriority": 1040212,
+        "IsInRaid": true,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 10066055342587039171
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "Manual"
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "TrackWeight": 100,
+        "DisplayRewardID": 11040211,
+        "ChapterID": 104002,
+        "SubRewardList": []
+      }
+    ],
+    "ExcelOutput/MazePlane.json": [
+      {
+        "PlaneID": 20001,
+        "PlaneType": "Maze",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 101,
+        "PlaneName": {
+          "Hash": 9764321538343869922
+        },
+        "StartFloorID": 20001001,
+        "FloorIDList": [
+          20001001
+        ]
+      },
+      {
+        "PlaneID": 40301,
+        "PlaneType": "Raid",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 401,
+        "PlaneName": {
+          "Hash": 13013349132478528449
+        },
+        "StartFloorID": 40301001,
+        "FloorIDList": [
+          40301001,
+          40301002
+        ]
+      },
+      {
+        "PlaneID": 40414,
+        "PlaneType": "Raid",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 501,
+        "PlaneName": {
+          "Hash": 13013349132478528449
+        },
+        "StartFloorID": 40414001,
+        "FloorIDList": [
+          40414001
+        ]
+      }
+    ],
+    "ExcelOutput/MapEntrance.json": [
+      {
+        "ID": 2000101,
+        "EntranceType": "Mission",
+        "PlaneID": 20001,
+        "FloorID": 20001001,
+        "StartGroupID": 2,
+        "StartAnchorID": 1,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [
+          1000101
+        ],
+        "FinishSubMissionList": [
+          100010103
+        ]
+      },
+      {
+        "ID": 40301001,
+        "EntranceType": "Explore",
+        "PlaneID": 40301,
+        "FloorID": 40301001,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      },
+      {
+        "ID": 40301002,
+        "EntranceType": "Explore",
+        "PlaneID": 40301,
+        "FloorID": 40301002,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      },
+      {
+        "ID": 40414001,
+        "EntranceType": "Explore",
+        "PlaneID": 40414,
+        "FloorID": 40414001,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      }
+    ],
+    "Config/Level/Mission/1036004/MissionInfo_1036004.json": [
+      {
+        "MainMissionID": 1036004,
+        "StartSubMissionList": [
+          103600401
+        ],
+        "FinishSubMissionList": [
+          103600412
+        ],
+        "MissionCustomValueList": [],
+        "IsLegacyAssistWayPoint": true,
+        "AssistWayPointPackList": []
+      }
+    ],
+    "Config/Level/Mission/1036004/MissionInfo_1036004.partial.json": [
+      {
+        "SubMissionList": [
+          {
+            "ID": 103600401,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "AudioEmotionState": "State_Bgm_E4",
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1036004
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600401",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              38
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "WayPointGroupID": 38,
+            "WayPointEntityID": 300001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600402,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600402",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              39
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "WayPointGroupID": 39,
+            "WayPointEntityID": 400001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600403,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600403",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              40
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "WayPointGroupID": 43,
+            "WayPointEntityID": 400001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600404,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600422
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600404",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [
+              {
+                "FinishActionType": "delSubMission",
+                "FinishActionPara": [
+                  103600416,
+                  103600417,
+                  103600418,
+                  103600419,
+                  103600402,
+                  103600403,
+                  103600420,
+                  103600421
+                ],
+                "FinishActionParaString": []
+              }
+            ],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              42
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "NPC",
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "WayPointGroupID": 42,
+            "WayPointEntityID": 400001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600405,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600410
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600405",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              10
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "WayPointGroupID": 10,
+            "WayPointEntityID": 300001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600406,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600423
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600406",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              11,
+              14
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "NPC",
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "WayPointGroupID": 11,
+            "WayPointEntityID": 400001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600407,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600413
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600407",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              12
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "WayPointGroupID": 12,
+            "WayPointEntityID": 300002,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600408,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600407
+            ],
+            "FinishType": "StageWin",
+            "ParamType": "Equal",
+            "ParamInt1": 20332071,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [
+              {
+                "FinishActionType": "SetFloorSavedValue",
+                "FinishActionPara": [],
+                "FinishActionParaString": [
+                  "40301",
+                  "40301002",
+                  "DoorController_Raid",
+                  "1"
+                ]
+              }
+            ],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              13
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "WayPointGroupID": 13,
+            "WayPointEntityID": 300002,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600409,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600408
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600409",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              15
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600410,
+            "MainMissionID": 1036004,
+            "MissionJsonPath": "Config/Level/Mission/1036004/Mission_103600410.json",
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600404
+            ],
+            "FinishType": "EnterRaidScene",
+            "ParamType": "Equal",
+            "ParamInt1": 40301,
+            "ParamInt2": 40301002,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600411,
+            "MainMissionID": 1036004,
+            "MissionJsonPath": "Config/Level/Mission/1036004/Mission_103600411.json",
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600409
+            ],
+            "FinishType": "EnterRaidScene",
+            "ParamType": "Equal",
+            "ParamInt1": 40301,
+            "ParamInt2": 40301001,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600412,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "AudioEmotionState": "State_Bgm_E4",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600411
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600412",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              45
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600413,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600406
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600413",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              16,
+              12
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "WayPointGroupID": 12,
+            "WayPointEntityID": 300002,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600414,
+            "MainMissionID": 1036004,
+            "MissionJsonPath": "Config/Level/Mission/1036004/Mission_103600414.json",
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600405
+            ],
+            "FinishType": "GetTrialAvatar",
+            "ParamType": "Equal",
+            "ParamInt1": 1021225,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600415,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "AudioEmotionState": "State_Bgm_E4",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              103600402,
+              103600403,
+              103600417,
+              103600418,
+              103600419
+            ],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 4,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "WayPointGroupID": 41,
+            "WayPointEntityID": 300004,
+            "WayPointShowRangeMin": 60,
+            "MapWaypointRange": 45,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600416,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600416",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600417,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600417",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600418,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600418",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600419,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600401
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600419",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600420,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600402
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600420",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              46
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600421,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "IsCanDelete": true,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600403
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600421",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              43
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600422,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600415
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600422",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              48
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40301001,
+            "WayPointGroupID": 41,
+            "WayPointEntityID": 300004,
+            "WayPointShowRangeMin": 60,
+            "MapWaypointRange": 45,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 103600423,
+            "MainMissionID": 1036004,
+            "LevelPlaneID": 40301,
+            "LevelFloorID": 40301002,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              103600414
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_103600423",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              18,
+              14,
+              11
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "NPC",
+            "GotoParam": [],
+            "WayPointFloorID": 40301002,
+            "WayPointGroupID": 11,
+            "WayPointEntityID": 400001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          }
+        ]
+      }
+    ],
+    "Config/Level/Mission/1040212/MissionInfo_1040212.json": [
+      {
+        "MainMissionID": 1040212,
+        "StartSubMissionList": [
+          104021201,
+          104021212
+        ],
+        "FinishSubMissionList": [
+          104021206
+        ],
+        "MissionCustomValueList": [],
+        "AssistWayPointPackList": []
+      }
+    ],
+    "Config/Level/Mission/1040212/MissionInfo_1040212.partial.json": [
+      {
+        "SubMissionList": [
+          {
+            "ID": 104021201,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021201.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "AudioEmotionState": "State_Bgm_E3",
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1040212
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021201",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "WayPointFloorID": 40414001,
+            "WayPointGroupID": 244,
+            "WayPointEntityID": 400001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021202,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021202.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021201
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021202",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              81
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021203,
+            "MainMissionID": 1040212,
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeParamIntList": [],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021203",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              8
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021204,
+            "MainMissionID": 1040212,
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021203
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021204",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              9
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021205,
+            "MainMissionID": 1040212,
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021204
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021205",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              10
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021206,
+            "MainMissionID": 1040212,
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "AudioEmotionState": "State_Bgm_E2",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021201
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021206",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              11
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "GotoParam": [],
+            "WayPointFloorID": 40414001,
+            "WayPointGroupID": 11,
+            "WayPointEntityID": 300003,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021207,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021207.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021201
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              104021206
+            ],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              8
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021208,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021208.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021201
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              104021206
+            ],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              33,
+              34,
+              35
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021209,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021209.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021203
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_104021209",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021210,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021210.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021201
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              104021206
+            ],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              6,
+              36,
+              37
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021211,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021211.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              104021201
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              104021206
+            ],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [
+              4,
+              5
+            ],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 104021212,
+            "MainMissionID": 1040212,
+            "MissionJsonPath": "Config/Level/Mission/1040212/Mission_104021212.json",
+            "LevelPlaneID": 40414,
+            "LevelFloorID": 40414001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1040212
+            ],
+            "FinishType": "GetTrialAvatar",
+            "ParamType": "Equal",
+            "ParamInt1": 1021404,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "GotoParam": [],
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          }
+        ]
+      }
+    ]
+  }
+}

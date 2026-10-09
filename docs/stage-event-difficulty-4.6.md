@@ -1,0 +1,17 @@
+# 4.6 剧情事件难度
+
+本批接入原始DifficultyAdjustmentStage中ID=20003011、EventIDs=[20003011]的有限source2事件。默认及合法空偏好使用实际世界，简单使用实际世界减1；实际玩家世界和正式队伍不改变。世界1至6可保存两种偏好，世界0保留默认且不允许更新；已保存的简单偏好在降到世界0后也不产生负等级。继承4.2路径保持原有世界选择。
+
+固定TurnBasedGameData提交724b139d8c9c32d12552eb95745a4fee72bfe48b的三份完整Git blob、15条原始记录保存在src/test/resources/fixtures/stage-event-difficulty-4.6.json。DifficultyAdjustmentStage原始完整行、PlaneEvent世界0至6及StageConfig七个原始关卡均保留sourceSHA、安装文件SHA及blob。全部关卡为Mainline，Stage200030110至116的Level分别为7、30、40、48、56、66、75，每个波次保留原始怪物8015011。
+
+本机DifficultyAdjustModule的GetStageEventDifficulty/585811和SendStageEventUpdate/585813具有source2包装证据；_InitCanAdjustmentStageEventIDs/585822读取原始EventIDs数组，DifficultyAdjustmentStage的数组偏移0x10和ID偏移0x18已有独立类型证明。使用既有4193/4103及ID字段8、来源字段11、难度字段12，不改命令表、151份冻结协议、生成类或GameConstants.VERSION。分组的ID与多EventIDs更新/别名语义仍未完整核对，本批拒绝20101011/20101012等分组编号。
+
+偏好单独保存于GameplayState.stageEventDifficultySettings，和source1副本偏好可以同时存在；查询只返回已保存记录，不制造默认条目。完整原始调整行与七个已加载事件/关卡配置及实际波次缓存共同形成来源标识。重复同值不再次保存，保存失败恢复原选择；损坏集合和变化的已存来源不回退为默认。
+
+SceneEnterStage原生入口与内部明确事件入口采用同一不可变Plan，冻结当前玩家、场景对象、实际世界、有效世界、难度、plane/floor/entry、原始Stage对象与来源。StageEventDifficultyBattle发送实际有效世界和原始怪物波次，场景必须为普通维度且属于当前玩家。活动实例、剧情副本、宇宙、试用、跑酷及故事线切换不采用该计划。入战后菜单更新拒绝；结算前核对同一世界、地点、场景、选择、来源、关卡与波次，变化时拒绝且不进入beginSettlement。现有任务击杀和明确自定义值上下文读取同一有效世界；一般StageWin继续冻结实际玩家世界。
+
+50项Java检查包括原始世界1至6的12种显式选择、世界0至6的7种未选择、混合source1/source2查询、防重、非法owner/世界/难度、保存失败回退、实际Player/Morphia六种各两次恢复、活动战斗菜单拒绝、普通QUIT、内部事件入口、继承4.2及来源/世界/地点/波次变化时关闭结算。第一阶段19项中12项因未接通source2真实先失败；位置阶段50项中四项失败包含三个真实地点结算缺口与一个未知维度的夹具构造错误，后者单独排除并改为明确的隔离维度视图。后续50项通过；集成编译、缓存协议开关和探针编译失误分别保留日志，不计为既有玩法缺陷。
+
+scripts/smoke-stage-event-difficulty.py从实际jar通过SDK创建隔离账号、UDP/KCP登录、先保持未选择默认、改简单并入战、正常stop、H2重启恢复简单、改默认及再次重启恢复默认。四份快照预期75次请求、五场原始事件战斗和QUIT、四次正常stop、三次同UID进程重启；查询/重复进入/错误结果身份/战斗内改选/重复结算均检查实际活动战斗保持或结束。离线检查只一次设置worldLevel=1，其余只读，正式lineup和配置每个字节保持不变。原始Excel表不改，Mission目录隔离为空，不种入已完成任务或奖励。最终结果以build/stage-event-difficulty-verification.json及同SHA报告为准，未结束的检查不计完成。
+
+单元场景/正式角色使用既有明确夹具，额外维度为隔离视图；原生场景沿用隔离账号的普通起始场景，不证明20003011的原始NPC摆放或完整任务入口。100040110的StageWin族编号20003011与其脚本实际TriggerBattle值20003012分别记录，不能相互替代。本批不保存进行中的战斗，不声明跨重连继续战斗，也不证明客户端难度按钮、完整剧情演出、所有分组、全部副本/宇宙/小游戏、官方战斗输入重放或断电原子性。

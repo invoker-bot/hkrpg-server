@@ -1,0 +1,194 @@
+{
+  "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Cyrene_00_Ability.json",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sha256": "08dbb8c089a9c2a111a9d8b32c883b5488230f125e405dc16e46bc8a18228930",
+  "sourceBlobSHA256": "b74952ea9bc8545b6a85b2a8f617cd451231fc42388179e31ab1926ed4179777",
+  "path": [
+    "AbilityList",
+    3,
+    "OnStart",
+    0
+  ],
+  "ability": "LocalPlayer_Cyrene_00_Revert",
+  "task": {
+    "$type": "RPG.GameCore.SetComponentAssetLoadStateWithAnimState",
+    "SetConfig": {
+      "Load": true,
+      "LoadIndex": 0
+    },
+    "StateConfigs": [
+      {
+        "FromStateName": "Run",
+        "ToStateName": "Run",
+        "Parameters": [
+          {
+            "Name": "FlyBlend",
+            "Value": 1
+          }
+        ]
+      }
+    ],
+    "SuccessTaskList": [
+      {
+        "$type": "RPG.GameCore.TriggerEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Cyrene_00/Eff_Avatar_Cyrene_00_MazeSkill_VeilEnd_01.prefab"
+      },
+      {
+        "$type": "RPG.GameCore.TriggerEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Cyrene_00/Eff_Avatar_Cyrene_00_MazeSkill_VeilEnd_02.prefab"
+      }
+    ],
+    "FailedTaskList": [
+      {
+        "$type": "RPG.GameCore.AdventureTriggerAnimStateWithMove",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimLogicState": "CustomSkill",
+        "AnimStateName": "Recover",
+        "TransitionDuration": 0.2
+      },
+      {
+        "$type": "RPG.GameCore.AdventureTriggerMoveApplyRunSpeed",
+        "MoveEntityType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "MaxDuration": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 1
+          }
+        },
+        "MaxSpeed": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 8
+          }
+        },
+        "MinSpeed": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0
+          }
+        },
+        "MaxSteerSpeed": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 20
+          }
+        },
+        "CanPlayerControl": true,
+        "AutoMove": false,
+        "Acceleration": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": -8
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "Recover",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.21
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.TriggerEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Cyrene_00/Eff_Avatar_Cyrene_00_MazeSkill_VeilEnd_01.prefab"
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "Recover",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.328
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.TriggerEffect",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "EffectPath": "Effects/Eff_Prefab/Eff_Avatar/Eff_Cyrene_00/Eff_Avatar_Cyrene_00_MazeSkill_VeilEnd_02.prefab"
+      },
+      {
+        "$type": "RPG.GameCore.VCameraConfigChange",
+        "CameraConfig": {
+          "Freelook3rdConfig": {
+            "DampChangeParam": {
+              "TargetValue": {
+                "X": 2,
+                "Y": 2,
+                "Z": 2
+              },
+              "ChangeCurvePath": "Camera/BlendCurve/AttackDampCurve.asset",
+              "RecoveryTime": 2,
+              "RecoveryCurvePath": "Camera/BlendCurve/AttackDampRecoverCurve.asset"
+            }
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.SetComponentAssetLoadState",
+        "Load": true,
+        "LoadIndex": 0
+      },
+      {
+        "$type": "RPG.GameCore.AdventureTriggerAnimStateWithMove",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "AdvLocalPlayer"
+        },
+        "AnimLogicState": "CustomSkill",
+        "AnimStateName": "Recover",
+        "NormalizedTimeStart": 0.9,
+        "TransitionDuration": 0
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "Recover",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.45
+          }
+        }
+      }
+    ]
+  },
+  "completeAbilityChainVerified": false,
+  "originalAnimationLoadImplemented": false
+}

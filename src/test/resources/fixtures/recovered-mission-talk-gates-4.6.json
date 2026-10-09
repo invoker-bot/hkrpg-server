@@ -1,0 +1,1207 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceFiles": {
+    "Config/Level/Mission/1054503/MissionInfo_1054503.json": "604f1e0bb84d111ece1598b3c7e7ae6242a322160a0ebf4bb88ba8c008ca75a7",
+    "Config/Level/Mission/1054503/MissionInfo_1054503.partial.json": "59a1f1c038ea3cafec011b07acc4cc212bdf4f82868bf176fb2c2cfae604f613",
+    "Config/Level/Mission/4340111/MissionInfo_4340111.json": "12cbbca5002188fc2846f936d3e1404c6608ff07fb35829ad0c2c5be969e1619",
+    "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json": "5097facb52cc7451937d65e442cf5226be2bc8c4dee8babf54e019bd94d7c4f2",
+    "ExcelOutput/MessageSectionConfig.json": "14618b292b232e547ca0e74aa11a57ac0b644a4fc3a16e06009ebcfcb8afc70e",
+    "ExcelOutput/MessageGroupConfig.json": "b754b8079fc1f8cb8199b04fd17a976c4cd17f11a7157d9ceaea43e96da2b498",
+    "ExcelOutput/MessageItemConfig.json": "b6d8a4436799b7d2d26fd8a00b49e0315e9981c59138e5e2137b4e866beda146",
+    "ExcelOutput/MapEntrance.json": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+    "ExcelOutput/MainMission.json": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "ExcelOutput/RewardData.json": "54ef4bd235ea6e89ce01e0b57140ea966c8a8201e68648c2d5c0a8ccb30573aa",
+    "ExcelOutput/ItemConfig.json": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142"
+  },
+  "fixedSourceRows": [
+    {
+      "kind": "main",
+      "sourcePath": "Config/Level/Mission/1054503/MissionInfo_1054503.json",
+      "row": {
+        "MainMissionID": 1054503,
+        "StartSubMissionList": [
+          105450301,
+          105450302
+        ],
+        "FinishSubMissionList": [
+          105450336
+        ],
+        "MissionCustomValueList": [],
+        "SubMissionRelationList": [],
+        "UseAssistWayPoint": true,
+        "AssistWayPointPackList": [
+          {
+            "AssistWayPointFloorID": 20551001,
+            "AssistWayPointRegionID": 5,
+            "AssistWayPointLittleGameConditionList": [
+              {
+                "AssistWayPointLittleGameGroupID": 56,
+                "AssistWayPointLittleGameEntityID": 110001
+              }
+            ],
+            "AssistWayPointList": [
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 56,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 3,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              }
+            ],
+            "AssistWayPointFastCompleteList": [
+              {
+                "UseOverrideTriggerTime": true,
+                "TriggerTime": 30,
+                "TeleportTargetID": 53
+              }
+            ]
+          },
+          {
+            "AssistWayPointFloorID": 20551001,
+            "AssistWayPointRegionID": 5,
+            "AssistWayPointLittleGameConditionList": [],
+            "AssistWayPointList": [
+              {
+                "WayPointType": "Anchor",
+                "WayPointGroupID": 283,
+                "WayPointEntityID": 1,
+                "SubmissionID": 105450329,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "Anchor",
+                "WayPointGroupID": 292,
+                "WayPointEntityID": 1,
+                "SubmissionID": 105450329,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "Anchor",
+                "WayPointGroupID": 291,
+                "WayPointEntityID": 1,
+                "SubmissionID": 105450329,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "Prop",
+                "WayPointGroupID": 117,
+                "WayPointEntityID": 300001,
+                "SubmissionID": 105450329,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "Anchor",
+                "WayPointGroupID": 291,
+                "WayPointEntityID": 2,
+                "SubmissionID": 105450331,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "Anchor",
+                "WayPointGroupID": 292,
+                "WayPointEntityID": 2,
+                "SubmissionID": 105450331,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "Prop",
+                "WayPointGroupID": 56,
+                "WayPointEntityID": 300001,
+                "SubmissionID": 105450331,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {},
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              }
+            ],
+            "AssistWayPointFastCompleteList": []
+          },
+          {
+            "AssistWayPointFloorID": 20551001,
+            "AssistWayPointRegionID": 4,
+            "AssistWayPointLittleGameConditionList": [
+              {
+                "AssistWayPointLittleGameGroupID": 92,
+                "AssistWayPointLittleGameEntityID": 110001
+              }
+            ],
+            "AssistWayPointList": [
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 92,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 81,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {
+                  "UseOverrideRangeMin": true,
+                  "OverrideRangeMin": 1
+                },
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 92,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 169,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {
+                  "UseOverrideRangeMin": true,
+                  "OverrideRangeMin": 1
+                },
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 92,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 5,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {
+                  "UseOverrideRangeMin": true,
+                  "OverrideRangeMin": 1
+                },
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 92,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 9,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {
+                  "OverrideRangeMin": 2
+                },
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              }
+            ],
+            "AssistWayPointFastCompleteList": [
+              {
+                "EndIndex": 3,
+                "UseOverrideTriggerTime": true,
+                "TriggerTime": 100,
+                "TeleportTargetID": 140
+              }
+            ]
+          },
+          {
+            "AssistWayPointFloorID": 20551001,
+            "AssistWayPointRegionID": 8,
+            "AssistWayPointLittleGameConditionList": [
+              {
+                "AssistWayPointLittleGameGroupID": 119,
+                "AssistWayPointLittleGameEntityID": 110001
+              }
+            ],
+            "AssistWayPointList": [
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 119,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 32,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {
+                  "UseOverrideRangeMin": true,
+                  "OverrideRangeMin": 1
+                },
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              },
+              {
+                "WayPointType": "LittleGame",
+                "WayPointGroupID": 119,
+                "WayPointEntityID": 110001,
+                "WayPointLittleGameEntityID": 3,
+                "SubmissionID": 105450344,
+                "SkipWhenSubMissionFinish": true,
+                "DistanceCondition": {
+                  "UseOverrideRangeMin": true,
+                  "OverrideRangeMin": 1
+                },
+                "FinishConditionMain": {
+                  "ConditionPackList": []
+                }
+              }
+            ],
+            "AssistWayPointFastCompleteList": [
+              {
+                "EndIndex": 1,
+                "UseOverrideTriggerTime": true,
+                "TriggerTime": 50,
+                "TeleportTargetID": 104
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/1054503/MissionInfo_1054503.partial.json",
+      "row": {
+        "ID": 105450323,
+        "MainMissionID": 1054503,
+        "MissionJsonPath": "Config/Level/Mission/1054503/Mission_105450323.json",
+        "LevelPlaneID": 20551,
+        "LevelFloorID": 20551001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          105450324
+        ],
+        "TakeParamStrList": [],
+        "MazePlaneID": 20551,
+        "MazeFloorID": 20551001,
+        "FinishType": "FloorSavedValue",
+        "ParamType": "Equal",
+        "ParamInt1": 1,
+        "ParamStr1": "FSV_StudioState",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "IsBackTrack": true,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "WayPointType": "Prop",
+        "GotoParam": [],
+        "WayPointFloorID": 20551001,
+        "WayPointGroupID": 55,
+        "WayPointEntityID": 300004,
+        "StoryLineIDList": [],
+        "IgnoreVerseParamList": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/1054503/MissionInfo_1054503.partial.json",
+      "row": {
+        "ID": 105450340,
+        "MainMissionID": 1054503,
+        "MissionJsonPath": "Config/Level/Mission/1054503/Mission_105450340.json",
+        "LevelPlaneID": 20551,
+        "LevelFloorID": 20551001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          105450323
+        ],
+        "TakeParamStrList": [],
+        "FinishType": "Talk",
+        "ParamType": "Equal",
+        "ParamStr1": "Mission_105450340",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": [],
+        "StoryLineIDList": [],
+        "IgnoreVerseParamList": []
+      }
+    },
+    {
+      "kind": "main",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.json",
+      "row": {
+        "MainMissionID": 4340111,
+        "StartSubMissionList": [
+          434011101
+        ],
+        "FinishSubMissionList": [
+          434011114
+        ],
+        "MissionCustomValueList": [
+          {
+            "Name": "OldValue_0",
+            "Type": "Former",
+            "ValidValueParamList": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "Index": 1,
+            "Name": "OldValue_1",
+            "Type": "ClientOnly",
+            "isLocal": true,
+            "ValidValueParamList": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "Index": 2,
+            "Name": "OldValue_2",
+            "Type": "ClientOnly",
+            "isLocal": true,
+            "ValidValueParamList": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "Index": 3,
+            "Name": "OldValue_3",
+            "Type": "ClientOnly",
+            "isLocal": true,
+            "ValidValueParamList": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "CustomValueSaveIndexList": [
+          "OldValue_0"
+        ],
+        "IsShow": false,
+        "AssistWayPointPackList": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json",
+      "row": {
+        "ID": 434011107,
+        "MainMissionID": 4340111,
+        "MissionJsonPath": "Config/Level/Mission/4340111/Mission_434011107.json",
+        "LevelPlaneID": 20321,
+        "LevelFloorID": 20321001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          434011103
+        ],
+        "FinishType": "Talk",
+        "ParamType": "Equal",
+        "ParamStr1": "Mission_434011107",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [
+          "OldValue_0"
+        ],
+        "CustomValueReward": [],
+        "GroupIDList": [
+          210
+        ],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json",
+      "row": {
+        "ID": 434011111,
+        "MainMissionID": 4340111,
+        "LevelPlaneID": 20321,
+        "LevelFloorID": 20321001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          434011108
+        ],
+        "TakeParamStrList": [],
+        "FinishType": "MessageSectionFinish",
+        "ParamType": "Equal",
+        "ParamInt1": 1306100,
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": [],
+        "StoryLineIDList": [],
+        "IgnoreVerseParamList": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json",
+      "row": {
+        "ID": 434011112,
+        "MainMissionID": 4340111,
+        "LevelPlaneID": 20321,
+        "LevelFloorID": 20321001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          434011109
+        ],
+        "TakeParamStrList": [],
+        "FinishType": "MessageSectionFinish",
+        "ParamType": "Equal",
+        "ParamInt1": 1306200,
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": [],
+        "StoryLineIDList": [],
+        "IgnoreVerseParamList": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json",
+      "row": {
+        "ID": 434011113,
+        "MainMissionID": 4340111,
+        "LevelPlaneID": 20321,
+        "LevelFloorID": 20321001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          434011110
+        ],
+        "TakeParamStrList": [],
+        "FinishType": "MessageSectionFinish",
+        "ParamType": "Equal",
+        "ParamInt1": 1306300,
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": [],
+        "StoryLineIDList": [],
+        "IgnoreVerseParamList": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json",
+      "row": {
+        "ID": 434011114,
+        "MainMissionID": 4340111,
+        "MissionJsonPath": "Config/Level/Mission/4340111/Mission_434011114.json",
+        "LevelPlaneID": 20321,
+        "LevelFloorID": 20321001,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          434011107
+        ],
+        "TakeParamStrList": [],
+        "FinishType": "Talk",
+        "ParamType": "Equal",
+        "ParamStr1": "Mission_434011114",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": [],
+        "StoryLineIDList": [],
+        "IgnoreVerseParamList": []
+      }
+    },
+    {
+      "kind": "sub",
+      "sourcePath": "Config/Level/Mission/4340111/MissionInfo_4340111.partial.json",
+      "row": {
+        "ID": 434011108,
+        "MainMissionID": 4340111,
+        "LevelPlaneID": 20321,
+        "LevelFloorID": 20321001,
+        "TakeType": "CustomValue",
+        "TakeParamIntList": [],
+        "TakeParamStrList": [
+          "OldValue_0",
+          "1",
+          "434011107"
+        ],
+        "FinishType": "WaitDays",
+        "ParamType": "Equal",
+        "ParamInt1": 1,
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": []
+      }
+    },
+    {
+      "kind": "MessageSectionConfig",
+      "sourcePath": "ExcelOutput/MessageSectionConfig.json",
+      "row": {
+        "ID": 1306100,
+        "StartMessageItemIDList": [
+          130610000
+        ]
+      }
+    },
+    {
+      "kind": "MessageGroupConfig",
+      "sourcePath": "ExcelOutput/MessageGroupConfig.json",
+      "row": {
+        "ID": 13061,
+        "MessageContactsID": 141,
+        "MessageSectionIDList": [
+          1306100
+        ]
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610000,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 11916775966968709248
+        },
+        "NextItemIDList": [
+          130610001
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610001,
+        "Sender": "PlayerAuto",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 9638832307480288803
+        },
+        "NextItemIDList": [
+          130610002
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610002,
+        "Sender": "PlayerAuto",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 2178457761657308821
+        },
+        "NextItemIDList": [
+          130610003
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610003,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 10544861655224020729
+        },
+        "NextItemIDList": [
+          130610004
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610004,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 6815525421433019325
+        },
+        "NextItemIDList": [
+          130610005
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610005,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 12182136549530144338
+        },
+        "NextItemIDList": [
+          130610006
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610006,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 17644516526268327220
+        },
+        "NextItemIDList": [
+          130610007
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610007,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 15010080880813364447
+        },
+        "NextItemIDList": [
+          130610008
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610008,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 376589913035626329
+        },
+        "NextItemIDList": [
+          130610009,
+          130610011
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610009,
+        "Sender": "Player",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 8673011524170794144
+        },
+        "OptionText": {
+          "Hash": 15251616650735484117
+        },
+        "NextItemIDList": [
+          130610010
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610010,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 15164337536270368789
+        },
+        "NextItemIDList": [
+          130610013
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610011,
+        "Sender": "Player",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 2697331631653642966
+        },
+        "OptionText": {
+          "Hash": 11594104424532036749
+        },
+        "NextItemIDList": [
+          130610012
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610012,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 2208397879971485668
+        },
+        "NextItemIDList": [
+          130610013
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610013,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 15995792832366331765
+        },
+        "NextItemIDList": [
+          130610014
+        ],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MessageItemConfig",
+      "sourcePath": "ExcelOutput/MessageItemConfig.json",
+      "row": {
+        "ID": 130610014,
+        "ContactsID": 141,
+        "Sender": "NPC",
+        "ItemType": "Text",
+        "MainText": {
+          "Hash": 6054582725772885171
+        },
+        "NextItemIDList": [],
+        "SectionID": 1306100
+      }
+    },
+    {
+      "kind": "MapEntrance",
+      "sourcePath": "ExcelOutput/MapEntrance.json",
+      "row": {
+        "ID": 2032101,
+        "EntranceType": "Mission",
+        "PlaneID": 20321,
+        "FloorID": 20321001,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [
+          1031501
+        ],
+        "FinishSubMissionList": [
+          103150120
+        ]
+      }
+    },
+    {
+      "kind": "MainMission",
+      "sourcePath": "ExcelOutput/MainMission.json",
+      "row": {
+        "MainMissionID": 4340111,
+        "Type": "Branch",
+        "WorldID": 401,
+        "DisplayPriority": 4340111,
+        "NextMainMissionList": [],
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1031501
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "RewardID": 14340111,
+        "DisplayRewardID": 100,
+        "SubRewardList": []
+      }
+    },
+    {
+      "kind": "RewardData",
+      "sourcePath": "ExcelOutput/RewardData.json",
+      "row": {
+        "RewardID": 14340111,
+        "ItemID_1": 2,
+        "Count_1": 5000,
+        "ItemID_2": 212,
+        "Count_2": 3,
+        "ItemID_3": 222,
+        "Count_3": 2
+      }
+    },
+    {
+      "kind": "ItemConfig",
+      "sourcePath": "ExcelOutput/ItemConfig.json",
+      "row": {
+        "ID": 2,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 11,
+        "ItemName": {
+          "Hash": 8760829406395316734
+        },
+        "ItemDesc": {
+          "Hash": 11786974837413392672
+        },
+        "ItemBGDesc": {
+          "Hash": 11264535423382425308
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/2.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/2.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/2.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      }
+    },
+    {
+      "kind": "ItemConfig",
+      "sourcePath": "ExcelOutput/ItemConfig.json",
+      "row": {
+        "ID": 212,
+        "ItemMainType": "Material",
+        "ItemSubType": "AvatarExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 1,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 17747764441101505056
+        },
+        "ItemDesc": {
+          "Hash": 13712902436557403541
+        },
+        "ItemBGDesc": {
+          "Hash": 9661696975142592798
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/212.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/212.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/212.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1010,
+        "SellType": "Destroy"
+      }
+    },
+    {
+      "kind": "ItemConfig",
+      "sourcePath": "ExcelOutput/ItemConfig.json",
+      "row": {
+        "ID": 222,
+        "ItemMainType": "Material",
+        "ItemSubType": "EquipmentExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 5,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 11880237416357818806
+        },
+        "ItemDesc": {
+          "Hash": 9299707827284584146
+        },
+        "ItemBGDesc": {
+          "Hash": 9679737055373985385
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/222.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/222.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/222.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1020,
+        "SellType": "Destroy"
+      }
+    }
+  ],
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "indexSHA256": "2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89",
+  "profileSHA256": "21032416c120e295a6bb1fc22d826661aeb35fd21792dae66cb46e02470e6200",
+  "graphs": [
+    {
+      "sourcePath": "Config/Level/Mission/1054503/Mission_105450340.json",
+      "sha256": "bbfbfc6413ee7cc85e523cb859ae2ce745b69dee094e5e4a6edbcc5ff69e6a5e",
+      "resourceSHA256": "6c41e493a39510152750bf0f87eb5fe625cede3db1388b4d378bd15353b4d7cc",
+      "resource": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitFloorCustomValueChangeV2",
+                "Name": {
+                  "Value": "FCV_StudioState_Entity"
+                },
+                "OnChange": [
+                  {
+                    "$type": "RPG.GameCore.PlayMissionTalk",
+                    "SimpleTalkList": [
+                      {
+                        "TalkSentenceID": 155032600,
+                        "ProtectTime": 2.0
+                      },
+                      {
+                        "TalkSentenceID": 155032601,
+                        "ProtectTime": 2.0
+                      }
+                    ]
+                  },
+                  {
+                    "$type": "RPG.GameCore.ClientFinishMission",
+                    "SubmissionID": 105450340
+                  }
+                ],
+                "Condition": {
+                  "$type": "RPG.GameCore.ByCompareFloorCustomFloatV2",
+                  "Name": {
+                    "Value": "FCV_StudioState_Entity"
+                  },
+                  "CompareValue": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 1
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PredicateTaskList",
+                "Predicate": {
+                  "$type": "RPG.GameCore.ByCompareFloorCustomFloatV2",
+                  "Name": {
+                    "Value": "FCV_StudioState_Entity"
+                  },
+                  "CompareValue": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 1
+                    }
+                  }
+                },
+                "SuccessTaskList": [
+                  {
+                    "$type": "RPG.GameCore.PlayMissionTalk",
+                    "SimpleTalkList": [
+                      {
+                        "TalkSentenceID": 155032600,
+                        "ProtectTime": 2.0
+                      },
+                      {
+                        "TalkSentenceID": 155032601,
+                        "ProtectTime": 2.0
+                      }
+                    ]
+                  },
+                  {
+                    "$type": "RPG.GameCore.ClientFinishMission",
+                    "SubmissionID": 105450340
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "sourcePath": "Config/Level/Mission/4340111/Mission_434011114.json",
+      "sha256": "d43a0a6889ac8d4ddd014a7cf652549d1db9d902b1e8f0065fd6ef9a42f3b84f",
+      "resourceSHA256": "a73a2b8d5432f8f09bba9231597517e4b8b2472e532bf6ca3673f44bf5409e50",
+      "resource": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CollectDataConditions",
+                "TaskIDList": [
+                  434011111,
+                  434011112,
+                  434011113
+                ],
+                "MainMissionIDList": [],
+                "PerformanceIDList": [],
+                "PerformanceIDDsList": [],
+                "CustomValueMainMissionIDList": []
+              },
+              {
+                "$type": "RPG.GameCore.ByCompareSubMissionState",
+                "SubMissionID": 434011111,
+                "SubMissionState": "Finish"
+              },
+              {
+                "$type": "RPG.GameCore.ClientFinishMission",
+                "SubmissionID": 434011114
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CollectDataConditions",
+                "TaskIDList": [
+                  434011111,
+                  434011112,
+                  434011113
+                ],
+                "MainMissionIDList": [],
+                "PerformanceIDList": [],
+                "PerformanceIDDsList": [],
+                "CustomValueMainMissionIDList": []
+              },
+              {
+                "$type": "RPG.GameCore.ByCompareSubMissionState",
+                "SubMissionID": 434011112,
+                "SubMissionState": "Finish"
+              },
+              {
+                "$type": "RPG.GameCore.ClientFinishMission",
+                "SubmissionID": 434011114
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CollectDataConditions",
+                "TaskIDList": [
+                  434011111,
+                  434011112,
+                  434011113
+                ],
+                "MainMissionIDList": [],
+                "PerformanceIDList": [],
+                "PerformanceIDDsList": [],
+                "CustomValueMainMissionIDList": []
+              },
+              {
+                "$type": "RPG.GameCore.ByCompareSubMissionState",
+                "SubMissionID": 434011113,
+                "SubMissionState": "Finish"
+              },
+              {
+                "$type": "RPG.GameCore.ClientFinishMission",
+                "SubmissionID": 434011114
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    }
+  ]
+}

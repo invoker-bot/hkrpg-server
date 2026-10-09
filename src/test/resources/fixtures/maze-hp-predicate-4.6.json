@@ -1,0 +1,120 @@
+{
+  "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Anaxa_00_Ability.json",
+  "sha256": "a6e1fd4ab51a778be1ad575a6bb2ea420cd4f4be04a5603264d48b908fc99eec",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceBlobSHA256": "263850c47781979a57ccc2f50ea3f0c3ddea412265e34ea34fbc15696f415570",
+  "path": [
+    "GlobalModifiers",
+    "ADV_StageAbility_Anaxa_00_LineupAttackListener",
+    "OnAttack",
+    0
+  ],
+  "task": {
+    "$type": "RPG.GameCore.PredicateTaskList",
+    "Predicate": {
+      "$type": "RPG.GameCore.AdventureByCompareHPRatio",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "CompareType": "Greater"
+    },
+    "SuccessTaskList": [
+      {
+        "$type": "RPG.GameCore.AddMazeBuff",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "ParamEntityList"
+        },
+        "ID": 140502,
+        "Condition": {
+          "$type": "RPG.GameCore.AdvByContainBehaviorFlag",
+          "Flag": "Fear"
+        },
+        "LifeTime": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 1
+          }
+        },
+        "Count": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 1
+          }
+        }
+      }
+    ]
+  },
+  "completeAbilityChainVerified": false,
+  "modifierListenerDispatchVerified": false,
+  "behaviorFlagAndTargetListVerified": false,
+  "nativeFieldEvidence": {
+    "clientFiles": {
+      "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+      "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+    },
+    "typeIndex": 20777,
+    "typeName": "AdventureByCompareHPRatio",
+    "fields": [
+      {
+        "fieldIndex": 93866,
+        "name": "TargetType",
+        "nativeTypeIndex": 501063,
+        "nativeType": {
+          "kind": 18,
+          "typeIndex": 23744,
+          "name": "TargetEvaluator"
+        }
+      },
+      {
+        "fieldIndex": 93867,
+        "name": "CompareType",
+        "nativeTypeIndex": 487251,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 16452,
+          "name": "CompareType"
+        }
+      },
+      {
+        "fieldIndex": 93868,
+        "name": "CompareValue",
+        "nativeTypeIndex": 453406,
+        "nativeType": {
+          "kind": 12
+        }
+      }
+    ],
+    "constructor": {
+      "methodIndex": 120391,
+      "rva": "0x1d38a2e0",
+      "endRva": "0x1d38a320",
+      "unwindRva": "0x8ee02b0",
+      "sha256": "5abda5b5f99c66283832621f045b2055f675193c85dc1fbba3dcdb6377d27512",
+      "bytesHex": "564883ec204889ce488b0d093afdeb80b9b7000000007421488b0df9e636ece82c89790048894620c7462804000000c64610014883c4205ec3e8621a9ae6ebd8",
+      "instructions": [
+        "push rsi",
+        "sub rsp, 0x20",
+        "mov rsi, rcx",
+        "mov rcx, qword ptr [rip - 0x1402c5f7]",
+        "cmp byte ptr [rcx + 0xb7], 0",
+        "je 0x19d38a319",
+        "mov rcx, qword ptr [rip - 0x13c91907]",
+        "call 0x19db22c30",
+        "mov qword ptr [rsi + 0x20], rax",
+        "mov dword ptr [rsi + 0x28], 4",
+        "mov byte ptr [rsi + 0x10], 1",
+        "add rsp, 0x20",
+        "pop rsi",
+        "ret ",
+        "call 0x183d2bd80",
+        "jmp 0x19d38a2f8"
+      ]
+    },
+    "runtimePredicateEvaluationVerified": false,
+    "wireFieldNumbersInferred": false,
+    "clientExecutableStarted": false,
+    "clientModified": false
+  }
+}

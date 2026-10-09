@@ -1,0 +1,742 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceFiles": {
+    "ExcelOutput/SpecialAvatar.json": "1c5b658b175d5a8de31b90eabae4c859e4e472d521b0af618776245039278601",
+    "ExcelOutput/AvatarConfig.json": "9e57b5e3700b525a3f7097895d34177f769012034ac9bd0428318c3ff47f889e",
+    "Config/Level/Mission/1031901/MissionInfo_1031901.partial.json": "a71ad87563e0ff05b936f498175f24caf98cc872d2bf77c45c9fcd282ac1fb39",
+    "Config/Level/Mission/1031901/Mission_103190112.json": "6ddb0edb8859dd681e5657873eb94a3985d7531ba752c8bf4af541a3c452b5af",
+    "Config/Level/Mission/2020504/MissionInfo_2020504.partial.json": "d68f9cb132b2ff4df224dc9815165c37034fdf20e5e236d0de7852d67fa9abcd",
+    "Config/Level/Mission/2020504/Mission_202050410.json": "47b5ff7f236902b11129f5c038a2d0d7c0f62e588741fe4a1063d0b8a0fea4a2",
+    "Config/Level/Mission/2020504/Mission_202050412.json": "47b5ff7f236902b11129f5c038a2d0d7c0f62e588741fe4a1063d0b8a0fea4a2",
+    "Config/Level/Mission/2011412/MissionInfo_2011412.partial.json": "7032e357d2054376fd833695ef455b8716b325b93008f044ba1849b3becfdbd6",
+    "Config/Level/Mission/2011412/Mission_201141225.json": "193da983d8d7cb5ed0e75ddab7a093ae8f1692741fda178602d20e33ffa1a51e"
+  },
+  "cases": [
+    {
+      "sourcePath": "Config/Level/Mission/1031901/MissionInfo_1031901.partial.json",
+      "sub": {
+        "ID": 103190112,
+        "MainMissionID": 1031901,
+        "MissionJsonPath": "Config/Level/Mission/1031901/Mission_103190112.json",
+        "LevelPlaneID": 43306,
+        "LevelFloorID": 43306002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          103190102
+        ],
+        "FinishType": "GetTrialAvatarList",
+        "ParamType": "ListContain",
+        "ParamIntList": [
+          1021304
+        ],
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "GotoParam": []
+      },
+      "scriptPath": "Config/Level/Mission/1031901/Mission_103190112.json",
+      "script": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.ReplaceVirtualTeam"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      },
+      "roles": [
+        {
+          "special": {
+            "SpecialAvatarID": 1021304,
+            "IsUseWorldLevel": true,
+            "PlayerID": 1304,
+            "AvatarID": 1304,
+            "Type": "TYPE_PLOT",
+            "LevelAreaPrefab": "",
+            "AnchorName": "",
+            "Level": 40,
+            "Promotion": 2,
+            "OverrideProperty": [],
+            "HaveActionDelay": true,
+            "SkillTreeTemplate": "TYPE_CUSTOM",
+            "CustomSkillTreeKey": "W1_Standard_30-40",
+            "EquipmentID": 21002,
+            "EquipmentLevel": 40,
+            "EquipmentPromotion": 2,
+            "EquipmentRank": 1,
+            "RelicPropertyType": 410302,
+            "RelicMainValue": 5305302,
+            "RelicSubValue": 302,
+            "AbilityNameList": [],
+            "PlayerJsonPath": "",
+            "JsonPath": "",
+            "AIPath": ""
+          },
+          "actor": {
+            "AvatarID": 1304,
+            "AvatarName": {
+              "Hash": 1512189965928596940
+            },
+            "AvatarFullName": {
+              "Hash": 7120301855670242165
+            },
+            "AdventurePlayerID": 1304,
+            "AvatarVOTag": "aventurine",
+            "Rarity": "CombatPowerAvatarRarityType5",
+            "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Aventurine_00_Config.json",
+            "DamageType": "Imaginary",
+            "SPNeed": {
+              "Value": 110
+            },
+            "ExpGroup": 1,
+            "MaxPromotion": 6,
+            "MaxRank": 6,
+            "RankIDList": [
+              130401,
+              130402,
+              130403,
+              130404,
+              130405,
+              130406
+            ],
+            "SkillList": [
+              130401,
+              130402,
+              130403,
+              130404,
+              130406,
+              130407
+            ],
+            "AvatarBaseType": "Knight",
+            "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Aventurine_00/Avatar_Aventurine_00.prefab",
+            "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1304.png",
+            "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1304.png",
+            "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1304.png",
+            "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1304.png",
+            "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1304B.png",
+            "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1304.prefab",
+            "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Aventurine_00/Manikin_Avatar_Lad_Aventurine_00.prefab",
+            "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Aventurine_00_Config.json",
+            "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Aventurine_00_ComplexSkillAI.json",
+            "SkilltreePrefabPath": "UI/Avatar/Widget/KnightSkillTreeGroup.prefab",
+            "DamageTypeResistance": [],
+            "Release": true,
+            "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1304.png",
+            "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1304.png",
+            "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1304.png",
+            "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1304.png",
+            "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1304.png",
+            "AvatarDropOffset": [
+              -32.1,
+              38,
+              0.61,
+              -32.1,
+              38,
+              0.61,
+              -32.1,
+              38,
+              0.61
+            ],
+            "AvatarTrialOffset": [],
+            "PlayerCardOffset": [],
+            "AssistOffset": [],
+            "AssistBgOffset": [],
+            "AvatarSelfShowOffset": []
+          },
+          "actorTable": "AvatarConfig"
+        }
+      ]
+    },
+    {
+      "sourcePath": "Config/Level/Mission/2020504/MissionInfo_2020504.partial.json",
+      "sub": {
+        "ID": 202050410,
+        "MainMissionID": 2020504,
+        "MissionJsonPath": "Config/Level/Mission/2020504/Mission_202050410.json",
+        "LevelPlaneID": 43201,
+        "LevelFloorID": 43201003,
+        "AudioEmotionState": "State_Bgm_E6",
+        "TakeParamIntList": [],
+        "FinishType": "GetTrialAvatarList",
+        "ParamType": "ListContain",
+        "ParamIntList": [
+          1101208
+        ],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "WayPointFloorID": 43201003
+      },
+      "scriptPath": "Config/Level/Mission/2020504/Mission_202050410.json",
+      "script": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.ReplaceTrialPlayer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      },
+      "roles": [
+        {
+          "special": {
+            "SpecialAvatarID": 1101208,
+            "IsUseWorldLevel": true,
+            "PlayerID": 1208,
+            "AvatarID": 1208,
+            "Type": "TYPE_TRIAL",
+            "LevelAreaPrefab": "",
+            "AnchorName": "",
+            "Level": 40,
+            "Promotion": 2,
+            "OverrideProperty": [],
+            "HaveActionDelay": true,
+            "SkillTreeTemplate": "TYPE_CUSTOM",
+            "CustomSkillTreeKey": "W1_Standard_30-40",
+            "EquipmentID": 21002,
+            "EquipmentLevel": 40,
+            "EquipmentPromotion": 2,
+            "EquipmentRank": 1,
+            "RelicPropertyType": 410602,
+            "RelicMainValue": 1412302,
+            "RelicSubValue": 302,
+            "AbilityNameList": [
+              "TrialPlayer_1101208_FuXuan_Ability"
+            ],
+            "PlayerJsonPath": "",
+            "JsonPath": "",
+            "AIPath": ""
+          },
+          "actor": {
+            "AvatarID": 1208,
+            "AvatarName": {
+              "Hash": 10351737015595052238
+            },
+            "AvatarFullName": {
+              "Hash": 1697900645579426127
+            },
+            "AdventurePlayerID": 1208,
+            "AvatarVOTag": "fuxuan",
+            "Rarity": "CombatPowerAvatarRarityType5",
+            "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_FuXuan_00_Config.json",
+            "DamageType": "Quantum",
+            "SPNeed": {
+              "Value": 135
+            },
+            "ExpGroup": 1,
+            "MaxPromotion": 6,
+            "MaxRank": 6,
+            "RankIDList": [
+              120801,
+              120802,
+              120803,
+              120804,
+              120805,
+              120806
+            ],
+            "SkillList": [
+              120801,
+              120802,
+              120803,
+              120804,
+              120806,
+              120807
+            ],
+            "AvatarBaseType": "Knight",
+            "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/FuXuan_00/Avatar_FuXuan_00.prefab",
+            "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1208.png",
+            "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1208.png",
+            "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1208.png",
+            "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1208.png",
+            "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1208B.png",
+            "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1208.prefab",
+            "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/FuXuan_00/Manikin_Avatar_Girl_FuXuan_00.prefab",
+            "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_FuXuan_00_Config.json",
+            "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_FuXuan_00_ComplexSkillAI.json",
+            "SkilltreePrefabPath": "UI/Avatar/Widget/KnightSkillTreeGroup.prefab",
+            "DamageTypeResistance": [],
+            "Release": true,
+            "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1208.png",
+            "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1208.png",
+            "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1208.png",
+            "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1208.png",
+            "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1208.png",
+            "AvatarCutinIntroText": {
+              "Hash": 4763544452084176885
+            },
+            "AvatarDropOffset": [
+              74,
+              -15.8,
+              0.67,
+              74,
+              -15.8,
+              0.67,
+              74,
+              -15.8,
+              0.67
+            ],
+            "AvatarTrialOffset": [],
+            "PlayerCardOffset": [],
+            "AssistOffset": [
+              60,
+              -105,
+              1.3
+            ],
+            "AssistBgOffset": [],
+            "AvatarSelfShowOffset": [
+              -44,
+              -11,
+              2.5
+            ]
+          },
+          "actorTable": "AvatarConfig"
+        }
+      ]
+    },
+    {
+      "sourcePath": "Config/Level/Mission/2020504/MissionInfo_2020504.partial.json",
+      "sub": {
+        "ID": 202050412,
+        "MainMissionID": 2020504,
+        "MissionJsonPath": "Config/Level/Mission/2020504/Mission_202050412.json",
+        "LevelPlaneID": 43201,
+        "LevelFloorID": 43201003,
+        "AudioEmotionState": "State_Bgm_E6",
+        "TakeParamIntList": [],
+        "FinishType": "GetTrialAvatarList",
+        "ParamType": "ListContain",
+        "ParamIntList": [
+          1101001
+        ],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "WayPointFloorID": 43201003
+      },
+      "scriptPath": "Config/Level/Mission/2020504/Mission_202050412.json",
+      "script": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.ReplaceTrialPlayer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      },
+      "roles": [
+        {
+          "special": {
+            "SpecialAvatarID": 1101001,
+            "IsUseWorldLevel": true,
+            "PlayerID": 1001,
+            "AvatarID": 1001,
+            "Type": "TYPE_TRIAL",
+            "LevelAreaPrefab": "",
+            "AnchorName": "",
+            "Level": 40,
+            "Promotion": 2,
+            "OverrideProperty": [],
+            "HaveActionDelay": true,
+            "SkillTreeTemplate": "TYPE_CUSTOM",
+            "CustomSkillTreeKey": "W1_Standard_30-40",
+            "EquipmentID": 21002,
+            "EquipmentLevel": 40,
+            "EquipmentPromotion": 2,
+            "EquipmentRank": 1,
+            "RelicPropertyType": 410302,
+            "RelicMainValue": 3362302,
+            "RelicSubValue": 302,
+            "AbilityNameList": [],
+            "PlayerJsonPath": "",
+            "JsonPath": "",
+            "AIPath": ""
+          },
+          "actor": {
+            "AvatarID": 1001,
+            "AvatarName": {
+              "Hash": 6186714091647966180
+            },
+            "AvatarFullName": {
+              "Hash": 9058972803650014395
+            },
+            "AdventurePlayerID": 1001,
+            "AvatarVOTag": "mar7th",
+            "Rarity": "CombatPowerAvatarRarityType4",
+            "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Mar_7th_00_Config.json",
+            "DamageType": "Ice",
+            "SPNeed": {
+              "Value": 120
+            },
+            "ExpGroup": 1,
+            "MaxPromotion": 6,
+            "MaxRank": 6,
+            "RankIDList": [
+              100101,
+              100102,
+              100103,
+              100104,
+              100105,
+              100106
+            ],
+            "SkillList": [
+              100101,
+              100102,
+              100103,
+              100104,
+              100106,
+              100107
+            ],
+            "AvatarBaseType": "Knight",
+            "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Mar_7th_00/Avatar_Mar_7th_00.prefab",
+            "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1001.png",
+            "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
+            "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1001.png",
+            "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1001.png",
+            "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001B.png",
+            "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1001.prefab",
+            "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Mar_7th_00/Manikin_Avatar_Maid_Mar_7th_00.prefab",
+            "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Mar_7th_00_Config.json",
+            "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Mar_7th_00_ComplexSkillAI.json",
+            "SkilltreePrefabPath": "UI/Avatar/Widget/KnightSkillTreeGroup.prefab",
+            "DamageTypeResistance": [],
+            "Release": true,
+            "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001.png",
+            "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001.png",
+            "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1001.png",
+            "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1001.png",
+            "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1001.png",
+            "AvatarCutinIntroText": {
+              "Hash": 7663786577497784004
+            },
+            "AvatarDropOffset": [
+              31,
+              29,
+              0.59,
+              31,
+              29,
+              0.59,
+              31,
+              29,
+              0.59
+            ],
+            "AvatarTrialOffset": [],
+            "PlayerCardOffset": [
+              82,
+              -84,
+              0.77
+            ],
+            "AssistOffset": [
+              70,
+              -72,
+              1.1
+            ],
+            "AssistBgOffset": [
+              108,
+              -300,
+              1
+            ],
+            "AvatarSelfShowOffset": [
+              0,
+              -100,
+              5
+            ]
+          },
+          "actorTable": "AvatarConfig"
+        }
+      ]
+    },
+    {
+      "sourcePath": "Config/Level/Mission/2011412/MissionInfo_2011412.partial.json",
+      "sub": {
+        "ID": 201141225,
+        "MainMissionID": 2011412,
+        "MissionJsonPath": "Config/Level/Mission/2011412/Mission_201141225.json",
+        "LevelPlaneID": 40101,
+        "LevelFloorID": 40101006,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          201141216
+        ],
+        "FinishType": "GetTrialAvatarList",
+        "ParamType": "ListContain",
+        "ParamIntList": [
+          1108001,
+          1108002
+        ],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "GroupIDList": [],
+        "RequiredNPCSeriesIDList": [],
+        "IsShow": false,
+        "WayPointFloorID": 40101006
+      },
+      "scriptPath": "Config/Level/Mission/2011412/Mission_201141225.json",
+      "script": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CreateTrialPlayer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      },
+      "roles": [
+        {
+          "special": {
+            "SpecialAvatarID": 1108001,
+            "IsUseWorldLevel": true,
+            "PlayerID": 8001,
+            "AvatarID": 8001,
+            "Type": "TYPE_TRIAL",
+            "LevelAreaPrefab": "",
+            "AnchorName": "",
+            "Level": 36,
+            "Promotion": 2,
+            "OverrideProperty": [],
+            "HaveActionDelay": true,
+            "SkillTreeTemplate": "TYPE_CUSTOM",
+            "CustomSkillTreeKey": "W1_Standard_30-40",
+            "EquipmentID": 21005,
+            "EquipmentLevel": 36,
+            "EquipmentPromotion": 2,
+            "EquipmentRank": 1,
+            "RelicPropertyType": 410502,
+            "RelicMainValue": 4444302,
+            "RelicSubValue": 302,
+            "AbilityNameList": [],
+            "PlayerJsonPath": "",
+            "JsonPath": "",
+            "AIPath": ""
+          },
+          "actor": {
+            "AvatarID": 8001,
+            "AvatarName": {
+              "Hash": 15351791685587679468
+            },
+            "AvatarFullName": {
+              "Hash": 1889615116897637623
+            },
+            "AdventurePlayerID": 8001,
+            "AvatarVOTag": "playerboy",
+            "Rarity": "CombatPowerAvatarRarityType5",
+            "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_PlayerBoy_00_Config.json",
+            "DamageType": "Physical",
+            "SPNeed": {
+              "Value": 120
+            },
+            "ExpGroup": 1,
+            "MaxPromotion": 6,
+            "MaxRank": 6,
+            "RankIDList": [
+              800101,
+              800102,
+              800103,
+              800104,
+              800105,
+              800106
+            ],
+            "SkillList": [
+              800101,
+              800102,
+              800103,
+              800104,
+              800106,
+              800107,
+              800108,
+              800109
+            ],
+            "AvatarBaseType": "Warrior",
+            "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/PlayerBoy_00/Avatar_PlayerBoy_00.prefab",
+            "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/8001.png",
+            "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/8001.png",
+            "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/8001.png",
+            "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/8001.png",
+            "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8001B.png",
+            "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_8001.prefab",
+            "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/PlayerBoy_00/Manikin_Avatar_Lad_PlayerBoy_00.prefab",
+            "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_PlayerBoy_00_Config.json",
+            "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_PlayerBoy_00_ComplexSkillAI.json",
+            "SkilltreePrefabPath": "UI/Avatar/Widget/WarriorSkillTreeGroup.prefab",
+            "DamageTypeResistance": [],
+            "Release": true,
+            "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8001.png",
+            "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8001.png",
+            "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/8001.png",
+            "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/8001.png",
+            "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/8001.png",
+            "AvatarCutinIntroText": {
+              "Hash": 2021220024962210302
+            },
+            "AvatarDropOffset": [
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "AvatarTrialOffset": [],
+            "PlayerCardOffset": [
+              73,
+              -76,
+              0.95
+            ],
+            "AssistOffset": [
+              63.8,
+              -76.5,
+              1.3
+            ],
+            "AssistBgOffset": [],
+            "AvatarSelfShowOffset": []
+          },
+          "actorTable": "AvatarConfig"
+        },
+        {
+          "special": {
+            "SpecialAvatarID": 1108002,
+            "IsUseWorldLevel": true,
+            "PlayerID": 8002,
+            "AvatarID": 8002,
+            "Type": "TYPE_TRIAL",
+            "LevelAreaPrefab": "",
+            "AnchorName": "",
+            "Level": 36,
+            "Promotion": 2,
+            "OverrideProperty": [],
+            "HaveActionDelay": true,
+            "SkillTreeTemplate": "TYPE_CUSTOM",
+            "CustomSkillTreeKey": "W1_Standard_30-40",
+            "EquipmentID": 21005,
+            "EquipmentLevel": 36,
+            "EquipmentPromotion": 2,
+            "EquipmentRank": 1,
+            "RelicPropertyType": 410502,
+            "RelicMainValue": 4444302,
+            "RelicSubValue": 302,
+            "AbilityNameList": [],
+            "PlayerJsonPath": "",
+            "JsonPath": "",
+            "AIPath": ""
+          },
+          "actor": {
+            "AvatarID": 8002,
+            "AvatarName": {
+              "Hash": 915414112326692585
+            },
+            "AvatarFullName": {
+              "Hash": 10220350920306746709
+            },
+            "AdventurePlayerID": 8002,
+            "AvatarVOTag": "playergirl",
+            "Rarity": "CombatPowerAvatarRarityType5",
+            "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_PlayerGirl_00_Config.json",
+            "DamageType": "Physical",
+            "SPNeed": {
+              "Value": 120
+            },
+            "ExpGroup": 1,
+            "MaxPromotion": 6,
+            "MaxRank": 6,
+            "RankIDList": [
+              800201,
+              800202,
+              800203,
+              800204,
+              800205,
+              800206
+            ],
+            "SkillList": [
+              800201,
+              800202,
+              800203,
+              800204,
+              800206,
+              800207,
+              800208,
+              800209
+            ],
+            "AvatarBaseType": "Warrior",
+            "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/PlayerGirl_00/Avatar_PlayerGirl_00.prefab",
+            "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/8002.png",
+            "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/8002.png",
+            "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/8002.png",
+            "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/8002.png",
+            "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8002B.png",
+            "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_8002.prefab",
+            "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/PlayerGirl_00/Manikin_Avatar_Miss_PlayerGirl_00.prefab",
+            "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_PlayerGirl_00_Config.json",
+            "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_PlayerBoy_00_ComplexSkillAI.json",
+            "SkilltreePrefabPath": "UI/Avatar/Widget/WarriorSkillTreeGroup.prefab",
+            "DamageTypeResistance": [],
+            "Release": true,
+            "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8002.png",
+            "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8002.png",
+            "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/8002.png",
+            "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/8002.png",
+            "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/8002.png",
+            "AvatarCutinIntroText": {
+              "Hash": 17748756880574087670
+            },
+            "AvatarDropOffset": [
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1
+            ],
+            "AvatarTrialOffset": [],
+            "PlayerCardOffset": [
+              86,
+              -97,
+              0.9
+            ],
+            "AssistOffset": [
+              30.5,
+              -90,
+              1.3
+            ],
+            "AssistBgOffset": [],
+            "AvatarSelfShowOffset": []
+          },
+          "actorTable": "AvatarConfig"
+        }
+      ]
+    }
+  ]
+}

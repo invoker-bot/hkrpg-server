@@ -1,0 +1,4974 @@
+{
+  "snapshotDate": "2026-09-30",
+  "note": "Source declarations only; handler names and counts do not prove gameplay or client compatibility.",
+  "projects": [
+    {
+      "name": "March7thHoney-OpenSource",
+      "url": "https://github.com/Mar7thLover/March7thHoney-OpenSource",
+      "commit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083",
+      "branch": "4.6",
+      "commitDate": "2026-09-08",
+      "language": "C#",
+      "declaredClientVersion": "4.6",
+      "license": "AGPL-3.0",
+      "trackedFiles": 2145,
+      "sourceExtensions": {
+        "(none)": 2,
+        ".csproj": 9,
+        ".cs": 1584,
+        ".md": 18,
+        ".ec2b": 1,
+        ".json": 19,
+        ".bin": 1,
+        ".pem": 2,
+        ".ico": 2,
+        ".sln": 1,
+        ".proto": 475,
+        ".txt": 24,
+        ".bat": 1,
+        ".command": 1,
+        ".sh": 5
+      },
+      "handlers": {
+        "GetActivityScheduleConfigCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerGetActivityScheduleConfigCsReq.cs"
+        ],
+        "GetTrialActivityDataCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerGetTrialActivityDataCsReq.cs"
+        ],
+        "LeaveTrialActivityCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerLeaveTrialActivityCsReq.cs"
+        ],
+        "StartTrialActivityCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerStartTrialActivityCsReq.cs"
+        ],
+        "TakeTrialActivityRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerTakeTrialActivityRewardCsReq.cs"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "GameServer/Server/Packet/Recv/Adventure/HandlerQuickStartCocoonStageCsReq.cs"
+        ],
+        "ReEnterLastElementStageCsReq": [
+          "GameServer/Server/Packet/Recv/Adventure/HandlerReEnterLastElementStageCsReq.cs"
+        ],
+        "GetArchiveDataCsReq": [
+          "GameServer/Server/Packet/Recv/Archive/HandlerGetArchiveDataCsReq.cs"
+        ],
+        "AvatarExpUpCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerAvatarExpUpCsReq.cs"
+        ],
+        "DressAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerDressAvatarCsReq.cs"
+        ],
+        "DressAvatarSkinCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerDressAvatarSkinCsReq.cs"
+        ],
+        "DressRelicAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerDressRelicAvatarCsReq.cs"
+        ],
+        "GetAvatarDataCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerGetAvatarDataCsReq.cs"
+        ],
+        "MarkAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerMarkAvatarCsReq.cs"
+        ],
+        "PromoteAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerPromoteAvatarCsReq.cs"
+        ],
+        "RankUpAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerRankUpAvatarCsReq.cs"
+        ],
+        "RelicReforgeConfirmCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerRelicReforgeConfirmCsReq.cs"
+        ],
+        "RelicReforgeCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerRelicReforgeCsReq.cs"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerSetAvatarEnhancedIdCsReq.cs"
+        ],
+        "SetMultipleAvatarPathsCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerSetMultipleAvatarPathsCsReq.cs"
+        ],
+        "SetPlayerOutfitCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerSetPlayerOutfitCsReq.cs"
+        ],
+        "TakeOffAvatarSkinCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakeOffAvatarSkinCsReq.cs"
+        ],
+        "TakeOffEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakeOffEquipmentCsReq.cs"
+        ],
+        "TakeOffRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakeOffRelicCsReq.cs"
+        ],
+        "TakePromotionRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakePromotionRewardCsReq.cs"
+        ],
+        "UnlockSkilltreeCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerUnlockSkilltreeCsReq.cs"
+        ],
+        "GetCurBattleInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerGetCurBattleInfoCsReq.cs"
+        ],
+        "GetFarmStageGachaInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerGetFarmStageGachaInfoCsReq.cs"
+        ],
+        "PVEBattleResultCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerPVEBattleResultCsReq.cs"
+        ],
+        "QuitBattleCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerQuitBattleCsReq.cs"
+        ],
+        "SyncClientResVersionCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerSyncClientResVersionCsReq.cs"
+        ],
+        "GetBattleCollegeDataCsReq": [
+          "GameServer/Server/Packet/Recv/BattleCollege/HandlerGetBattleCollegeDataCsReq.cs"
+        ],
+        "StartBattleCollegeCsReq": [
+          "GameServer/Server/Packet/Recv/BattleCollege/HandlerStartBattleCollegeCsReq.cs"
+        ],
+        "ConfirmChallengeTierceStageSettleCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerConfirmChallengeTierceStageSettleCsReq.cs"
+        ],
+        "EnterChallengeNextPhaseCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerEnterChallengeNextPhaseCsReq.cs"
+        ],
+        "GetChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetChallengeCsReq.cs"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetChallengeGroupStatisticsCsReq.cs"
+        ],
+        "GetChallengeTierceControllerCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetChallengeTierceControllerCsReq.cs"
+        ],
+        "GetChallengeTierceDataCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetChallengeTierceDataCsReq.cs"
+        ],
+        "GetCurChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetCurChallengeCsReq.cs"
+        ],
+        "LeaveChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerLeaveChallengeCsReq.cs"
+        ],
+        "LeaveChallengeTierceCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerLeaveChallengeTierceCsReq.cs"
+        ],
+        "RestartChallengeTierceCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerRestartChallengeTierceCsReq.cs"
+        ],
+        "SetChallengeTierceLineupCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerSetChallengeTierceLineupCsReq.cs"
+        ],
+        "StartChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerStartChallengeCsReq.cs"
+        ],
+        "StartChallengeTierceCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerStartChallengeTierceCsReq.cs"
+        ],
+        "StartNextChallengeTierceCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerStartChallengeTierceNextStageCsReq.cs"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerTakeChallengeRewardCsReq.cs"
+        ],
+        "GetChallengePeakDataCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerGetChallengePeakDataCsReq.cs"
+        ],
+        "GetCurChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerGetCurChallengePeakCsReq.cs"
+        ],
+        "LeaveChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerLeaveChallengePeakCsReq.cs"
+        ],
+        "ReStartChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerReStartChallengePeakCsReq.cs"
+        ],
+        "SetChallengePeakBossHardModeCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerSetChallengePeakBossHardModeCsReq.cs"
+        ],
+        "SetChallengePeakMobLineupAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerSetChallengePeakMobLineupAvatarCsReq.cs"
+        ],
+        "StartChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerStartChallengePeakCsReq.cs"
+        ],
+        "TakeChallengePeakRewardCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerTakeChallengePeakRewardCsReq.cs"
+        ],
+        "GetChatFriendHistoryCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerGetChatFriendHistoryCsReq.cs"
+        ],
+        "GetPrivateChatHistoryCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerGetPrivateChatHistoryCsReq.cs"
+        ],
+        "SendMsgCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerSendMsgCsReq.cs"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "GameServer/Server/Packet/Recv/ContentPackage/HandlerContentPackageGetDataCsReq.cs"
+        ],
+        "GetDailyActiveInfoCsReq": [
+          "GameServer/Server/Packet/Recv/DailyActive/HandlerGetDailyActiveInfoCsReq.cs"
+        ],
+        "BuyShopGoodCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerDiceCombatBuyShopGoodCsReq.cs"
+        ],
+        "DiceCombatFinishPveStageCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerDiceCombatFinishPveStageCsReq.cs"
+        ],
+        "DiceCombatMainPageRollDiceCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerDiceCombatMainPageRollDiceCsReq.cs"
+        ],
+        "DiceCombatModifyAvatarDiceCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerDiceCombatModifyAvatarDiceCsReq.cs"
+        ],
+        "DiceCombatUpgradeAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerDiceCombatUpgradeAvatarCsReq.cs"
+        ],
+        "GetDiceCombatShopDataCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerGetDiceCombatShopDataCsReq.cs"
+        ],
+        "GetDiceCombatSystemDataCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerGetDiceCombatSystemDataCsReq.cs"
+        ],
+        "V2FinishPveStageCsReq": [
+          "GameServer/Server/Packet/Recv/DiceCombat/HandlerV2FinishPveStageCsReq.cs"
+        ],
+        "AcceptMultipleExpeditionCsReq": [
+          "GameServer/Server/Packet/Recv/Expedition/HandlerAcceptMultipleExpeditionCsReq.cs"
+        ],
+        "GetExpeditionDataCsReq": [
+          "GameServer/Server/Packet/Recv/Expedition/HandlerGetExpeditionDataCsReq.cs"
+        ],
+        "TakeMultipleExpeditionRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Expedition/HandlerTakeMultipleExpeditionRewardCsReq.cs"
+        ],
+        "AddBlacklistCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerAddBlacklistCsReq.cs"
+        ],
+        "ApplyFriendCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerApplyFriendCsReq.cs"
+        ],
+        "DeleteBlacklistCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerDeleteBlacklistCsReq.cs"
+        ],
+        "DeleteFriendCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerDeleteFriendCsReq.cs"
+        ],
+        "GetAssistHistoryCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetAssistHistoryCsReq.cs"
+        ],
+        "GetAssistListCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetAssistListCsReq.cs"
+        ],
+        "GetCurAssistCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetCurAssistCsReq.cs"
+        ],
+        "GetFriendApplyListInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendApplyListInfoCsReq.cs"
+        ],
+        "GetFriendBattleRecordDetailCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendBattleRecordDetailCsReq.cs"
+        ],
+        "GetFriendListInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendListInfoCsReq.cs"
+        ],
+        "GetFriendLoginInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendLoginInfoCsReq.cs"
+        ],
+        "GetFriendRecommendListInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendRecommendListInfoCsReq.cs"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetPlayerDetailInfoCsReq.cs"
+        ],
+        "HandleFriendCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerHandleFriendCsReq.cs"
+        ],
+        "SearchPlayerCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerSearchPlayerCsReq.cs"
+        ],
+        "SetFriendMarkCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerSetFriendMarkCsReq.cs"
+        ],
+        "SetFriendRemarkNameCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerSetFriendRemarkNameCsReq.cs"
+        ],
+        "DoGachaCsReq": [
+          "GameServer/Server/Packet/Recv/Gacha/HandlerDoGachaCsReq.cs"
+        ],
+        "GetGachaInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Gacha/HandlerGetGachaInfoCsReq.cs"
+        ],
+        "SetGachaDecideItemCsReq": [
+          "GameServer/Server/Packet/Recv/Gacha/HandlerSetGachaDecideItemCsReq.cs"
+        ],
+        "GridFightGetDataCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightStartGamePlayCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightResumeGamePlayCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightQuitSettleCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightQuitLeaveGamePlayCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightHandlePendingActionCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightUpdateEliteBranchSelectCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightGetOrbCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightBuyGoodsCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightUseHackOptionCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightRefreshShopCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightRecycleRoleCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightBuyExpCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightUpdatePosCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightUseForgeCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightEnterBattleStageCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightBackToPrepareCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightCore.cs"
+        ],
+        "GridFightEquipDressCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightEquipment.cs"
+        ],
+        "GridFightEquipCraftCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightEquipment.cs"
+        ],
+        "GridFightUseConsumableCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightEquipment.cs"
+        ],
+        "GridFightGetFormationCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightQueries.cs"
+        ],
+        "GridFightFinishTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/GridFight/HandlersGridFightQueries.cs"
+        ],
+        "ChangeScriptEmotionCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerChangeScriptEmotionCsReq.cs"
+        ],
+        "FinishEmotionDialoguePerformanceCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerFinishEmotionDialoguePerformanceCsReq.cs"
+        ],
+        "GetHeartDialInfoCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerGetHeartDialInfoCsReq.cs"
+        ],
+        "SubmitEmotionItemCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerSubmitEmotionItemCsReq.cs"
+        ],
+        "ComposeItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerComposeItemCsReq.cs"
+        ],
+        "ComposeSelectedRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerComposeSelectedRelicCsReq.cs"
+        ],
+        "DestroyItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerDestroyItemCsReq.cs"
+        ],
+        "DiscardRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerDiscardRelicCsReq.cs"
+        ],
+        "ExchangeHcoinCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerExchangeHcoinCsReq.cs"
+        ],
+        "ExpUpEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerExpUpEquipmentCsReq.cs"
+        ],
+        "ExpUpRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerExpUpRelicCsReq.cs"
+        ],
+        "GetBagCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerGetBagCsReq.cs"
+        ],
+        "LockEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerLockEquipmentCsReq.cs"
+        ],
+        "LockRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerLockRelicCsReq.cs"
+        ],
+        "PromoteEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerPromoteEquipmentCsReq.cs"
+        ],
+        "RankUpEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerRankUpEquipmentCsReq.cs"
+        ],
+        "SellItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerSellItemCsReq.cs"
+        ],
+        "UseItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerUseItemCsReq.cs"
+        ],
+        "GetJukeboxDataCsReq": [
+          "GameServer/Server/Packet/Recv/JukeBox/HandlerGetJukeboxDataCsReq.cs"
+        ],
+        "PlayBackGroundMusicCsReq": [
+          "GameServer/Server/Packet/Recv/JukeBox/HandlerPlayBackGroundMusicCsReq.cs"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerChangeLineupLeaderCsReq.cs"
+        ],
+        "GetAllLineupDataCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerGetAllLineupDataCsReq.cs"
+        ],
+        "GetCurLineupDataCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerGetCurLineupDataCsReq.cs"
+        ],
+        "GetLineupAvatarDataCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerGetLineupAvatarDataCsReq.cs"
+        ],
+        "ReplaceLineupCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerReplaceLineupCsReq.cs"
+        ],
+        "SwitchLineupIndexCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerSwitchLineupIndexCsReq.cs"
+        ],
+        "LobbyCreateCsReq": [
+          "GameServer/Server/Packet/Recv/Lobby/HandlerLobbyCreateCsReq.cs"
+        ],
+        "LobbyJoinCsReq": [
+          "GameServer/Server/Packet/Recv/Lobby/HandlerLobbyJoinCsReq.cs"
+        ],
+        "LobbyModifyPlayerInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Lobby/HandlerLobbyModifyPlayerInfoCsReq.cs"
+        ],
+        "LobbyQuitCsReq": [
+          "GameServer/Server/Packet/Recv/Lobby/HandlerLobbyQuitCsReq.cs"
+        ],
+        "LobbyStartFightCsReq": [
+          "GameServer/Server/Packet/Recv/Lobby/HandlerLobbyStartFightCsReq.cs"
+        ],
+        "DelMailCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerDelMailCsReq.cs"
+        ],
+        "GetMailCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerGetMailCsReq.cs"
+        ],
+        "MarkReadMailCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerMarkReadMailCsReq.cs"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerTakeMailAttachmentCsReq.cs"
+        ],
+        "EnterMapRotationRegionCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerEnterMapRotationRegionCsReq.cs"
+        ],
+        "InteractChargerCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerInteractChargerCsReq.cs"
+        ],
+        "LeaveMapRotationRegionCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerLeaveMapRotationRegionCsReq.cs"
+        ],
+        "GetMarkChestCsReq": [
+          "GameServer/Server/Packet/Recv/MarkChest/HandlerGetMarkChestCsReq.cs"
+        ],
+        "UpdateMarkChestCsReq": [
+          "GameServer/Server/Packet/Recv/MarkChest/HandlerUpdateMarkChestCsReq.cs"
+        ],
+        "FinishItemIdCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerFinishItemIdCsReq.cs"
+        ],
+        "FinishPerformSectionIdCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerFinishPerformSectionIdCsReq.cs"
+        ],
+        "FinishSectionIdCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerFinishSectionIdCsReq.cs"
+        ],
+        "GetNpcMessageGroupCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerGetNpcMessageGroupCsReq.cs"
+        ],
+        "GetNpcStatusCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerGetNpcStatusCsReq.cs"
+        ],
+        "GetUnreleasedBlockInfoCsReq": [
+          "GameServer/Server/Packet/Recv/MiscModule/HandlerGetUnreleasedBlockInfoCsReq.cs"
+        ],
+        "MazeKillDirectCsReq": [
+          "GameServer/Server/Packet/Recv/MiscModule/HandlerMazeKillDirectCsReq.cs"
+        ],
+        "AcceptMainMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerAcceptMainMissionCsReq.cs"
+        ],
+        "FinishCosumeItemMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerFinishCosumeItemMissionCsReq.cs"
+        ],
+        "FinishTalkMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerFinishTalkMissionCsReq.cs"
+        ],
+        "GetMainMissionCustomValueCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerGetMainMissionCustomValueCsReq.cs"
+        ],
+        "GetMissionDataCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerGetMissionDataCsReq.cs"
+        ],
+        "GetMissionStatusCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerGetMissionStatusCsReq.cs"
+        ],
+        "StarPerformanceRelayCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerStarPerformanceRelayCsReq.cs"
+        ],
+        "UpdateTrackMainMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerUpdateTrackMainMissionIdCsReq.cs"
+        ],
+        "GetMatchPlayDataCsReq": [
+          "GameServer/Server/Packet/Recv/Multiplayer/HandlerGetMatchPlayDataCsReq.cs"
+        ],
+        "MultiplayerFightGiveUpCsReq": [
+          "GameServer/Server/Packet/Recv/Multiplayer/HandlerMultiplayerFightGiveUpCsReq.cs"
+        ],
+        "MultiplayerGetFightGateCsReq": [
+          "GameServer/Server/Packet/Recv/Multiplayer/HandlerMultiplayerGetFightGateCsReq.cs"
+        ],
+        "MusicRhythmDataCsReq": [
+          "GameServer/Server/Packet/Recv/Music/HandlerMusicRhythmDataCsReq.cs"
+        ],
+        "MusicRhythmFinishLevelCsReq": [
+          "GameServer/Server/Packet/Recv/Music/HandlerMusicRhythmFinishLevelCsReq.cs"
+        ],
+        "MusicRhythmStartLevelCsReq": [
+          "GameServer/Server/Packet/Recv/Music/HandlerMusicRhythmStartLevelCsReq.cs"
+        ],
+        "GetOfferingInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Offering/HandlerGetOfferingInfoCsReq.cs"
+        ],
+        "SubmitOfferingItemCsReq": [
+          "GameServer/Server/Packet/Recv/Offering/HandlerSubmitOfferingItemCsReq.cs"
+        ],
+        "TakeOfferingRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Offering/HandlerTakeOfferingRewardCsReq.cs"
+        ],
+        "GetPamSkinDataCsReq": [
+          "GameServer/Server/Packet/Recv/PamSkin/HandlerGetPamSkinDataCsReq.cs"
+        ],
+        "SelectPamSkinCsReq": [
+          "GameServer/Server/Packet/Recv/PamSkin/HandlerSelectPamSkinCsReq.cs"
+        ],
+        "GetPetDataCsReq": [
+          "GameServer/Server/Packet/Recv/Pet/HandlerGetPetDataCsReq.cs"
+        ],
+        "RecallPetCsReq": [
+          "GameServer/Server/Packet/Recv/Pet/HandlerRecallPetCsReq.cs"
+        ],
+        "SummonPetCsReq": [
+          "GameServer/Server/Packet/Recv/Pet/HandlerSummonPetCsReq.cs"
+        ],
+        "GetPhoneDataCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerGetPhoneDataCsReq.cs"
+        ],
+        "SelectChatBubbleCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSelectChatBubbleCsReq.cs"
+        ],
+        "SelectPhoneCaseCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSelectPhoneCaseCsReq.cs"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSelectPhoneThemeCsReq.cs"
+        ],
+        "SetPersonalCardCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSetPersonalCardCsReq.cs"
+        ],
+        "CancelAutoConversionCacheCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerCancelAutoConversionCacheCsReq.cs"
+        ],
+        "PlayerForceSyncGameStateFinishCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerForceSyncGameStateFinishCsReq.cs"
+        ],
+        "GetBasicInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetBasicInfoCsReq.cs"
+        ],
+        "GetLevelRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetLevelRewardCsReq.cs"
+        ],
+        "GetLevelRewardTakenListCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetLevelRewardTakenListCsReq.cs"
+        ],
+        "GetSecretKeyInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetSecretKeyInfoCsReq.cs"
+        ],
+        "GetVideoVersionKeyCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetVideoVersionKeyCsReq.cs"
+        ],
+        "PlayerGetTokenCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerGetTokenCsReq.cs"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerHeartBeatCsReq.cs"
+        ],
+        "PlayerLoginCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerLoginCsReq.cs"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerLoginFinishCsReq.cs"
+        ],
+        "PlayerLogoutCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerLogoutCsReq.cs"
+        ],
+        "QueryProductInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerQueryProductInfoCsReq.cs"
+        ],
+        "ReserveStaminaExchangeCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerReserveStaminaExchangeCsReq.cs"
+        ],
+        "SetAvatarPathCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetAvatarPathCsReq.cs"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetGameplayBirthdayCsReq.cs"
+        ],
+        "SetGenderCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetGenderCsReq.cs"
+        ],
+        "SetLanguageCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetLanguageCsReq.cs"
+        ],
+        "SetNicknameCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetNicknameCsReq.cs"
+        ],
+        "SetPlayerInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetPlayerInfoCsReq.cs"
+        ],
+        "UpdatePlayerSettingCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerUpdatePlayerSettingCsReq.cs"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerGetPlayerBoardDataCsReq.cs"
+        ],
+        "SetAssistAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetAssistAvatarCsReq.cs"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetDisplayAvatarCsReq.cs"
+        ],
+        "SetHeadIconCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetHeadIconCsReq.cs"
+        ],
+        "SetSignatureCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetSignatureCsReq.cs"
+        ],
+        "FinishQuestCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerFinishQuestCsReq.cs"
+        ],
+        "GetQuestDataCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerGetQuestDataCsReq.cs"
+        ],
+        "TakeQuestOptionalRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerTakeQuestOptionalRewardCsReq.cs"
+        ],
+        "TakeQuestRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerTakeQuestRewardCsReq.cs"
+        ],
+        "GetAllSaveRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerGetAllSaveRaidCsReq.cs"
+        ],
+        "GetRaidInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerGetRaidInfoCsReq.cs"
+        ],
+        "GetSaveRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerGetSaveRaidCsReq.cs"
+        ],
+        "LeaveRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerLeaveRaidCsReq.cs"
+        ],
+        "StartRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerStartRaidCsReq.cs"
+        ],
+        "GetRechargeGiftInfoCsReq": [
+          "GameServer/Server/Packet/Recv/RechargeGift/HandlerGetRechargeGiftInfoCsReq.cs"
+        ],
+        "GetBigDataAllRecommendCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerGetBigDataAllRecommendCsReq.cs"
+        ],
+        "GetBigDataRecommendCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerGetBigDataRecommendCsReq.cs"
+        ],
+        "RelicSmartWearAddPlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearAddPlanCsReq.cs"
+        ],
+        "RelicSmartWearDeletePlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearDeletePlanCsReq.cs"
+        ],
+        "RelicSmartWearGetPinRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearGetPinRelicCsReq.cs"
+        ],
+        "RelicSmartWearGetPlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearGetPlanCsReq.cs"
+        ],
+        "RelicSmartWearUpdatePlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearUpdatePlanCsReq.cs"
+        ],
+        "GetRndOptionCsReq": [
+          "GameServer/Server/Packet/Recv/RndOption/HandlerGetRndOptionCsReq.cs"
+        ],
+        "DoGachaInRollShopCsReq": [
+          "GameServer/Server/Packet/Recv/RollShop/HandlerDoGachaInRollShopCsReq.cs"
+        ],
+        "GetRollShopInfoCsReq": [
+          "GameServer/Server/Packet/Recv/RollShop/HandlerGetRollShopInfoCsReq.cs"
+        ],
+        "ActiveFarmElementCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerActivateFarmElementCsReq.cs"
+        ],
+        "ChangePropTimelineInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerChangePropTimelineInfoCsReq.cs"
+        ],
+        "CocoonSweepCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerCocoonSweepCsReq.cs"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerDeactivateFarmElementCsReq.cs"
+        ],
+        "DeleteSummonUnitCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerDeleteSummonUnitCsReq.cs"
+        ],
+        "EnterSceneCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerEnterSceneCsReq.cs"
+        ],
+        "EnterSectionCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerEnterSectionCsReq.cs"
+        ],
+        "FarmElementSweepCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerFarmElementSweepCsReq.cs"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetCurSceneInfoCsReq.cs"
+        ],
+        "GetEnteredSceneCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetEnteredSceneCsReq.cs"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetSceneMapInfoCsReq.cs"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetUnlockTeleportCsReq.cs"
+        ],
+        "InteractPropCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerInteractPropCsReq.cs"
+        ],
+        "RefreshTriggerByClientCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerRefreshTriggerByClientCsReq.cs"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneCastSkillCostMpCsReq.cs"
+        ],
+        "SceneCastSkillCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneCastSkillCsReq.cs"
+        ],
+        "SceneEnterStageCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneEnterStageCsReq.cs"
+        ],
+        "SceneEntityMoveCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneEntityMoveCsReq.cs"
+        ],
+        "SceneEntityTeleportCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneEntityTeleportCsReq.cs"
+        ],
+        "SceneReviveAfterRebattleCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneReviveAfterRebattleCsReq.cs"
+        ],
+        "SetClientPausedCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSetClientPausedCsReq.cs"
+        ],
+        "SetGroupCustomSaveDataCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSetGroupCustomSaveDataCsReq.cs"
+        ],
+        "StartCocoonStageCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerStartCocoonStageCsReq.cs"
+        ],
+        "UpdateGroupPropertyCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerUpdateGroupPropertyCsReq.cs"
+        ],
+        "GetAllServerPrefsDataCsReq": [
+          "GameServer/Server/Packet/Recv/ServerPrefs/HandlerGetAllServerPrefsDataCsReq.cs"
+        ],
+        "UpdateServerPrefsCsReq": [
+          "GameServer/Server/Packet/Recv/ServerPrefs/HandlerUpdateServerPrefsDataCsReq.cs"
+        ],
+        "BuyGoodsCsReq": [
+          "GameServer/Server/Packet/Recv/Shop/HandlerBuyGoodsCsReq.cs"
+        ],
+        "GetShopListCsReq": [
+          "GameServer/Server/Packet/Recv/Shop/HandlerGetShopListCsReq.cs"
+        ],
+        "GetStoryLineInfoCsReq": [
+          "GameServer/Server/Packet/Recv/StoryLine/HandlerGetStoryLineInfoCsReq.cs"
+        ],
+        "SwitchHandDataCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandDataCsReq.cs"
+        ],
+        "FinishFirstTalkByPerformanceNpcCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerFinishFirstTalkByPerformanceNpcCsReq.cs"
+        ],
+        "GetFirstTalkByPerformanceNpcCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerGetFirstTalkByPerformanceNpcCsReq.cs"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerGetFirstTalkNpcCsReq.cs"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerGetNpcTakenRewardCsReq.cs"
+        ],
+        "SelectInclinationTextCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerSelectInclinationTextCsReq.cs"
+        ],
+        "SocialPlayPreCheckEnterRoomCsReq": [
+          "GameServer/Server/Packet/Recv/TrainCakeCatch/HandlerPreCheckEnterRoomReq.cs"
+        ],
+        "JGAMELLGLGE": [
+          "GameServer/Server/Packet/Recv/TrainCakeCatch/HandlerRoomMovementCsReq.cs"
+        ],
+        "TrainCakeCatchDiyCsReq": [
+          "GameServer/Server/Packet/Recv/TrainCakeCatch/HandlerTrainCakeCatchDiyCsReq.cs"
+        ],
+        "TrainCakeCatchDiyLikeCsReq": [
+          "GameServer/Server/Packet/Recv/TrainCakeCatch/HandlerTrainCakeCatchDiyLikeCsReq.cs"
+        ],
+        "TrainCakeCatchOpenBoxCsReq": [
+          "GameServer/Server/Packet/Recv/TrainCakeCatch/HandlerTrainCakeCatchOpenBoxCsReq.cs"
+        ],
+        "TrainCakeCatchSearchCsReq": [
+          "GameServer/Server/Packet/Recv/TrainCakeCatch/HandlerTrainCakeCatchSearchCsReq.cs"
+        ],
+        "TrainPartyAddBuildDynamicBuffCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyAddBuildDynamicBuffCsReq.cs"
+        ],
+        "TrainPartyBuildDiyCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyBuildDiyCsReq.cs"
+        ],
+        "TrainPartyBuildSelfDisplayAreaDiyCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyBuildSelfDisplayAreaDiyCsReq.cs"
+        ],
+        "TrainPartyBuildStartStepCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyBuildStartStepCsReq.cs"
+        ],
+        "TrainPartyEnterCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyEnterCsReq.cs"
+        ],
+        "TrainPartyGamePlayStartCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyGamePlayStartCsReq.cs"
+        ],
+        "TrainPartyGetDataCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyGetDataCsReq.cs"
+        ],
+        "TrainPartyHandlePendingActionCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyHandlePendingActionCsReq.cs"
+        ],
+        "TrainPartyLeaveCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyLeaveCsReq.cs"
+        ],
+        "TrainPartySetBadgeAutoFillCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartySetBadgeAutoFillCsReq.cs"
+        ],
+        "TrainPartyTakeBuildLevelAwardCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyTakeBuildLevelAwardCsReq.cs"
+        ],
+        "TrainPartyUseCardCsReq": [
+          "GameServer/Server/Packet/Recv/TrainParty/HandlerTrainPartyUseCardCsReq.cs"
+        ],
+        "GetTreasureDungeonActivityDataCsReq": [
+          "GameServer/Server/Packet/Recv/TreasureDungeon/HandlerGetTreasureDungeonActivityDataCsReq.cs"
+        ],
+        "FinishTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerFinishTutorialCsReq.cs"
+        ],
+        "FinishTutorialGuideCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerFinishTutorialGuideCsReq.cs"
+        ],
+        "GetTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerGetTutorialCsReq.cs"
+        ],
+        "GetTutorialGuideCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerGetTutorialGuideCsReq.cs"
+        ],
+        "UnlockTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerUnlockTutorialCsReq.cs"
+        ],
+        "UnlockTutorialGuideCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerUnlockTutorialGuideCsReq.cs"
+        ]
+      }
+    },
+    {
+      "name": "pearl-sr",
+      "url": "https://git.xeondev.com/HonkaiSlopRail/pearl-sr",
+      "commit": "dc4aa061c32e58f910922bd9c301e03a9b2a5111",
+      "branch": "master",
+      "commitDate": "2026-09-30",
+      "language": "Zig",
+      "declaredClientVersion": "4.6.51 / 4.7 beta",
+      "license": "unspecified",
+      "trackedFiles": 83,
+      "sourceExtensions": {
+        ".md": 1,
+        ".png": 1,
+        ".zig": 51,
+        ".zon": 4,
+        ".json": 23,
+        ".dll": 1,
+        ".exe": 1,
+        ".bat": 1
+      },
+      "handlers": {
+        "ShieldLoginCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "ShieldVerifyCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "VerifyLoginCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "ComboTokenReqCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "RiskyApiCheckCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "GetConfigCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "LoadConfigCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "appLoginByPasswordCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "VerifyCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "QueryDispatchCsReq": [
+          "dispatch/src/dispatch.zig"
+        ],
+        "QueryGatewayCsReq": [
+          "dispatch/src/dispatch.zig"
+        ],
+        "RefillCsReq": [
+          "gameserver/src/commands/refill.zig"
+        ],
+        "SyncAvatarCsReq": [
+          "gameserver/src/commands/sync.zig"
+        ],
+        "GenerateAndSyncCsReq": [
+          "gameserver/src/commands/sync.zig"
+        ],
+        "BuffIdCsReq": [
+          "gameserver/src/commands/value.zig"
+        ],
+        "BuffInfoCsReq": [
+          "gameserver/src/commands/value.zig"
+        ],
+        "GetAvatarDataCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBasicInfoCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetAvatarPathCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetPlayerOutfitCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "DressAvatarSkinCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "TakeOffAvatarSkinCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBigDataAllCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBigDataCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetPreAvatarGrowthInfoCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "StartCocoonStageCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "QuickStartFarmElementCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "StartBattleCollegeCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SceneCastSkillCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "GetCurBattleInfoCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "PVEBattleResultCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SyncClientResVersionCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "GetChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengeTierceCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetCurChallengeScRspCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetCurChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengePeakDataCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeTierceControllerCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeTierceDataCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "ReStartChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengePeakMobLineupAvatarCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengePeakBossHardModeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetFriendBattleRecordDetailCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengeTierceCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengeTierceLineupCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetFriendListInfoCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "ChatEmojiListCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "PrivateChatHistoryCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "GetAiPamChatHistoryCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "SendMsgCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "TriggerAiPamSpeakCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "GetActivityCsReq": [
+          "gameserver/src/services/events.zig"
+        ],
+        "UpdateServerPrefsDataCsReq": [
+          "gameserver/src/services/events.zig"
+        ],
+        "GetGachaInfoCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "BuyGoodsCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "ExchangeHcoinCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "DoGachaCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "GetBagCsReq": [
+          "gameserver/src/services/item.zig"
+        ],
+        "UseItemCsReq": [
+          "gameserver/src/services/item.zig"
+        ],
+        "GetCurLineupDataCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "ReplaceLineupCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "SetLineupNameCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "PlayerGetTokenCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "PlayerLoginCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "SetClientPausedCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetArchiveDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetUpdatedArchiveDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetMailCsReq": [
+          "gameserver/src/services/mail.zig"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "gameserver/src/services/mail.zig"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "gameserver/src/services/misc.zig"
+        ],
+        "GetMissionStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetTutorialGuideStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetTutorialStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "FinishTalkMissionCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetQuestDataCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "UnlockTutorialGuideCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "UnlockTutorialCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetPhoneDataCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectChatBubbleCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetAssistAvatarCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetSignatureCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetHeadIconCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectPhoneCaseCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "UpdatePlayerSettingCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetPersonalCardCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SceneEntityMoveCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "EnterSceneCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "EnterSectionCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetEnteredSceneCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SceneEntityTeleportCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetFirstTalkByPerformanceNpCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "UpdateGroupPropertyCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ChangePropTimelineCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ActivateFarmElementCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "InteractPropCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ChangeEraFlipperDataCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SetTrainWorldIdCsReq": [
+          "gameserver/src/services/scene.zig"
+        ]
+      }
+    },
+    {
+      "name": "echium-server",
+      "url": "https://github.com/yuvlian/echium-server",
+      "commit": "d92ec88e8a4e5f2dfc198e547a8b1d8d68f9320c",
+      "branch": "main",
+      "commitDate": "2026-09-03",
+      "language": "Python",
+      "declaredClientVersion": "4.5.52",
+      "license": "Unlicense",
+      "trackedFiles": 39,
+      "sourceExtensions": {
+        "(none)": 5,
+        ".PNG": 2,
+        ".json": 2,
+        ".md": 1,
+        ".proto": 1,
+        ".py": 23,
+        ".lua": 1,
+        ".toml": 1,
+        ".bat": 3
+      },
+      "handlers": {
+        "GetArchiveDataCsReq": [
+          "gameserver/handlers/archive.py"
+        ],
+        "GetAvatarDataCsReq": [
+          "gameserver/handlers/avatar.py"
+        ],
+        "TakePromotionRewardCsReq": [
+          "gameserver/handlers/avatar.py"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "gameserver/handlers/avatar.py"
+        ],
+        "PVEBattleResultCsReq": [
+          "gameserver/handlers/battle.py"
+        ],
+        "StartCocoonStageCsReq": [
+          "gameserver/handlers/battle.py"
+        ],
+        "GetGachaInfoCsReq": [
+          "gameserver/handlers/extra.py"
+        ],
+        "GetMailCsReq": [
+          "gameserver/handlers/extra.py"
+        ],
+        "GetFriendListInfoCsReq": [
+          "gameserver/handlers/extra.py"
+        ],
+        "GetFriendLoginInfoCsReq": [
+          "gameserver/handlers/extra.py"
+        ],
+        "GetBagCsReq": [
+          "gameserver/handlers/item.py"
+        ],
+        "GetAllLineupDataCsReq": [
+          "gameserver/handlers/lineup.py"
+        ],
+        "GetCurLineupDataCsReq": [
+          "gameserver/handlers/lineup.py"
+        ],
+        "JoinLineupCsReq": [
+          "gameserver/handlers/lineup.py"
+        ],
+        "ReplaceLineupCsReq": [
+          "gameserver/handlers/lineup.py"
+        ],
+        "QuitLineupCsReq": [
+          "gameserver/handlers/lineup.py"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "gameserver/handlers/lineup.py"
+        ],
+        "GetMissionStatusCsReq": [
+          "gameserver/handlers/mission.py"
+        ],
+        "PlayerGetTokenCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "PlayerLoginCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "GetBasicInfoCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "GetAssistHistoryCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "SetSignatureCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "gameserver/handlers/player.py"
+        ],
+        "GetBigDataAllRecommendCsReq": [
+          "gameserver/handlers/recommend.py"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "gameserver/handlers/scene.py"
+        ],
+        "GetEnteredSceneCsReq": [
+          "gameserver/handlers/scene.py"
+        ]
+      }
+    },
+    {
+      "name": "LunarCore",
+      "url": "https://github.com/Melledy/LunarCore",
+      "commit": "04b5de871c62895091c4d65243b2e03997e66f23",
+      "branch": "lite",
+      "commitDate": "2026-05-26",
+      "language": "Java",
+      "declaredClientVersion": "4.2.0 (lite)",
+      "license": "AGPL-3.0",
+      "trackedFiles": 1179,
+      "sourceExtensions": {
+        "(none)": 5,
+        ".yml": 2,
+        ".md": 9,
+        ".gradle": 2,
+        ".json": 3,
+        ".jar": 2,
+        ".properties": 1,
+        ".bat": 1,
+        ".java": 1153,
+        ".xml": 1
+      },
+      "handlers": {
+        "NONE": [
+          "src/main/java/emu/lunarcore/server/packet/recv/Handler.java"
+        ],
+        "ActivateFarmElementCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerActivateFarmElementCsReq.java"
+        ],
+        "ApplyFriendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerApplyFriendCsReq.java"
+        ],
+        "AvatarExpUpCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerAvatarExpUpCsReq.java"
+        ],
+        "BuyGoodsCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerBuyGoodsCsReq.java"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerChangeLineupLeaderCsReq.java"
+        ],
+        "ChessRogueQueryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerChessRogueQueryCsReq.java"
+        ],
+        "ClockParkGetOngoingScriptInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerClockParkGetOngoingScriptInfoCsReq.java"
+        ],
+        "ClockParkQuitScriptCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerClockParkQuitScriptCsReq.java"
+        ],
+        "CommonRogueQueryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerCommonRogueQueryCsReq.java"
+        ],
+        "ComposeItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerComposeItemCsReq.java"
+        ],
+        "ComposeSelectedRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerComposeSelectedRelicCsReq.java"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerContentPackageGetDataCsReq.java"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDeactivateFarmElementCsReq.java"
+        ],
+        "DelMailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDelMailCsReq.java"
+        ],
+        "DeleteFriendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDeleteFriendCsReq.java"
+        ],
+        "DeleteSocialEventServerCacheCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDeleteSocialEventServerCacheCsReq.java"
+        ],
+        "DestroyItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDestroyItemCsReq.java"
+        ],
+        "DiscardRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDiscardRelicCsReq.java"
+        ],
+        "DoGachaCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDoGachaCsReq.java"
+        ],
+        "DressAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDressAvatarCsReq.java"
+        ],
+        "DressAvatarSkinCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDressAvatarSkinCsReq.java"
+        ],
+        "DressRelicAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDressRelicAvatarCsReq.java"
+        ],
+        "EnterMapRotationRegionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnterMapRotationRegionCsReq.java"
+        ],
+        "EnterSceneCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnterSceneCsReq.java"
+        ],
+        "EnterSectionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnterSectionCsReq.java"
+        ],
+        "EntityBindPropCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEntityBindPropCsReq.java"
+        ],
+        "ExchangeGachaCeilingCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExchangeGachaCeilingCsReq.java"
+        ],
+        "ExchangeHcoinCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExchangeHcoinCsReq.java"
+        ],
+        "ExpUpEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExpUpEquipmentCsReq.java"
+        ],
+        "ExpUpRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExpUpRelicCsReq.java"
+        ],
+        "FinishQuestCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerFinishQuestCsReq.java"
+        ],
+        "FinishTutorialGuideCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerFinishTutorialGuideCsReq.java"
+        ],
+        "GetActivityScheduleConfigCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetActivityScheduleConfigCsReq.java"
+        ],
+        "GetAllLineupDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAllLineupDataCsReq.java"
+        ],
+        "GetArchiveDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetArchiveDataCsReq.java"
+        ],
+        "GetAssistHistoryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAssistHistoryCsReq.java"
+        ],
+        "GetAssistListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAssistListCsReq.java"
+        ],
+        "GetAvatarDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAvatarDataCsReq.java"
+        ],
+        "GetBagCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetBagCsReq.java"
+        ],
+        "GetBasicInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetBasicInfoCsReq.java"
+        ],
+        "GetBigDataAllRecommendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetBigDataAllRecommendCsReq.java"
+        ],
+        "GetBigDataRecommendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetBigDataRecommendCsReq.java"
+        ],
+        "GetChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChallengeCsReq.java"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChallengeGroupStatisticsCsReq.java"
+        ],
+        "GetChallengePeakDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChallengePeakDataCsReq.java"
+        ],
+        "GetChatEmojiListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChatEmojiListCsReq.java"
+        ],
+        "GetChessRogueNousStoryInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChessRogueNousStoryInfoCsReq.java"
+        ],
+        "GetChessRogueStoryInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChessRogueStoryInfoCsReq.java"
+        ],
+        "GetCrossInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCrossInfoCsReq.java"
+        ],
+        "GetCurChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCurChallengeCsReq.java"
+        ],
+        "GetCurLineupDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCurLineupDataCsReq.java"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCurSceneInfoCsReq.java"
+        ],
+        "GetDailyActiveInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetDailyActiveInfoCsReq.java"
+        ],
+        "GetEnteredSceneCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetEnteredSceneCsReq.java"
+        ],
+        "GetFarmStageGachaInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFarmStageGachaInfoCsReq.java"
+        ],
+        "GetFirstTalkByPerformanceNpcCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFirstTalkByPerformanceNpcCsReq.java"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFirstTalkNpcCsReq.java"
+        ],
+        "GetFriendApplyListInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendApplyListInfoCsReq.java"
+        ],
+        "GetFriendAssistListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendAssistListCsReq.java"
+        ],
+        "GetFriendBattleRecordDetailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendBattleRecordDetailCsReq.java"
+        ],
+        "GetFriendDevelopmentInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendDevelopmentInfoCsReq.java"
+        ],
+        "GetFriendListInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendListInfoCsReq.java"
+        ],
+        "GetFriendLoginInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendLoginInfoCsReq.java"
+        ],
+        "GetFriendRecommendListInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendRecommendListInfoCsReq.java"
+        ],
+        "GetGachaCeilingCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetGachaCeilingCsReq.java"
+        ],
+        "GetGachaInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetGachaInfoCsReq.java"
+        ],
+        "GetJukeboxDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetJukeboxDataCsReq.java"
+        ],
+        "GetLineupAvatarDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetLineupAvatarDataCsReq.java"
+        ],
+        "GetMailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMailCsReq.java"
+        ],
+        "GetMainMissionCustomValueCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMainMissionCustomValueCsReq.java"
+        ],
+        "GetMapRotationDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMapRotationDataCsReq.java"
+        ],
+        "GetMarkChestCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMarkChestCsReq.java"
+        ],
+        "GetMissionDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMissionDataCsReq.java"
+        ],
+        "GetMissionStatusCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMissionStatusCsReq.java"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetNpcTakenRewardCsReq.java"
+        ],
+        "GetOfferingInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetOfferingInfoCsReq.java"
+        ],
+        "GetPamSkinDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPamSkinDataCsReq.java"
+        ],
+        "GetPetDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPetDataCsReq.java"
+        ],
+        "GetPhoneDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPhoneDataCsReq.java"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPlayerBoardDataCsReq.java"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPlayerDetailInfoCsReq.java"
+        ],
+        "GetPreAvatarActivityListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPreAvatarActivityListCsReq.java"
+        ],
+        "GetPreAvatarGrowthInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPreAvatarGrowthInfoCsReq.java"
+        ],
+        "GetPrivateChatHistoryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPrivateChatHistoryCsReq.java"
+        ],
+        "GetQuestDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetQuestDataCsReq.java"
+        ],
+        "GetRechargeGiftInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRechargeGiftInfoCsReq.java"
+        ],
+        "GetRogueCommonDialogueDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueCommonDialogueDataCsReq.java"
+        ],
+        "GetRogueEndlessActivityDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueEndlessActivityDataCsReq.java"
+        ],
+        "GetRogueInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueInfoCsReq.java"
+        ],
+        "GetRogueInitialScoreCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueInitialScoreCsReq.java"
+        ],
+        "GetRogueScoreRewardInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueScoreRewardInfoCsReq.java"
+        ],
+        "GetRogueTalentInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueTalentInfoCsReq.java"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetSceneMapInfoCsReq.java"
+        ],
+        "GetShopListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetShopListCsReq.java"
+        ],
+        "GetSocialEventServerCacheCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetSocialEventServerCacheCsReq.java"
+        ],
+        "GetStrongChallengeActivityDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetStrongChallengeActivityDataCsReq.java"
+        ],
+        "GetTreasureDungeonActivityDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetTreasureDungeonActivityDataCsReq.java"
+        ],
+        "GetTutorialCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetTutorialCsReq.java"
+        ],
+        "GetTutorialGuideCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetTutorialGuideCsReq.java"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetUnlockTeleportCsReq.java"
+        ],
+        "GetUnreleasedBlockInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetUnreleasedBlockInfoCsReq.java"
+        ],
+        "GroupStateChangeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGroupStateChangeCsReq.java"
+        ],
+        "HandleFriendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerHandleFriendCsReq.java"
+        ],
+        "InteractPropCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerInteractPropCsReq.java"
+        ],
+        "JoinLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerJoinLineupCsReq.java"
+        ],
+        "LeaveChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLeaveChallengeCsReq.java"
+        ],
+        "LeaveTrialActivityCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLeaveTrialActivityCsReq.java"
+        ],
+        "LockEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLockEquipmentCsReq.java"
+        ],
+        "LockRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLockRelicCsReq.java"
+        ],
+        "MarkAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerMarkAvatarCsReq.java"
+        ],
+        "MarkReadMailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerMarkReadMailCsReq.java"
+        ],
+        "PVEBattleResultCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPVEBattleResultCsReq.java"
+        ],
+        "PlayBackGroundMusicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayBackGroundMusicCsReq.java"
+        ],
+        "PlayerGetTokenCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerGetTokenCsReq.java"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerHeartBeatCsReq.java"
+        ],
+        "PlayerLoginCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerLoginCsReq.java"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerLoginFinishCsReq.java"
+        ],
+        "PlayerLogoutCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerLogoutCsReq.java"
+        ],
+        "PromoteAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPromoteAvatarCsReq.java"
+        ],
+        "PromoteEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPromoteEquipmentCsReq.java"
+        ],
+        "QueryProductInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQueryProductInfoCsReq.java"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQuickStartCocoonStageCsReq.java"
+        ],
+        "QuickStartFarmElementCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQuickStartFarmElementCsReq.java"
+        ],
+        "QuitLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQuitLineupCsReq.java"
+        ],
+        "RankUpAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRankUpAvatarCsReq.java"
+        ],
+        "RankUpEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRankUpEquipmentCsReq.java"
+        ],
+        "ReEnterLastElementStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReEnterLastElementStageCsReq.java"
+        ],
+        "ReStartChallengePeakCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReStartChallengePeakCsReq.java"
+        ],
+        "RecallPetCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRecallPetCsReq.java"
+        ],
+        "RefreshTriggerByClientCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRefreshTriggerByClientCsReq.java"
+        ],
+        "RelicReforgeConfirmCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRelicReforgeConfirmCsReq.java"
+        ],
+        "RelicReforgeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRelicReforgeCsReq.java"
+        ],
+        "RelicSmartWearGetPinRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRelicSmartWearGetPinRelicCsReq.java"
+        ],
+        "RelicSmartWearGetPlanCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRelicSmartWearGetPlanCsReq.java"
+        ],
+        "ReplaceLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReplaceLineupCsReq.java"
+        ],
+        "ReserveStaminaExchangeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReserveStaminaExchangeCsReq.java"
+        ],
+        "RogueArcadeGetInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueArcadeGetInfoCsReq.java"
+        ],
+        "RogueMagicQueryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueMagicQueryCsReq.java"
+        ],
+        "RogueTournGetArchiveRepositoryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueTournGetArchiveRepositoryCsReq.java"
+        ],
+        "RogueTournGetCurRogueCocoonInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueTournGetCurRogueCocoonInfoCsReq.java"
+        ],
+        "RogueTournGetPermanentTalentInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueTournGetPermanentTalentInfoCsReq.java"
+        ],
+        "RogueTournQueryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueTournQueryCsReq.java"
+        ],
+        "RotateMapCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRotateMapCsReq.java"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneCastSkillCostMpCsReq.java"
+        ],
+        "SceneCastSkillCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneCastSkillCsReq.java"
+        ],
+        "SceneEnterStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneEnterStageCsReq.java"
+        ],
+        "SceneEntityMoveCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneEntityMoveCsReq.java"
+        ],
+        "SceneEntityTeleportCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneEntityTeleportCsReq.java"
+        ],
+        "SearchPlayerCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSearchPlayerCsReq.java"
+        ],
+        "SelectChatBubbleCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectChatBubbleCsReq.java"
+        ],
+        "SelectInclinationTextCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectInclinationTextCsReq.java"
+        ],
+        "SelectPamSkinCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectPamSkinCsReq.java"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectPhoneThemeCsReq.java"
+        ],
+        "SellItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSellItemCsReq.java"
+        ],
+        "SendMsgCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSendMsgCsReq.java"
+        ],
+        "SetAssistAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetAssistAvatarCsReq.java"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetAvatarEnhancedIdCsReq.java"
+        ],
+        "SetAvatarPathCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetAvatarPathCsReq.java"
+        ],
+        "SetChallengePeakMobLineupAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetChallengePeakMobLineupAvatarCsReq.java"
+        ],
+        "SetClientPausedCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetClientPausedCsReq.java"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetDisplayAvatarCsReq.java"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetGameplayBirthdayCsReq.java"
+        ],
+        "SetHeadIconCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetHeadIconCsReq.java"
+        ],
+        "SetLineupNameCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetLineupNameCsReq.java"
+        ],
+        "SetNicknameCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetNicknameCsReq.java"
+        ],
+        "SetRogueCollectionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetRogueCollectionCsReq.java"
+        ],
+        "SetSignatureCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetSignatureCsReq.java"
+        ],
+        "SetTrainWorldIdCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetTrainWorldIdCsReq.java"
+        ],
+        "StartChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartChallengeCsReq.java"
+        ],
+        "StartChallengePeakCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartChallengePeakCsReq.java"
+        ],
+        "StartCocoonStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartCocoonStageCsReq.java"
+        ],
+        "StartPartialChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartPartialChallengeCsReq.java"
+        ],
+        "StartTrialActivityCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartTrialActivityCsReq.java"
+        ],
+        "SummonPetCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSummonPetCsReq.java"
+        ],
+        "SwapLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSwapLineupCsReq.java"
+        ],
+        "SyncClientResVersionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSyncClientResVersionCsReq.java"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeChallengeRewardCsReq.java"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeMailAttachmentCsReq.java"
+        ],
+        "TakeOffAvatarSkinCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeOffAvatarSkinCsReq.java"
+        ],
+        "TakeOffEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeOffEquipmentCsReq.java"
+        ],
+        "TakeOffRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeOffRelicCsReq.java"
+        ],
+        "TakePromotionRewardCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakePromotionRewardCsReq.java"
+        ],
+        "TextJoinQueryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTextJoinQueryCsReq.java"
+        ],
+        "TrainPartyGetDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTrainPartyGetDataCsReq.java"
+        ],
+        "UnlockAvatarPathCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUnlockAvatarPathCsReq.java"
+        ],
+        "UnlockBackGroundMusicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUnlockBackGroundMusicCsReq.java"
+        ],
+        "UnlockSkilltreeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUnlockSkilltreeCsReq.java"
+        ],
+        "UnlockTutorialCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUnlockTutorialCsReq.java"
+        ],
+        "UpdateGroupPropertyCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUpdateGroupPropertyCsReq.java"
+        ],
+        "UpdateMarkChestCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUpdateMarkChestCsReq.java"
+        ],
+        "UpdateServerPrefsDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUpdateServerPrefsDataCsReq.java"
+        ],
+        "UseItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUseItemCsReq.java"
+        ]
+      }
+    },
+    {
+      "name": "HyacineDH-Core",
+      "url": "https://github.com/Mar7thLover/HyacineDH-Core",
+      "commit": "dd54de89ca8df8355fae5727e49e9e2bbba55344",
+      "branch": "main",
+      "commitDate": "2026-04-18",
+      "language": "C#",
+      "declaredClientVersion": "4.0",
+      "license": "AGPL-3.0",
+      "trackedFiles": 1096,
+      "sourceExtensions": {
+        ".yml": 1,
+        "(none)": 2,
+        ".csproj": 6,
+        ".cs": 1031,
+        ".md": 9,
+        ".json": 10,
+        ".txt": 29,
+        ".ec2b": 1,
+        ".cache": 1,
+        ".sln": 1,
+        ".ico": 1,
+        ".proto": 2,
+        ".bat": 1,
+        ".ps1": 1
+      },
+      "handlers": {
+        "GetActivityScheduleConfigCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerGetActivityScheduleConfigCsReq.cs"
+        ],
+        "GetTrialActivityDataCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerGetTrialActivityDataCsReq.cs"
+        ],
+        "LeaveTrialActivityCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerLeaveTrialActivityCsReq.cs"
+        ],
+        "StartTrialActivityCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerStartTrialActivityCsReq.cs"
+        ],
+        "TakeLoginActivityRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerTakeLoginActivityRewardCsReq.cs"
+        ],
+        "TakeTrialActivityRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Activity/HandlerTakeTrialActivityRewardCsReq.cs"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "GameServer/Server/Packet/Recv/Adventure/HandlerQuickStartCocoonStageCsReq.cs"
+        ],
+        "GetArchiveDataCsReq": [
+          "GameServer/Server/Packet/Recv/Archive/HandlerGetArchiveDataCsReq.cs"
+        ],
+        "AvatarExpUpCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerAvatarExpUpCsReq.cs"
+        ],
+        "DressAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerDressAvatarCsReq.cs"
+        ],
+        "DressAvatarSkinCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerDressAvatarSkinCsReq.cs"
+        ],
+        "DressRelicAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerDressRelicAvatarCsReq.cs"
+        ],
+        "GetAvatarDataCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerGetAvatarDataCsReq.cs"
+        ],
+        "MarkAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerMarkAvatarCsReq.cs"
+        ],
+        "PromoteAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerPromoteAvatarCsReq.cs"
+        ],
+        "RankUpAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerRankUpAvatarCsReq.cs"
+        ],
+        "RelicReforgeConfirmCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerRelicReforgeConfirmCsReq.cs"
+        ],
+        "RelicReforgeCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerRelicReforgeCsReq.cs"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerSetAvatarEnhancedIdCsReq.cs"
+        ],
+        "SetMultipleAvatarPathsCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerSetMultipleAvatarPathsCsReq.cs"
+        ],
+        "SetPlayerOutfitCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerSetPlayerOutfitCsReq.cs"
+        ],
+        "TakeOffAvatarSkinCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakeOffAvatarSkinCsReq.cs"
+        ],
+        "TakeOffEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakeOffEquipmentCsReq.cs"
+        ],
+        "TakeOffRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakeOffRelicCsReq.cs"
+        ],
+        "TakePromotionRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerTakePromotionRewardCsReq.cs"
+        ],
+        "UnlockSkilltreeCsReq": [
+          "GameServer/Server/Packet/Recv/Avatar/HandlerUnlockSkilltreeCsReq.cs"
+        ],
+        "GetCurBattleInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerGetCurBattleInfoCsReq.cs"
+        ],
+        "GetFarmStageGachaInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerGetFarmStageGachaInfoCsReq.cs"
+        ],
+        "PVEBattleResultCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerPVEBattleResultCsReq.cs"
+        ],
+        "QuitBattleCsReq": [
+          "GameServer/Server/Packet/Recv/Battle/HandlerQuitBattleCsReq.cs"
+        ],
+        "GetBattleCollegeDataCsReq": [
+          "GameServer/Server/Packet/Recv/BattleCollege/HandlerGetBattleCollegeDataCsReq.cs"
+        ],
+        "StartBattleCollegeCsReq": [
+          "GameServer/Server/Packet/Recv/BattleCollege/HandlerStartBattleCollegeCsReq.cs"
+        ],
+        "EnterChallengeNextPhaseCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerEnterChallengeNextPhaseCsReq.cs"
+        ],
+        "GetChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetChallengeCsReq.cs"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetChallengeGroupStatisticsCsReq.cs"
+        ],
+        "GetCurChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerGetCurChallengeCsReq.cs"
+        ],
+        "LeaveChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerLeaveChallengeCsReq.cs"
+        ],
+        "StartChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerStartChallengeCsReq.cs"
+        ],
+        "StartPartialChallengeCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerStartPartialChallengeCsReq.cs"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Challenge/HandlerTakeChallengeRewardCsReq.cs"
+        ],
+        "ConfirmChallengePeakSettleCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerConfirmChallengePeakSettleCsReq.cs"
+        ],
+        "GetChallengePeakDataCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerGetChallengePeakDataCsReq.cs"
+        ],
+        "GetCurChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerGetCurChallengePeakCsReq.cs"
+        ],
+        "LeaveChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerLeaveChallengePeakCsReq.cs"
+        ],
+        "ReStartChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerReStartChallengePeakCsReq.cs"
+        ],
+        "SetChallengePeakBossHardModeCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerSetChallengePeakBossHardModeCsReq.cs"
+        ],
+        "SetChallengePeakMobLineupAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerSetChallengePeakMobLineupAvatarCsReq.cs"
+        ],
+        "StartChallengePeakCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerStartChallengePeakCsReq.cs"
+        ],
+        "TakeChallengePeakRewardCsReq": [
+          "GameServer/Server/Packet/Recv/ChallengePeak/HandlerTakeChallengePeakRewardCsReq.cs"
+        ],
+        "BatchMarkChatEmojiCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerBatchMarkChatEmojiCsReq.cs"
+        ],
+        "GetChatEmojiListCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerGetChatEmojiListCsReq.cs"
+        ],
+        "GetChatFriendHistoryCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerGetChatFriendHistoryCsReq.cs"
+        ],
+        "GetLoginChatInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerGetLoginChatInfoCsReq.cs"
+        ],
+        "GetPrivateChatHistoryCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerGetPrivateChatHistoryCsReq.cs"
+        ],
+        "MarkChatEmojiCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerMarkChatEmojiCsReq.cs"
+        ],
+        "SendMsgCsReq": [
+          "GameServer/Server/Packet/Recv/Chat/HandlerSendMsgCsReq.cs"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "GameServer/Server/Packet/Recv/ContentPackage/HandlerContentPackageGetDataCsReq.cs"
+        ],
+        "AddBlacklistCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerAddBlacklistCsReq.cs"
+        ],
+        "ApplyFriendCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerApplyFriendCsReq.cs"
+        ],
+        "DeleteBlacklistCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerDeleteBlacklistCsReq.cs"
+        ],
+        "DeleteFriendCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerDeleteFriendCsReq.cs"
+        ],
+        "GetAssistHistoryCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetAssistHistoryCsReq.cs"
+        ],
+        "GetAssistListCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetAssistListCsReq.cs"
+        ],
+        "GetCurAssistCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetCurAssistCsReq.cs"
+        ],
+        "GetFriendApplyListInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendApplyListInfoCsReq.cs"
+        ],
+        "GetFriendBattleRecordDetailCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendBattleRecordDetailCsReq.cs"
+        ],
+        "GetFriendDevelopmentInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendDevelopmentInfoCsReq.cs"
+        ],
+        "GetFriendListInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendListInfoCsReq.cs"
+        ],
+        "GetFriendLoginInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendLoginInfoCsReq.cs"
+        ],
+        "GetFriendRecommendLineupCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendRecommendLineupCsReq.cs"
+        ],
+        "GetFriendRecommendListInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetFriendRecommendListInfoCsReq.cs"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerGetPlayerDetailInfoCsReq.cs"
+        ],
+        "HandleFriendCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerHandleFriendCsReq.cs"
+        ],
+        "SearchPlayerCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerSearchPlayerCsReq.cs"
+        ],
+        "SetFriendMarkCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerSetFriendMarkCsReq.cs"
+        ],
+        "SetFriendRemarkNameCsReq": [
+          "GameServer/Server/Packet/Recv/Friend/HandlerSetFriendRemarkNameCsReq.cs"
+        ],
+        "DoGachaCsReq": [
+          "GameServer/Server/Packet/Recv/Gacha/HandlerDoGachaCsReq.cs"
+        ],
+        "GetGachaInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Gacha/HandlerGetGachaInfoCsReq.cs"
+        ],
+        "SetGachaDecideItemCsReq": [
+          "GameServer/Server/Packet/Recv/Gacha/HandlerSetGachaDecideItemCsReq.cs"
+        ],
+        "ChangeScriptEmotionCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerChangeScriptEmotionCsReq.cs"
+        ],
+        "FinishEmotionDialoguePerformanceCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerFinishEmotionDialoguePerformanceCsReq.cs"
+        ],
+        "GetHeartDialInfoCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerGetHeartDialInfoCsReq.cs"
+        ],
+        "SubmitEmotionItemCsReq": [
+          "GameServer/Server/Packet/Recv/HeartDial/HandlerSubmitEmotionItemCsReq.cs"
+        ],
+        "ComposeItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerComposeItemCsReq.cs"
+        ],
+        "ComposeSelectedRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerComposeSelectedRelicCsReq.cs"
+        ],
+        "DestroyItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerDestroyItemCsReq.cs"
+        ],
+        "DiscardRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerDiscardRelicCsReq.cs"
+        ],
+        "ExpUpEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerExpUpEquipmentCsReq.cs"
+        ],
+        "ExpUpRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerExpUpRelicCsReq.cs"
+        ],
+        "GetBagCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerGetBagCsReq.cs"
+        ],
+        "LockEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerLockEquipmentCsReq.cs"
+        ],
+        "LockRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerLockRelicCsReq.cs"
+        ],
+        "PromoteEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerPromoteEquipmentCsReq.cs"
+        ],
+        "RankUpEquipmentCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerRankUpEquipmentCsReq.cs"
+        ],
+        "SellItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerSellItemCsReq.cs"
+        ],
+        "UseItemCsReq": [
+          "GameServer/Server/Packet/Recv/Item/HandlerUseItemCsReq.cs"
+        ],
+        "GetJukeboxDataCsReq": [
+          "GameServer/Server/Packet/Recv/JukeBox/HandlerGetJukeboxDataCsReq.cs"
+        ],
+        "PlayBackGroundMusicCsReq": [
+          "GameServer/Server/Packet/Recv/JukeBox/HandlerPlayBackGroundMusicCsReq.cs"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerChangeLineupLeaderCsReq.cs"
+        ],
+        "GetAllLineupDataCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerGetAllLineupDataCsReq.cs"
+        ],
+        "GetCurLineupDataCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerGetCurLineupDataCsReq.cs"
+        ],
+        "GetLineupAvatarDataCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerGetLineupAvatarDataCsReq.cs"
+        ],
+        "ReplaceLineupCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerReplaceLineupCsReq.cs"
+        ],
+        "SwitchLineupIndexCsReq": [
+          "GameServer/Server/Packet/Recv/Lineup/HandlerSwitchLineupIndexCsReq.cs"
+        ],
+        "DelMailCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerDelMailCsReq.cs"
+        ],
+        "GetMailCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerGetMailCsReq.cs"
+        ],
+        "MarkReadMailCsReq": [
+          "GameServer/Server/Packet/Recv/Mail/HandlerMarkReadMailCsReq.cs"
+        ],
+        "DeployRotaterCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerDeployRotaterCsReq.cs"
+        ],
+        "EnterMapRotationRegionCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerEnterMapRotationRegionCsReq.cs"
+        ],
+        "InteractChargerCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerInteractChargerCsReq.cs"
+        ],
+        "LeaveMapRotationRegionCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerLeaveMapRotationRegionCsReq.cs"
+        ],
+        "RemoveRotaterCsReq": [
+          "GameServer/Server/Packet/Recv/MapRotation/HandlerRemoveRotaterCsReq.cs"
+        ],
+        "MarbleGetDataCsReq": [
+          "GameServer/Server/Packet/Recv/Marble/HandlerMarbleGetDataCsReq.cs"
+        ],
+        "MarbleLevelFinishCsReq": [
+          "GameServer/Server/Packet/Recv/Marble/HandlerMarbleLevelFinishCsReq.cs"
+        ],
+        "MarbleUpdateShownSealCsReq": [
+          "GameServer/Server/Packet/Recv/Marble/HandlerMarbleUpdateShownSealCsReq.cs"
+        ],
+        "GetMarkChestCsReq": [
+          "GameServer/Server/Packet/Recv/MarkChest/HandlerGetMarkChestCsReq.cs"
+        ],
+        "UpdateMarkChestCsReq": [
+          "GameServer/Server/Packet/Recv/MarkChest/HandlerUpdateMarkChestCsReq.cs"
+        ],
+        "GetCrossInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Match/HandlerGetCrossInfoCsReq.cs"
+        ],
+        "FinishItemIdCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerFinishItemIdCsReq.cs"
+        ],
+        "FinishPerformSectionIdCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerFinishPerformSectionIdCsReq.cs"
+        ],
+        "FinishSectionIdCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerFinishSectionIdCsReq.cs"
+        ],
+        "GetNpcMessageGroupCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerGetNpcMessageGroupCsReq.cs"
+        ],
+        "GetNpcStatusCsReq": [
+          "GameServer/Server/Packet/Recv/Message/HandlerGetNpcStatusCsReq.cs"
+        ],
+        "MazeKillDirectCsReq": [
+          "GameServer/Server/Packet/Recv/MiscModule/HandlerMazeKillDirectCsReq.cs"
+        ],
+        "AcceptMainMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerAcceptMainMissionCsReq.cs"
+        ],
+        "FinishCosumeItemMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerFinishCosumeItemMissionCsReq.cs"
+        ],
+        "FinishTalkMissionCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerFinishTalkMissionCsReq.cs"
+        ],
+        "GetMainMissionCustomValueCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerGetMainMissionCustomValueCsReq.cs"
+        ],
+        "GetMissionDataCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerGetMissionDataCsReq.cs"
+        ],
+        "GetMissionStatusCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerGetMissionStatusCsReq.cs"
+        ],
+        "UpdateTrackMainMissionIdCsReq": [
+          "GameServer/Server/Packet/Recv/Mission/HandlerUpdateTrackMainMissionIdCsReq.cs"
+        ],
+        "MusicRhythmDataCsReq": [
+          "GameServer/Server/Packet/Recv/Music/HandlerMusicRhythmDataCsReq.cs"
+        ],
+        "MusicRhythmFinishLevelCsReq": [
+          "GameServer/Server/Packet/Recv/Music/HandlerMusicRhythmFinishLevelCsReq.cs"
+        ],
+        "MusicRhythmStartLevelCsReq": [
+          "GameServer/Server/Packet/Recv/Music/HandlerMusicRhythmStartLevelCsReq.cs"
+        ],
+        "GetOfferingInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Offering/HandlerGetOfferingInfoCsReq.cs"
+        ],
+        "SubmitOfferingItemCsReq": [
+          "GameServer/Server/Packet/Recv/Offering/HandlerSubmitOfferingItemCsReq.cs"
+        ],
+        "TakeOfferingRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Offering/HandlerTakeOfferingRewardCsReq.cs"
+        ],
+        "GetPamSkinDataCsReq": [
+          "GameServer/Server/Packet/Recv/PamSkin/HandlerGetPamSkinDataCsReq.cs"
+        ],
+        "SelectPamSkinCsReq": [
+          "GameServer/Server/Packet/Recv/PamSkin/HandlerSelectPamSkinCsReq.cs"
+        ],
+        "GetPetDataCsReq": [
+          "GameServer/Server/Packet/Recv/Pet/HandlerGetPetDataCsReq.cs"
+        ],
+        "RecallPetCsReq": [
+          "GameServer/Server/Packet/Recv/Pet/HandlerRecallPetCsReq.cs"
+        ],
+        "SummonPetCsReq": [
+          "GameServer/Server/Packet/Recv/Pet/HandlerSummonPetCsReq.cs"
+        ],
+        "GetPhoneDataCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerGetPhoneDataCsReq.cs"
+        ],
+        "SelectChatBubbleCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSelectChatBubbleCsReq.cs"
+        ],
+        "SelectPhoneCaseCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSelectPhoneCaseCsReq.cs"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSelectPhoneThemeCsReq.cs"
+        ],
+        "SetPersonalCardCsReq": [
+          "GameServer/Server/Packet/Recv/Phone/HandlerSetPersonalCardCsReq.cs"
+        ],
+        "GetBasicInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetBasicInfoCsReq.cs"
+        ],
+        "GetLevelRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetLevelRewardCsReq.cs"
+        ],
+        "GetLevelRewardTakenListCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetLevelRewardTakenListCsReq.cs"
+        ],
+        "GetSecretKeyInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetSecretKeyInfoCsReq.cs"
+        ],
+        "GetVideoVersionKeyCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerGetVideoVersionKeyCsReq.cs"
+        ],
+        "PlayerGetTokenCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerGetTokenCsReq.cs"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerHeartBeatCsReq.cs"
+        ],
+        "PlayerLoginCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerLoginCsReq.cs"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerLoginFinishCsReq.cs"
+        ],
+        "PlayerLogoutCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerPlayerLogoutCsReq.cs"
+        ],
+        "QueryProductInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerQueryProductInfoCsReq.cs"
+        ],
+        "ReserveStaminaExchangeCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerReserveStaminaExchangeCsReq.cs"
+        ],
+        "SetAvatarPathCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetAvatarPathCsReq.cs"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetGameplayBirthdayCsReq.cs"
+        ],
+        "SetNicknameCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetNicknameCsReq.cs"
+        ],
+        "SetPlayerInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerSetPlayerInfoCsReq.cs"
+        ],
+        "UpdatePlayerSettingCsReq": [
+          "GameServer/Server/Packet/Recv/Player/HandlerUpdatePlayerSettingCsReq.cs"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerGetPlayerBoardDataCsReq.cs"
+        ],
+        "SetAssistAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetAssistAvatarCsReq.cs"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetDisplayAvatarCsReq.cs"
+        ],
+        "SetHeadIconCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetHeadIconCsReq.cs"
+        ],
+        "SetIsDisplayAvatarInfoCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetIsDisplayAvatarInfoCsReq.cs"
+        ],
+        "SetIsDisplayAvatarInfoReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetIsDisplayAvatarInfoReq.cs"
+        ],
+        "SetSignatureCsReq": [
+          "GameServer/Server/Packet/Recv/PlayerBoard/HandlerSetSignatureCsReq.cs"
+        ],
+        "FinishQuestCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerFinishQuestCsReq.cs"
+        ],
+        "GetDailyActiveInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerGetDailyActiveInfoCsReq.cs"
+        ],
+        "GetQuestDataCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerGetQuestDataCsReq.cs"
+        ],
+        "TakeQuestRewardCsReq": [
+          "GameServer/Server/Packet/Recv/Quest/HandlerTakeQuestRewardCsReq.cs"
+        ],
+        "GetAllSaveRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerGetAllSaveRaidCsReq.cs"
+        ],
+        "GetRaidInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerGetRaidInfoCsReq.cs"
+        ],
+        "GetSaveRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerGetSaveRaidCsReq.cs"
+        ],
+        "LeaveRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerLeaveRaidCsReq.cs"
+        ],
+        "StartRaidCsReq": [
+          "GameServer/Server/Packet/Recv/Raid/HandlerStartRaidCsReq.cs"
+        ],
+        "GetRechargeGiftInfoCsReq": [
+          "GameServer/Server/Packet/Recv/RechargeGift/HandlerGetRechargeGiftInfoCsReq.cs"
+        ],
+        "GetBigDataAllRecommendCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerGetBigDataAllRecommendCsReq.cs"
+        ],
+        "GetBigDataRecommendCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerGetBigDataRecommendCsReq.cs"
+        ],
+        "RelicSmartWearAddPlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearAddPlanCsReq.cs"
+        ],
+        "RelicSmartWearDeletePlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearDeletePlanCsReq.cs"
+        ],
+        "RelicSmartWearGetPinRelicCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearGetPinRelicCsReq.cs"
+        ],
+        "RelicSmartWearGetPlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearGetPlanCsReq.cs"
+        ],
+        "RelicSmartWearUpdatePlanCsReq": [
+          "GameServer/Server/Packet/Recv/Recommend/HandlerRelicSmartWearUpdatePlanCsReq.cs"
+        ],
+        "GetRndOptionCsReq": [
+          "GameServer/Server/Packet/Recv/RndOption/HandlerGetRndOptionCsReq.cs"
+        ],
+        "DoGachaInRollShopCsReq": [
+          "GameServer/Server/Packet/Recv/RollShop/HandlerDoGachaInRollShopCsReq.cs"
+        ],
+        "GetRollShopInfoCsReq": [
+          "GameServer/Server/Packet/Recv/RollShop/HandlerGetRollShopInfoCsReq.cs"
+        ],
+        "ActivateFarmElementCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerActivateFarmElementCsReq.cs"
+        ],
+        "ChangePropTimelineInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerChangePropTimelineInfoCsReq.cs"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerDeactivateFarmElementCsReq.cs"
+        ],
+        "EnterSceneCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerEnterSceneCsReq.cs"
+        ],
+        "EnterSectionCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerEnterSectionCsReq.cs"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetCurSceneInfoCsReq.cs"
+        ],
+        "GetEnteredSceneCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetEnteredSceneCsReq.cs"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetSceneMapInfoCsReq.cs"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerGetUnlockTeleportCsReq.cs"
+        ],
+        "InteractPropCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerInteractPropCsReq.cs"
+        ],
+        "RefreshTriggerByClientCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerRefreshTriggerByClientCsReq.cs"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneCastSkillCostMpCsReq.cs"
+        ],
+        "SceneCastSkillCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneCastSkillCsReq.cs"
+        ],
+        "SceneEnterStageCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneEnterStageCsReq.cs"
+        ],
+        "SceneEntityMoveCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneEntityMoveCsReq.cs"
+        ],
+        "SceneEntityTeleportCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSceneEntityTeleportCsReq.cs"
+        ],
+        "SetClientPausedCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSetClientPausedCsReq.cs"
+        ],
+        "SetGroupCustomSaveDataCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerSetGroupCustomSaveDataCsReq.cs"
+        ],
+        "StartCocoonStageCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerStartCocoonStageCsReq.cs"
+        ],
+        "UpdateGroupPropertyCsReq": [
+          "GameServer/Server/Packet/Recv/Scene/HandlerUpdateGroupPropertyCsReq.cs"
+        ],
+        "GetAllServerPrefsDataCsReq": [
+          "GameServer/Server/Packet/Recv/ServerPrefs/HandlerGetAllServerPrefsDataCsReq.cs"
+        ],
+        "GetServerPrefsDataCsReq": [
+          "GameServer/Server/Packet/Recv/ServerPrefs/HandlerGetServerPrefsDataCsReq.cs"
+        ],
+        "UpdateServerPrefsDataCsReq": [
+          "GameServer/Server/Packet/Recv/ServerPrefs/HandlerUpdateServerPrefsDataCsReq.cs"
+        ],
+        "BuyGoodsCsReq": [
+          "GameServer/Server/Packet/Recv/Shop/HandlerBuyGoodsCsReq.cs"
+        ],
+        "GetShopListCsReq": [
+          "GameServer/Server/Packet/Recv/Shop/HandlerGetShopListCsReq.cs"
+        ],
+        "GetStoryLineInfoCsReq": [
+          "GameServer/Server/Packet/Recv/StoryLine/HandlerGetStoryLineInfoCsReq.cs"
+        ],
+        "SwitchHandCoinUpdateCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandCoinUpdateCsReq.cs"
+        ],
+        "SwitchHandDataCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandDataCsReq.cs"
+        ],
+        "SwitchHandFinishCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandFinishCsReq.cs"
+        ],
+        "SwitchHandResetGameCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandResetGameCsReq.cs"
+        ],
+        "SwitchHandResetHandPosCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandResetHandPosCsReq.cs"
+        ],
+        "SwitchHandStartCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandStartCsReq.cs"
+        ],
+        "SwitchHandUpdateCsReq": [
+          "GameServer/Server/Packet/Recv/SwitchHand/HandlerSwitchHandUpdateCsReq.cs"
+        ],
+        "GetFirstTalkByPerformanceNpcCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerGetFirstTalkByPerformanceNpcCsReq.cs"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerGetFirstTalkNpcCsReq.cs"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerGetNpcTakenRewardCsReq.cs"
+        ],
+        "SelectInclinationTextCsReq": [
+          "GameServer/Server/Packet/Recv/TalkEvent/HandlerSelectInclinationTextCsReq.cs"
+        ],
+        "GetTreasureDungeonActivityDataCsReq": [
+          "GameServer/Server/Packet/Recv/TreasureDungeon/HandlerGetTreasureDungeonActivityDataCsReq.cs"
+        ],
+        "FinishTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerFinishTutorialCsReq.cs"
+        ],
+        "FinishTutorialGuideCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerFinishTutorialGuideCsReq.cs"
+        ],
+        "GetTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerGetTutorialCsReq.cs"
+        ],
+        "GetTutorialGuideCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerGetTutorialGuideCsReq.cs"
+        ],
+        "UnlockTutorialCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerUnlockTutorialCsReq.cs"
+        ],
+        "UnlockTutorialGuideCsReq": [
+          "GameServer/Server/Packet/Recv/Tutorial/HandlerUnlockTutorialGuideCsReq.cs"
+        ]
+      }
+    },
+    {
+      "name": "hkrpg-go",
+      "url": "https://github.com/gucooing/hkrpg-go",
+      "commit": "ef47e49a233133c46d70ab5a4deb4bc71ae49571",
+      "branch": "dev",
+      "commitDate": "2025-02-24",
+      "language": "Go",
+      "declaredClientVersion": "3.0.0",
+      "license": "AGPL-3.0",
+      "trackedFiles": 421,
+      "sourceExtensions": {
+        ".yml": 3,
+        "(none)": 4,
+        ".md": 51,
+        ".bat": 4,
+        ".sh": 3,
+        ".go": 330,
+        ".json": 10,
+        ".ini\"": 2,
+        ".mod": 1,
+        ".sum": 1,
+        ".proto": 9,
+        ".py": 1,
+        ".png\"": 2
+      },
+      "handlers": {
+        "PlayerLoginCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_login.go"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go",
+          "tools/rebirth/playerbin.go"
+        ],
+        "GetAllLineupDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "GetCurLineupDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "GetLineupAvatarDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "JoinLineupCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "SwitchLineupIndexCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "SetLineupNameCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "ReplaceLineupCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "QuitLineupCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "TriggerVoiceCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_lineup.go"
+        ],
+        "GetMultiPathAvatarInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "GetAvatarDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "RankUpAvatarCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "AvatarExpUpCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "PromoteAvatarCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "UnlockSkilltreeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "TakePromotionRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "UnlockAvatarPathCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_avatar.go"
+        ],
+        "SetAvatarPathCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "DressAvatarCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "TakeOffEquipmentCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "ExpUpEquipmentCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "RankUpEquipmentCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "PromoteEquipmentCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "RelicRecommendCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "DressRelicAvatarCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "TakeOffRelicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "ExpUpRelicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "RelicAvatarRecommendCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "RelicSmartWearGetPlanCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "RelicReforgeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "RelicReforgeConfirmCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "GetEnteredSceneCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "SceneEntityMoveCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_query.go"
+        ],
+        "EnterSceneCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "InteractPropCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "GroupStateChangeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "DeployRotaterCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "StartWolfBroGameCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "SetGroupCustomSaveDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "GetPetDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "SummonPetCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "RecallPetCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "UpdateMarkChestCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_scene.go"
+        ],
+        "GetPamSkinDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "SelectPamSkinCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "TrainPartyGetDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "GetTrainVisitorRegisterCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "TrainPartyEnterCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "TrainPartyLeaveCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "PlayBackGroundMusicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "GetJukeboxDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "UnlockBackGroundMusicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_train.go"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "SceneCastSkillCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "SetTurnFoodSwitchCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "RefreshTriggerByClientCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "PVEBattleResultCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "StartCocoonStageCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "ActivateFarmElementCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "ReEnterLastElementStageCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "QuickStartFarmElementCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "SceneEnterStageCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_battle.go"
+        ],
+        "GetRaidInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_raid.go"
+        ],
+        "StartRaidCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_raid.go"
+        ],
+        "LeaveRaidCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_raid.go"
+        ],
+        "GetRogueHandbookDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "CommonRogueQueryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "TakeRogueEventHandbookRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "TakeRogueMiracleHandbookRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "GetRogueScoreRewardInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest_rogue.go",
+          "gameserver/player/player_rogue_quest.go"
+        ],
+        "GetRogueInitialScoreCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest_rogue.go",
+          "gameserver/player/player_rogue_quest.go"
+        ],
+        "TakeRogueScoreRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest_rogue.go",
+          "gameserver/player/player_rogue_quest.go"
+        ],
+        "GetRogueTalentInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest_rogue.go",
+          "gameserver/player/player_rogue_quest.go"
+        ],
+        "GetRogueInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest_rogue.go",
+          "gameserver/player/player_rogue_quest.go"
+        ],
+        "StartRogueCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest_rogue.go",
+          "gameserver/player/player_rogue_quest.go"
+        ],
+        "LeaveRogueCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "QuitRogueCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "HandleRogueCommonPendingActionCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "EnterRogueMapRoomCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "GetRogueBuffEnhanceInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "GetRogueAdventureRoomInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue.go"
+        ],
+        "RogueTournQueryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "RogueTournGetPermanentTalentInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "RogueTournStartCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "RogueTournGetMiscRealTimeDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "RogueTournEnterCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "RogueTournSettleCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "RogueTournEnterRoomCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_rogue_tourn.go"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "GetChallengeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "StartChallengeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "GetCurChallengeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "LeaveChallengeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "RestartChallengePhaseCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "StartPartialChallengeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "EnterChallengeNextPhaseCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "GetFriendChallengeLineupCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_challenge.go"
+        ],
+        "GetBagCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "DestroyItemCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "SellItemCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "UseItemCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "ComposeItemCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "ComposeSelectedRelicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "LockRelicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "LockEquipmentCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "DiscardRelicCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "CancelCacheNotifyCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_item.go"
+        ],
+        "QueryProductInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "GetShopListCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "ExchangeHcoinCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "ExchangeRogueRewardKeyCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "BuyGoodsCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "TakeCityShopRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "GetRollShopInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_shop.go"
+        ],
+        "GetChatEmojiListCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "SetAssistAvatarCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "GetFriendLoginInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "GetFriendListInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "GetPrivateChatHistoryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetChatFriendHistoryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "SearchPlayerCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "GetFriendApplyListInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "HandleFriendCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_friend.go"
+        ],
+        "MarkReadMailCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mail.go"
+        ],
+        "GetMailCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mail.go"
+        ],
+        "DelMailCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mail.go"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mail.go"
+        ],
+        "GetGachaInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_gacha.go"
+        ],
+        "DoGachaCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_gacha.go"
+        ],
+        "GetGachaCeilingCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_gacha.go"
+        ],
+        "ExchangeGachaCeilingCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_gacha.go"
+        ],
+        "GetFarmStageGachaInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_gacha.go"
+        ],
+        "GetDailyActiveInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "GetMainMissionCustomValueCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "GetMissionEventDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "GetMissionStatusCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "GetMissionDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "FinishTalkMissionCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "FinishCosumeItemMissionCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "GetVideoVersionKeyCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetSecretKeyInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "UpdateTrackMainMissionIdCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_mission.go"
+        ],
+        "GetArchiveDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetUpdatedArchiveDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetQuestDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_quest.go"
+        ],
+        "PlayerReturnInfoQueryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "PlayerReturnTakeRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "PlayerReturnSignCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "HeliobusActivityDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "GetActivityScheduleConfigCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "GetLoginActivityCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "GetTrialActivityDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_trial.go"
+        ],
+        "StartTrialActivityCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_trial.go"
+        ],
+        "TakeLoginActivityRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "TakeTrialActivityRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_trial.go"
+        ],
+        "GetTreasureDungeonActivityDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "GetCrossInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "LobbyGetInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity.go"
+        ],
+        "GetAetherDivideInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "GetAetherDivideChallengeInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "SetAetherDivideLineUpCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "EquipAetherDividePassiveSkillCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "ClearAetherDividePassiveSkillCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "AetherDivideTakeChallengeRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "StartAetherDivideChallengeBattleCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "StartAetherDivideSceneBattleCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "StartAetherDivideStageBattleCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "LeaveAetherDivideSceneCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_aether_divide.go"
+        ],
+        "ClockParkGetInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_clock_park.go"
+        ],
+        "ClockParkStartScriptCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_clock_park.go"
+        ],
+        "ClockParkGetOngoingScriptInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_clock_park.go"
+        ],
+        "GetSwordTrainingDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_sword_training.go"
+        ],
+        "SwordTrainingStartGameCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_sword_training.go"
+        ],
+        "MatchThreeGetDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_match_three.go"
+        ],
+        "MatchThreeLevelEndCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_match_three.go"
+        ],
+        "MatchThreeSetBirdPosCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_match_three.go"
+        ],
+        "MusicRhythmDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_activity_music_rhythm.go"
+        ],
+        "GetBasicInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetPhoneDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetClientPausedCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SyncClientResVersionCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_login.go"
+        ],
+        "GetAssistHistoryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetHeadIconCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetNicknameCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetSignatureCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetTutorialCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetTutorialGuideCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "UnlockTutorialCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "UnlockTutorialGuideCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "FinishTutorialCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "FinishTutorialGuideCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SetPlayerInfoCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_player.go"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_player.go"
+        ],
+        "GetLevelRewardTakenListCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetLevelRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "TakeBpRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "TakeAllRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "ReserveStaminaExchangeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SelectChatBubbleCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "TextJoinQueryCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "TextJoinSaveCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "TextJoinBatchSaveCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "GetFirstTalkByPerformanceNpcCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "GetNpcMessageGroupCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "FinishPerformSectionIdCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "GetNpcStatusCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "FinishItemIdCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "FinishSectionIdCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "FinishFirstTalkByPerformanceNpcCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_npc.go"
+        ],
+        "GetAuthkeyCsReq": [
+          "gameserver/player/router.go",
+          "gameserver/player/player_base.go"
+        ],
+        "PlayerLogoutCsReq": [
+          "gateserver/service/packet.go",
+          "hkrpg-go-pe/packet.go"
+        ],
+        "SendMsgCsReq": [
+          "gateserver/service/packet.go",
+          "hkrpg-go-pe/packet.go"
+        ],
+        "ApplyFriendCsReq": [
+          "hkrpg-go-pe/packet.go"
+        ],
+        "GetFriendRecommendListInfoCsReq": [
+          "hkrpg-go-pe/packet.go"
+        ]
+      }
+    },
+    {
+      "name": "himeko-nova-sr",
+      "url": "https://git.xeondev.com/HonkaiSlopRail/himeko-nova-sr",
+      "commit": "3b304b5a1b1cc0d478e285c3dcb0d4a555ed0910",
+      "branch": "master",
+      "commitDate": "2026-07-31",
+      "language": "Zig",
+      "declaredClientVersion": "4.4.53 / 4.5 beta",
+      "license": "unspecified",
+      "trackedFiles": 83,
+      "sourceExtensions": {
+        ".md": 1,
+        ".png": 1,
+        ".zig": 52,
+        ".zon": 4,
+        ".json": 22,
+        ".dll": 1,
+        ".exe": 1,
+        ".bat": 1
+      },
+      "handlers": {
+        "ShieldLoginCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "ShieldVerifyCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "VerifyLoginCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "ComboTokenReqCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "RiskyApiCheckCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "GetConfigCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "LoadConfigCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "appLoginByPasswordCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "VerifyCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "QueryDispatchCsReq": [
+          "dispatch/src/dispatch.zig"
+        ],
+        "QueryGatewayCsReq": [
+          "dispatch/src/dispatch.zig"
+        ],
+        "RefillCsReq": [
+          "gameserver/src/commands/refill.zig"
+        ],
+        "SyncAvatarCsReq": [
+          "gameserver/src/commands/sync.zig"
+        ],
+        "GenerateAndSyncCsReq": [
+          "gameserver/src/commands/sync.zig"
+        ],
+        "BuffIdCsReq": [
+          "gameserver/src/commands/value.zig"
+        ],
+        "BuffInfoCsReq": [
+          "gameserver/src/commands/value.zig"
+        ],
+        "GetAvatarDataCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBasicInfoCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetAvatarPathCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetPlayerOutfitCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "DressAvatarSkinCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "TakeOffAvatarSkinCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBigDataAllCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBigDataCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetPreAvatarGrowthInfoCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "StartCocoonStageCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "QuickStartFarmElementCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "StartBattleCollegeCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SceneCastSkillCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "GetCurBattleInfoCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "PVEBattleResultCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SyncClientResVersionCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "GetChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengeTierceCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetCurChallengeScRspCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetCurChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengePeakDataCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeTierceControllerCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeTierceDataCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "ReStartChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengePeakMobLineupAvatarCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengePeakBossHardModeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetFriendBattleRecordDetailCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengeTierceCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengeTierceLineupCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetFriendListInfoCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "ChatEmojiListCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "PrivateChatHistoryCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "GetAiPamChatHistoryCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "SendMsgCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "TriggerAiPamSpeakCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "GetActivityCsReq": [
+          "gameserver/src/services/events.zig"
+        ],
+        "UpdateServerPrefsDataCsReq": [
+          "gameserver/src/services/events.zig"
+        ],
+        "GetGachaInfoCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "BuyGoodsCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "ExchangeHcoinCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "DoGachaCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "GetBagCsReq": [
+          "gameserver/src/services/item.zig"
+        ],
+        "UseItemCsReq": [
+          "gameserver/src/services/item.zig"
+        ],
+        "GetCurLineupDataCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "ReplaceLineupCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "SetLineupNameCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "PlayerGetTokenCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "PlayerLoginCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "SetClientPausedCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetArchiveDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetUpdatedArchiveDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetMailCsReq": [
+          "gameserver/src/services/mail.zig"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "gameserver/src/services/mail.zig"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "gameserver/src/services/misc.zig"
+        ],
+        "GetMissionStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetTutorialGuideStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetTutorialStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "FinishTalkMissionCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetQuestDataCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "UnlockTutorialGuideCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "UnlockTutorialCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetPetDataCsReq": [
+          "gameserver/src/services/pet.zig"
+        ],
+        "RecallPetCsReq": [
+          "gameserver/src/services/pet.zig"
+        ],
+        "SummonPetCsReq": [
+          "gameserver/src/services/pet.zig"
+        ],
+        "GetPhoneDataCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectChatBubbleCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetAssistAvatarCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetSignatureCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetHeadIconCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectPhoneCaseCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "UpdatePlayerSettingCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetPersonalCardCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SceneEntityMoveCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "EnterSceneCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "EnterSectionCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetEnteredSceneCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SceneEntityTeleportCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetFirstTalkByPerformanceNpCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "UpdateGroupPropertyCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ChangePropTimelineCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ActivateFarmElementCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "InteractPropCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ChangeEraFlipperDataCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SetTrainWorldIdCsReq": [
+          "gameserver/src/services/scene.zig"
+        ]
+      }
+    },
+    {
+      "name": "evanescia-sr",
+      "url": "https://git.xeondev.com/HonkaiSlopRail/evanescia-sr",
+      "commit": "c56c04aea7255bddf9182f991b0ba423f2f935ee",
+      "branch": "master",
+      "commitDate": "2026-05-16",
+      "language": "Zig",
+      "declaredClientVersion": "4.2.54 / 4.3 beta",
+      "license": "unspecified",
+      "trackedFiles": 83,
+      "sourceExtensions": {
+        ".md": 1,
+        ".png": 1,
+        ".zig": 52,
+        ".zon": 4,
+        ".json": 22,
+        ".dll": 1,
+        ".exe": 1,
+        ".bat": 1
+      },
+      "handlers": {
+        "ShieldLoginCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "ShieldVerifyCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "VerifyLoginCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "ComboTokenReqCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "RiskyApiCheckCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "GetConfigCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "LoadConfigCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "appLoginByPasswordCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "VerifyCsReq": [
+          "dispatch/src/authentication.zig"
+        ],
+        "QueryDispatchCsReq": [
+          "dispatch/src/dispatch.zig"
+        ],
+        "QueryGatewayCsReq": [
+          "dispatch/src/dispatch.zig"
+        ],
+        "RefillCsReq": [
+          "gameserver/src/commands/refill.zig"
+        ],
+        "SyncAvatarCsReq": [
+          "gameserver/src/commands/sync.zig"
+        ],
+        "GenerateAndSyncCsReq": [
+          "gameserver/src/commands/sync.zig"
+        ],
+        "BuffIdCsReq": [
+          "gameserver/src/commands/value.zig"
+        ],
+        "BuffInfoCsReq": [
+          "gameserver/src/commands/value.zig"
+        ],
+        "GetAvatarDataCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBasicInfoCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetAvatarPathCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetPlayerOutfitCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "SetAvatarEnhancedIdCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "DressAvatarSkinCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "TakeOffAvatarSkinCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBigDataAllCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetBigDataCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "GetPreAvatarGrowthInfoCsReq": [
+          "gameserver/src/services/avatar.zig"
+        ],
+        "StartCocoonStageCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "QuickStartCocoonStageCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "QuickStartFarmElementCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "StartBattleCollegeCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SceneCastSkillCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "GetCurBattleInfoCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "PVEBattleResultCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "SyncClientResVersionCsReq": [
+          "gameserver/src/services/battle.zig"
+        ],
+        "GetChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeGroupStatisticsCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "LeaveChallengeTierceCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetCurChallengeScRspCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetCurChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengePeakDataCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeTierceControllerCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetChallengeTierceDataCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "ReStartChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengePeakMobLineupAvatarCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengePeakCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengePeakBossHardModeCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetFriendBattleRecordDetailCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "StartChallengeTierceCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "SetChallengeTierceLineupCsReq": [
+          "gameserver/src/services/challenge.zig"
+        ],
+        "GetFriendListInfoCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "ChatEmojiListCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "PrivateChatHistoryCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "GetAiPamChatHistoryCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "SendMsgCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "TriggerAiPamSpeakCsReq": [
+          "gameserver/src/services/chat.zig"
+        ],
+        "GetActivityCsReq": [
+          "gameserver/src/services/events.zig"
+        ],
+        "UpdateServerPrefsDataCsReq": [
+          "gameserver/src/services/events.zig"
+        ],
+        "GetGachaInfoCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "BuyGoodsCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "ExchangeHcoinCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "DoGachaCsReq": [
+          "gameserver/src/services/gacha.zig"
+        ],
+        "GetBagCsReq": [
+          "gameserver/src/services/item.zig"
+        ],
+        "UseItemCsReq": [
+          "gameserver/src/services/item.zig"
+        ],
+        "GetCurLineupDataCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "ReplaceLineupCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "SetLineupNameCsReq": [
+          "gameserver/src/services/lineup.zig"
+        ],
+        "PlayerGetTokenCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "PlayerLoginCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "SetClientPausedCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetArchiveDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetUpdatedArchiveDataCsReq": [
+          "gameserver/src/services/login.zig"
+        ],
+        "GetMailCsReq": [
+          "gameserver/src/services/mail.zig"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "gameserver/src/services/mail.zig"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "gameserver/src/services/misc.zig"
+        ],
+        "GetMissionStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetTutorialGuideStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetTutorialStatusCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "FinishTalkMissionCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetQuestDataCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "UnlockTutorialGuideCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "UnlockTutorialCsReq": [
+          "gameserver/src/services/mission.zig"
+        ],
+        "GetPetDataCsReq": [
+          "gameserver/src/services/pet.zig"
+        ],
+        "RecallPetCsReq": [
+          "gameserver/src/services/pet.zig"
+        ],
+        "SummonPetCsReq": [
+          "gameserver/src/services/pet.zig"
+        ],
+        "GetPhoneDataCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectChatBubbleCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetAssistAvatarCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetSignatureCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetHeadIconCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SelectPhoneCaseCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "UpdatePlayerSettingCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "SetPersonalCardCsReq": [
+          "gameserver/src/services/profile.zig"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SceneEntityMoveCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "EnterSceneCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "EnterSectionCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetEnteredSceneCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SceneEntityTeleportCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetFirstTalkByPerformanceNpCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "UpdateGroupPropertyCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ChangePropTimelineCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "DeactivateFarmElementCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ActivateFarmElementCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "InteractPropCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "ChangeEraFlipperDataCsReq": [
+          "gameserver/src/services/scene.zig"
+        ],
+        "SetTrainWorldIdCsReq": [
+          "gameserver/src/services/scene.zig"
+        ]
+      }
+    },
+    {
+      "name": "LunarCore-development",
+      "url": "https://github.com/Melledy/LunarCore/tree/development",
+      "commit": "ec315bb1cf5cf86ae0f6ee52824e07f1fef9a5c4",
+      "branch": "development",
+      "commitDate": "2024-10-21",
+      "language": "Java",
+      "declaredClientVersion": "2.5.0",
+      "license": "AGPL-3.0",
+      "trackedFiles": 1166,
+      "sourceExtensions": {
+        "(none)": 5,
+        ".yml": 2,
+        ".md": 9,
+        ".gradle": 2,
+        ".json": 3,
+        ".jar": 2,
+        ".properties": 1,
+        ".bat": 1,
+        ".java": 1140,
+        ".xml": 1
+      },
+      "handlers": {
+        "NONE": [
+          "src/main/java/emu/lunarcore/server/packet/recv/Handler.java"
+        ],
+        "ActivateFarmElementCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerActivateFarmElementCsReq.java"
+        ],
+        "ApplyFriendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerApplyFriendCsReq.java"
+        ],
+        "AvatarExpUpCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerAvatarExpUpCsReq.java"
+        ],
+        "BuyGoodsCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerBuyGoodsCsReq.java"
+        ],
+        "ChangeLineupLeaderCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerChangeLineupLeaderCsReq.java"
+        ],
+        "ComposeItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerComposeItemCsReq.java"
+        ],
+        "ComposeSelectedRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerComposeSelectedRelicCsReq.java"
+        ],
+        "ContentPackageGetDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerContentPackageGetDataCsReq.java"
+        ],
+        "DelMailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDelMailCsReq.java"
+        ],
+        "DeleteFriendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDeleteFriendCsReq.java"
+        ],
+        "DeployRotaterCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDeployRotaterCsReq.java"
+        ],
+        "DestroyItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDestroyItemCsReq.java"
+        ],
+        "DiscardRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDiscardRelicCsReq.java"
+        ],
+        "DoGachaCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDoGachaCsReq.java"
+        ],
+        "DressAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDressAvatarCsReq.java"
+        ],
+        "DressRelicAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerDressRelicAvatarCsReq.java"
+        ],
+        "EnableRogueTalentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnableRogueTalentCsReq.java"
+        ],
+        "EnhanceRogueBuffCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnhanceRogueBuffCsReq.java"
+        ],
+        "EnterMapRotationRegionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnterMapRotationRegionCsReq.java"
+        ],
+        "EnterRogueMapRoomCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnterRogueMapRoomCsReq.java"
+        ],
+        "EnterSceneCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEnterSceneCsReq.java"
+        ],
+        "EntityBindPropCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerEntityBindPropCsReq.java"
+        ],
+        "ExchangeGachaCeilingCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExchangeGachaCeilingCsReq.java"
+        ],
+        "ExchangeHcoinCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExchangeHcoinCsReq.java"
+        ],
+        "ExpUpEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExpUpEquipmentCsReq.java"
+        ],
+        "ExpUpRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerExpUpRelicCsReq.java"
+        ],
+        "FinishRogueCommonDialogueCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerFinishRogueCommonDialogueCsReq.java"
+        ],
+        "FinishTalkMissionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerFinishTalkMissionCsReq.java"
+        ],
+        "GetActivityScheduleConfigCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetActivityScheduleConfigCsReq.java"
+        ],
+        "GetAllLineupDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAllLineupDataCsReq.java"
+        ],
+        "GetArchiveDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetArchiveDataCsReq.java"
+        ],
+        "GetAssistHistoryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAssistHistoryCsReq.java"
+        ],
+        "GetAssistListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAssistListCsReq.java"
+        ],
+        "GetAvatarDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetAvatarDataCsReq.java"
+        ],
+        "GetBagCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetBagCsReq.java"
+        ],
+        "GetBasicInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetBasicInfoCsReq.java"
+        ],
+        "GetChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChallengeCsReq.java"
+        ],
+        "GetChatEmojiListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetChatEmojiListCsReq.java"
+        ],
+        "GetCurChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCurChallengeCsReq.java"
+        ],
+        "GetCurLineupDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCurLineupDataCsReq.java"
+        ],
+        "GetCurSceneInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetCurSceneInfoCsReq.java"
+        ],
+        "GetDailyActiveInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetDailyActiveInfoCsReq.java"
+        ],
+        "GetEnteredSceneCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetEnteredSceneCsReq.java"
+        ],
+        "GetFarmStageGachaInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFarmStageGachaInfoCsReq.java"
+        ],
+        "GetFirstTalkByPerformanceNpcCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFirstTalkByPerformanceNpcCsReq.java"
+        ],
+        "GetFirstTalkNpcCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFirstTalkNpcCsReq.java"
+        ],
+        "GetFriendApplyListInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendApplyListInfoCsReq.java"
+        ],
+        "GetFriendAssistListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendAssistListCsReq.java"
+        ],
+        "GetFriendChallengeLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendChallengeLineupCsReq.java"
+        ],
+        "GetFriendListInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendListInfoCsReq.java"
+        ],
+        "GetFriendLoginInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendLoginInfoCsReq.java"
+        ],
+        "GetFriendRecommendListInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetFriendRecommendListInfoCsReq.java"
+        ],
+        "GetGachaCeilingCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetGachaCeilingCsReq.java"
+        ],
+        "GetGachaInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetGachaInfoCsReq.java"
+        ],
+        "GetJukeboxDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetJukeboxDataCsReq.java"
+        ],
+        "GetMailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMailCsReq.java"
+        ],
+        "GetMissionDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMissionDataCsReq.java"
+        ],
+        "GetMissionStatusCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMissionStatusCsReq.java"
+        ],
+        "GetMultiPathAvatarInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetMultiPathAvatarInfoCsReq.java"
+        ],
+        "GetNpcTakenRewardCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetNpcTakenRewardCsReq.java"
+        ],
+        "GetPetDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPetDataCsReq.java"
+        ],
+        "GetPhoneDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPhoneDataCsReq.java"
+        ],
+        "GetPlayerBoardDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPlayerBoardDataCsReq.java"
+        ],
+        "GetPlayerDetailInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPlayerDetailInfoCsReq.java"
+        ],
+        "GetPrivateChatHistoryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetPrivateChatHistoryCsReq.java"
+        ],
+        "GetQuestDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetQuestDataCsReq.java"
+        ],
+        "GetRogueBuffEnhanceInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueBuffEnhanceInfoCsReq.java"
+        ],
+        "GetRogueHandbookDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueHandbookDataCsReq.java"
+        ],
+        "GetRogueInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueInfoCsReq.java"
+        ],
+        "GetRogueInitialScoreCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueInitialScoreCsReq.java"
+        ],
+        "GetRogueScoreRewardInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueScoreRewardInfoCsReq.java"
+        ],
+        "GetRogueTalentInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetRogueTalentInfoCsReq.java"
+        ],
+        "GetSceneMapInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetSceneMapInfoCsReq.java"
+        ],
+        "GetShopListCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetShopListCsReq.java"
+        ],
+        "GetTreasureDungeonActivityDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetTreasureDungeonActivityDataCsReq.java"
+        ],
+        "GetUnlockTeleportCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGetUnlockTeleportCsReq.java"
+        ],
+        "GroupStateChangeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerGroupStateChangeCsReq.java"
+        ],
+        "HandleFriendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerHandleFriendCsReq.java"
+        ],
+        "HandleRogueCommonPendingActionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerHandleRogueCommonPendingActionCsReq.java"
+        ],
+        "InteractChargerCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerInteractChargerCsReq.java"
+        ],
+        "InteractPropCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerInteractPropCsReq.java"
+        ],
+        "JoinLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerJoinLineupCsReq.java"
+        ],
+        "LeaveChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLeaveChallengeCsReq.java"
+        ],
+        "LeaveRogueCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLeaveRogueCsReq.java"
+        ],
+        "LockEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLockEquipmentCsReq.java"
+        ],
+        "LockRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerLockRelicCsReq.java"
+        ],
+        "MarkAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerMarkAvatarCsReq.java"
+        ],
+        "MarkReadMailCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerMarkReadMailCsReq.java"
+        ],
+        "PVEBattleResultCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPVEBattleResultCsReq.java"
+        ],
+        "PickRogueAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPickRogueAvatarCsReq.java"
+        ],
+        "PlayBackGroundMusicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayBackGroundMusicCsReq.java"
+        ],
+        "PlayerGetTokenCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerGetTokenCsReq.java"
+        ],
+        "PlayerHeartBeatCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerHeartBeatCsReq.java"
+        ],
+        "PlayerLoginCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerLoginCsReq.java"
+        ],
+        "PlayerLoginFinishCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerLoginFinishCsReq.java"
+        ],
+        "PlayerLogoutCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerLogoutCsReq.java"
+        ],
+        "PromoteAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPromoteAvatarCsReq.java"
+        ],
+        "PromoteEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerPromoteEquipmentCsReq.java"
+        ],
+        "QueryProductInfoCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQueryProductInfoCsReq.java"
+        ],
+        "QuitLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQuitLineupCsReq.java"
+        ],
+        "QuitRogueCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerQuitRogueCsReq.java"
+        ],
+        "RankUpAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRankUpAvatarCsReq.java"
+        ],
+        "RankUpEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRankUpEquipmentCsReq.java"
+        ],
+        "ReEnterLastElementStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReEnterLastElementStageCsReq.java"
+        ],
+        "RecallPetCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRecallPetCsReq.java"
+        ],
+        "RefreshTriggerByClientCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRefreshTriggerByClientCsReq.java"
+        ],
+        "RelicRecommendCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRelicRecommendCsReq.java"
+        ],
+        "ReplaceLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReplaceLineupCsReq.java"
+        ],
+        "ReserveStaminaExchangeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerReserveStaminaExchangeCsReq.java"
+        ],
+        "RogueNpcDisappearCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueNpcDisappearCsReq.java"
+        ],
+        "RotateMapCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerRotateMapCsReq.java"
+        ],
+        "SceneCastSkillCostMpCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneCastSkillCostMpCsReq.java"
+        ],
+        "SceneCastSkillCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneCastSkillCsReq.java"
+        ],
+        "SceneEnterStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneEnterStageCsReq.java"
+        ],
+        "SceneEntityMoveCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneEntityMoveCsReq.java"
+        ],
+        "SearchPlayerCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSearchPlayerCsReq.java"
+        ],
+        "SelectChatBubbleCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectChatBubbleCsReq.java"
+        ],
+        "SelectPhoneThemeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectPhoneThemeCsReq.java"
+        ],
+        "SelectRogueCommonDialogueOptionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSelectRogueCommonDialogueOptionCsReq.java"
+        ],
+        "SellItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSellItemCsReq.java"
+        ],
+        "SendMsgCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSendMsgCsReq.java"
+        ],
+        "SetAssistAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetAssistAvatarCsReq.java"
+        ],
+        "SetAvatarPathCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetAvatarPathCsReq.java"
+        ],
+        "SetClientPausedCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetClientPausedCsReq.java"
+        ],
+        "SetDisplayAvatarCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetDisplayAvatarCsReq.java"
+        ],
+        "SetGameplayBirthdayCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetGameplayBirthdayCsReq.java"
+        ],
+        "SetHeadIconCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetHeadIconCsReq.java"
+        ],
+        "SetLineupNameCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetLineupNameCsReq.java"
+        ],
+        "SetNicknameCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetNicknameCsReq.java"
+        ],
+        "SetSignatureCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSetSignatureCsReq.java"
+        ],
+        "StartChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartChallengeCsReq.java"
+        ],
+        "StartCocoonStageCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartCocoonStageCsReq.java"
+        ],
+        "StartPartialChallengeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartPartialChallengeCsReq.java"
+        ],
+        "StartRogueCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerStartRogueCsReq.java"
+        ],
+        "SummonPetCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSummonPetCsReq.java"
+        ],
+        "SwapLineupCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSwapLineupCsReq.java"
+        ],
+        "SwitchLineupIndexCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSwitchLineupIndexCsReq.java"
+        ],
+        "SyncClientResVersionCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerSyncClientResVersionCsReq.java"
+        ],
+        "TakeChallengeRewardCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeChallengeRewardCsReq.java"
+        ],
+        "TakeMailAttachmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeMailAttachmentCsReq.java"
+        ],
+        "TakeOffEquipmentCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeOffEquipmentCsReq.java"
+        ],
+        "TakeOffRelicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakeOffRelicCsReq.java"
+        ],
+        "TakePromotionRewardCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTakePromotionRewardCsReq.java"
+        ],
+        "TextJoinQueryCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerTextJoinQueryCsReq.java"
+        ],
+        "UnlockBackGroundMusicCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUnlockBackGroundMusicCsReq.java"
+        ],
+        "UnlockSkilltreeCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUnlockSkilltreeCsReq.java"
+        ],
+        "UpdateServerPrefsDataCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUpdateServerPrefsDataCsReq.java"
+        ],
+        "UseItemCsReq": [
+          "src/main/java/emu/lunarcore/server/packet/recv/HandlerUseItemCsReq.java"
+        ]
+      }
+    }
+  ],
+  "analysisReferences": [
+    {
+      "name": "HNA-MORAX",
+      "url": "https://github.com/NeonTeam58/HNA-MORAX",
+      "commit": "5b169a9ec74dd8e369ff20933dbb9052b1b75b30",
+      "license": "MIT",
+      "runtimeDependency": false,
+      "binariesExecuted": false,
+      "codeImported": false,
+      "purpose": "只读分析参考；测试版常量不适用于本机，解析脚本由本机反汇编证据独立实现"
+    }
+  ]
+}

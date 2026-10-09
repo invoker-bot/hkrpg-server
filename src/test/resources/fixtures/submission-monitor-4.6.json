@@ -1,0 +1,938 @@
+[
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "828e1edf96a8d940838b9a52219706365b733457f5cb7d209e8a0fa71d4143ba",
+    "sourceBlobSHA256": "c1cf52d00ea179231817ebe70ed850fa6ae65ab46b2b341c6b7c2a155cd9995d",
+    "kind": "main",
+    "path": [],
+    "row": {
+      "MainMissionID": 1054502,
+      "StartSubMissionList": [
+        105450201
+      ],
+      "FinishSubMissionList": [
+        105450213
+      ],
+      "MissionCustomValueList": [
+        {
+          "Index": 1,
+          "Name": "MissionResult_105450235",
+          "isRange": true,
+          "ValidValueParamList": [
+            0,
+            2
+          ]
+        },
+        {
+          "Index": 2,
+          "Name": "MissionResult_105450212",
+          "isRange": true,
+          "ValidValueParamList": [
+            0,
+            2
+          ]
+        }
+      ],
+      "SubMissionRelationList": [
+        {
+          "MonitorSubMissionID": 105450235,
+          "MonitoredSubMissionIDList": [
+            105450232
+          ]
+        }
+      ],
+      "UseAssistWayPoint": true,
+      "AssistWayPointPackList": [
+        {
+          "AssistWayPointFloorID": 10551001,
+          "AssistWayPointRegionID": 1,
+          "AssistWayPointLittleGameConditionList": [
+            {
+              "AssistWayPointLittleGameGroupID": 33,
+              "AssistWayPointLittleGameEntityID": 110001
+            }
+          ],
+          "AssistWayPointList": [
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 94,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "UseDistance": false,
+              "DistanceCondition": {},
+              "FinishConditionMain": {
+                "ConditionPackList": [
+                  {
+                    "ConditionList": [
+                      {
+                        "$type": "RPG.GameCore.AssistWayPointGroupPropertyCondition",
+                        "TargetGroupProperty": {
+                          "ID": 608,
+                          "Name": "LG_110001__94_FragilePlatState_Auto",
+                          "DefaultValue": 1
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 18,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "UseDistance": false,
+              "DistanceCondition": {},
+              "FinishConditionMain": {
+                "ConditionPackList": [
+                  {
+                    "ConditionList": [
+                      {
+                        "$type": "RPG.GameCore.AssistWayPointGroupPropertyCondition",
+                        "TargetGroupProperty": {
+                          "ID": 615,
+                          "Name": "LG_110001__18_FragilePlatState_Auto",
+                          "DefaultValue": 1
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 112,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {},
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 142,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {
+                "UseOverrideRangeMin": true,
+                "OverrideRangeMin": 1
+              },
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 39,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {
+                "UseOverrideRangeMin": true,
+                "OverrideRangeMin": 1
+              },
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 63,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {
+                "UseOverrideRangeMin": true,
+                "OverrideRangeMin": 1
+              },
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110001,
+              "WayPointLittleGameEntityID": 7,
+              "SubmissionID": 105450203,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {
+                "UseOverrideRangeMin": true,
+                "OverrideRangeMin": 1
+              },
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            }
+          ],
+          "AssistWayPointFastCompleteList": [
+            {
+              "EndIndex": 6,
+              "UseOverrideTriggerTime": true,
+              "TriggerTime": 200,
+              "TeleportTargetID": 296
+            }
+          ]
+        },
+        {
+          "AssistWayPointFloorID": 10551001,
+          "AssistWayPointRegionID": 1,
+          "AssistWayPointLittleGameConditionList": [
+            {
+              "AssistWayPointLittleGameGroupID": 33,
+              "AssistWayPointLittleGameEntityID": 110002
+            }
+          ],
+          "AssistWayPointList": [
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110002,
+              "WayPointLittleGameEntityID": 74,
+              "SubmissionID": 105450220,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {
+                "UseOverrideRangeMin": true,
+                "OverrideRangeMin": 1
+              },
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            },
+            {
+              "WayPointType": "LittleGame",
+              "WayPointGroupID": 33,
+              "WayPointEntityID": 110002,
+              "WayPointLittleGameEntityID": 4,
+              "SubmissionID": 105450220,
+              "SkipWhenSubMissionFinish": true,
+              "DistanceCondition": {
+                "UseOverrideRangeMin": true,
+                "OverrideRangeMin": 1
+              },
+              "FinishConditionMain": {
+                "ConditionPackList": []
+              }
+            }
+          ],
+          "AssistWayPointFastCompleteList": [
+            {
+              "EndIndex": 1,
+              "UseOverrideTriggerTime": true,
+              "TriggerTime": 100,
+              "TeleportTargetID": 50
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      11
+    ],
+    "row": {
+      "ID": 105450212,
+      "MainMissionID": 1054502,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450211
+      ],
+      "TakePriority": 2,
+      "TakeParamStrList": [],
+      "FinishType": "SubMissionMultiFinish",
+      "ParamType": "ListContain",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        49
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "WayPointType": "Anchor",
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "WayPointGroupID": 49,
+      "WayPointEntityID": 1,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      26
+    ],
+    "row": {
+      "ID": 105450227,
+      "MainMissionID": 1054502,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450206
+      ],
+      "TakeParamStrList": [],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_105450227",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "delSubMission",
+          "FinishActionPara": [
+            105450228,
+            105450229
+          ],
+          "FinishActionParaString": []
+        }
+      ],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        42
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "WayPointType": "Prop",
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "WayPointGroupID": 42,
+      "WayPointEntityID": 300001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      29
+    ],
+    "row": {
+      "ID": 105450230,
+      "MainMissionID": 1054502,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "IsCanDelete": true,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450227
+      ],
+      "TakeParamStrList": [],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_105450230",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        183
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      30
+    ],
+    "row": {
+      "ID": 105450231,
+      "MainMissionID": 1054502,
+      "SortID": 2,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "IsCanDelete": true,
+      "LogicType": "Optional",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450230
+      ],
+      "TakeParamStrList": [],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_105450231",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        183
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "WayPointType": "NPC",
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "WayPointGroupID": 183,
+      "WayPointEntityID": 400001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": [],
+      "OptionalTrackMode": "Always"
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      31
+    ],
+    "row": {
+      "ID": 105450232,
+      "MainMissionID": 1054502,
+      "SortID": 1,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "IsCanDelete": true,
+      "LogicType": "Optional",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450227
+      ],
+      "TakePriority": 2,
+      "TakeParamStrList": [],
+      "FinishType": "SubMissionFinishCnt",
+      "ParamType": "ListContain",
+      "ParamIntList": [
+        105450231,
+        105450234
+      ],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 2,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [],
+      "RequiredNPCSeriesIDList": [],
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      33
+    ],
+    "row": {
+      "ID": 105450234,
+      "MainMissionID": 1054502,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "IsCanDelete": true,
+      "LogicType": "Optional",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450227
+      ],
+      "TakeParamStrList": [],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_105450234",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        184
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "WayPointType": "Prop",
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "WayPointGroupID": 184,
+      "WayPointEntityID": 300001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": [],
+      "OptionalTrackMode": "Always"
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054502/MissionInfo_1054502.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8640dcefc115da08dae39b75931c9193f83d346034dd2f9a42366d5c06f6fbf",
+    "sourceBlobSHA256": "8f06bc41076c79d6e723c72e647f93377a9f3fc6f84d08e66cc75d5b53dc4109",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      34
+    ],
+    "row": {
+      "ID": 105450235,
+      "MainMissionID": 1054502,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105450227
+      ],
+      "TakeParamStrList": [],
+      "FinishType": "SubMissionMultiFinish",
+      "ParamType": "ListContain",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "delSubMission",
+          "FinishActionPara": [
+            105450230,
+            105450234,
+            105450231
+          ],
+          "FinishActionParaString": []
+        }
+      ],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        185
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "WayPointType": "Prop",
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "WayPointGroupID": 216,
+      "WayPointEntityID": 300004,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054528/MissionInfo_1054528.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "8f41d42c9c5e4b5eca13436f79b0f551fd01ff7f5b51408dd239aaa3844f040f",
+    "sourceBlobSHA256": "0fd7aead79739370b61bfc893470143560c96fe8e023ea84d61ad8ebfb660e63",
+    "kind": "main",
+    "path": [],
+    "row": {
+      "MainMissionID": 1054528,
+      "StartSubMissionList": [
+        105452802
+      ],
+      "FinishSubMissionList": [
+        105452803
+      ],
+      "MissionCustomValueList": [
+        {
+          "Index": 1,
+          "Name": "DrivingDialogue_1054528",
+          "Type": "Former",
+          "isRange": true,
+          "ValidValueParamList": [
+            0,
+            2
+          ]
+        }
+      ],
+      "AssistWayPointPackList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/1054528/MissionInfo_1054528.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "252166f24add2afc129513aaca48723bee4fa4c5acd5a314e3b8200967bc353d",
+    "sourceBlobSHA256": "21302c54bfeb700dd356fe1ca62ebd4f10cecdb353fb75f9a4e5cbdd90eec339",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      3
+    ],
+    "row": {
+      "ID": 105452804,
+      "MainMissionID": 1054528,
+      "LevelPlaneID": 10551,
+      "LevelFloorID": 10551001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        105452802
+      ],
+      "TakeParamStrList": [],
+      "FinishType": "SubMissionMultiFinish",
+      "ParamType": "Equal",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        165
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "GotoParam": [],
+      "WayPointFloorID": 10551001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": [],
+      "FixTransferRotation": true
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/8040101/MissionInfo_8040101.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "19389c33b2cec8de39c79d6827b5b967373fef8ce2221a90103364a49838fc9a",
+    "sourceBlobSHA256": "13d6b2e3d1af99f19c91a783e71c3b73bcb530169daa661d03e742b772f345e6",
+    "kind": "main",
+    "path": [],
+    "row": {
+      "MainMissionID": 8040101,
+      "StartSubMissionList": [
+        804010101
+      ],
+      "FinishSubMissionList": [
+        804010118
+      ],
+      "MissionCustomValueList": [
+        {
+          "Index": 1,
+          "Name": "Battle1",
+          "Type": "Former",
+          "ValidValueParamList": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "Index": 2,
+          "Name": "Battle2",
+          "Type": "Former",
+          "ValidValueParamList": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "Index": 3,
+          "Name": "Battle3",
+          "Type": "Former",
+          "ValidValueParamList": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "Index": 4,
+          "Name": "MissionResult_804010119",
+          "isRange": true,
+          "ValidValueParamList": [
+            0,
+            2
+          ]
+        },
+        {
+          "Index": 5,
+          "Name": "MissionResult_804010120",
+          "isRange": true,
+          "ValidValueParamList": [
+            0,
+            2
+          ]
+        },
+        {
+          "Index": 6,
+          "Name": "MissionResult_804010121",
+          "isRange": true,
+          "ValidValueParamList": [
+            0,
+            2
+          ]
+        },
+        {
+          "Index": 7,
+          "Name": "PlayerGender",
+          "Type": "Former",
+          "ValidValueParamList": [
+            0,
+            1,
+            2
+          ]
+        }
+      ],
+      "SubMissionRelationList": [],
+      "AssistWayPointPackList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/8040101/MissionInfo_8040101.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "99bf2bc7dfa1ec0a80f8581df54da2c4b9b2ec4b3d810c0feb774ad46308b065",
+    "sourceBlobSHA256": "2e756188f42992f6938795562e173943001d102ecf92537e0fce68da572a086b",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      18
+    ],
+    "row": {
+      "ID": 804010119,
+      "MainMissionID": 8040101,
+      "LevelPlaneID": 10501,
+      "LevelFloorID": 10501001,
+      "IsCanDelete": true,
+      "TakeType": "CustomValue",
+      "TakeParamIntList": [],
+      "TakeParamStrList": [
+        "Battle1",
+        "1",
+        "804010104"
+      ],
+      "FinishType": "SubMissionMultiFinish",
+      "ParamType": "ListContain",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "SetCustomValue",
+          "FinishActionPara": [],
+          "FinishActionParaString": [
+            "Battle1",
+            "2"
+          ]
+        },
+        {
+          "FinishActionType": "delSubMission",
+          "FinishActionPara": [
+            804010105
+          ],
+          "FinishActionParaString": []
+        },
+        {
+          "FinishActionType": "EnterEntryIfNotThere",
+          "FinishActionPara": [
+            2050301,
+            48,
+            1
+          ],
+          "FinishActionParaString": []
+        }
+      ],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        228
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "WayPointType": "NPC",
+      "GotoParam": [],
+      "WayPointFloorID": 10501001,
+      "WayPointGroupID": 228,
+      "WayPointEntityID": 400002,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/8040101/MissionInfo_8040101.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "99bf2bc7dfa1ec0a80f8581df54da2c4b9b2ec4b3d810c0feb774ad46308b065",
+    "sourceBlobSHA256": "2e756188f42992f6938795562e173943001d102ecf92537e0fce68da572a086b",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      19
+    ],
+    "row": {
+      "ID": 804010120,
+      "MainMissionID": 8040101,
+      "LevelPlaneID": 20503,
+      "LevelFloorID": 20503001,
+      "IsCanDelete": true,
+      "TakeType": "CustomValue",
+      "TakeParamIntList": [],
+      "TakeParamStrList": [
+        "Battle2",
+        "1",
+        "804010108"
+      ],
+      "FinishType": "SubMissionMultiFinish",
+      "ParamType": "ListContain",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "SetCustomValue",
+          "FinishActionPara": [],
+          "FinishActionParaString": [
+            "Battle2",
+            "2"
+          ]
+        },
+        {
+          "FinishActionType": "delSubMission",
+          "FinishActionPara": [
+            804010109
+          ],
+          "FinishActionParaString": []
+        },
+        {
+          "FinishActionType": "EnterEntryIfNotThere",
+          "FinishActionPara": [
+            1050101,
+            58,
+            1
+          ],
+          "FinishActionParaString": []
+        }
+      ],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        108
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "WayPointType": "NPC",
+      "GotoParam": [],
+      "WayPointFloorID": 20503001,
+      "WayPointGroupID": 108,
+      "WayPointEntityID": 400002,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  },
+  {
+    "source": "resources/4.6/Config/Level/Mission/8040101/MissionInfo_8040101.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "99bf2bc7dfa1ec0a80f8581df54da2c4b9b2ec4b3d810c0feb774ad46308b065",
+    "sourceBlobSHA256": "2e756188f42992f6938795562e173943001d102ecf92537e0fce68da572a086b",
+    "kind": "sub",
+    "path": [
+      "SubMissionList",
+      20
+    ],
+    "row": {
+      "ID": 804010121,
+      "MainMissionID": 8040101,
+      "LevelPlaneID": 10501,
+      "LevelFloorID": 10501001,
+      "IsCanDelete": true,
+      "TakeType": "CustomValue",
+      "TakeParamIntList": [],
+      "TakeParamStrList": [
+        "Battle3",
+        "1",
+        "804010112"
+      ],
+      "FinishType": "SubMissionMultiFinish",
+      "ParamType": "ListContain",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "SetCustomValue",
+          "FinishActionPara": [],
+          "FinishActionParaString": [
+            "Battle3",
+            "2"
+          ]
+        },
+        {
+          "FinishActionType": "delSubMission",
+          "FinishActionPara": [
+            804010113
+          ],
+          "FinishActionParaString": []
+        },
+        {
+          "FinishActionType": "MoveToAnchor",
+          "FinishActionPara": [
+            1050101,
+            61,
+            1
+          ],
+          "FinishActionParaString": []
+        }
+      ],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueList": [],
+      "CheckFloor": true,
+      "CustomValueReward": [],
+      "GroupIDList": [
+        229
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "WayPointType": "NPC",
+      "GotoParam": [],
+      "WayPointFloorID": 10501001,
+      "WayPointGroupID": 229,
+      "WayPointEntityID": 400001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  }
+]

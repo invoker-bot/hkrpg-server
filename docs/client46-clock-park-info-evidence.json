@@ -1,0 +1,491 @@
+{
+  "clientExecutableStarted": false,
+  "clientModified": false,
+  "clientAccepted": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "boundary": "Static receiver, script list sync and reached chapter list only; command IDs follow the pinned protocol, no game UI acceptance.",
+  "selectedMethods": [
+    {
+      "index": 566274,
+      "name": "_OnClockParkGetInfoScRsp",
+      "rva": "0xc3d9280",
+      "typeIndex": 61468,
+      "typeName": "ActivityClockParkModule",
+      "instructions": [
+        "c3d9280: push rsi",
+        "c3d9281: push rdi",
+        "c3d9282: push rbx",
+        "c3d9283: sub rsp, 0x20",
+        "c3d9287: mov rsi, r8",
+        "c3d928a: mov rdi, rcx",
+        "c3d928d: cmp byte ptr [rip - 0x30cbec2], 0",
+        "c3d9294: jne 0x18c3d933e",
+        "c3d929a: test rsi, rsi",
+        "c3d929d: je 0x18c3d9368",
+        "c3d92a3: mov rax, qword ptr [rsi]",
+        "c3d92a6: cmp rax, qword ptr [rip - 0x3063ea5]",
+        "c3d92ad: jne 0x18c3d9368",
+        "c3d92b3: mov eax, dword ptr [rsi + 0x30]",
+        "c3d92b6: mov dword ptr [rdi + 0x50], eax",
+        "c3d92b9: mov rdx, qword ptr [rsi + 0x18]",
+        "c3d92bd: mov rcx, rdi",
+        "c3d92c0: call 0x18c3d9380",
+        "c3d92c5: mov rax, qword ptr [rsi + 0x20]",
+        "c3d92c9: test rax, rax",
+        "c3d92cc: je 0x18c3d9308",
+        "c3d92ce: xor ebx, ebx",
+        "c3d92d0: movsxd rcx, dword ptr [rax + 0x18]",
+        "c3d92d4: cmp rbx, rcx",
+        "c3d92d7: jge 0x18c3d930d",
+        "c3d92d9: mov rax, qword ptr [rax + 0x10]",
+        "c3d92dd: test rax, rax",
+        "c3d92e0: je 0x18c3d932f",
+        "c3d92e2: mov ecx, dword ptr [rax + 0x18]",
+        "c3d92e5: cmp rbx, rcx",
+        "c3d92e8: jae 0x18c3d9334",
+        "c3d92ea: mov rcx, qword ptr [rdi + 0x38]",
+        "c3d92ee: test rcx, rcx",
+        "c3d92f1: je 0x18c3d9339",
+        "c3d92f3: mov edx, dword ptr [rax + rbx*4 + 0x20]",
+        "c3d92f7: call 0x19b7523b0",
+        "c3d92fc: inc rbx",
+        "c3d92ff: mov rax, qword ptr [rsi + 0x20]",
+        "c3d9303: test rax, rax",
+        "c3d9306: jne 0x18c3d92d0",
+        "c3d9308: call 0x183cc8050",
+        "c3d930d: mov eax, dword ptr [rsi + 0x28]",
+        "c3d9310: mov dword ptr [rdi + 0x4c], eax",
+        "c3d9313: mov eax, dword ptr [rsi + 0x34]",
+        "c3d9316: mov dword ptr [rdi + 0x48], eax",
+        "c3d9319: mov ecx, 0xa7e",
+        "c3d931e: xor edx, edx",
+        "c3d9320: mov r8b, 1",
+        "c3d9323: add rsp, 0x20",
+        "c3d9327: pop rbx",
+        "c3d9328: pop rdi",
+        "c3d9329: pop rsi",
+        "c3d932a: jmp 0x18d9be560",
+        "c3d932f: call 0x183cc8050",
+        "c3d9334: call 0x183cc7dc0",
+        "c3d9339: call 0x183cc8050",
+        "c3d933e: mov ebx, edx",
+        "c3d9340: mov ecx, 0x8a402",
+        "c3d9345: call 0x1963e3810",
+        "c3d934a: test rax, rax",
+        "c3d934d: je 0x18c3d936d",
+        "c3d934f: movzx r8d, bx",
+        "c3d9353: mov rcx, rax",
+        "c3d9356: mov rdx, rdi",
+        "c3d9359: mov r9, rsi",
+        "c3d935c: add rsp, 0x20",
+        "c3d9360: pop rbx",
+        "c3d9361: pop rdi",
+        "c3d9362: pop rsi",
+        "c3d9363: jmp 0x195f37910",
+        "c3d9368: call 0x183cc8050",
+        "c3d936d: call 0x183cc8050",
+        "c3d9372: int3 "
+      ],
+      "verifiedNativeEndRva": "0xc3d9373",
+      "boundarySource": "PE x64 runtime-function table"
+    },
+    {
+      "index": 566275,
+      "name": "_SyncScriptInfoList",
+      "rva": "0xc3d9380",
+      "typeIndex": 61468,
+      "typeName": "ActivityClockParkModule",
+      "instructions": [
+        "c3d9380: push r14",
+        "c3d9382: push rsi",
+        "c3d9383: push rdi",
+        "c3d9384: push rbx",
+        "c3d9385: sub rsp, 0x28",
+        "c3d9389: mov rsi, rdx",
+        "c3d938c: mov r14, rcx",
+        "c3d938f: cmp byte ptr [rip - 0x30cbfc3], 0",
+        "c3d9396: jne 0x18c3d941b",
+        "c3d939c: test rsi, rsi",
+        "c3d939f: je 0x18c3d9441",
+        "c3d93a5: mov eax, dword ptr [rsi + 0x18]",
+        "c3d93a8: test eax, eax",
+        "c3d93aa: jle 0x18c3d93fd",
+        "c3d93ac: xor edi, edi",
+        "c3d93ae: nop ",
+        "c3d93b0: cdqe ",
+        "c3d93b2: cmp rdi, rax",
+        "c3d93b5: jge 0x18c3d9446",
+        "c3d93bb: mov rax, qword ptr [rsi + 0x10]",
+        "c3d93bf: test rax, rax",
+        "c3d93c2: je 0x18c3d9407",
+        "c3d93c4: mov ecx, dword ptr [rax + 0x18]",
+        "c3d93c7: cmp rdi, rcx",
+        "c3d93ca: jae 0x18c3d940c",
+        "c3d93cc: mov rbx, qword ptr [rax + rdi*8 + 0x20]",
+        "c3d93d1: test rbx, rbx",
+        "c3d93d4: je 0x18c3d9411",
+        "c3d93d6: mov edx, dword ptr [rbx + 0x20]",
+        "c3d93d9: mov rcx, r14",
+        "c3d93dc: call 0x18c3d9480",
+        "c3d93e1: test rax, rax",
+        "c3d93e4: je 0x18c3d9416",
+        "c3d93e6: mov rcx, rax",
+        "c3d93e9: mov rdx, rbx",
+        "c3d93ec: call 0x18cb847a0",
+        "c3d93f1: inc rdi",
+        "c3d93f4: movsxd rax, dword ptr [rsi + 0x18]",
+        "c3d93f8: cmp rdi, rax",
+        "c3d93fb: jl 0x18c3d93b0",
+        "c3d93fd: add rsp, 0x28",
+        "c3d9401: pop rbx",
+        "c3d9402: pop rdi",
+        "c3d9403: pop rsi",
+        "c3d9404: pop r14",
+        "c3d9406: ret ",
+        "c3d9407: call 0x183cc8050",
+        "c3d940c: call 0x183cc7dc0",
+        "c3d9411: call 0x183cc8050",
+        "c3d9416: call 0x183cc8050",
+        "c3d941b: mov ecx, 0x8a403",
+        "c3d9420: call 0x1963e3810",
+        "c3d9425: test rax, rax",
+        "c3d9428: je 0x18c3d9473",
+        "c3d942a: mov rcx, rax",
+        "c3d942d: mov rdx, r14",
+        "c3d9430: mov r8, rsi",
+        "c3d9433: add rsp, 0x28",
+        "c3d9437: pop rbx",
+        "c3d9438: pop rdi",
+        "c3d9439: pop rsi",
+        "c3d943a: pop r14",
+        "c3d943c: jmp 0x195eefbd0",
+        "c3d9441: call 0x183cc8050",
+        "c3d9446: mov rcx, qword ptr [rip - 0x308014d]",
+        "c3d944d: call 0x183cc7ee0",
+        "c3d9452: mov rsi, rax",
+        "c3d9455: mov rdx, qword ptr [rip - 0x2ce568c]",
+        "c3d945c: mov rcx, rax",
+        "c3d945f: call 0x19c073490",
+        "c3d9464: mov rdx, qword ptr [rip - 0x2d04bdb]",
+        "c3d946b: mov rcx, rsi",
+        "c3d946e: call 0x183cc8040",
+        "c3d9473: call 0x183cc8050",
+        "c3d9478: int3 "
+      ],
+      "verifiedNativeEndRva": "0xc3d9479",
+      "boundarySource": "PE x64 runtime-function table"
+    },
+    {
+      "index": 566329,
+      "name": "Sync",
+      "rva": "0xcb847a0",
+      "typeIndex": 61469,
+      "typeName": "ClockParkScriptData",
+      "instructions": [
+        "cb847a0: push r15",
+        "cb847a2: push r14",
+        "cb847a4: push rsi",
+        "cb847a5: push rdi",
+        "cb847a6: push rbx",
+        "cb847a7: sub rsp, 0x20",
+        "cb847ab: mov r14, rdx",
+        "cb847ae: mov r15, rcx",
+        "cb847b1: cmp byte ptr [rip - 0x38773af], 0",
+        "cb847b8: jne 0x18cb84875",
+        "cb847be: mov rax, qword ptr [r15 + 0x18]",
+        "cb847c2: test rax, rax",
+        "cb847c5: je 0x18cb8489d",
+        "cb847cb: inc dword ptr [rax + 0x1c]",
+        "cb847ce: mov dword ptr [rax + 0x18], 0",
+        "cb847d5: test r14, r14",
+        "cb847d8: je 0x18cb848a2",
+        "cb847de: mov r8, qword ptr [r14 + 0x10]",
+        "cb847e2: test r8, r8",
+        "cb847e5: je 0x18cb8484f",
+        "cb847e7: xor ebx, ebx",
+        "cb847e9: jmp 0x18cb84801",
+        "cb847eb: nop dword ptr [rax + rax]",
+        "cb847f0: call 0x1980c6dc0",
+        "cb847f5: mov r8, qword ptr [r14 + 0x10]",
+        "cb847f9: inc rbx",
+        "cb847fc: test r8, r8",
+        "cb847ff: je 0x18cb8484f",
+        "cb84801: movsxd rcx, dword ptr [r8 + 0x18]",
+        "cb84805: cmp rbx, rcx",
+        "cb84808: jge 0x18cb84854",
+        "cb8480a: mov rdx, qword ptr [r8 + 0x10]",
+        "cb8480e: test rdx, rdx",
+        "cb84811: je 0x18cb84861",
+        "cb84813: mov ecx, dword ptr [rdx + 0x18]",
+        "cb84816: cmp rbx, rcx",
+        "cb84819: jae 0x18cb84866",
+        "cb8481b: mov rcx, qword ptr [r15 + 0x18]",
+        "cb8481f: test rcx, rcx",
+        "cb84822: je 0x18cb8486b",
+        "cb84824: mov edx, dword ptr [rdx + rbx*4 + 0x20]",
+        "cb84828: inc dword ptr [rcx + 0x1c]",
+        "cb8482b: mov rsi, qword ptr [rcx + 0x10]",
+        "cb8482f: test rsi, rsi",
+        "cb84832: je 0x18cb84870",
+        "cb84834: movsxd rdi, dword ptr [rcx + 0x18]",
+        "cb84838: cmp edi, dword ptr [rsi + 0x18]",
+        "cb8483b: jae 0x18cb847f0",
+        "cb8483d: lea eax, [rdi + 1]",
+        "cb84840: mov dword ptr [rcx + 0x18], eax",
+        "cb84843: mov dword ptr [rsi + rdi*4 + 0x20], edx",
+        "cb84847: inc rbx",
+        "cb8484a: test r8, r8",
+        "cb8484d: jne 0x18cb84801",
+        "cb8484f: call 0x183cc8050",
+        "cb84854: nop ",
+        "cb84855: add rsp, 0x20",
+        "cb84859: pop rbx",
+        "cb8485a: pop rdi",
+        "cb8485b: pop rsi",
+        "cb8485c: pop r14",
+        "cb8485e: pop r15",
+        "cb84860: ret ",
+        "cb84861: call 0x183cc8050",
+        "cb84866: call 0x183cc7dc0",
+        "cb8486b: call 0x183cc8050",
+        "cb84870: call 0x183cc8050",
+        "cb84875: mov ecx, 0x8a439",
+        "cb8487a: call 0x1963e3810",
+        "cb8487f: test rax, rax",
+        "cb84882: je 0x18cb848a7",
+        "cb84884: mov rcx, rax",
+        "cb84887: mov rdx, r15",
+        "cb8488a: mov r8, r14",
+        "cb8488d: add rsp, 0x20",
+        "cb84891: pop rbx",
+        "cb84892: pop rdi",
+        "cb84893: pop rsi",
+        "cb84894: pop r14",
+        "cb84896: pop r15",
+        "cb84898: jmp 0x195eefbd0",
+        "cb8489d: call 0x183cc8050",
+        "cb848a2: call 0x183cc8050",
+        "cb848a7: call 0x183cc8050",
+        "cb848ac: int3 "
+      ],
+      "verifiedNativeEndRva": "0xcb848ad",
+      "boundarySource": "PE x64 runtime-function table"
+    }
+  ],
+  "types": [
+    {
+      "typeIndex": 27699,
+      "name": "LJDPBAPPHGO",
+      "fields": [
+        {
+          "fieldIndex": 123946,
+          "name": "HENAEGGNPFE",
+          "nativeTypeIndex": 534312,
+          "nativeType": {
+            "kind": 21,
+            "attributes": 49
+          },
+          "isStatic": true
+        },
+        {
+          "fieldIndex": 123947,
+          "name": "GKLPDEEPJJI",
+          "nativeTypeIndex": 524386,
+          "nativeType": {
+            "kind": 21,
+            "attributes": 49
+          },
+          "isStatic": true
+        },
+        {
+          "fieldIndex": 123948,
+          "name": "CHLCMCKIGKG",
+          "nativeTypeIndex": 534313,
+          "nativeType": {
+            "kind": 21,
+            "attributes": 49
+          },
+          "isStatic": true
+        },
+        {
+          "fieldIndex": 123949,
+          "name": "NLNEGBCPCHL",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8,
+            "attributes": 32854
+          },
+          "isStatic": true,
+          "constant": {
+            "nativeTypeIndex": 71,
+            "kind": 8,
+            "dataOffset": 340047,
+            "value": 4
+          }
+        },
+        {
+          "fieldIndex": 123950,
+          "name": "FNPFIJPKBLH",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8,
+            "attributes": 32854
+          },
+          "isStatic": true,
+          "constant": {
+            "nativeTypeIndex": 71,
+            "kind": 8,
+            "dataOffset": 340051,
+            "value": 1
+          }
+        },
+        {
+          "fieldIndex": 123951,
+          "name": "ENGHHAJNMFD",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8,
+            "attributes": 32854
+          },
+          "isStatic": true,
+          "constant": {
+            "nativeTypeIndex": 71,
+            "kind": 8,
+            "dataOffset": 340055,
+            "value": 2
+          }
+        },
+        {
+          "fieldIndex": 123952,
+          "name": "PLDKENJLKME",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8,
+            "attributes": 32854
+          },
+          "isStatic": true,
+          "constant": {
+            "nativeTypeIndex": 71,
+            "kind": 8,
+            "dataOffset": 340059,
+            "value": 12
+          }
+        },
+        {
+          "fieldIndex": 123953,
+          "name": "KLJANMLJHEF",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8,
+            "attributes": 32854
+          },
+          "isStatic": true,
+          "constant": {
+            "nativeTypeIndex": 71,
+            "kind": 8,
+            "dataOffset": 340063,
+            "value": 10
+          }
+        },
+        {
+          "fieldIndex": 123954,
+          "name": "EHNIOLJAEBB",
+          "nativeTypeIndex": 452886,
+          "nativeType": {
+            "kind": 8,
+            "attributes": 32854
+          },
+          "isStatic": true,
+          "constant": {
+            "nativeTypeIndex": 71,
+            "kind": 8,
+            "dataOffset": 340067,
+            "value": 6
+          }
+        },
+        {
+          "fieldIndex": 123955,
+          "name": "DHHIJOGAOFI",
+          "nativeTypeIndex": 469430,
+          "nativeType": {
+            "kind": 18,
+            "attributes": 1,
+            "typeIndex": 5414,
+            "name": "UnknownFieldSet"
+          },
+          "isStatic": false,
+          "instanceOffset": 16
+        },
+        {
+          "fieldIndex": 123956,
+          "name": "AMBFMIEKJNK",
+          "nativeTypeIndex": 534314,
+          "nativeType": {
+            "kind": 21,
+            "attributes": 33
+          },
+          "isStatic": false,
+          "instanceOffset": 24
+        },
+        {
+          "fieldIndex": 123957,
+          "name": "JILKILNLMAC",
+          "nativeTypeIndex": 524387,
+          "nativeType": {
+            "kind": 21,
+            "attributes": 33
+          },
+          "isStatic": false,
+          "instanceOffset": 32
+        },
+        {
+          "fieldIndex": 123958,
+          "name": "JMLEAOECANC",
+          "nativeTypeIndex": 451805,
+          "nativeType": {
+            "kind": 9,
+            "attributes": 1
+          },
+          "isStatic": false,
+          "instanceOffset": 40
+        },
+        {
+          "fieldIndex": 123959,
+          "name": "NAEACGPKNNH",
+          "nativeTypeIndex": 451805,
+          "nativeType": {
+            "kind": 9,
+            "attributes": 1
+          },
+          "isStatic": false,
+          "instanceOffset": 44
+        },
+        {
+          "fieldIndex": 123960,
+          "name": "NDFIDCNNGMJ",
+          "nativeTypeIndex": 451805,
+          "nativeType": {
+            "kind": 9,
+            "attributes": 1
+          },
+          "isStatic": false,
+          "instanceOffset": 48
+        },
+        {
+          "fieldIndex": 123961,
+          "name": "DEGDBJHFAME",
+          "nativeTypeIndex": 451805,
+          "nativeType": {
+            "kind": 9,
+            "attributes": 1
+          },
+          "isStatic": false,
+          "instanceOffset": 52
+        }
+      ]
+    }
+  ]
+}

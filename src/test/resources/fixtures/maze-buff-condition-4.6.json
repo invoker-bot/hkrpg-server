@@ -1,0 +1,102 @@
+[
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Aventurine_00_Ability.json",
+    "sha256": "fa3519b803df126f23fa234919050a0b3460c2126aaf1c746013a48caed5d456",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      16,
+      "SuccessTaskList",
+      0
+    ],
+    "task": {
+      "$type": "RPG.GameCore.AddMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 130401,
+      "Condition": {
+        "$type": "RPG.GameCore.ByAnd",
+        "PredicateList": [
+          {
+            "$type": "RPG.GameCore.ByCompareCarryMazebuff",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "Caster"
+            },
+            "BuffID": 130402,
+            "Inverse": true
+          },
+          {
+            "$type": "RPG.GameCore.ByCompareCarryMazebuff",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "Caster"
+            },
+            "BuffID": 130403,
+            "Inverse": true
+          }
+        ]
+      },
+      "LifeTime": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": -1
+        }
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Aventurine_00_Ability.json",
+    "sha256": "fa3519b803df126f23fa234919050a0b3460c2126aaf1c746013a48caed5d456",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      16,
+      "SuccessTaskList",
+      1
+    ],
+    "task": {
+      "$type": "RPG.GameCore.AddMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 130404,
+      "Condition": {
+        "$type": "RPG.GameCore.ByAny",
+        "PredicateList": [
+          {
+            "$type": "RPG.GameCore.ByCompareCarryMazebuff",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "Caster"
+            },
+            "BuffID": 130402
+          },
+          {
+            "$type": "RPG.GameCore.ByCompareCarryMazebuff",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "Caster"
+            },
+            "BuffID": 130403
+          }
+        ]
+      },
+      "LifeTime": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": -1
+        }
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  }
+]

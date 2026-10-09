@@ -1,0 +1,13 @@
+# 4.6 未选择难度的世界1剧情副本
+
+后续世界2至6扩展见[更高世界剧情难度](higher-world-raid-difficulty-4.6.md)。下文保留5891项认证当时World1范围，旧认证及独立源码包封存。
+
+原始43306/source1在实际世界1且尚无保存偏好时，首次入场按Default冻结actualWorld=1/effectiveWorld=1/difficulty=0。不新增菜单记录、不伪造一次选择请求；查询仍返回空列表。显式Default/Easy、暂停后改选和旧局不重解释的规则保持。
+
+本机GameAssembly.dll SHA256为8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3，元数据SHA256为09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130。只读解析DifficultyAdjustModule/63571核对_DataCollections偏移0x18；GetRaidDifficultyType/585810在0xccbf1c7传source=1，在0xccbf1d5跳转GetDifficultyType/585821。后者0xccbf669读取集合，空值在0xccbf670跳0xccbf6c5，xor eax,eax后返回0；集合查找调用0x1af66a30，返回负数也跳到同一0分支。该调用体在0x1af66a44读取0x10存储，空存储在0x1af66afd设置-1并在0x1af66e2a返回。方法边界来自本机PE x64 runtime-function表；泛型调用体的正式方法名称未独立解析，不把它命名成已确认的FindEntry。Default枚举0与原始世界1关卡均沿用上一批已核对证据。这支持空数据采用Default的服务端设计推断，不代表游戏UI验收。
+
+15项新增Java检查的初次记录为build/unselected-world-one-raid-red.xml：10项失败，包括同一首次入口缺口的8项、非法多条偏好绕过检查的1项，以及空键导致查询异常的1项。修复将空且合法的偏好集合与损坏集合区分；空键、空值、超限、错误来源签名继续拒绝新局，原生查询的空键返回PLAYER_DATA_ERROR。无快照的旧World0局即使正式玩家变成World1，也不能获得新默认快照。实际原始事件203210501/Level32、虚拟角色1021304、消耗MP后的恢复及两种各两次实际Player/Morphia恢复纳入检查。
+
+`scripts/smoke-default-entry-mission-raid.py --unselected-world-one`与Default/Easy标志互斥：省去首次两次更新菜单请求，要求131次KCP/11份同UID快照。首次和早期重启的查询保持空列表；副本内改选拒绝；暂停后实际保存Easy并重入，原局继续世界1。两次实际原始事件战斗后QUIT、8次正常stop、7次H2重启和12次存档检查；4次明确夹具写入、8次只读、正式队伍无写入，2947份来源文件SHA保持。World1、父任务和早期Talk/StageWin结果是明确隔离夹具，未模拟自然战斗输入或剧情演出。
+
+根目录及独立源码包的全部Java/Python、未选择模式和显式两种难度、Dispatch恢复、原始World0回归以build/unselected-world-one-verification.json及各检查日志为准；未结束的检查不计通过。上一批5876项Default认证与源码包封存不修改。151份协议保持，不改客户端、运营资源、配置或数据库。只开放已证明的43306/source1/World1，source2、其他世界和副本、完整剧情/日常、其他宇宙与活动小游戏、真实游戏UI和断电原子性仍待完成，功能状态保持partial。

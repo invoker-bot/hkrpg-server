@@ -1,0 +1,247 @@
+[
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      2
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Physical"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Physical"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      3
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Fire"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Fire"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      4
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Ice"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Ice"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      5
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Thunder"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Thunder"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      6
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Wind"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Wind"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      7
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Quantum"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Quantum"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/Adventure_AbilityCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f2312539eabe9af79b0fb2cae985395a5596496c990cb6928c1299ebeef17fa8",
+    "sourceBlobSHA256": "e18993d7485b7c385992b04964c5b119b6dee5830d9dd51dfb8ee362a151a402",
+    "path": [
+      "AbilityList",
+      0,
+      "OnStart",
+      8
+    ],
+    "task": {
+      "$type": "RPG.GameCore.PredicateTaskList",
+      "Predicate": {
+        "$type": "RPG.GameCore.ByCharacterDamageType",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "DamageType": "Imaginary"
+      },
+      "SuccessTaskList": [
+        {
+          "$type": "RPG.GameCore.AddAdventureModifier",
+          "TargetType": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "ModifierName": "ADV_StageAbility_MazeCommon_ListenEnterBattle_Imaginary"
+        }
+      ]
+    },
+    "completeAbilityChainVerified": false,
+    "modifierListenerDispatchVerified": false
+  }
+]

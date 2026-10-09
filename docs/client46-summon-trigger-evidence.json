@@ -1,0 +1,180 @@
+{
+  "passed": true,
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "StarRail_Data/il2cpp_data/Metadata/global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "functions": [
+    {
+      "type": "WaitSecond",
+      "method": ".ctor",
+      "metadataMethodIndex": 135015,
+      "rva": "0x1dc738f0",
+      "bytes": 108,
+      "sha256": "5826e79611c8897d76a868a6566c007220a98116bc75f90633a61db3bd708569",
+      "instructions": [
+        "1dc738f0: push rsi",
+        "1dc738f1: sub rsp, 0x20",
+        "1dc738f5: mov rsi, rcx",
+        "1dc738f8: mov rcx, qword ptr [rip - 0x14916077]",
+        "1dc738ff: cmp byte ptr [rcx + 0xb7], 0",
+        "1dc73906: je 0x1dc7392b",
+        "1dc73908: mov rax, qword ptr [rip - 0x14930467]",
+        "1dc7390f: mov rax, qword ptr [rax + 0x21608]",
+        "1dc73916: mov qword ptr [rsi + 0x18], rax",
+        "1dc7391a: mov dword ptr [rsi + 0x20], 0xbf800000",
+        "1dc73921: mov byte ptr [rsi + 0x10], 1",
+        "1dc73925: add rsp, 0x20",
+        "1dc73929: pop rsi",
+        "1dc7392a: ret ",
+        "1dc7392b: call 0x3d2bd80",
+        "1dc73930: mov rcx, qword ptr [rip - 0x149160af]",
+        "1dc73937: cmp byte ptr [rcx + 0xb7], 0",
+        "1dc7393e: jne 0x1dc73908",
+        "1dc73940: call 0x3d2bd80",
+        "1dc73945: mov rcx, qword ptr [rip - 0x149160c4]",
+        "1dc7394c: cmp byte ptr [rcx + 0xb7], 0",
+        "1dc73953: jne 0x1dc73908",
+        "1dc73955: call 0x3d2bd80",
+        "1dc7395a: jmp 0x1dc73908"
+      ]
+    },
+    {
+      "type": "DynamicFloat",
+      "method": ".cctor",
+      "metadataMethodIndex": 74677,
+      "rva": "0x1d5fae30",
+      "bytes": 163,
+      "sha256": "b93b392a3ef0df993348318513cf8b582c5ba071fe4c22bf1d8e739802a4db13",
+      "instructions": [
+        "1d5fae30: sub rsp, 0x28",
+        "1d5fae34: mov rcx, qword ptr [rip - 0x1429d5b3]",
+        "1d5fae3b: call 0x3d3a130",
+        "1d5fae40: mov qword ptr [rax + 0x10], 0",
+        "1d5fae48: mov rcx, qword ptr [rip - 0x142b79a7]",
+        "1d5fae4f: mov qword ptr [rcx + 0x21608], rax",
+        "1d5fae56: mov rcx, qword ptr [rip - 0x1429d5d5]",
+        "1d5fae5d: call 0x3d3a130",
+        "1d5fae62: movabs rcx, 0x200000000",
+        "1d5fae6c: mov qword ptr [rax + 0x10], rcx",
+        "1d5fae70: mov rcx, qword ptr [rip - 0x142b79cf]",
+        "1d5fae77: mov qword ptr [rcx + 0x21600], rax",
+        "1d5fae7e: mov rcx, qword ptr [rip - 0x1429d5fd]",
+        "1d5fae85: call 0x3d3a130",
+        "1d5fae8a: movabs rcx, 0xc800000000",
+        "1d5fae94: mov qword ptr [rax + 0x10], rcx",
+        "1d5fae98: mov rcx, qword ptr [rip - 0x142b79f7]",
+        "1d5fae9f: mov qword ptr [rcx + 0x215f8], rax",
+        "1d5faea6: mov rcx, qword ptr [rip - 0x1429d625]",
+        "1d5faead: call 0x3d3a130",
+        "1d5faeb2: movabs rcx, 0x2d000000000",
+        "1d5faebc: mov qword ptr [rax + 0x10], rcx",
+        "1d5faec0: mov rcx, qword ptr [rip - 0x142b7a1f]",
+        "1d5faec7: mov qword ptr [rcx + 0x215f0], rax",
+        "1d5faece: add rsp, 0x28",
+        "1d5faed2: ret "
+      ]
+    },
+    {
+      "type": "UnitCustomTriggerConfig",
+      "method": ".ctor",
+      "metadataMethodIndex": 108679,
+      "rva": "0x1dc463d0",
+      "bytes": 37,
+      "sha256": "743bcb68df6e5033eefd6869c3a56448dec727d8c887e8e07668898178b49af4",
+      "instructions": [
+        "1dc463d0: mov byte ptr [rcx + 0x18], 1",
+        "1dc463d4: xorps xmm0, xmm0",
+        "1dc463d7: movlps qword ptr [rcx + 0x28], xmm0",
+        "1dc463db: mov dword ptr [rcx + 0x30], 0",
+        "1dc463e2: mov dword ptr [rcx + 0x44], 0x3f800000",
+        "1dc463e9: mov byte ptr [rcx + 0x78], 1",
+        "1dc463ed: mov byte ptr [rcx + 0xbb], 1",
+        "1dc463f4: ret "
+      ]
+    },
+    {
+      "type": "SetSummonUnitTriggerEnable",
+      "method": ".ctor",
+      "metadataMethodIndex": 118381,
+      "rva": "0x1da96000",
+      "bytes": 5,
+      "sha256": "af146aa151844ad3c4229c6dcf275a68d8976d69b40d423e3c86cc8e01df0753",
+      "instructions": [
+        "1da96000: mov byte ptr [rcx + 0x10], 1",
+        "1da96004: ret "
+      ]
+    }
+  ],
+  "metadataTypes": {
+    "WaitSecond": {
+      "typeIndex": 23785,
+      "members": [
+        {
+          "fieldIndex": 102283,
+          "name": "WaitTime",
+          "nativeTypeIndex": 487213,
+          "nativeType": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        }
+      ]
+    },
+    "UnitCustomTriggerConfig": {
+      "typeIndex": 17600,
+      "members": [
+        {
+          "fieldIndex": 84973,
+          "name": "DefaultEnable",
+          "nativeTypeIndex": 451898,
+          "nativeType": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "SetSummonUnitTriggerEnable": {
+      "typeIndex": 20164,
+      "members": [
+        {
+          "fieldIndex": 91906,
+          "name": "Enable",
+          "nativeTypeIndex": 451898,
+          "nativeType": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "DynamicFloat": {
+      "typeIndex": 10836,
+      "members": [
+        {
+          "fieldIndex": 47088,
+          "name": "fixedValue",
+          "nativeTypeIndex": 486349,
+          "nativeType": {
+            "kind": 17,
+            "typeIndex": 9939,
+            "name": "FixPoint"
+          }
+        }
+      ]
+    }
+  },
+  "sharedStorageSlotRva": "0x93434a8",
+  "sharedObjectOffset": "0x21608",
+  "fixedZeroObjectMemberOffset": "0x10",
+  "waitTimeObjectMemberOffset": "0x18",
+  "omittedWaitTimeFixedSeconds": 0,
+  "omittedDefaultEnable": true,
+  "omittedTaskEnable": false,
+  "booleanMemberAssociation": "inferred from metadata field layout and native constructor writes",
+  "scaledTimeAndFrameBehaviorVerified": false,
+  "fullNativeTaskExecutorVerified": false,
+  "clientExecutableStarted": false,
+  "clientModified": false,
+  "clientAccepted": false
+}

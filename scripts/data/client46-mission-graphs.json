@@ -1,0 +1,677 @@
+{
+  "baseProfileSHA256": "d8c56646e3567ebc0e1d688ec8b0845e0ed46f6556d1382effa70df9a7f8079b",
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "indexSHA256": "2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89",
+  "classes": {
+    "WaitFloorCustomValueChangeV2": {
+      "typeIndex": 20703,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "IsLoop",
+          "declaringType": "AdvWaitingEventBase",
+          "fieldIndex": 93610,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Name",
+          "declaringType": "WaitFloorCustomValueChangeV2",
+          "fieldIndex": 93657,
+          "type": {
+            "kind": 18,
+            "typeIndex": 16479,
+            "name": "DynamicString"
+          }
+        },
+        {
+          "name": "OnChange",
+          "declaringType": "WaitFloorCustomValueChangeV2",
+          "fieldIndex": 93658,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "typeIndex": 23738,
+              "name": "TaskConfig"
+            }
+          }
+        },
+        {
+          "name": "Condition",
+          "declaringType": "WaitFloorCustomValueChangeV2",
+          "fieldIndex": 93659,
+          "type": {
+            "kind": 18,
+            "typeIndex": 23740,
+            "name": "PredicateConfig"
+          }
+        }
+      ]
+    },
+    "CollectDataConditions": {
+      "typeIndex": 20853,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TaskIDList",
+          "declaringType": "CollectDataConditions",
+          "fieldIndex": 94098,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 9
+            }
+          }
+        },
+        {
+          "name": "MainMissionIDList",
+          "declaringType": "CollectDataConditions",
+          "fieldIndex": 94099,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 9
+            }
+          }
+        },
+        {
+          "name": "PerformanceIDList",
+          "declaringType": "CollectDataConditions",
+          "fieldIndex": 94100,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 9
+            }
+          }
+        },
+        {
+          "name": "PerformanceIDDsList",
+          "declaringType": "CollectDataConditions",
+          "fieldIndex": 94101,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "typeIndex": 16479,
+              "name": "DynamicString"
+            }
+          }
+        },
+        {
+          "name": "CustomValueMainMissionIDList",
+          "declaringType": "CollectDataConditions",
+          "fieldIndex": 94102,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 9
+            }
+          }
+        }
+      ]
+    },
+    "PlayMissionTalk": {
+      "typeIndex": 23807,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SimpleTalkList",
+          "declaringType": "SimpleTalkListConfig",
+          "fieldIndex": 94074,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "typeIndex": 24391,
+              "name": "SimpleTalkInfo"
+            }
+          }
+        },
+        {
+          "name": "IsVoice3D",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102337,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Voice3DTargetType",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102338,
+          "type": {
+            "kind": 18,
+            "typeIndex": 23744,
+            "name": "TargetEvaluator"
+          }
+        },
+        {
+          "name": "ResumeAfterInterrupt",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102339,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SubMissionIDForResume",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102340,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "PendingInBattle",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102341,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StartSentenceID",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102342,
+          "type": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "name": "EndSentenceID",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102343,
+          "type": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        },
+        {
+          "name": "IsOverrideContentTime",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102344,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "OverrideContentTime",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102345,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "MuteBattleVO",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102346,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ChangeStyle",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102347,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StyleList",
+          "declaringType": "PlayMissionTalk",
+          "fieldIndex": 102348,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "typeIndex": 23806,
+              "name": "MissionTalkStyle"
+            }
+          }
+        }
+      ]
+    },
+    "ByCompareSubMissionState": {
+      "typeIndex": 20312,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Inverse",
+          "declaringType": "PredicateConfig",
+          "fieldIndex": 102141,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SubMissionID",
+          "declaringType": "ByCompareSubMissionState",
+          "fieldIndex": 92482,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "SubMissionState",
+          "declaringType": "ByCompareSubMissionState",
+          "fieldIndex": 92483,
+          "type": {
+            "kind": 17,
+            "typeIndex": 24496,
+            "name": "SubMissionState"
+          }
+        },
+        {
+          "name": "AllStoryLine",
+          "declaringType": "ByCompareSubMissionState",
+          "fieldIndex": 92484,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "MissionTalkStyle": {
+      "typeIndex": 23806,
+      "fields": [
+        {
+          "name": "StyleType",
+          "declaringType": "MissionTalkStyle",
+          "fieldIndex": 102335,
+          "type": {
+            "kind": 17,
+            "typeIndex": 24782,
+            "name": "MissionTalkStyleType"
+          }
+        },
+        {
+          "name": "SpeakerID",
+          "declaringType": "MissionTalkStyle",
+          "fieldIndex": 102336,
+          "type": {
+            "kind": 14
+          }
+        }
+      ]
+    },
+    "SimpleTalkInfo": {
+      "typeIndex": 24391,
+      "fields": [
+        {
+          "name": "TextSpeed",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103837,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103838,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "ProtectTime",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103839,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "ForceToNextTime",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103840,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "TyperType",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103841,
+          "type": {
+            "kind": 17,
+            "typeIndex": 24826,
+            "name": "TextMotionTyperType"
+          }
+        },
+        {
+          "name": "ProtectByVoice",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103842,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ForceToNextOnProtectEnd",
+          "declaringType": "SimpleTalkInfo",
+          "fieldIndex": 103843,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "ClientFinishMission": {
+      "typeIndex": 20356,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SubmissionID",
+          "declaringType": "ClientFinishMission",
+          "fieldIndex": 92633,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "IsWaitServer",
+          "declaringType": "ClientFinishMission",
+          "fieldIndex": 92634,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "OnComplete",
+          "declaringType": "ClientFinishMission",
+          "fieldIndex": 92635,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "typeIndex": 23738,
+              "name": "TaskConfig"
+            }
+          }
+        }
+      ]
+    },
+    "ByCompareFloorCustomFloatV2": {
+      "typeIndex": 20700,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Inverse",
+          "declaringType": "PredicateConfig",
+          "fieldIndex": 102141,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Name",
+          "declaringType": "ByCompareFloorCustomFloatV2",
+          "fieldIndex": 93649,
+          "type": {
+            "kind": 18,
+            "typeIndex": 16479,
+            "name": "DynamicString"
+          }
+        },
+        {
+          "name": "CompareType",
+          "declaringType": "ByCompareFloorCustomFloatV2",
+          "fieldIndex": 93650,
+          "type": {
+            "kind": 17,
+            "typeIndex": 16452,
+            "name": "CompareType"
+          }
+        },
+        {
+          "name": "CompareValue",
+          "declaringType": "ByCompareFloorCustomFloatV2",
+          "fieldIndex": 93651,
+          "type": {
+            "kind": 18,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          }
+        }
+      ]
+    }
+  },
+  "enums": {
+    "24496": {
+      "name": "SubMissionState",
+      "values": {
+        "0": "Unknow",
+        "1": "Started",
+        "2": "Finish",
+        "3": "TakenAndNotStarted"
+      }
+    }
+  },
+  "tasks": {
+    "1082": {
+      "name": "CollectDataConditions",
+      "noReaderPayload": false,
+      "factoryMethod": {
+        "index": 131031,
+        "name": "NDMPKOKFMPH",
+        "rva": "0x1ceddf00",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "methodSlot": "0x9533260",
+      "assignmentRVA": "0x1d62e244",
+      "typeSlot": "0x936bee0",
+      "readerMethod": {
+        "index": 120660,
+        "rva": "0x1d59c460",
+        "typeName": "CollectDataConditions"
+      }
+    },
+    "3816": {
+      "name": "WaitFloorCustomValueChangeV2",
+      "noReaderPayload": false,
+      "factoryMethod": {
+        "index": 133755,
+        "name": "MLFEGBILHON",
+        "rva": "0x1d624b10",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "methodSlot": "0x9538b30",
+      "assignmentRVA": "0x1d63f7d9",
+      "typeSlot": "0x936bbf0",
+      "readerMethod": {
+        "index": 120149,
+        "rva": "0x1dc6a970",
+        "typeName": "WaitFloorCustomValueChangeV2"
+      }
+    },
+    "1945": {
+      "name": "PlayMissionTalk",
+      "noReaderPayload": false,
+      "factoryMethod": {
+        "index": 131891,
+        "name": "HMFIJAMNOID",
+        "rva": "0x1d1f8370",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "methodSlot": "0x9534e58",
+      "assignmentRVA": "0x1d6339e1",
+      "typeSlot": "0x9362740",
+      "readerMethod": {
+        "index": 135105,
+        "rva": "0x1d900200",
+        "typeName": "PlayMissionTalk"
+      }
+    },
+    "638": {
+      "name": "ByCompareSubMissionState",
+      "noReaderPayload": false,
+      "factoryMethod": {
+        "index": 130587,
+        "name": "EPBOMIPBBNB",
+        "rva": "0x1ced6930",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "methodSlot": "0x9532438",
+      "assignmentRVA": "0x1d62b528",
+      "typeSlot": "0x9366d98",
+      "readerMethod": {
+        "index": 118876,
+        "rva": "0x1d4ad1d0",
+        "typeName": "ByCompareSubMissionState"
+      }
+    },
+    "1065": {
+      "name": "ClientFinishMission",
+      "noReaderPayload": false,
+      "factoryMethod": {
+        "index": 131014,
+        "name": "MPMFDHHFPCP",
+        "rva": "0x1ceddac0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "methodSlot": "0x95331d8",
+      "assignmentRVA": "0x1d62e08a",
+      "typeSlot": "0x936b370",
+      "readerMethod": {
+        "index": 119012,
+        "rva": "0x1d58a000",
+        "typeName": "ClientFinishMission"
+      }
+    }
+  },
+  "predicates": {
+    "160": "ByCompareFloorCustomFloatV2"
+  },
+  "predicateFactory": {
+    "methodSlot": "0x951e158",
+    "typeSlot": "0x9362718",
+    "factoryMethod": {
+      "index": 134072,
+      "name": "MNLFLCKJNNL",
+      "rva": "0x1d190790",
+      "typeIndex": 23739,
+      "typeName": "MKIOEPLIEIH"
+    },
+    "readerMethod": {
+      "index": 120134,
+      "rva": "0x1d47f890",
+      "typeName": "ByCompareFloorCustomFloatV2"
+    }
+  },
+  "functions": {
+    "taskFactoryInitializer": {
+      "beginRVA": "0x1d6275b0",
+      "endRVA": "0x1d64073c",
+      "sha256": "f0b631e3d608e265977cff0e8b5794abc4ed234443b48d0426d189eab65d8d64",
+      "points": {
+        "0x1d62e244": "mov qword ptr [rax + 0x21f0], rdx",
+        "0x1d63f7d9": "mov qword ptr [rax + 0x7760], rdx",
+        "0x1d6339e1": "mov qword ptr [rax + 0x3ce8], rdx",
+        "0x1d62b528": "mov qword ptr [rax + 0x1410], rdx",
+        "0x1d62e08a": "mov qword ptr [rax + 0x2168], rdx",
+        "0x1d62e23d": "mov rdx, qword ptr [rip - 0x140fafe4]",
+        "0x1d63f7d2": "mov rdx, qword ptr [rip - 0x14106ca9]",
+        "0x1d6339da": "mov rdx, qword ptr [rip - 0x140feb89]",
+        "0x1d62b521": "mov rdx, qword ptr [rip - 0x140f90f0]",
+        "0x1d62e083": "mov rdx, qword ptr [rip - 0x140faeb2]"
+      }
+    },
+    "predicateFactoryInitializer": {
+      "beginRVA": "0x1d198b50",
+      "endRVA": "0x1d19cbd9",
+      "sha256": "efc933393e56fc344b246fd26d6652602ec79dd3230c3f1ab48e6e35c338008b",
+      "points": {
+        "0x1d199a3f": "mov qword ptr [rax + 0x520], rdx",
+        "0x1d199a38": "mov rdx, qword ptr [rip - 0x13c7b8e7]"
+      }
+    }
+  },
+  "records": {
+    "Config/Level/Mission/1054503/Mission_105450340.json": {
+      "entryKey": "758508d3883e2b48",
+      "chunk": 1,
+      "locale": "",
+      "offset": 68107294,
+      "length": 164,
+      "sha256": "bbfbfc6413ee7cc85e523cb859ae2ce745b69dee094e5e4a6edbcc5ff69e6a5e"
+    },
+    "Config/Level/Mission/4340111/Mission_434011114.json": {
+      "entryKey": "8d48ce0eb5653b89",
+      "chunk": 1,
+      "locale": "",
+      "offset": 71856695,
+      "length": 130,
+      "sha256": "d43a0a6889ac8d4ddd014a7cf652549d1db9d902b1e8f0065fd6ef9a42f3b84f"
+    }
+  },
+  "jsonTypeNames": {
+    "CollectDataConditions": "RPG.GameCore.CollectDataConditions",
+    "WaitFloorCustomValueChangeV2": "RPG.GameCore.WaitFloorCustomValueChangeV2",
+    "PlayMissionTalk": "RPG.GameCore.PlayMissionTalk",
+    "ByCompareSubMissionState": "RPG.GameCore.ByCompareSubMissionState",
+    "ClientFinishMission": "RPG.GameCore.ClientFinishMission",
+    "ByCompareFloorCustomFloatV2": "RPG.GameCore.ByCompareFloorCustomFloatV2",
+    "PredicateTaskList": "RPG.GameCore.PredicateTaskList"
+  },
+  "clientAccepted": false,
+  "scriptsExecuted": false
+}

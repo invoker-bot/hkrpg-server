@@ -1,0 +1,30 @@
+services:
+  server:
+    build:
+      context: ..
+    command: ["--mode=dispatch", "--no-console"]
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:23301:23301/udp"
+    volumes:
+      - ./config.json:/srv/hkrpg/config.json
+      - hkrpg-data:/srv/hkrpg/data
+      - hkrpg-logs:/srv/hkrpg/logs
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+volumes:
+  hkrpg-data:
+  hkrpg-logs:
+  mongo-data:

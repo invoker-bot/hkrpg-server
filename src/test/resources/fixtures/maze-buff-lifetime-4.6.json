@@ -1,0 +1,77 @@
+[
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Acheron_00_Ability.json",
+    "sha256": "05e1b30bc315ab8b1b2244469cacc8bee6ffbef7c60b04788f23675ae8572a3c",
+    "sourcePath": [
+      "AbilityList",
+      1,
+      "OnStart",
+      0
+    ],
+    "abilityName": "LocalPlayer_Acheron_MazeSkill",
+    "task": {
+      "$type": "RPG.GameCore.AddMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 130801,
+      "LifeTime": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 1.1
+        }
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Bailu_00_Ability.json",
+    "sha256": "00d12dea9487b15871315224f3f690b110d88f0d56425815a478d24a8134807e",
+    "sourcePath": [
+      "AbilityList",
+      1,
+      "OnStart",
+      2
+    ],
+    "abilityName": "LocalPlayer_Bailu_MazeSkill",
+    "task": {
+      "$type": "RPG.GameCore.AddMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 121101,
+      "LifeTime": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": -1
+        }
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Cyrene_00_Ability.json",
+    "sha256": "08dbb8c089a9c2a111a9d8b32c883b5488230f125e405dc16e46bc8a18228930",
+    "sourcePath": [
+      "AbilityList",
+      2,
+      "OnStart",
+      11
+    ],
+    "abilityName": "LocalPlayer_Cyrene_00_MazeSkill",
+    "task": {
+      "$type": "RPG.GameCore.AddMazeBuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ID": 141501,
+      "LifeTime": {
+        "IsDynamic": false,
+        "FixedValue": {
+          "Value": 30
+        }
+      }
+    }
+  }
+]

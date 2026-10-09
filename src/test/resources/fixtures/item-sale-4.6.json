@@ -1,0 +1,1104 @@
+[
+  {
+    "source": "resources/4.6/ExcelOutput/DailyActiveQuestPool.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "08395f3943b46cc581a7b06e1c1d166757a2e937ddc763b9a9e16aebfa555cdd",
+    "sourceBlobSHA256": "9676a6a8a5319b1696ac87614f846ec927743955607806a3eb2e04cbce0b485e",
+    "path": [
+      21
+    ],
+    "kind": "pool",
+    "row": {
+      "QuestID": 2100109,
+      "Type": 5
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      2671
+    ],
+    "kind": "quest",
+    "row": {
+      "QuestID": 2100109,
+      "QuestType": 5,
+      "QuestTitle": {
+        "Hash": 7428826033893751014
+      },
+      "ImagePath": "",
+      "UnlockType": "FinishMission",
+      "UnlockParamList": [
+        4010125
+      ],
+      "RewardID": 103002,
+      "FinishWayID": 2100109,
+      "GotoID": 503
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      509
+    ],
+    "kind": "rule",
+    "row": {
+      "ID": 2100109,
+      "FinishType": "ResolveRelic",
+      "ParamType": "NoPara",
+      "ParamStr1": "",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "Progress": 1
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RewardData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+    "sourceBlobSHA256": "54ef4bd235ea6e89ce01e0b57140ea966c8a8201e68648c2d5c0a8ccb30573aa",
+    "path": [
+      1334
+    ],
+    "kind": "reward",
+    "row": {
+      "RewardID": 103002,
+      "ItemID_1": 23,
+      "Count_1": 100
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      682
+    ],
+    "kind": "gate",
+    "row": {
+      "MainMissionID": 4010125,
+      "Type": "Branch",
+      "SubType": "System",
+      "DisplayPriority": 4010125,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 756294430308432416
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 1011202
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "NextTrackMainMission": 4010126,
+      "RewardID": 100,
+      "DisplayRewardID": 100,
+      "SubRewardList": []
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      7
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 23,
+      "ItemMainType": "Virtual",
+      "ItemSubType": "Virtual",
+      "InventoryDisplayTag": 1,
+      "Rarity": "Rare",
+      "ItemName": {
+        "Hash": 6255515680722461286
+      },
+      "ItemIconPath": "SpriteOutput/DailyMission/ActiveIcon.png",
+      "ItemFigureIconPath": "SpriteOutput/DailyMission/ActiveIcon.png",
+      "ItemCurrencyIconPath": "SpriteOutput/DailyMission/ActiveIcon.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 999999999,
+      "CustomDataList": [],
+      "ReturnItemIDList": []
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      30
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 221,
+      "ItemMainType": "Material",
+      "ItemSubType": "EquipmentExp",
+      "InventoryDisplayTag": 1,
+      "Rarity": "NotNormal",
+      "PurposeType": 5,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 17919790600284038314
+      },
+      "ItemDesc": {
+        "Hash": 14819496190992752753
+      },
+      "ItemBGDesc": {
+        "Hash": 717478127120891782
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/221.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/221.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/221.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [],
+      "ItemGroup": 1020,
+      "SellType": "Destroy"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      32
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 223,
+      "ItemMainType": "Material",
+      "ItemSubType": "EquipmentExp",
+      "InventoryDisplayTag": 1,
+      "Rarity": "VeryRare",
+      "PurposeType": 5,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 15230073150782918155
+      },
+      "ItemDesc": {
+        "Hash": 4532852645191934465
+      },
+      "ItemBGDesc": {
+        "Hash": 9599334365243187856
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/223.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/223.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/223.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [],
+      "ItemGroup": 1020,
+      "SellType": "Destroy"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      33
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 231,
+      "ItemMainType": "Material",
+      "ItemSubType": "RelicExp",
+      "InventoryDisplayTag": 1,
+      "Rarity": "NotNormal",
+      "PurposeType": 6,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 7768623034616639502
+      },
+      "ItemDesc": {
+        "Hash": 14868147883332303268
+      },
+      "ItemBGDesc": {
+        "Hash": 2780000759047084538
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/231.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/231.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/231.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [],
+      "ItemGroup": 1030,
+      "SellType": "Destroy"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      34
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 232,
+      "ItemMainType": "Material",
+      "ItemSubType": "RelicExp",
+      "InventoryDisplayTag": 1,
+      "Rarity": "Rare",
+      "PurposeType": 6,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 10507670789378241871
+      },
+      "ItemDesc": {
+        "Hash": 8834160985476416425
+      },
+      "ItemBGDesc": {
+        "Hash": 9057163038819142501
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/232.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/232.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/232.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [],
+      "ItemGroup": 1030,
+      "SellType": "Destroy"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      35
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 233,
+      "ItemMainType": "Material",
+      "ItemSubType": "RelicExp",
+      "InventoryDisplayTag": 1,
+      "Rarity": "VeryRare",
+      "PurposeType": 6,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 13841296995264637795
+      },
+      "ItemDesc": {
+        "Hash": 2226847294951731815
+      },
+      "ItemBGDesc": {
+        "Hash": 1275444624238625148
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/233.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/233.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/233.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [],
+      "ItemGroup": 1030,
+      "SellType": "Destroy"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      36
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 234,
+      "ItemMainType": "Material",
+      "ItemSubType": "RelicExp",
+      "InventoryDisplayTag": 1,
+      "Rarity": "SuperRare",
+      "PurposeType": 6,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 16174167239666517168
+      },
+      "ItemDesc": {
+        "Hash": 4235427620301451032
+      },
+      "ItemBGDesc": {
+        "Hash": 12776151475171728612
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/234.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/234.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/234.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [],
+      "ItemGroup": 1030
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      37
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 235,
+      "ItemMainType": "Material",
+      "ItemSubType": "Material",
+      "InventoryDisplayTag": 3,
+      "Rarity": "SuperRare",
+      "PurposeType": 10,
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 2216377554567530479
+      },
+      "ItemDesc": {
+        "Hash": 15406579030293421445
+      },
+      "ItemBGDesc": {
+        "Hash": 1451771662708953623
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/235.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/235.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/235.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 99999,
+      "CustomDataList": [],
+      "ReturnItemIDList": []
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigRelic.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "84b43c8bc198e9289353db612f3f5b4c835c3d0075bd3d0d65875859e0211aea",
+    "sourceBlobSHA256": "2325435b36076a9c29799943d23e23c42cc5a41c92b76c892e889ca4ea5cfe82",
+    "path": [
+      0
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 31011,
+      "ItemMainType": "Relic",
+      "ItemSubType": "Relic",
+      "InventoryDisplayTag": 1,
+      "Rarity": "NotNormal",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 3577701605246524164
+      },
+      "ItemBGDesc": {
+        "Hash": 26176757811863663
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/RelicIcons/IconRelic_101_1.png",
+      "ItemFigureIconPath": "SpriteOutput/RelicFigures/IconRelic_101_1.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [
+        {
+          "ItemID": 231,
+          "ItemNum": 3
+        }
+      ],
+      "SellType": "Sell"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigRelic.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "84b43c8bc198e9289353db612f3f5b4c835c3d0075bd3d0d65875859e0211aea",
+    "sourceBlobSHA256": "2325435b36076a9c29799943d23e23c42cc5a41c92b76c892e889ca4ea5cfe82",
+    "path": [
+      1
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 41011,
+      "ItemMainType": "Relic",
+      "ItemSubType": "Relic",
+      "InventoryDisplayTag": 1,
+      "Rarity": "Rare",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 3577701605246524164
+      },
+      "ItemBGDesc": {
+        "Hash": 26176757811863663
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/RelicIcons/IconRelic_101_1.png",
+      "ItemFigureIconPath": "SpriteOutput/RelicFigures/IconRelic_101_1.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [
+        {
+          "ItemID": 232,
+          "ItemNum": 1
+        }
+      ],
+      "SellType": "Sell"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigRelic.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "84b43c8bc198e9289353db612f3f5b4c835c3d0075bd3d0d65875859e0211aea",
+    "sourceBlobSHA256": "2325435b36076a9c29799943d23e23c42cc5a41c92b76c892e889ca4ea5cfe82",
+    "path": [
+      2
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 51011,
+      "ItemMainType": "Relic",
+      "ItemSubType": "Relic",
+      "InventoryDisplayTag": 1,
+      "Rarity": "VeryRare",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 3577701605246524164
+      },
+      "ItemBGDesc": {
+        "Hash": 26176757811863663
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/RelicIcons/IconRelic_101_1.png",
+      "ItemFigureIconPath": "SpriteOutput/RelicFigures/IconRelic_101_1.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [
+        {
+          "ItemID": 232,
+          "ItemNum": 2
+        }
+      ],
+      "SellType": "Sell"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigRelic.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "84b43c8bc198e9289353db612f3f5b4c835c3d0075bd3d0d65875859e0211aea",
+    "sourceBlobSHA256": "2325435b36076a9c29799943d23e23c42cc5a41c92b76c892e889ca4ea5cfe82",
+    "path": [
+      3
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 61011,
+      "ItemMainType": "Relic",
+      "ItemSubType": "Relic",
+      "InventoryDisplayTag": 1,
+      "Rarity": "SuperRare",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 3577701605246524164
+      },
+      "ItemBGDesc": {
+        "Hash": 26176757811863663
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/RelicIcons/IconRelic_101_1.png",
+      "ItemFigureIconPath": "SpriteOutput/RelicFigures/IconRelic_101_1.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [
+        {
+          "ItemID": 232,
+          "ItemNum": 3
+        }
+      ],
+      "SellType": "Sell"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigEquipment.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "6b66e649a5bb332448e42f888a588103348ca427e0c41b9351e87500ff442b3d",
+    "sourceBlobSHA256": "99e04f375edf16c2b8946a11f6c0f451cde6637b30a7a2d6db1daa914ceb1bf8",
+    "path": [
+      0
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 20000,
+      "ItemMainType": "Equipment",
+      "ItemSubType": "Equipment",
+      "InventoryDisplayTag": 1,
+      "Rarity": "Rare",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 3938930023512122568
+      },
+      "ItemDesc": {
+        "Hash": 16159044508835640864
+      },
+      "ItemBGDesc": {
+        "Hash": 5435417150194813419
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/LightConeIcons/20000.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/LightCone/20000.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [
+        {
+          "ItemID": 221,
+          "ItemNum": 1
+        }
+      ],
+      "SellType": "Sell"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigEquipment.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "6b66e649a5bb332448e42f888a588103348ca427e0c41b9351e87500ff442b3d",
+    "sourceBlobSHA256": "99e04f375edf16c2b8946a11f6c0f451cde6637b30a7a2d6db1daa914ceb1bf8",
+    "path": [
+      21
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 21000,
+      "ItemMainType": "Equipment",
+      "ItemSubType": "Equipment",
+      "InventoryDisplayTag": 1,
+      "Rarity": "VeryRare",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 1702900170261385584
+      },
+      "ItemDesc": {
+        "Hash": 12232888620289242123
+      },
+      "ItemBGDesc": {
+        "Hash": 17866426189465812083
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/LightConeIcons/21000.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/LightCone/21000.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": [
+        {
+          "ItemID": 223,
+          "ItemNum": 2
+        }
+      ],
+      "SellType": "Sell"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ItemConfigEquipment.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "6b66e649a5bb332448e42f888a588103348ca427e0c41b9351e87500ff442b3d",
+    "sourceBlobSHA256": "99e04f375edf16c2b8946a11f6c0f451cde6637b30a7a2d6db1daa914ceb1bf8",
+    "path": [
+      55
+    ],
+    "kind": "item",
+    "row": {
+      "ID": 23000,
+      "ItemMainType": "Equipment",
+      "ItemSubType": "Equipment",
+      "InventoryDisplayTag": 1,
+      "Rarity": "SuperRare",
+      "isVisible": true,
+      "ItemName": {
+        "Hash": 15615456999322924824
+      },
+      "ItemDesc": {
+        "Hash": 4308749327763980438
+      },
+      "ItemBGDesc": {
+        "Hash": 18377950469962483557
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/LightConeIcons/23000.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/LightCone/23000.png",
+      "ItemCurrencyIconPath": "0",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 9999,
+      "CustomDataList": [],
+      "ReturnItemIDList": []
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8e841f21ce7593c40537fdf9b262057b4e7d8abae04a4199f5ad38bb152dc15",
+    "sourceBlobSHA256": "390c6d7c7a29eb01e44531e97600f0befe488e6e6543e627a106fe8c15dbe2cf",
+    "path": [
+      0
+    ],
+    "kind": "relic",
+    "row": {
+      "ID": 31011,
+      "SetID": 101,
+      "Type": "HEAD",
+      "Rarity": "CombatPowerRelicRarity2",
+      "MainAffixGroup": 21,
+      "SubAffixGroup": 2,
+      "MaxLevel": 6,
+      "ExpType": 1,
+      "ExpProvide": 300,
+      "CoinCost": 450,
+      "Mode": "BASIC"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8e841f21ce7593c40537fdf9b262057b4e7d8abae04a4199f5ad38bb152dc15",
+    "sourceBlobSHA256": "390c6d7c7a29eb01e44531e97600f0befe488e6e6543e627a106fe8c15dbe2cf",
+    "path": [
+      1
+    ],
+    "kind": "relic",
+    "row": {
+      "ID": 41011,
+      "SetID": 101,
+      "Type": "HEAD",
+      "Rarity": "CombatPowerRelicRarity3",
+      "MainAffixGroup": 31,
+      "SubAffixGroup": 3,
+      "MaxLevel": 9,
+      "ExpType": 2,
+      "ExpProvide": 500,
+      "CoinCost": 750,
+      "Mode": "BASIC"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8e841f21ce7593c40537fdf9b262057b4e7d8abae04a4199f5ad38bb152dc15",
+    "sourceBlobSHA256": "390c6d7c7a29eb01e44531e97600f0befe488e6e6543e627a106fe8c15dbe2cf",
+    "path": [
+      2
+    ],
+    "kind": "relic",
+    "row": {
+      "ID": 51011,
+      "SetID": 101,
+      "Type": "HEAD",
+      "Rarity": "CombatPowerRelicRarity4",
+      "MainAffixGroup": 41,
+      "SubAffixGroup": 4,
+      "MaxLevel": 12,
+      "ExpType": 3,
+      "ExpProvide": 1000,
+      "CoinCost": 1500,
+      "Mode": "BASIC"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d8e841f21ce7593c40537fdf9b262057b4e7d8abae04a4199f5ad38bb152dc15",
+    "sourceBlobSHA256": "390c6d7c7a29eb01e44531e97600f0befe488e6e6543e627a106fe8c15dbe2cf",
+    "path": [
+      3
+    ],
+    "kind": "relic",
+    "row": {
+      "ID": 61011,
+      "SetID": 101,
+      "Type": "HEAD",
+      "Rarity": "CombatPowerRelicRarity5",
+      "MainAffixGroup": 51,
+      "SubAffixGroup": 5,
+      "MaxLevel": 15,
+      "ExpType": 4,
+      "ExpProvide": 1500,
+      "CoinCost": 2250,
+      "Mode": "BASIC"
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/EquipmentConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "74ea91580ab4a251ee16c3b491be46465f37ec2f6178982a92a6cbf4c0086ebc",
+    "sourceBlobSHA256": "dddb9cd0f5108fb1cd0146b6a94d1511f5d223c0ac631cad5e9c3f4ebfa7cc73",
+    "path": [
+      0
+    ],
+    "kind": "equipment",
+    "row": {
+      "EquipmentID": 20000,
+      "Release": true,
+      "EquipmentName": {
+        "Hash": 1315631816518421847
+      },
+      "Rarity": "CombatPowerLightconeRarity3",
+      "AvatarBaseType": "Rogue",
+      "MaxPromotion": 6,
+      "MaxRank": 5,
+      "ExpType": 1,
+      "SkillID": 20000,
+      "ExpProvide": 500,
+      "CoinCost": 250,
+      "RankUpCostList": [],
+      "ThumbnailPath": "SpriteOutput/LightConeMediumIcon/20000.png",
+      "ImagePath": "SpriteOutput/LightConeMaxFigures/20000.png",
+      "ItemRightPanelOffset": [
+        0,
+        -64,
+        0.7
+      ],
+      "AvatarDetailOffset": [
+        0,
+        -71,
+        1.15
+      ],
+      "BattleDialogOffset": [
+        12,
+        -6,
+        0.6
+      ],
+      "GachaResultOffset": [
+        14,
+        -9,
+        0.545
+      ]
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/EquipmentConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "74ea91580ab4a251ee16c3b491be46465f37ec2f6178982a92a6cbf4c0086ebc",
+    "sourceBlobSHA256": "dddb9cd0f5108fb1cd0146b6a94d1511f5d223c0ac631cad5e9c3f4ebfa7cc73",
+    "path": [
+      21
+    ],
+    "kind": "equipment",
+    "row": {
+      "EquipmentID": 21000,
+      "Release": true,
+      "EquipmentName": {
+        "Hash": 2167454448275708155
+      },
+      "Rarity": "CombatPowerLightconeRarity4",
+      "AvatarBaseType": "Priest",
+      "MaxPromotion": 6,
+      "MaxRank": 5,
+      "ExpType": 2,
+      "SkillID": 21000,
+      "ExpProvide": 12000,
+      "CoinCost": 6000,
+      "RankUpCostList": [],
+      "ThumbnailPath": "SpriteOutput/LightConeMediumIcon/21000.png",
+      "ImagePath": "SpriteOutput/LightConeMaxFigures/21000.png",
+      "ItemRightPanelOffset": [
+        0,
+        -138,
+        0.7
+      ],
+      "AvatarDetailOffset": [
+        0,
+        -128,
+        1.15
+      ],
+      "BattleDialogOffset": [
+        0,
+        0,
+        0.55
+      ],
+      "GachaResultOffset": [
+        8,
+        -11,
+        0.5123
+      ]
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/EquipmentConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "74ea91580ab4a251ee16c3b491be46465f37ec2f6178982a92a6cbf4c0086ebc",
+    "sourceBlobSHA256": "dddb9cd0f5108fb1cd0146b6a94d1511f5d223c0ac631cad5e9c3f4ebfa7cc73",
+    "path": [
+      55
+    ],
+    "kind": "equipment",
+    "row": {
+      "EquipmentID": 23000,
+      "Release": true,
+      "EquipmentName": {
+        "Hash": 15382217452095502614
+      },
+      "Rarity": "CombatPowerLightconeRarity5",
+      "AvatarBaseType": "Mage",
+      "MaxPromotion": 6,
+      "MaxRank": 5,
+      "ExpType": 3,
+      "SkillID": 23000,
+      "ExpProvide": 60000,
+      "CoinCost": 30000,
+      "RankUpCostList": [],
+      "ThumbnailPath": "SpriteOutput/LightConeMediumIcon/23000.png",
+      "ImagePath": "SpriteOutput/LightConeMaxFigures/23000.png",
+      "ItemRightPanelOffset": [
+        0,
+        -143,
+        0.7
+      ],
+      "AvatarDetailOffset": [
+        0,
+        -158,
+        1.15
+      ],
+      "BattleDialogOffset": [
+        0,
+        0,
+        0.75
+      ],
+      "GachaResultOffset": [
+        -3,
+        -96,
+        1.09
+      ]
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      0
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Equipment_Exp_Recyle_Ratio",
+      "Value": {
+        "IntValue": 80
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      83
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_Exp_ConversionRate",
+      "Value": {
+        "IntValue": 80
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      84
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_ReturnItemID",
+      "Value": {
+        "ArrayValue": [
+          {
+            "IntValue": 232
+          },
+          {
+            "IntValue": 231
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      86
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Item_Sell_Max_Count",
+      "Value": {
+        "IntValue": 500
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      201
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_Rank5_ReturnItem_RelicRemains_ItemID",
+      "Value": {
+        "IntValue": 235
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      202
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_Rank5_ReturnItem_RelicRemains_ItemNum",
+      "Value": {
+        "IntValue": 10
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      226
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_ReturnItem_RelicRemains_Bias",
+      "Value": {
+        "IntValue": 10
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      227
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_ReturnItem_RelicRemains_Coefficient",
+      "Value": {
+        "DoubleValue": 0.005144
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/ConstValueCommon.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f1d5904318d35acae07e8279ec4b05868936ab3571990b0854252728e6695c9",
+    "sourceBlobSHA256": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "path": [
+      228
+    ],
+    "kind": "constant",
+    "row": {
+      "ConstValueName": "Relic_ReturnItem_RelicExp_CoinRatio",
+      "Value": {
+        "DoubleValue": 1.2
+      }
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicExpItem.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "702ed8192fb370bb6284fe89a848552fb25de8e31bc1c78cb878bd09b8fa3b58",
+    "sourceBlobSHA256": "26f30e98bcd14e2e6e6d0113ff5783cf5582e792b35f718935543a6e5bc3e21e",
+    "path": [
+      0
+    ],
+    "kind": "relic-material",
+    "row": {
+      "ItemID": 231,
+      "ExpProvide": 100,
+      "CoinCost": 150
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicExpItem.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "702ed8192fb370bb6284fe89a848552fb25de8e31bc1c78cb878bd09b8fa3b58",
+    "sourceBlobSHA256": "26f30e98bcd14e2e6e6d0113ff5783cf5582e792b35f718935543a6e5bc3e21e",
+    "path": [
+      1
+    ],
+    "kind": "relic-material",
+    "row": {
+      "ItemID": 232,
+      "ExpProvide": 500,
+      "CoinCost": 750
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicExpItem.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "702ed8192fb370bb6284fe89a848552fb25de8e31bc1c78cb878bd09b8fa3b58",
+    "sourceBlobSHA256": "26f30e98bcd14e2e6e6d0113ff5783cf5582e792b35f718935543a6e5bc3e21e",
+    "path": [
+      2
+    ],
+    "kind": "relic-material",
+    "row": {
+      "ItemID": 233,
+      "ExpProvide": 1000,
+      "CoinCost": 1500
+    }
+  },
+  {
+    "source": "resources/4.6/ExcelOutput/RelicExpItem.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "702ed8192fb370bb6284fe89a848552fb25de8e31bc1c78cb878bd09b8fa3b58",
+    "sourceBlobSHA256": "26f30e98bcd14e2e6e6d0113ff5783cf5582e792b35f718935543a6e5bc3e21e",
+    "path": [
+      3
+    ],
+    "kind": "relic-material",
+    "row": {
+      "ItemID": 234,
+      "ExpProvide": 2000,
+      "CoinCost": 3000
+    }
+  }
+]

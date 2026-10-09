@@ -1,0 +1,11 @@
+# 游戏传输启动就绪检查
+
+当前固定的lib/kcp.jar在KcpServer.init中调用Bootstrap.bind后只保存Channel，不等待ChannelFuture完成。原GameServer.start随即保存在线区域并返回，LunarCore随后发布ready=true。隔离进程测试占用真实UDP端口后，5966项封存产物仍返回ready=true，证明失败绑定也可被宣布为已启动。该测试没有进入场景或执行玩法，不把之前两组连接超时的具体原因归结为这一个缺陷。
+
+TransportStartup读取固定KcpServer类自身的localAddresss列表；此依赖没有公开的通道访问器。每个对象须为实际DatagramChannel，通道必须保持打开、已激活且本地地址和配置地址一致，端口必须已分配。所有通道完成才允许保存在线区域、刷新Dispatch缓存和发布就绪；空列表、非UDP、关闭、错地址/端口、超时及中断均使启动失败。绑定等待使用单调时钟，上限10秒，中断保留标志。反射只读这个固定依赖的已知字段，依赖布局不兼容时停止启动；不改写或重新打包第三方二进制。
+
+14项Java回归使用真实NioDatagramChannel和受控事件循环，包含阻塞后成功绑定、一个已绑定而另一个等待、未绑定超时、真实占用导致绑定失败、关闭、错地址/端口、空Kcp列表、依赖自身通道列表、非UDP及中断。等待和拒绝行为修改前有13项失败，正常已绑定通道对照通过；不把这些失败计为13个独立缺陷。生产GameServer在init之后、区域在线保存之前执行检查。
+
+scripts/smoke-transport-startup.py使用临时配置、H2数据库和真实独占UDP端口，从打包jar启动完整4.6服务。必须以1退出，不出现Game Server started日志，也不能观察到ready=true。脚本不创建玩家，不执行场景/玩法，配置每个字节保持不变，三个原始资源SHA前后核对。本机首次脚本路径错误发生在启动前，不计入失败复现；修正资源路径后的真实ready=true失败记录单独保留。
+
+最终构建、Python、打包端口占用/正常Dispatch和原生游戏登录及正常H2重启，以build/transport-startup-verification.json和相同SHA产物的逐项日志为准。尚未结束的检查不计完成。全部剧情、宇宙、小游戏和真实4.6客户端验收继续保持待完成；本次只验证服务启动发布边界，不能证明全部网络故障已消除。

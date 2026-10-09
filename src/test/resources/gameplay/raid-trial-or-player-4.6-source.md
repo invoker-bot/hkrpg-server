@@ -1,0 +1,9 @@
+# TrialOrPlayer副本正式角色路径测试来源
+
+来源：TurnBasedGameData@724b139d8c9c32d12552eb95745a4fee72bfe48b。摘录40235、IncludeAvatar限制3和原始副本任务2022005；测试不直接成为运行时依赖。
+
+- ExcelOutput/RaidConfig.json SHA256 6db69c1a08548df913399689804d7ea63c3d40acf2414e1ac28cf4863966ca5e
+- ExcelOutput/TeamLimitCondition.json SHA256 5f0dd5fbcf52571461568ade6627d5a2dfbceae13e045330a0026b4ba77529ce
+- ExcelOutput/MainMission.json SHA256 9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a
+
+本项先处理实际持有正式椒丘1209的路径，未持有或仅声明试用编号1011209不自动取得角色，不取消IsInRaid要求。试用选择与模板、技能、装备和恢复仍需独立实现及验收；形式相同的孤立地图/父任务夹具必须在验证报告中记录。

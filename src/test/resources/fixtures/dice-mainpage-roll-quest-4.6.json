@@ -1,0 +1,94 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "tables": {
+    "QuestData": {
+      "source": "ExcelOutput/QuestData.json",
+      "sourceSHA256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+      "rows": [
+        {
+          "QuestID": 4000001,
+          "QuestType": 1,
+          "ImagePath": "",
+          "UnlockType": "AutoUnlock",
+          "UnlockParamList": [],
+          "RewardID": 100,
+          "FinishWayID": 4000001
+        },
+        {
+          "QuestID": 4055044,
+          "QuestType": 1,
+          "ImagePath": "",
+          "UnlockType": "FinishQuest",
+          "UnlockParamList": [
+            4000001
+          ],
+          "RewardID": 113000,
+          "FinishWayID": 4055044
+        }
+      ]
+    },
+    "FinishWay": {
+      "source": "ExcelOutput/FinishWay.json",
+      "sourceSHA256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+      "rows": [
+        {
+          "ID": 4000001,
+          "FinishType": "FinishMission",
+          "ParamType": "ListContain",
+          "ParamStr1": "",
+          "ParamIntList": [
+            1000201
+          ],
+          "ParamItemList": [],
+          "Progress": 1
+        },
+        {
+          "ID": 4055044,
+          "FinishType": "DiceCombatRollDiceCnt",
+          "ParamType": "NoPara",
+          "ParamStr1": "",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "Progress": 20
+        }
+      ]
+    },
+    "RewardData": {
+      "source": "ExcelOutput/RewardData.json",
+      "sourceSHA256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+      "rows": [
+        {
+          "RewardID": 113000,
+          "Hcoin": 5
+        }
+      ]
+    },
+    "ItemConfig": {
+      "source": "ExcelOutput/ItemConfig.json",
+      "sourceSHA256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+      "rows": [
+        {
+          "ID": 1,
+          "ItemMainType": "Virtual",
+          "ItemSubType": "Virtual",
+          "InventoryDisplayTag": 1,
+          "Rarity": "SuperRare",
+          "PurposeType": 12,
+          "ItemName": {
+            "Hash": 7739077644877555281
+          },
+          "ItemBGDesc": {
+            "Hash": 4559313086410327619
+          },
+          "ItemIconPath": "SpriteOutput/ItemIcon/900001.png",
+          "ItemFigureIconPath": "SpriteOutput/ItemFigures/900001.png",
+          "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/1.png",
+          "ItemAvatarIconPath": "",
+          "PileLimit": 999999999,
+          "CustomDataList": [],
+          "ReturnItemIDList": []
+        }
+      ]
+    }
+  }
+}

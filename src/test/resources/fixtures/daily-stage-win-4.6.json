@@ -1,0 +1,5420 @@
+[
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/3011012/MissionInfo_3011012.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d6b93e81dfc14891f9a7c836e595966d719602deebd91e815c569f4de2da49c5",
+    "sourceBlobSHA256": "e9cc509915b2ab0b9718369e4880c61e6b18fabee71493f0559d478091d0e7e1",
+    "path": [],
+    "row": {
+      "MainMissionID": 3011012,
+      "StartSubMissionList": [
+        301101201
+      ],
+      "FinishSubMissionList": [
+        301101205
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011012/MissionInfo_3011012.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "e5abac98b2c46cfe3801ff40f8101f0a05f44a87d40938eda348ab9d6c27dc3a",
+    "sourceBlobSHA256": "6ac921c40bc89c0b8b187ec1304b86e84d106c78c2ef48611a41cbbbe25e7844",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 301101201,
+      "MainMissionID": 3011012,
+      "MissionJsonPath": "Config/Level/Mission/3011012/Mission_301101201.json",
+      "LevelPlaneID": 10102,
+      "LevelFloorID": 10102001,
+      "TakeType": "Auto",
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301101201",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 10102001,
+      "WayPointGroupID": 99,
+      "WayPointEntityID": 400002,
+      "FroceMapHint": true
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011012/MissionInfo_3011012.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "e5abac98b2c46cfe3801ff40f8101f0a05f44a87d40938eda348ab9d6c27dc3a",
+    "sourceBlobSHA256": "6ac921c40bc89c0b8b187ec1304b86e84d106c78c2ef48611a41cbbbe25e7844",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 301101202,
+      "MainMissionID": 3011012,
+      "MissionJsonPath": "Config/Level/Mission/3011012/Mission_301101202.json",
+      "LevelPlaneID": 10102,
+      "LevelFloorID": 10102001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301101201
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301101202",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowStartHint": "New",
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10102001,
+      "WayPointGroupID": 100,
+      "WayPointEntityID": 300001
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011012/MissionInfo_3011012.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "e5abac98b2c46cfe3801ff40f8101f0a05f44a87d40938eda348ab9d6c27dc3a",
+    "sourceBlobSHA256": "6ac921c40bc89c0b8b187ec1304b86e84d106c78c2ef48611a41cbbbe25e7844",
+    "path": [
+      "SubMissionList",
+      2
+    ],
+    "row": {
+      "ID": 301101203,
+      "MainMissionID": 3011012,
+      "MissionJsonPath": "Config/Level/Mission/3011012/Mission_301101203.json",
+      "LevelPlaneID": 10102,
+      "LevelFloorID": 10102001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301101202
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301101203",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10102001,
+      "WayPointGroupID": 102,
+      "WayPointEntityID": 300001
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011012/MissionInfo_3011012.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "e5abac98b2c46cfe3801ff40f8101f0a05f44a87d40938eda348ab9d6c27dc3a",
+    "sourceBlobSHA256": "6ac921c40bc89c0b8b187ec1304b86e84d106c78c2ef48611a41cbbbe25e7844",
+    "path": [
+      "SubMissionList",
+      3
+    ],
+    "row": {
+      "ID": 301101204,
+      "MainMissionID": 3011012,
+      "MissionJsonPath": "Config/Level/Mission/3011012/Mission_301101204.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301101203
+      ],
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 201212,
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 80,
+      "WayPointEntityID": 400001
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011012/MissionInfo_3011012.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "e5abac98b2c46cfe3801ff40f8101f0a05f44a87d40938eda348ab9d6c27dc3a",
+    "sourceBlobSHA256": "6ac921c40bc89c0b8b187ec1304b86e84d106c78c2ef48611a41cbbbe25e7844",
+    "path": [
+      "SubMissionList",
+      4
+    ],
+    "row": {
+      "ID": 301101205,
+      "MainMissionID": 3011012,
+      "MissionJsonPath": "Config/Level/Mission/3011012/Mission_301101205.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301101204
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301101205",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowFinishEffect": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 80,
+      "WayPointEntityID": 400001
+    }
+  },
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/3011112/MissionInfo_3011112.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "3cb4ff5520b6c7f3e3a2b3f60baf160ce53b9c633753fcea47b9b20bee0e7e87",
+    "sourceBlobSHA256": "0c32f5d24d13be10192b21f3f31c00849cee3d892d83d746052328f6639b8335",
+    "path": [],
+    "row": {
+      "MainMissionID": 3011112,
+      "StartSubMissionList": [
+        301111201
+      ],
+      "FinishSubMissionList": [
+        301111204
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011112/MissionInfo_3011112.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "af31bff983ef1ae8e704d25913b0cbbc1d703c49280eaca104c6916586c7b3e4",
+    "sourceBlobSHA256": "2407756f039be97d4edb0cb496db97cfce1d9b4727b0357574061ad88ff2286c",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 301111201,
+      "MainMissionID": 3011112,
+      "MissionJsonPath": "Config/Level/Mission/3011112/Mission_301111201.json",
+      "LevelPlaneID": 20131,
+      "LevelFloorID": 20131001,
+      "TakeType": "Auto",
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301111201",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20131001,
+      "WayPointGroupID": 61,
+      "WayPointEntityID": 400002,
+      "FroceMapHint": true
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011112/MissionInfo_3011112.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "af31bff983ef1ae8e704d25913b0cbbc1d703c49280eaca104c6916586c7b3e4",
+    "sourceBlobSHA256": "2407756f039be97d4edb0cb496db97cfce1d9b4727b0357574061ad88ff2286c",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 301111202,
+      "MainMissionID": 3011112,
+      "MissionJsonPath": "Config/Level/Mission/3011112/Mission_301111202.json",
+      "LevelPlaneID": 20131,
+      "LevelFloorID": 20131001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301111201
+      ],
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 201311,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowStartHint": "New",
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20131001,
+      "WayPointGroupID": 21,
+      "WayPointEntityID": 400021
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011112/MissionInfo_3011112.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "af31bff983ef1ae8e704d25913b0cbbc1d703c49280eaca104c6916586c7b3e4",
+    "sourceBlobSHA256": "2407756f039be97d4edb0cb496db97cfce1d9b4727b0357574061ad88ff2286c",
+    "path": [
+      "SubMissionList",
+      2
+    ],
+    "row": {
+      "ID": 301111203,
+      "MainMissionID": 3011112,
+      "MissionJsonPath": "Config/Level/Mission/3011112/Mission_301111203.json",
+      "LevelPlaneID": 20131,
+      "LevelFloorID": 20131001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301111202
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301111203",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20131001,
+      "WayPointGroupID": 61,
+      "WayPointEntityID": 400002
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011112/MissionInfo_3011112.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "af31bff983ef1ae8e704d25913b0cbbc1d703c49280eaca104c6916586c7b3e4",
+    "sourceBlobSHA256": "2407756f039be97d4edb0cb496db97cfce1d9b4727b0357574061ad88ff2286c",
+    "path": [
+      "SubMissionList",
+      3
+    ],
+    "row": {
+      "ID": 301111204,
+      "MainMissionID": 3011112,
+      "MissionJsonPath": "Config/Level/Mission/3011112/Mission_301111204.json",
+      "LevelPlaneID": 20131,
+      "LevelFloorID": 20131001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301111203
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301111204",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowFinishEffect": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20131001,
+      "WayPointGroupID": 21,
+      "WayPointEntityID": 400019
+    }
+  },
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/3011602/MissionInfo_3011602.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "0cfe1c5844bcf7e1f753df84c1f7f242cc6d52fefa3fc66f34521d5349fb6f6f",
+    "sourceBlobSHA256": "21def61442c402aed6993ea41fdd90c4b9100147ae82fa25606d7ee816f93bf8",
+    "path": [],
+    "row": {
+      "MainMissionID": 3011602,
+      "StartSubMissionList": [
+        301160201
+      ],
+      "FinishSubMissionList": [
+        301160202
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011602/MissionInfo_3011602.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "245132f77c9ea2e8664e4179969d9dbdd0e984ced97ae13e123f61deafbbf38d",
+    "sourceBlobSHA256": "b5119335a7251f3b93428df18a3da764983b2aa5e73e47266a761a28b37e377f",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 301160201,
+      "MainMissionID": 3011602,
+      "MissionJsonPath": "Config/Level/Mission/3011602/Mission_301160201.json",
+      "LevelPlaneID": 20111,
+      "LevelFloorID": 20111001,
+      "TakeType": "Auto",
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 20134221,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowStartHint": "New",
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20111001,
+      "WayPointGroupID": 67,
+      "WayPointEntityID": 400001,
+      "FroceMapHint": true
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011602/MissionInfo_3011602.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "245132f77c9ea2e8664e4179969d9dbdd0e984ced97ae13e123f61deafbbf38d",
+    "sourceBlobSHA256": "b5119335a7251f3b93428df18a3da764983b2aa5e73e47266a761a28b37e377f",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 301160202,
+      "MainMissionID": 3011602,
+      "MissionJsonPath": "Config/Level/Mission/3011602/Mission_301160202.json",
+      "LevelPlaneID": 20111,
+      "LevelFloorID": 20111001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301160201
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301160202",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false,
+      "IsShowFinishEffect": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20111001,
+      "WayPointGroupID": 67,
+      "WayPointEntityID": 400001
+    }
+  },
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/3011607/MissionInfo_3011607.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "cc7e114c85f7d0ee2b881c53afbb5fdace115f5c14dcd13c253b30c7b23825d6",
+    "sourceBlobSHA256": "4a40cbc22ac03b83dc29662458c4d1d02e8d6b13f0194448d767336a67a59de4",
+    "path": [],
+    "row": {
+      "MainMissionID": 3011607,
+      "StartSubMissionList": [
+        301160701
+      ],
+      "FinishSubMissionList": [
+        301160702
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011607/MissionInfo_3011607.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "b9d143aeea05d4c277e118f56c1eafacf0d366ecdd9b1983efe2db00f571a1ae",
+    "sourceBlobSHA256": "66f0441cafea45caf264e14c99bbb03aae15cdae2cc4acfa9daca9134df2f128",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 301160701,
+      "MainMissionID": 3011607,
+      "MissionJsonPath": "Config/Level/Mission/3011607/Mission_301160701.json",
+      "LevelPlaneID": 20122,
+      "LevelFloorID": 20122001,
+      "TakeType": "Auto",
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 20134222,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowStartHint": "New",
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20122001,
+      "WayPointGroupID": 104,
+      "WayPointEntityID": 400001,
+      "FroceMapHint": true
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/3011607/MissionInfo_3011607.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "b9d143aeea05d4c277e118f56c1eafacf0d366ecdd9b1983efe2db00f571a1ae",
+    "sourceBlobSHA256": "66f0441cafea45caf264e14c99bbb03aae15cdae2cc4acfa9daca9134df2f128",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 301160702,
+      "MainMissionID": 3011607,
+      "MissionJsonPath": "Config/Level/Mission/3011607/Mission_301160702.json",
+      "LevelPlaneID": 20122,
+      "LevelFloorID": 20122001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        301160701
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_301160702",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false,
+      "IsShowFinishEffect": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 20122001,
+      "WayPointGroupID": 104,
+      "WayPointEntityID": 400001
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      67
+    ],
+    "row": {
+      "MainMissionID": 1011403,
+      "Type": "Main",
+      "WorldID": 201,
+      "DisplayPriority": 1011403,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 18440840110273942980
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 1011400
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "NextTrackMainMission": 1011501,
+      "TrackWeight": 100,
+      "RewardID": 11011403,
+      "DisplayRewardID": 11011403,
+      "ChapterID": 101002,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      68
+    ],
+    "row": {
+      "MainMissionID": 1011501,
+      "Type": "Main",
+      "WorldID": 201,
+      "DisplayPriority": 1011501,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 255570789094265575
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 1011403
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "NextTrackMainMission": 1011502,
+      "TrackWeight": 100,
+      "RewardID": 11011501,
+      "DisplayRewardID": 11011501,
+      "ChapterID": 101002,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      367
+    ],
+    "row": {
+      "MainMissionID": 2010501,
+      "Type": "Companion",
+      "WorldID": 201,
+      "DisplayPriority": 2010501,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 994947578581496934
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 2010500
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 12010501,
+      "DisplayRewardID": 12010501,
+      "MissionPack": 2010500,
+      "ChapterID": 601021,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      597
+    ],
+    "row": {
+      "MainMissionID": 3011012,
+      "Type": "Daily",
+      "DisplayPriority": 3011012,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 18162327579147813173
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "Manual"
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 231,
+      "DisplayRewardID": 231,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      601
+    ],
+    "row": {
+      "MainMissionID": 3011112,
+      "Type": "Daily",
+      "DisplayPriority": 3011112,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 8713617165922637572
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "Manual"
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 231,
+      "DisplayRewardID": 231,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      626
+    ],
+    "row": {
+      "MainMissionID": 3011602,
+      "Type": "Daily",
+      "DisplayPriority": 3011602,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 117998157407155861
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "Manual"
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 231,
+      "DisplayRewardID": 231,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      631
+    ],
+    "row": {
+      "MainMissionID": 3011607,
+      "Type": "Daily",
+      "DisplayPriority": 3011607,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 1484656219861394833
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "Manual"
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 231,
+      "DisplayRewardID": 231,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "daily",
+    "source": "resources/4.6/ExcelOutput/DailyMissionData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "a8f8601e66ddaeb5944028d7d511701fb2d92bfb6dc3c6ccf774f89f96343830",
+    "sourceBlobSHA256": "7cf6a5b25db9d91612202fe387246bd068549fe652ce6f6bd6652eb38507d0b4",
+    "path": [
+      35
+    ],
+    "row": {
+      "ID": 3011012,
+      "DailyMissionType": 1,
+      "GroupID": 30103,
+      "UnlockMainMission": 2010501,
+      "IconPath": "SpriteOutput/TabIcon/Quest/QuestDailyIcon.png",
+      "QuestID": 2100003
+    }
+  },
+  {
+    "kind": "daily",
+    "source": "resources/4.6/ExcelOutput/DailyMissionData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "a8f8601e66ddaeb5944028d7d511701fb2d92bfb6dc3c6ccf774f89f96343830",
+    "sourceBlobSHA256": "7cf6a5b25db9d91612202fe387246bd068549fe652ce6f6bd6652eb38507d0b4",
+    "path": [
+      39
+    ],
+    "row": {
+      "ID": 3011112,
+      "DailyMissionType": 1,
+      "GroupID": 30104,
+      "UnlockMainMission": 1011403,
+      "IconPath": "SpriteOutput/TabIcon/Quest/QuestDailyIcon.png",
+      "QuestID": 2100003
+    }
+  },
+  {
+    "kind": "daily",
+    "source": "resources/4.6/ExcelOutput/DailyMissionData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "a8f8601e66ddaeb5944028d7d511701fb2d92bfb6dc3c6ccf774f89f96343830",
+    "sourceBlobSHA256": "7cf6a5b25db9d91612202fe387246bd068549fe652ce6f6bd6652eb38507d0b4",
+    "path": [
+      64
+    ],
+    "row": {
+      "ID": 3011602,
+      "DailyMissionType": 1,
+      "GroupID": 30108,
+      "UnlockMainMission": 1011501,
+      "IconPath": "SpriteOutput/TabIcon/Quest/QuestDailyIcon.png",
+      "QuestID": 2100003
+    }
+  },
+  {
+    "kind": "daily",
+    "source": "resources/4.6/ExcelOutput/DailyMissionData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "a8f8601e66ddaeb5944028d7d511701fb2d92bfb6dc3c6ccf774f89f96343830",
+    "sourceBlobSHA256": "7cf6a5b25db9d91612202fe387246bd068549fe652ce6f6bd6652eb38507d0b4",
+    "path": [
+      69
+    ],
+    "row": {
+      "ID": 3011607,
+      "DailyMissionType": 1,
+      "GroupID": 30108,
+      "UnlockMainMission": 1011501,
+      "IconPath": "SpriteOutput/TabIcon/Quest/QuestDailyIcon.png",
+      "QuestID": 2100003
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1819
+    ],
+    "row": {
+      "StageID": 2012120,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 18,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1820
+    ],
+    "row": {
+      "StageID": 2012121,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1821
+    ],
+    "row": {
+      "StageID": 2012122,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1822
+    ],
+    "row": {
+      "StageID": 2012123,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1823
+    ],
+    "row": {
+      "StageID": 2012124,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1824
+    ],
+    "row": {
+      "StageID": 2012125,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1825
+    ],
+    "row": {
+      "StageID": 2012126,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1840
+    ],
+    "row": {
+      "StageID": 2013110,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 18,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1841
+    ],
+    "row": {
+      "StageID": 2013111,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1842
+    ],
+    "row": {
+      "StageID": 2013112,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1843
+    ],
+    "row": {
+      "StageID": 2013113,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1844
+    ],
+    "row": {
+      "StageID": 2013114,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1845
+    ],
+    "row": {
+      "StageID": 2013115,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      1846
+    ],
+    "row": {
+      "StageID": 2013116,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13087150147011258837
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1013010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10831
+    ],
+    "row": {
+      "StageID": 201212010,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 20,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10832
+    ],
+    "row": {
+      "StageID": 201212011,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 31,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10833
+    ],
+    "row": {
+      "StageID": 201212012,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10834
+    ],
+    "row": {
+      "StageID": 201212013,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10835
+    ],
+    "row": {
+      "StageID": 201212014,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10836
+    ],
+    "row": {
+      "StageID": 201212015,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10837
+    ],
+    "row": {
+      "StageID": 201212016,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 75,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002020,
+          "Monster1": 1002020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10838
+    ],
+    "row": {
+      "StageID": 201212020,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 20,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10839
+    ],
+    "row": {
+      "StageID": 201212021,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 31,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10840
+    ],
+    "row": {
+      "StageID": 201212022,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10841
+    ],
+    "row": {
+      "StageID": 201212023,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10842
+    ],
+    "row": {
+      "StageID": 201212024,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10843
+    ],
+    "row": {
+      "StageID": 201212025,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10844
+    ],
+    "row": {
+      "StageID": 201212026,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 75,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012010,
+          "Monster1": 1002020,
+          "Monster2": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10845
+    ],
+    "row": {
+      "StageID": 201212080,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 20,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10846
+    ],
+    "row": {
+      "StageID": 201212081,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 31,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10847
+    ],
+    "row": {
+      "StageID": 201212082,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10848
+    ],
+    "row": {
+      "StageID": 201212083,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10849
+    ],
+    "row": {
+      "StageID": 201212084,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10850
+    ],
+    "row": {
+      "StageID": 201212085,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10851
+    ],
+    "row": {
+      "StageID": 201212086,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 75,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10852
+    ],
+    "row": {
+      "StageID": 201212310,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 22,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10853
+    ],
+    "row": {
+      "StageID": 201212311,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 35,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10854
+    ],
+    "row": {
+      "StageID": 201212312,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 44,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10855
+    ],
+    "row": {
+      "StageID": 201212313,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 53,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10856
+    ],
+    "row": {
+      "StageID": 201212314,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 63,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10857
+    ],
+    "row": {
+      "StageID": 201212315,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 72,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10858
+    ],
+    "row": {
+      "StageID": 201212316,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 16229653902150898118
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "EliteGroup": 8,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "1"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1013020,
+          "Monster2": 1012030,
+          "Monster3": 1012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10859
+    ],
+    "row": {
+      "StageID": 201212320,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 22,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10860
+    ],
+    "row": {
+      "StageID": 201212321,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 35,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10861
+    ],
+    "row": {
+      "StageID": 201212322,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 44,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10862
+    ],
+    "row": {
+      "StageID": 201212323,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 53,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10863
+    ],
+    "row": {
+      "StageID": 201212324,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 63,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10864
+    ],
+    "row": {
+      "StageID": 201212325,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 72,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10865
+    ],
+    "row": {
+      "StageID": 201212326,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10866
+    ],
+    "row": {
+      "StageID": 201212340,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 22,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10867
+    ],
+    "row": {
+      "StageID": 201212341,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 35,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10868
+    ],
+    "row": {
+      "StageID": 201212342,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 44,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10869
+    ],
+    "row": {
+      "StageID": 201212343,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 53,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10870
+    ],
+    "row": {
+      "StageID": 201212344,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 63,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10871
+    ],
+    "row": {
+      "StageID": 201212345,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 72,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      10872
+    ],
+    "row": {
+      "StageID": 201212346,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "EliteGroup": 7,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1012030,
+          "Monster3": 1002020,
+          "Monster4": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1.2,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11475
+    ],
+    "row": {
+      "StageID": 201311020,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11476
+    ],
+    "row": {
+      "StageID": 201311021,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11477
+    ],
+    "row": {
+      "StageID": 201311022,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11478
+    ],
+    "row": {
+      "StageID": 201311023,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11479
+    ],
+    "row": {
+      "StageID": 201311024,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11480
+    ],
+    "row": {
+      "StageID": 201311025,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11481
+    ],
+    "row": {
+      "StageID": 201311026,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 76,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002030,
+          "Monster3": 1002040
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11482
+    ],
+    "row": {
+      "StageID": 201311030,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11483
+    ],
+    "row": {
+      "StageID": 201311031,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11484
+    ],
+    "row": {
+      "StageID": 201311032,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11485
+    ],
+    "row": {
+      "StageID": 201311033,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11486
+    ],
+    "row": {
+      "StageID": 201311034,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11487
+    ],
+    "row": {
+      "StageID": 201311035,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11488
+    ],
+    "row": {
+      "StageID": 201311036,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 76,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "2"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002040
+        },
+        {
+          "Monster0": 1002030,
+          "Monster1": 1002040,
+          "Monster2": 1002050,
+          "Monster3": 1002030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11489
+    ],
+    "row": {
+      "StageID": 201311040,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11490
+    ],
+    "row": {
+      "StageID": 201311041,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11491
+    ],
+    "row": {
+      "StageID": 201311042,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11492
+    ],
+    "row": {
+      "StageID": 201311043,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11493
+    ],
+    "row": {
+      "StageID": 201311044,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11494
+    ],
+    "row": {
+      "StageID": 201311045,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11495
+    ],
+    "row": {
+      "StageID": 201311046,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 76,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "3"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002040,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1002050,
+          "Monster2": 1002050
+        },
+        {
+          "Monster0": 1002040,
+          "Monster1": 1003010,
+          "Monster2": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11496
+    ],
+    "row": {
+      "StageID": 201311050,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11497
+    ],
+    "row": {
+      "StageID": 201311051,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11498
+    ],
+    "row": {
+      "StageID": 201311052,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11499
+    ],
+    "row": {
+      "StageID": 201311053,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11500
+    ],
+    "row": {
+      "StageID": 201311054,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11501
+    ],
+    "row": {
+      "StageID": 201311055,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11502
+    ],
+    "row": {
+      "StageID": 201311056,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 1659673182808509609
+      },
+      "HardLevelGroup": 1,
+      "Level": 77,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 8002040,
+          "Monster2": 1012010,
+          "Monster3": 1012030
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11895
+    ],
+    "row": {
+      "StageID": 201342210,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 18,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11896
+    ],
+    "row": {
+      "StageID": 201342211,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11897
+    ],
+    "row": {
+      "StageID": 201342212,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11898
+    ],
+    "row": {
+      "StageID": 201342213,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11899
+    ],
+    "row": {
+      "StageID": 201342214,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11900
+    ],
+    "row": {
+      "StageID": 201342215,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11901
+    ],
+    "row": {
+      "StageID": 201342216,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 17626827885970395495
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1002050,
+          "Monster1": 1002030,
+          "Monster2": 1002040,
+          "Monster3": 1002050
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11902
+    ],
+    "row": {
+      "StageID": 201342220,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 18,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11903
+    ],
+    "row": {
+      "StageID": 201342221,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11904
+    ],
+    "row": {
+      "StageID": 201342222,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11905
+    ],
+    "row": {
+      "StageID": 201342223,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11906
+    ],
+    "row": {
+      "StageID": 201342224,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11907
+    ],
+    "row": {
+      "StageID": 201342225,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      11908
+    ],
+    "row": {
+      "StageID": 201342226,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 13338180008181879161
+      },
+      "HardLevelGroup": 1,
+      "Level": 78,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 1012030,
+          "Monster1": 1002020,
+          "Monster2": 1002020,
+          "Monster3": 1012020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  }
+]

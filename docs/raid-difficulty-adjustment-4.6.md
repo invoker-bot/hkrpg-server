@@ -1,0 +1,21 @@
+# 4.6 剧情副本简单难度
+
+本批接通DifficultyAdjustmentGetDataCsReq/ScRsp（4193/4173）及UpdateData（4103/4129）。原始AMKBFMCOIHK的ID字段8、来源字段11和难度字段12，以及Update请求的子消息字段2，均由本机4.6客户端有边界的WriteTo、字段读取和实际发送函数静态核对。原始协议文件、生成类、命令号和版本常量保持不变。未运行或修改本机客户端，也未取得游戏UI验收。
+
+当前支持原始43306、source=1、实际世界等级1的Default/Easy菜单选择。完整RaidConfig原始行的DifficultyAdjustmentType=1、DisplayEventID=20321050与两阶段入口保持；Easy按本机GetEasyWorldLevel的减一并限制到零规则选择世界0原始PlaneEvent/Stage。当前只验证世界1到0，不开放其他世界等级或其他副本。source=2的关卡选择仅核对原始DifficultyAdjustmentStage关联表，尚未实现。
+
+菜单只返回真实保存选择，不制造默认记录。重复/并发相同选择只保存一次；拒绝缺失子消息、未知字段、重复标量/子消息、非法枚举、溢出ID、错误来源、未知副本及不支持的玩家等级。正在副本、战斗、其他实例或不兼容临时队伍上下文不能改选。保存失败回退内存，可显式重试；这不保证数据库在任意断电边界的原子恢复。
+
+选择保存到Player.gameplay；新Easy局另保存不可变的43306身份、实际等级1、有效等级0、Easy标志和完整原始入口SHA。暂停后选择Default不改写已有Easy局，重入继续使用冻结世界0；旧世界0局没有该快照，后来升到世界1并选择Easy不能借旧记录补造新局。实际等级或完整入口来源变化关闭对应归属与继续结算。5868项封存时显式Default只保存菜单、世界1新局仍关闭；后续显式Default入口已在docs/default-world-one-raid-4.6.md追加，历史封存源码/报告保持不改写。其他难度和入口仍未全部可玩。
+
+SceneEntityLoader在构建目标Scene时核对所属冻结副本，NPC使用有效世界0；事件战斗及SceneEnterStage响应选择原始203210500（Level24），战斗序列化返回世界0，正式玩家信息仍为世界1。战斗保存实际run和快照引用，结算前再次核对；战斗中等级变化、原始行变化、归属消失不进入结算或发奖。KillMonsterInBattle和CustomValue上下文使用相同有效世界；其他既有流程保持原有有限实现。
+
+原始1021304试用角色是按世界等级取表的剧情角色。本批追加其原始WorldLevel=1行，仍由现有TrialManager按正式世界1构建Level40/装备21002/七技能，不把试用角色表改到世界0。试用队伍的暂停重入、消费后MP与正式MP隔离沿用已实现流程。第一次新增此检查漏装世界1试用表，导致夹具失败，修正后验证；该失败不计生产缺陷。
+
+新增31项Java检查。原生路由缺失的14项初始失败属于同一入口缺口；20项阶段有4项入口失败；24项阶段有4项怪物/关卡/结算行为失败；28项阶段有1项快照损坏仍回退正式世界战斗的失败。重叠用例不相加为独立缺陷。三种实际Player/Morphia状态各两次恢复包括活动Easy局、暂停Easy局、暂停后选择Default；实际场景到达和前置/早期任务结果是明确夹具。单位测试NPC放置也是合成夹具。
+
+`src/test/resources/fixtures/raid-difficulty-adjustment-4.6.json`记录TurnBasedGameData固定提交724b139d8c9c32d12552eb95745a4fee72bfe48b的五份完整Git blob和七条原始记录。已核对本地资源原始记录及LF规范化SHA；没有改写运营资源。客户端静态证据保存在build/client46-difficulty-adjustment-native-bounded.json和wire-bounded.json，GameAssembly SHA为8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3，metadata SHA为09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130。
+
+`scripts/smoke-default-entry-mission-raid.py --easy-world-one`使用原始两阶段/试用来源和独立H2目录。实际世界1、父任务接取及早期Talk/StageWin结果为隔离夹具；难度选择、原生事件入战和QUIT、重连/重启、暂停改选、重入和正式队伍恢复由实际服务器执行。预期133次KCP、11份同UID快照、8次正常stop、7次H2进程重启、两场世界0实际事件战斗；只有完成验证报告后计通过。
+
+本批全量、独立源码包、正常Dispatch/H2和旧世界0回归以build/raid-difficulty-verification.json为准，未完成检查不计通过。完整剧情演出、自然战斗输入、其他难度/入口、其他活动宇宙玩法、正式客户端UI及断电原子性仍待完成，功能状态保持partial。

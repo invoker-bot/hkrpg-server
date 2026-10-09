@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "type": {
+    "typeIndex": 24280,
+    "name": "AdventureByCompareMP",
+    "methods": [
+      {
+        "index": 138032,
+        "name": ".ctor",
+        "rva": "0x1d38ac10",
+        "typeIndex": 24280,
+        "typeName": "AdventureByCompareMP"
+      },
+      {
+        "index": 138033,
+        "name": "OJNNBEJLDIJ",
+        "rva": "0x1d38abe0",
+        "typeIndex": 24280,
+        "typeName": "AdventureByCompareMP"
+      },
+      {
+        "index": 138034,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d38ac20",
+        "typeIndex": 24280,
+        "typeName": "AdventureByCompareMP"
+      },
+      {
+        "index": 138035,
+        "name": "LJACLBNEEEB",
+        "rva": "0x1d38adf0",
+        "typeIndex": 24280,
+        "typeName": "AdventureByCompareMP"
+      },
+      {
+        "index": 138036,
+        "name": "EOJLPDGNHEK",
+        "rva": "0x1d38ae20",
+        "typeIndex": 24280,
+        "typeName": "AdventureByCompareMP"
+      }
+    ],
+    "fields": [
+      {
+        "fieldIndex": 103506,
+        "name": "CompareType",
+        "nativeTypeIndex": 487251,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 16452,
+          "name": "CompareType"
+        }
+      },
+      {
+        "fieldIndex": 103507,
+        "name": "CompareValue",
+        "nativeTypeIndex": 453406,
+        "nativeType": {
+          "kind": 12
+        }
+      }
+    ]
+  },
+  "constructor": {
+    "metadataMethodIndex": 138032,
+    "rva": "0x1d38ac10",
+    "instructions": [
+      "1d38ac10: mov byte ptr [rcx + 0x10], 1",
+      "1d38ac14: ret "
+    ],
+    "compareValueDefault": 0
+  },
+  "compareEnum": {
+    "Unknow": 0,
+    "Greater": 1,
+    "GreaterEqual": 2,
+    "NotEqual": 3,
+    "Equal": 4,
+    "LessEqual": 5,
+    "Less": 6
+  },
+  "sourceFixture": "src/test/resources/fixtures/maze-mp-predicate-4.6.json",
+  "completeModifierLifecycleVerified": false,
+  "clientModified": false,
+  "clientGameplayVerified": false
+}

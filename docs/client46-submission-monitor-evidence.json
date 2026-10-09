@@ -1,0 +1,87 @@
+{
+  "clientModified": false,
+  "clientExecutableStarted": false,
+  "clientGameplayVerified": false,
+  "nativeConditionExecutorVerified": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "nativeRelationConfig": {
+    "typeIndex": 19020,
+    "name": "SubMissionRelationConfig",
+    "methods": [
+      {
+        "index": 112075,
+        "name": ".ctor",
+        "rva": "0x1db094a0",
+        "typeIndex": 19020,
+        "typeName": "SubMissionRelationConfig"
+      },
+      {
+        "index": 112076,
+        "name": "OJNNBEJLDIJ",
+        "rva": "0x1db09390",
+        "typeIndex": 19020,
+        "typeName": "SubMissionRelationConfig"
+      },
+      {
+        "index": 112077,
+        "name": "LJACLBNEEEB",
+        "rva": "0x1db094b0",
+        "typeIndex": 19020,
+        "typeName": "SubMissionRelationConfig"
+      }
+    ],
+    "fields": [
+      {
+        "fieldIndex": 90474,
+        "name": "MonitorSubMissionID",
+        "nativeTypeIndex": 453410,
+        "nativeType": {
+          "kind": 9
+        }
+      },
+      {
+        "fieldIndex": 90475,
+        "name": "MonitoredSubMissionIDList",
+        "nativeTypeIndex": 465134,
+        "nativeType": {
+          "kind": 29
+        }
+      }
+    ]
+  },
+  "resourceSourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceMonitor": {
+    "main": 1054502,
+    "monitor": 105450235,
+    "monitored": [
+      105450232
+    ],
+    "monitoredAggregate": [
+      105450231,
+      105450234
+    ],
+    "monitoredProgress": 2
+  },
+  "interpretation": "本项目将明确的单对象监视关系接到同主任务的实际完成记录；原始文件及元数据字段证明关系结构，尚未核对原生完成条件执行器。",
+  "supportedShape": {
+    "finishType": "SubMissionMultiFinish",
+    "paramType": "ListContain",
+    "progress": 1,
+    "singleRelation": true,
+    "singleMonitoredObjective": true,
+    "sameAcceptedMain": true
+  },
+  "otherOriginalTargetsPending": [
+    105450212,
+    105452804,
+    804010119,
+    804010120,
+    804010121
+  ],
+  "runtimeProtocolClassesModified": false,
+  "commandsModified": false,
+  "operatorDataModified": false
+}

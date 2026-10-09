@@ -1,0 +1,435 @@
+{
+  "sourceRepo": "https://github.com/Dimbreath/TurnBasedGameData",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "files": [
+    {
+      "path": "ExcelOutput/MazeProp.json",
+      "sha256": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418",
+      "sourceBlobSha256": "dc806a0172350f18e39d755040906652af05f645f107690072808de9987c021d"
+    },
+    {
+      "path": "ExcelOutput/RogueRoom.json",
+      "sha256": "3635ab4f5a58cee69c7920fa22a1c0aae6a0a057ead9ef6e5c2486b85194148b",
+      "sourceBlobSha256": "a9903207742aff67e64f607e376dfbc499c635f56bd53264efcefea0fdf581d9"
+    },
+    {
+      "path": "ExcelOutput/MapEntrance.json",
+      "sha256": "d808baea60c70e4f96e889bdc7899450ac1c6c97eb62ba684bc144642ea52da4",
+      "sourceBlobSha256": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8"
+    },
+    {
+      "path": "ExcelOutput/RogueMiracle.json",
+      "sha256": "db1a991d075d8bc560c7d44c06439f9693a3ea82c5babc81bc88cd2e539427be",
+      "sourceBlobSha256": "a1486702c0c6ca4c3c1b78d3562edba4b045a5f2925d68042304b2c2719f3fce"
+    },
+    {
+      "path": "ExcelOutput/RogueMiracleEffect.json",
+      "sha256": "41f42747a1f089fe476f2d14f995b9497ca8d94dd979fdadaf3571485e42fb08",
+      "sourceBlobSha256": "877b6440ced886761062403df6bc50d1a97bab77dda4e2ddc8f7e8cc26b8b5f6"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G22.json",
+      "sha256": "0b891a38f6b0a2d98fc89a20dbd63fb4a08c222b223919ac00b36a0057002a25",
+      "sourceBlobSha256": "50aeab6d84c933dacdbac2ce2dac505448199170045cc43e72f66ce21ea4de59"
+    }
+  ],
+  "rows": {
+    "MazeProp": [
+      {
+        "ID": 100024,
+        "PropType": "PROP_DESTRUCT",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Des_HPRecoverBox_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_DesHPRecoverBox_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      },
+      {
+        "ID": 100025,
+        "PropType": "PROP_DESTRUCT",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Des_MPRecoverBox_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_DesMPRecoverBox_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      }
+    ],
+    "RogueRoom": [
+      {
+        "RogueRoomID": 306,
+        "RogueRoomType": 5,
+        "MapEntrance": 8000103,
+        "GroupID": 22,
+        "GroupWithContent": {
+          "22": 0
+        },
+        "RogueRoomSections": [
+          3
+        ]
+      }
+    ],
+    "MapEntrance": [
+      {
+        "ID": 8000103,
+        "EntranceType": "Explore",
+        "PlaneID": 80001,
+        "FloorID": 80001003,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      }
+    ],
+    "RogueMiracle": [
+      {
+        "MiracleID": 18,
+        "MiracleDisplayID": 45,
+        "MiracleEffectDisplayID": 64
+      },
+      {
+        "MiracleID": 64,
+        "MiracleDisplayID": 45,
+        "MiracleEffectDisplayID": 64,
+        "UnlockHandbookMiracleID": 64
+      }
+    ],
+    "RogueMiracleEffect": [
+      {
+        "MiracleEffectID": 64,
+        "MiracleDesc": {
+          "Hash": 18401802804391226077
+        },
+        "ParamList": [
+          {
+            "Value": 0
+          }
+        ]
+      }
+    ]
+  },
+  "group": {
+    "$type": "RPG.GameCore.RtLevelGroupInfo",
+    "GroupName": "Rogue_RestRoom",
+    "LevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Group_RestRoom.json",
+    "AreaAnchorName": "LevelArea_P80001_F80001003_G22",
+    "LoadSide": "Server",
+    "ConflictIDList": [],
+    "AnchorList": [
+      {
+        "Name": "Anchor1",
+        "RotY": 270,
+        "ID": 1,
+        "PosX": 178.04,
+        "PosY": 77.01668,
+        "PosZ": 95.72
+      }
+    ],
+    "MonsterList": [],
+    "PropList": [
+      {
+        "PropID": 1021,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_Door.json",
+        "Trigger": {
+          "Radius": 2,
+          "DimX": 1,
+          "DimY": 1,
+          "DimZ": 1,
+          "PointList": []
+        },
+        "CampID": 4,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Door1",
+        "RotY": 89.99995,
+        "ID": 300002,
+        "PosX": 158.14,
+        "PosY": 77.01708,
+        "PosZ": 95.70473
+      },
+      {
+        "PropID": 1001,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Rogue/InitLevelGraph_Prop_RogueLobby_PickMachine_01.json",
+        "Trigger": {
+          "Radius": 2,
+          "DimX": 1,
+          "DimY": 1,
+          "DimZ": 1,
+          "PointList": []
+        },
+        "CampID": 4,
+        "EventID": 10000,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [
+          13
+        ],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Pick",
+        "RotY": 119.9999,
+        "ID": 300004,
+        "PosX": 167.74,
+        "PosY": 77.01688,
+        "PosZ": 100.66
+      },
+      {
+        "PropID": 100025,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Des_MPRevoverBox_01.json",
+        "CampID": 4,
+        "EventID": 18001,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Destruct",
+        "RotY": 209.9961,
+        "ID": 300012,
+        "PosX": 173.24,
+        "PosY": 77.01666,
+        "PosZ": 99.63999
+      },
+      {
+        "PropID": 100024,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Des_HPRevoverBox_01.json",
+        "CampID": 4,
+        "EventID": 18002,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Destruct",
+        "RotY": 209.9961,
+        "ID": 300013,
+        "PosX": 173.25,
+        "PosY": 77.01707,
+        "PosZ": 98.92
+      },
+      {
+        "PropID": 100024,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Des_HPRevoverBox_01.json",
+        "CampID": 4,
+        "EventID": 18002,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Destruct",
+        "RotY": 209.9961,
+        "ID": 300015,
+        "PosX": 172.55,
+        "PosY": 77.01652,
+        "PosZ": 99.27999
+      },
+      {
+        "PropID": 1002,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Rogue/InitLevelGraph_Prop_RogueLobby_ReviveMachine_01.json",
+        "CampID": 4,
+        "State": "Open",
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [
+          14
+        ],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Revive",
+        "RotY": 44.99997,
+        "ID": 300019,
+        "PosX": 167.35,
+        "PosY": 77.01583,
+        "PosZ": 92.75
+      },
+      {
+        "PropID": 100001,
+        "LoadOnInitial": false,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+        "ValueSource": {
+          "Values": [
+            {
+              "$type": "RPG.GameCore.SharedString",
+              "Value": "83,300003",
+              "Key": "Maze_Prop_Chap01_DoorFrame"
+            }
+          ]
+        },
+        "CampID": 4,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Prop1",
+        "ID": 300001,
+        "PosX": 125.9901,
+        "PosY": 80.51331,
+        "PosZ": 103.866
+      },
+      {
+        "PropID": 300003,
+        "LoadOnInitial": false,
+        "IsOverrideInitLevelGraph": true,
+        "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+        "CampID": 4,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "StageObjectCapture": {
+          "BlockAlias": "Chap00_CloseView_MAZ_INT_N301_Room_Corridor_01_BlockData",
+          "PrefabAlias": "DoorFrame0"
+        },
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Prop3",
+        "RotY": 90,
+        "ID": 300003,
+        "PosX": 125.9661,
+        "PosY": 80.4608,
+        "PosZ": 129.012
+      },
+      {
+        "Scale": {
+          "X": 2,
+          "Y": 1,
+          "Z": 1
+        },
+        "PropID": 100006,
+        "IsOverrideInitLevelGraph": true,
+        "CampID": 4,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Prop5",
+        "RotY": 89.99999,
+        "ID": 300005,
+        "PosX": 184.03,
+        "PosY": 77.01691,
+        "PosZ": 95.78
+      },
+      {
+        "PropID": 100006,
+        "IsOverrideInitLevelGraph": true,
+        "CampID": 4,
+        "CustomTriggerMap": {},
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "Name": "Prop6",
+        "ID": 300006,
+        "PosX": 174.07,
+        "PosY": 77.05293,
+        "PosZ": 102.17
+      }
+    ],
+    "DistrictList": [],
+    "WaypointList": [],
+    "PathwayList": [],
+    "BattleAreaList": [],
+    "NPCList": [
+      {
+        "NPCID": 1013,
+        "LevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_NPC_Avatar.json",
+        "DialogueGroups": [],
+        "ServerInteractVerificationIDList": [],
+        "DefaultLookAtMode": "Closed",
+        "BoardShowList": [
+          4
+        ],
+        "TalkDialogGroupIDList": [],
+        "DefaultIdleFreeStyleMotionID": 310130000,
+        "IsMapContent": true,
+        "MiniMapIconType": 56,
+        "InitialHiddenNodeList": [],
+        "Dialog": {
+          "LevelGraph": "Config/Level/RogueDialogue/RogueDialogueEvent/Act/Act403810002.json",
+          "PackList": []
+        },
+        "Name": "NPC1",
+        "RotY": 105.0001,
+        "ID": 400001,
+        "PosX": 162.17,
+        "PosY": 77.01718,
+        "PosZ": 98.75
+      }
+    ],
+    "CrowdList": [],
+    "PedestrianList": [],
+    "SmartObjectList": []
+  },
+  "groupId": 22,
+  "isolatedFloorContainsOnlyGroup22": true,
+  "baseHpRecoveryProjectRule": 2500,
+  "baseMpRecoveryProjectRule": 2,
+  "curioMultiplier": 2,
+  "sourceSpawnFrequencyImplemented": false,
+  "completePropLootImplemented": false,
+  "clientGameplayVerified": false
+}

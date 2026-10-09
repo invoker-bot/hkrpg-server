@@ -1,0 +1,1751 @@
+[
+  {
+    "kind": "room",
+    "source": "resources/4.6/ExcelOutput/RogueRoom.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "3635ab4f5a58cee69c7920fa22a1c0aae6a0a057ead9ef6e5c2486b85194148b",
+    "sourceBlobSHA256": "a9903207742aff67e64f607e376dfbc499c635f56bd53264efcefea0fdf581d9",
+    "path": [
+      25
+    ],
+    "row": {
+      "RogueRoomID": 200112,
+      "RogueRoomType": 1,
+      "MapEntrance": 8100201,
+      "GroupID": 57,
+      "GroupWithContent": {
+        "57": 3010,
+        "59": 3007,
+        "58": 3008
+      },
+      "RogueRoomSections": [
+        0
+      ]
+    }
+  },
+  {
+    "kind": "entry",
+    "source": "resources/4.6/ExcelOutput/MapEntrance.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d808baea60c70e4f96e889bdc7899450ac1c6c97eb62ba684bc144642ea52da4",
+    "sourceBlobSHA256": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+    "path": [
+      810
+    ],
+    "row": {
+      "ID": 8100201,
+      "EntranceType": "Explore",
+      "PlaneID": 81002,
+      "FloorID": 81002001,
+      "BeginMainMissionList": [],
+      "FinishMainMissionList": [],
+      "FinishSubMissionList": []
+    }
+  },
+  {
+    "kind": "plane",
+    "source": "resources/4.6/ExcelOutput/MazePlane.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de",
+    "sourceBlobSHA256": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+    "path": [
+      357
+    ],
+    "row": {
+      "PlaneID": 81002,
+      "PlaneType": "Rogue",
+      "SubType": 1,
+      "MazePoolType": 3,
+      "WorldID": 101,
+      "PlaneName": {
+        "Hash": 4353013476209336816
+      },
+      "StartFloorID": 81002001,
+      "FloorIDList": [
+        81002001
+      ]
+    }
+  },
+  {
+    "kind": "floor",
+    "source": "resources/4.6/Config/LevelOutput/RuntimeFloor/P81002_F81002001.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "55713406b5a2ffa9cf051d1dccbf9adf6ae021af8d0eb3fc15e3c20f3d983fbc",
+    "sourceBlobSHA256": "5955c05be00d46b802c13917d4796c9d4763eaaba0b0697e3327eb18a625f6b5",
+    "path": [],
+    "row": {
+      "FloorID": 81002001,
+      "StartGroupIndex": 10,
+      "StartAnchorID": 1,
+      "StageData": "Stages/Outputs/Chapter00/Stages/Chap00_MAZ_N201_MainLine_01_StageData/Chap00_MAZ_N201_MainLine_01_StageData.stage",
+      "CameraType": "Maze",
+      "LayerToAreaMask": [
+        1
+      ],
+      "NavmapConfigPath": "Config/LevelOutput/Map/MapInfo_P81002_F81002001.json",
+      "GroupInstanceList": [
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G1.json",
+          "Name": "DefaultGroup",
+          "ID": 1
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G56.json",
+          "Name": "Sound",
+          "ID": 56
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G57.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 57
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G58.json",
+          "Name": "Rogue_StartRoom_Monster",
+          "ID": 58
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G59.json",
+          "Name": "Rogue_StartRoom_Monster_Patrol",
+          "ID": 59
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G60.json",
+          "Name": "Door",
+          "ID": 60
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G61.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 61
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G62.json",
+          "Name": "Rogue_StartRoom_Monster",
+          "ID": 62
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G63.json",
+          "Name": "Rogue_StartRoom_Monster_Patrol",
+          "ID": 63
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G64.json",
+          "Name": "FlipBridge",
+          "ID": 64
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G65.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 65
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G66.json",
+          "Name": "Rogue_StartRoom_Monster",
+          "ID": 66
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G67.json",
+          "Name": "Rogue_StartRoom_Monster_Patrol",
+          "ID": 67
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G68.json",
+          "Name": "Rogue_ChallengeRoom",
+          "ID": 68
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G69.json",
+          "Name": "Rogue_ChallengeRoom",
+          "ID": 69
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G70.json",
+          "Name": "Rogue_ChallengeRoom",
+          "ID": 70
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G71.json",
+          "Name": "Rogue_NormalRoom",
+          "ID": 71
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G72.json",
+          "Name": "Rogue_NormalRoom",
+          "ID": 72
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G73.json",
+          "Name": "Rogue_NormalRoom",
+          "ID": 73
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G74.json",
+          "Name": "Rogue_EventRoom",
+          "ID": 74
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G76.json",
+          "Name": "Rogue_EventRoom",
+          "ID": 76
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G77.json",
+          "Name": "Rogue_EventRoom",
+          "ID": 77
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G79.json",
+          "Name": "Rogue_RestRoom",
+          "ID": 79
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G80.json",
+          "Name": "Rogue_EliteRoom",
+          "ID": 80
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G85.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 85
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G86.json",
+          "Name": "Rogue_StartRoom_Monster",
+          "ID": 86
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G87.json",
+          "Name": "Rogue_StartRoom_Monster_Patrol",
+          "ID": 87
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G88.json",
+          "Name": "Rogue_NormalRoom",
+          "ID": 88
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G89.json",
+          "Name": "Rogue_NormalRoom_Monster",
+          "ID": 89
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G90.json",
+          "Name": "Rogue_NormalRoom",
+          "ID": 90
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G91.json",
+          "Name": "Rogue_NormalRoom_Monster",
+          "ID": 91
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G92.json",
+          "Name": "Rogue_SpecialBuffAfterTalk_Prop",
+          "ID": 92
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G93.json",
+          "Name": "Rogue_BossRoom",
+          "ID": 93
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G94.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 94
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G95.json",
+          "Name": "Rogue_StartRoom_Monster",
+          "ID": 95
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G96.json",
+          "Name": "Rogue_StartRoom_Monster_Patrol",
+          "ID": 96
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G98.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 98
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G99.json",
+          "Name": "Rogue_EliteRoom",
+          "ID": 99
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G100.json",
+          "Name": "DefaultProp",
+          "ID": 100
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G102.json",
+          "Name": "BlockObject",
+          "ID": 102
+        }
+      ],
+      "DimensionList": [
+        {
+          "DefaultEnviroProfile": "Stages/Outputs/Chapter00/EnviroProfile/Chap00_CloseView_MAZ_N201_01_Day.enviroProfile.asset",
+          "CameraType": "Maze",
+          "BattleAreaList": [],
+          "IsExclusiveSaveMapSection": true,
+          "GroupIndexList": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39
+          ],
+          "ExclusiveSavedGroupIDList": [],
+          "StartGroupIndex": 10,
+          "StartAnchorID": 1
+        }
+      ],
+      "GroupInstanceCommonMap": {
+        "1": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true
+        },
+        "56": {
+          "SaveType": "Permanent",
+          "LoadOnInitial": true
+        },
+        "57": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "58": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "59": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "60": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "61": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "62": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "63": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "64": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "GroupRefreshID": 1
+        },
+        "65": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "66": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "67": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "68": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "69": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "70": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "71": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "72": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "73": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "74": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "76": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "77": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "79": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "80": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "85": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "86": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "87": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "88": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "89": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "90": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "91": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "92": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "93": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "94": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "95": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "96": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "98": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "99": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "100": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "102": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true
+        }
+      },
+      "EnableGroupRegionStreaming": false
+    }
+  },
+  {
+    "kind": "group",
+    "source": "resources/4.6/Config/LevelOutput/SharedRuntimeGroup/Groups_P81002_F81002001/LevelGroup_P81002_F81002001_G58.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "fb102175d100aa1849de1bb7e5129ba9934a00e5c97aea8e85014183f26d1d04",
+    "sourceBlobSHA256": "27f5fb1cfa50cedc88f4bf00cf12f7a960492fae7225295235c67ec9cacba97b",
+    "path": [],
+    "row": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "Rogue_StartRoom_Monster",
+      "LevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Group_StartRoom_Monster.json",
+      "AreaAnchorName": "LevelArea_P81002_F81002001_G58",
+      "LoadSide": "Server",
+      "AnchorList": [],
+      "MonsterList": [
+        {
+          "NPCMonsterID": 1002040,
+          "AIConfig": {
+            "PathwayList": [
+              {
+                "UseOwnerGroup": true,
+                "UseGroup": 58,
+                "UseID": 1,
+                "StartAt": 1
+              }
+            ],
+            "SlaveConfigList": []
+          },
+          "CampID": 3,
+          "BattleArea": {
+            "GroupID": 1,
+            "ID": 1
+          },
+          "BoardShowList": [
+            2
+          ],
+          "Name": "Monster2",
+          "RotY": 74.9641,
+          "ID": 200002,
+          "PosX": 2.72,
+          "PosY": 2.895139,
+          "PosZ": -44.17
+        }
+      ],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_TriggerBuffSelect.json",
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Buff",
+          "RotY": 90,
+          "ID": 300001
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [
+        {
+          "ID": 1,
+          "PosX": 3.54,
+          "PosY": 2.920838,
+          "PosZ": -47.05
+        },
+        {
+          "ID": 2,
+          "PosX": 1.51,
+          "PosY": 2.920838,
+          "PosZ": -40.69
+        }
+      ],
+      "PathwayList": [
+        {
+          "WaypointIDList": [
+            1,
+            2
+          ],
+          "Name": "Pathway1",
+          "ID": 1,
+          "PosX": 5.477053,
+          "PosY": 2.920838,
+          "PosZ": -40.69805
+        }
+      ],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    }
+  },
+  {
+    "kind": "monsterGroup",
+    "source": "resources/4.6/ExcelOutput/RogueMonsterGroup.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "6a9ecc270047c2d696ffcd87a4d159c0992447130e80408f4d15ea0006ce79c6",
+    "sourceBlobSHA256": "25818a8fa38a0b351a639ebcec0a71a150b344049b1ec25f9097b573f904b8d7",
+    "path": [
+      25
+    ],
+    "row": {
+      "RogueMonsterGroupID": 3008,
+      "RogueMonsterListAndWeight": {
+        "30081": 9,
+        "30082": 9,
+        "31011": 4,
+        "31012": 4,
+        "31013": 4
+      }
+    }
+  },
+  {
+    "kind": "rogueMonster",
+    "source": "resources/4.6/ExcelOutput/RogueMonster.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "609132eae8d25854d30dfb48590181896fcab40c7d999c2ad03ce3ceada50056",
+    "sourceBlobSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+    "path": [
+      45
+    ],
+    "row": {
+      "RogueMonsterID": 30081,
+      "NpcMonsterID": 8001030,
+      "EventID": 80030081
+    }
+  },
+  {
+    "kind": "rogueMonster",
+    "source": "resources/4.6/ExcelOutput/RogueMonster.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "609132eae8d25854d30dfb48590181896fcab40c7d999c2ad03ce3ceada50056",
+    "sourceBlobSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+    "path": [
+      46
+    ],
+    "row": {
+      "RogueMonsterID": 30082,
+      "NpcMonsterID": 8012010,
+      "EventID": 80030082
+    }
+  },
+  {
+    "kind": "rogueMonster",
+    "source": "resources/4.6/ExcelOutput/RogueMonster.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "609132eae8d25854d30dfb48590181896fcab40c7d999c2ad03ce3ceada50056",
+    "sourceBlobSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+    "path": [
+      67
+    ],
+    "row": {
+      "RogueMonsterID": 31011,
+      "NpcMonsterID": 8002060,
+      "EventID": 80031011
+    }
+  },
+  {
+    "kind": "rogueMonster",
+    "source": "resources/4.6/ExcelOutput/RogueMonster.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "609132eae8d25854d30dfb48590181896fcab40c7d999c2ad03ce3ceada50056",
+    "sourceBlobSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+    "path": [
+      68
+    ],
+    "row": {
+      "RogueMonsterID": 31012,
+      "NpcMonsterID": 8002080,
+      "EventID": 80031012
+    }
+  },
+  {
+    "kind": "rogueMonster",
+    "source": "resources/4.6/ExcelOutput/RogueMonster.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "609132eae8d25854d30dfb48590181896fcab40c7d999c2ad03ce3ceada50056",
+    "sourceBlobSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+    "path": [
+      69
+    ],
+    "row": {
+      "RogueMonsterID": 31013,
+      "NpcMonsterID": 8002070,
+      "EventID": 80031013
+    }
+  },
+  {
+    "kind": "npc",
+    "source": "resources/4.6/ExcelOutput/NPCMonsterData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
+    "sourceBlobSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+    "path": [
+      230
+    ],
+    "row": {
+      "ID": 8001030,
+      "NPCName": {
+        "Hash": 6992162709149774251
+      },
+      "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Minion03_00_Entity.json",
+      "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Minion03_00_Config.json",
+      "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Steer.json",
+      "MiniMapIconType": 5,
+      "Rank": "Minion",
+      "IsMazeLink": true,
+      "PrototypeID": 8001030,
+      "MappingInfoID": 3001
+    }
+  },
+  {
+    "kind": "npc",
+    "source": "resources/4.6/ExcelOutput/NPCMonsterData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
+    "sourceBlobSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+    "path": [
+      238
+    ],
+    "row": {
+      "ID": 8002060,
+      "NPCName": {
+        "Hash": 12948843582600228830
+      },
+      "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Minion04_01_Entity.json",
+      "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Minion04_02_Config.json",
+      "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/NPCMonster_XP_Minion04/ST_NPCMonster_XP_Minion04_Master.json",
+      "MiniMapIconType": 5,
+      "Rank": "MinionLv2",
+      "IsMazeLink": true,
+      "PrototypeID": 8002050
+    }
+  },
+  {
+    "kind": "npc",
+    "source": "resources/4.6/ExcelOutput/NPCMonsterData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
+    "sourceBlobSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+    "path": [
+      239
+    ],
+    "row": {
+      "ID": 8002070,
+      "NPCName": {
+        "Hash": 5557063902460499604
+      },
+      "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Minion04_01_Entity.json",
+      "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Minion04_03_Config.json",
+      "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/NPCMonster_XP_Minion04/ST_NPCMonster_XP_Minion04_Master.json",
+      "MiniMapIconType": 5,
+      "Rank": "MinionLv2",
+      "IsMazeLink": true,
+      "PrototypeID": 8002050
+    }
+  },
+  {
+    "kind": "npc",
+    "source": "resources/4.6/ExcelOutput/NPCMonsterData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
+    "sourceBlobSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+    "path": [
+      240
+    ],
+    "row": {
+      "ID": 8002080,
+      "NPCName": {
+        "Hash": 5146051967349127871
+      },
+      "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Minion04_01_Entity.json",
+      "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Minion04_04_Config.json",
+      "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/NPCMonster_XP_Minion04/ST_NPCMonster_XP_Minion04_Master.json",
+      "MiniMapIconType": 5,
+      "Rank": "MinionLv2",
+      "IsMazeLink": true,
+      "PrototypeID": 8002050
+    }
+  },
+  {
+    "kind": "npc",
+    "source": "resources/4.6/ExcelOutput/NPCMonsterData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
+    "sourceBlobSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+    "path": [
+      284
+    ],
+    "row": {
+      "ID": 8012010,
+      "NPCName": {
+        "Hash": 15809842706120728438
+      },
+      "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_AML_Minion02_00_Entity.json",
+      "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_AML_Minion02_00_Config.json",
+      "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Chase.json",
+      "MiniMapIconType": 5,
+      "Rank": "MinionLv2",
+      "IsMazeLink": true,
+      "PrototypeID": 8012010,
+      "MappingInfoID": 3002
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      7126
+    ],
+    "row": {
+      "StageID": 80030081,
+      "StageType": "VerseSimulation",
+      "StageName": {
+        "Hash": 10926781862263016942
+      },
+      "HardLevelGroup": 2,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 8001030,
+          "Monster1": 8011010,
+          "Monster2": 8012020,
+          "Monster3": 8011010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      7127
+    ],
+    "row": {
+      "StageID": 80030082,
+      "StageType": "VerseSimulation",
+      "StageName": {
+        "Hash": 11266246438277436492
+      },
+      "HardLevelGroup": 2,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 8011020,
+          "Monster1": 8012010,
+          "Monster2": 8012010,
+          "Monster3": 8011020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      7148
+    ],
+    "row": {
+      "StageID": 80031011,
+      "StageType": "VerseSimulation",
+      "StageName": {
+        "Hash": 10926781862263016942
+      },
+      "HardLevelGroup": 2,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 8011010,
+          "Monster1": 8012020,
+          "Monster2": 8011010,
+          "Monster3": 8002060
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      7149
+    ],
+    "row": {
+      "StageID": 80031012,
+      "StageType": "VerseSimulation",
+      "StageName": {
+        "Hash": 10926781862263016942
+      },
+      "HardLevelGroup": 2,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 8012010,
+          "Monster1": 8002080,
+          "Monster2": 8012010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "stage",
+    "source": "resources/4.6/ExcelOutput/StageConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "sourceBlobSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+    "path": [
+      7150
+    ],
+    "row": {
+      "StageID": 80031013,
+      "StageType": "VerseSimulation",
+      "StageName": {
+        "Hash": 10926781862263016942
+      },
+      "HardLevelGroup": 2,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 8011020,
+          "Monster1": 8012010,
+          "Monster2": 8002070,
+          "Monster3": 8011020
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2099
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 7468315395756013344
+      },
+      "MonsterIntroduction": {
+        "Hash": 16366592146701316761
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8001030,
+      "MonsterTemplateID": 8001030,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Fire",
+        "Quantum"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Physical",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Ice",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Thunder",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Wind",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Imaginary",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        800103001,
+        800103002,
+        800103003
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2246
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 11881964344183540885
+      },
+      "MonsterIntroduction": {
+        "Hash": 4867760953842633248
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8002060,
+      "MonsterTemplateID": 8002060,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Ice",
+        "Wind",
+        "Quantum"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Physical",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Fire",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Thunder",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Imaginary",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [
+        "Monster_Minion04"
+      ],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        800206001,
+        800206002,
+        800206003,
+        800206004
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2250
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 2752689934917166965
+      },
+      "MonsterIntroduction": {
+        "Hash": 17048588807119327962
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8002070,
+      "MonsterTemplateID": 8002070,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Physical",
+        "Thunder",
+        "Quantum"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Fire",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Ice",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Wind",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Imaginary",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [
+        "Monster_Minion04"
+      ],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        800207001,
+        800207002,
+        800207003,
+        800207004
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2253
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 7590631861913129720
+      },
+      "MonsterIntroduction": {
+        "Hash": 18196007296849943080
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8002080,
+      "MonsterTemplateID": 8002080,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Fire",
+        "Ice",
+        "Imaginary"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Physical",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Thunder",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Wind",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Quantum",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [
+        "Monster_Minion04"
+      ],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        800208001,
+        800208002,
+        800208003,
+        800208004
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2397
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 11824583688690652165
+      },
+      "MonsterIntroduction": {
+        "Hash": 17123258492434931275
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8011010,
+      "MonsterTemplateID": 8011010,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Ice",
+        "Wind"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Physical",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Fire",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Thunder",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Quantum",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Imaginary",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [
+        "LockTarget"
+      ],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        801101001
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2409
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 11923375971317041948
+      },
+      "MonsterIntroduction": {
+        "Hash": 8368363892184263835
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8011020,
+      "MonsterTemplateID": 8011020,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Physical",
+        "Quantum"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Fire",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Ice",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Thunder",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Wind",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Imaginary",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        801102001
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2420
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 12136238828350213487
+      },
+      "MonsterIntroduction": {
+        "Hash": 3871600477208820631
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8012010,
+      "MonsterTemplateID": 8012010,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Physical",
+        "Thunder"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Fire",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Ice",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Wind",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Quantum",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Imaginary",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [
+        "LockTarget02"
+      ],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        801201001,
+        801201002,
+        801201003
+      ],
+      "OverrideSkillParams": []
+    }
+  },
+  {
+    "kind": "monster",
+    "source": "resources/4.6/ExcelOutput/MonsterConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
+    "sourceBlobSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+    "path": [
+      2453
+    ],
+    "row": {
+      "MonsterName": {
+        "Hash": 3306954115373551782
+      },
+      "MonsterIntroduction": {
+        "Hash": 7966877714134971383
+      },
+      "MonsterStrategy": [],
+      "MonsterID": 8012020,
+      "MonsterTemplateID": 8012020,
+      "EliteGroup": 1,
+      "HardLevelGroup": 1,
+      "AttackModifyRatio": {
+        "Value": 1
+      },
+      "DefenceModifyRatio": {
+        "Value": 1
+      },
+      "HPModifyRatio": {
+        "Value": 1
+      },
+      "SpeedModifyRatio": {
+        "Value": 1
+      },
+      "StanceModifyRatio": {
+        "Value": 1
+      },
+      "StanceWeakList": [
+        "Wind",
+        "Imaginary"
+      ],
+      "DamageTypeResistance": [
+        {
+          "DamageType": "Physical",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Fire",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Ice",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Thunder",
+          "Value": {
+            "Value": 0.2
+          }
+        },
+        {
+          "DamageType": "Quantum",
+          "Value": {
+            "Value": 0.2
+          }
+        }
+      ],
+      "DebuffResist": [],
+      "CustomValueTags": [
+        "LockTarget01"
+      ],
+      "CustomValues": [],
+      "DynamicValues": [],
+      "SummonIDList": [],
+      "OverrideAIPath": "",
+      "OverrideAISkillSequence": [],
+      "AbilityNameList": [],
+      "SkillList": [
+        801202001,
+        801202002
+      ],
+      "OverrideSkillParams": []
+    }
+  }
+]

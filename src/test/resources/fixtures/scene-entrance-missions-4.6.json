@@ -1,0 +1,135 @@
+[
+  {
+    "kind": "entrance",
+    "source": "resources/4.6/ExcelOutput/MapEntrance.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d808baea60c70e4f96e889bdc7899450ac1c6c97eb62ba684bc144642ea52da4",
+    "sourceBlobSHA256": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+    "path": [
+      96
+    ],
+    "row": {
+      "ID": 1020101,
+      "EntranceType": "Town",
+      "PlaneID": 10201,
+      "FloorID": 10201001,
+      "BeginMainMissionList": [],
+      "FinishMainMissionList": [
+        1020201
+      ],
+      "FinishSubMissionList": [
+        102020110
+      ]
+    }
+  },
+  {
+    "kind": "plane",
+    "source": "resources/4.6/ExcelOutput/MazePlane.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de",
+    "sourceBlobSHA256": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+    "path": [
+      5
+    ],
+    "row": {
+      "PlaneID": 10201,
+      "PlaneType": "Town",
+      "SubType": 1,
+      "MazePoolType": 1,
+      "WorldID": 301,
+      "PlaneName": {
+        "Hash": 12947833765326775950
+      },
+      "StartFloorID": 10201001,
+      "FloorIDList": [
+        10201001,
+        10201002
+      ]
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      72
+    ],
+    "row": {
+      "MainMissionID": 1020201,
+      "Type": "Main",
+      "WorldID": 301,
+      "DisplayPriority": 1020201,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 1033322385535263307
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 1020101
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "NextTrackMainMission": 1020302,
+      "TrackWeight": 100,
+      "RewardID": 100,
+      "DisplayRewardID": 11020201,
+      "ChapterID": 102001,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/1020201/MissionInfo_1020201.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "373d90858430bfe2022dea62c7cae1c326a6a9acf4161c615297cb3538087f1f",
+    "sourceBlobSHA256": "a5df6d59c36260a0d8aa075732ce307cba98ac1752e0dc3e981cea904208709a",
+    "path": [],
+    "row": {
+      "MainMissionID": 1020201,
+      "StartSubMissionList": [
+        102020101
+      ],
+      "FinishSubMissionList": [
+        102020110
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1020201/MissionInfo_1020201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9630523d26aab8ed837e9ccfcead51b04405954446088a272784131824397186",
+    "sourceBlobSHA256": "10ed902b014a0e0a9d7bc34eb9ced0ed2662228375f9922bc87f8f6559f8ca49",
+    "path": [
+      "SubMissionList",
+      7
+    ],
+    "row": {
+      "ID": 102020110,
+      "MainMissionID": 1020201,
+      "MissionJsonPath": "Config/Level/Mission/1020201/Mission_102020110.json",
+      "LevelPlaneID": 20211,
+      "LevelFloorID": 20211001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        102020126
+      ],
+      "FinishType": "EnterFloor",
+      "ParamType": "Equal",
+      "ParamInt1": 10201,
+      "ParamInt2": 10201001,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowFinishEffect": 2
+    }
+  }
+]

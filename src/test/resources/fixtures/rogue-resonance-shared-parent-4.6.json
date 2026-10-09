@@ -1,0 +1,662 @@
+{
+  "nativeFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "indexSHA256": "2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89",
+  "parentRecord": {
+    "sourcePath": "Config/ConfigAbility/Level/Level_RogueBuff_Ability_3.json",
+    "entryKey": "e300873dad1631ea",
+    "length": 21718,
+    "sha256": "210fce2ab0792fd1bbe3c23b2d4c46ec4092ecba1488e826d220a805dcce92be"
+  },
+  "rootType": "TurnBasedAbilityConfigList",
+  "abilityCount": 76,
+  "expressionCount": 246,
+  "additionalFields": {
+    "AttackData": [
+      "HitTimeSlowType"
+    ],
+    "TurnBasedAbilityConfig": [
+      "OnAdd"
+    ]
+  },
+  "additionalSchemas": {
+    "MazeBuffParamKey": {
+      "typeIndex": 18262,
+      "maskWords": 1,
+      "fields": [
+        {
+          "name": "MazeBuffID",
+          "type": {
+            "kind": 9,
+            "attributes": 6
+          },
+          "fieldIndex": 87334,
+          "instanceOffset": 16
+        },
+        {
+          "name": "Level",
+          "type": {
+            "kind": 9,
+            "attributes": 6
+          },
+          "fieldIndex": 87335,
+          "instanceOffset": 20
+        },
+        {
+          "name": "Index",
+          "type": {
+            "kind": 9,
+            "attributes": 6
+          },
+          "fieldIndex": 87336,
+          "instanceOffset": 24
+        }
+      ],
+      "allowedFields": [
+        "Index",
+        "MazeBuffID"
+      ],
+      "nativeReaderRva": "0x1d8350b0"
+    },
+    "ModifyHealData": {
+      "typeIndex": 23572,
+      "maskWords": 1,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "type": {
+            "kind": 2,
+            "attributes": 6
+          },
+          "fieldIndex": 102139,
+          "instanceOffset": 16
+        },
+        {
+          "name": "Healer_Attack",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101538,
+          "instanceOffset": 24
+        },
+        {
+          "name": "Healer_AttackAddedRatio",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101539,
+          "instanceOffset": 32
+        },
+        {
+          "name": "Healer_AttackDelta",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101540,
+          "instanceOffset": 40
+        },
+        {
+          "name": "Healer_AttackConvert",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101541,
+          "instanceOffset": 48
+        },
+        {
+          "name": "Healer_HealRatio",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101542,
+          "instanceOffset": 56
+        },
+        {
+          "name": "Target_HealTakenRatio",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101543,
+          "instanceOffset": 64
+        },
+        {
+          "name": "Task_HealPercentage",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101544,
+          "instanceOffset": 72
+        },
+        {
+          "name": "Task_HealValue",
+          "type": {
+            "kind": 18,
+            "attributes": 6,
+            "typeIndex": 10836,
+            "name": "DynamicFloat"
+          },
+          "fieldIndex": 101545,
+          "instanceOffset": 80
+        }
+      ],
+      "allowedFields": [
+        "Healer_HealRatio"
+      ],
+      "nativeReaderRva": "0x1d86a480"
+    },
+    "SetDynamicValueByMazeBuffConfig": {
+      "typeIndex": 23834,
+      "maskWords": 1,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "type": {
+            "kind": 2,
+            "attributes": 6
+          },
+          "fieldIndex": 102139,
+          "instanceOffset": 16
+        },
+        {
+          "name": "ContextScope",
+          "type": {
+            "kind": 17,
+            "attributes": 6,
+            "typeIndex": 24757,
+            "name": "DynamicValueContextScope"
+          },
+          "fieldIndex": 102431,
+          "instanceOffset": 24
+        },
+        {
+          "name": "QueryList",
+          "type": {
+            "kind": 21,
+            "attributes": 6
+          },
+          "fieldIndex": 102432,
+          "instanceOffset": 32
+        }
+      ],
+      "allowedFields": [
+        "QueryList"
+      ],
+      "nativeReaderRva": "0x1da79a00"
+    }
+  },
+  "additionalTaskBindings": {
+    "1751": {
+      "tag": 1751,
+      "factoryMethod": {
+        "index": 131697,
+        "name": "NKKOJLACCOO",
+        "rva": "0x1d1f4f20",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlotRva": "0x939fdd0",
+      "readerRva": "0x1d86a480",
+      "name": "ModifyHealData",
+      "typeIndex": 23572,
+      "registration": {
+        "tag": 1751,
+        "registrationRva": "0x1d63262d",
+        "methodSlotRva": "0x95347a8"
+      }
+    },
+    "2847": {
+      "tag": 2847,
+      "factoryMethod": {
+        "index": 132786,
+        "name": "FOMHKMPCIAB",
+        "rva": "0x1d41f750",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlotRva": "0x9378870",
+      "readerRva": "0x1da79a00",
+      "name": "SetDynamicValueByMazeBuffConfig",
+      "typeIndex": 23834,
+      "registration": {
+        "tag": 2847,
+        "registrationRva": "0x1d63956c",
+        "methodSlotRva": "0x9536ad8"
+      }
+    }
+  },
+  "additionalEnums": {
+    "18238": {
+      "name": "TurnBasedModifierEvent",
+      "underlyingType": {
+        "kind": 8,
+        "attributes": 1542
+      },
+      "allowedRawValues": [
+        6,
+        44,
+        46,
+        53
+      ]
+    },
+    "18216": {
+      "name": "HitTimeSlowType",
+      "underlyingType": {
+        "kind": 8,
+        "attributes": 1542
+      },
+      "allowedRawValues": [
+        3
+      ]
+    },
+    "10479": {
+      "name": "AbilityProperty",
+      "underlyingType": {
+        "kind": 8,
+        "attributes": 1542
+      },
+      "allowedRawValues": [
+        34,
+        35,
+        80,
+        133
+      ]
+    }
+  },
+  "enumConstants": [
+    {
+      "name": "TurnBasedModifierEvent",
+      "typeIndex": 18238,
+      "fieldName": "OnPhase1",
+      "fieldIndex": 87002,
+      "metadataOffset": 24424945,
+      "nativeKind": 8,
+      "value": 6
+    },
+    {
+      "name": "TurnBasedModifierEvent",
+      "typeIndex": 18238,
+      "fieldName": "OnBeforeDealHeal",
+      "fieldIndex": 87040,
+      "metadataOffset": 24425097,
+      "nativeKind": 8,
+      "value": 44
+    },
+    {
+      "name": "TurnBasedModifierEvent",
+      "typeIndex": 18238,
+      "fieldName": "OnAfterDealHeal",
+      "fieldIndex": 87042,
+      "metadataOffset": 24425105,
+      "nativeKind": 8,
+      "value": 46
+    },
+    {
+      "name": "TurnBasedModifierEvent",
+      "typeIndex": 18238,
+      "fieldName": "OnStack",
+      "fieldIndex": 87049,
+      "metadataOffset": 24425133,
+      "nativeKind": 8,
+      "value": 53
+    },
+    {
+      "name": "HitTimeSlowType",
+      "typeIndex": 18216,
+      "fieldName": "Impact",
+      "fieldIndex": 86831,
+      "metadataOffset": 24424573,
+      "nativeKind": 8,
+      "value": 3
+    },
+    {
+      "name": "AbilityProperty",
+      "typeIndex": 10479,
+      "fieldName": "SpeedAddedRatio",
+      "fieldIndex": 44607,
+      "metadataOffset": 24394071,
+      "nativeKind": 8,
+      "value": 34
+    },
+    {
+      "name": "AbilityProperty",
+      "typeIndex": 10479,
+      "fieldName": "SpeedDelta",
+      "fieldIndex": 44608,
+      "metadataOffset": 24394075,
+      "nativeKind": 8,
+      "value": 35
+    },
+    {
+      "name": "AbilityProperty",
+      "typeIndex": 10479,
+      "fieldName": "IceResistanceDelta",
+      "fieldIndex": 44653,
+      "metadataOffset": 24394255,
+      "nativeKind": 8,
+      "value": 80
+    },
+    {
+      "name": "AbilityProperty",
+      "typeIndex": 10479,
+      "fieldName": "StatusProbabilityBase",
+      "fieldIndex": 44706,
+      "metadataOffset": 24394467,
+      "nativeKind": 8,
+      "value": 133
+    }
+  ],
+  "fieldBindings": [
+    {
+      "name": "AttackData",
+      "field": "HitTimeSlowType",
+      "ordinal": 37,
+      "nativeReaderRva": "0x1d3d5a60",
+      "metadata": {
+        "name": "HitTimeSlowType",
+        "type": {
+          "kind": 17,
+          "attributes": 6,
+          "typeIndex": 18216,
+          "name": "HitTimeSlowType"
+        },
+        "fieldIndex": 98465,
+        "instanceOffset": 252
+      },
+      "instructionAnchors": [
+        [
+          "0x1d3d63d6",
+          "bt",
+          "rbx, 0x25"
+        ],
+        [
+          "0x1d3d63e6",
+          "lea",
+          "r14, [rdi + 0xfc]"
+        ],
+        [
+          "0x1d3d640e",
+          "call",
+          "0x196f1a340"
+        ]
+      ]
+    },
+    {
+      "name": "MazeBuffParamKey",
+      "field": "Index",
+      "ordinal": 2,
+      "nativeReaderRva": "0x1d8350b0",
+      "metadata": {
+        "name": "Index",
+        "type": {
+          "kind": 9,
+          "attributes": 6
+        },
+        "fieldIndex": 87336,
+        "instanceOffset": 24
+      },
+      "instructionAnchors": [
+        [
+          "0x1d835154",
+          "test",
+          "bl, 4"
+        ],
+        [
+          "0x1d835174",
+          "call",
+          "0x19d1aed60"
+        ],
+        [
+          "0x1d835179",
+          "mov",
+          "dword ptr [rsi + 0x18], eax"
+        ]
+      ]
+    },
+    {
+      "name": "MazeBuffParamKey",
+      "field": "MazeBuffID",
+      "ordinal": 0,
+      "nativeReaderRva": "0x1d8350b0",
+      "metadata": {
+        "name": "MazeBuffID",
+        "type": {
+          "kind": 9,
+          "attributes": 6
+        },
+        "fieldIndex": 87334,
+        "instanceOffset": 16
+      },
+      "instructionAnchors": [
+        [
+          "0x1d8350f4",
+          "test",
+          "bl, 1"
+        ],
+        [
+          "0x1d83511c",
+          "call",
+          "0x19d1aed60"
+        ],
+        [
+          "0x1d835121",
+          "mov",
+          "dword ptr [rsi + 0x10], eax"
+        ]
+      ]
+    },
+    {
+      "name": "ModifyHealData",
+      "field": "Healer_HealRatio",
+      "ordinal": 5,
+      "nativeReaderRva": "0x1d86a480",
+      "metadata": {
+        "name": "Healer_HealRatio",
+        "type": {
+          "kind": 18,
+          "attributes": 6,
+          "typeIndex": 10836,
+          "name": "DynamicFloat"
+        },
+        "fieldIndex": 101542,
+        "instanceOffset": 56
+      },
+      "instructionAnchors": [
+        [
+          "0x1d86a5fb",
+          "test",
+          "bl, 0x20"
+        ],
+        [
+          "0x1d86a634",
+          "call",
+          "0x19d5fa270"
+        ],
+        [
+          "0x1d86a639",
+          "mov",
+          "qword ptr [rsi + 0x38], rax"
+        ]
+      ]
+    },
+    {
+      "name": "SetDynamicValueByMazeBuffConfig",
+      "field": "QueryList",
+      "ordinal": 2,
+      "nativeReaderRva": "0x1da79a00",
+      "metadata": {
+        "name": "QueryList",
+        "type": {
+          "kind": 21,
+          "attributes": 6
+        },
+        "fieldIndex": 102432,
+        "instanceOffset": 32
+      },
+      "instructionAnchors": [
+        [
+          "0x1da79aad",
+          "test",
+          "bl, 4"
+        ],
+        [
+          "0x1da79ac9",
+          "add",
+          "rsi, 0x20"
+        ],
+        [
+          "0x1da79af9",
+          "call",
+          "0x196f18270"
+        ]
+      ]
+    },
+    {
+      "name": "TurnBasedAbilityConfig",
+      "field": "OnAdd",
+      "ordinal": 2,
+      "nativeReaderRva": "0x1dc34150",
+      "metadata": {
+        "name": "OnAdd",
+        "type": {
+          "kind": 29,
+          "attributes": 6,
+          "elementTypeIndex": 22754,
+          "elementType": {
+            "kind": 18,
+            "attributes": 0,
+            "typeIndex": 23738,
+            "name": "TaskConfig"
+          }
+        },
+        "fieldIndex": 76608,
+        "instanceOffset": 32
+      },
+      "instructionAnchors": [
+        [
+          "0x1dc341cd",
+          "test",
+          "bl, 4"
+        ],
+        [
+          "0x1dc341e2",
+          "lea",
+          "r15, [rdi + 0x20]"
+        ],
+        [
+          "0x1dc3420a",
+          "call",
+          "0x196f12c80"
+        ]
+      ]
+    }
+  ],
+  "nativeMethods": [
+    {
+      "index": 131697,
+      "name": "NKKOJLACCOO",
+      "rva": "0x1d1f4f20",
+      "typeIndex": 23737,
+      "typeName": "BEMKAFNMJIK",
+      "endRva": "0x1d1f4f55",
+      "unwindRva": "0x8ec2134",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "56574883ec284889ce488b0da0ae1aece8fb51b4e64889c74889c1e8c05267004889f14889fae8355567004889f84883c4285f5ec3",
+      "sha256": "bde3c801ba783b0a657b0fe9a107a05692449cd181b9fd97021f27858c42e34a"
+    },
+    {
+      "index": 132786,
+      "name": "FOMHKMPCIAB",
+      "rva": "0x1d41f750",
+      "typeIndex": 23737,
+      "typeName": "BEMKAFNMJIK",
+      "endRva": "0x1d41f781",
+      "unwindRva": "0x8ee8f8c",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "56574883ec284889ce488b0d1091f5ebe8cba991e64889c7c64010014889f14889c2e889a265004889f84883c4285f5ec3",
+      "sha256": "01e17ef6ad1065f5ca6aff269d1d5a9429220176640956f4ff0b8943573ad05b"
+    },
+    {
+      "index": 110276,
+      "name": "OJNNBEJLDIJ",
+      "rva": "0x1d8350b0",
+      "typeIndex": 18262,
+      "typeName": "MazeBuffParamKey",
+      "endRva": "0x1d8351ec",
+      "unwindRva": "0x8f1d00c",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "41565657534883ec284889d74989ce488b0d6294b9ebe8655050e6c7401401000000488907488b0d7c6db2eb80b9b7000000000f849d0000004c89f1e86f9c97ff4889c3f6c301742b488b374885f60f84bd000000488b0d4c6db2eb80b9b7000000000f84b80000004c89f1e83f9c97ff894610f6c302742b488b374885f60f8492000000488b0d1c6db2eb80b9b7000000000f84920000004c89f1e80f9c97ff894614f6c3047423488b374885f6746b488b0df06cb2eb80b9b70000000074744c89f1e8e79b97ff8946184883c4285b5f5e415ec3e8f56b4fe6488b0dc66cb2eb80b9b7000000000f854affffffe8dc6b4fe6488b0dad6cb2eb80b9b7000000000f8531ffffffe8c36b4fe6e927ffffffe8892e49e6e8842e49e6e87f2e49e6e8aa6b4fe6e93effffffe8a06b4fe6e964ffffffe8966b4fe6eb85",
+      "sha256": "0c8e0550e836998102c4b41ba7bee64c1a45ec14cc85071733c615fd4dff8ab0"
+    },
+    {
+      "index": 129423,
+      "name": "MGMEGEDLMAK",
+      "rva": "0x1d86a480",
+      "typeIndex": 23572,
+      "typeName": "ModifyHealData",
+      "endRva": "0x1d86a8a2",
+      "unwindRva": "0x8f201d8",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "5657534883ec204889d64889cf488b0dc419afeb80b9b7000000000f846d0200004889f9e8b74894ff4889c3f6c30174424885f60f8490020000488b0d9719afeb80b9b7000000000f84860200004885ff0f848b020000488b4f108b5718e8ed8381fe8846104889f9ba01000000e8bd4d4a00f6c302743d4885f60f844e020000488b0d5019afeb80b9b7000000000f845c020000488b0d6c33afeb80b9b7000000000f84610200004889f9e83ffdd8ff48894618f6c304743d4885f60f8424020000488b0d0e19afeb80b9b7000000000f8442020000488b0d2a33afeb80b9b7000000000f84470200004889f9e8fdfcd8ff48894620f6c308743d4885f60f84e7010000488b0dcc18afeb80b9b7000000000f8428020000488b0de832afeb80b9b7000000000f842d0200004889f9e8bbfcd8ff48894628f6c310743d4885f60f84cd010000488b0d8a18afeb80b9b7000000000f840e020000488b0da632afeb80b9b7000000000f84130200004889f9e879fcd8ff48894630f6c320743d4885f60f84b3010000488b0d4818afeb80b9b7000000000f84f4010000488b0d6432afeb80b9b7000000000f84f90100004889f9e837fcd8ff48894638f6c340743d4885f60f8499010000488b0d0618afeb80b9b7000000000f84da010000488b0d2232afeb80b9b7000000000f84df0100004889f9e8f5fbd8ff48894640f6c380743d4885f60f847f010000488b0dc417afeb80b9b7000000000f84bb010000488b0de031afeb80b9b7000000000f84c00100004889f9e8b3fbd8ff48894648f7c300010000743d4885f60f8462010000488b0d7f17afeb80b9b7000000000f8499010000488b0d9b31afeb80b9b7000000000f849e0100004889f9e86efbd8ff488946504883c4205b5f5ec3e86d164ce6488b0d3e17afeb80b9b7000000000f857afdffffe854164ce6488b0d2517afeb80b9b7000000000f8561fdffffe83b164ce6e957fdffffe801d945e6e8fcd845e6e827164ce64885ff0f8575fdffffe8e9d845e6e8e4d845e6e8dfd845e6e80a164ce6488b0d0b31afeb80b9b7000000000f859ffdffffe8f1154ce6e995fdffffe8b7d845e6e8e2154ce6488b0de330afeb80b9b7000000000f85b9fdffffe8c9154ce6e9affdffffe88fd845e6e8ba154ce6488b0dbb30afeb80b9b7000000000f85d3fdffffe8a1154ce6e9c9fdffffe867d845e6e892154ce6488b0d9330afeb80b9b7000000000f85edfdffffe879154ce6e9e3fdffffe83fd845e6e86a154ce6488b0d6b30afeb80b9b7000000000f8507feffffe851154ce6e9fdfdffffe817d845e6e842154ce6488b0d4330afeb80b9b7000000000f8521feffffe829154ce6e917feffffe81f154ce6488b0d2030afeb80b9b7000000000f8540feffffe806154ce6e936feffffe8fc144ce6488b0dfd2fafeb80b9b7000000000f8562feffffe8e3144ce6e958feffff",
+      "sha256": "0f998c0e549c1f08fde2fbf42bc33e8e68a48c7cec35f246c18fbd4837ec7d59"
+    },
+    {
+      "index": 135282,
+      "name": "MGMEGEDLMAK",
+      "rva": "0x1da79a00",
+      "typeIndex": 23834,
+      "typeName": "SetDynamicValueByMazeBuffConfig",
+      "endRva": "0x1da79b7b",
+      "unwindRva": "0x8f3eda0",
+      "bounds": "PE Exception Directory",
+      "bytesHex": "41565657534883ec284889d64889cf488b0d42248eeb80b9b7000000000f84e60000004889f9e8355373ff4889c3f6c30174424885f60f8409010000488b0d15248eeb80b9b7000000000f84ff0000004885ff0f8404010000488b4f108b5718e86b8e60fe8846104889f9ba01000000e83b582900f6c30274334885f60f84c70000004c8d7618488b0dca238eeb80b9b7000000000f84cc0000004c8b053edf9deb4889f94c89f2e893084af9f6c304744c4885f60f84a7000000488b1dd6679deb4c8b35af1ea0eb4883c620488b0d84238eeb80b9b7000000000f8490000000488b05981ea0eb48894424204889f94889da4d89f04989f1e872e749f9904883c4285b5f5e415ec3e872222be6488b0d43238eeb80b9b7000000000f8501ffffffe859222be6488b0d2a238eeb80b9b7000000000f85e8feffffe840222be6e9defeffffe806e524e6e801e524e6e82c222be64885ff0f85fcfeffffe8eee424e6e8e9e424e6e814222be6e92affffffe80a222be6e966ffffff",
+      "sha256": "2f47d2285ec637d0331d4c14c19fe8d4d7c84126a8ead9f646e321d53af7c42f"
+    }
+  ],
+  "nativeBytes": 1855,
+  "queryDictionary": {
+    "context": "SetDynamicValueByMazeBuffConfig.QueryList",
+    "keyReaderSlotRva": "0x9450298",
+    "valueReaderSlotRva": "0x947b978",
+    "valueReader": {
+      "index": 110276,
+      "name": "OJNNBEJLDIJ",
+      "rva": "0x1d8350b0",
+      "typeIndex": 18262,
+      "typeName": "MazeBuffParamKey"
+    },
+    "valueType": {
+      "kind": 18,
+      "name": "MazeBuffParamKey",
+      "typeIndex": 18262
+    }
+  },
+  "defaultsNotMaterialized": true,
+  "queryParametersEvaluated": false,
+  "expressionEvaluationVerified": false,
+  "abilityExecutionVerified": false,
+  "jsonInstalled": false,
+  "clientGameplayVerified": false
+}

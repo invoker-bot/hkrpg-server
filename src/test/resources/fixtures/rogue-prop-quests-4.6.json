@@ -1,0 +1,963 @@
+[
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      639
+    ],
+    "row": {
+      "QuestID": 4000001,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "AutoUnlock",
+      "UnlockParamList": [],
+      "RewardID": 100,
+      "FinishWayID": 4000001
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      890
+    ],
+    "row": {
+      "QuestID": 4092312,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "FinishQuest",
+      "UnlockParamList": [
+        4000001
+      ],
+      "RewardID": 113000,
+      "FinishWayID": 4092312
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      891
+    ],
+    "row": {
+      "QuestID": 4092313,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "FinishQuest",
+      "UnlockParamList": [
+        4000001
+      ],
+      "RewardID": 113001,
+      "FinishWayID": 4092313
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      819
+    ],
+    "row": {
+      "ID": 4000001,
+      "FinishType": "FinishMission",
+      "ParamType": "ListContain",
+      "ParamStr1": "",
+      "ParamIntList": [
+        1000201
+      ],
+      "ParamItemList": [],
+      "Progress": 1
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      1070
+    ],
+    "row": {
+      "ID": 4092312,
+      "FinishType": "RoguePropDestruct",
+      "ParamType": "Equal",
+      "ParamStr1": "",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "Progress": 20
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      1071
+    ],
+    "row": {
+      "ID": 4092313,
+      "FinishType": "RoguePropDestruct",
+      "ParamType": "Equal",
+      "ParamStr1": "",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "Progress": 400
+    }
+  },
+  {
+    "kind": "reward",
+    "source": "resources/4.6/ExcelOutput/RewardData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+    "sourceBlobSHA256": "54ef4bd235ea6e89ce01e0b57140ea966c8a8201e68648c2d5c0a8ccb30573aa",
+    "path": [
+      2100
+    ],
+    "row": {
+      "RewardID": 113000,
+      "Hcoin": 5
+    }
+  },
+  {
+    "kind": "reward",
+    "source": "resources/4.6/ExcelOutput/RewardData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+    "sourceBlobSHA256": "54ef4bd235ea6e89ce01e0b57140ea966c8a8201e68648c2d5c0a8ccb30573aa",
+    "path": [
+      2101
+    ],
+    "row": {
+      "RewardID": 113001,
+      "Hcoin": 10
+    }
+  },
+  {
+    "kind": "item",
+    "source": "resources/4.6/ExcelOutput/ItemConfig.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "sourceBlobSHA256": "3607f3bf214baca99a82cfe90c957781aa8c3aa1847e712da4acaa35cf7f7142",
+    "path": [
+      0
+    ],
+    "row": {
+      "ID": 1,
+      "ItemMainType": "Virtual",
+      "ItemSubType": "Virtual",
+      "InventoryDisplayTag": 1,
+      "Rarity": "SuperRare",
+      "PurposeType": 12,
+      "ItemName": {
+        "Hash": 7739077644877555281
+      },
+      "ItemBGDesc": {
+        "Hash": 4559313086410327619
+      },
+      "ItemIconPath": "SpriteOutput/ItemIcon/900001.png",
+      "ItemFigureIconPath": "SpriteOutput/ItemFigures/900001.png",
+      "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/1.png",
+      "ItemAvatarIconPath": "",
+      "PileLimit": 999999999,
+      "CustomDataList": [],
+      "ReturnItemIDList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      5
+    ],
+    "row": {
+      "MainMissionID": 1000201,
+      "Type": "Main",
+      "WorldID": 101,
+      "DisplayPriority": 1000201,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 1829630529026038115
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 1000101
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "NextTrackMainMission": 1000202,
+      "TrackWeight": 100,
+      "RewardID": 11000201,
+      "DisplayRewardID": 11000203,
+      "MissionPack": 1000201,
+      "ChapterID": 100001,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "achievement",
+    "source": "resources/4.6/ExcelOutput/AchievementData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "3acac7f0c8746aab29c34f196e72cf3f5cd3447aab6ada6d6d89bc083801f416",
+    "sourceBlobSHA256": "d3df64f75ba8d0fcd761a707cf9bc632777632b81f36bbe0c87bca348ca089d1",
+    "path": [
+      297
+    ],
+    "row": {
+      "AchievementID": 4092312,
+      "SeriesID": 9,
+      "QuestID": 4092312,
+      "LinearQuestID": 4092312,
+      "AchievementTitle": {
+        "Hash": 6752427870412747073
+      },
+      "AchievementDesc": {
+        "Hash": 6247290283742640023
+      },
+      "ParamList": [
+        {
+          "Value": 20
+        }
+      ],
+      "Priority": 9840,
+      "Rarity": "Low",
+      "PSTrophyID": ""
+    }
+  },
+  {
+    "kind": "achievement",
+    "source": "resources/4.6/ExcelOutput/AchievementData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "3acac7f0c8746aab29c34f196e72cf3f5cd3447aab6ada6d6d89bc083801f416",
+    "sourceBlobSHA256": "d3df64f75ba8d0fcd761a707cf9bc632777632b81f36bbe0c87bca348ca089d1",
+    "path": [
+      298
+    ],
+    "row": {
+      "AchievementID": 4092313,
+      "SeriesID": 9,
+      "QuestID": 4092313,
+      "LinearQuestID": 4092313,
+      "AchievementTitle": {
+        "Hash": 2615644630888286439
+      },
+      "AchievementDesc": {
+        "Hash": 18438751689860634689
+      },
+      "ParamList": [
+        {
+          "Value": 400
+        }
+      ],
+      "Priority": 9830,
+      "Rarity": "Mid",
+      "PSTrophyID": ""
+    }
+  },
+  {
+    "kind": "room",
+    "source": "resources/4.6/ExcelOutput/RogueRoom.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "3635ab4f5a58cee69c7920fa22a1c0aae6a0a057ead9ef6e5c2486b85194148b",
+    "sourceBlobSHA256": "a9903207742aff67e64f607e376dfbc499c635f56bd53264efcefea0fdf581d9",
+    "path": [
+      8
+    ],
+    "row": {
+      "RogueRoomID": 305,
+      "RogueRoomType": 3,
+      "MapEntrance": 8000103,
+      "GroupID": 21,
+      "GroupWithContent": {
+        "21": 40398
+      },
+      "RogueRoomSections": [
+        2
+      ]
+    }
+  },
+  {
+    "kind": "entry",
+    "source": "resources/4.6/ExcelOutput/MapEntrance.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "d808baea60c70e4f96e889bdc7899450ac1c6c97eb62ba684bc144642ea52da4",
+    "sourceBlobSHA256": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+    "path": [
+      808
+    ],
+    "row": {
+      "ID": 8000103,
+      "EntranceType": "Explore",
+      "PlaneID": 80001,
+      "FloorID": 80001003,
+      "BeginMainMissionList": [],
+      "FinishMainMissionList": [],
+      "FinishSubMissionList": []
+    }
+  },
+  {
+    "kind": "plane",
+    "source": "resources/4.6/ExcelOutput/MazePlane.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de",
+    "sourceBlobSHA256": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+    "path": [
+      306
+    ],
+    "row": {
+      "PlaneID": 80001,
+      "PlaneType": "Rogue",
+      "SubType": 1,
+      "MazePoolType": 3,
+      "WorldID": 101,
+      "PlaneName": {
+        "Hash": 4932096847182731048
+      },
+      "StartFloorID": 80001001,
+      "FloorIDList": [
+        80001001,
+        80001002,
+        80001003
+      ]
+    }
+  },
+  {
+    "kind": "prop",
+    "source": "resources/4.6/ExcelOutput/MazeProp.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418",
+    "sourceBlobSHA256": "dc806a0172350f18e39d755040906652af05f645f107690072808de9987c021d",
+    "path": [
+      28
+    ],
+    "row": {
+      "ID": 100027,
+      "PropType": "PROP_DESTRUCT",
+      "PropName": {
+        "Hash": 13013349132478528449
+      },
+      "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+      "BoardShowList": [],
+      "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Des_Box_01_Entity.json",
+      "DamageTypeList": [],
+      "MiniMapStateIcons": [],
+      "JsonPath": "Config/Props/Chap00/Prop_Chap00_DesBox_02_Config.json",
+      "PropStateList": [
+        "Closed",
+        "Open",
+        "Locked"
+      ],
+      "PerformanceType": "C",
+      "HasRendererComponent": true,
+      "LodPriority": 2
+    }
+  },
+  {
+    "kind": "floor",
+    "source": "resources/4.6/Config/LevelOutput/RuntimeFloor/P80001_F80001003.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "29e52c97df35282bb6ca230997c30ec4aac16ac7872a3ceadadbbd74ec86bb11",
+    "sourceBlobSHA256": "008dd3e0042b8a82f5b3312e3a174cbc9ece0d55572b9570ddc3a36bc9942495",
+    "path": [],
+    "row": {
+      "FloorID": 80001003,
+      "StartAnchorID": 1,
+      "StageData": "Stages/Outputs/Chapter00/Stages/Chap00_MAZ_N301_MainLine_01_StageData/Chap00_MAZ_N301_MainLine_01_StageData.stage",
+      "CameraType": "Maze",
+      "LayerToAreaMask": [
+        1
+      ],
+      "NavmapConfigPath": "Config/LevelOutput/Map/MapInfo_P80001_F80001003.json",
+      "GroupInstanceList": [
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G1.json",
+          "Name": "New Group",
+          "ID": 1
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G2.json",
+          "Name": "Rogue_Main_Boss",
+          "ID": 2
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G3.json",
+          "Name": "Rogue_Monster_AddAvatar",
+          "ID": 3
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G4.json",
+          "Name": "Rogue_Monster_Waypoints",
+          "ID": 4
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G5.json",
+          "Name": "Rogue_Main_Boss",
+          "ID": 5
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G6.json",
+          "Name": "Rogue_Monster_Waypoints",
+          "ID": 6
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G7.json",
+          "Name": "Rogue_Monster_Waypoints",
+          "ID": 7
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G8.json",
+          "Name": "Rogue_NPC",
+          "ID": 8
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G9.json",
+          "Name": "SmallRoom_NPC",
+          "ID": 9
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G10.json",
+          "Name": "SmallRoom_Boss",
+          "ID": 10
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G11.json",
+          "Name": "New Group",
+          "ID": 11
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G13.json",
+          "Name": "NewBeeMission",
+          "ID": 13
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G15.json",
+          "Name": "Mission4030003",
+          "ID": 15
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G17.json",
+          "Name": "Sound",
+          "ID": 17
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G18.json",
+          "Name": "Rogue_StartRoom_Main",
+          "ID": 18
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G19.json",
+          "Name": "Rogue_StartRoom_Monster",
+          "ID": 19
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G20.json",
+          "Name": "Rogue_StartRoom_Monster_Patrol",
+          "ID": 20
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G21.json",
+          "Name": "Rogue_EventRoom",
+          "ID": 21
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G22.json",
+          "Name": "Rogue_RestRoom",
+          "ID": 22
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G23.json",
+          "Name": "Rogue_BossRoom",
+          "ID": 23
+        }
+      ],
+      "DimensionList": [
+        {
+          "DefaultEnviroProfile": "Stages/Outputs/Chapter00/EnviroProfile/Chap00_CloseView_MAZ_N301_01_Day.enviroProfile.asset",
+          "CameraType": "Maze",
+          "BattleAreaList": [],
+          "IsExclusiveSaveMapSection": true,
+          "GroupIndexList": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19
+          ],
+          "ExclusiveSavedGroupIDList": [],
+          "StartAnchorID": 1
+        }
+      ],
+      "GroupInstanceCommonMap": {
+        "1": {
+          "SaveType": "Reset"
+        },
+        "2": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "3": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "4": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "5": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "6": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "7": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "8": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "9": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "10": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "11": {
+          "SaveType": "Permanent",
+          "LoadOnInitial": true
+        },
+        "13": {
+          "SaveType": "Reset"
+        },
+        "15": {
+          "SaveType": "Permanent",
+          "LoadOnInitial": true
+        },
+        "17": {
+          "SaveType": "Permanent",
+          "LoadOnInitial": true
+        },
+        "18": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "19": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "20": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "21": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "22": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "23": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        }
+      },
+      "EnableGroupRegionStreaming": false
+    }
+  },
+  {
+    "kind": "group",
+    "source": "resources/4.6/Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G21.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "6ac9979ae6815fe8d264e0e1e5e10f2a9248d3843dd13a19333d0ac00978a5cb",
+    "sourceBlobSHA256": "dd83065a722bc654d4339d57deda34a09c5934c38cda74291e00da5a83b541b7",
+    "path": [],
+    "row": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "Rogue_EventRoom",
+      "LevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Tutorial_EventRoom.json",
+      "AreaAnchorName": "LevelArea_P80001_F80001003_G21",
+      "LoadSide": "Server",
+      "ConflictIDList": [],
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "ID": 1,
+          "PosX": 8.764,
+          "PosY": 76.66325,
+          "PosZ": 133.94
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_TriggerBuffSelect.json",
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop1",
+          "RotY": 90,
+          "ID": 300001,
+          "PosX": -34.51,
+          "PosY": -2.133952,
+          "PosZ": -172.21
+        },
+        {
+          "PropID": 1000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_Door.json",
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Teleport1",
+          "RotY": 165,
+          "ID": 300002,
+          "PosX": 7.13,
+          "PosY": 76.64383,
+          "PosZ": 153.28
+        },
+        {
+          "PropID": 1000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_Door.json",
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop4",
+          "RotY": 195,
+          "ID": 300004,
+          "PosX": 10.24,
+          "PosY": 76.66075,
+          "PosZ": 153.39
+        },
+        {
+          "PropID": 100001,
+          "LoadOnInitial": false,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "82,300009",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop5",
+          "RotY": 180.0004,
+          "ID": 300005,
+          "PosX": 8.743809,
+          "PosY": 76.72211,
+          "PosZ": 133.1156
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "82,300009",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop6",
+          "RotY": 180.0004,
+          "ID": 300006,
+          "PosX": 8.741622,
+          "PosY": 76.70824,
+          "PosZ": 156.017
+        },
+        {
+          "PropID": 100027,
+          "IsOverrideInitLevelGraph": true,
+          "CampID": 4,
+          "EventID": 80210001,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop7",
+          "RotY": 270,
+          "ID": 300007,
+          "PosX": 11.347,
+          "PosY": 76.66076,
+          "PosZ": 139.346
+        },
+        {
+          "PropID": 100027,
+          "IsOverrideInitLevelGraph": true,
+          "CampID": 4,
+          "EventID": 80210001,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop8",
+          "RotY": 270,
+          "ID": 300008,
+          "PosX": 5.77,
+          "PosY": 76.70235,
+          "PosZ": 139.21
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_CloseView_MAZ_INT_N301_Room_Corridor_01_BlockData",
+            "PrefabAlias": "DoorFrame0"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop9",
+          "RotY": 90,
+          "ID": 300009,
+          "PosX": 125.9661,
+          "PosY": 80.4608,
+          "PosZ": 129.012
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 4,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "ID": 300003,
+          "PosX": 8.7,
+          "PosY": 77.12665,
+          "PosZ": 141.1
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "70,300011",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop10",
+          "RotY": 180.0004,
+          "ID": 300010,
+          "PosX": 8.731998,
+          "PosY": 79.65775,
+          "PosZ": 113.9303
+        },
+        {
+          "Scale": {
+            "X": -1,
+            "Y": 1,
+            "Z": 1
+          },
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_CloseView_MAZ_INT_N301_Room_Basic_01_BlockData",
+            "PrefabAlias": "DoorFrame2"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop11",
+          "RotY": 90,
+          "ID": 300011,
+          "PosX": 8.731998,
+          "PosY": 79.584,
+          "PosZ": 110.666
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [
+        {
+          "NPCID": 3013,
+          "LevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_NPC_EventPainting.json",
+          "DialogueGroups": [],
+          "ServerInteractVerificationIDList": [],
+          "BoardShowList": [],
+          "TalkDialogGroupIDList": [],
+          "DefaultAnimationType": "IdleState",
+          "IsMapContent": true,
+          "MiniMapIconType": 55,
+          "InitialHiddenNodeList": [],
+          "Dialog": {
+            "LevelGraph": "Config/Level/Mission/4030003/Act/Act403000398.json",
+            "PackList": []
+          },
+          "SpawnConfig": {
+            "CaptureDistanceTolerance": 10,
+            "EntitySpawnConfig": {}
+          },
+          "Name": "NPC1",
+          "RotY": 195,
+          "ID": 400001,
+          "PosX": 10.784,
+          "PosY": 76.70244,
+          "PosZ": 150.017
+        }
+      ],
+      "CrowdList": [],
+      "PedestrianList": [],
+      "SmartObjectList": []
+    }
+  }
+]

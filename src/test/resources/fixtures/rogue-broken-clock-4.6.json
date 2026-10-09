@@ -1,0 +1,98 @@
+{
+  "sourceRepo": "https://github.com/Dimbreath/TurnBasedGameData",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "files": [
+    {
+      "path": "ExcelOutput/RogueMiracle.json",
+      "sha256": "db1a991d075d8bc560c7d44c06439f9693a3ea82c5babc81bc88cd2e539427be",
+      "sourceBlobSha256": "a1486702c0c6ca4c3c1b78d3562edba4b045a5f2925d68042304b2c2719f3fce"
+    },
+    {
+      "path": "ExcelOutput/RogueMiracleEffect.json",
+      "sha256": "41f42747a1f089fe476f2d14f995b9497ca8d94dd979fdadaf3571485e42fb08",
+      "sourceBlobSha256": "877b6440ced886761062403df6bc50d1a97bab77dda4e2ddc8f7e8cc26b8b5f6"
+    },
+    {
+      "path": "ExcelOutput/RogueMiracleDisplay.json",
+      "sha256": "11465494d24589a7f069272d517f22b14e8aee99b9f4cf1fda584b67ab059c4d",
+      "sourceBlobSha256": "d3f745f35650a6b520de1795a934dce0690bab3005eaae0df91c5d919983c760"
+    }
+  ],
+  "rows": {
+    "RogueMiracle": [
+      {
+        "MiracleID": 9,
+        "MiracleDisplayID": 55,
+        "MiracleEffectDisplayID": 9
+      },
+      {
+        "MiracleID": 70,
+        "MiracleDisplayID": 51,
+        "MiracleEffectDisplayID": 70,
+        "UnlockHandbookMiracleID": 70
+      }
+    ],
+    "RogueMiracleEffect": [
+      {
+        "MiracleEffectID": 9,
+        "MiracleDesc": {
+          "Hash": 7508694887548506211
+        },
+        "ParamList": [
+          {
+            "Value": 499
+          },
+          {
+            "Value": 999
+          }
+        ]
+      },
+      {
+        "MiracleEffectID": 70,
+        "MiracleDesc": {
+          "Hash": 15605018368260438639
+        },
+        "ParamList": [
+          {
+            "Value": 0.25
+          }
+        ]
+      }
+    ],
+    "RogueMiracleDisplay": [
+      {
+        "MiracleDisplayID": 51,
+        "MiracleName": {
+          "Hash": 6465157667392292298
+        },
+        "MiracleBGDesc": {
+          "Hash": 9432126390146061517
+        },
+        "MiracleIconPath": "SpriteOutput/Rogue/MiracleIcon/1039.png",
+        "MiracleFigureIconPath": "SpriteOutput/Rogue/MiracleFigureIcon/1039.png"
+      },
+      {
+        "MiracleDisplayID": 55,
+        "MiracleName": {
+          "Hash": 17098877408968650837
+        },
+        "MiracleBGDesc": {
+          "Hash": 14330494688902929003
+        },
+        "MiracleIconPath": "SpriteOutput/Rogue/MiracleIcon/1059.png",
+        "MiracleFigureIconPath": "SpriteOutput/Rogue/MiracleFigureIcon/1059.png"
+      }
+    ]
+  },
+  "textMap": {
+    "path": "TextMap/TextMapCHS.json",
+    "sourceBlobSha256": "b442c7a30bbd5c21e5f4393781bfd833e939e5feca6f6612b01b107e94b2ea9c",
+    "values": {
+      "7508694887548506211": "携带公司咕咕钟累计额外消耗一定数量宇宙碎片后获取该奇物，并立即获得<unbreak>#2[i]</unbreak>宇宙碎片",
+      "15605018368260438639": "强化祝福和重置祝福所需的宇宙碎片数量提高<unbreak>#1[i]%</unbreak>"
+    }
+  },
+  "projectThresholdRule": "extraFragmentsSpent > 499",
+  "officialThresholdComparisonVerified": false,
+  "clientGameplayVerified": false
+}

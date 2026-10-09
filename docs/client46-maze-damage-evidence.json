@@ -1,0 +1,108 @@
+{
+  "passed": true,
+  "clientExecutableStarted": false,
+  "clientModified": false,
+  "clientGameplayVerified": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "type": {
+    "typeIndex": 20251,
+    "name": "ByCharacterDamageType",
+    "methods": [
+      {
+        "index": 118674,
+        "name": ".ctor",
+        "rva": "0x1d45c060",
+        "typeIndex": 20251,
+        "typeName": "ByCharacterDamageType",
+        "instructions": [
+          "1d45c060: mov byte ptr [rcx + 0x10], 1",
+          "1d45c064: ret ",
+          "1d45c065: nop word ptr cs:[rax + rax]"
+        ]
+      },
+      {
+        "index": 118675,
+        "name": "OJNNBEJLDIJ",
+        "rva": "0x1d45c030",
+        "typeIndex": 20251,
+        "typeName": "ByCharacterDamageType"
+      },
+      {
+        "index": 118676,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d45c070",
+        "typeIndex": 20251,
+        "typeName": "ByCharacterDamageType"
+      },
+      {
+        "index": 118677,
+        "name": "LJACLBNEEEB",
+        "rva": "0x1d45c240",
+        "typeIndex": 20251,
+        "typeName": "ByCharacterDamageType"
+      },
+      {
+        "index": 118678,
+        "name": "EOJLPDGNHEK",
+        "rva": "0x1d45c270",
+        "typeIndex": 20251,
+        "typeName": "ByCharacterDamageType"
+      }
+    ],
+    "fields": [
+      {
+        "fieldIndex": 92203,
+        "name": "TargetType",
+        "nativeTypeIndex": 501063,
+        "nativeType": {
+          "kind": 18,
+          "typeIndex": 23744,
+          "name": "TargetEvaluator"
+        }
+      },
+      {
+        "fieldIndex": 92204,
+        "name": "DamageType",
+        "nativeTypeIndex": 491112,
+        "nativeType": {
+          "kind": 17,
+          "typeIndex": 10410,
+          "name": "AttackDamageType"
+        }
+      }
+    ]
+  },
+  "constructor": {
+    "index": 118674,
+    "name": ".ctor",
+    "rva": "0x1d45c060",
+    "typeIndex": 20251,
+    "typeName": "ByCharacterDamageType",
+    "instructions": [
+      "1d45c060: mov byte ptr [rcx + 0x10], 1",
+      "1d45c064: ret ",
+      "1d45c065: nop word ptr cs:[rax + rax]"
+    ]
+  },
+  "damageEnum": {
+    "Unknow": 0,
+    "Physical": 1,
+    "Fire": 2,
+    "Ice": 4,
+    "Thunder": 8,
+    "Wind": 16,
+    "Quantum": 32,
+    "Imaginary": 64,
+    "Heal": 128,
+    "AllType": 255
+  },
+  "enumTypeIndex": 10410,
+  "defaultDamageTypeVerified": false,
+  "runtimePredicateEvaluatorVerified": false,
+  "nativeMaskComparisonVerified": false,
+  "modifierListenerDispatchVerified": false,
+  "completeAbilityChainVerified": false
+}

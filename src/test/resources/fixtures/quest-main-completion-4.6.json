@@ -1,0 +1,744 @@
+[
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "081e3d30537db34ceacf316c1b6e0aeb4cb0a2ce6f799c1b37f96e89f2f5fe4e",
+    "sourceBlobSHA256": "b3212e18bf165732a22a1b6f904141a194e678b772623de1939b2c2f6b78a633",
+    "path": [],
+    "row": {
+      "MainMissionID": 1000201,
+      "StartSubMissionList": [
+        100020104
+      ],
+      "FinishSubMissionList": [
+        100020109
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "sourceBlobSHA256": "aeb9a008cb81d748d0e387dce374bd03b9f10e32d378eae82a3a831ebe9a9cdc",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 100020104,
+      "MainMissionID": 1000201,
+      "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020104.json",
+      "LevelPlaneID": 20002,
+      "LevelFloorID": 20002001,
+      "TakeType": "Auto",
+      "MazePlaneID": 20002,
+      "MazeFloorID": 20002001,
+      "FinishType": "PropState",
+      "ParamType": "Equal",
+      "ParamInt1": 3,
+      "ParamInt2": 300002,
+      "ParamInt3": 1,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShowStartHint": "Update",
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20002001,
+      "WayPointGroupID": 3,
+      "WayPointEntityID": 300002
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "sourceBlobSHA256": "aeb9a008cb81d748d0e387dce374bd03b9f10e32d378eae82a3a831ebe9a9cdc",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 100020105,
+      "MainMissionID": 1000201,
+      "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020105.json",
+      "LevelPlaneID": 20002,
+      "LevelFloorID": 20002001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100020104
+      ],
+      "MazePlaneID": 20002,
+      "MazeFloorID": 20002001,
+      "FinishType": "KillMonster",
+      "ParamType": "Equal",
+      "ParamInt1": 16,
+      "ParamInt2": 200001,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueReward": [],
+      "WayPointType": "Monster",
+      "WayPointFloorID": 20002001,
+      "WayPointGroupID": 16,
+      "WayPointEntityID": 200001
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "sourceBlobSHA256": "aeb9a008cb81d748d0e387dce374bd03b9f10e32d378eae82a3a831ebe9a9cdc",
+    "path": [
+      "SubMissionList",
+      2
+    ],
+    "row": {
+      "ID": 100020106,
+      "MainMissionID": 1000201,
+      "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020106.json",
+      "LevelPlaneID": 20002,
+      "LevelFloorID": 20002001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100020105
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100020106",
+      "ParamItemList": [],
+      "Progress": 1,
+      "CustomValueReward": [],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20002001,
+      "WayPointGroupID": 4,
+      "WayPointEntityID": 300013
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "sourceBlobSHA256": "aeb9a008cb81d748d0e387dce374bd03b9f10e32d378eae82a3a831ebe9a9cdc",
+    "path": [
+      "SubMissionList",
+      3
+    ],
+    "row": {
+      "ID": 100020107,
+      "MainMissionID": 1000201,
+      "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020107.json",
+      "LevelPlaneID": 20002,
+      "LevelFloorID": 20002001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100020106
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100020107",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20002001,
+      "WayPointGroupID": 4,
+      "WayPointEntityID": 300013
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "sourceBlobSHA256": "aeb9a008cb81d748d0e387dce374bd03b9f10e32d378eae82a3a831ebe9a9cdc",
+    "path": [
+      "SubMissionList",
+      4
+    ],
+    "row": {
+      "ID": 100020131,
+      "MainMissionID": 1000201,
+      "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020131.json",
+      "LevelPlaneID": 20002,
+      "LevelFloorID": 20002001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100020107
+      ],
+      "MazePlaneID": 20002,
+      "MazeFloorID": 20002001,
+      "FinishType": "KillMonster",
+      "ParamType": "Equal",
+      "ParamInt1": 5,
+      "ParamInt2": 200002,
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsBackTrack": true,
+      "CustomValueReward": [],
+      "WayPointType": "Monster",
+      "WayPointFloorID": 20002001,
+      "WayPointGroupID": 5,
+      "WayPointEntityID": 200002
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/1000201/MissionInfo_1000201.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "sourceBlobSHA256": "aeb9a008cb81d748d0e387dce374bd03b9f10e32d378eae82a3a831ebe9a9cdc",
+    "path": [
+      "SubMissionList",
+      5
+    ],
+    "row": {
+      "ID": 100020109,
+      "MainMissionID": 1000201,
+      "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020109.json",
+      "LevelPlaneID": 20002,
+      "LevelFloorID": 20002001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100020131
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100020109",
+      "ParamItemList": [],
+      "Progress": 1,
+      "CustomValueReward": [],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20002001,
+      "WayPointGroupID": 8,
+      "WayPointEntityID": 300001
+    }
+  },
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/4040204/MissionInfo_4040204.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "86cb8026d9cacb5d139d3f65505b4b9e44224fd4ac1a48e93ad6b253dfe084f6",
+    "sourceBlobSHA256": "cca3ad693d518ca8ed940636380a0f7aac056f347aa215822db7729c97fdd452",
+    "path": [],
+    "row": {
+      "MainMissionID": 4040204,
+      "StartSubMissionList": [
+        404020401
+      ],
+      "FinishSubMissionList": [
+        404020403
+      ],
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/4040204/MissionInfo_4040204.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dba1702988268db9e54a923298ad280c45e93be9cb659894d144a21ca28dd2b7",
+    "sourceBlobSHA256": "8b7d4b1cf2721d8b997f83bc615203abbf6fd195e8717349b6fe19296c187068",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 404020401,
+      "MainMissionID": 4040204,
+      "MissionJsonPath": "Config/Level/Mission/4040204/Mission_404020401.json",
+      "LevelPlaneID": 10201,
+      "LevelFloorID": 10201001,
+      "TakeType": "Auto",
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_404020401",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/4040204/MissionInfo_4040204.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "dba1702988268db9e54a923298ad280c45e93be9cb659894d144a21ca28dd2b7",
+    "sourceBlobSHA256": "8b7d4b1cf2721d8b997f83bc615203abbf6fd195e8717349b6fe19296c187068",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 404020403,
+      "MainMissionID": 4040204,
+      "MissionJsonPath": "Config/Level/Mission/4040204/Mission_404020403.json",
+      "LevelPlaneID": 10201,
+      "LevelFloorID": 10201001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        404020401
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_404020403",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "definition",
+    "source": "resources/4.6/Config/Level/Mission/4040208/MissionInfo_4040208.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "7e7e0482cab71e4020405db33556a818b8cf0b44ce9f90f216eb60058c10d886",
+    "sourceBlobSHA256": "e6c032e834479422b73b4c8a38947cbecb9d85d53ae2a18a62e7ea171cc1ef72",
+    "path": [],
+    "row": {
+      "MainMissionID": 4040208,
+      "StartSubMissionList": [
+        404020801
+      ],
+      "FinishSubMissionList": [
+        404020802
+      ],
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/4040208/MissionInfo_4040208.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "474e00ac5d8db16130369b3f9534ed60d8ece205ff0939792aa17b3c2d0a2530",
+    "sourceBlobSHA256": "17fdfb0e77753f66aae2ca0c8c7219bdd3fa95e3ee76e509539f1a558ace3035",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 404020801,
+      "MainMissionID": 4040208,
+      "MissionJsonPath": "Config/Level/Mission/4040208/Mission_404020801.json",
+      "LevelPlaneID": 10202,
+      "LevelFloorID": 10202001,
+      "TakeType": "Auto",
+      "TakeParamIntList": [
+        4040208
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_404020801",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/4040208/MissionInfo_4040208.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "474e00ac5d8db16130369b3f9534ed60d8ece205ff0939792aa17b3c2d0a2530",
+    "sourceBlobSHA256": "17fdfb0e77753f66aae2ca0c8c7219bdd3fa95e3ee76e509539f1a558ace3035",
+    "path": [
+      "SubMissionList",
+      1
+    ],
+    "row": {
+      "ID": 404020802,
+      "MainMissionID": 4040208,
+      "MissionJsonPath": "Config/Level/Mission/4040208/Mission_404020802.json",
+      "LevelPlaneID": 10202,
+      "LevelFloorID": 10202001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        404020801
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_404020802",
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      5
+    ],
+    "row": {
+      "MainMissionID": 1000201,
+      "Type": "Main",
+      "WorldID": 101,
+      "DisplayPriority": 1000201,
+      "NextMainMissionList": [],
+      "Name": {
+        "Hash": 1829630529026038115
+      },
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 1000101
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "NextTrackMainMission": 1000202,
+      "TrackWeight": 100,
+      "RewardID": 11000201,
+      "DisplayRewardID": 11000203,
+      "MissionPack": 1000201,
+      "ChapterID": 100001,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      888
+    ],
+    "row": {
+      "MainMissionID": 4040204,
+      "Type": "Branch",
+      "WorldID": 301,
+      "DisplayPriority": 4040204,
+      "NextMainMissionList": [],
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 4040202
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 14040204,
+      "DisplayRewardID": 14040204,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      892
+    ],
+    "row": {
+      "MainMissionID": 4040208,
+      "Type": "Branch",
+      "WorldID": 301,
+      "DisplayPriority": 4040208,
+      "NextMainMissionList": [],
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 4040202
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 14040208,
+      "DisplayRewardID": 14040208,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      1068
+    ],
+    "row": {
+      "MainMissionID": 4140119,
+      "Type": "Branch",
+      "WorldID": 101,
+      "DisplayPriority": 4140119,
+      "NextMainMissionList": [],
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 8016202
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 14140119,
+      "DisplayRewardID": 100,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/ExcelOutput/MainMission.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "sourceBlobSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "path": [
+      1069
+    ],
+    "row": {
+      "MainMissionID": 4140120,
+      "Type": "Branch",
+      "WorldID": 101,
+      "DisplayPriority": 4140120,
+      "NextMainMissionList": [],
+      "TakeOperation": "And",
+      "BeginOperation": "And",
+      "TakeParam": [
+        {
+          "Type": "MultiSequence",
+          "Value": 8016202
+        }
+      ],
+      "BeginParam": [
+        {
+          "Type": "Auto"
+        }
+      ],
+      "RewardID": 14140120,
+      "DisplayRewardID": 100,
+      "SubRewardList": []
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      639
+    ],
+    "row": {
+      "QuestID": 4000001,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "AutoUnlock",
+      "UnlockParamList": [],
+      "RewardID": 100,
+      "FinishWayID": 4000001
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      977
+    ],
+    "row": {
+      "QuestID": 4052344,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "FinishQuest",
+      "UnlockParamList": [
+        4000001
+      ],
+      "RewardID": 113000,
+      "FinishWayID": 4052344
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      981
+    ],
+    "row": {
+      "QuestID": 4052348,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "FinishQuest",
+      "UnlockParamList": [
+        4000001
+      ],
+      "RewardID": 113000,
+      "FinishWayID": 4052348
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      1219
+    ],
+    "row": {
+      "QuestID": 4052910,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "FinishQuest",
+      "UnlockParamList": [
+        4000001
+      ],
+      "RewardID": 113000,
+      "FinishWayID": 4052910
+    }
+  },
+  {
+    "kind": "quest",
+    "source": "resources/4.6/ExcelOutput/QuestData.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+    "sourceBlobSHA256": "6217495bd587ae506fbbce3b01d59ab5c4f313d5b965457cca5e2f28268e46d1",
+    "path": [
+      2539
+    ],
+    "row": {
+      "QuestID": 4045407,
+      "QuestType": 1,
+      "ImagePath": "",
+      "UnlockType": "FinishQuest",
+      "UnlockParamList": [
+        4000001
+      ],
+      "RewardID": 113000,
+      "FinishWayID": 4045407
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      819
+    ],
+    "row": {
+      "ID": 4000001,
+      "FinishType": "FinishMission",
+      "ParamType": "ListContain",
+      "ParamStr1": "",
+      "ParamIntList": [
+        1000201
+      ],
+      "ParamItemList": [],
+      "Progress": 1
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      1157
+    ],
+    "row": {
+      "ID": 4052344,
+      "FinishType": "FinishMission",
+      "ParamType": "ListContain",
+      "ParamStr1": "",
+      "ParamIntList": [
+        4040204
+      ],
+      "ParamItemList": [],
+      "Progress": 1
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      1161
+    ],
+    "row": {
+      "ID": 4052348,
+      "FinishType": "FinishMission",
+      "ParamType": "ListContain",
+      "ParamStr1": "",
+      "ParamIntList": [
+        4040208
+      ],
+      "ParamItemList": [],
+      "Progress": 1
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      1399
+    ],
+    "row": {
+      "ID": 4052910,
+      "FinishType": "FinishMission",
+      "ParamType": "ListContain",
+      "ParamStr1": "",
+      "ParamIntList": [
+        4140119,
+        4140120
+      ],
+      "ParamItemList": [],
+      "Progress": 2
+    }
+  },
+  {
+    "kind": "rule",
+    "source": "resources/4.6/ExcelOutput/FinishWay.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+    "sourceBlobSHA256": "c023bcf6a45e7b2946ff1d76f3bf8bc0c4783de683691ea5b840756218dd935c",
+    "path": [
+      2719
+    ],
+    "row": {
+      "ID": 4045407,
+      "FinishType": "FinishQuestByClient",
+      "ParamType": "NoPara",
+      "ParamInt3": 4045407,
+      "ParamStr1": "",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "Progress": 1
+    }
+  }
+]

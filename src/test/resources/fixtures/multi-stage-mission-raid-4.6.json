@@ -1,0 +1,4034 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceFiles": {
+    "ExcelOutput/RaidConfig.json": "21cd8e8bd7404912be043c994e365c6778585ad34956a2de27eecca695cf86a9",
+    "ExcelOutput/MainMission.json": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "ExcelOutput/MazePlane.json": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+    "ExcelOutput/MapEntrance.json": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+    "ExcelOutput/TeamLimitCondition.json": "1ccbce108471d2703409188202b6113c856154e544b2abb402ba4de277d7d34c",
+    "ExcelOutput/SpecialAvatar.json": "1c5b658b175d5a8de31b90eabae4c859e4e472d521b0af618776245039278601",
+    "ExcelOutput/AvatarConfig.json": "9e57b5e3700b525a3f7097895d34177f769012034ac9bd0428318c3ff47f889e",
+    "ExcelOutput/AvatarPromotionConfig.json": "7501192b3dc1dd32b43ec702d76b6f8462fa10760c9cad4aa6a78188a5dacd85",
+    "ExcelOutput/AvatarSkillTreeConfig.json": "5b49ad95e56fd422fbddd034efd9db27f8874bd5455f67c2cfa5649944068fa9",
+    "ExcelOutput/EquipmentPromotionConfig.json": "4c39a581896a55558170fae5bd582ac4a656dd428ed2572c6be15d60eb4ac333",
+    "ExcelOutput/ItemConfigEquipment.json": "99e04f375edf16c2b8946a11f6c0f451cde6637b30a7a2d6db1daa914ceb1bf8",
+    "ExcelOutput/EquipmentConfig.json": "dddb9cd0f5108fb1cd0146b6a94d1511f5d223c0ac631cad5e9c3f4ebfa7cc73",
+    "Config/Level/Mission/1021301/MissionInfo_1021301.json": "3ee8d76c93cc31edac24720268d6b72f833ff6ae9e1581af5e2b01b7ad515e07",
+    "Config/Level/Mission/1021301/MissionInfo_1021301.partial.json": "16e7d9ec34bf214c7c76a47fbd6dca751d2aceec7f9308fd39c63c039f1382dc",
+    "Config/Level/Mission/1021401/MissionInfo_1021401.json": "8ed2b561df8adbe82b5d540de106ee504b2384e58305937f185c757ae6ac2e8b",
+    "Config/Level/Mission/1021401/MissionInfo_1021401.partial.json": "cc78b56957363229272cd7e99dcd5afacaf3b34fd90816a89cd7b111d47f59c2",
+    "Config/Level/Mission/1021301/Mission_102130113.json": "6e91bbb942d9b522d20e11b2eb686fcd4620d8dbe2ea62a1d6536446766da924",
+    "Config/Level/Mission/1021401/Mission_102140141.json": "6e91bbb942d9b522d20e11b2eb686fcd4620d8dbe2ea62a1d6536446766da924",
+    "Config/BattleLineupPage/SkillTreePointPreset/SkillTreePointPreset_7.json": "72998433c1b02f4822a10d9dc7d437c5277198effb5aabc1f25f06628fdca501",
+    "Config/BattleLineupPage/SkillTreePointPreset/SkillTreePointPreset_8.json": "fabe00eb0bace634f677865537391a09228710fa2451fa6d9f83bbd40a9e9f27",
+    "Config/Level/Mission/1021401/Mission_102140142.json": "47b5ff7f236902b11129f5c038a2d0d7c0f62e588741fe4a1063d0b8a0fea4a2",
+    "Config/Level/Mission/1021401/Mission_102140143.json": "193da983d8d7cb5ed0e75ddab7a093ae8f1692741fda178602d20e33ffa1a51e"
+  },
+  "records": {
+    "ExcelOutput/RaidConfig.json": [
+      {
+        "RaidID": 40231001,
+        "RaidTagList": [],
+        "UnlockWorldLevel": [],
+        "Type": "Mission",
+        "MonsterList": [],
+        "MonsterHideList": [],
+        "RaidName": {
+          "Hash": 4959504324340410796
+        },
+        "RaidDesc": {
+          "Hash": 7726750522157694558
+        },
+        "FinishEntranceID": 2023202,
+        "BuffParamList": [],
+        "TeamLimitIDList": [
+          14
+        ],
+        "LimitIDList": [],
+        "RecoverType": [
+          "Unknown"
+        ],
+        "RewardList": [],
+        "TeamType": "TrialOnly",
+        "TrialAvatarList": [
+          1021002
+        ],
+        "MainMissionIDList": [
+          1021301,
+          1021401
+        ],
+        "MainMissionIDBefore": 1021201,
+        "MainMissionIDAfter": 1021501,
+        "SkipRewardOnFinish": true,
+        "EntrancePageBGImagePath": "",
+        "DamageType": [],
+        "RaidTargetID": [],
+        "EnterType": "SkipUI"
+      }
+    ],
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1021201,
+        "Type": "Main",
+        "WorldID": 301,
+        "DisplayPriority": 1021201,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 16595136353742617684
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1021101
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1021501,
+        "TrackWeight": 100,
+        "RewardID": 100,
+        "DisplayRewardID": 11021201,
+        "ChapterID": 102002,
+        "SubRewardList": [
+          2000498,
+          2000505
+        ]
+      },
+      {
+        "MainMissionID": 1021301,
+        "Type": "Main",
+        "WorldID": 301,
+        "DisplayPriority": 1021301,
+        "IsInRaid": true,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 12281657520744820915
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "Manual"
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "TrackWeight": 100,
+        "ChapterID": 102002,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1021401,
+        "Type": "Main",
+        "WorldID": 301,
+        "DisplayPriority": 1021401,
+        "IsInRaid": true,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 13772259889546076201
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1021301
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "TrackWeight": 100,
+        "ChapterID": 102002,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1021501,
+        "Type": "Main",
+        "WorldID": 301,
+        "DisplayPriority": 1021501,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 1774686877902012867
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1021201
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1021702,
+        "TrackWeight": 100,
+        "RewardID": 11021501,
+        "DisplayRewardID": 11021501,
+        "ChapterID": 102002,
+        "SubRewardList": [
+          11021201
+        ]
+      }
+    ],
+    "ExcelOutput/MazePlane.json": [
+      {
+        "PlaneID": 40231,
+        "PlaneType": "Raid",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 301,
+        "PlaneName": {
+          "Hash": 13013349132478528449
+        },
+        "StartFloorID": 40231001,
+        "FloorIDList": [
+          40231001,
+          40231003,
+          40231004
+        ]
+      },
+      {
+        "PlaneID": 20232,
+        "PlaneType": "Maze",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 301,
+        "PlaneName": {
+          "Hash": 4320299263096095201
+        },
+        "StartFloorID": 20232001,
+        "FloorIDList": [
+          20232001
+        ]
+      }
+    ],
+    "ExcelOutput/MapEntrance.json": [
+      {
+        "ID": 40231001,
+        "EntranceType": "Explore",
+        "PlaneID": 40231,
+        "FloorID": 40231001,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      },
+      {
+        "ID": 40231003,
+        "EntranceType": "Explore",
+        "PlaneID": 40231,
+        "FloorID": 40231003,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      },
+      {
+        "ID": 40231004,
+        "EntranceType": "Explore",
+        "PlaneID": 40231,
+        "FloorID": 40231004,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [],
+        "FinishSubMissionList": []
+      },
+      {
+        "ID": 2023202,
+        "EntranceType": "Mission",
+        "PlaneID": 20232,
+        "FloorID": 20232001,
+        "StartGroupID": 1,
+        "StartAnchorID": 5,
+        "BeginMainMissionList": [],
+        "FinishMainMissionList": [
+          1021201
+        ],
+        "FinishSubMissionList": []
+      }
+    ],
+    "ExcelOutput/TeamLimitCondition.json": [
+      {
+        "ID": 14,
+        "LimitType": "ForbidReplace",
+        "ParamIntList": []
+      }
+    ],
+    "ExcelOutput/SpecialAvatar.json": [
+      {
+        "SpecialAvatarID": 1021002,
+        "IsUseWorldLevel": true,
+        "PlayerID": 1002,
+        "AvatarID": 1002,
+        "Type": "TYPE_TRIAL",
+        "LevelAreaPrefab": "",
+        "AnchorName": "",
+        "Level": 38,
+        "Promotion": 2,
+        "OverrideProperty": [],
+        "HaveActionDelay": true,
+        "SkillTreeTemplate": "TYPE_CUSTOM",
+        "CustomSkillTreeKey": "MaxWithInLevel",
+        "EquipmentID": 21003,
+        "EquipmentLevel": 38,
+        "EquipmentPromotion": 2,
+        "EquipmentRank": 1,
+        "RelicPropertyType": 411002,
+        "RelicMainValue": 4484302,
+        "RelicSubValue": 302,
+        "AbilityNameList": [],
+        "PlayerJsonPath": "",
+        "JsonPath": "",
+        "AIPath": ""
+      }
+    ],
+    "ExcelOutput/AvatarConfig.json": [
+      {
+        "AvatarID": 1002,
+        "AvatarName": {
+          "Hash": 10239807114774791393
+        },
+        "AvatarFullName": {
+          "Hash": 5982200128528119830
+        },
+        "AdventurePlayerID": 1002,
+        "AvatarVOTag": "danheng",
+        "Rarity": "CombatPowerAvatarRarityType4",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_DanHeng_00_Config.json",
+        "DamageType": "Wind",
+        "SPNeed": {
+          "Value": 100
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          100201,
+          100202,
+          100203,
+          100204,
+          100205,
+          100206
+        ],
+        "SkillList": [
+          100201,
+          100202,
+          100203,
+          100204,
+          100206,
+          100207
+        ],
+        "AvatarBaseType": "Rogue",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/DanHeng_00/Avatar_DanHeng_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1002.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1002.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1002.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1002.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1002B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1002.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/DanHeng_00/Manikin_Avatar_Lad_DanHeng_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_DanHeng_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_DanHeng_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/RogueSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1002.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1002.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1002.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1002.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1002.png",
+        "AvatarCutinIntroText": {
+          "Hash": 9591651858232036873
+        },
+        "AvatarDropOffset": [
+          -65,
+          76.1,
+          0.71,
+          -65,
+          76.1,
+          0.71,
+          -65,
+          76.1,
+          0.71
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          -21,
+          -48,
+          1
+        ],
+        "AssistOffset": [
+          10,
+          -42,
+          1.3
+        ],
+        "AssistBgOffset": [
+          -140,
+          -260,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          -55,
+          -45,
+          5
+        ]
+      }
+    ],
+    "ExcelOutput/AvatarPromotionConfig.json": [
+      {
+        "AvatarID": 1002,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 3200
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 4
+          }
+        ],
+        "MaxLevel": 20,
+        "PlayerLevelRequire": 15,
+        "AttackBase": {
+          "Value": 74.4
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 54
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 120
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      },
+      {
+        "AvatarID": 1002,
+        "Promotion": 1,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 6400
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 8
+          }
+        ],
+        "MaxLevel": 30,
+        "WorldLevelRequire": 1,
+        "AttackBase": {
+          "Value": 104.16
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 75.6
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 168
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      },
+      {
+        "AvatarID": 1002,
+        "Promotion": 2,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 12800
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 110405,
+            "ItemNum": 2
+          }
+        ],
+        "MaxLevel": 40,
+        "WorldLevelRequire": 2,
+        "AttackBase": {
+          "Value": 133.92
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 97.2
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 216
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      },
+      {
+        "AvatarID": 1002,
+        "Promotion": 3,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 32000
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 110405,
+            "ItemNum": 5
+          }
+        ],
+        "MaxLevel": 50,
+        "WorldLevelRequire": 3,
+        "AttackBase": {
+          "Value": 163.68
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 118.8
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 264
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      },
+      {
+        "AvatarID": 1002,
+        "Promotion": 4,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 64000
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 110405,
+            "ItemNum": 15
+          }
+        ],
+        "MaxLevel": 60,
+        "WorldLevelRequire": 4,
+        "AttackBase": {
+          "Value": 193.44
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 140.4
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 312
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      },
+      {
+        "AvatarID": 1002,
+        "Promotion": 5,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 7
+          },
+          {
+            "ItemID": 110405,
+            "ItemNum": 28
+          }
+        ],
+        "MaxLevel": 70,
+        "WorldLevelRequire": 5,
+        "AttackBase": {
+          "Value": 223.2
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 162
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 360
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      },
+      {
+        "AvatarID": 1002,
+        "Promotion": 6,
+        "PromotionCostList": [],
+        "MaxLevel": 80,
+        "WorldLevelRequire": 5,
+        "AttackBase": {
+          "Value": 252.96
+        },
+        "AttackAdd": {
+          "Value": 3.72
+        },
+        "DefenceBase": {
+          "Value": 183.6
+        },
+        "DefenceAdd": {
+          "Value": 2.7
+        },
+        "HPBase": {
+          "Value": 408
+        },
+        "HPAdd": {
+          "Value": 6
+        },
+        "SpeedBase": {
+          "Value": 110
+        },
+        "CriticalChance": {
+          "Value": 0.05
+        },
+        "CriticalDamage": {
+          "Value": 0.5
+        },
+        "BaseAggro": {
+          "Value": 75
+        }
+      }
+    ],
+    "ExcelOutput/AvatarSkillTreeConfig.json": [
+      {
+        "PointID": 1002001,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100201
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002001,
+        "Level": 2,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100201
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002001,
+        "Level": 3,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100201
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002001,
+        "Level": 4,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100201
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002001,
+        "Level": 5,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 36000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100201
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002001,
+        "Level": 6,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100201
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 2,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2000
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 1,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 3,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 4,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 5,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 6,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 24000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 5
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 7,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 36000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 8,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 64000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 9,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002002,
+        "Level": 10,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 240000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 11
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100202
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 2,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2000
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 1,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 3,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 4,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 5,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 6,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 24000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 5
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 7,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 36000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 8,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 64000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 9,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002003,
+        "Level": 10,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 240000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 11
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100203
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 2,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2000
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 1,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 3,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 4,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 5,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 6,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 24000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 5
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 7,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 36000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 8,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 64000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 9,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002004,
+        "Level": 10,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 240000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 11
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100204
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002007,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 2,
+        "AnchorType": "Point05",
+        "MaxLevel": 1,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100207
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_Maze.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointMaze",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002101,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 3,
+        "AnchorType": "Point06",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_SkillTree1.png",
+        "PointName": "SkillPointName_1002101",
+        "PointDesc": "SkillPointDesc_1002101",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "Avatar_DanHeng_SkillTree01",
+        "PointTriggerKey": "PointB1",
+        "ParamList": [
+          {
+            "Value": 0.5
+          },
+          {
+            "Value": 0.5
+          }
+        ]
+      },
+      {
+        "PointID": 1002102,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 3,
+        "AnchorType": "Point07",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_SkillTree2.png",
+        "PointName": "SkillPointName_1002102",
+        "PointDesc": "SkillPointDesc_1002102",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [
+          30000002
+        ],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "Avatar_DanHeng_SkillTree02",
+        "PointTriggerKey": "PointB2",
+        "ParamList": [
+          {
+            "Value": 0.5
+          },
+          {
+            "Value": 0.2
+          },
+          {
+            "Value": 2
+          }
+        ]
+      },
+      {
+        "PointID": 1002103,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 3,
+        "AnchorType": "Point08",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1002/SkillIcon_1002_SkillTree3.png",
+        "PointName": "SkillPointName_1002103",
+        "PointDesc": "SkillPointDesc_1002103",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointB3",
+        "ParamList": [
+          {
+            "Value": 0.4
+          }
+        ]
+      },
+      {
+        "PointID": 1002201,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point09",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [
+          {
+            "PropertyType": "WindAddedRatio",
+            "Value": {
+              "Value": 0.032
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2000
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarLevelLimit": 1,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconWindAddedRatio.png",
+        "PointName": "SkillPointName_1002201",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS1",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002202,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point10",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002101
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "AttackAddedRatio",
+            "Value": {
+              "Value": 0.04
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconAttack.png",
+        "PointName": "SkillPointName_1002202",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS2",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002203,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point11",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002202
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "WindAddedRatio",
+            "Value": {
+              "Value": 0.032
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconWindAddedRatio.png",
+        "PointName": "SkillPointName_1002203",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS3",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002204,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point12",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [
+          {
+            "PropertyType": "DefenceAddedRatio",
+            "Value": {
+              "Value": 0.05
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconDefence.png",
+        "PointName": "SkillPointName_1002204",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS4",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002205,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point13",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002102
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "WindAddedRatio",
+            "Value": {
+              "Value": 0.048
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconWindAddedRatio.png",
+        "PointName": "SkillPointName_1002205",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS5",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002206,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point14",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002205
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "AttackAddedRatio",
+            "Value": {
+              "Value": 0.06
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 36000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconAttack.png",
+        "PointName": "SkillPointName_1002206",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS6",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002207,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point15",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [
+          {
+            "PropertyType": "WindAddedRatio",
+            "Value": {
+              "Value": 0.048
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 36000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 2
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconWindAddedRatio.png",
+        "PointName": "SkillPointName_1002207",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS7",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002208,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point16",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002103
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "DefenceAddedRatio",
+            "Value": {
+              "Value": 0.075
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconDefence.png",
+        "PointName": "SkillPointName_1002208",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS8",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002209,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point17",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002208
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "AttackAddedRatio",
+            "Value": {
+              "Value": 0.08
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarLevelLimit": 75,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconAttack.png",
+        "PointName": "SkillPointName_1002209",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS9",
+        "ParamList": []
+      },
+      {
+        "PointID": 1002210,
+        "Level": 1,
+        "AvatarID": 1002,
+        "PointType": 1,
+        "AnchorType": "Point18",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1002208
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "WindAddedRatio",
+            "Value": {
+              "Value": 0.064
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 128000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarLevelLimit": 80,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconWindAddedRatio.png",
+        "PointName": "SkillPointName_1002210",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS10",
+        "ParamList": []
+      }
+    ],
+    "ExcelOutput/EquipmentPromotionConfig.json": [
+      {
+        "EquipmentID": 21003,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 4000
+          },
+          {
+            "ItemID": 112001,
+            "ItemNum": 5
+          }
+        ],
+        "PlayerLevelRequire": 15,
+        "MaxLevel": 20,
+        "BaseHP": {
+          "Value": 43.2
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 21.6
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 15
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      },
+      {
+        "EquipmentID": 21003,
+        "Promotion": 1,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 8000
+          },
+          {
+            "ItemID": 110121,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 112001,
+            "ItemNum": 10
+          }
+        ],
+        "WorldLevelRequire": 1,
+        "MaxLevel": 30,
+        "BaseHP": {
+          "Value": 95.04
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 47.52
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 33
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      },
+      {
+        "EquipmentID": 21003,
+        "Promotion": 2,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 16000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 112002,
+            "ItemNum": 6
+          }
+        ],
+        "WorldLevelRequire": 2,
+        "MaxLevel": 40,
+        "BaseHP": {
+          "Value": 164.16
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 82.08
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 57
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      },
+      {
+        "EquipmentID": 21003,
+        "Promotion": 3,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 40000
+          },
+          {
+            "ItemID": 110122,
+            "ItemNum": 6
+          },
+          {
+            "ItemID": 112002,
+            "ItemNum": 9
+          }
+        ],
+        "WorldLevelRequire": 3,
+        "MaxLevel": 50,
+        "BaseHP": {
+          "Value": 233.28
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 116.64
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 81
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      },
+      {
+        "EquipmentID": 21003,
+        "Promotion": 4,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 80000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 4
+          },
+          {
+            "ItemID": 112003,
+            "ItemNum": 5
+          }
+        ],
+        "WorldLevelRequire": 4,
+        "MaxLevel": 60,
+        "BaseHP": {
+          "Value": 302.4
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 151.2
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 105
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      },
+      {
+        "EquipmentID": 21003,
+        "Promotion": 5,
+        "PromotionCostList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110123,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 112003,
+            "ItemNum": 7
+          }
+        ],
+        "WorldLevelRequire": 5,
+        "MaxLevel": 70,
+        "BaseHP": {
+          "Value": 371.52
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 185.76
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 129
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      },
+      {
+        "EquipmentID": 21003,
+        "Promotion": 6,
+        "PromotionCostList": [],
+        "WorldLevelRequire": 5,
+        "MaxLevel": 80,
+        "BaseHP": {
+          "Value": 440.64
+        },
+        "BaseHPAdd": {
+          "Value": 6.48
+        },
+        "BaseAttack": {
+          "Value": 220.32
+        },
+        "BaseAttackAdd": {
+          "Value": 3.24
+        },
+        "BaseDefence": {
+          "Value": 153
+        },
+        "BaseDefenceAdd": {
+          "Value": 2.25
+        }
+      }
+    ],
+    "ExcelOutput/ItemConfigEquipment.json": [
+      {
+        "ID": 21003,
+        "ItemMainType": "Equipment",
+        "ItemSubType": "Equipment",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 13313286697450071406
+        },
+        "ItemDesc": {
+          "Hash": 15667421342692326096
+        },
+        "ItemBGDesc": {
+          "Hash": 8528926304496598506
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/LightConeIcons/21003.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/LightCone/21003.png",
+        "ItemCurrencyIconPath": "0",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 9999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [
+          {
+            "ItemID": 223,
+            "ItemNum": 2
+          }
+        ],
+        "SellType": "Sell"
+      }
+    ],
+    "ExcelOutput/EquipmentConfig.json": [
+      {
+        "EquipmentID": 21003,
+        "Release": true,
+        "EquipmentName": {
+          "Hash": 12928749239135264942
+        },
+        "Rarity": "CombatPowerLightconeRarity4",
+        "AvatarBaseType": "Rogue",
+        "MaxPromotion": 6,
+        "MaxRank": 5,
+        "ExpType": 2,
+        "SkillID": 21003,
+        "ExpProvide": 12000,
+        "CoinCost": 6000,
+        "RankUpCostList": [],
+        "ThumbnailPath": "SpriteOutput/LightConeMediumIcon/21003.png",
+        "ImagePath": "SpriteOutput/LightConeMaxFigures/21003.png",
+        "ItemRightPanelOffset": [
+          0,
+          -99,
+          0.7
+        ],
+        "AvatarDetailOffset": [
+          0,
+          -90,
+          1.15
+        ],
+        "BattleDialogOffset": [
+          0,
+          0,
+          0.55
+        ],
+        "GachaResultOffset": [
+          -8,
+          -6,
+          0.4905
+        ]
+      }
+    ],
+    "Config/Level/Mission/1021301/MissionInfo_1021301.json": [
+      {
+        "MainMissionID": 1021301,
+        "StartSubMissionList": [
+          102130101
+        ],
+        "FinishSubMissionList": [
+          102130112
+        ],
+        "MissionCustomValueList": [
+          {
+            "Name": "OldValue_0",
+            "Type": "ClientOnly",
+            "isLocal": true,
+            "isRange": true,
+            "ValidValueParamList": [
+              0,
+              2
+            ]
+          }
+        ]
+      }
+    ],
+    "Config/Level/Mission/1021301/MissionInfo_1021301.partial.json": [
+      {
+        "SubMissionList": [
+          {
+            "ID": 102130101,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130101.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1021301
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130101",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 7,
+            "WayPointEntityID": 300002
+          },
+          {
+            "ID": 102130102,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130102.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130102",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 7,
+            "WayPointEntityID": 300002
+          },
+          {
+            "ID": 102130103,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130103.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130105
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130103",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 27,
+            "WayPointEntityID": 300001
+          },
+          {
+            "ID": 102130104,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130104.json",
+            "SortID": 2,
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130102
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130104",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231001
+          },
+          {
+            "ID": 102130105,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130105.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130102
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130105",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 7,
+            "WayPointEntityID": 300002
+          },
+          {
+            "ID": 102130106,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130106.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130106",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 8,
+            "WayPointEntityID": 300003
+          },
+          {
+            "ID": 102130107,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130107.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "AudioEmotionState": "State_Severe",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130106
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130107",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 9,
+            "WayPointEntityID": 300002
+          },
+          {
+            "ID": 102130108,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130108.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130107
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130108",
+            "ParamItemList": [],
+            "Progress": 1,
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "WayPointFloorID": 40231001
+          },
+          {
+            "ID": 102130109,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130109.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeParamIntList": [],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130109",
+            "ParamItemList": [],
+            "Progress": 1,
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "WayPointFloorID": 40231001
+          },
+          {
+            "ID": 102130110,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130110.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "AudioEmotionState": "State_Severe",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130107
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130110",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "NPC",
+            "WayPointFloorID": 40231001,
+            "WayPointGroupID": 10,
+            "WayPointEntityID": 400007
+          },
+          {
+            "ID": 102130111,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130111.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231004,
+            "AudioEmotionState": "State_Tense",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130113
+            ],
+            "FinishType": "StageWin",
+            "ParamType": "Equal",
+            "ParamInt1": 20231051,
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231004
+          },
+          {
+            "ID": 102130112,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130112.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231004,
+            "AudioEmotionState": "State_Severe",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130111
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102130112",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231004
+          },
+          {
+            "ID": 102130113,
+            "MainMissionID": 1021301,
+            "MissionJsonPath": "Config/Level/Mission/1021301/Mission_102130113.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102130110
+            ],
+            "FinishType": "EnterRaidScene",
+            "ParamType": "Equal",
+            "ParamInt1": 40231001,
+            "ParamInt2": 40231004,
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231001
+          }
+        ]
+      }
+    ],
+    "Config/Level/Mission/1021401/MissionInfo_1021401.json": [
+      {
+        "MainMissionID": 1021401,
+        "StartSubMissionList": [
+          102140141
+        ],
+        "FinishSubMissionList": [
+          102140105
+        ],
+        "MissionCustomValueList": []
+      }
+    ],
+    "Config/Level/Mission/1021401/MissionInfo_1021401.partial.json": [
+      {
+        "SubMissionList": [
+          {
+            "ID": 102140101,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140101.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140142
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140101",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140102,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140102.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "StageWin",
+            "ParamType": "Equal",
+            "ParamInt1": 20231052,
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231003,
+            "WayPointGroupID": 17,
+            "WayPointEntityID": 300001
+          },
+          {
+            "ID": 102140103,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140103.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "AudioEmotionState": "State_Bgm_E3",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140102
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140103",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140104,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140104.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "AudioEmotionState": "State_Bgm_E1",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140104",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140105,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140105.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "AudioEmotionState": "State_Bgm_E1",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140104
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140105",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointType": "Prop",
+            "WayPointFloorID": 40231003,
+            "WayPointGroupID": 18,
+            "WayPointEntityID": 300001
+          },
+          {
+            "ID": 102140106,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140106.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140103
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              102140121,
+              102140122,
+              102140123,
+              102140124
+            ],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 4,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140111,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140111.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140111",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140112,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140112.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140112",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140113,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140113.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140113",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140116,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140116.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140116",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140117,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140117.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140117",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140118,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140118.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140118",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140121,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140121.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140121",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140122,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140122.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140122",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140123,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140123.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140123",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140124,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140124.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140124",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140131,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140131.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140121
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140131",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140132,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140132.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140122
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140132",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140133,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140133.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140123
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140133",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140134,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140134.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140124
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140134",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140135,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140135.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140104
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_102140135",
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140141,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140141.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231004,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1021401
+            ],
+            "FinishType": "EnterRaidScene",
+            "ParamType": "Equal",
+            "ParamInt1": 40231001,
+            "ParamInt2": 40231003,
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231004
+          },
+          {
+            "ID": 102140142,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140142.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              102140141
+            ],
+            "FinishType": "GetTrialAvatar",
+            "ParamType": "Equal",
+            "ParamInt1": 1021213,
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "WayPointFloorID": 40231003
+          },
+          {
+            "ID": 102140143,
+            "MainMissionID": 1021401,
+            "MissionJsonPath": "Config/Level/Mission/1021401/Mission_102140143.json",
+            "LevelPlaneID": 40231,
+            "LevelFloorID": 40231003,
+            "TakeParamIntList": [],
+            "FinishType": "GetTrialAvatar",
+            "ParamType": "Equal",
+            "ParamInt1": 1021204,
+            "Progress": 1,
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "WayPointFloorID": 40231003
+          }
+        ]
+      }
+    ],
+    "Config/Level/Mission/1021301/Mission_102130113.json": [
+      {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.RaidSceneTransfer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    ],
+    "Config/Level/Mission/1021401/Mission_102140141.json": [
+      {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.RaidSceneTransfer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    ],
+    "Config/BattleLineupPage/SkillTreePointPreset/SkillTreePointPreset_7.json": [
+      {
+        "Name": "MaxWithInLevel",
+        "DisplayName": "自适应角色等级最大",
+        "PresetList": [
+          {
+            "Anchor": "Point01",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point02",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point03",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point04",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point05",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point06",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point07",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point08",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point09",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point10",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point11",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point12",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point13",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point14",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point15",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point16",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point17",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point18",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point19",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point20",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point22",
+            "LevelType": "MaxWithCharacterLevel"
+          }
+        ]
+      }
+    ],
+    "Config/BattleLineupPage/SkillTreePointPreset/SkillTreePointPreset_8.json": [
+      {
+        "Name": "MaxWithInLevel_Summon",
+        "DisplayName": "记忆等级最大",
+        "PresetList": [
+          {
+            "Anchor": "Point01",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point02",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point03",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point04",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point05",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point06",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point07",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point08",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point09",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point10",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point11",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point12",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point13",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point14",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point15",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point16",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point17",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point18",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point19",
+            "LevelType": "MaxWithCharacterLevel"
+          },
+          {
+            "Anchor": "Point20",
+            "LevelType": "MaxWithCharacterLevel"
+          }
+        ]
+      }
+    ],
+    "Config/Level/Mission/1021401/Mission_102140142.json": [
+      {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.ReplaceTrialPlayer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    ],
+    "Config/Level/Mission/1021401/Mission_102140143.json": [
+      {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CreateTrialPlayer"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    ]
+  }
+}

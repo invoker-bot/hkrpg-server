@@ -1,0 +1,183 @@
+[
+  {
+    "kind": "file",
+    "source": "resources/4.6/Config/Level/Mission/3011607/Mission_301160701.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "88b8650b1ece49580823de83dc910e0547265c14047ded097fd75de72f533ff5",
+    "sourceBlobSHA256": "5b524af9b0db83e17d68ca51a8e9676229074519dabb6a10743923661c04aa3d",
+    "path": [],
+    "row": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitCustomString",
+              "CustomString": {
+                "Value": "Talk_301160701"
+              }
+            },
+            {
+              "$type": "RPG.GameCore.TriggerCustomString",
+              "CustomString": {
+                "Value": "Battle_301160701"
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitCustomString",
+              "CustomString": {
+                "Value": "Battle_301160701"
+              },
+              "GoNextImmediately": true
+            },
+            {
+              "$type": "RPG.GameCore.TriggerBattle",
+              "EventID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 20134222
+                }
+              },
+              "GroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 2
+                }
+              },
+              "BattleAreaID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 1
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    }
+  },
+  {
+    "kind": "file",
+    "source": "resources/4.6/Config/Level/Mission/3011607/Mission_301160702.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "c2c3cbfe8fee7f9f75e8788f40db08dc325ee175a1e2b75abf506f94b8a7e3a3",
+    "sourceBlobSHA256": "d1e0559c0a05e05d9fed655ed6023f127b6c920f7ae17e1c6ba97351970333bf",
+    "path": [],
+    "row": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.TriggerPerformance",
+              "PerformanceType": "E",
+              "PerformanceID": 301160702
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_301160702"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    }
+  },
+  {
+    "kind": "file",
+    "source": "resources/4.6/Config/Level/Mission/3011607/MissionInfo_3011607.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "cc7e114c85f7d0ee2b881c53afbb5fdace115f5c14dcd13c253b30c7b23825d6",
+    "sourceBlobSHA256": "4a40cbc22ac03b83dc29662458c4d1d02e8d6b13f0194448d767336a67a59de4",
+    "path": [],
+    "row": {
+      "MainMissionID": 3011607,
+      "StartSubMissionList": [
+        301160701
+      ],
+      "FinishSubMissionList": [
+        301160702
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "source": "resources/4.6/Config/Level/Mission/3011607/MissionInfo_3011607.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "b9d143aeea05d4c277e118f56c1eafacf0d366ecdd9b1983efe2db00f571a1ae",
+    "sourceBlobSHA256": "66f0441cafea45caf264e14c99bbb03aae15cdae2cc4acfa9daca9134df2f128",
+    "path": [],
+    "row": {
+      "SubMissionList": [
+        {
+          "ID": 301160701,
+          "MainMissionID": 3011607,
+          "MissionJsonPath": "Config/Level/Mission/3011607/Mission_301160701.json",
+          "LevelPlaneID": 20122,
+          "LevelFloorID": 20122001,
+          "TakeType": "Auto",
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20134222,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShowStartHint": "New",
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20122001,
+          "WayPointGroupID": 104,
+          "WayPointEntityID": 400001,
+          "FroceMapHint": true
+        },
+        {
+          "ID": 301160702,
+          "MainMissionID": 3011607,
+          "MissionJsonPath": "Config/Level/Mission/3011607/Mission_301160702.json",
+          "LevelPlaneID": 20122,
+          "LevelFloorID": 20122001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            301160701
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_301160702",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "IsShowFinishEffect": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20122001,
+          "WayPointGroupID": 104,
+          "WayPointEntityID": 400001
+        }
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "source": "resources/4.6/Config/Level/Mission/3011607/MissionInfo_3011607.partial.layout.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "7e56d54476d57807877d2812ecd3cefebe60e3d42f8f476da89e42ca407bdf5a",
+    "sourceBlobSHA256": "3c8e73fe95030a7a11b3356e0f79f13c5f92d89e8d0e351fdc16790118239456",
+    "path": [],
+    "row": {
+      "BakeInfoLayouts": [
+        {
+          "UniqueName": "SubMission_301160701",
+          "TypeId": "TypeId_SubMissionInfoConfig",
+          "Offset": 2
+        },
+        {
+          "UniqueName": "SubMission_301160702",
+          "TypeId": "TypeId_SubMissionInfoConfig",
+          "Offset": 100
+        }
+      ]
+    }
+  }
+]

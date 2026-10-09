@@ -1,0 +1,32 @@
+"""核对普通引用对象池的字段、泛型、回调与失败顺序。"""
+import importlib.util
+from pathlib import Path
+from types import SimpleNamespace
+import unittest
+ROOT=Path(__file__).resolve().parents[2]
+CLIENT=Path(r'C:\Users\InvokerBot\AppData\Local\hoyo\hkrpg\versions\current')
+spec=importlib.util.spec_from_file_location('reference_pool',ROOT/'scripts/read-rogue-reference-pool.py')
+reference_pool=importlib.util.module_from_spec(spec);spec.loader.exec_module(reference_pool)
+def rows(rva):return {i['rva']:(i['mnemonic'],i['operand']) for m in sum([reference_pool.load_profile()[k] for k in ['nativeMethods','runtimeMethods','auxiliaryMethods','leafFragments']],[]) if m['rva']==rva for i in m['instructions']}
+class ReferencePoolTest(unittest.TestCase):
+ @classmethod
+ def setUpClass(cls):cls.report=reference_pool.analyze(SimpleNamespace(client_dir=CLIENT,output=ROOT/'build/rogue-reference-pool-python-evidence.json'))
+ def test_complete_bytes_types_generic_specs_and_leaf_fragments_match(self):
+  self.assertEqual((3,1357,4,1804,1,265,2,15,5,10,1,3,3,2,2),tuple(self.report[k] for k in ['matchedCompleteNativeMethods','matchedCompleteNativeBytes','matchedCompleteRuntimeHelpers','matchedCompleteRuntimeHelperBytes','matchedCompleteAuxiliaryMethods','matchedCompleteAuxiliaryBytes','matchedLeafFragments','matchedLeafFragmentBytes','matchedFieldTypes','matchedBoundMethodIdentities','matchedGenericFieldArguments','matchedTypeUsageSlots','matchedPoolMethodSpecs','matchedDepartedPayloadMethodSpecs','matchedStaticLayoutRecords']))
+ def test_reuse_publishes_pop_before_type_check_and_clear_before_on_alloc(self):
+  r=rows('0x170dcb00');self.assertEqual(('mov','dword ptr [rdi + 0x24], eax'),r['0x170dcb1d']);self.assertEqual(('mov','r14, qword ptr [rcx + rax*8 + 0x20]'),r['0x170dcb34']);self.assertEqual(('call','0x183d21420'),r['0x170dcb67']);self.assertEqual(('mov','rax, qword ptr [rdi + 0x10]'),r['0x170dcb74']);self.assertEqual(('movsxd','rcx, dword ptr [rdi + 0x24]'),r['0x170dcb81']);self.assertEqual(('mov','qword ptr [rax + rcx*8 + 0x20], 0'),r['0x170dcb8e']);self.assertEqual(('cmp','byte ptr [rdi + 0x20], 0'),r['0x170dcb97']);self.assertEqual(('call','rsi'),r['0x170dcda8'])
+ def test_initializer_scan_checks_bit_two_zero_parameters_and_no_match_returns_null(self):
+  r=rows('0x170dcb00');self.assertEqual(('call','0x183d3a130'),r['0x170dcc28']);self.assertEqual(('test','byte ptr [rax + 0x2f], 2'),r['0x170dcc70']);self.assertEqual(('cmp','byte ptr [rax + 0x2e], 0'),r['0x170dcc76']);self.assertEqual(('call','qword ptr [rax + 8]'),r['0x170dcc82']);self.assertEqual(('cmp','byte ptr [rdi + 0x20], 0'),r['0x170dccde']);self.assertEqual(('xor','r14d, r14d'),r['0x170dcce8'])
+ def test_on_recycle_uses_extended_slot_one_then_clear_uses_reference_slot_zero(self):
+  r=rows('0x1c3f8b10');self.assertEqual(('inc','edx'),r['0x1c3f8bd2']);self.assertEqual(('call','rdi'),r['0x1c3f8c07']);self.assertEqual(('xor','r9d, r9d'),r['0x1c3f8c57']);self.assertEqual(('call','rdi'),r['0x1c3f8ca2']);p=reference_pool.load_profile();self.assertEqual([('ReferenceCollection',5625),('IReferenceEx',5629),('IReference',5628)],[(t['typeName'],t['typeIndex']) for t in p['poolTypeUsageSlots']]);self.assertEqual({'0x170dcbaa':'0x93598f8','0x170dcc98':'0x93598f8','0x1c3f8b32':'0x93598f8','0x1c3f8c12':'0x9359900'},{r['instructionRva']:r['slot'] for r in p['ripBindings'] if r['instructionRva'] in ['0x170dcbaa','0x170dcc98','0x1c3f8b32','0x1c3f8c12']})
+ def test_duplicate_identity_and_growth_publish_header_before_store_validation(self):
+  r=rows('0x1c3f8b10');self.assertEqual(('mov','ebx, dword ptr [r14 + 0x24]'),r['0x1c3f8cab']);self.assertEqual(('mov','rdi, qword ptr [r14 + 0x10]'),r['0x1c3f8caf']);self.assertEqual(('cmp','qword ptr [rdi + rcx*8 + 0x20], rsi'),r['0x1c3f8cd9']);self.assertEqual(('mov','dword ptr [r14 + 0x24], eax'),r['0x1c3f8cff']);self.assertEqual(('add','ebx, ebx'),r['0x1c3f8d10']);self.assertEqual(('call','0x196f71df0'),r['0x1c3f8d14']);self.assertEqual(('mov','dword ptr [r14 + 0x24], eax'),r['0x1c3f8d24']);self.assertEqual(('call','0x183d21420'),r['0x1c3f8d59']);self.assertEqual(('mov','qword ptr [rdi + rax*8 + 0x20], rsi'),r['0x1c3f8d6e']);h=rows('0x16f71df0');self.assertEqual(('cmovl','edi, eax'),h['0x16f71e43']);self.assertEqual(('call','0x19c075050'),h['0x16f71e55']);self.assertEqual(('mov','qword ptr [r14], rsi'),h['0x16f71e7f'])
+ def test_constructor_capacity_attribute_and_default_sixteen_then_fields(self):
+  r=rows('0x1c3f9a00');self.assertEqual(('mov','edx, 0x10'),r['0x1c3f9a46']);self.assertEqual(('mov','qword ptr [rsi + 0x10], rax'),r['0x1c3f9a57']);self.assertEqual(('mov','dword ptr [rsi + 0x24], 0'),r['0x1c3f9a5b']);self.assertEqual(('mov','qword ptr [rsi + 0x18], rdi'),r['0x1c3f9a62']);self.assertEqual(('mov','byte ptr [rsi + 0x20], al'),r['0x1c3f9ab0']);p=reference_pool.load_profile();self.assertEqual([(12485,[(17,424),(18,5625)]),(5725,[(18,5630)]),(976,[(18,5628)])],[(r['methodSpec']['methodDefinition'],[(a['kind'],a['payload']) for i in r['instRecords'] for a in i['arguments']]) for r in p['poolMethodSpecs']]);self.assertEqual([('s_ReferenceCollections','0x40002d8'),('m_EnableStrictCheck','0x20001f0')],[(r['field']['name'],r['rawOffset']) for r in p['staticLayout']['fields']])
+ def test_shared_wrapper_routes_actual_type_and_strict_flag_defaults_false(self):
+  r=rows('0xb10ce60');self.assertEqual(('test','rcx, rcx'),r['0xb10ce69']);self.assertEqual(('cmp','rbx, rdi'),r['0xb10ce91']);self.assertEqual(('call','0x19c3f92d0'),r['0xb10ce9d']);self.assertEqual(('jmp','0x19c3f8b10'),r['0xb10cf26']);r=rows('0xb10cfd0');self.assertEqual(('jmp','0x1970dcb00'),r['0xb10d03f']);r=rows('0x1c3f9b20');self.assertEqual(('mov','byte ptr [rip - 0x130b6541], 0'),r['0x1c3f9bda']);p=reference_pool.load_profile();self.assertEqual(1,len(p['genericFields']));self.assertEqual('Dictionary`2',p['genericFields'][0]['record']['genericName'])
+ def test_world_factories_interfaces_hotfix_and_client_remain_unclaimed(self):
+  for key,value in reference_pool.load_profile().items():
+   if isinstance(value,bool):self.assertIs(value,self.report[key],key)
+  self.assertIs(True,self.report['actualEventConstructorClearAndDepartedTailReuseIntegrated']);self.assertIs(False,self.report['actualWorldBindingInstalled']);self.assertIs(False,self.report['generalClrAllocationReflectionInterfacesAndDictionaryInstalled']);self.assertIs(False,self.report['clientGameplayVerified'])
+if __name__=='__main__':unittest.main()

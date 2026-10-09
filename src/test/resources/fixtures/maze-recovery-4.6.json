@@ -1,0 +1,90 @@
+[
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_PlayerBoy_00_Ability.json",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      5
+    ],
+    "task": {
+      "$type": "RPG.GameCore.AdventureModifyTeamPlayerHP",
+      "AddRatio": {
+        "IsDynamic": true,
+        "PostfixExpr": {
+          "OpCodes": "AQAR",
+          "FixedValues": [],
+          "DynamicHashes": [
+            -850066311
+          ]
+        }
+      },
+      "TriggerCommonEffect": false
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "12b7fd274fb1d7f0c70596bd115f15746ecbcb411e9f183af50f624cd757bb9d",
+    "sourceBlobSHA256": "cbbca5811e72bd647a4ce5c86ec58d6836248a4731fb3f21f3733ff44e855bca",
+    "originalOuterAbilityVerified": false,
+    "clientGameplayVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_PlayerGirl_00_Ability.json",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      5
+    ],
+    "task": {
+      "$type": "RPG.GameCore.AdventureModifyTeamPlayerHP",
+      "AddRatio": {
+        "IsDynamic": true,
+        "PostfixExpr": {
+          "OpCodes": "AQAR",
+          "FixedValues": [],
+          "DynamicHashes": [
+            -850066311
+          ]
+        }
+      },
+      "TriggerCommonEffect": false
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "1274f4084a0bd1aec8bb790fad13aafb89fae7990dae34e3b2cdd7cb7b1609af",
+    "sourceBlobSHA256": "1adf5f371ac8851974f7f6c83215c66e5a024db2fe8533caa144dd03e9431290",
+    "originalOuterAbilityVerified": false,
+    "clientGameplayVerified": false
+  },
+  {
+    "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Tingyun_00_Ability.json",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      3
+    ],
+    "task": {
+      "$type": "RPG.GameCore.AdventureModifyTeamPlayerSP",
+      "ModifyValue": {
+        "IsDynamic": true,
+        "PostfixExpr": {
+          "OpCodes": "AQAR",
+          "FixedValues": [],
+          "DynamicHashes": [
+            457361642
+          ]
+        }
+      },
+      "SpecifyTargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "ClientUseGMCommand": true
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "a67b772e4770b216bb75a5ac400e78f56e658abd45a035126236b57adb5509bc",
+    "sourceBlobSHA256": "8110b6a80a062a035d3ded5e069a475aa774326614d446331a8344647ab1046c",
+    "originalOuterAbilityVerified": false,
+    "clientGameplayVerified": false
+  }
+]

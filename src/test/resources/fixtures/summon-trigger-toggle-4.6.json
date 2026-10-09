@@ -1,0 +1,49 @@
+[
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Mydeimos_00_Ability.json",
+    "sha256": "7c6dec1ef63e283bea554981b7fe195ff841438e9832b8af8d13290a311657e4",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      8
+    ],
+    "task": {
+      "$type": "RPG.GameCore.SetSummonUnitTriggerEnable",
+      "SummonUnit": {
+        "$type": "RPG.GameCore.TargetFetchSummonUnit",
+        "Summoner": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "SummonUnitID": 14041
+      },
+      "Enable": true
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  },
+  {
+    "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Mydeimos_00_Ability.json",
+    "sha256": "7c6dec1ef63e283bea554981b7fe195ff841438e9832b8af8d13290a311657e4",
+    "path": [
+      "AbilityList",
+      1,
+      "OnStart",
+      16
+    ],
+    "task": {
+      "$type": "RPG.GameCore.SetSummonUnitTriggerEnable",
+      "SummonUnit": {
+        "$type": "RPG.GameCore.TargetFetchSummonUnit",
+        "Summoner": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "SummonUnitID": 14041
+      }
+    },
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "completeAbilityChainVerified": false
+  }
+]

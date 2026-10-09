@@ -1,0 +1,131 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceFiles": {
+    "Config/Level/Mission/4030006/MissionInfo_4030006.json": "50b8d59d95f0e7cf35f87e5b8f4917d6a5d61ef718f47aea45d5498bbcea1e84",
+    "Config/Level/Mission/4030006/MissionInfo_4030006.partial.json": "531d89dfd44f0fba10dc2710b489cdd768c7338cf8f4c944ab486e20b0d593ef",
+    "Config/Level/Mission/4030006/Mission_403000601.json": "2bdf1655f4d5572bff4e79bf9d9c632203783dc9578f4a44fdd6b800148b8014",
+    "ExcelOutput/MainMission.json": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+    "ExcelOutput/RogueAreaConfig.json": "07d53fdda3645ca989dee5f67d8e98e3d7af732e911fcc979903eaf1597f294b",
+    "ExcelOutput/ConstValueCommon.json": "0d0ea8ddf7ec62bd94d41e999aad759632afe25d648324f2129f739b12b03ddc",
+    "ExcelOutput/ConstValueRogue.json": "43a4bce7113b171f0039f1d6bd9b7d4c654a3f457a57ecd9c4c2198cb7bb2fbd",
+    "ExcelOutput/RewardData.json": "54ef4bd235ea6e89ce01e0b57140ea966c8a8201e68648c2d5c0a8ccb30573aa"
+  },
+  "main": {
+    "MainMissionID": 4030006,
+    "StartSubMissionList": [
+      403000601
+    ],
+    "FinishSubMissionList": [
+      403000601
+    ],
+    "IsShow": false
+  },
+  "sub": {
+    "ID": 403000601,
+    "MainMissionID": 4030006,
+    "MissionJsonPath": "Config/Level/Mission/4030006/Mission_403000601.json",
+    "LevelPlaneID": 80112,
+    "LevelFloorID": 80112001,
+    "TakeType": "Auto",
+    "FinishType": "RogueExploreScore",
+    "ParamType": "NoPara",
+    "ParamItemList": [],
+    "Progress": 1,
+    "IsShow": false,
+    "WayPointFloorID": 80112001
+  },
+  "script": {
+    "OnInitSequece": [],
+    "OnStartSequece": [],
+    "Type": "Mission"
+  },
+  "mainExcel": {
+    "MainMissionID": 4030006,
+    "Type": "Branch",
+    "SubType": "System",
+    "DisplayPriority": 4030006,
+    "NextMainMissionList": [],
+    "TakeOperation": "And",
+    "BeginOperation": "And",
+    "TakeParam": [
+      {
+        "Type": "MultiSequence",
+        "Value": 4030002
+      }
+    ],
+    "BeginParam": [
+      {
+        "Type": "Auto"
+      }
+    ],
+    "RewardID": 100,
+    "DisplayRewardID": 100,
+    "SubRewardList": []
+  },
+  "area": {
+    "RogueAreaID": 110,
+    "AreaProgress": 1,
+    "Difficulty": 1,
+    "AreaEnvironment": [],
+    "RecommendLevel": 14,
+    "RecommendNature": [
+      "Quantum",
+      "Physical",
+      "Wind"
+    ],
+    "AreaNameID": {
+      "Hash": 12615533921307137761
+    },
+    "AreaIcon": "SpriteOutput/Rogue/World/PicRogueN2.png",
+    "AreaFigure": "UI/Rogue/World/PicRogueN2.png",
+    "DisplayMonsterMap": {
+      "8003010": 14,
+      "8003020": 14
+    },
+    "DisplayMonsterMap2": {
+      "8013010": 11
+    },
+    "FirstReward": 105101,
+    "UnlockID": 12001,
+    "MapDisplayItemList": [],
+    "ChestDisplayItemList": [],
+    "MonsterEliteDropDisplayID": 101,
+    "ScoreMap": {
+      "1": 260,
+      "2": 780,
+      "3": 780,
+      "4": 1300,
+      "5": 1560,
+      "6": 1560,
+      "7": 2600
+    },
+    "AreaTipsIcon": "SpriteOutput/Rogue/Planet/IconRoguePlanetM1.png"
+  },
+  "cycleConstants": [
+    {
+      "ConstValueName": "CycleScore_Refresh",
+      "Value": {
+        "IntValue": 7
+      }
+    },
+    {
+      "ConstValueName": "CycleScore_StartDate",
+      "Value": {
+        "StringValue": "2026-02-09 04:00:00"
+      }
+    }
+  ],
+  "rogueConstants": [
+    {
+      "ConstRogueName": "Rogue_Explore_Score_To_Talent_Coin_Rate",
+      "ConstValue": "0.1"
+    },
+    {
+      "ConstRogueName": "Rogue_Score_Reward_Unlock_Progress",
+      "ConstValue": "1"
+    }
+  ],
+  "reward": {
+    "RewardID": 100
+  }
+}

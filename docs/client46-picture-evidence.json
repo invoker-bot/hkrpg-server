@@ -1,0 +1,349 @@
+{
+  "passed": true,
+  "clientModified": false,
+  "clientExecutableStarted": false,
+  "clientGameplayVerified": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "nativeRequestCommand4160Verified": true,
+  "requestTypeSlotVerified": true,
+  "noDeclaredRequestFieldsVerified": true,
+  "currentNativeReplyConsumerVerified": false,
+  "replyCommand4116AndField13Source": "frozen-4.6-schema-and-fixed-compatible-reference",
+  "completeHotfixPathVerified": false,
+  "picturePixelsVerified": false,
+  "methods": {
+    "networkProducer": {
+      "clientModified": false,
+      "clientExecutableStarted": false,
+      "clientGameplayVerified": false,
+      "dllSHA256": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+      "requestedRVA": "0xd9a0930",
+      "rva": "0xd9a0930",
+      "unwindEndRVA": "0xd9a0989",
+      "byteSHA256": "2682805be2226f1b600a45737ae61361d16fcfb83a9ea8c30c29feac42ca9484",
+      "fullUnwindRangeCovered": true,
+      "instructions": [
+        "d9a0930: push rsi",
+        "d9a0931: sub rsp, 0x20",
+        "d9a0935: mov rsi, rcx",
+        "d9a0938: cmp byte ptr [rip - 0x468292f], 0",
+        "d9a093f: jne 0x18d9a0964",
+        "d9a0941: mov rcx, qword ptr [rip - 0x45e8668]",
+        "d9a0948: call 0x183d3a130",
+        "d9a094d: mov rcx, rsi",
+        "d9a0950: mov dx, 0x1040",
+        "d9a0954: mov r8, rax",
+        "d9a0957: xor r9d, r9d",
+        "d9a095a: add rsp, 0x20",
+        "d9a095e: pop rsi",
+        "d9a095f: jmp 0x18d9912e0",
+        "d9a0964: mov ecx, 0x9b040",
+        "d9a0969: call 0x1963e3810",
+        "d9a096e: test rax, rax",
+        "d9a0971: je 0x18d9a0983",
+        "d9a0973: mov rcx, rax",
+        "d9a0976: mov rdx, rsi",
+        "d9a0979: add rsp, 0x20",
+        "d9a097d: pop rsi",
+        "d9a097e: jmp 0x195eefe10",
+        "d9a0983: call 0x183cc8050",
+        "d9a0988: int3 "
+      ]
+    },
+    "secondProducer": {
+      "clientModified": false,
+      "clientExecutableStarted": false,
+      "clientGameplayVerified": false,
+      "dllSHA256": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+      "requestedRVA": "0x10c39390",
+      "rva": "0x10c39390",
+      "unwindEndRVA": "0x10c3959a",
+      "byteSHA256": "32c918c20edc50ff56d1402788c4efe531a46970c1b076d342e929d82d01f5f5",
+      "fullUnwindRangeCovered": true,
+      "instructions": [
+        "10c39390: push rbp",
+        "10c39391: push rsi",
+        "10c39392: push rdi",
+        "10c39393: sub rsp, 0x80",
+        "10c3939a: lea rbp, [rsp + 0x80]",
+        "10c393a2: mov qword ptr [rbp - 0x10], 0xfffffffffffffffe",
+        "10c393aa: mov qword ptr [rbp - 0x18], rcx",
+        "10c393ae: cmp byte ptr [rip - 0x796042a], 0",
+        "10c393b5: jne 0x190c394f0",
+        "10c393bb: mov rcx, qword ptr [rip - 0x7872c92]",
+        "10c393c2: cmp byte ptr [rcx + 0xb7], 0",
+        "10c393c9: je 0x190c39515",
+        "10c393cf: mov rax, qword ptr [rip - 0x78f5f2e]",
+        "10c393d6: mov rax, qword ptr [rax + 0x400a0]",
+        "10c393dd: mfence ",
+        "10c393e0: test rax, rax",
+        "10c393e3: je 0x190c3951f",
+        "10c393e9: mov rsi, qword ptr [rax + 0x10]",
+        "10c393ed: test rsi, rsi",
+        "10c393f0: je 0x190c39524",
+        "10c393f6: mov rdi, qword ptr [rip - 0x79b7bd5]",
+        "10c393fd: test rdi, rdi",
+        "10c39400: jne 0x190c39454",
+        "10c39402: lea rax, [rip - 0xb4a4e6b]",
+        "10c39409: mov qword ptr [rbp - 0x50], rax",
+        "10c3940d: mov qword ptr [rbp - 0x48], 5",
+        "10c39415: lea rax, [rip - 0xb59abe4]",
+        "10c3941c: mov qword ptr [rbp - 0x40], rax",
+        "10c39420: mov qword ptr [rbp - 0x38], 0x11",
+        "10c39428: movabs rax, 0x200000001",
+        "10c39432: mov qword ptr [rbp - 0x30], rax",
+        "10c39436: mov dword ptr [rbp - 0x28], 0xc",
+        "10c3943d: mov byte ptr [rbp - 0x24], 0",
+        "10c39441: lea rcx, [rbp - 0x50]",
+        "10c39445: call 0x183d3a8c0",
+        "10c3944a: mov rdi, rax",
+        "10c3944d: mov qword ptr [rip - 0x79b7c2c], rax",
+        "10c39454: mov rcx, qword ptr [rbp - 0x18]",
+        "10c39458: mov edx, 1",
+        "10c3945d: call rdi",
+        "10c3945f: mov qword ptr [rsp + 0x20], 0",
+        "10c39468: mov rcx, rsi",
+        "10c3946b: mov rdx, qword ptr [rbp - 0x18]",
+        "10c3946f: mov r8d, 1",
+        "10c39475: mov r9d, eax",
+        "10c39478: call 0x19522d840",
+        "10c3947d: mov rsi, rax",
+        "10c39480: test rax, rax",
+        "10c39483: je 0x190c3954f",
+        "10c39489: mov rdx, qword ptr [rip - 0x78dd3e8]",
+        "10c39490: mov rax, qword ptr [rsi]",
+        "10c39493: cmp rax, rdx",
+        "10c39496: je 0x190c394ba",
+        "10c39498: movzx ecx, byte ptr [rdx + 0xb4]",
+        "10c3949f: cmp byte ptr [rax + 0xb4], cl",
+        "10c394a5: jb 0x190c39547",
+        "10c394ab: mov rax, qword ptr [rax + 0x68]",
+        "10c394af: cmp qword ptr [rax + rcx*8 - 8], rdx",
+        "10c394b4: jne 0x190c39547",
+        "10c394ba: cmp byte ptr [rip - 0x791b4b1], 0",
+        "10c394c1: jne 0x190c39529",
+        "10c394c3: mov rcx, qword ptr [rip - 0x78811ea]",
+        "10c394ca: call 0x183d3a130",
+        "10c394cf: xor edi, edi",
+        "10c394d1: mov rcx, rsi",
+        "10c394d4: mov dx, 0x1040",
+        "10c394d8: mov r8, rax",
+        "10c394db: xor r9d, r9d",
+        "10c394de: call 0x18d9912e0",
+        "10c394e3: mov eax, edi",
+        "10c394e5: add rsp, 0x80",
+        "10c394ec: pop rdi",
+        "10c394ed: pop rsi",
+        "10c394ee: pop rbp",
+        "10c394ef: ret ",
+        "10c394f0: mov ecx, 0x55fbb",
+        "10c394f5: call 0x1963e3810",
+        "10c394fa: test rax, rax",
+        "10c394fd: je 0x190c39554",
+        "10c394ff: mov rcx, rax",
+        "10c39502: mov rdx, qword ptr [rbp - 0x18]",
+        "10c39506: add rsp, 0x80",
+        "10c3950d: pop rdi",
+        "10c3950e: pop rsi",
+        "10c3950f: pop rbp",
+        "10c39510: jmp 0x195ff2b40",
+        "10c39515: call 0x183d2bd80",
+        "10c3951a: jmp 0x190c393cf",
+        "10c3951f: call 0x183cc8050",
+        "10c39524: call 0x183cc8050",
+        "10c39529: mov ecx, 0x9b040",
+        "10c3952e: call 0x1963e3810",
+        "10c39533: test rax, rax",
+        "10c39536: je 0x190c39559",
+        "10c39538: xor edi, edi",
+        "10c3953a: mov rcx, rax",
+        "10c3953d: mov rdx, rsi",
+        "10c39540: call 0x195eefe10",
+        "10c39545: jmp 0x190c394e3",
+        "10c39547: mov rcx, rsi",
+        "10c3954a: call 0x183cc82a0",
+        "10c3954f: call 0x183cc8050",
+        "10c39554: call 0x183cc8050",
+        "10c39559: call 0x183cc8050",
+        "10c3955e: mov rsi, qword ptr [rip - 0x7543aed]",
+        "10c39565: mov rdx, qword ptr [rbp - 0x20]",
+        "10c39569: test rdx, rdx",
+        "10c3956c: je 0x190c3957d",
+        "10c3956e: mov ecx, 3",
+        "10c39573: call 0x18000ee90",
+        "10c39578: mov rdx, rax",
+        "10c3957b: jmp 0x190c3957f",
+        "10c3957d: xor edx, edx",
+        "10c3957f: mov rcx, rsi",
+        "10c39582: call 0x19c0a4a00",
+        "10c39587: mov rcx, qword ptr [rbp - 0x18]",
+        "10c3958b: mov rdx, rax",
+        "10c3958e: call 0x194dac410",
+        "10c39593: mov edi, eax",
+        "10c39595: jmp 0x190c394e3"
+      ]
+    }
+  },
+  "selectedMethods": [
+    {
+      "index": 352187,
+      "name": "",
+      "rva": "0x10c39390",
+      "typeIndex": 50304,
+      "typeName": "DMPKJANNHIN"
+    },
+    {
+      "index": 634944,
+      "name": "PBKOLNMMKIM",
+      "rva": "0xd9a0930",
+      "typeIndex": 69368,
+      "typeName": "NetworkManager"
+    }
+  ],
+  "typeInfoSlots": [
+    {
+      "slot": "0x93b82e0",
+      "pairIndex": 717965,
+      "typeIndex": 30809,
+      "typeName": "LIOGDHEFOGD"
+    }
+  ],
+  "requestType": {
+    "typeIndex": 30809,
+    "name": "LIOGDHEFOGD",
+    "methods": [
+      {
+        "index": 199779,
+        "name": ".ctor",
+        "rva": "0x1e9450f0",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199780,
+        "name": ".ctor",
+        "rva": "0x1e945100",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199781,
+        "name": ".cctor",
+        "rva": "0x1e9454e0",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199782,
+        "name": "JJGHOBBFNJD",
+        "rva": "0x1e9450b0",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199783,
+        "name": "pb::Google.Protobuf.IMessage.get_Descriptor",
+        "rva": "0x1e9450e0",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199784,
+        "name": "Clone",
+        "rva": "0x1e945130",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199785,
+        "name": "Equals",
+        "rva": "0x1e945170",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199786,
+        "name": "Equals",
+        "rva": "0x1e945240",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199787,
+        "name": "GetHashCode",
+        "rva": "0x1e9453a0",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199788,
+        "name": "ToString",
+        "rva": "0x1e9453d0",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199789,
+        "name": "WriteTo",
+        "rva": "0x1e945430",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199790,
+        "name": "CalculateSize",
+        "rva": "0x1e945440",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199791,
+        "name": "MergeFrom",
+        "rva": "0x1e945460",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      },
+      {
+        "index": 199792,
+        "name": "MergeFrom",
+        "rva": "0x1e945490",
+        "typeIndex": 30809,
+        "typeName": "LIOGDHEFOGD"
+      }
+    ],
+    "fields": [
+      {
+        "fieldIndex": 139012,
+        "name": "CHLCMCKIGKG",
+        "nativeTypeIndex": 545872,
+        "nativeType": {
+          "kind": 21
+        }
+      },
+      {
+        "fieldIndex": 139013,
+        "name": "DHHIJOGAOFI",
+        "nativeTypeIndex": 469430,
+        "nativeType": {
+          "kind": 18,
+          "typeIndex": 5414,
+          "name": "UnknownFieldSet"
+        }
+      }
+    ]
+  },
+  "reference": {
+    "commit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083",
+    "license": "AGPL-3.0",
+    "runtimeCodeCopied": false,
+    "filesSHA256": {
+      "KcpSharp/CmdIds.cs": "83042f653e722bbc2c0b59e7dd4251f23ca9345c4b143862db6564cfc245eefe",
+      "Proto/Generated/CmdMiscModuleType.cs": "56675d3882a08a9e4822460d07669a3c2cda486a49364585074236f2d79e9114",
+      "LICENSE": "6f1e622c82a380075843bb084a7ec3b1f1d12a4a02526d75e78b0924a860aa75"
+    }
+  },
+  "frozenProtocolSHA256": "49072ea2f1566dcb8dc0bcc0feed0c54e4055cad694e46ac07b5a04877f25fc2"
+}

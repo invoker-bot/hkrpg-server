@@ -1,0 +1,646 @@
+{
+  "sourceMain": 2022005,
+  "subs": [
+    {
+      "ID": 202200501,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200501.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "Auto",
+      "TakeParamIntList": [
+        2022005
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_202200501",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        16
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "GotoParam": [],
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    },
+    {
+      "ID": 202200502,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200502.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        202200501
+      ],
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 20241054,
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        17,
+        15
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "WayPointType": "NPC",
+      "GotoParam": [],
+      "WayPointFloorID": 40235001,
+      "WayPointGroupID": 15,
+      "WayPointEntityID": 400001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    },
+    {
+      "ID": 202200503,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200503.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        202200506,
+        202200507
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_202200503",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        18
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "GotoParam": [],
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    },
+    {
+      "ID": 202200504,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200504.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        202200503
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_202200504",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        19
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "GotoParam": [],
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    },
+    {
+      "ID": 202200505,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200505.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        202200504
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_202200505",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [
+        20
+      ],
+      "RequiredNPCSeriesIDList": [],
+      "GotoParam": []
+    },
+    {
+      "ID": 202200506,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200506.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        202200501
+      ],
+      "FinishType": "BattleWinWithCustomValue",
+      "ParamType": "Equal",
+      "ParamInt1": 1,
+      "ParamInt2": 20241054,
+      "ParamStr1": "_PlayerWin",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "GotoParam": [],
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    },
+    {
+      "ID": 202200507,
+      "MainMissionID": 2022005,
+      "MissionJsonPath": "Config/Level/Mission/2022005/Mission_202200507.json",
+      "LevelPlaneID": 40235,
+      "LevelFloorID": 40235001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        202200501
+      ],
+      "FinishType": "BattleWinWithCustomValue",
+      "ParamType": "Equal",
+      "ParamInt2": 20241054,
+      "ParamStr1": "_PlayerWin",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "GotoParam": [],
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    }
+  ],
+  "battleScript": {
+    "OnInitSequece": [],
+    "OnStartSequece": [
+      {
+        "TaskList": [
+          {
+            "$type": "RPG.GameCore.WaitCustomString",
+            "CustomString": {
+              "Value": "TriggerBattle2022005"
+            },
+            "GoNextImmediately": true
+          },
+          {
+            "$type": "RPG.GameCore.TriggerBattle",
+            "EventID": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 20241054
+              }
+            },
+            "GroupID": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 2
+              }
+            },
+            "BattleAreaID": {
+              "IsDynamic": false,
+              "FixedValue": {
+                "Value": 1
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "Type": "Mission"
+  },
+  "events": [
+    {
+      "EventID": 20241054,
+      "StageID": 202410540,
+      "DropList": [],
+      "DisplayItemList": []
+    },
+    {
+      "EventID": 20241054,
+      "WorldLevel": 1,
+      "StageID": 202410541,
+      "DropList": [],
+      "DisplayItemList": []
+    },
+    {
+      "EventID": 20241054,
+      "WorldLevel": 2,
+      "StageID": 202410542,
+      "DropList": [],
+      "DisplayItemList": []
+    },
+    {
+      "EventID": 20241054,
+      "WorldLevel": 3,
+      "StageID": 202410543,
+      "DropList": [],
+      "DisplayItemList": []
+    },
+    {
+      "EventID": 20241054,
+      "WorldLevel": 4,
+      "StageID": 202410544,
+      "DropList": [],
+      "DisplayItemList": []
+    },
+    {
+      "EventID": 20241054,
+      "WorldLevel": 5,
+      "StageID": 202410545,
+      "DropList": [],
+      "DisplayItemList": []
+    },
+    {
+      "EventID": 20241054,
+      "WorldLevel": 6,
+      "StageID": 202410546,
+      "DropList": [],
+      "DisplayItemList": []
+    }
+  ],
+  "stages": [
+    {
+      "StageID": 202410540,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 24,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 202410541,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 32,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 202410542,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 40,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 202410543,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 48,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 202410544,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 56,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 202410545,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 66,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 202410546,
+      "StageType": "Mainline",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 88,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [
+        {
+          "BFLIFKBEOPJ": "_DefaultSubStage",
+          "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20241054.json",
+          "EOAHMJFOLHD": "",
+          "MEDEFCIKNLA": "",
+          "APNFMFEMPNI": "",
+          "LGNKFIIEICM": "",
+          "BIEJJCIFBGA": ""
+        }
+      ],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        },
+        {
+          "BFLIFKBEOPJ": "_CreateBattleEvent",
+          "MNDFOPKBHKP": "60014"
+        },
+        {
+          "BFLIFKBEOPJ": "_StageInfiniteGroup",
+          "MNDFOPKBHKP": "20241054"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 2002010
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  ]
+}

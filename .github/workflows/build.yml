@@ -1,0 +1,23 @@
+name: Java build
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: python3 scripts/verify-source-package.py
+      - run: chmod +x gradlew
+      - run: python3 scripts/verify-protocols.py
+      - run: ./gradlew test shadowJar --no-daemon
+      - run: python3 scripts/generate-feature-docs.py
+      - run: python3 scripts/generate-feature-backlog.py
+      - run: python3 scripts/smoke-server.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hkrpg-server
+          path: build/libs/hkrpg-server.jar

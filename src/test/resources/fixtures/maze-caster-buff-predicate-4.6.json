@@ -1,0 +1,137 @@
+{
+  "source": "references/TurnBasedGameData/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_SilverWolf999_00_Ability.json",
+  "sha256": "ca2ac3cc963753d7a97c0f9947be135cb806e129e28e31258284df98179d869b",
+  "path": [
+    "AbilityList",
+    1,
+    "OnStart",
+    0
+  ],
+  "task": {
+    "$type": "RPG.GameCore.PredicateTaskList",
+    "Predicate": {
+      "$type": "RPG.GameCore.ByCompareCarryMazebuff",
+      "TargetType": {
+        "$type": "RPG.GameCore.TargetAlias",
+        "Alias": "Caster"
+      },
+      "BuffID": 150601
+    },
+    "SuccessTaskList": [
+      {
+        "$type": "RPG.GameCore.DestroySummonUnit",
+        "SummonUnit": {
+          "$type": "RPG.GameCore.TargetFetchSummonUnit",
+          "Summoner": {
+            "$type": "RPG.GameCore.TargetAlias",
+            "Alias": "Caster"
+          },
+          "SummonUnitID": 15061
+        }
+      },
+      {
+        "$type": "RPG.GameCore.AdventureSubmitSkill"
+      }
+    ],
+    "FailedTaskList": [
+      {
+        "$type": "RPG.GameCore.PredicateTaskList",
+        "Predicate": {
+          "$type": "RPG.GameCore.ByHaveAbilityTarget"
+        },
+        "SuccessTaskList": [
+          {
+            "$type": "RPG.GameCore.LookAt",
+            "TargetType": "AbilityTargetEntity",
+            "Duration": 0.1
+          }
+        ]
+      },
+      {
+        "$type": "RPG.GameCore.AdventureTriggerAnimStateWithMove",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "AdvLocalPlayer"
+        },
+        "AnimLogicState": "MazeSkill",
+        "AnimStateName": "MazeSkill"
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "MazeSkill",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.095
+          }
+        }
+      },
+      {
+        "$type": "RPG.GameCore.CreateSummonUnit",
+        "SummonUnitID": 15061,
+        "PosTarget": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "Distance": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 1.732
+          }
+        },
+        "OffsetX": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 1.732
+          }
+        },
+        "PosAdaption": {
+          "Option": "CharacterDefault",
+          "AvoidanceRadius": 0.3
+        },
+        "ForbidSkillMsg": true,
+        "OnCreate": [
+          {
+            "$type": "RPG.GameCore.EnableAdvEntityDitherWithPlayer",
+            "SourceType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "ParamEntity"
+            },
+            "Enable": true
+          },
+          {
+            "$type": "RPG.GameCore.AddAdventureModifier",
+            "TargetType": {
+              "$type": "RPG.GameCore.TargetAlias",
+              "Alias": "Caster"
+            },
+            "ModifierName": "ADV_GlobalSkill_Maze_SilverWolf999_00_ListenMazeSkillPoint"
+          }
+        ]
+      },
+      {
+        "$type": "RPG.GameCore.AdventureSubmitSkill"
+      },
+      {
+        "$type": "RPG.GameCore.WaitAnimState",
+        "TargetType": {
+          "$type": "RPG.GameCore.TargetAlias",
+          "Alias": "Caster"
+        },
+        "AnimStateName": "MazeSkill",
+        "NormalizedTimeEnd": {
+          "IsDynamic": false,
+          "FixedValue": {
+            "Value": 0.156
+          }
+        }
+      }
+    ]
+  },
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "completeAbilityChainVerified": false
+}

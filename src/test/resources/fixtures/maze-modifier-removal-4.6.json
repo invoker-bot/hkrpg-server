@@ -1,0 +1,23 @@
+{
+  "source": "resources/4.6/Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Acheron_00_Ability.json",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sha256": "05e1b30bc315ab8b1b2244469cacc8bee6ffbef7c60b04788f23675ae8572a3c",
+  "sourceBlobSHA256": "846c40fd089af06a147740c01224a1bf74d28d9bf32ac507f72a4bbc98f06f7f",
+  "path": [
+    "AbilityList",
+    0,
+    "OnStart",
+    0
+  ],
+  "ability": "LocalPlayer_Acheron_NormalAtk01",
+  "task": {
+    "$type": "RPG.GameCore.RemoveAdventureModifier",
+    "TargetType": {
+      "$type": "RPG.GameCore.TargetAlias",
+      "Alias": "Caster"
+    },
+    "ModifierName": "ADV_StageAbility_Maze_IgnoreWeakness_MazeSkillMark"
+  },
+  "completeAbilityChainVerified": false,
+  "completeModifierLifecycleVerified": false
+}

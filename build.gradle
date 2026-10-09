@@ -1,0 +1,73 @@
+plugins {
+    id 'application'
+    id 'com.gradleup.shadow' version '8.3.8'
+}
+
+group = 'org.hkrpg'
+version = '0.1.0'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+repositories { mavenCentral() }
+
+dependencies {
+    implementation files('lib/kcp.jar')
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'ch.qos.logback:logback-classic:1.5.32'
+    implementation 'it.unimi.dsi:fastutil-core:8.5.18'
+    implementation 'org.reflections:reflections:0.10.2'
+    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation 'us.hebi.quickbuf:quickbuf-runtime:1.4'
+    implementation 'com.google.protobuf:protobuf-java:4.33.1'
+    implementation 'io.javalin:javalin:6.7.0'
+    implementation 'io.netty:netty-common:4.1.132.Final'
+    implementation 'io.netty:netty-handler:4.1.132.Final'
+    implementation 'io.netty:netty-transport-native-epoll:4.1.132.Final'
+    implementation 'io.netty:netty-transport-native-kqueue:4.1.132.Final'
+    implementation 'dev.morphia.morphia:morphia-core:2.3.9'
+    implementation 'de.bwaldvogel:mongo-java-server:1.44.0'
+    implementation 'de.bwaldvogel:mongo-java-server-h2-backend:1.44.0'
+    implementation 'org.jline:jline:3.30.9'
+    implementation 'org.jline:jline-terminal-jansi:3.30.9'
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    annotationProcessor 'org.projectlombok:lombok:1.18.42'
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+sourceSets.main.java.srcDir 'src/generated/main'
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+application { mainClass = 'org.hkrpg.server.HkrpgServer' }
+run { standardInput = System.in }
+test {
+    useJUnitPlatform()
+    // 测试数据库只使用少量连接；按大型机器 CPU 数创建选择器会耗尽 Windows 临时端口。
+    systemProperty 'io.netty.eventLoopThreads', '2'
+    systemProperty 'hkrpg.test.runtimeClasspath', sourceSets.test.runtimeClasspath.asPath
+}
+shadowJar {
+    archiveFileName = 'hkrpg-server.jar'
+    mergeServiceFiles()
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/INDEX.LIST'
+}
+tasks.named('build') { dependsOn tasks.named('shadowJar') }
+
+// Generated build metadata belongs in build/, never in tracked source files.
+def metadataDir = layout.buildDirectory.dir('generated/build-metadata')
+tasks.register('generateBuildMetadata') {
+    outputs.dir(metadataDir)
+    inputs.property('serverVersion', project.version.toString())
+    doLast {
+        def output = metadataDir.get().file('emu/lunarcore/BuildConfig.java').asFile
+        output.parentFile.mkdirs()
+        output.text = """package emu.lunarcore;
+public final class BuildConfig {
+    public static final String VERSION = "${project.version}";
+    public static final String GIT_HASH = "LunarCore-04b5de871c62";
+    public static final String GIT_TIMESTAMP = "0";
+}
+"""
+    }
+}
+sourceSets.main.java.srcDir(metadataDir)
+tasks.named('compileJava') { dependsOn tasks.named('generateBuildMetadata') }

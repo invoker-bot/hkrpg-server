@@ -1,0 +1,138 @@
+{
+  "passed": true,
+  "clientExecutableStarted": false,
+  "clientModified": false,
+  "clientGameplayVerified": false,
+  "files": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "abilityPropertyTypeIndex": 10479,
+  "normalEnergyProperties": {
+    "MaxSP": 11,
+    "CurrentSP": 12,
+    "MaxSpecialSP": 13,
+    "CurrentSpecialSP": 14
+  },
+  "capacityInterface": {
+    "typeIndex": 56921,
+    "methodIndex": 525346,
+    "methodOrdinal": 10,
+    "typeSlot": {
+      "slot": "0x937cf20",
+      "pairIndex": 705631,
+      "typeIndex": 56921,
+      "typeName": "ICharacterRowData"
+    }
+  },
+  "initializationMethod": {
+    "index": 524717,
+    "rva": "0xe599970",
+    "unwindEndRVA": "0xe59a847",
+    "normalEnergyInstructions": [
+      "e59a032: mov r8, qword ptr [rip - 0x521d119]",
+      "e59a077: mov r9d, 0xa",
+      "e59a0c5: call rbp",
+      "e59a0c7: mov rcx, qword ptr [rsp + 0x50]",
+      "e59a0cc: mov rdx, rax",
+      "e59a0cf: call 0x19dccb160",
+      "e59a0d4: mov rcx, rax",
+      "e59a0d7: mov rdx, r15",
+      "e59a0da: call 0x19dcc94f0",
+      "e59a10b: mov edx, 0xc",
+      "e59a116: mov r9, rbx",
+      "e59a119: call 0x18e7586c0"
+    ]
+  },
+  "mathMethods": [
+    {
+      "index": 68474,
+      "name": "op_Multiply",
+      "rva": "0x1dccb160",
+      "typeIndex": 9939,
+      "typeName": "FixPoint"
+    },
+    {
+      "index": 68481,
+      "name": "op_Division",
+      "rva": "0x1dcc94f0",
+      "typeIndex": 9939,
+      "typeName": "FixPoint"
+    }
+  ],
+  "resetMethodParameters": [
+    {
+      "ordinal": 0,
+      "index": 484697,
+      "name": "",
+      "nativeTypeIndex": 20993,
+      "nativeType": {
+        "kind": 17,
+        "typeIndex": 9939,
+        "name": "FixPoint"
+      }
+    },
+    {
+      "ordinal": 1,
+      "index": 484698,
+      "name": "",
+      "nativeTypeIndex": 20993,
+      "nativeType": {
+        "kind": 17,
+        "typeIndex": 9939,
+        "name": "FixPoint"
+      }
+    },
+    {
+      "ordinal": 2,
+      "index": 484699,
+      "name": "",
+      "nativeTypeIndex": 20993,
+      "nativeType": {
+        "kind": 17,
+        "typeIndex": 9939,
+        "name": "FixPoint"
+      }
+    },
+    {
+      "ordinal": 3,
+      "index": 484700,
+      "name": "",
+      "nativeTypeIndex": 20993,
+      "nativeType": {
+        "kind": 17,
+        "typeIndex": 9939,
+        "name": "FixPoint"
+      }
+    }
+  ],
+  "characterEntry": {
+    "file": "C:\\Users\\InvokerBot\\AppData\\Local\\hoyo\\hkrpg\\versions\\current\\StarRail_Data\\Persistent\\DesignData\\Windows\\7707e972d9afb983df824274f7ae0ce1.bytes",
+    "chunkSHA256": "3f8c0a2375be589b337a5733250d30c531b86ef98c521c5a2c34547d6be59a4e",
+    "entry": {
+      "key": "522b3c2fad281563",
+      "length": 1468,
+      "offset": 32857932
+    },
+    "entrySHA256": "daf0408a7ff15967c3c9d1bd0d72e7bdec218290e373f11dc4261679238054c7",
+    "recordHex": "d4a396b4030000000109536b696c6c4d617a6500",
+    "recordPosition": 1272
+  },
+  "scopedDynamicBinding": {
+    "hash": 457361642,
+    "ability": "LocalPlayer_TingYun_MazeSkill",
+    "avatarId": 1202,
+    "skillId": 120207,
+    "triggerKey": "SkillMaze",
+    "parameterIndex": 0,
+    "inference": true
+  },
+  "normalSpInitializationFormulaStaticallyVerified": true,
+  "packetToInitializationInputsVerified": false,
+  "nativeEnergyTaskExecutorVerified": false,
+  "absoluteActionUnitInference": true,
+  "nativeEnergyRoundingVerified": false,
+  "capacityModifiersAndSpecialEnergyVerified": false,
+  "completeCharacterBinaryDecoderVerified": false,
+  "originalOuterAbilityVerified": false
+}

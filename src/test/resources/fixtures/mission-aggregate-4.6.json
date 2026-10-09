@@ -1,0 +1,120 @@
+[
+  {
+    "kind": "main",
+    "source": "resources/4.6/Config/Level/Mission/2011406/MissionInfo_2011406.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "0f6bfe2d0640fdccdd605c98f685d9a0a6c727f479cffc62c53f02fd29ded686",
+    "sourceBlobSHA256": "85ac1cecb34aca10b5557a0059de967d393a5912eb84388e83689cea86d1e242",
+    "path": [],
+    "row": {
+      "MainMissionID": 2011406,
+      "StartSubMissionList": [
+        201140601
+      ],
+      "FinishSubMissionList": [
+        201140601
+      ],
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/2011406/MissionInfo_2011406.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "f38dfb5e4e427cd4321f6e6f05e74298f0afbe3a38d51bae69a8864bb3d8f6c4",
+    "sourceBlobSHA256": "611c29542bce758ad760a39efa70d040b66c6bf239dfa4a5e4fb0a03ebbb73bf",
+    "path": [
+      "SubMissionList",
+      0
+    ],
+    "row": {
+      "ID": 201140601,
+      "MainMissionID": 2011406,
+      "LevelPlaneID": 20101,
+      "LevelFloorID": 20101001,
+      "TakeType": "Auto",
+      "FinishType": "SubMissionFinishCnt",
+      "ParamType": "ListContain",
+      "ParamIntList": [
+        201140108
+      ],
+      "ParamItemList": [],
+      "Progress": 1,
+      "IsShow": false
+    }
+  },
+  {
+    "kind": "main",
+    "source": "resources/4.6/Config/Level/Mission/2011401/MissionInfo_2011401.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "09c512fd1f77a34991dbbedc358c0ba1f389570269ff1e310d53ff97ce4470de",
+    "sourceBlobSHA256": "635b68eae111430452a1cb3289de6ca354ce6b155594cc3fc5b5fdcfa6be5399",
+    "path": [],
+    "row": {
+      "MainMissionID": 2011401,
+      "PrologueSubMssionID": 201140101,
+      "StartSubMissionList": [
+        201140101
+      ],
+      "FinishSubMissionList": [
+        201140117
+      ],
+      "MissionCustomValueList": [
+        {
+          "Name": "OldValue_0",
+          "Type": "Former",
+          "ValidValueParamList": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "Index": 1,
+          "Name": "OldValue_1",
+          "Type": "Former",
+          "ValidValueParamList": [
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "kind": "sub",
+    "source": "resources/4.6/Config/Level/Mission/2011401/MissionInfo_2011401.partial.json",
+    "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "6658a46855bf0cdbb35ce8fb2b568dae650bd956aacb18a7db4518967f312fcc",
+    "sourceBlobSHA256": "95ae849e04798638485a1a52ba76a6e1156ec586cc83161d1fa931089896af82",
+    "path": [
+      "SubMissionList",
+      7
+    ],
+    "row": {
+      "ID": 201140108,
+      "MainMissionID": 2011401,
+      "MissionJsonPath": "Config/Level/Mission/2011401/Mission_201140108.json",
+      "LevelPlaneID": 20101,
+      "LevelFloorID": 20101001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        201140107
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_201140108",
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "RequiredNPCSeriesIDList": [],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20101001,
+      "WayPointGroupID": 11,
+      "WayPointEntityID": 300001
+    }
+  }
+]
