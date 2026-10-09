@@ -16,7 +16,7 @@ public final class RogueMutexAttach46 {
 
   public static final class Effect {
     public String effectPath;
-    public int instanceId, reuseRefCount;
+    public int instanceId, instancePadding, reuseRefCount;
     public MonoEffect instance;
     public TriggerParameters parameters;
   }
@@ -25,10 +25,12 @@ public final class RogueMutexAttach46 {
     public long cachedPointer;
     public int instanceId;
     public Object behavior;
+    public TriggerParameters triggerParams;
   }
 
   public static final class TriggerParameters {
     public CompletionCallback completeCallback;
+    public int aliveState;
   }
 
   public static final class Closure {
@@ -83,8 +85,13 @@ public final class RogueMutexAttach46 {
     require(closure, "mutex completion closure");
     RogueModifierDestroy46.State owner = require(closure.owner, "mutex completion closure owner");
     Effect effect = closure.effectData;
-    require(world, "mutex completion completion binding")
+    require(world, "mutex asynchronous completion binding")
         .asyncLoadEffectFinished(owner, effect, parameters);
+  }
+
+  public static void invokeCompletionCallback(
+      Closure closure, Object instance, Object nativeCallbackParameters, World world) {
+    invokeCompletionCallback(closure, instance, world);
   }
 
   public static void tryAttach(

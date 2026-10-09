@@ -15,6 +15,7 @@ public final class RogueModifierDestroy46 {
   public static final class State {
     public final RogueModifierCleanup46.State cleanup;
     public int deathSource;
+    public boolean effectUnload;
     public Object preshowEntity;
     public Children children;
 
