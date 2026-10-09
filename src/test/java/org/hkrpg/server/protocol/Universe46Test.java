@@ -2,16 +2,39 @@ package org.hkrpg.server.protocol;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.gson.Gson;
 import com.google.protobuf.DynamicMessage;
+import emu.lunarcore.data.GameData;
+import emu.lunarcore.data.excel.MazeBuffExcel;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
 import java.util.*;
 import org.hkrpg.server.gameplay.GameplayDefinitions;
 import org.hkrpg.server.gameplay.GameplayState;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 class Universe46Test {
+  final List<MazeBuffExcel> oldBindings = new ArrayList<>();
+  final List<MazeBuffExcel> bindings = new ArrayList<>();
+
+  @BeforeEach
+  void supplyBattleResourceForSyntheticBlessing() {
+    for (int id : new int[] {100002, 100005}) {
+      var old = GameData.getMazeBuffExcelMap().get(id, 1);
+      if (old != null) oldBindings.add(old);
+      var row = new Gson().fromJson("{\"ID\":" + id + ",\"Lv\":1}", MazeBuffExcel.class);
+      bindings.add(row);
+      GameData.getMazeBuffExcelMap().add(row);
+    }
+  }
+
+  @AfterEach
+  void restoreBattleResource() {
+    GameData.getMazeBuffExcelMap().values().removeIf(bindings::contains);
+    oldBindings.forEach(GameData.getMazeBuffExcelMap()::add);
+  }
+
   static class OnlineSession extends Gameplay46HandlerTest.Session {
     final List<DynamicMessage> notifications = new ArrayList<>();
     final List<String> names = new ArrayList<>();

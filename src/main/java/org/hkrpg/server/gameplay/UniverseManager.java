@@ -696,9 +696,11 @@ public final class UniverseManager {
           || !run.getOffers().contains(buff)
           || !run.validOfferLevels()
           || run.offerLevel(buff) <= 0
-          || (run.offerLevel(buff) > 1
-              && emu.lunarcore.data.GameData.getMazeBuffExcelMap().get(buff, run.offerLevel(buff))
-                  == null)) return Retcode.REQ_PARA_INVALID;
+          || run.getBlessings().containsKey(buff)) return Retcode.REQ_PARA_INVALID;
+      var binding =
+          emu.lunarcore.data.GameData.getMazeBuffExcelMap().get(buff, run.offerLevel(buff));
+      if (binding == null || binding.getID() != buff || binding.getLv() != run.offerLevel(buff))
+        return Retcode.REQ_PARA_INVALID;
       run.select(buff);
       run.activateResonance(buff);
       player.getGameplay().getRogueCollectedBuffs().add(buff);
