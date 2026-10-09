@@ -28,7 +28,7 @@ public final class SceneEventBattles {
   /** Local Legend uses its dedicated entry with activity, difficulty and party context. */
   public static StageExcel resolveClientEvent(int eventId, int world) {
     var stage = resolve(eventId, world);
-    return stage != null && stage.getStageType() != StageType.LocalLegend ? stage : null;
+    return stage != null && stage.getStageType() != StageType.LocalLegend && stage.getStageType() != StageType.BoxingClub ? stage : null;
   }
 
   private SceneEventBattles() {}

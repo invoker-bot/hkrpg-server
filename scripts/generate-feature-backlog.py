@@ -1034,6 +1034,14 @@ for _ranked_request46 in ("ClockParkStartScriptCsReq", "ClockParkGetOngoingScrip
     _ranked_row46["gap"] = "原始射击/两场电影0至3评级按本服累计规则v2结算属性，保存实际评级、胜利、来源与原始检查点；旧零规则v1及来源不升级，历史各自复算。九项真实先失败，保存回退、封顶、并发、防重、旧存档/混合历史及真实Player恢复和25阶段自然KCP/H2边界见docs/clock-park-ranked-games-4.6.md。此规则是本服设计，官方正评级公式、发牌/Buff/无尽、Unity小游戏、完整剧情/其他活动和游戏UI仍待完成。历史记录：" + _ranked_row46["gap"]
 
 
+_boxing_tests46 = ['src/test/java/org/hkrpg/server/gameplay/BoxingClubRounds46Test.java', 'src/test/java/org/hkrpg/server/protocol/BoxingClubCatalog46Test.java', 'scripts/tests/test_boxing_club_sources.py', 'scripts/smoke-boxing-club-rounds.py', 'docs/boxing-club-rounds-4.6.md']
+_boxing_gap46 = '首季五关匹配、四轮原始事件/祝福、独立正式队伍、最佳回合及首次奖励防重接入；目录和占用重启恢复。固定12份来源blob/394条完整记录，305条运行绑定指纹与140个原始事件关卡核对；最终测试和原生/H2证据见build/boxing-round-verification.json。总回合预算为本服严格口径，客户端仍报告胜负；试用、第二季共鸣/可选祝福、true放弃参数、完整任务链和实际UI/输入验收待完成。'
+for _boxing_request46 in (
+    "GetBoxingClubInfoCsReq", "MatchBoxingClubOpponentCsReq",
+    "StartBoxingClubBattleCsReq", "GiveUpBoxingClubChallengeCsReq",
+):
+    REVIEWED[_boxing_request46] = {"tests": _boxing_tests46, "gap": _boxing_gap46}
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
@@ -1069,6 +1077,18 @@ def main():
                     "license": "AGPL-3.0", "paths": ["Proto/4.6/CmdRogueCommonType.proto"],
                     "kind": "protocol-definition-and-local-client-static-evidence"}],
                 "acceptance": {"serverBehavior": False, "resourceVersion": False, "client46": False}}
+    for name, command in [("GetBoxingClubInfoCsReq", 4234), ("MatchBoxingClubOpponentCsReq", 4205),
+                          ("StartBoxingClubBattleCsReq", 4260), ("GiveUpBoxingClubChallengeCsReq", 4258),
+                          ("ChooseBoxingClubResonanceCsReq", 4242), ("ChooseBoxingClubStageOptionalBuffCsReq", 4268),
+                          ("SetBoxingClubResonanceCsReq", 4261)]:
+        if name not in requests:
+            requests[name] = {"request": name, "status": "planned", "nativeCommand": command,
+                "protocolName": name,
+                "sources": [{"project": "March7thHoney-OpenSource", "commit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083",
+                    "license": "AGPL-3.0", "paths": ["Proto/4.6/CmdBoxingClubType.proto"],
+                    "kind": "protocol-definition-and-local-client-static-evidence"}],
+                "acceptance": {"serverBehavior": False, "resourceVersion": False, "client46": False}}
+        requests[name]["javaEvidence"] = "src/main/java/org/hkrpg/server/protocol/BoxingClub46.java"
     for path in (ROOT / "src/main/java/emu/lunarcore/server/packet/recv").glob("*.java"):
         for name in re.findall(r"@Opcodes\(CmdId\.(\w+)", path.read_text(encoding="utf-8")):
             if name in requests:

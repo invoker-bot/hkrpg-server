@@ -30,6 +30,15 @@ public class GameplayState {
     return missionTrials;
   }
 
+  private BoxingClubState boxingClub = new BoxingClubState();
+
+  public BoxingClubState getBoxingClub() {
+    if (boxingClub == null) boxingClub = new BoxingClubState();
+    return boxingClub;
+  }
+
+  void boxingClub(BoxingClubState value) { boxingClub = java.util.Objects.requireNonNull(value); }
+
   private LocalLegendProgress localLegendProgress = new LocalLegendProgress();
 
   public LocalLegendProgress getLocalLegendProgress() {

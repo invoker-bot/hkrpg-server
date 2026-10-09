@@ -899,3 +899,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 原生虚构叙事按原始关卡采用四或五回合限制，见 [关卡回合限制核验](story-challenge-round-limit-4.6.md)。
 
 第一季拳击俱乐部的原始五关目录接入4.6原生查询，见 [目录核验](boxing-club-catalog-4.6.md)。
+
+首季拳馆使用独立持久状态和战斗队伍快照，四轮有序结果先保存，首次奖励收据另存；常规战斗结算不写普通队伍。原始来源、跨轮预算口径及未完成边界见 [拳馆四轮](boxing-club-rounds-4.6.md)。

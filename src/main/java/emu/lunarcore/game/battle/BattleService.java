@@ -33,7 +33,8 @@ public class BattleService extends BaseGameService {
 
     private static boolean activityBlocksBattle(Player player) {
         var state = player.getGameplay();
-        return state.getStoryLines().isTransitionPending()
+        return state.getBoxingClub().getActive() != null
+                || state.getStoryLines().isTransitionPending()
                 || state.getClockPark().getActive() != null
                 || state.getRhythm().getActiveLevel() != 0
                 || state.getParkour().getActiveLevel() != 0;
@@ -101,6 +102,19 @@ public class BattleService extends BaseGameService {
         if (targets.size() == 0) {
             player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId));
             return;
+        }
+
+        for (var target : targets) {
+            if (target instanceof EntityMonster monster && org.hkrpg.server.gameplay.BoxingClubManager.genericMonsterRequiresMatch(monster)) {
+                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.REQ_PARA_INVALID));
+                return;
+            }
+        }
+        for (int id : assistMonsters) {
+            if (player.getScene().getEntities().get(id) instanceof EntityMonster monster && org.hkrpg.server.gameplay.BoxingClubManager.genericMonsterRequiresMatch(monster)) {
+                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.REQ_PARA_INVALID));
+                return;
+            }
         }
 
         // Separate entities into monster list
@@ -255,7 +269,7 @@ public class BattleService extends BaseGameService {
             int battleStageId = configEvent == null ? stageId : configEvent.getStageId();
             stage = GameData.getStageExcelMap().get(battleStageId);
         }
-        if (stage == null) return null;
+        if (stage == null || stage.getStageType() == StageType.BoxingClub) return null;
 
         // Create new battle for player
         Battle battle = new Battle(player, player.getCurrentLineup(), stage);
@@ -366,6 +380,7 @@ public class BattleService extends BaseGameService {
                     || result != BattleEndStatus.BATTLE_END_WIN && result != BattleEndStatus.BATTLE_END_LOSE && result != BattleEndStatus.BATTLE_END_QUIT
                     || stats == null || !validStats(active, stats) || !org.hkrpg.server.gameplay.StoryChallengeReports.valid(active, result, stats) || monsters == null || monsters.size() > 1024
                     || active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend && !legend.accepts(stats)
+                    || active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing && !boxing.accepts(result, stats)
                     || monsters.stream().anyMatch(java.util.Objects::isNull)
                     || !org.hkrpg.server.gameplay.RogueResonance.validReport(active, energies)
                     || active.getRaidDifficultyScope() != null && !active.getRaidDifficultyScope().matches(player)
@@ -374,6 +389,8 @@ public class BattleService extends BaseGameService {
                     || !active.beginSettlement()) return null;
             org.hkrpg.server.gameplay.RogueResonance.saveReport(active, energies);
             active.setReportedMonsters(result == BattleEndStatus.BATTLE_END_WIN ? List.copyOf(monsters) : List.of());
+            if (active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing)
+                return boxing.finish(result, stats);
             if (active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend)
                 return legend.finish(result, stats);
             return settleBattle(player, result, stats);

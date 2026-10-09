@@ -122,6 +122,14 @@ final class Battle46 {
             || (target instanceof emu.lunarcore.game.scene.entity.EntityProp prop
                 && !scene.canDestroyProp(prop))) error = Retcode.REQ_PARA_INVALID;
       }
+    if (error == Retcode.SUCC && scene != null) {
+      var combatants = new IntLinkedOpenHashSet(hits);
+      combatants.addAll(assists);
+      for (int id : combatants)
+        if (scene.getEntities().get(id) instanceof EntityMonster monster
+            && org.hkrpg.server.gameplay.BoxingClubManager.genericMonsterRequiresMatch(monster))
+          error = Retcode.REQ_PARA_INVALID;
+    }
     MazeSkill skill = null;
     var abilityName = (String) value(req, "maze_ability_str");
     if (error == Retcode.SUCC

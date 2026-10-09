@@ -1181,6 +1181,8 @@ public class Player implements Tickable, Syncable {
             this.getMailbox().sendWelcomeMail();
         }
 
+        org.hkrpg.server.gameplay.BoxingClubManager.restore(this);
+
         // Set logged in flag
         this.lastActiveTime = System.currentTimeMillis() / 1000;
         this.loggedIn = true;
