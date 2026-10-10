@@ -742,6 +742,9 @@ public class Player implements Tickable, Syncable {
     }
 
     public synchronized EntityProp interactWithProp(int interactId, int propEntityId) {
+        if (getScene() != null && getScene().getEntityById(propEntityId) instanceof EntityProp candidate
+            && org.hkrpg.server.gameplay.WorldChests.applies(candidate))
+            return org.hkrpg.server.gameplay.WorldChests.open(this, interactId, propEntityId).prop();
         if (org.hkrpg.server.gameplay.SceneInteractions.validate(this, interactId, propEntityId) != emu.lunarcore.server.packet.Retcode.SUCC) return null;
         // Sanity
         if (this.getScene() == null) return null;

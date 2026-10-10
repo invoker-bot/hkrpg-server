@@ -9,6 +9,12 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private WorldChestState worldChests = new WorldChestState();
+  public WorldChestState getWorldChests() {
+    if (worldChests == null) worldChests = new WorldChestState();
+    return worldChests;
+  }
+  void worldChests(WorldChestState value) { worldChests = Objects.requireNonNull(value); }
   private WorldFirstTalkState worldFirstTalks = new WorldFirstTalkState();
   public WorldFirstTalkState getWorldFirstTalks() {
     if (worldFirstTalks == null) worldFirstTalks = new WorldFirstTalkState();

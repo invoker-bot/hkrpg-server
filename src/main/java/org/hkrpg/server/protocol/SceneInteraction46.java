@@ -26,7 +26,11 @@ public final class SceneInteraction46 {
       if (result == Retcode.SUCC) {
         var target =
             (emu.lunarcore.game.scene.entity.EntityProp) player.getScene().getEntityById(entity);
-        if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(target)) {
+        if (org.hkrpg.server.gameplay.WorldChests.applies(target)) {
+          var transition = org.hkrpg.server.gameplay.WorldChests.open(player, config, entity);
+          result = transition.retcode();
+          prop = transition.prop();
+        } else if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(target)) {
           var transition =
               org.hkrpg.server.gameplay.ScenePropTransitions.interact(player, config, entity);
           result = transition.retcode();

@@ -116,6 +116,7 @@ public class SceneEntityLoader {
 
         org.hkrpg.server.gameplay.SceneInteractions.restore(prop);
         org.hkrpg.server.gameplay.ScenePropTransitions.restore(prop);
+        org.hkrpg.server.gameplay.WorldChests.restore(prop);
         return prop;
     }
 

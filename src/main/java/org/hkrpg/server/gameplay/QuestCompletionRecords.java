@@ -31,7 +31,8 @@ public final class QuestCompletionRecords {
                 && (BoxingClubActivityQuests.belongs(definition)
                     || TimelineActivityQuests.belongs(definition)
                     || ActivityKillQuests.belongs(definition)
-                    || ActivityFirstTalkQuests.belongs(definition)))) return null;
+                    || ActivityFirstTalkQuests.belongs(definition)
+                    || ActivityChestQuests.belongs(definition)))) return null;
     var rule = GameData.getFinishWayExcelMap().get(definition.getFinishWayID());
     var state = ownedState(player, definition);
     return rule != null
@@ -53,6 +54,8 @@ public final class QuestCompletionRecords {
       return ActivityKillQuests.completionState(player, id);
     if (ActivityFirstTalkQuests.belongs(definition))
       return ActivityFirstTalkQuests.completionState(player, id);
+    if (ActivityChestQuests.belongs(definition))
+      return ActivityChestQuests.completionState(player, id);
     if (BoxingClubResidentQuests.belongs(definition))
       return BoxingClubResidentQuests.state(player, id);
     return player.getQuestStates().get(id);
