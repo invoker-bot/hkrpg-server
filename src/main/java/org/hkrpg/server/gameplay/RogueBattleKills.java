@@ -41,7 +41,7 @@ public final class RogueBattleKills {
           && GameplayDefinitions.rogueMonsters.get(sourceMapping.RogueMonsterID()) == sourceMapping
           && sourceBinding.matches(scene, sourceGroup)
           && entity.getMonsterInfo() == placement
-          && scene.getFloorInfo().getGroups().get(group) == sourceGroup
+          && scene.getResourceGroups().get(group) == sourceGroup
           && sourceGroup.getId() == group
           && sourceGroup.getMonsterList() != null
           && sourceGroup.getMonsterList().stream()
@@ -160,7 +160,7 @@ public final class RogueBattleKills {
           || actor.isFarmElement()
           || !seen.add(actor.getEntityId())
           || !placements.add(actor.getGroupId() + ":" + actor.getInstId())) return null;
-      var group = scene.getFloorInfo().getGroups().get(actor.getGroupId());
+      var group = scene.getResourceGroups().get(actor.getGroupId());
       var placement = actor.getMonsterInfo();
       var binding = RogueMonsterSelection.current(scene, group);
       var row = binding == null ? null : binding.mapping();

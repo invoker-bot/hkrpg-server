@@ -473,7 +473,7 @@ public final class UniverseManager {
           || assigned.getValue() == null
           || assigned.getValue() < 0
           || !scene.getLoadedGroups().contains(assigned.getKey())) return;
-      var group = scene.getFloorInfo().getGroups().get(assigned.getKey());
+      var group = scene.getResourceGroups().get(assigned.getKey());
       if (group == null
           || group.getId() != assigned.getKey()
           || (group.getMonsterList() != null

@@ -25,7 +25,7 @@ public class TrialEntityLoader extends SceneEntityLoader {
         scene.loadGroup(instance.getExcel().getMazeGroupID1());
 
         // Load all groups with props
-        for (var group : scene.getFloorInfo().getGroups().values()) {
+        for (var group : scene.getResourceGroups().values()) {
             // Skip non-server groups
             if (group.getLoadSide() != GroupLoadSide.Server) {
                 continue;

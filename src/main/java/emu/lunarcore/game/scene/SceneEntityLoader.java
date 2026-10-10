@@ -16,7 +16,7 @@ import emu.lunarcore.game.scene.entity.GameEntity;
 public class SceneEntityLoader {
 
     public void onSceneLoad(Scene scene) {
-        for (GroupInfo group : scene.getFloorInfo().getGroups().values()) {
+        for (GroupInfo group : scene.getResourceGroups().values()) {
             boolean isToLoad = true;
 
             if (group.getCategory() == GroupInfo.GroupCategory.Mission || group.getCategory() == GroupInfo.GroupCategory.Atmosphere

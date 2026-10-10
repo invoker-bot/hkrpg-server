@@ -165,10 +165,14 @@ public class Scene implements Tickable {
     }
 
     public void loadGroup(int groupId) {
-        GroupInfo group = getFloorInfo().getGroups().get(groupId);
+        GroupInfo group = getResourceGroups().get(groupId);
         if (group != null) {
             this.loadGroup(group);
         }
+    }
+
+    public Int2ObjectMap<GroupInfo> getResourceGroups() {
+        return getFloorInfo().getGroups(getDimensionId());
     }
 
     public void loadGroup(GroupInfo group) {
@@ -236,7 +240,7 @@ public class Scene implements Tickable {
 
     public boolean hasGroupProperty(int groupId, String name) {
         if (getFloorInfo() == null || !getLoadedGroups().contains(groupId)) return false;
-        var group = getFloorInfo().getGroups().get(groupId);
+        var group = getResourceGroups().get(groupId);
         return group != null && group.getGroupPropertyMap() != null
             && group.getGroupPropertyMap().values().stream().anyMatch(p -> p.getName().equals(name));
     }
@@ -254,7 +258,7 @@ public class Scene implements Tickable {
 
     public boolean hasStoryGroup(int groupId) {
         return getFloorInfo() != null && getLoadedGroups().contains(groupId)
-            && getFloorInfo().getGroups().containsKey(groupId);
+            && getResourceGroups().containsKey(groupId);
     }
 
     public boolean setStoryGroupState(int groupId, int state) {
@@ -294,7 +298,7 @@ public class Scene implements Tickable {
     public void refreshMissionGroups() {
         if (getFloorInfo() == null) return;
         var toLoad = new ArrayList<GroupInfo>();
-        for (var group : getFloorInfo().getGroups().values()) {
+        for (var group : getResourceGroups().values()) {
             boolean atmosphere = group.getCategory() == GroupInfo.GroupCategory.Atmosphere;
             boolean deferred = org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, this);
             if ((!atmosphere && !deferred && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;

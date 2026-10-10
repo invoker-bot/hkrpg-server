@@ -129,7 +129,7 @@ public final class MissionTrialRemovals {
               Set.of("$type", "GroupID", "GroupNpcID"))) return null;
       var npcTask = spawn.get(0).getAsJsonObject();
       int groupId = constant(npcTask.get("GroupID")), npcId = constant(npcTask.get("GroupNpcID"));
-      var group = scene.getFloorInfo().getGroups().get(groupId);
+      var group = scene.getResourceGroups().get(groupId);
       if (groupId <= 0
           || npcId <= 0
           || group == null
@@ -248,7 +248,7 @@ public final class MissionTrialRemovals {
     if (player == null) return false;
     synchronized (player) {
       if (scene.getFloorInfo() == null
-          || scene.getFloorInfo().getGroups().get(group.getId()) != group
+          || scene.getResourceGroups().get(group.getId()) != group
           || group.getNPCList() == null
           || !group.getNPCList().contains(npc)) return false;
       var receipts = player.getGameplay().getMissionTrials().getRemovals();

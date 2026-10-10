@@ -305,9 +305,7 @@ public class ResourceLoader {
                         group.setId(simpleGroup.getID());
 
                         // Load groups into the floor info
-                        synchronized (floor.getGroups()) {
-                            floor.getGroups().put(simpleGroup.getID(), group);
-                        }
+                        floor.registerGroup(index, group);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -331,7 +329,7 @@ public class ResourceLoader {
         // Finish loading floors
         for (FloorInfo floor : GameData.getFloorInfos().values()) {
             // Check if we are missing group infos TODO broken
-            if (floor.getGroups().size() == 0) {
+            if (!floor.hasLoadedGroups()) {
                 LunarCore.getLogger().warn("Floor " + floor.getFloorID() + " is missing group infos.");
                 missingGroupInfos = true;
             }

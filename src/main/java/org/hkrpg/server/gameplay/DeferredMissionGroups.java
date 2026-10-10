@@ -17,7 +17,7 @@ public final class DeferredMissionGroups {
         && group.getUnloadCondition() != null
         && group.getUnloadCondition().isDelayToLevelReload()
         && scene.getFloorInfo() != null
-        && scene.getFloorInfo().getGroups().get(group.getId()) == group;
+        && scene.getResourceGroups().get(group.getId()) == group;
   }
 
   static boolean retains(GroupInfo group, Scene scene) {

@@ -134,6 +134,7 @@ class DiceCombat46Test {
 
           public void sendPacket(BasePacket packet) {}
         };
+    final ProtocolBridge wireProtocol = ProtocolBridge.forVersion("4.6.0");
     String responseName;
     DynamicMessage response;
     final List<String> messages = new ArrayList<>();
@@ -148,7 +149,7 @@ class DiceCombat46Test {
     }
 
     public ProtocolBridge getProtocol() {
-      return ProtocolBridge.forVersion("4.6.0");
+      return wireProtocol;
     }
 
     public void send(BasePacket packet) {}

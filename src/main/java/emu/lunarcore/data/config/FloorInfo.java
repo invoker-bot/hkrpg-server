@@ -33,6 +33,8 @@ public class FloorInfo {
     private transient boolean loaded;
     private transient List<ExtraDataInfo> savedValues;
     private transient Int2ObjectMap<GroupInfo> groups;
+    private transient final Int2ObjectMap<GroupInfo> indexedGroups = new Int2ObjectLinkedOpenHashMap<>();
+    private transient volatile Map<Integer, Int2ObjectMap<GroupInfo>> resourceGroups = Map.of();
     private transient Int2ObjectMap<PropInfo> cachedTeleports;
     private transient List<PropInfo> unlockedCheckpoints; // DEBUG
     @Getter(lombok.AccessLevel.NONE)
@@ -46,7 +48,51 @@ public class FloorInfo {
 
     public GroupInfo getGroupInfoByIndex(int groupIndex) {
         var simpleGroup = SimpleGroupList.get(groupIndex);
-        return this.getGroups().get(simpleGroup.getID());
+        return indexedGroups.isEmpty() ? this.getGroups().get(simpleGroup.getID()) : indexedGroups.get(groupIndex);
+    }
+
+    /** Preserve every authored resource before selecting the current scene dimension. */
+    public synchronized void registerGroup(int index, GroupInfo group) {
+        if (loaded || SimpleGroupList == null || index < 0 || index >= SimpleGroupList.size()
+            || group == null || group.getId() != SimpleGroupList.get(index).getID()
+            || indexedGroups.containsKey(index)) throw new IllegalArgumentException("Invalid floor resource index");
+        indexedGroups.put(index, group);
+        resourceGroups = Map.of();
+    }
+
+    public boolean hasLoadedGroups() { return !groups.isEmpty() || !indexedGroups.isEmpty(); }
+
+    public Int2ObjectMap<GroupInfo> getGroups(int dimension) {
+        if (indexedGroups.isEmpty()) return groups;
+        var cached = resourceGroups.get(dimension);
+        if (cached != null) return cached;
+        synchronized (this) {
+            cached = resourceGroups.get(dimension);
+            if (cached != null) return cached;
+            var result = new Int2ObjectLinkedOpenHashMap<GroupInfo>();
+            var origins = new it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap();
+            if (DimensionList != null) for (var info : DimensionList) {
+                if (info.getID() != dimension || info.getGroupIndexList() == null) continue;
+                for (int index : info.getGroupIndexList()) {
+                    var group = indexedGroups.get(index);
+                    if (group == null) continue;
+                    var previous = result.get(group.getId());
+                    if (previous == null) {
+                        result.put(group.getId(), group);
+                        origins.put(group.getId(), index);
+                    } else if (previous != group) {
+                        var path = SimpleGroupList.get(origins.get(group.getId())).getGroupPath();
+                        if (path == null || path.isBlank() || !path.equals(SimpleGroupList.get(index).getGroupPath()))
+                            throw new IllegalStateException("Duplicate group resource in dimension " + dimension);
+                    }
+                }
+            }
+            var next = new java.util.HashMap<>(resourceGroups);
+            cached = it.unimi.dsi.fastutil.ints.Int2ObjectMaps.unmodifiable(result);
+            next.put(dimension, cached);
+            resourceGroups = Map.copyOf(next);
+            return cached;
+        }
     }
 
     public AnchorInfo getStartAnchorInfo() {
@@ -143,10 +189,23 @@ public class FloorInfo {
     public void onLoad() {
         if (this.loaded) return;
 
+        if (!indexedGroups.isEmpty()) {
+            var selected = getGroups(0);
+            groups.clear();
+            // Preserve the legacy query of all referenced IDs, preferring the default resource.
+            indexedGroups.int2ObjectEntrySet().stream()
+                .sorted(java.util.Comparator.comparingInt(e -> e.getIntKey()))
+                .forEach(e -> groups.putIfAbsent(e.getValue().getId(), e.getValue()));
+            groups.putAll(selected);
+        }
+
         this.savedValues = getExtraDatas();
 
         // Cache anchors
-        for (GroupInfo group : groups.values()) {
+        var definitions = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<GroupInfo, Boolean>());
+        definitions.addAll(groups.values());
+        definitions.addAll(indexedGroups.values());
+        for (GroupInfo group : definitions) {
             if (group.getPropList() == null) {
                 continue;
             }
@@ -163,7 +222,7 @@ public class FloorInfo {
                     prop.setState(PropState.BridgeState3);
                 }
 
-                if (prop.getAnchorID() > 0 && isGroupInDimension(group.getId(), 0)) {
+                if (prop.getAnchorID() > 0 && getGroups(0).get(group.getId()) == group && isGroupInDimension(group.getId(), 0)) {
                     // Put inside cached teleport list to send to client when they request map info
                     this.cachedTeleports.put(prop.getMappingInfoID(), prop);
                     if (prop.getState() == PropState.CheckPointEnable) this.unlockedCheckpoints.add(prop);

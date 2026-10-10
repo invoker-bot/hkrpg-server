@@ -67,7 +67,7 @@ public final class RoguePropRecovery {
         || prop.getInstId() <= 0
         || scene.getFloorInfo() == null
         || GameData.getPropExcelMap().get(prop.getPropId()) != prop.getExcel()) return null;
-    var group = scene.getFloorInfo().getGroups().get(prop.getGroupId());
+    var group = scene.getResourceGroups().get(prop.getGroupId());
     var info = prop.getPropInfo();
     if (group == null
         || group.getPropList() == null

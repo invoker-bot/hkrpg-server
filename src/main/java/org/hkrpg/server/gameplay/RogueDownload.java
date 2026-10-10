@@ -68,7 +68,7 @@ public final class RogueDownload {
           || !prop.getPropInfo().isLoadOnInitial()
           || !UniverseEntityLoader.roomGroups(p).contains(prop.getGroupId()))
         return Retcode.SCENE_ENTITY_NOT_EXIST;
-      var group = scene.getFloorInfo().getGroups().get(prop.getGroupId());
+      var group = scene.getResourceGroups().get(prop.getGroupId());
       if (group == null
           || group.getPropList() == null
           || group.getPropList().stream()

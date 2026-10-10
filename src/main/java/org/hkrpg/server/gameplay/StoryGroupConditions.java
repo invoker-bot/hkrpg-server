@@ -31,7 +31,8 @@ public final class StoryGroupConditions {
         || player.getGameplay().getStoryLines().isTransitionPending()) return false;
     var floor = GameData.getFloorInfo(config.getMazePlaneID(), config.getMazeFloorID());
     if (floor == null || floor.getFloorID() != config.getMazeFloorID()) return false;
-    var group = floor.getGroups().get(config.getParamInt1());
+    var scene = player.getScene();
+    var group = floor.getGroups(scene == null ? 0 : scene.getDimensionId()).get(config.getParamInt1());
     if (group == null
         || group.getId() != config.getParamInt1()
         || group.getGroupPropertyMap() == null

@@ -36,7 +36,7 @@ public final class RogueEnhancement {
           || scene.getEntityById(npc.getEntityId()) != npc
           || npc.getInstId() <= 0
           || !UniverseEntityLoader.roomGroups(p).contains(npc.getGroupId())) continue;
-      var group = scene.getFloorInfo().getGroups().get(npc.getGroupId());
+      var group = scene.getResourceGroups().get(npc.getGroupId());
       if (group != null
           && group.getNPCList() != null
           && group.getNPCList().stream()

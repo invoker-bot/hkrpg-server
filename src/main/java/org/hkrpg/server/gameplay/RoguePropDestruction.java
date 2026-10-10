@@ -79,7 +79,7 @@ public final class RoguePropDestruction {
         || prop.getInstId() <= 0
         || GameData.getPropExcelMap().get(prop.getPropId()) != prop.getExcel()
         || !UniverseEntityLoader.roomGroups(player).contains(prop.getGroupId())) return false;
-    var group = scene.getFloorInfo().getGroups().get(prop.getGroupId());
+    var group = scene.getResourceGroups().get(prop.getGroupId());
     var info = prop.getPropInfo();
     if (group == null
         || group.getId() != prop.getGroupId()

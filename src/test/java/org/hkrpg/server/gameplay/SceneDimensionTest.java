@@ -75,6 +75,9 @@ class SceneDimensionTest {
       var loaded = GameData.getFloorInfo(PLANE, FLOOR);
       assertNotNull(loaded);
       assertEquals(Set.of(8, 9), loaded.getGroups().keySet());
+      assertEquals(Set.of(8), loaded.getGroups(0).keySet());
+      assertEquals(Set.of(8, 9), loaded.getGroups(4).keySet());
+      assertSame(loaded.getGroupInfoByIndex(1), loaded.getGroups(4).get(9));
       assertEquals(4, loaded.getDimensionList().get(1).getID());
     } finally {
       configField.set(null, oldConfig);

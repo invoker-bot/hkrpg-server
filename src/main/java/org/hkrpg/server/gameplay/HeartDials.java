@@ -177,7 +177,7 @@ public final class HeartDials {
         || binding.InstanceID() != npc.getInstId()
         || binding.DefaultScriptID() != script
         || !List.of(script).equals(binding.ScriptIDList())) return null;
-    var group = scene.getFloorInfo().getGroups().get(npc.getGroupId());
+    var group = scene.getResourceGroups().get(npc.getGroupId());
     if (group == null || group.getId() != npc.getGroupId() || group.getNPCList() == null)
       return null;
     var rows =

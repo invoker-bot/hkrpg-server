@@ -12,12 +12,13 @@ public final class QuestCompletionRecords {
           || definition == null
           || definition.getId() != id
           || definition.getQuestType() != 1 && definition.getQuestType() != 4
-              && !(definition.getQuestType() == 3 && BoxingClubActivityQuests.belongs(definition))) return false;
+              && !(definition.getQuestType() == 3 && (BoxingClubActivityQuests.belongs(definition)||TimelineActivityQuests.belongs(definition)))) return false;
       var rule = GameData.getFinishWayExcelMap().get(definition.getFinishWayID());
       var state = LocalLegendQuests.belongs(definition)
           ? LocalLegendQuests.state(player, id) : DiceRollQuests.belongs(definition)
               ? DiceRollQuests.state(player, id) : BoxingClubActivityQuests.belongs(definition)
-                  ? BoxingClubActivityQuests.completionState(player, id) : BoxingClubResidentQuests.belongs(definition)
+                  ? BoxingClubActivityQuests.completionState(player, id) : TimelineActivityQuests.belongs(definition)
+                      ? TimelineActivityQuests.state(player,id) : BoxingClubResidentQuests.belongs(definition)
                   ? BoxingClubResidentQuests.state(player, id) : player.getQuestStates().get(id);
       return rule != null
           && rule.getId() == definition.getFinishWayID()

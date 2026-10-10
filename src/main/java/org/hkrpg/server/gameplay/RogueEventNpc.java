@@ -72,7 +72,7 @@ public final class RogueEventNpc extends EntityNpc {
         && entry.getFloorID() == scene.getFloorId()
         && scene.getPlaneType() == emu.lunarcore.game.enums.PlaneType.Rogue
         && scene.getFloorInfo() != null
-        && scene.getFloorInfo().getGroups().get(group.getId()) == group
+        && scene.getResourceGroups().get(group.getId()) == group
         && group.getNPCList() != null
         && group.getNPCList().contains(info)
         && info.getID() > 0

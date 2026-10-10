@@ -9,6 +9,11 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private TimelineActivityState timelineActivityQuests=new TimelineActivityState();
+  public TimelineActivityState getTimelineActivityQuests() {
+    if(timelineActivityQuests==null)timelineActivityQuests=new TimelineActivityState();return timelineActivityQuests;
+  }
+  void timelineActivityQuests(TimelineActivityState value){timelineActivityQuests=Objects.requireNonNull(value);}
   private PropTimelineState propTimelines = PropTimelineState.empty();
   public PropTimelineState getPropTimelines() {
     if(propTimelines==null)propTimelines=PropTimelineState.empty();

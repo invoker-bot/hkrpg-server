@@ -154,7 +154,7 @@ public final class RogueMonsterSelection {
         || group.getId() <= 0
         || scene.getDimensionId() != 0
         || scene.getFloorInfo() == null
-        || scene.getFloorInfo().getGroups().get(group.getId()) != group) return null;
+        || scene.getResourceGroups().get(group.getId()) != group) return null;
     var run = scene.getPlayer().getGameplay().getRogue();
     var room = GameplayDefinitions.rooms.get(run.getRoomId());
     if (run.getPhase() != GameplayState.RogueRun.Phase.EXPLORING
@@ -224,7 +224,7 @@ public final class RogueMonsterSelection {
     if (!originalCatalog(scene)) return legacy(scene, group);
     return scene == null || scene.getFloorInfo() == null
         ? null
-        : current(scene, scene.getFloorInfo().getGroups().get(group));
+        : current(scene, scene.getResourceGroups().get(group));
   }
 
   public static GameplayDefinitions.RogueMonster resolve(

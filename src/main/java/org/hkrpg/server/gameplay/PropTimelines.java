@@ -38,7 +38,9 @@ public final class PropTimelines {
         if (tag == null
             || !"Prop.Component.TimeRewindEntity".equals(tag.get("Tag").getAsString())
             || tag.get("TagHash").getAsBigDecimal().intValueExact() != 532483231
-            || !PropTimelineState.stateName(component.get("InitState").getAsString())) return false;
+            || component.has("InitState")
+                && !PropTimelineState.stateName(component.get("InitState").getAsString()))
+          return false;
         found++;
       }
       return found == 1;
@@ -50,7 +52,7 @@ public final class PropTimelines {
     }
   }
 
-  private static String source(PropInfo info) {
+  static String source(PropInfo info) {
     try {
       return HexFormat.of()
           .formatHex(
@@ -61,12 +63,12 @@ public final class PropTimelines {
     }
   }
 
-  private static PropInfo original(Scene scene, int group, int instance) {
+  static PropInfo original(Scene scene, int group, int instance) {
     if (scene == null || scene.getFloorInfo() == null || group <= 0 || instance <= 0) return null;
     var registered = GameData.getFloorInfo(scene.getPlaneId(), scene.getFloorId());
     if (registered == null || !registered.isGroupInDimension(group, scene.getDimensionId()))
       return null;
-    var data = registered.getGroups().get(group);
+    var data = registered.getGroups(scene.getDimensionId()).get(group);
     if (data == null || data.getId() != group || data.getPropList() == null) return null;
     var matches =
         data.getPropList().stream().filter(p -> p != null && p.getID() == instance).toList();
@@ -95,7 +97,7 @@ public final class PropTimelines {
     return new Scope(run.getPropTimelines(), run, main);
   }
 
-  private static String key(Scene scene, int group, int instance) {
+  static String key(Scene scene, int group, int instance) {
     return scene.getPlaneId()
         + ":"
         + scene.getFloorId()
@@ -120,6 +122,16 @@ public final class PropTimelines {
 
   private static PropTimelineInfo proto(String state) {
     return PropTimelineInfo.newInstance().setCOOGIPJIPIA(state.getBytes(StandardCharsets.US_ASCII));
+  }
+
+  static String initial(PropInfo info) {
+    if (!tagged(info)) return null;
+    for (var raw : info.getTagOverrideComponents().getAsJsonArray("TagComponents")) {
+      var tag = raw.getAsJsonObject();
+      if ("RPG.GameCore.PropTagTimeRewindEntityComponent".equals(tag.get("$type").getAsString()))
+        return tag.has("InitState") ? tag.get("InitState").getAsString() : null;
+    }
+    return null;
   }
 
   public static void restore(EntityProp prop) {
@@ -184,19 +196,30 @@ public final class PropTimelines {
               state,
               acceptance);
       var old = scope.state().get(stored.key());
-      if (!matches(old, info, scope) || !state.equals(old.getState())) {
+      var activity =
+          scope.raid() == null ? TimelineActivityQuests.observe(player, prop, stored) : null;
+      if (!matches(old, info, scope)
+          || !state.equals(old.getState())
+          || activity != null && activity.changed()) {
         var next = scope.state().with(stored);
         replace(player, scope, next);
+        if (activity != null && activity.changed())
+          player.getGameplay().timelineActivityQuests(activity.next);
         try {
           player.save();
         } catch (RuntimeException failed) {
           replace(player, scope, scope.state());
+          if (activity != null && activity.changed())
+            player.getGameplay().timelineActivityQuests(activity.original);
           if (scope.main() != null) scope.main().restoreObservationKey(acceptance, previous);
           return Retcode.SYSTEM_BUSY;
         }
       }
+      if (activity != null) activity.committed();
       prop.setTimelineInfo(proto(state));
       player.getMissionManager().refresh();
+      if (activity != null && activity.changed())
+        player.sendPacket(new emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp(player));
       return Retcode.SUCC;
     }
   }
