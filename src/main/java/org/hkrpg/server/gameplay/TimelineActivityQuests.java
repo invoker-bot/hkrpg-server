@@ -91,6 +91,18 @@ public final class TimelineActivityQuests {
     return states(p).get(id);
   }
 
+  /** Finished observations remain prerequisites; presentation and claims still need a live window. */
+  public static QuestState completionState(Player p, int id) {
+    synchronized (p) {
+      if (!TimelineActivityRules.IDS.contains(id)) return null;
+      var rules = TimelineActivityRules.load();
+      var domain = p.getGameplay().getTimelineActivityQuests();
+      if (!domain.valid(rules) || !rules.unlocked(p, id)) return null;
+      var state = domain.getQuests().get(id);
+      return MissionStateRecords.completed(state, id, 3) ? state : null;
+    }
+  }
+
   private static boolean world(Player p, Scene scene) {
     return scene != null
         && scene.getPlayer() == p

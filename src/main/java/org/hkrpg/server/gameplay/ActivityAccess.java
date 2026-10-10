@@ -41,19 +41,7 @@ public final class ActivityAccess {
       return switch (kind) {
         case "FinishMainMission" -> player.getMissionManager().finished(value);
         case "FinishSubMission" -> MissionStateRecords.subCompleted(player, value);
-        case "QuestClose" -> {
-          var state = player.getQuestStates().get(value);
-          var definition = GameData.getQuestExcelMap().get(value);
-          var rule =
-              definition == null
-                  ? null
-                  : GameData.getFinishWayExcelMap().get(definition.getFinishWayID());
-          yield state != null
-              && state.getPhase() == emu.lunarcore.game.quest.QuestState.Phase.CLOSED
-              && rule != null
-              && MissionStateRecords.completed(state, value, rule.getProgress())
-              && QuestCompletionRecords.completed(player, value);
-        }
+        case "QuestClose" -> QuestCompletionRecords.closed(player, value);
         case "PlayerLevel" -> player.getLevel() >= value;
         case "WorldLevel" -> player.getWorldLevel() >= value;
         default -> false;
