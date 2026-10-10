@@ -1,6 +1,5 @@
 package org.hkrpg.server.gameplay;
 
-import emu.lunarcore.data.ResourceLoader;
 import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.player.Player;
@@ -11,13 +10,7 @@ import java.util.*;
 
 /** Accepted, non-backtracked single-step tutorial goals from a completed native story battle. */
 public final class StoryChallengeSettlementGoals {
-  public record Target(String definition, String script) {
-    static Target of(MissionInfo.SubMissionInfo config) {
-      return new Target(
-          ResourceLoader.getGson().toJson(config),
-          config.getTask() == null ? "" : config.getTask().getSourceDefinition());
-    }
-  }
+  public record Target(MissionBattleAcceptance acceptance) {}
 
   public static Map<Integer, Target> capture(Player player) {
     var targets = new HashMap<Integer, Target>();
@@ -25,8 +18,10 @@ public final class StoryChallengeSettlementGoals {
       var config = GameplayDefinitions.subs.get(state.getQuestId());
       if (state.getPhase() == QuestState.Phase.DOING
           && condition(config)
-          && player.getMissionManager().canFinishFromAction(config.getId()))
-        targets.put(config.getId(), Target.of(config));
+          && player.getMissionManager().canFinishFromAction(config.getId())) {
+        var acceptance = MissionBattleAcceptance.capture(player, config);
+        if (acceptance != null) targets.put(config.getId(), new Target(acceptance));
+      }
     }
     return Map.copyOf(targets);
   }
@@ -59,8 +54,11 @@ public final class StoryChallengeSettlementGoals {
     return battle.getStorySettlementTargets();
   }
 
-  public static boolean matches(Map<Integer, Target> targets, MissionInfo.SubMissionInfo config) {
-    return condition(config) && Objects.equals(targets.get(config.getId()), Target.of(config));
+  public static boolean matches(
+      Player player, Map<Integer, Target> targets, MissionInfo.SubMissionInfo config) {
+    if (!condition(config)) return false;
+    var target = targets.get(config.getId());
+    return target != null && target.acceptance().matches(player, config);
   }
 
   static boolean condition(MissionInfo.SubMissionInfo config) {

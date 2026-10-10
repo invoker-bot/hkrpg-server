@@ -15,17 +15,7 @@ import java.util.*;
 
 /** Memory challenge completion from validated encounters, independent of star rewards. */
 public final class MissionChallengeWin {
-  public record Target(
-      String type, int parameter, boolean backTrack, int navigationPlane, int navigationFloor) {
-    static Target of(MissionInfo.SubMissionInfo config) {
-      return new Target(
-          config.getFinishType(),
-          config.getParamInt1(),
-          config.isBackTrack(),
-          config.getLevelPlaneID(),
-          config.getLevelFloorID());
-    }
-  }
+  public record Target(MissionBattleAcceptance acceptance) {}
 
   public record Combatant(
       EntityMonster monster, int group, int instance, int npc, int event, int world) {
@@ -81,9 +71,10 @@ public final class MissionChallengeWin {
               .allMatch(c -> battle.getNpcMonsters().contains(c.monster()) && c.unchanged());
     }
 
-    public boolean matchesTarget(MissionInfo.SubMissionInfo config) {
-      return condition(config, challengeId)
-          && Objects.equals(targets.get(config.getId()), Target.of(config));
+    public boolean matchesTarget(Player player, MissionInfo.SubMissionInfo config) {
+      if (!condition(config, challengeId)) return false;
+      var target = targets.get(config.getId());
+      return target != null && target.acceptance().matches(player, config);
     }
   }
 
@@ -168,8 +159,10 @@ public final class MissionChallengeWin {
       var config = GameplayDefinitions.subs.get(state.getQuestId());
       if (state.getPhase() == QuestState.Phase.DOING
           && condition(config, excel.getId())
-          && player.getMissionManager().canFinishFromAction(config.getId()))
-        targets.put(config.getId(), Target.of(config));
+          && player.getMissionManager().canFinishFromAction(config.getId())) {
+        var acceptance = MissionBattleAcceptance.capture(player, config);
+        if (acceptance != null) targets.put(config.getId(), new Target(acceptance));
+      }
     }
     return new Context(
         challenge,

@@ -1,4 +1,5 @@
 """原始忘却之庭日常2100119与200活跃度；实际1/15关卡，隔离接取/入口门槛。"""
+import argparse
 import hashlib
 import json
 import os
@@ -27,10 +28,15 @@ def request(base, route, body=None):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
+    parser.add_argument('--output', type=Path)
+    args = parser.parse_args()
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'), None)
     java = str(java) if java else 'java'
-    artifact = ROOT / 'build/libs/hkrpg-server.jar'
+    artifact = args.jar.resolve()
     assert artifact.is_file(), '先运行 scripts/build.ps1'
+    artifact_sha = hashlib.sha256(artifact.read_bytes()).hexdigest()
     source = ROOT / 'resources/4.6'
     runs = ROOT / 'build/smoke'
     runs.mkdir(parents=True, exist_ok=True)
@@ -116,7 +122,8 @@ def main():
         'httpServer': {'bindAddress': '127.0.0.1', 'bindPort': http_port},
         'gameServer': {'bindAddress': '127.0.0.1', 'bindPort': game_port},
         'internalMongoServer': {'address': '127.0.0.1', 'port': mongo_port, 'filePath': './data/database.mv'}}), encoding='utf-8')
-    command = [java, '-Xmx1536m', f'-Djdk.net.unixdomain.tmpdir={directory / "tcp-fallback"}', '-jar', str(artifact), '--no-console', '--no-handbook']
+    config_bytes = (directory / 'config.json').read_bytes()
+    command = [java, '-Xmx1536m', f'-Djdk.net.unixdomain.tmpdir={directory / "tcp-fallback"}', '-jar', str(artifact), '--no-handbook']
     base = f'http://127.0.0.1:{http_port}'
 
     def probe(name, credentials):
@@ -131,9 +138,10 @@ def main():
         return result
 
     snapshots, credentials = [], None
+    normal_stops = 0
     for iteration in range(2):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
-            process = subprocess.Popen(command, cwd=directory, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+            process = subprocess.Popen(command, cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT,
                                        creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
             try:
                 deadline = time.monotonic() + 90
@@ -177,14 +185,25 @@ def main():
                 time.sleep(2)
             finally:
                 if process.poll() is None:
-                    process.terminate()
-                    try: process.wait(timeout=15)
+                    process.stdin.write(b'stop\n')
+                    process.stdin.flush()
+                    try:
+                        assert process.wait(timeout=25) == (1000 if os.name == 'nt' else 232), directory / f'server-{iteration}.log'
+                        normal_stops += 1
                     except subprocess.TimeoutExpired:
                         process.kill()
                         process.wait(timeout=5)
+                        raise RuntimeError(f'Normal shutdown timed out; inspect {directory}')
+                if process.stdin:
+                    process.stdin.close()
+    assert normal_stops == 2
+    assert config_bytes == (directory / 'config.json').read_bytes()
+    assert artifact_sha == hashlib.sha256(artifact.read_bytes()).hexdigest()
     for name, digest in before.items():
         assert hashlib.sha256((source / name).read_bytes()).hexdigest() == digest
-    print(json.dumps({'passed': True, 'runtimeDirectory': str(directory), 'snapshots': snapshots,
+    report = {'passed': True, 'runtimeDirectory': str(directory), 'snapshots': snapshots,
+        'rootJarSHA256': artifact_sha, 'normalStopCount': normal_stops,
+        'sameUIDNormalH2ProcessRestartCount': 1, 'operatorDataModified': False,
         'checks': ['actual-packed-memory-lineup-entry', 'actual-formal-identifiers-two-half-entry',
                    'wrong-battle-identity-rejected', 'rejected-report-preserves-battle', 'repeated-settlement-rejected',
                    'actual-count-objective-completes-once', 'first-half-stays-pending', 'specified-challenge-two-half-completes',
@@ -203,7 +222,11 @@ def main():
                     'reportedRoundsPerBattle': 8, 'dailyQuest': 2100119, 'dailyReward': 103004,
                     'virtualActivePointItem': 23, 'rewardPoints': 200, 'dailyGateRelaxed': 4010134,
                     'dailyPoolIsolated': True, 'expectedStarMasks': {'1': 5, '15': 5},
-                    'sourceSha256': before, 'sourceResourcesModified': False, 'officialStoryMissionVerified': False}, 'clientGameplayVerified': False}, ensure_ascii=False))
+                    'sourceSha256': before, 'sourceResourcesModified': False, 'officialStoryMissionVerified': False}, 'clientGameplayVerified': False}
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    print(json.dumps(report, ensure_ascii=False))
 
 
 if __name__ == '__main__':

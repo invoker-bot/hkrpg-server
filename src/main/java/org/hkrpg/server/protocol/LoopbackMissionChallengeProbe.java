@@ -180,7 +180,7 @@ public final class LoopbackMissionChallengeProbe {
     result.put("dailyPoints", expected);
   }
 
-  private void dailyState(DynamicMessage m, int progress, int status) {
+  private DynamicMessage dailyQuest(DynamicMessage m) {
     require((Integer) field(m, "retcode") == 0, "Daily quest query rejected");
     var rows =
         ((List<?>) field(m, "quest_list"))
@@ -189,7 +189,11 @@ public final class LoopbackMissionChallengeProbe {
                 .filter(r -> (Integer) field(r, "id") == 2100119)
                 .toList();
     require(rows.size() == 1, "Missing or duplicate Memory daily");
-    var quest = rows.getFirst();
+    return rows.getFirst();
+  }
+
+  private void dailyState(DynamicMessage m, int progress, int status) {
+    var quest = dailyQuest(m);
     require(
         (Integer) field(quest, "progress") == progress
             && ((com.google.protobuf.Descriptors.EnumValueDescriptor) field(quest, "status"))
@@ -198,6 +202,20 @@ public final class LoopbackMissionChallengeProbe {
         "Wrong Memory daily progress/status at step " + step);
     result.put("dailyProgress", progress);
     result.put("dailyQuestStatus", status);
+  }
+
+  private void dailyNotification(DynamicMessage message) {
+    var quest = dailyQuest(message);
+    int progress = (Integer) field(quest, "progress");
+    int status =
+        ((com.google.protobuf.Descriptors.EnumValueDescriptor) field(quest, "status")).getNumber();
+    boolean claimed =
+        resume || Boolean.TRUE.equals(result.get("nativeActivityPointsRemainVirtual"));
+    require(
+        claimed
+            ? progress == 1 && status == 3
+            : progress == 0 && status == 1 || progress == 1 && status == 2,
+        "Invalid Memory daily notification at step " + step + ": " + progress + "/" + status);
   }
 
   private void checkHistory(DynamicMessage message) {
@@ -390,8 +408,7 @@ public final class LoopbackMissionChallengeProbe {
             result.put("nativeDailyCreditStayedSingle", true);
             done();
           } else {
-            // The existing claim handler also sends a fresh quest snapshot after its reply.
-            dailyState(m, 1, 3);
+            dailyNotification(m);
           }
         }
         case "TakeQuestRewardScRsp" -> {

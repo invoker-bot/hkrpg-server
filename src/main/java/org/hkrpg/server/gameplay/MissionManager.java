@@ -1102,7 +1102,7 @@ public final class MissionManager {
     synchronized (player) {
       var targets = StoryChallengeSettlementGoals.completed(player, battle);
       if (targets.isEmpty()) return;
-      event(config -> StoryChallengeSettlementGoals.matches(targets, config), 1);
+      event(config -> StoryChallengeSettlementGoals.matches(player, targets, config), 1);
     }
   }
 
@@ -1111,7 +1111,7 @@ public final class MissionManager {
       var context = battle.getMissionChallengeWin();
       if (context == null || !context.completed(player, battle)) return;
       if (player.getGameplay().recordMemoryChallenge(context.challengeId())) player.save();
-      event(context::matchesTarget, 1);
+      event(config -> context.matchesTarget(player, config), 1);
       refresh();
     }
   }
