@@ -172,8 +172,8 @@ class DefaultHybridMissionRaid46Test {
   }
 
   @ParameterizedTest
-  @ValueSource(ints = {1, 6, 7})
-  void unverifiedHigherWorldDifficultyCannotBorrowTheWorldZeroEntry(int world) {
+  @ValueSource(ints = {-1, 7, 99})
+  void absentHigherWorldDifficultyCannotBorrowTheWorldZeroEntry(int world) {
     player.world = world;
     assertEquals(Retcode.REQ_PARA_INVALID, trial());
     assertEquals(0, player.saves);

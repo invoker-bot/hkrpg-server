@@ -917,3 +917,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 物件时间轴按实际原生状态保存，世界记录与副本运行分开，副本另绑定主任务接取；保存成功后发布实体并查询回溯目标。来源、响应边界和未完成入口见[时间轴说明](prop-timeline-4.6.md)。
 
 原始单主任务 Default/TrialOrPlayer 入口复用已冻结的剧情副本队伍；当前世界等级0，角色门槛与换层仍由原始来源核对，见[混合入口说明](default-hybrid-mission-raid-4.6.md)。
+
+混合剧情队伍世界1至6的 source1 难度、独立菜单、原始战斗与恢复边界见[混合剧情队伍世界等级](default-hybrid-raid-worlds-4.6.md)。

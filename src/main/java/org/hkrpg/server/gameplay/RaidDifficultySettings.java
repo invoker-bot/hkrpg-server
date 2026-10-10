@@ -13,6 +13,7 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 public final class RaidDifficultySettings {
   private Map<Integer, Choice> choices = new HashMap<>();
+  private static final Set<Integer> VERIFIED_RAIDS = Set.of(40431, 43306);
 
   private static boolean verifiedWorld(int world) {
     return world >= 1 && world <= 6;
@@ -45,7 +46,7 @@ public final class RaidDifficultySettings {
 
   static String identity(GameplayDefinitions.Raid row) {
     if (row == null
-        || row.RaidID() != 43306
+        || !VERIFIED_RAIDS.contains(row.RaidID())
         || row.WorldLevel() != 0
         || !RaidEntranceSources.adjustable(row)) return null;
     var source = RaidEntranceSources.fingerprint(row);
@@ -61,7 +62,7 @@ public final class RaidDifficultySettings {
   }
 
   public List<Choice> snapshot() {
-    if (choices == null || choices.size() > 1)
+    if (choices == null || choices.size() > VERIFIED_RAIDS.size())
       throw new IllegalStateException("Invalid saved raid difficulty choices");
     var result = new ArrayList<Choice>();
     for (var item : choices.entrySet()) {
@@ -73,6 +74,7 @@ public final class RaidDifficultySettings {
         throw new IllegalStateException("Changed saved raid difficulty source");
       result.add(value);
     }
+    result.sort(Comparator.comparingInt(Choice::getRaid));
     return List.copyOf(result);
   }
 
@@ -116,9 +118,9 @@ public final class RaidDifficultySettings {
     if (identity(row) == null) return -1;
     try {
       var saved = snapshot();
-      if (saved.isEmpty()) return 0;
-      var value = saved.getFirst();
-      return value.matches(row) ? value.getDifficulty() : -1;
+      for (var value : saved)
+        if (value.getRaid() == row.RaidID()) return value.matches(row) ? value.getDifficulty() : -1;
+      return 0;
     } catch (IllegalStateException invalid) {
       return -1;
     }
