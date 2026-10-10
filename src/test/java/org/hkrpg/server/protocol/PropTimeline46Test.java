@@ -716,7 +716,7 @@ class PropTimeline46Test {
   }
 
   @Test
-  void original40431DefaultTrialOrPlayerEntranceRemainsAnExplicitUnsupportedBoundary()
+  void original40431WithoutUsableTeamConfigurationCannotPublishTimelineProof()
       throws Exception {
     raid(104040816);
     assertNull(MissionRaid.resource(40431, 0));

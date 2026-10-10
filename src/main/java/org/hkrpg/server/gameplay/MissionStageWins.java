@@ -18,7 +18,8 @@ public final class MissionStageWins {
       QuestState sub,
       int progress,
       String mainKey,
-      Clause clause) {}
+      Clause clause,
+      MissionBattleAcceptance raidAcceptance) {}
 
   public static final class Context {
     private final Player owner;
@@ -26,8 +27,13 @@ public final class MissionStageWins {
     private final int stageId;
     private final int world, plane, floor, entry;
     private final Map<Integer, Target> targets;
+    private final MissionRaidBattleScope raid;
 
-    private Context(Player owner, BattleStage stage, Map<Integer, Target> targets) {
+    private Context(
+        Player owner,
+        BattleStage stage,
+        Map<Integer, Target> targets,
+        MissionRaidBattleScope raid) {
       this.owner = owner;
       this.stage = stage;
       this.stageId = stage == null ? 0 : stage.getId();
@@ -36,6 +42,7 @@ public final class MissionStageWins {
       this.floor = owner.getFloorId();
       this.entry = owner.getEntryId();
       this.targets = Map.copyOf(targets);
+      this.raid = raid;
     }
 
     public boolean matches(Player player, Battle battle, MissionInfo.SubMissionInfo definition) {
@@ -52,6 +59,9 @@ public final class MissionStageWins {
           || player.getFloorId() != floor
           || player.getEntryId() != entry
           || !available(player)
+          || (raid == null
+              ? player.getGameplay().getCurrentMissionRaid() != 0
+              : !raid.matches(player))
           || target.definition() != definition
           || !target.clause().equals(clause(definition))
           || !condition(definition, stage.getId(), plane, floor)) return false;
@@ -64,6 +74,9 @@ public final class MissionStageWins {
           && target.sub().getProgress() == target.progress()
           && Objects.equals(
               target.mainKey(), DailyMissionRepeats.mainKey(player, definition.getMainMissionID()))
+          && (raid == null
+              || target.raidAcceptance() != null
+                  && target.raidAcceptance().matches(player, definition))
           && player.getMissionManager().canFinishFromAction(definition.getId());
     }
   }
@@ -73,15 +86,18 @@ public final class MissionStageWins {
       var targets = new HashMap<Integer, Target>();
       var stage = battle.getStage();
       var source = stage == null ? null : GameData.getStageExcelMap().get(stage.getId());
+      var raid = MissionRaidBattleScope.capture(player);
       if (battle.getPlayer() == player
           && source != null
           && source == stage
           && !battle.getWaves().isEmpty()
-          && available(player)) {
+          && available(player)
+          && (player.getGameplay().getCurrentMissionRaid() == 0 || raid != null)) {
         var g = player.getGameplay();
         for (var state : g.getSubMissions().values()) {
           var c = state == null ? null : GameplayDefinitions.subs.get(state.getQuestId());
           if (condition(c, stage.getId(), player.getPlaneId(), player.getFloorId())
+              && (raid == null || raid.owns(c.getMainMissionID()))
               && MissionStateRecords.doing(state, c.getId(), Math.max(1, c.getProgress()))
               && player.getMissionManager().canFinishFromAction(c.getId()))
             targets.put(
@@ -92,10 +108,11 @@ public final class MissionStageWins {
                     state,
                     state.getProgress(),
                     DailyMissionRepeats.mainKey(player, c.getMainMissionID()),
-                    clause(c)));
+                    clause(c),
+                    raid == null ? null : MissionBattleAcceptance.capture(player, c)));
         }
       }
-      return new Context(player, stage, targets);
+      return new Context(player, stage, targets, raid);
     }
   }
 
@@ -103,7 +120,6 @@ public final class MissionStageWins {
     var run = player.getGameplay().getRogue();
     return player.getGameplay().getStoryLines().getCurrentId() == 0
         && !player.getGameplay().getStoryLines().isTransitionPending()
-        && player.getGameplay().getCurrentMissionRaid() == 0
         && player.getGameplay().getTrialRun() == null
         && player.getInstance() == null
         && (run == null || !run.isInside());

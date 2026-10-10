@@ -96,9 +96,9 @@ final class RaidEntranceSources {
     if (row == null) return false;
     if ("SkipUI".equals(row.EnterType())) return true;
     return source(row) != null
-        && "Player".equals(row.TeamType())
         && row.MainMissionIDList() != null
-        && row.MainMissionIDList().size() > 1;
+        && ("Player".equals(row.TeamType()) && row.MainMissionIDList().size() > 1
+            || "TrialOrPlayer".equals(row.TeamType()) && row.MainMissionIDList().size() == 1);
   }
 
   static boolean permits(Player player, GameplayDefinitions.Raid row) {
