@@ -20,15 +20,11 @@ public final class Scene46 {
     var run = player.getGameplay().getRogue();
     boolean enrichPortals =
         run.isInside() && scene.getPlaneType() == emu.lunarcore.game.enums.PlaneType.Rogue;
-    boolean train = scene.getPlaneType() == emu.lunarcore.game.enums.PlaneType.Train;
-    if (!enrichPortals && !train && scene.getDimensionId() == 0 && scene.getStoryLineId() == 0) return bytes;
     var portals = new HashMap<Integer, RoguePortal>();
     if (enrichPortals)
       for (var entity : scene.getEntities().values())
         if (entity instanceof RoguePortal portal && portal.valid())
           portals.put(portal.getEntityId(), portal);
-    if (portals.isEmpty() && RogueDialogue46.active(scene).isEmpty()
-        && !train && scene.getDimensionId() == 0 && scene.getStoryLineId() == 0) return bytes;
     try {
       var original = schema.parse(name, bytes);
       var changed = transform(original, schema, portals, scene, 0);
@@ -65,8 +61,7 @@ public final class Scene46 {
         && Gameplay46.number(message, "floor_id") != scene.getFloorId()) return message;
     if ("SceneInfo".equals(type) && Gameplay46.number(message, "plane_id") != scene.getPlaneId())
       return message;
-    if ("SceneInfo".equals(type) && (scene.getDimensionId() != 0 || scene.getStoryLineId() != 0
-        || scene.getPlaneType() == emu.lunarcore.game.enums.PlaneType.Train)) {
+    if ("SceneInfo".equals(type)) {
       if (Gameplay46.number(message, "entry_id") != scene.getEntryId()) return message;
       var dimension = message.getDescriptorForType().findFieldByName("dimension_id");
       if (dimension == null) throw new ProtocolException("Missing native scene dimension field");
@@ -74,9 +69,8 @@ public final class Scene46 {
       if (story == null) throw new ProtocolException("Missing native scene story field");
       var selected = message.toBuilder().setField(dimension, scene.getDimensionId())
           .setField(story,scene.getStoryLineId());
-      if (scene.getPlaneType() == emu.lunarcore.game.enums.PlaneType.Train)
-        Gameplay46.set(selected, "interact_id", scene.getRuntimeId());
-      return selected.build();
+      Gameplay46.set(selected, "interact_id", scene.getRuntimeId());
+      message = selected.build();
     }
     if (message.getDescriptorForType().getName().equals("SceneEntityInfo")) {
       var actor = scene.getEntityById(Gameplay46.number(message, "entity_id"));

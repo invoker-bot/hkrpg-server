@@ -49,6 +49,7 @@ public class EntityProp implements GameEntity {
         if (group != null) {
             this.groupId = group.getId();
         }
+        org.hkrpg.server.gameplay.PropTimelines.restore(this);
     }
 
     public int getPropId() {
@@ -86,11 +87,15 @@ public class EntityProp implements GameEntity {
     }
 
     public void setTimelineInfo(PropTimelineInfo info) {
+        setTimelineInfo(info, true);
+    }
+
+    public void setTimelineInfo(PropTimelineInfo info, boolean sendPacket) {
         // Set timeline info
         this.timelineInfo = info;
 
         // Sync update to client
-        this.getScene().getPlayer().sendPacket(new PacketSceneGroupRefreshScNotify(this.getScene(), this, null));
+        if (sendPacket) this.getScene().getPlayer().sendPacket(new PacketSceneGroupRefreshScNotify(this.getScene(), this, null));
     }
 
     /** Recovery belongs to a validated player destruction, never administrative scene unloading. */

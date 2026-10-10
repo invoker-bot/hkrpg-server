@@ -26,6 +26,7 @@ public class PropInfo extends ObjectInfo {
     private int FarmElementID;
     private boolean IsClientOnly;
     private boolean LoadOnInitial = true;
+    private JsonObject TagOverrideComponents;
 
     @Setter private PropValueSource ValueSource;
     @Setter private String InitLevelGraph;

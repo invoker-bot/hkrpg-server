@@ -72,7 +72,7 @@ public class SceneEntityLoader {
         if (propExcel == null) return null;
 
         // Remove these annoying props from the map
-        if (propExcel.isDisabled()) {
+        if (propExcel.isDisabled() && !org.hkrpg.server.gameplay.PropTimelines.tagged(propInfo)) {
             return null;
         }
 

@@ -1153,6 +1153,7 @@ public final class MissionManager {
 
   private boolean currentCondition(MissionInfo.SubMissionInfo c) {
     return switch (Objects.toString(c.getFinishType(), "")) {
+      case "TimeLineSetState" -> PropTimelines.satisfied(player,c);
       case "BoxingClubAccomplish" -> BoxingClubMissionGoals.satisfied(player, c);
       case "GetTrialAvatar", "GetTrialAvatarList" ->
           TrialAvatarMissionConditions.satisfied(player, c);

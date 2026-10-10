@@ -104,6 +104,8 @@ public final class ProtocolBridge {
           Map.entry("SceneGroupRefreshInfo.group_refresh_type", "refresh_type"),
           Map.entry("SceneEntityRefreshInfo.del_entity", "delete_entity"),
           Map.entry("PropExtraInfo.prop_timeline_info", "timeline_info"),
+          Map.entry("PropTimelineInfo.KBFLIKKFOEG", "timeline_bool_value"),
+          Map.entry("PropTimelineInfo.COOGIPJIPIA", "timeline_byte_value"),
           Map.entry("AvatarPathChangedNotify.changed_avatar_type", "cur_multi_path_avatar_type"));
   private static final Set<String> FIELDLESS_CORE_HANDLERS =
       Set.of("PlayerLoginCsReq", "PlayerLoginFinishCsReq", "GetAvatarDataCsReq", "GetMailCsReq");

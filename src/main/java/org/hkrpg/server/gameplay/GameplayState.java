@@ -9,6 +9,12 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private PropTimelineState propTimelines = PropTimelineState.empty();
+  public PropTimelineState getPropTimelines() {
+    if(propTimelines==null)propTimelines=PropTimelineState.empty();
+    return propTimelines;
+  }
+  void propTimelines(PropTimelineState value){propTimelines=Objects.requireNonNull(value);}
   private RaidDifficultySettings raidDifficultySettings = new RaidDifficultySettings();
 
   public RaidDifficultySettings getRaidDifficultySettings() {
@@ -1074,6 +1080,12 @@ public class GameplayState {
   @Entity(useDiscriminator = false)
   @Getter
   public static class MissionRaidRun {
+    private PropTimelineState propTimelines = PropTimelineState.empty();
+    public PropTimelineState getPropTimelines() {
+      if(propTimelines==null)propTimelines=PropTimelineState.empty();
+      return propTimelines;
+    }
+    void propTimelines(PropTimelineState value){propTimelines=Objects.requireNonNull(value);}
     private int raidId;
     private int worldLevel;
     private int mainMission;
