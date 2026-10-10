@@ -75,7 +75,7 @@ class SceneInteraction46Test {
           public void sendPacket(emu.lunarcore.server.packet.BasePacket p) {}
 
           public Scene getScene() {
-            if (current == null)
+            if (current == null) {
               current =
                   new Scene(
                       this,
@@ -83,6 +83,8 @@ class SceneInteraction46Test {
                           "{\"PlaneID\":" + PLANE + ",\"PlaneType\":\"Maze\"}",
                           MazePlaneExcel.class),
                       FLOOR);
+              current.setEntryId(getEntryId());
+            }
             return current;
           }
         };

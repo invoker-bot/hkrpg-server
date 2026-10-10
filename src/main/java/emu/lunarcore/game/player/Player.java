@@ -769,6 +769,9 @@ public class Player implements Tickable, Syncable {
         }
         */
 
+        if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(prop))
+            return org.hkrpg.server.gameplay.ScenePropTransitions.interact(this, interactId, propEntityId).prop();
+
         // Save old state
         PropState oldState = prop.getState();
         PropState newState = interactExcel.getTargetState();

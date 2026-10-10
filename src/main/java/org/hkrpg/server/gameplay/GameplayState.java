@@ -15,6 +15,12 @@ public class GameplayState {
   }
   void timelineActivityQuests(TimelineActivityState value){timelineActivityQuests=Objects.requireNonNull(value);}
   private PropTimelineState propTimelines = PropTimelineState.empty();
+  private ScenePropState scenePropStates = ScenePropState.empty();
+  public ScenePropState getScenePropStates() {
+    if (scenePropStates == null) scenePropStates = ScenePropState.empty();
+    return scenePropStates;
+  }
+  void scenePropStates(ScenePropState value) { scenePropStates = Objects.requireNonNull(value); }
   public PropTimelineState getPropTimelines() {
     if(propTimelines==null)propTimelines=PropTimelineState.empty();
     return propTimelines;
@@ -1086,6 +1092,12 @@ public class GameplayState {
   @Getter
   public static class MissionRaidRun {
     private PropTimelineState propTimelines = PropTimelineState.empty();
+    private ScenePropState scenePropStates = ScenePropState.empty();
+    public ScenePropState getScenePropStates() {
+      if (scenePropStates == null) scenePropStates = ScenePropState.empty();
+      return scenePropStates;
+    }
+    void scenePropStates(ScenePropState value) { scenePropStates = Objects.requireNonNull(value); }
     public PropTimelineState getPropTimelines() {
       if(propTimelines==null)propTimelines=PropTimelineState.empty();
       return propTimelines;

@@ -22,7 +22,17 @@ public final class SceneInteraction46 {
                   && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id")
               ? SceneInteractions.validateNative(player, config, entity)
               : Retcode.REQ_PARA_INVALID;
-      var prop = result == Retcode.SUCC ? player.interactWithProp(config, entity) : null;
+      emu.lunarcore.game.scene.entity.EntityProp prop = null;
+      if (result == Retcode.SUCC) {
+        var target =
+            (emu.lunarcore.game.scene.entity.EntityProp) player.getScene().getEntityById(entity);
+        if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(target)) {
+          var transition =
+              org.hkrpg.server.gameplay.ScenePropTransitions.interact(player, config, entity);
+          result = transition.retcode();
+          prop = transition.prop();
+        } else prop = player.interactWithProp(config, entity);
+      }
       if (result == Retcode.SUCC && prop == null) result = Retcode.PLAYER_DATA_ERROR;
       var fields = new HashMap<String, Object>();
       fields.put("retcode", result.getVal());

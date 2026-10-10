@@ -69,6 +69,16 @@ public final class SceneInteractions {
 
   public static void restore(EntityProp prop) {
     if (!persistent(prop)) return;
+    var scene = prop.getScene();
+    if (ScenePropTransitions.applies(prop)) {
+      var states = scene.getPlayer().getGameplay().getScenePropStates();
+      if (scene.getDimensionId() != 0
+          || scene.getStoryLineId() != 0
+          || !states.valid()
+          || states
+              .getRecords()
+              .containsKey(PropTimelines.key(scene, prop.getGroupId(), prop.getInstId()))) return;
+    }
     var saved = prop.getScene().getPlayer().getGameplay().getStoryValues().get(key(prop));
     if (saved == null) return;
     for (var state : prop.getExcel().getPropStateList())
