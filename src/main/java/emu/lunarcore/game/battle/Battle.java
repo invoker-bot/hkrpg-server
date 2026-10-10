@@ -65,6 +65,7 @@ public class Battle {
     @Setter private BattleEndStatus result;
     @Setter private BattleStatistics stats;
     @Setter private org.hkrpg.server.gameplay.MissionBattleKills.Context missionBattleKills;
+    @Setter private org.hkrpg.server.gameplay.ActivityKillQuests.Context activityKillQuests;
     @Setter private org.hkrpg.server.gameplay.MissionBattleCustomValues.Context missionBattleCustomValues;
     @Setter private org.hkrpg.server.gameplay.MissionChallengeWin.Context missionChallengeWin;
     private org.hkrpg.server.gameplay.StoryChallengeScope.Binding storyChallengeBinding;

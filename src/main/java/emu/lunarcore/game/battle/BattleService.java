@@ -217,6 +217,7 @@ public class BattleService extends BaseGameService {
             battle.setDailyWeaknessEntry(org.hkrpg.server.gameplay.DailyWeaknessEntries.capture(player, battle, casterId, castedSkill, targets));
             // Set battle and send rsp packet
             player.setBattle(battle);
+            battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
             battle.setMissionChallengeWin(org.hkrpg.server.gameplay.MissionChallengeWin.capture(player, battle));
             player.sendPacket(new PacketSceneCastSkillScRsp(battle, attackedGroupId));
             return;
@@ -244,6 +245,7 @@ public class BattleService extends BaseGameService {
                 if (plan == null) return null;
                 Battle battle = new org.hkrpg.server.gameplay.StageEventDifficultyBattle(player, plan);
                 player.setBattle(battle);
+                battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
                 battle.setMissionBattleKills(org.hkrpg.server.gameplay.MissionBattleKills.capture(player, battle, eventId, plan.world()));
                 battle.setMissionBattleCustomValues(org.hkrpg.server.gameplay.MissionBattleCustomValues.capture(player, battle, eventId, plan.world()));
                 return battle;
@@ -275,6 +277,7 @@ public class BattleService extends BaseGameService {
         // Create new battle for player
         Battle battle = new Battle(player, player.getCurrentLineup(), stage);
         player.setBattle(battle);
+        battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
         battle.setMissionBattleKills(org.hkrpg.server.gameplay.MissionBattleKills.capture(player, battle, stageId, worldLevel));
         battle.setMissionBattleCustomValues(org.hkrpg.server.gameplay.MissionBattleCustomValues.capture(player, battle, stageId, worldLevel));
 
@@ -388,7 +391,9 @@ public class BattleService extends BaseGameService {
                     || active.getRaidDifficultyScope() != null && !active.getRaidDifficultyScope().matches(player)
                     || active instanceof org.hkrpg.server.gameplay.StageEventDifficultyBattle adjusted && !adjusted.matches(player)
                     || result == BattleEndStatus.BATTLE_END_WIN && player.getStamina() < active.getStaminaCost()
-                    || !active.beginSettlement()) return null;
+                    || active.isSettling()) return null;
+            if (!org.hkrpg.server.gameplay.ActivityKillQuests.record(player, active, result, monsters)) return null;
+            if (!active.beginSettlement()) return null;
             org.hkrpg.server.gameplay.RogueResonance.saveReport(active, energies);
             active.setReportedMonsters(result == BattleEndStatus.BATTLE_END_WIN ? List.copyOf(monsters) : List.of());
             if (active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing)
@@ -538,6 +543,7 @@ public class BattleService extends BaseGameService {
 
         // Done - Clear battle object from player
         player.setBattle(null);
+        org.hkrpg.server.gameplay.ActivityKillQuests.onSettled(player, battle);
         return battle;
     }
 

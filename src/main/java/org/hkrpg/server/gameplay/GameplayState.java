@@ -9,6 +9,12 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private ActivityKillState activityKillQuests = new ActivityKillState();
+  public ActivityKillState getActivityKillQuests() {
+    if (activityKillQuests == null) activityKillQuests = new ActivityKillState();
+    return activityKillQuests;
+  }
+  void activityKillQuests(ActivityKillState value) { activityKillQuests = Objects.requireNonNull(value); }
   private TimelineActivityState timelineActivityQuests=new TimelineActivityState();
   public TimelineActivityState getTimelineActivityQuests() {
     if(timelineActivityQuests==null)timelineActivityQuests=new TimelineActivityState();return timelineActivityQuests;

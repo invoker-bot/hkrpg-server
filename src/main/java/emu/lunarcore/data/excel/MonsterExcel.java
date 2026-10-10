@@ -8,6 +8,7 @@ import lombok.Getter;
 @ResourceType(name = {"MonsterConfig.json"})
 public class MonsterExcel extends GameResource {
     private int MonsterID;
+    private int MonsterTemplateID;
     private long MonsterName;
     private java.util.List<emu.lunarcore.game.enums.DamageType> StanceWeakList = java.util.List.of();
 
