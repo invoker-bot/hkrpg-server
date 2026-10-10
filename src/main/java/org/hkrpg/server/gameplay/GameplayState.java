@@ -9,6 +9,12 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private WorldFirstTalkState worldFirstTalks = new WorldFirstTalkState();
+  public WorldFirstTalkState getWorldFirstTalks() {
+    if (worldFirstTalks == null) worldFirstTalks = new WorldFirstTalkState();
+    return worldFirstTalks;
+  }
+  void worldFirstTalks(WorldFirstTalkState value) { worldFirstTalks = Objects.requireNonNull(value); }
   private ActivityKillState activityKillQuests = new ActivityKillState();
   public ActivityKillState getActivityKillQuests() {
     if (activityKillQuests == null) activityKillQuests = new ActivityKillState();
