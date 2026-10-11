@@ -1,4 +1,8 @@
-param([switch]$SkipTests)
+param(
+    [switch]$SkipTests,
+    [ValidateRange(1, 4)][int]$TestForks = [Math]::Min(4, [Environment]::ProcessorCount),
+    [switch]$RerunTests
+)
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
 $localJdk = Get-ChildItem -LiteralPath (Join-Path $workspace '.tools') -Directory -Filter 'jdk-21*' -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -11,6 +15,11 @@ $env:JAVA_TOOL_OPTIONS = "$env:JAVA_TOOL_OPTIONS -Djdk.net.unixdomain.tmpdir=$tc
 Push-Location $workspace
 try {
     if ($SkipTests) { & .\gradlew.bat shadowJar --no-daemon }
-    else { & .\gradlew.bat test shadowJar --no-daemon }
+    else {
+        $buildArguments = @('test')
+        if ($RerunTests) { $buildArguments += '--rerun' }
+        $buildArguments += @('shadowJar', "-PtestForks=$TestForks", '--no-daemon')
+        & .\gradlew.bat @buildArguments
+    }
     if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
 } finally { Pop-Location }

@@ -227,6 +227,11 @@ Windows PowerShell：
 ./scripts/start.ps1 -Mode dispatch -NoConsole
 ```
 
+构建默认最多使用 4 个独立 Java 进程运行测试；每个进程内的测试仍顺序执行。
+可用 `./scripts/build.ps1 -TestForks 1` 顺序运行，或用
+`./scripts/build.ps1 -RerunTests` 强制重跑测试而复用未改变的编译结果。
+其他系统使用 `-PtestForks=1` 调整测试进程数量，范围为 1 至 4。
+
 其他系统：
 
 ```sh
