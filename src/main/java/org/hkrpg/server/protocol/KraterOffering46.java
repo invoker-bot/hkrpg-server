@@ -83,7 +83,7 @@ public final class KraterOffering46 {
     return ((List<?>) value(req, key)).stream().map(v -> (Integer) v).toList();
   }
 
-  private static DynamicMessage snapshot(GameSession s, KraterOfferings.Snapshot info) {
+  static DynamicMessage snapshot(GameSession s, KraterOfferings.Snapshot info) {
     var out = builder(s, "OfferingInfo");
     set(out, "offering_id", 6);
     set(out, "offering_level", info.level());

@@ -36,6 +36,7 @@ public final class VersionedPacketHandler {
     if (DicePve46.handle(session, command, bytes)) return true;
     if (DiceMainPageRoll46.handle(session, command, bytes)) return true;
     if (DiceProgression46.handle(session, command, bytes)) return true;
+    if (OfferingQuery46.handle(session, command, bytes)) return true;
     if (KraterOffering46.handle(session, command, bytes)) return true;
     if (Offering46.handle(session, command, bytes)) return true;
     if (FirstTalk46.handle(session, command, bytes)) return true;
