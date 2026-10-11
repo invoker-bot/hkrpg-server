@@ -1,5 +1,6 @@
 """3000602 的有限来源证明；不把脚本存在或源码核对计作运行/客户端验收。"""
 import hashlib
+from decimal import Decimal
 import json
 from pathlib import Path
 import subprocess
@@ -23,7 +24,9 @@ class DailyMessageSourcesTest(unittest.TestCase):
     def test_full_blobs_fixed_commit_and_installed_missing_are_recorded_separately(self):
         self.assertEqual(124, len(self.records))
         cache = {}
-        missing = set()
+        historical_missing = set()
+        current_present = set()
+        number = lambda value: ('json-number', Decimal(value))
         for record in self.records:
             self.assertEqual(PIN, record['sourceCommit'])
             relative = record['source'].removeprefix('resources/4.6/')
@@ -33,16 +36,22 @@ class DailyMessageSourcesTest(unittest.TestCase):
                 self.assertEqual(record['sourceBlobSHA256'], hashlib.sha256(blob).hexdigest())
                 original = json.loads(blob)
                 installed = ROOT / record['source']
-                if installed.is_file():
+                if record['installation'] == 'present':
+                    self.assertTrue(installed.is_file())
                     raw = installed.read_bytes()
-                    self.assertEqual('present', record['installation'])
                     self.assertEqual(record['sha256'], hashlib.sha256(raw).hexdigest())
-                    self.assertEqual(original, json.loads(raw), relative)
                 else:
                     self.assertEqual('missing', record['installation'])
                     self.assertIsNone(record['sha256'])
                     self.assertIn(relative, MISSING)
-                    missing.add(relative)
+                    historical_missing.add(relative)
+                    if installed.is_file():
+                        current_present.add(relative)
+                if installed.is_file():
+                    # Historical missing stays unchanged after add-only installation. Current data must
+                    # still equal the entire original object, with bool distinct from JSON numbers.
+                    self.assertEqual(json.loads(blob, parse_int=number, parse_float=number),
+                                     json.loads(installed.read_bytes(), parse_int=number, parse_float=number), relative)
                 cache[relative] = original, record['sourceBlobSHA256'], record['sha256']
             original, blob_sha, installed_sha = cache[relative]
             self.assertEqual((blob_sha, installed_sha), (record['sourceBlobSHA256'], record['sha256']))
@@ -51,7 +60,8 @@ class DailyMessageSourcesTest(unittest.TestCase):
                 selected = selected[component]
             self.assertEqual(record['row'], selected, relative)
         self.assertEqual(39, len(cache))
-        self.assertEqual(MISSING, missing)
+        self.assertEqual(MISSING, historical_missing)
+        self.assertIn(current_present, (set(), MISSING), 'The pair must remain absent or be completely installed and matching')
 
     def test_manual_quota_and_two_original_goals_preserve_the_authored_script_name(self):
         header = next(r for r in self.rows('main') if r['MainMissionID'] == 3000602)
