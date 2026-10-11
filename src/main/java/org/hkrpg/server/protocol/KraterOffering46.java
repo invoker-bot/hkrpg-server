@@ -28,7 +28,7 @@ public final class KraterOffering46 {
         name.equals("GetOfferingInfoCsReq")
             ? integers(req, "offering_id_list")
             : List.of(number(req, "offering_id"));
-    if (!ids.contains(6)) return false;
+    if (!ids.contains(6) && !ids.contains(10)) return false;
     if (s.getState() != SessionState.ACTIVE) return true;
     synchronized (s.getPlayer()) {
       var code =
@@ -53,21 +53,24 @@ public final class KraterOffering46 {
                 "offering_info_list",
                 id == 6 ? snapshot(s, info) : Offering46.snapshot(s, 12));
       } else {
+        int id = number(req, "offering_id");
         var result = new KraterOfferings.Result(code, List.of());
         if (code == Retcode.SUCC)
           result =
               name.equals("SubmitOfferingItemCsReq")
-                  ? KraterOfferings.submit(s.getPlayer(), number(req, "interacted_prop_entity_id"))
+                  ? KraterOfferings.submit(
+                      s.getPlayer(), id, number(req, "interacted_prop_entity_id"))
                   : KraterOfferings.claim(
                       s.getPlayer(),
+                      id,
                       number(req, "interacted_prop_entity_id"),
                       integers(req, "take_reward_level_list"));
         code = result.code();
         if (code == Retcode.SUCC) {
-          var info = KraterOfferings.snapshot(s.getPlayer());
+          var info = KraterOfferings.snapshot(s.getPlayer(), id);
           code = info.code();
           if (code == Retcode.SUCC) {
-            set(out, "offering_info", snapshot(s, info));
+            set(out, "offering_info", snapshot(s, id, info));
             if (name.equals("TakeOfferingRewardCsReq"))
               set(out, "reward", items(s, result.items()));
           }
@@ -84,8 +87,12 @@ public final class KraterOffering46 {
   }
 
   static DynamicMessage snapshot(GameSession s, KraterOfferings.Snapshot info) {
+    return snapshot(s, 6, info);
+  }
+
+  static DynamicMessage snapshot(GameSession s, int id, KraterOfferings.Snapshot info) {
     var out = builder(s, "OfferingInfo");
-    set(out, "offering_id", 6);
+    set(out, "offering_id", id);
     set(out, "offering_level", info.level());
     set(out, "level_exp", info.exp());
     set(out, "total_exp", info.total());

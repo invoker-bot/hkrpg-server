@@ -15,6 +15,12 @@ public class GameplayState {
     return kraterOffering;
   }
   void kraterOffering(KraterOfferingState value) { kraterOffering = Objects.requireNonNull(value); }
+  private KraterOfferingState worldShopOffering = new KraterOfferingState();
+  public KraterOfferingState getWorldShopOffering() {
+    if (worldShopOffering == null) worldShopOffering = new KraterOfferingState();
+    return worldShopOffering;
+  }
+  void worldShopOffering(KraterOfferingState value) { worldShopOffering = Objects.requireNonNull(value); }
   private WorldChestState worldChests = new WorldChestState();
   public WorldChestState getWorldChests() {
     if (worldChests == null) worldChests = new WorldChestState();

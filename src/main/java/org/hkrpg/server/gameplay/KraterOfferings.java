@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- * Native offering 6, actual material debits, source reward batches and repeatable long-tail
+ * Native world offerings 6 and 10, actual debits, source rewards and repeatable long-tail
  * exchange.
  */
 public final class KraterOfferings {
@@ -34,10 +34,25 @@ public final class KraterOfferings {
     return new Result(code, List.of());
   }
 
+  private static KraterOfferingState state(Player p, int id) {
+    return id == 6 ? p.getGameplay().getKraterOffering() : p.getGameplay().getWorldShopOffering();
+  }
+
+  private static void replace(Player p, int id, KraterOfferingState value) {
+    if (id == 6) p.getGameplay().kraterOffering(value);
+    else p.getGameplay().worldShopOffering(value);
+  }
+
   public static Snapshot snapshot(Player p) {
+    return snapshot(p, 6);
+  }
+
+  public static Snapshot snapshot(Player p, int id) {
+    if (id != 6 && id != 10)
+      return new Snapshot(Retcode.REQ_PARA_INVALID, false, 0, 0, 0, Set.of());
     synchronized (p) {
-      var rules = KraterOfferingRules.load();
-      var state = p.getGameplay().getKraterOffering();
+      var rules = KraterOfferingRules.load(id);
+      var state = state(p, id);
       var code =
           rules == null
               ? Retcode.REWARD_CONFIG_NOT_EXIST
@@ -54,21 +69,26 @@ public final class KraterOfferings {
     }
   }
 
-  private static Retcode preflight(Player p, KraterOfferingRules rules, int entity) {
+  private static Retcode preflight(Player p, int id, KraterOfferingRules rules, int entity) {
     if (rules == null) return Retcode.REWARD_CONFIG_NOT_EXIST;
-    if (!p.getGameplay().getKraterOffering().valid(rules, p)) return Retcode.PLAYER_DATA_ERROR;
+    if (!state(p, id).valid(rules, p)) return Retcode.PLAYER_DATA_ERROR;
     if (!rules.unlocked(p)) return Retcode.SHOP_NOT_OPEN;
-    if (p.getGameplay().getKraterOffering().pending()) return Retcode.SYSTEM_BUSY;
+    if (state(p, id).pending()) return Retcode.SYSTEM_BUSY;
     return rules.actor(p, entity) == null ? Retcode.REQ_PARA_INVALID : Retcode.SUCC;
   }
 
   public static Result submit(Player p, int entity) {
+    return submit(p, 6, entity);
+  }
+
+  public static Result submit(Player p, int id, int entity) {
+    if (id != 6 && id != 10) return rejected(Retcode.REQ_PARA_INVALID);
     synchronized (p) {
-      var rules = KraterOfferingRules.load();
-      var code = preflight(p, rules, entity);
+      var rules = KraterOfferingRules.load(id);
+      var code = preflight(p, id, rules, entity);
       if (code != Retcode.SUCC) return rejected(code);
-      var old = p.getGameplay().getKraterOffering();
-      var item = p.getInventory().getMaterialByItemId(KraterOfferingRules.ITEM);
+      var old = state(p, id);
+      var item = p.getInventory().getMaterialByItemId(rules.item());
       if (item == null || item.getCount() < 1) return rejected(Retcode.ITEM_NOT_ENOUGH);
       int amount = Math.min(item.getCount(), Integer.MAX_VALUE - old.paid());
       if (amount < 1 || old.getPayments().size() >= 4096)
@@ -77,15 +97,15 @@ public final class KraterOfferings {
           new KraterOfferingState.Payment(
               p, rules.actor(p, entity), old.paid(), amount, item.getCount());
       var prepared = old.prepared(rules, receipt);
-      p.getGameplay().kraterOffering(prepared);
+      replace(p, id, prepared);
       if (!prepared.valid(rules, p)) {
-        p.getGameplay().kraterOffering(old);
+        replace(p, id, old);
         return rejected(Retcode.PLAYER_DATA_ERROR);
       }
       try {
         p.save();
       } catch (RuntimeException failed) {
-        p.getGameplay().kraterOffering(old);
+        replace(p, id, old);
         return rejected(Retcode.SYSTEM_BUSY);
       }
       try {
@@ -100,27 +120,32 @@ public final class KraterOfferings {
                             "Material debit differs from reserved stock");
                       var complete = prepared.paid(receipt.getEvent());
                       complete.refresh(rules, p, Instant.now());
-                      p.getGameplay().kraterOffering(complete);
+                      replace(p, id, complete);
                       if (!complete.valid(rules, p))
                         throw new IllegalStateException("Invalid paid offering receipt");
                       p.save();
                     });
         if (!consumed) return rejected(Retcode.PLAYER_DATA_ERROR);
       } catch (RuntimeException interrupted) {
-        p.getGameplay().kraterOffering(prepared);
+        replace(p, id, prepared);
         return rejected(Retcode.SYSTEM_BUSY);
       }
-      p.getQuestManager().onKraterOfferingProgress();
+      if (id == 6) p.getQuestManager().onKraterOfferingProgress();
       return rejected(Retcode.SUCC);
     }
   }
 
   public static Result claim(Player p, int entity, List<Integer> levels) {
+    return claim(p, 6, entity, levels);
+  }
+
+  public static Result claim(Player p, int id, int entity, List<Integer> levels) {
+    if (id != 6 && id != 10) return rejected(Retcode.REQ_PARA_INVALID);
     synchronized (p) {
-      var rules = KraterOfferingRules.load();
-      var code = preflight(p, rules, entity);
+      var rules = KraterOfferingRules.load(id);
+      var code = preflight(p, id, rules, entity);
       if (code != Retcode.SUCC) return rejected(code);
-      var old = p.getGameplay().getKraterOffering();
+      var old = state(p, id);
       int level = old.level(rules);
       if (levels == null
           || levels.isEmpty()
@@ -147,15 +172,15 @@ public final class KraterOfferings {
               tail,
               recipe);
       var prepared = old.prepared(rules, receipt);
-      p.getGameplay().kraterOffering(prepared);
+      replace(p, id, prepared);
       if (!prepared.valid(rules, p)) {
-        p.getGameplay().kraterOffering(old);
+        replace(p, id, old);
         return rejected(Retcode.PLAYER_DATA_ERROR);
       }
       try {
         p.save();
       } catch (RuntimeException failed) {
-        p.getGameplay().kraterOffering(old);
+        replace(p, id, old);
         return rejected(Retcode.SYSTEM_BUSY);
       }
       var items = new ItemParamMap();
@@ -168,15 +193,15 @@ public final class KraterOfferings {
       }
       if (granted == null || !granted.complete()) return rejected(Retcode.PLAYER_DATA_ERROR);
       var complete = prepared.claimed(receipt.getEvent());
-      p.getGameplay().kraterOffering(complete);
+      replace(p, id, complete);
       if (!complete.valid(rules, p)) {
-        p.getGameplay().kraterOffering(prepared);
+        replace(p, id, prepared);
         return rejected(Retcode.PLAYER_DATA_ERROR);
       }
       try {
         p.save();
       } catch (RuntimeException interrupted) {
-        p.getGameplay().kraterOffering(prepared);
+        replace(p, id, prepared);
         return rejected(Retcode.SYSTEM_BUSY);
       }
       return new Result(Retcode.SUCC, List.copyOf(granted.items()));

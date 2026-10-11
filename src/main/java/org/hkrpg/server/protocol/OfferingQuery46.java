@@ -36,6 +36,7 @@ public final class OfferingQuery46 {
           || ids.stream().anyMatch(id -> id < 1 || id > 15)) code = Retcode.REQ_PARA_INVALID;
       OfferingQueryCatalog catalog = null;
       KraterOfferings.Snapshot krater = null;
+      KraterOfferings.Snapshot worldShop = null;
       if (code == Retcode.SUCC) {
         catalog = OfferingQueryCatalog.read();
         if (catalog == null) code = Retcode.REWARD_CONFIG_NOT_EXIST;
@@ -43,6 +44,12 @@ public final class OfferingQuery46 {
       if (code == Retcode.SUCC && ids.contains(6)) {
         krater = KraterOfferings.snapshot(session.getPlayer());
         code = krater.code();
+      }
+      if (code == Retcode.SUCC
+          && ids.contains(10)
+          && !session.getPlayer().getGameplay().getWorldShopOffering().pristine()) {
+        worldShop = KraterOfferings.snapshot(session.getPlayer(), 10);
+        code = worldShop.code();
       }
       if (code == Retcode.SUCC && ids.contains(12)) {
         if (OfferingCatalog.read() == null) code = Retcode.REWARD_CONFIG_NOT_EXIST;
@@ -61,6 +68,8 @@ public final class OfferingQuery46 {
         for (int id : ids) {
           DynamicMessage info;
           if (id == 6) info = KraterOffering46.snapshot(session, krater);
+          else if (id == 10 && worldShop != null)
+            info = KraterOffering46.snapshot(session, id, worldShop);
           else if (id == 12) info = Offering46.snapshot(session, id);
           else {
             var row = builder(session, "OfferingInfo");

@@ -128,6 +128,17 @@ public final class KraterOfferingState {
     }
   }
 
+  public boolean pristine() {
+    return version == 1
+        && source == null
+        && payments != null
+        && payments.isEmpty()
+        && claims != null
+        && claims.isEmpty()
+        && quest == null
+        && goal == null;
+  }
+
   private static boolean uuid(String value) {
     try {
       return value != null && UUID.fromString(value).toString().equals(value);
@@ -311,6 +322,7 @@ public final class KraterOfferingState {
           pending = true;
         }
       }
+      if (rules.id() != 6) return quest == null && goal == null;
       if (quest == null) return goal == null;
       if (!uuid(quest.getObservationKey())) return false;
       if (goal == null) return MissionStateRecords.doing(quest, KraterOfferingRules.QUEST, 1);

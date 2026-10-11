@@ -22,7 +22,8 @@ final class KraterOfferingRules {
   private record Cached(String bytes, JsonElement json, String canonical) {}
 
   private static final Map<Path, Cached> cache = new LinkedHashMap<>(64, .75f, true);
-  private static KraterOfferingRules current;
+  private static final Map<Integer, KraterOfferingRules> currentById = new HashMap<>();
+  private final int id;
   private final Path root;
   private final Map<String, String> hashes;
   private final Map<String, JsonObject> rows;
@@ -33,10 +34,12 @@ final class KraterOfferingRules {
   private final String source;
 
   private KraterOfferingRules(
+      int id,
       Path root,
       Map<String, String> hashes,
       Map<String, JsonObject> rows,
       Map<String, JsonElement> files) {
+    this.id = id;
     this.root = root;
     this.hashes = Map.copyOf(hashes);
     this.rows = Map.copyOf(rows);
@@ -69,30 +72,58 @@ final class KraterOfferingRules {
     group = gson.fromJson(files.get(GROUP), GroupInfo.class);
     group.setId(24);
     npc = group.getNPCList().stream().filter(n -> n.getID() == 400001).findFirst().orElseThrow();
-    var subs =
-        files
-            .get("Config/Level/Mission/1040104/MissionInfo_1040104.partial.json")
-            .getAsJsonObject()
-            .getAsJsonArray("SubMissionList");
-    prerequisite =
-        subs.asList().stream()
-            .map(v -> gson.fromJson(v, MissionInfo.SubMissionInfo.class))
-            .filter(v -> v.getId() == 104010403)
-            .findFirst()
-            .orElseThrow();
+    if (id == 6) {
+      var subs =
+          files
+              .get("Config/Level/Mission/1040104/MissionInfo_1040104.partial.json")
+              .getAsJsonObject()
+              .getAsJsonArray("SubMissionList");
+      prerequisite =
+          subs.asList().stream()
+              .map(v -> gson.fromJson(v, MissionInfo.SubMissionInfo.class))
+              .filter(v -> v.getId() == 104010403)
+              .findFirst()
+              .orElseThrow();
+
+    } else prerequisite = null;
     source =
         TimelineActivityRules.fingerprint(
-            gson.toJsonTree(
-                Map.of("rows", KraterOfferingSources.ROWS, "files", KraterOfferingSources.FILES)));
+            gson.toJsonTree(Map.of("rows", rowPins(id), "files", filePins(id))));
   }
 
-  static synchronized KraterOfferingRules load() {
+  private static Map<String, String> rowPins(int id) {
+    return id == 6 ? KraterOfferingSources.ROWS : WorldShopOfferingSources.ROWS;
+  }
+
+  private static Map<String, String> filePins(int id) {
+    return id == 6 ? KraterOfferingSources.FILES : WorldShopOfferingSources.FILES;
+  }
+
+  private static Map<String, String> keys(int id) {
+    return id == 6 ? KraterOfferingSources.KEYS : WorldShopOfferingSources.KEYS;
+  }
+
+  int id() {
+    return id;
+  }
+
+  int item() {
+    return id == 6 ? 120004 : 120005;
+  }
+
+  static KraterOfferingRules load() {
+    return load(6);
+  }
+
+  static synchronized KraterOfferingRules load(int id) {
+    if (id != 6 && id != 10) return null;
+    var current = currentById.get(id);
     if (GameData.getNpcExcelMap().get(100) == null) return null;
     try {
       var root = Path.of(LunarCore.getConfig().getResourceDir()).toAbsolutePath().normalize();
       var real = root.toRealPath();
-      var paths = new TreeSet<>(KraterOfferingSources.FILES.keySet());
-      KraterOfferingSources.KEYS.keySet().forEach(t -> paths.add("ExcelOutput/" + t + ".json"));
+      var paths = new TreeSet<>(filePins(id).keySet());
+      keys(id).keySet().forEach(t -> paths.add("ExcelOutput/" + t + ".json"));
       var hashes = new TreeMap<String, String>();
       var files = new TreeMap<String, JsonElement>();
       for (String path : paths) {
@@ -115,10 +146,10 @@ final class KraterOfferingRules {
       }
       if (current != null && current.root.equals(root) && current.hashes.equals(hashes))
         return current.loaded() ? current : null;
-      for (var entry : KraterOfferingSources.FILES.entrySet())
+      for (var entry : filePins(id).entrySet())
         if (!entry.getValue().equals(hashes.get(entry.getKey()))) return null;
       var selected = new HashMap<String, JsonObject>();
-      for (var table : KraterOfferingSources.KEYS.entrySet()) {
+      for (var table : keys(id).entrySet()) {
         var json = files.get("ExcelOutput/" + table.getKey() + ".json");
         if (!json.isJsonArray() || json.getAsJsonArray().size() > 131072) return null;
         var all = new HashMap<String, JsonObject>();
@@ -133,7 +164,7 @@ final class KraterOfferingRules {
           String key = table.getKey() + ":" + String.join(":", parts);
           if (all.put(key, row) != null) return null;
         }
-        for (var pin : KraterOfferingSources.ROWS.entrySet()) {
+        for (var pin : rowPins(id).entrySet()) {
           if (!pin.getKey().startsWith(table.getKey() + ":")) continue;
           var row = all.get(pin.getKey());
           if (row == null || !pin.getValue().equals(TimelineActivityRules.fingerprint(row)))
@@ -141,9 +172,9 @@ final class KraterOfferingRules {
           selected.put(pin.getKey(), row);
         }
       }
-      var next = new KraterOfferingRules(root, hashes, selected, files);
+      var next = new KraterOfferingRules(id, root, hashes, selected, files);
       if (!next.loaded()) return null;
-      current = next;
+      currentById.put(id, next);
       return next;
     } catch (Exception invalid) {
       return null;
@@ -177,6 +208,7 @@ final class KraterOfferingRules {
       if (entry.getValue() instanceof RewardExcel reward
           && !reward.getRewards().equals(((RewardExcel) actual).getRewards())) return false;
     }
+    if (id == 10) return true;
     var actual = GameplayDefinitions.subs.get(104010403);
     if (actual == null) return false;
     var first = gson.toJsonTree(prerequisite).getAsJsonObject();
@@ -198,11 +230,11 @@ final class KraterOfferingRules {
   }
 
   int cost(int level) {
-    return rows.get("OfferingLevelConfig:6:" + level).get("ItemCost").getAsInt();
+    return rows.get("OfferingLevelConfig:" + id + ":" + level).get("ItemCost").getAsInt();
   }
 
   int reward(int level) {
-    return rows.get("OfferingLevelConfig:6:" + level).get("RewardID").getAsInt();
+    return rows.get("OfferingLevelConfig:" + id + ":" + level).get("RewardID").getAsInt();
   }
 
   int normalCost() {
@@ -249,11 +281,13 @@ final class KraterOfferingRules {
   }
 
   boolean unlocked(Player p) {
-    return MissionStateRecords.subCompleted(p, 104010403);
+    return id == 6
+        ? MissionStateRecords.subCompleted(p, 104010403)
+        : MissionStateRecords.mainCompleted(p, 1040505);
   }
 
   GameplayDefinitions.Window window(Player p, Instant now) {
-    if (now == null || !unlocked(p) || !ActivityAccess.unlocked(p, 30013)) return null;
+    if (id != 6 || now == null || !unlocked(p) || !ActivityAccess.unlocked(p, 30013)) return null;
     var found =
         GameplayDefinitions.windows.stream()
             .filter(
