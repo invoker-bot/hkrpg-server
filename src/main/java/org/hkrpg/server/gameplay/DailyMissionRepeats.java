@@ -7,7 +7,7 @@ import emu.lunarcore.game.quest.QuestState;
 import java.time.Instant;
 import java.util.*;
 
-/** Only settled, stateless source talk/aggregation graphs can install a fresh daily view. */
+/** Only settled, stateless source talk/aggregation/travel graphs can install a fresh daily view. */
 final class DailyMissionRepeats {
   static boolean supportedGraph(int id) {
     return safeGraph(GameData.getMissionInfos().get(id));
@@ -181,8 +181,12 @@ final class DailyMissionRepeats {
         || graph.getStartSubMissionList().length == 0
         || graph.getFinishSubMissionList() == null
         || graph.getFinishSubMissionList().length == 0) return false;
-    for (int start : graph.getStartSubMissionList()) if (!ids.contains(start)) return false;
-    for (int end : graph.getFinishSubMissionList()) if (!ids.contains(end)) return false;
+    var starts = new HashSet<Integer>();
+    for (int start : graph.getStartSubMissionList())
+      if (!ids.contains(start) || !starts.add(start)) return false;
+    var ends = new HashSet<Integer>();
+    for (int end : graph.getFinishSubMissionList())
+      if (!ids.contains(end) || !ends.add(end)) return false;
     for (var sub : graph.getSubMissionList()) {
       if (sub.getProgress() <= 0
           || sub.getSubRewardID() < 0
@@ -196,13 +200,17 @@ final class DailyMissionRepeats {
           || sub.getCustomValueList().length != 0
           || sub.getParamItemList() == null
           || !sub.getParamItemList().isEmpty()
-          || sub.getParamInt1() != 0 && !"StageWin".equals(sub.getFinishType())
-          || sub.getParamInt2() != 0
+          || sub.getParamInt1() != 0
+              && !"StageWin".equals(sub.getFinishType())
+              && !"EnterFloor".equals(sub.getFinishType())
+          || sub.getParamInt2() != 0 && !"EnterFloor".equals(sub.getFinishType())
           || sub.getParamInt3() != 0
           || sub.getParamIntList() == null
-          || sub.getTakeParamIntList() == null) return false;
+          || sub.getTakeParamIntList() == null
+          || sub.getTakeParamStrList() == null
+          || sub.getTakeParamStrList().length != 0) return false;
       if ("Auto".equals(sub.getTakeType())) {
-        if (sub.getTakeParamIntList().length != 0) return false;
+        if (!DailyMissionTravelRules.auto(graph, sub)) return false;
       } else if (!Set.of("AnySequence", "MultiSequence")
               .contains(Objects.toString(sub.getTakeType(), ""))
           || sub.getTakeParamIntList().length == 0
@@ -215,6 +223,8 @@ final class DailyMissionRepeats {
             || sub.getParamIntList().length != 0) return false;
       } else if ("StageWin".equals(sub.getFinishType())) {
         if (!MissionStageWins.repeatable(sub)) return false;
+      } else if ("EnterFloor".equals(sub.getFinishType())) {
+        if (!DailyMissionTravelRules.enterFloor(sub)) return false;
       } else if (!"SubMissionFinishCnt".equals(sub.getFinishType())
           || !"ListContain".equals(sub.getParamType())
           || !"".equals(sub.getParamStr1())
