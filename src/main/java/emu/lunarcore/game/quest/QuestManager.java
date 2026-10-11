@@ -60,6 +60,7 @@ public final class QuestManager extends BasePlayerManager {
         observed |= org.hkrpg.server.gameplay.ActivityKillQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityFirstTalkQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityChestQuests.refresh(getPlayer());
+        observed |= org.hkrpg.server.gameplay.ActivityKraterQuests.refresh(getPlayer());
         collectionChanged |= observed;
         changed |= observed;
         pass |= observed;
@@ -287,6 +288,8 @@ public final class QuestManager extends BasePlayerManager {
         state = org.hkrpg.server.gameplay.ActivityFirstTalkQuests.state(getPlayer(), questId);
       if (org.hkrpg.server.gameplay.ActivityChestQuests.belongs(definition))
         state = org.hkrpg.server.gameplay.ActivityChestQuests.state(getPlayer(), questId);
+      if (org.hkrpg.server.gameplay.ActivityKraterQuests.belongs(definition))
+        state = org.hkrpg.server.gameplay.ActivityKraterQuests.state(getPlayer(), questId);
       if (state == null) return new Claim(Retcode.QUEST_NOT_ACCEPT, List.of());
       if (state.getPhase() == QuestState.Phase.CLOSED)
         return new Claim(Retcode.QUEST_REWARD_ALREADY_TAKEN, List.of());
@@ -356,7 +359,9 @@ public final class QuestManager extends BasePlayerManager {
                             && (!org.hkrpg.server.gameplay.ActivityFirstTalkQuests.belongs(definition)
                                 || org.hkrpg.server.gameplay.ActivityFirstTalkQuests.state(getPlayer(), q.getQuestId()) == q)
                             && (!org.hkrpg.server.gameplay.ActivityChestQuests.belongs(definition)
-                                || org.hkrpg.server.gameplay.ActivityChestQuests.state(getPlayer(), q.getQuestId()) == q);
+                                || org.hkrpg.server.gameplay.ActivityChestQuests.state(getPlayer(), q.getQuestId()) == q)
+                            && (!org.hkrpg.server.gameplay.ActivityKraterQuests.belongs(definition)
+                                || org.hkrpg.server.gameplay.ActivityKraterQuests.state(getPlayer(), q.getQuestId()) == q);
                       })
                   .toList());
       states.addAll(new ParkourQuests(getPlayer()).states());
@@ -365,6 +370,7 @@ public final class QuestManager extends BasePlayerManager {
       states.addAll(org.hkrpg.server.gameplay.ActivityKillQuests.states(getPlayer()).values());
       states.addAll(org.hkrpg.server.gameplay.ActivityFirstTalkQuests.states(getPlayer()));
       states.addAll(org.hkrpg.server.gameplay.ActivityChestQuests.states(getPlayer()));
+      states.addAll(org.hkrpg.server.gameplay.ActivityKraterQuests.states(getPlayer()));
       states.addAll(org.hkrpg.server.gameplay.RogueBlessingQuests.permanentStates(getPlayer()));
       states.addAll(org.hkrpg.server.gameplay.LocalLegendQuests.activityStates(getPlayer()));
       states.addAll(new org.hkrpg.server.gameplay.DailyCycleQuests(getPlayer())
@@ -395,6 +401,9 @@ public final class QuestManager extends BasePlayerManager {
     synchronized (getPlayer()) { sync(); }
   }
   public void onWorldChestProgress() {
+    synchronized (getPlayer()) { sync(); }
+  }
+  public void onKraterOfferingProgress() {
     synchronized (getPlayer()) { sync(); }
   }
 

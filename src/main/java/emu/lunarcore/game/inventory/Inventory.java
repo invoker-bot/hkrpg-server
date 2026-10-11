@@ -228,6 +228,7 @@ public class Inventory extends BasePlayerManager {
         var type = excel.getItemMainType();
         return type == ItemMainType.Material || type == ItemMainType.Mission
             || org.hkrpg.server.gameplay.BookItems.storable(excel)
+            || org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(excel)
             || (type == ItemMainType.Usable && (excel.getItemSubType() == ItemSubType.Food
                 || excel.getItemSubType() == ItemSubType.Gift
                 || excel.getItemSubType() == ItemSubType.PlayerOutfit
@@ -353,12 +354,14 @@ public class Inventory extends BasePlayerManager {
                 if (subType != ItemSubType.Food && subType != ItemSubType.Gift
                     && subType != ItemSubType.PlayerOutfit
                     && !org.hkrpg.server.gameplay.BookItems.storable(item.getExcel())
+                    && !org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(item.getExcel())
                     && !(subType == ItemSubType.Formula
                         && item.getExcel().getUseMethod() == emu.lunarcore.game.enums.ItemUseMethod.Recipe)) {
                     return null;
                 }
                 if ((subType == ItemSubType.Gift || subType == ItemSubType.PlayerOutfit || subType == ItemSubType.Formula
-                    || org.hkrpg.server.gameplay.BookItems.storable(item.getExcel()))
+                    || org.hkrpg.server.gameplay.BookItems.storable(item.getExcel())
+                    || org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(item.getExcel()))
                     && (item.getExcel().getPileLimit() <= 0 || item.getCount() > item.getExcel().getPileLimit())) return null;
             default:
                 if (tab == null) {

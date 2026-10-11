@@ -9,6 +9,12 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private KraterOfferingState kraterOffering = new KraterOfferingState();
+  public KraterOfferingState getKraterOffering() {
+    if (kraterOffering == null) kraterOffering = new KraterOfferingState();
+    return kraterOffering;
+  }
+  void kraterOffering(KraterOfferingState value) { kraterOffering = Objects.requireNonNull(value); }
   private WorldChestState worldChests = new WorldChestState();
   public WorldChestState getWorldChests() {
     if (worldChests == null) worldChests = new WorldChestState();
