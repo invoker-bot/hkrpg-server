@@ -434,6 +434,16 @@ public class GameplayState {
   private Set<Integer> rogueCollectedBuffs = new HashSet<>();
   private RogueHandbookState rogueHandbook = new RogueHandbookState();
   private RogueEnhancementState rogueEnhancements = new RogueEnhancementState();
+
+  /** Undo one unacknowledged merchant operation without replacing the live run or NPC leases. */
+  public void restoreMiracleShop(GameplayState prior) {
+    if (prior == null) throw new IllegalArgumentException("Missing merchant snapshot");
+    rogue.restoreMiracleShop(prior.rogue);
+    rogueCollectedBuffs.clear();
+    rogueCollectedBuffs.addAll(prior.rogueCollectedBuffs);
+    rogueHandbook = prior.rogueHandbook;
+    rogueEnhancements = prior.rogueEnhancements;
+  }
   private RogueDestructionState rogueDestructions = new RogueDestructionState();
   private RogueBattleKillState rogueBattleKills = new RogueBattleKillState();
   private RogueBattleDeathState rogueBattleDeaths = new RogueBattleDeathState();
@@ -1978,6 +1988,15 @@ public class GameplayState {
 
     protected RogueRun() {}
 
+    public void restoreMiracleShop(RogueRun prior) {
+      // Includes the exact ordinary/resonance selection fields and currency changed by the shop.
+      // The existing immutable resonance plan, live run and authored dialogue objects are retained.
+      restoreEventReward(prior);
+      miracles = prior.miracles;
+      miracleFragmentGrants = prior.miracleFragmentGrants;
+      miracleShops = prior.miracleShops;
+    }
+
     public RogueRun(int area, int map, Map<Integer, Integer> assignments) {
       runId = UUID.randomUUID().toString();
       areaId = area;
@@ -2057,11 +2076,17 @@ public class GameplayState {
   @Getter
   public static class RogueShopPlan {
     private Map<Integer, RogueShopOffer> offers = new HashMap<>();
+    private RogueRestMerchantLease restMerchant;
 
     protected RogueShopPlan() {}
 
     public RogueShopPlan(Map<Integer, RogueShopOffer> offers) {
       this.offers.putAll(offers);
+    }
+
+    public RogueShopPlan(Map<Integer, RogueShopOffer> offers, RogueRestMerchantLease lease) {
+      this(offers);
+      restMerchant = java.util.Objects.requireNonNull(lease);
     }
   }
 

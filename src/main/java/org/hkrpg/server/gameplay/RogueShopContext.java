@@ -12,6 +12,7 @@ import java.util.Objects;
 
 /** Merchant identity and flat page tasks; not a complete dialogue condition interpreter. */
 final class RogueShopContext {
+  record Context(String key, RogueRestMerchantRecipes.Rule recipe) {}
   private static boolean opensPage(NpcInfo info, String page) {
     try {
       var graph = info.getDialog() == null ? null : info.getDialog().getLevelGraph();
@@ -43,6 +44,11 @@ final class RogueShopContext {
   }
 
   static String key(Player p, int entity, int npcId, String page) {
+    var context = context(p, entity, npcId, page);
+    return context == null ? null : context.key();
+  }
+
+  static Context context(Player p, int entity, int npcId, String page) {
     var run = p.getGameplay().getRogue();
     if (entity <= 0
         || run.getPhase() != GameplayState.RogueRun.Phase.EXPLORING
@@ -77,9 +83,15 @@ final class RogueShopContext {
     if (info.getNPCID() != npcId
         || info.isIsDelete()
         || info.isIsClientOnly()
-        || !info.isLoadOnInitial()
-        || !opensPage(info, page)) return null;
-    return run.getSiteId() + ":" + run.getRoomId() + ":" + npc.getGroupId() + ":" + npc.getInstId();
+        || !info.isLoadOnInitial()) return null;
+    var key = run.getSiteId() + ":" + run.getRoomId() + ":" + npc.getGroupId() + ":" + npc.getInstId();
+    if ("MiracleShop".equals(page) && room.RogueRoomID() == 306 && npc.getGroupId() == 22) {
+      // The server recipe is separate from the authored enhancement graph, which stays intact.
+      // A changed G22 source must not fall through to an injected ordinary shop page.
+      var recipe = RogueRestMerchantRecipes.rule(p, npc, group, room, entry);
+      return recipe == null ? null : new Context(key, recipe);
+    }
+    return opensPage(info, page) ? new Context(key, null) : null;
   }
 
   static boolean valid(GameplayState.RogueShopPlan plan) {

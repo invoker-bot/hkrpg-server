@@ -463,6 +463,7 @@ public final class GameplayDefinitions {
     HeartDialDefinitions.load(root);
     RogueDialogueDefinitions.load(root);
     RogueDialogueRewards.load(root, Path.of(LunarCore.getConfig().getDataDir(), "RogueDialogueRewards.json"));
+    RogueRestMerchantRecipes.load(root, Path.of(LunarCore.getConfig().getDataDir(), "RogueRestMerchants.json"));
   }
 
   public static void loadMissions(Path root) {

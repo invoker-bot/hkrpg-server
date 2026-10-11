@@ -17,6 +17,7 @@ REQUIRED = [
     "src/main/resources/defaults/RogueMapGenByMap.json",
     "src/main/resources/defaults/RogueBossGen.json",
     "src/main/resources/defaults/RogueDialogueRewards.json",
+    "src/main/resources/defaults/RogueRestMerchants.json",
     "src/main/resources/defaults/Gameplay46.json",
     "src/main/java/org/hkrpg/server/gameplay/GameplayState.java",
     "src/main/resources/protocol/4.2/descriptor.pb",
