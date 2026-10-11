@@ -404,7 +404,7 @@ class BoxingClubResonance46Test {
           GameplayDefinitions.windows.add(new GameplayDefinitions.Window(40003, 4000301, 1, now));
       case "future" ->
           GameplayDefinitions.windows.add(
-              new GameplayDefinitions.Window(40003, 4000301, now + 1, now + 50));
+              new GameplayDefinitions.Window(40003, 4000301, now + 3600, now + 7200));
       case "duplicate" -> {
         var w = new GameplayDefinitions.Window(40003, 4000301, 1, Long.MAX_VALUE);
         GameplayDefinitions.windows.add(w);
