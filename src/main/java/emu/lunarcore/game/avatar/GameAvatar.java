@@ -173,6 +173,7 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
         if (lineup instanceof org.hkrpg.server.gameplay.StoryLineup story) return story.hp(getAvatarId());
         if (lineup instanceof org.hkrpg.server.gameplay.MissionTrialLineup trial) return trial.hp(getAvatarId());
         if (lineup instanceof org.hkrpg.server.gameplay.RogueLineup rogue) return rogue.hp(getAvatarId());
+        if (lineup instanceof org.hkrpg.server.gameplay.ChessRogueLineup chess) return chess.hp(getAvatarId());
         return !lineup.isExtraLineup() ? this.currentHp : this.extraLineupHp;
     }
 
@@ -181,6 +182,7 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
         if (lineup instanceof org.hkrpg.server.gameplay.StoryLineup story) return story.sp(getAvatarId());
         if (lineup instanceof org.hkrpg.server.gameplay.MissionTrialLineup trial) return trial.sp(getAvatarId());
         if (lineup instanceof org.hkrpg.server.gameplay.RogueLineup rogue) return rogue.sp(getAvatarId());
+        if (lineup instanceof org.hkrpg.server.gameplay.ChessRogueLineup chess) return chess.sp(getAvatarId());
         return !lineup.isExtraLineup() ? this.currentSp : this.extraLineupSp;
     }
 
@@ -190,6 +192,7 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
         if (lineup instanceof org.hkrpg.server.gameplay.StoryLineup story) { story.hp(getAvatarId(), amount); return; }
         if (lineup instanceof org.hkrpg.server.gameplay.MissionTrialLineup trial) { trial.hp(getAvatarId(), amount); return; }
         if (lineup instanceof org.hkrpg.server.gameplay.RogueLineup rogue) { rogue.hp(getAvatarId(), amount); return; }
+        if (lineup instanceof org.hkrpg.server.gameplay.ChessRogueLineup chess) { chess.hp(getAvatarId(), amount); return; }
         if (!lineup.isExtraLineup()) {
             this.currentHp = amount;
         } else {
@@ -203,6 +206,7 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
         if (lineup instanceof org.hkrpg.server.gameplay.StoryLineup story) { story.sp(getAvatarId(), amount); return; }
         if (lineup instanceof org.hkrpg.server.gameplay.MissionTrialLineup trial) { trial.sp(getAvatarId(), amount); return; }
         if (lineup instanceof org.hkrpg.server.gameplay.RogueLineup rogue) { rogue.sp(getAvatarId(), amount); return; }
+        if (lineup instanceof org.hkrpg.server.gameplay.ChessRogueLineup chess) { chess.sp(getAvatarId(), amount); return; }
         if (!lineup.isExtraLineup()) {
             this.currentSp = amount;
         } else {

@@ -938,3 +938,7 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 
 
 4.6 第三批集成：原骑兽6029860的加载NPC报告/原奖励防重、3000602每轮独立手机日常及四份休息区完整原图已补入。492类/13,444项全量零失败；骑兽C和手机D的实际KCP/正常H2恢复分别留证，70,616份原运营配置/资源不变。原骑乘与NPC演出、Chess/DLC奇物商店真实进入和完整游戏UI仍待完成，保持partial，见[集成验证](parallel-gameplay-validation-4.6.md)。
+
+4.6 施放与入口批次：`MazeCastState` 仅保存当前会话的 UseID 预付身份；H2 不恢复旧会话的付款许可。`NpcFirstTalkState` 将原 G61 初遇与旧通用演出记录分开，原菜单资格读取实际任务及首次观察。`DailyManager` 同日仅补新解锁且未占用的原池 Type，新增记录保存失败撤回，已有接受身份和奖励状态保持。`ChessRogueState`、`ChessRogueLineup` 与原经典 `RogueRun`、普通队伍隔离，四战收据、商店库存及奇物取得身份在玩家文档保存；操作保存成功后才发布通知。`WolfBroAmmoState` 按 UID/Run/来源保存扣弹、击败和掉落记录，数字来源身份按 Gson 原 JSON 词法核对，不借用 Python 浮点重写后的摘要。
+
+上述有限路径共同497类/13,622项 Java 全绿，冻结产物529请求/773检查、14正常停服/10同 UID H2恢复通过，70,624个运营文件不变。Chess Query永久玩法资料字段10、真实退出、完整剧情/骰子/祝福效果、哈努爆炸及客户端UI仍在补齐；配方默认关闭和本服数值政策明确区分。来源、失败基线及产物验收见[本批记录](gameplay-entry-batch-4.6.md)。

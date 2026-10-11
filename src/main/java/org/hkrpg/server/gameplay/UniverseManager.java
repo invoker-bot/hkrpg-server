@@ -12,6 +12,12 @@ import java.util.*;
  */
 public final class UniverseManager {
   private final Player player;
+  private ChessRogueManager chess;
+
+  public ChessRogueManager chess() {
+    if (chess == null) chess = new ChessRogueManager(player);
+    return chess;
+  }
   private GameplayState.RogueRun lineupRun;
   private RogueLineup lineup;
   private Battle boundBattle;
@@ -87,6 +93,7 @@ public final class UniverseManager {
       var prior = player.getGameplay().getRogue();
       if (prior.getPhase() == EXPLORING
           || prior.isInside()
+          || player.getGameplay().getChessRogue().active()
           || player.isInBattle()
           || player.getInstance() != null
           || player.getGameplay().getStoryLines().getCurrentId() != 0
@@ -290,6 +297,10 @@ public final class UniverseManager {
 
   public void onBattleFinish(Battle battle) {
     synchronized (player) {
+      if (player.getGameplay().getChessRogue().isInside() || chess().owns(battle)) {
+        chess().onBattleFinish(battle);
+        return;
+      }
       var run = player.getGameplay().getRogue();
       var room = GameplayDefinitions.rooms.get(run.getRoomId());
       if (run.getPhase() != EXPLORING
@@ -820,6 +831,10 @@ public final class UniverseManager {
   }
 
   public void onBattleStart(Battle battle) {
+    if (player.getGameplay().getChessRogue().isInside()) {
+      chess().onBattleStart(battle);
+      return;
+    }
     battleKills = null;
     combatPrepared = false;
     battleFragments = -1;
@@ -849,6 +864,10 @@ public final class UniverseManager {
   /** Project rule follows LunarCore development ec315bb1 (AGPL): 20..40 per linked NPC. */
   public void onBattlePrepared(Battle battle) {
     synchronized (player) {
+      if (player.getGameplay().getChessRogue().isInside() || chess().owns(battle)) {
+        chess().onBattlePrepared(battle);
+        return;
+      }
       var run = player.getGameplay().getRogue();
       if (boundBattle != battle || combatPrepared || run.getPhase() != EXPLORING || !run.isInside())
         return;

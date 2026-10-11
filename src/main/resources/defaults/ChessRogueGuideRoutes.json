@@ -1,0 +1,1721 @@
+{
+  "schema": 1,
+  "enabled": false,
+  "ruleId": "hkrpg-chess-guide-original-merchant-v1",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "origin": "server_source_constrained_routing_policy",
+  "officialRoomToPhysicalMappingRecovered": false,
+  "area": 101,
+  "aeon": 6,
+  "initialCoins": 0,
+  "coinsPerMonsterVictory": 100,
+  "initialActionPoints": 30,
+  "miracleBasePrice": 200,
+  "miracleStockLimit": 3,
+  "miracleIds": [
+    4
+  ],
+  "monsterLevel": 53,
+  "layers": [
+    {
+      "layer": 1011,
+      "board": 10111,
+      "path": [
+        201,
+        202,
+        203,
+        204
+      ]
+    },
+    {
+      "layer": 1012,
+      "board": 10121,
+      "path": [
+        201
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "block": "MonsterNormal",
+      "room": 2111141,
+      "entry": 8020101,
+      "dimension": 0,
+      "anchorGroup": 24,
+      "anchor": 1,
+      "groups": [
+        24,
+        25
+      ],
+      "monsterGroup": 11,
+      "rogueMonster": 111
+    },
+    {
+      "block": "MonsterBoss",
+      "room": 1210602,
+      "entry": 8020101,
+      "dimension": 0,
+      "anchorGroup": 31,
+      "anchor": 1,
+      "groups": [
+        31,
+        32
+      ],
+      "monsterGroup": 13901,
+      "rogueMonster": 139011
+    },
+    {
+      "block": "Respite",
+      "room": 1310601,
+      "entry": 8020101,
+      "dimension": 0,
+      "anchorGroup": 34,
+      "anchor": 1,
+      "groups": [
+        34,
+        35
+      ],
+      "merchantGroup": 35,
+      "npc": 1013,
+      "instance": 400001
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "Config/LevelOutput/RuntimeFloor/P80201_F80201001.json",
+      "sourceSHA256": "48e384a3dabafe70d02e9c1c3ef7da7725924e8e41afaa3a1532c1546e297bfd",
+      "normalizedSHA256": "48e384a3dabafe70d02e9c1c3ef7da7725924e8e41afaa3a1532c1546e297bfd"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G1.json",
+      "sourceSHA256": "583a4e4a0fdd376aab915fc8f1419b93be30cf4b5a961ad84d4016ed66dc3dc9",
+      "normalizedSHA256": "583a4e4a0fdd376aab915fc8f1419b93be30cf4b5a961ad84d4016ed66dc3dc9"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G2.json",
+      "sourceSHA256": "f3ff00b65ab1300697c94f374dc6e648ea60f2dd92cfb86627116ed01186544e",
+      "normalizedSHA256": "f3ff00b65ab1300697c94f374dc6e648ea60f2dd92cfb86627116ed01186544e"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G3.json",
+      "sourceSHA256": "0c9d971e8fabc35966edf9a42ab1c51fd33f4402aba73a2953d65815d61e2af8",
+      "normalizedSHA256": "0c9d971e8fabc35966edf9a42ab1c51fd33f4402aba73a2953d65815d61e2af8"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G4.json",
+      "sourceSHA256": "41eef95b5b6411d74f3f4df3a7ac2f1064f4f466b8544773cd31dd86ef793c76",
+      "normalizedSHA256": "41eef95b5b6411d74f3f4df3a7ac2f1064f4f466b8544773cd31dd86ef793c76"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G5.json",
+      "sourceSHA256": "143ad1abb873df96e747eb10085ad423481f7efcaea486b669f47db988c3a2f8",
+      "normalizedSHA256": "143ad1abb873df96e747eb10085ad423481f7efcaea486b669f47db988c3a2f8"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G6.json",
+      "sourceSHA256": "c35b2defce856f5bc68a0a2f2d49eb2a8e1a2c1b32ad06fe09563aba7b009338",
+      "normalizedSHA256": "c35b2defce856f5bc68a0a2f2d49eb2a8e1a2c1b32ad06fe09563aba7b009338"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G7.json",
+      "sourceSHA256": "1b3b0746ba59b3774155bb6b33436c55aac5e968dadb1e868ad1546b4386341b",
+      "normalizedSHA256": "1b3b0746ba59b3774155bb6b33436c55aac5e968dadb1e868ad1546b4386341b"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G8.json",
+      "sourceSHA256": "b62047189fa08d15c59d1dcfd0539137586b11436dd98b8d95197effb0579ed2",
+      "normalizedSHA256": "b62047189fa08d15c59d1dcfd0539137586b11436dd98b8d95197effb0579ed2"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G9.json",
+      "sourceSHA256": "b25f9cd1ec4c68963090f44f8af35a0b8ed430edf6d78d57c347d09a9684c05c",
+      "normalizedSHA256": "b25f9cd1ec4c68963090f44f8af35a0b8ed430edf6d78d57c347d09a9684c05c"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G12.json",
+      "sourceSHA256": "b7d84159103fc7ffb59c9940bc3e594d36d98b072af27afc8f6761b36cf4b9b1",
+      "normalizedSHA256": "b7d84159103fc7ffb59c9940bc3e594d36d98b072af27afc8f6761b36cf4b9b1"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G13.json",
+      "sourceSHA256": "2477f1bd3b3562dd04f7a98e21869b7c29d1522327dc625b1de5d5660de5a3b8",
+      "normalizedSHA256": "2477f1bd3b3562dd04f7a98e21869b7c29d1522327dc625b1de5d5660de5a3b8"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G15.json",
+      "sourceSHA256": "be93ad5e14dabf608c2957e757f18e50a83f2c8a05b272d2d97d16e801b89aed",
+      "normalizedSHA256": "be93ad5e14dabf608c2957e757f18e50a83f2c8a05b272d2d97d16e801b89aed"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G16.json",
+      "sourceSHA256": "dbacc88680349b43f0c2e08ac590169a7ce38534d1818d6656f958ef20f84610",
+      "normalizedSHA256": "dbacc88680349b43f0c2e08ac590169a7ce38534d1818d6656f958ef20f84610"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G18.json",
+      "sourceSHA256": "77ad355fc94e0b10437536bfe5b82a63d59013e7373ac7beeae808916b045508",
+      "normalizedSHA256": "77ad355fc94e0b10437536bfe5b82a63d59013e7373ac7beeae808916b045508"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G124.json",
+      "sourceSHA256": "7258cc5cd652a7e45318b444c1037b0a2a8a38fff407e71277137614041b9599",
+      "normalizedSHA256": "7258cc5cd652a7e45318b444c1037b0a2a8a38fff407e71277137614041b9599"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G125.json",
+      "sourceSHA256": "8c9fe496019545a3e37aebd1b129c8947496af86a5ea7b4ec596ce7ad2f5e0c6",
+      "normalizedSHA256": "8c9fe496019545a3e37aebd1b129c8947496af86a5ea7b4ec596ce7ad2f5e0c6"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G126.json",
+      "sourceSHA256": "2dc4fda860f8902048d64d0dd8077530b089272f08e34b48017cd25d7e8ecac1",
+      "normalizedSHA256": "2dc4fda860f8902048d64d0dd8077530b089272f08e34b48017cd25d7e8ecac1"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G116.json",
+      "sourceSHA256": "ed4a39ed1545db64d0b25ade849180660e2d1e4afa728b256dd865c4a63dd7bf",
+      "normalizedSHA256": "ed4a39ed1545db64d0b25ade849180660e2d1e4afa728b256dd865c4a63dd7bf"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G19.json",
+      "sourceSHA256": "06e0212858650112fdbf506d9df4016ca62833002264dcde1fbeb18d43a9164d",
+      "normalizedSHA256": "06e0212858650112fdbf506d9df4016ca62833002264dcde1fbeb18d43a9164d"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G23.json",
+      "sourceSHA256": "c994f42701785f7cb0d882c72e839daca9f4d10dc5b652f059a17e9c7efc3b49",
+      "normalizedSHA256": "c994f42701785f7cb0d882c72e839daca9f4d10dc5b652f059a17e9c7efc3b49"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G24.json",
+      "sourceSHA256": "8b860a6021189aeb4c8c31d0a5f9a3fee1f550aa87e07be92e0f66b5476b0465",
+      "normalizedSHA256": "8b860a6021189aeb4c8c31d0a5f9a3fee1f550aa87e07be92e0f66b5476b0465"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G25.json",
+      "sourceSHA256": "8a116f5fc93ea412081e4789d564227c5d5488b9a448f10b535d33a60cd244f6",
+      "normalizedSHA256": "8a116f5fc93ea412081e4789d564227c5d5488b9a448f10b535d33a60cd244f6"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G30.json",
+      "sourceSHA256": "eab368b9ca4e4d8577361f3bcb2860f25c926a1fb50bdf7b0ee4c04c41612416",
+      "normalizedSHA256": "eab368b9ca4e4d8577361f3bcb2860f25c926a1fb50bdf7b0ee4c04c41612416"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G31.json",
+      "sourceSHA256": "814af1e1871d99e68eb57a79d0b0bb0873ad51687f1ce75c844af2153a29f0ea",
+      "normalizedSHA256": "814af1e1871d99e68eb57a79d0b0bb0873ad51687f1ce75c844af2153a29f0ea"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G95.json",
+      "sourceSHA256": "6f5a0e59669731b1a77f313e782e6b09f90729cc3faa15d63b5268eaed6fe7d4",
+      "normalizedSHA256": "6f5a0e59669731b1a77f313e782e6b09f90729cc3faa15d63b5268eaed6fe7d4"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G32.json",
+      "sourceSHA256": "420379705d42a211ab92cbd2e02572628fdf2e4812ded724aa5c4bc7a9bad745",
+      "normalizedSHA256": "420379705d42a211ab92cbd2e02572628fdf2e4812ded724aa5c4bc7a9bad745"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G33.json",
+      "sourceSHA256": "865ffef9ec1b137c230ecf672d67ac4aa826157800a1b5d32d7470ab69171f7a",
+      "normalizedSHA256": "865ffef9ec1b137c230ecf672d67ac4aa826157800a1b5d32d7470ab69171f7a"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G34.json",
+      "sourceSHA256": "19b2e307c3c8ae83f2e6d597ffe7c9d7d3a5c66e4d0cc19047ab9072ff12677d",
+      "normalizedSHA256": "19b2e307c3c8ae83f2e6d597ffe7c9d7d3a5c66e4d0cc19047ab9072ff12677d"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G35.json",
+      "sourceSHA256": "77746db9976f2e1a8a5375d620270ed4247c5be9a28113c3c059bc54d785fb90",
+      "normalizedSHA256": "77746db9976f2e1a8a5375d620270ed4247c5be9a28113c3c059bc54d785fb90"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G117.json",
+      "sourceSHA256": "e0c3922a9d540f6d2b74e5ba59080c05b8a3e4ca2aab418599d91bbb093ea655",
+      "normalizedSHA256": "e0c3922a9d540f6d2b74e5ba59080c05b8a3e4ca2aab418599d91bbb093ea655"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G36.json",
+      "sourceSHA256": "1821a399d34105f2947e84ecc4985fc5c205103ed2b3250a51a453ea12b28ad8",
+      "normalizedSHA256": "1821a399d34105f2947e84ecc4985fc5c205103ed2b3250a51a453ea12b28ad8"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G37.json",
+      "sourceSHA256": "7f6da8c85d72b462fbb385e732a90889dcd817de9fa19b88ed085fb5a53af849",
+      "normalizedSHA256": "7f6da8c85d72b462fbb385e732a90889dcd817de9fa19b88ed085fb5a53af849"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G38.json",
+      "sourceSHA256": "39436594fe8e8eb320631fd8134016b115c32693716eab6bca83e7823b7fb9ac",
+      "normalizedSHA256": "39436594fe8e8eb320631fd8134016b115c32693716eab6bca83e7823b7fb9ac"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G39.json",
+      "sourceSHA256": "5fe697da0707557fed23a466f5f887dc999ca1a644160adaf59a31f411dd1c2b",
+      "normalizedSHA256": "5fe697da0707557fed23a466f5f887dc999ca1a644160adaf59a31f411dd1c2b"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G40.json",
+      "sourceSHA256": "207dd521de40c412ec8ba28b487bc437376250ba7f01af19fa7373c27e29d719",
+      "normalizedSHA256": "207dd521de40c412ec8ba28b487bc437376250ba7f01af19fa7373c27e29d719"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G108.json",
+      "sourceSHA256": "99e51b797a1b15243f987b2358e2ac827e9500ff7f87d456beafa0c6a12511b5",
+      "normalizedSHA256": "99e51b797a1b15243f987b2358e2ac827e9500ff7f87d456beafa0c6a12511b5"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G109.json",
+      "sourceSHA256": "fef73812499cd2577792bfddd646329c23fd0910a6e403749f779d28667fb003",
+      "normalizedSHA256": "fef73812499cd2577792bfddd646329c23fd0910a6e403749f779d28667fb003"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G110.json",
+      "sourceSHA256": "e07aa46e6c10a7d4ffce6eb5fa811165d5ac12cf90fae84f281b3b69abd51caf",
+      "normalizedSHA256": "e07aa46e6c10a7d4ffce6eb5fa811165d5ac12cf90fae84f281b3b69abd51caf"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G46.json",
+      "sourceSHA256": "a27cf169c13be36b14e0d702f04881e2a339c02fed9fde499346044dba0eff63",
+      "normalizedSHA256": "a27cf169c13be36b14e0d702f04881e2a339c02fed9fde499346044dba0eff63"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G47.json",
+      "sourceSHA256": "01070036b6593778cf79de2afaea55493b72095a890239875fca6f3b20a11dfd",
+      "normalizedSHA256": "01070036b6593778cf79de2afaea55493b72095a890239875fca6f3b20a11dfd"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G48.json",
+      "sourceSHA256": "9bb33080e529781c63dc4a000813390cea5ac51691acda6ae05551d85348fb41",
+      "normalizedSHA256": "9bb33080e529781c63dc4a000813390cea5ac51691acda6ae05551d85348fb41"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G49.json",
+      "sourceSHA256": "bc75f92ba24c741bdd06a3aa5666c8a787c64bee00ac0624cbb6cc9d5a28f77f",
+      "normalizedSHA256": "bc75f92ba24c741bdd06a3aa5666c8a787c64bee00ac0624cbb6cc9d5a28f77f"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G50.json",
+      "sourceSHA256": "b2dbf707b434876419368da3f16465ce39208ef6ec6b92892f17d552967caf8e",
+      "normalizedSHA256": "b2dbf707b434876419368da3f16465ce39208ef6ec6b92892f17d552967caf8e"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G112.json",
+      "sourceSHA256": "109dcfe508bcfc45e1f9b9682206729cb4733f54b44a4abbad90984f441dbba7",
+      "normalizedSHA256": "109dcfe508bcfc45e1f9b9682206729cb4733f54b44a4abbad90984f441dbba7"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G113.json",
+      "sourceSHA256": "1823de07ccabe18d96d2449d97229560dad69c67407d5e1adc9f747ddd5f0dae",
+      "normalizedSHA256": "1823de07ccabe18d96d2449d97229560dad69c67407d5e1adc9f747ddd5f0dae"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G114.json",
+      "sourceSHA256": "01b1729f04015d882757ad49f0cb7fabcf8443f3356fb9341de419f37de885c0",
+      "normalizedSHA256": "01b1729f04015d882757ad49f0cb7fabcf8443f3356fb9341de419f37de885c0"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G68.json",
+      "sourceSHA256": "d9e6adb46fca018f8f5f84609f7420e573e5eecd6bb98f78fe683d8b9daeb54b",
+      "normalizedSHA256": "d9e6adb46fca018f8f5f84609f7420e573e5eecd6bb98f78fe683d8b9daeb54b"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G69.json",
+      "sourceSHA256": "82598875038a7d346b6f5aea1e3117ab66a4713192130670c71d4878fa2edede",
+      "normalizedSHA256": "82598875038a7d346b6f5aea1e3117ab66a4713192130670c71d4878fa2edede"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G70.json",
+      "sourceSHA256": "33b19a5a63b48d2fb71fb997950d9bb90a176f2655dde79cb08f947e6f2d13bc",
+      "normalizedSHA256": "33b19a5a63b48d2fb71fb997950d9bb90a176f2655dde79cb08f947e6f2d13bc"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G132.json",
+      "sourceSHA256": "a0fcae3b51955084a34f7e4074e73ee6d2abc34ea8dc09af9e8ddd0c2c83338d",
+      "normalizedSHA256": "a0fcae3b51955084a34f7e4074e73ee6d2abc34ea8dc09af9e8ddd0c2c83338d"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G133.json",
+      "sourceSHA256": "1d63c92ce7d3afa036eb2693754bd78f998a818e2bf5ce6978942e70cbf031fb",
+      "normalizedSHA256": "1d63c92ce7d3afa036eb2693754bd78f998a818e2bf5ce6978942e70cbf031fb"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G71.json",
+      "sourceSHA256": "b1d5757f6ca67127c8c7ea6895cfbb222ce531343b6a61e2523b0b9535a40589",
+      "normalizedSHA256": "b1d5757f6ca67127c8c7ea6895cfbb222ce531343b6a61e2523b0b9535a40589"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G72.json",
+      "sourceSHA256": "f1a1ba63075872c07db32337852111ee9095de5ca37af14d195c1c249c42ff51",
+      "normalizedSHA256": "f1a1ba63075872c07db32337852111ee9095de5ca37af14d195c1c249c42ff51"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G73.json",
+      "sourceSHA256": "aa04eb88dce1567b815f63d2b825bffe1d7afbcc5dd2b4a290fc702d85e8ec1b",
+      "normalizedSHA256": "aa04eb88dce1567b815f63d2b825bffe1d7afbcc5dd2b4a290fc702d85e8ec1b"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G97.json",
+      "sourceSHA256": "af873f37a9eda14cb0d7d99bff53024a47ef7c8f41d015e3ddae1f4c687bfde8",
+      "normalizedSHA256": "af873f37a9eda14cb0d7d99bff53024a47ef7c8f41d015e3ddae1f4c687bfde8"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G98.json",
+      "sourceSHA256": "bba8ab85f49761eb6414300a94ff131a1811ed9269eb4a86b2e2103017f02301",
+      "normalizedSHA256": "bba8ab85f49761eb6414300a94ff131a1811ed9269eb4a86b2e2103017f02301"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G79.json",
+      "sourceSHA256": "51a40d361aaec8cb9ef66f6e181f6683b91a3ceb1abc8fe9464ee869b2266c50",
+      "normalizedSHA256": "51a40d361aaec8cb9ef66f6e181f6683b91a3ceb1abc8fe9464ee869b2266c50"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G80.json",
+      "sourceSHA256": "53ae8485fad10f2d0dd33d3081a9936c0d1be6f7b3a8b27a7db341e1f7f96876",
+      "normalizedSHA256": "53ae8485fad10f2d0dd33d3081a9936c0d1be6f7b3a8b27a7db341e1f7f96876"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G81.json",
+      "sourceSHA256": "198e82635c4b834a3dd17348b369034f011eca6e93511dc2995b9b92dd8be844",
+      "normalizedSHA256": "198e82635c4b834a3dd17348b369034f011eca6e93511dc2995b9b92dd8be844"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G127.json",
+      "sourceSHA256": "d24d7360279b39fae37b5c1169b0c149140dad58ec200c8b499269fe8a3a4bc3",
+      "normalizedSHA256": "d24d7360279b39fae37b5c1169b0c149140dad58ec200c8b499269fe8a3a4bc3"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G128.json",
+      "sourceSHA256": "5ad05daf63d3ca833e1ad15550bfc92a4eadd4132588372efa6e58bdc4c55c5f",
+      "normalizedSHA256": "5ad05daf63d3ca833e1ad15550bfc92a4eadd4132588372efa6e58bdc4c55c5f"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G129.json",
+      "sourceSHA256": "22b885bea8e01095acae2938b05954ef06cb53c3e4f88ae6c07bccb6af47ca7e",
+      "normalizedSHA256": "22b885bea8e01095acae2938b05954ef06cb53c3e4f88ae6c07bccb6af47ca7e"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G82.json",
+      "sourceSHA256": "fc54ce0ad320b7e16f25eb43d943cf03c456ffe441e1e23f8b7daa96e8b6fba3",
+      "normalizedSHA256": "fc54ce0ad320b7e16f25eb43d943cf03c456ffe441e1e23f8b7daa96e8b6fba3"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G84.json",
+      "sourceSHA256": "181e8cdcd5d82ec2cdc1b700e968d665a536cd37e3ee66d3bb82ef1e106097b1",
+      "normalizedSHA256": "181e8cdcd5d82ec2cdc1b700e968d665a536cd37e3ee66d3bb82ef1e106097b1"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G85.json",
+      "sourceSHA256": "20c9ad84d4a6d6508854f08bcb4730210b0c9aa517ede511356e1e4a8e4e616e",
+      "normalizedSHA256": "20c9ad84d4a6d6508854f08bcb4730210b0c9aa517ede511356e1e4a8e4e616e"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G86.json",
+      "sourceSHA256": "8197cfa5486721a33b73a911e5a9ec56a8fb58ec47e9f16b725977fd3a258417",
+      "normalizedSHA256": "8197cfa5486721a33b73a911e5a9ec56a8fb58ec47e9f16b725977fd3a258417"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G87.json",
+      "sourceSHA256": "d3e3d733988acd2aedae450afb25c2029bd7c7fe05b21ccd8ebcccc73172ac62",
+      "normalizedSHA256": "d3e3d733988acd2aedae450afb25c2029bd7c7fe05b21ccd8ebcccc73172ac62"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G88.json",
+      "sourceSHA256": "70a93d658f64b25a0ced2d4d3f573817c196997fa3fac9a4ca4cfb238566073e",
+      "normalizedSHA256": "70a93d658f64b25a0ced2d4d3f573817c196997fa3fac9a4ca4cfb238566073e"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G89.json",
+      "sourceSHA256": "2c43defcbbf10514c51f62d31245ab0289a900e0e97454518464fd99fc5e5b4f",
+      "normalizedSHA256": "2c43defcbbf10514c51f62d31245ab0289a900e0e97454518464fd99fc5e5b4f"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G130.json",
+      "sourceSHA256": "02c711cf3cc40be37206c744f9941619687cba7f3911b2e3db4f5be0caa22803",
+      "normalizedSHA256": "02c711cf3cc40be37206c744f9941619687cba7f3911b2e3db4f5be0caa22803"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G131.json",
+      "sourceSHA256": "730bc96ad31c22c405cacbf9d58e66ec2f8ec080e4f3a13fedad5e0461b1b010",
+      "normalizedSHA256": "730bc96ad31c22c405cacbf9d58e66ec2f8ec080e4f3a13fedad5e0461b1b010"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G90.json",
+      "sourceSHA256": "435a3fad46851718893d26da8d1c5b77de6cc713aa888897ddc9c95efba29af9",
+      "normalizedSHA256": "435a3fad46851718893d26da8d1c5b77de6cc713aa888897ddc9c95efba29af9"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G92.json",
+      "sourceSHA256": "b7a6a937d45058fcf6570a20fbf9dbe62827a4932338e4e18521ac00710b517a",
+      "normalizedSHA256": "b7a6a937d45058fcf6570a20fbf9dbe62827a4932338e4e18521ac00710b517a"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G93.json",
+      "sourceSHA256": "a7a69c2292ebe5decfd3b4684f960f471f80292c149b13e100310e26ae215236",
+      "normalizedSHA256": "a7a69c2292ebe5decfd3b4684f960f471f80292c149b13e100310e26ae215236"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G94.json",
+      "sourceSHA256": "294cd586e4fc3f45f2ca798c3d8474f4550e796aa7ad2ff62fca379992d376dd",
+      "normalizedSHA256": "294cd586e4fc3f45f2ca798c3d8474f4550e796aa7ad2ff62fca379992d376dd"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G99.json",
+      "sourceSHA256": "d4e150ac34197320daa66abbd3bf1305186a316721adbbe4193f8462cf13f0a9",
+      "normalizedSHA256": "d4e150ac34197320daa66abbd3bf1305186a316721adbbe4193f8462cf13f0a9"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G100.json",
+      "sourceSHA256": "1e4dd7dd11213ded7804fe2a4c997c10bc8397845386304467b0b2d706276e17",
+      "normalizedSHA256": "1e4dd7dd11213ded7804fe2a4c997c10bc8397845386304467b0b2d706276e17"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G101.json",
+      "sourceSHA256": "1375f9d704db14c0df1e16c36a8b5602d0b606ba4c176e193416ef1296c1d61b",
+      "normalizedSHA256": "1375f9d704db14c0df1e16c36a8b5602d0b606ba4c176e193416ef1296c1d61b"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G118.json",
+      "sourceSHA256": "55ac03ba7ee4733db4c448ea8c6aab38fb7705505fe5315440145705e8c6aa86",
+      "normalizedSHA256": "55ac03ba7ee4733db4c448ea8c6aab38fb7705505fe5315440145705e8c6aa86"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G120.json",
+      "sourceSHA256": "6489102307b15b7cafcb331856328a67d8e786220d0bf62a004e4b660e7bc029",
+      "normalizedSHA256": "6489102307b15b7cafcb331856328a67d8e786220d0bf62a004e4b660e7bc029"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G121.json",
+      "sourceSHA256": "3d0db34761fccc97bca35510003a76be1029558446a99fcd916cb76c5ccfbe42",
+      "normalizedSHA256": "3d0db34761fccc97bca35510003a76be1029558446a99fcd916cb76c5ccfbe42"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P80201_F80201001/LevelGroup_P80201_F80201001_G122.json",
+      "sourceSHA256": "60cb2665b2913273a6423d7f5e6cb8efb4606a3c649221eaf100c11a33b92ee9",
+      "normalizedSHA256": "60cb2665b2913273a6423d7f5e6cb8efb4606a3c649221eaf100c11a33b92ee9"
+    },
+    {
+      "path": "Config/Gameplays/RogueDLC/RogueDLC_Tutorial1_1.json",
+      "sourceSHA256": "b761125ba282b97ec38e822db66a7757f9d6b988f90c8bc19542f3c0dacd8933",
+      "normalizedSHA256": "b761125ba282b97ec38e822db66a7757f9d6b988f90c8bc19542f3c0dacd8933"
+    },
+    {
+      "path": "Config/Gameplays/RogueDLC/RogueDLC_Tutorial1_2.json",
+      "sourceSHA256": "14e5e8be8fee9526635683f3ec078ae80b17a67a154a9b7e17c4f26bfb6887c5",
+      "normalizedSHA256": "14e5e8be8fee9526635683f3ec078ae80b17a67a154a9b7e17c4f26bfb6887c5"
+    },
+    {
+      "path": "Config/Level/RogueDialogue/RogueDialogueEvent/Act/Rogue130/Act0110003.json",
+      "sourceSHA256": "63b71691dbc10756ce7d9a3794f22c998c95c503ac795b82c7c97a9f4d1358b9",
+      "normalizedSHA256": "63b71691dbc10756ce7d9a3794f22c998c95c503ac795b82c7c97a9f4d1358b9"
+    },
+    {
+      "path": "Config/LevelOutput/RuntimeFloor/P20001_F20001001.json",
+      "sourceSHA256": "ad2e13bb9c346857803d3f331d154d7648a00403255411567b36de9c5503066d",
+      "normalizedSHA256": "ad2e13bb9c346857803d3f331d154d7648a00403255411567b36de9c5503066d"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G2.json",
+      "sourceSHA256": "bbd868b3a66f08d35ee2223b242315e7b7fc262df04ba44bdc55d087d7d5de41",
+      "normalizedSHA256": "bbd868b3a66f08d35ee2223b242315e7b7fc262df04ba44bdc55d087d7d5de41"
+    }
+  ],
+  "sourceRows": [
+    {
+      "path": "ExcelOutput/RogueDLCArea.json",
+      "sourceSHA256": "a0c16a1c8b0054b1cbf7c862d8fe3a02f4b7ea5bc0c3606ad72f11ddb7b1d1fd",
+      "normalizedSHA256": "a0c16a1c8b0054b1cbf7c862d8fe3a02f4b7ea5bc0c3606ad72f11ddb7b1d1fd",
+      "rows": [
+        {
+          "AreaID": 101,
+          "SubType": "ChessRogue",
+          "AreaNameID": {
+            "Hash": 12571336509673901180
+          },
+          "AreaGroupID": "Guide",
+          "UnlockID": 1000020,
+          "Difficulty": "Difficulty_1",
+          "DifficultyID": [
+            1011,
+            1012
+          ],
+          "LayerIDList": [
+            1011,
+            1012
+          ],
+          "RecommendLevel": 59,
+          "RecommendNature": [
+            "Fire",
+            "Ice"
+          ],
+          "DisplayMonsterMap": {
+            "8003051": 56
+          },
+          "FirstReward": 109011,
+          "AreaScoreMap": []
+        }
+      ],
+      "rowSelectionSHA256": "72968d4d498b7c18f0856c6d1c229eead2a1d4297c0d4828e32a4754145c1ff2"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCLayer.json",
+      "sourceSHA256": "93bc10fbf96c3749c7e8dbfd0025a39078dfef1335019ae42e3242d9cfd7421e",
+      "normalizedSHA256": "93bc10fbf96c3749c7e8dbfd0025a39078dfef1335019ae42e3242d9cfd7421e",
+      "rows": [
+        {
+          "LayerID": 1011,
+          "LayerNumID": {
+            "Hash": 6447344968498276241
+          },
+          "LayerNameID": {
+            "Hash": 14068184658691614415
+          },
+          "LayerIcon": "SpriteOutput/UI/Rogue/DLC/Dice/Level/ImgRogueDlcDiamondMount1.png"
+        },
+        {
+          "LayerID": 1012,
+          "LayerNumID": {
+            "Hash": 10230917664135928806
+          },
+          "LayerNameID": {
+            "Hash": 13807500830745356809
+          },
+          "LayerIcon": "SpriteOutput/UI/Rogue/DLC/Dice/Level/ImgRogueDlcDiamondMount2.png"
+        }
+      ],
+      "rowSelectionSHA256": "06c5fdabfeebf572e163aeef27d78c81b1e7ad2eb28cefc174ce036dd9ca4d01"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCDifficulty.json",
+      "sourceSHA256": "c6ef1204a042b866d01e3308e73d05bae062a54cf39f67d8c8f6b118a373d539",
+      "normalizedSHA256": "c6ef1204a042b866d01e3308e73d05bae062a54cf39f67d8c8f6b118a373d539",
+      "rows": [
+        {
+          "DifficultyID": 1011,
+          "DifficultyCutList": [
+            6
+          ],
+          "LevelList": [
+            53,
+            54
+          ]
+        },
+        {
+          "DifficultyID": 1012,
+          "DifficultyCutList": [
+            6
+          ],
+          "LevelList": [
+            55,
+            56
+          ]
+        }
+      ],
+      "rowSelectionSHA256": "06eb7d7443759727e807e8fda6e2a7f607c3bb46a4cd1c89d36b9c1265fee161"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCChessBoard.json",
+      "sourceSHA256": "b7d7f10145db696fec823155631a978c8e1438fe7e33afaf34b21848111ffdbf",
+      "normalizedSHA256": "b7d7f10145db696fec823155631a978c8e1438fe7e33afaf34b21848111ffdbf",
+      "rows": [
+        {
+          "ChessBoardID": 10111,
+          "ChessBoardConfiguration": "Config/Gameplays/RogueDLC/RogueDLC_Tutorial1_1.json",
+          "BlockCreatGroupID": 10111,
+          "ChessBoardEventList": []
+        },
+        {
+          "ChessBoardID": 10121,
+          "ChessBoardConfiguration": "Config/Gameplays/RogueDLC/RogueDLC_Tutorial1_2.json",
+          "BlockCreatGroupID": 10121,
+          "ChessBoardEventList": []
+        }
+      ],
+      "rowSelectionSHA256": "9e58e6c685d66fc5fd47c1749baf9ddd831644416623f8ccae7da830e4926862"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCBlockType.json",
+      "sourceSHA256": "cb25e0397c4cdd06becfd5b11a3c71c769b9cd03cf054d5dbd0380cf483f9e7f",
+      "normalizedSHA256": "cb25e0397c4cdd06becfd5b11a3c71c769b9cd03cf054d5dbd0380cf483f9e7f",
+      "rows": [
+        {
+          "BlockTypeID": 1,
+          "BlockTypeNameID": {
+            "Hash": 5977083739219287398
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDlcEmptyIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDlcEmptyIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffd9",
+          "BlockIntroID": 1
+        },
+        {
+          "BlockTypeID": 2,
+          "BlockTypeNameID": {
+            "Hash": 11685003576629344845
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueIntensifyIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueIntensifyIcon.png",
+          "BlockTypeChessBoardColor": "#80e5edff",
+          "BlockIntroID": 2
+        },
+        {
+          "BlockTypeID": 3,
+          "BlockTypeNameID": {
+            "Hash": 9097338828599213457
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueFoeIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueFoeIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffd9",
+          "BlockIntroID": 3
+        },
+        {
+          "BlockTypeID": 4,
+          "BlockTypeNameID": {
+            "Hash": 7738848962522493105
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDlcMonsterIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDlcFoeEliteIcon.png",
+          "BlockTypeChessBoardColor": "#c979ffff",
+          "BlockIntroID": 4
+        },
+        {
+          "BlockTypeID": 5,
+          "BlockTypeNameID": {
+            "Hash": 9950163163890205944
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueFoeEliteIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueFoeEliteIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffd9",
+          "BlockIntroID": 5
+        },
+        {
+          "BlockTypeID": 6,
+          "BlockTypeNameID": {
+            "Hash": 16129680637621771628
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDlcGameIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDlcGameIcon.png",
+          "BlockTypeChessBoardColor": "#f3dbb5ff",
+          "BlockIntroID": 6
+        },
+        {
+          "BlockTypeID": 7,
+          "BlockTypeNameID": {
+            "Hash": 10441113722397429558
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDlcGiftIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDlcRewardIcon.png",
+          "BlockTypeChessBoardColor": "#f3dbb5ff",
+          "BlockIntroID": 7
+        },
+        {
+          "BlockTypeID": 8,
+          "BlockTypeNameID": {
+            "Hash": 1312658481415262494
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueRandomIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueRandomIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffd9",
+          "BlockIntroID": 8
+        },
+        {
+          "BlockTypeID": 9,
+          "BlockTypeNameID": {
+            "Hash": 5158161620362489502
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDlcRandomIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDlcRandomIcon.png",
+          "BlockTypeChessBoardColor": "#c979ffff",
+          "BlockIntroID": 9
+        },
+        {
+          "BlockTypeID": 11,
+          "BlockTypeNameID": {
+            "Hash": 13517860334169458136
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueBossIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueBossIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffff",
+          "BlockIntroID": 10
+        },
+        {
+          "BlockTypeID": 12,
+          "BlockTypeNameID": {
+            "Hash": 14426450173586016992
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDlcBossIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDlcBossIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffff",
+          "BlockIntroID": 11
+        },
+        {
+          "BlockTypeID": 13,
+          "BlockTypeNameID": {
+            "Hash": 8857479825777289277
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueDealIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueDealIcon.png",
+          "BlockTypeChessBoardColor": "#80e5edff",
+          "BlockIntroID": 12
+        },
+        {
+          "BlockTypeID": 14,
+          "BlockTypeIcon": "",
+          "BlockTypeChessBoardIcon": "",
+          "BlockTypeChessBoardColor": ""
+        },
+        {
+          "BlockTypeID": 15,
+          "BlockTypeNameID": {
+            "Hash": 1510425812948110277
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueNousDlcBossIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueNousDlcBossIcon.png",
+          "BlockTypeChessBoardColor": "#ffffffff",
+          "BlockIntroID": 10
+        },
+        {
+          "BlockTypeID": 16,
+          "BlockTypeNameID": {
+            "Hash": 6125319227823086245
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueNousEventIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueNousEventIcon.png",
+          "BlockTypeChessBoardColor": "#83ffd3",
+          "BlockIntroID": 20
+        },
+        {
+          "BlockTypeID": 17,
+          "BlockTypeNameID": {
+            "Hash": 1618239595656283200
+          },
+          "BlockTypeIcon": "SpriteOutput/Rogue/Map/RogueNousSpEventIcon.png",
+          "BlockTypeChessBoardIcon": "SpriteOutput/Rogue/SceneNavi/SceneNaviRogueNousSpEventIcon.png",
+          "BlockTypeChessBoardColor": "#c979ff",
+          "BlockIntroID": 21
+        }
+      ],
+      "rowSelectionSHA256": "eb22a9b0948cb8dc1c4ed5a37d2031faa4c741d8ec2d05f33c6db6927c00d38c"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCAeon.json",
+      "sourceSHA256": "f79375f9ac3b4d02e2dbb8716813d33f26f859782d257dfd6125e9f7427ee6f0",
+      "normalizedSHA256": "f79375f9ac3b4d02e2dbb8716813d33f26f859782d257dfd6125e9f7427ee6f0",
+      "rows": [
+        {
+          "AeonID": 6,
+          "Sort": 5,
+          "PlayShortDesc": {
+            "Hash": 9733491682652971881
+          },
+          "RogueAeonDisplayID": 6,
+          "AeonDiceID": 6,
+          "EffectDesc3": {
+            "Hash": 5083479921764452117
+          },
+          "DescParam": [
+            {
+              "Value": 2
+            },
+            {
+              "Value": 0.08
+            },
+            {
+              "Value": 1
+            }
+          ],
+          "RogueBuffType": 125,
+          "BattleEventBuffGroup": 12504,
+          "BattleEventEnhanceBuffGroup": 12505,
+          "EffectType1": "AddMazeBuff",
+          "EffectParam1": [
+            641250
+          ],
+          "EffectParam2": [
+            0
+          ],
+          "EffectType3": "DestroyAeonGain",
+          "EffectParam3": [
+            2,
+            5
+          ],
+          "EffectParam4": [
+            200720,
+            3,
+            10007
+          ],
+          "EntrancePrefabPath": "UI/Rogue/DLC/Dice/Widget/BtnGenreDice6.prefab",
+          "ExtraEffect": [
+            61000013
+          ]
+        }
+      ],
+      "rowSelectionSHA256": "72a53d9c963dbbe883988caa17b95dcd7c7eb3649f447ba3a155572ce5757f2a"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCRoom.json",
+      "sourceSHA256": "53662480bcfed6a12eb31720f1987c779b0873481d52bcdd73c0dbce9aad1a86",
+      "normalizedSHA256": "53662480bcfed6a12eb31720f1987c779b0873481d52bcdd73c0dbce9aad1a86",
+      "rows": [
+        {
+          "RogueRoomID": 2111141,
+          "RogueSubMode": "ChessRogue",
+          "RogueRoomSections": [
+            0
+          ]
+        },
+        {
+          "RogueRoomID": 1210602,
+          "RogueSubMode": "ChessRogue",
+          "RogueRoomSections": [
+            0
+          ]
+        },
+        {
+          "RogueRoomID": 1310601,
+          "RogueSubMode": "ChessRogue",
+          "RogueRoomSections": [
+            0
+          ]
+        }
+      ],
+      "rowSelectionSHA256": "b81f2a8cfd91696afb1d9dae01885b2a94bacd3dbd89ed9397dd18c04310c5f0"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCUnlock.json",
+      "sourceSHA256": "cbd90ca3bcc56f76426c86c7b42aa629dc171ab38c4922bbcf5d2c8446e9e260",
+      "normalizedSHA256": "cbd90ca3bcc56f76426c86c7b42aa629dc171ab38c4922bbcf5d2c8446e9e260",
+      "rows": [
+        {
+          "RogueUnlockID": 1000020,
+          "UnlockFinishWay": 1000020
+        }
+      ],
+      "rowSelectionSHA256": "7653341cecafceac3664d4fc889bc8ad9e000d698072121c088146af46d18dfc"
+    },
+    {
+      "path": "ExcelOutput/RogueDLCFinishWay.json",
+      "sourceSHA256": "d25e7df510ae2f312691a716e876672e63e736a754ae460b1496db924d7bb16f",
+      "normalizedSHA256": "d25e7df510ae2f312691a716e876672e63e736a754ae460b1496db924d7bb16f",
+      "rows": [
+        {
+          "ID": 1000020,
+          "FinishType": "FinishMission",
+          "ParamType": "ListContain",
+          "ParamStr1": "",
+          "ParamIntList": [
+            8013104
+          ],
+          "ParamItemList": [],
+          "Progress": 1
+        }
+      ],
+      "rowSelectionSHA256": "c6d2d90305991992dc5b5b57ee47dac36b4a07f3ce3340027f0441c751901fb8"
+    },
+    {
+      "path": "ExcelOutput/ConstValueClient.json",
+      "sourceSHA256": "3bce2d490f845286b22c0e970121e94ad289a8117e3cd364fcc9effc802a46c0",
+      "normalizedSHA256": "3bce2d490f845286b22c0e970121e94ad289a8117e3cd364fcc9effc802a46c0",
+      "rows": [
+        {
+          "ConstValueName": "RogueDLC_GuideArea1",
+          "Value": {
+            "IntValue": 101
+          }
+        },
+        {
+          "ConstValueName": "RogueDLC_GuideAeon",
+          "Value": {
+            "IntValue": 6
+          }
+        }
+      ],
+      "rowSelectionSHA256": "61e35e4ae827d43f60dd9a5372d64803272bed6e3b5bad622df2719bcf9a80f4"
+    },
+    {
+      "path": "ExcelOutput/MapEntrance.json",
+      "sourceSHA256": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+      "normalizedSHA256": "64d726582b8eeb627c466dcb82d760fe3dd6c7be5d2a6566f14d0fa22a7896f8",
+      "rows": [
+        {
+          "ID": 2000101,
+          "EntranceType": "Mission",
+          "PlaneID": 20001,
+          "FloorID": 20001001,
+          "StartGroupID": 2,
+          "StartAnchorID": 1,
+          "BeginMainMissionList": [],
+          "FinishMainMissionList": [
+            1000101
+          ],
+          "FinishSubMissionList": [
+            100010103
+          ]
+        },
+        {
+          "ID": 8020101,
+          "EntranceType": "Explore",
+          "PlaneID": 80201,
+          "FloorID": 80201001,
+          "BeginMainMissionList": [],
+          "FinishMainMissionList": [],
+          "FinishSubMissionList": []
+        }
+      ],
+      "rowSelectionSHA256": "4fdd9590da8552efd20f773e0d51909f5943e9f736f9b31758a1f438bef82a06"
+    },
+    {
+      "path": "ExcelOutput/MazePlane.json",
+      "sourceSHA256": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+      "normalizedSHA256": "7105afc0a4f00fbab94da6500fbb72c093613fa8b4bbf0b4343df2883ade7ca9",
+      "rows": [
+        {
+          "PlaneID": 20001,
+          "PlaneType": "Maze",
+          "SubType": 1,
+          "MazePoolType": 1,
+          "WorldID": 101,
+          "PlaneName": {
+            "Hash": 9764321538343869922
+          },
+          "StartFloorID": 20001001,
+          "FloorIDList": [
+            20001001
+          ]
+        },
+        {
+          "PlaneID": 80201,
+          "PlaneType": "Rogue",
+          "SubType": 2,
+          "MazePoolType": 4,
+          "WorldID": 101,
+          "PlaneName": {
+            "Hash": 16863429713483496328
+          },
+          "StartFloorID": 80201001,
+          "FloorIDList": [
+            80201001
+          ]
+        }
+      ],
+      "rowSelectionSHA256": "414138acc77fd0e6ab417208544a84c99c6c97b8648eeebb203d5e6568a4a3bd"
+    },
+    {
+      "path": "ExcelOutput/AvatarConfig.json",
+      "sourceSHA256": "9e57b5e3700b525a3f7097895d34177f769012034ac9bd0428318c3ff47f889e",
+      "normalizedSHA256": "9e57b5e3700b525a3f7097895d34177f769012034ac9bd0428318c3ff47f889e",
+      "rows": [
+        {
+          "AvatarID": 1001,
+          "AvatarName": {
+            "Hash": 6186714091647966180
+          },
+          "AvatarFullName": {
+            "Hash": 9058972803650014395
+          },
+          "AdventurePlayerID": 1001,
+          "AvatarVOTag": "mar7th",
+          "Rarity": "CombatPowerAvatarRarityType4",
+          "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Mar_7th_00_Config.json",
+          "DamageType": "Ice",
+          "SPNeed": {
+            "Value": 120
+          },
+          "ExpGroup": 1,
+          "MaxPromotion": 6,
+          "MaxRank": 6,
+          "RankIDList": [
+            100101,
+            100102,
+            100103,
+            100104,
+            100105,
+            100106
+          ],
+          "SkillList": [
+            100101,
+            100102,
+            100103,
+            100104,
+            100106,
+            100107
+          ],
+          "AvatarBaseType": "Knight",
+          "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Mar_7th_00/Avatar_Mar_7th_00.prefab",
+          "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1001.png",
+          "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
+          "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1001.png",
+          "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1001.png",
+          "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001B.png",
+          "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1001.prefab",
+          "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Mar_7th_00/Manikin_Avatar_Maid_Mar_7th_00.prefab",
+          "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Mar_7th_00_Config.json",
+          "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Mar_7th_00_ComplexSkillAI.json",
+          "SkilltreePrefabPath": "UI/Avatar/Widget/KnightSkillTreeGroup.prefab",
+          "DamageTypeResistance": [],
+          "Release": true,
+          "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001.png",
+          "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001.png",
+          "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1001.png",
+          "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1001.png",
+          "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1001.png",
+          "AvatarCutinIntroText": {
+            "Hash": 7663786577497784004
+          },
+          "AvatarDropOffset": [
+            31,
+            29,
+            0.59,
+            31,
+            29,
+            0.59,
+            31,
+            29,
+            0.59
+          ],
+          "AvatarTrialOffset": [],
+          "PlayerCardOffset": [
+            82,
+            -84,
+            0.77
+          ],
+          "AssistOffset": [
+            70,
+            -72,
+            1.1
+          ],
+          "AssistBgOffset": [
+            108,
+            -300,
+            1
+          ],
+          "AvatarSelfShowOffset": [
+            0,
+            -100,
+            5
+          ]
+        }
+      ],
+      "rowSelectionSHA256": "0f7e93c3e3c58e900c4888d106291d74a976d568531884f17cbca1c1c8eb410b"
+    },
+    {
+      "path": "ExcelOutput/MultiplePathAvatarConfig.json",
+      "sourceSHA256": "70556deb9ccf38cef43e26f48e1a960711c4164d7800cacff698ff2a8e9e6d59",
+      "normalizedSHA256": "70556deb9ccf38cef43e26f48e1a960711c4164d7800cacff698ff2a8e9e6d59",
+      "rows": [
+        {
+          "AvatarID": 1001,
+          "UnlockConditions": [],
+          "BaseAvatarID": 1001,
+          "Desc": {
+            "Hash": 18244176707869243035
+          },
+          "ChangeConfigPath": "Config/ConfigAvatarPathChange/Avatar_Mar_7th_00_AvatarPathChangeConfig.json"
+        }
+      ],
+      "rowSelectionSHA256": "884e9aa09578a5ac77d204c8604e2aef1578675ddb68e6ab3d2160a6b9424285"
+    },
+    {
+      "path": "ExcelOutput/NPCData.json",
+      "sourceSHA256": "5891a26eb2b4da8976ed1e06ecc1114e372ed46405604c5d357d34467f1c550d",
+      "normalizedSHA256": "5891a26eb2b4da8976ed1e06ecc1114e372ed46405604c5d357d34467f1c550d",
+      "rows": [
+        {
+          "ID": 1013,
+          "DefaultNPCName": {
+            "Hash": 11970011844889851432
+          },
+          "ConfigEntityPath": "Config/ConfigEntity/NPC/Avatar/NPC_Avatar_Girl_Herta_00_Entity.json",
+          "JsonPath": "Config/ConfigCharacter/NPC/Avatar/NPC_Avatar_Herta_00_Config.json",
+          "SubType": "Avatar",
+          "SeriesID": 101301
+        }
+      ],
+      "rowSelectionSHA256": "7af7b59e17f0b7ac2665973f70c15354082a5926dd9e361df339ec22d8b789c9"
+    },
+    {
+      "path": "ExcelOutput/NPCMonsterData.json",
+      "sourceSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+      "normalizedSHA256": "cf7849f0dfd428d123a2a891fe471f4a01987beac18d8204fe9828ff0ed26faa",
+      "rows": [
+        {
+          "ID": 1002040,
+          "NPCName": {
+            "Hash": 5404972463855190237
+          },
+          "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_W1_Soldier01_00_Entity.json",
+          "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_W1_Soldier01_00_Config.json",
+          "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Chase.json",
+          "MiniMapIconType": 5,
+          "Rank": "MinionLv2",
+          "IsMazeLink": true,
+          "PrototypeID": 1002040,
+          "MappingInfoID": 3009
+        },
+        {
+          "ID": 1004021,
+          "NPCName": {
+            "Hash": 7750281751743326106
+          },
+          "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_W1_Gepard_00_Entity.json",
+          "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_W1_Gepard_00_Config_A.json",
+          "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Dummy.json",
+          "MiniMapIconType": 5,
+          "Rank": "LittleBoss",
+          "IsMazeLink": true,
+          "PrototypeID": 1004020
+        },
+        {
+          "ID": 8011020,
+          "NPCName": {
+            "Hash": 7407888690957241702
+          },
+          "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_AML_Minion01_01_Entity.json",
+          "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_AML_Minion01_01_Config.json",
+          "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Steer.json",
+          "MiniMapIconType": 5,
+          "Rank": "Minion",
+          "IsMazeLink": true,
+          "PrototypeID": 8011020,
+          "MappingInfoID": 3002
+        }
+      ],
+      "rowSelectionSHA256": "3dafddb06660231f556c4fd6e08b79e8cb7214ca08990c7d4beb0875b9a83118"
+    },
+    {
+      "path": "ExcelOutput/StageConfig.json",
+      "sourceSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+      "normalizedSHA256": "3544788c571ca888098887b5705eb576870c3dee1b2408505f59be09b6ed78fa",
+      "rows": [
+        {
+          "StageID": 80010011,
+          "StageType": "VerseSimulation",
+          "StageName": {
+            "Hash": 11266246438277436492
+          },
+          "HardLevelGroup": 2,
+          "Level": 7,
+          "EliteGroup": 31001,
+          "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+          "StageAbilityConfig": [],
+          "SubLevelGraphs": [
+            {
+              "BFLIFKBEOPJ": "_DefaultSubStage",
+              "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_403000104.json",
+              "EOAHMJFOLHD": "",
+              "MEDEFCIKNLA": "",
+              "APNFMFEMPNI": "",
+              "LGNKFIIEICM": "",
+              "BIEJJCIFBGA": ""
+            }
+          ],
+          "StageConfigData": [
+            {
+              "BFLIFKBEOPJ": "_Wave",
+              "MNDFOPKBHKP": "1"
+            },
+            {
+              "BFLIFKBEOPJ": "_IsEliteBattle",
+              "MNDFOPKBHKP": "0"
+            }
+          ],
+          "MonsterList": [
+            {
+              "Monster0": 8011020,
+              "Monster1": 8011010
+            }
+          ],
+          "LevelLoseCondition": [],
+          "LevelWinCondition": [],
+          "Release": true,
+          "ForbidExitBattle": true,
+          "MonsterWarningRatio": 0.1,
+          "TrialAvatarList": []
+        },
+        {
+          "StageID": 80139011,
+          "StageType": "VerseSimulation",
+          "StageName": {
+            "Hash": 18198685905294229273
+          },
+          "HardLevelGroup": 2,
+          "Level": 50,
+          "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+          "StageAbilityConfig": [
+            "StageAbility_RogueBossLevel"
+          ],
+          "SubLevelGraphs": [],
+          "StageConfigData": [
+            {
+              "BFLIFKBEOPJ": "_Wave",
+              "MNDFOPKBHKP": "1"
+            },
+            {
+              "BFLIFKBEOPJ": "_IsEliteBattle",
+              "MNDFOPKBHKP": "1"
+            }
+          ],
+          "MonsterList": [
+            {
+              "Monster0": 1004022
+            }
+          ],
+          "LevelLoseCondition": [],
+          "LevelWinCondition": [],
+          "Release": true,
+          "ForbidExitBattle": true,
+          "MonsterWarningRatio": 1,
+          "TrialAvatarList": []
+        }
+      ],
+      "rowSelectionSHA256": "1941ef550d3eda368f3623c7a4a009d68ffbd9598a4f0af43dcf8689a9d301f4"
+    },
+    {
+      "path": "ExcelOutput/MonsterConfig.json",
+      "sourceSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+      "normalizedSHA256": "b7ddb5557a0f4d9ef0f39711523d337532d1b8c3ba83fc375946dcf2a586787c",
+      "rows": [
+        {
+          "MonsterName": {
+            "Hash": 18198685905294229273
+          },
+          "MonsterIntroduction": {
+            "Hash": 10035769098482486376
+          },
+          "MonsterStrategy": [],
+          "MonsterID": 1004022,
+          "MonsterTemplateID": 1004022,
+          "EliteGroup": 1,
+          "HardLevelGroup": 1,
+          "AttackModifyRatio": {
+            "Value": 1
+          },
+          "DefenceModifyRatio": {
+            "Value": 1
+          },
+          "HPModifyRatio": {
+            "Value": 1
+          },
+          "SpeedModifyRatio": {
+            "Value": 1
+          },
+          "StanceModifyRatio": {
+            "Value": 1
+          },
+          "StanceWeakList": [
+            "Physical",
+            "Thunder",
+            "Imaginary"
+          ],
+          "DamageTypeResistance": [
+            {
+              "DamageType": "Fire",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Ice",
+              "Value": {
+                "Value": 0.4
+              }
+            },
+            {
+              "DamageType": "Wind",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Quantum",
+              "Value": {
+                "Value": 0.2
+              }
+            }
+          ],
+          "DebuffResist": [
+            {
+              "Key": "STAT_CTRL_Frozen",
+              "Value": {
+                "Value": 0.75
+              }
+            },
+            {
+              "Key": "STAT_Confine",
+              "Value": {
+                "Value": 0.75
+              }
+            },
+            {
+              "Key": "STAT_Entangle",
+              "Value": {
+                "Value": 0.75
+              }
+            }
+          ],
+          "CustomValueTags": [
+            "RL"
+          ],
+          "CustomValues": [],
+          "DynamicValues": [],
+          "SummonIDList": [
+            1003012,
+            100203001,
+            100204101
+          ],
+          "OverrideAIPath": "",
+          "OverrideAISkillSequence": [],
+          "AbilityNameList": [
+            "Monster_Common_SpecialDieEffect"
+          ],
+          "SkillList": [
+            100402201,
+            100402202,
+            100402203,
+            100402204,
+            100402205,
+            100402207,
+            100402208,
+            100402209,
+            100402210,
+            100402211
+          ],
+          "OverrideSkillParams": []
+        },
+        {
+          "MonsterName": {
+            "Hash": 11824583688690652165
+          },
+          "MonsterIntroduction": {
+            "Hash": 17123258492434931275
+          },
+          "MonsterStrategy": [],
+          "MonsterID": 8011010,
+          "MonsterTemplateID": 8011010,
+          "EliteGroup": 1,
+          "HardLevelGroup": 1,
+          "AttackModifyRatio": {
+            "Value": 1
+          },
+          "DefenceModifyRatio": {
+            "Value": 1
+          },
+          "HPModifyRatio": {
+            "Value": 1
+          },
+          "SpeedModifyRatio": {
+            "Value": 1
+          },
+          "StanceModifyRatio": {
+            "Value": 1
+          },
+          "StanceWeakList": [
+            "Ice",
+            "Wind"
+          ],
+          "DamageTypeResistance": [
+            {
+              "DamageType": "Physical",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Fire",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Thunder",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Quantum",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Imaginary",
+              "Value": {
+                "Value": 0.2
+              }
+            }
+          ],
+          "DebuffResist": [],
+          "CustomValueTags": [
+            "LockTarget"
+          ],
+          "CustomValues": [],
+          "DynamicValues": [],
+          "SummonIDList": [],
+          "OverrideAIPath": "",
+          "OverrideAISkillSequence": [],
+          "AbilityNameList": [],
+          "SkillList": [
+            801101001
+          ],
+          "OverrideSkillParams": []
+        },
+        {
+          "MonsterName": {
+            "Hash": 11923375971317041948
+          },
+          "MonsterIntroduction": {
+            "Hash": 8368363892184263835
+          },
+          "MonsterStrategy": [],
+          "MonsterID": 8011020,
+          "MonsterTemplateID": 8011020,
+          "EliteGroup": 1,
+          "HardLevelGroup": 1,
+          "AttackModifyRatio": {
+            "Value": 1
+          },
+          "DefenceModifyRatio": {
+            "Value": 1
+          },
+          "HPModifyRatio": {
+            "Value": 1
+          },
+          "SpeedModifyRatio": {
+            "Value": 1
+          },
+          "StanceModifyRatio": {
+            "Value": 1
+          },
+          "StanceWeakList": [
+            "Physical",
+            "Quantum"
+          ],
+          "DamageTypeResistance": [
+            {
+              "DamageType": "Fire",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Ice",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Thunder",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Wind",
+              "Value": {
+                "Value": 0.2
+              }
+            },
+            {
+              "DamageType": "Imaginary",
+              "Value": {
+                "Value": 0.2
+              }
+            }
+          ],
+          "DebuffResist": [],
+          "CustomValueTags": [],
+          "CustomValues": [],
+          "DynamicValues": [],
+          "SummonIDList": [],
+          "OverrideAIPath": "",
+          "OverrideAISkillSequence": [],
+          "AbilityNameList": [],
+          "SkillList": [
+            801102001
+          ],
+          "OverrideSkillParams": []
+        }
+      ],
+      "rowSelectionSHA256": "053c72b1262a64cb7bc8ab8e6215c20eb7d642640186a0f3332e6e761218ea00"
+    },
+    {
+      "path": "ExcelOutput/RogueMonster.json",
+      "sourceSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+      "normalizedSHA256": "b043c87fb8d41c0bed6f0d57b58d4a2ea68290eb720b7c6fb50bc54faa73723d",
+      "rows": [
+        {
+          "RogueMonsterID": 111,
+          "NpcMonsterID": 8011020,
+          "EventID": 80010011
+        },
+        {
+          "RogueMonsterID": 139011,
+          "NpcMonsterID": 1004021,
+          "EventID": 80139011,
+          "MonsterDropType": "AreaDrop"
+        }
+      ],
+      "rowSelectionSHA256": "49bfd5c553826658f8a585e54afea2f92170980fc222541962cf430b0f70a957"
+    },
+    {
+      "path": "ExcelOutput/RogueMonsterGroup.json",
+      "sourceSHA256": "25818a8fa38a0b351a639ebcec0a71a150b344049b1ec25f9097b573f904b8d7",
+      "normalizedSHA256": "25818a8fa38a0b351a639ebcec0a71a150b344049b1ec25f9097b573f904b8d7",
+      "rows": [
+        {
+          "RogueMonsterGroupID": 11,
+          "RogueMonsterListAndWeight": {
+            "111": 1
+          }
+        },
+        {
+          "RogueMonsterGroupID": 13901,
+          "RogueMonsterListAndWeight": {
+            "139011": 1
+          }
+        }
+      ],
+      "rowSelectionSHA256": "80a9fe3ef92cabc7e2b7e48c5e58c9912a90bb7d768db609b82325335025ebb1"
+    },
+    {
+      "path": "ExcelOutput/MazeProp.json",
+      "sourceSHA256": "dc806a0172350f18e39d755040906652af05f645f107690072808de9987c021d",
+      "normalizedSHA256": "dc806a0172350f18e39d755040906652af05f645f107690072808de9987c021d",
+      "rows": [
+        {
+          "ID": 100,
+          "PropType": "PROP_ORDINARY",
+          "PropName": {
+            "Hash": 13013349132478528449
+          },
+          "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+          "BoardShowList": [
+            4
+          ],
+          "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+          "DamageTypeList": [],
+          "MiniMapStateIcons": [],
+          "JsonPath": "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+          "PropStateList": [
+            "Closed",
+            "Open",
+            "Locked",
+            "TriggerDisable",
+            "TriggerEnable"
+          ],
+          "PerformanceType": "D"
+        },
+        {
+          "ID": 100026,
+          "PropType": "PROP_DESTRUCT",
+          "PropName": {
+            "Hash": 13013349132478528449
+          },
+          "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+          "BoardShowList": [],
+          "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Des_Box_02_Entity.json",
+          "DamageTypeList": [],
+          "MiniMapStateIcons": [],
+          "JsonPath": "Config/Props/Chap00/Prop_Chap00_DesBox_01_Config.json",
+          "PropStateList": [
+            "Closed",
+            "Open",
+            "Locked"
+          ],
+          "PerformanceType": "C",
+          "HasRendererComponent": true,
+          "LodPriority": 2
+        },
+        {
+          "ID": 1002,
+          "PropType": "PROP_ROGUE_OBJECT",
+          "PropName": {
+            "Hash": 12951514634214426305
+          },
+          "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+          "BoardShowList": [
+            1
+          ],
+          "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_RogueLobby_Appraisal_01_Entity.json",
+          "DamageTypeList": [],
+          "MiniMapIconType": 53,
+          "MiniMapStateIcons": [],
+          "JsonPath": "Config/Props/Rogue/Prop_Rogue_ReviveConsole_01_Config.json",
+          "PropStateList": [
+            "Closed",
+            "Open",
+            "Locked",
+            "TriggerDisable",
+            "TriggerEnable"
+          ],
+          "PerformanceType": "C",
+          "HasRendererComponent": true,
+          "LodPriority": 2
+        },
+        {
+          "ID": 1026,
+          "PropType": "PROP_ROGUE_DOOR",
+          "PropName": {
+            "Hash": 11181035463016414205
+          },
+          "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+          "BoardShowList": [
+            1,
+            8
+          ],
+          "ConfigEntityPath": "Config/ConfigEntity/Props/Rogue/Prop_Rogue_DiceConsole_01_Entity.json",
+          "DamageTypeList": [],
+          "MiniMapIconType": 51,
+          "MiniMapStateIcons": [],
+          "JsonPath": "Config/Props/Rogue/Prop_Rogue_DiceConsole_01_Config.json",
+          "PropStateList": [
+            "CustomState01",
+            "CustomState02",
+            "CustomState03",
+            "CustomState04"
+          ],
+          "PerformanceType": "A",
+          "HasRendererComponent": true,
+          "LodPriority": 2
+        }
+      ],
+      "rowSelectionSHA256": "5973d6d1addc2c194877ca9bac5fa90e8e4880767a6d1b958b571c6937a84529"
+    },
+    {
+      "path": "ExcelOutput/RogueMiracle.json",
+      "sourceSHA256": "a1486702c0c6ca4c3c1b78d3562edba4b045a5f2925d68042304b2c2719f3fce",
+      "normalizedSHA256": "a1486702c0c6ca4c3c1b78d3562edba4b045a5f2925d68042304b2c2719f3fce",
+      "rows": [
+        {
+          "MiracleID": 4,
+          "MiracleDisplayID": 4,
+          "MiracleEffectDisplayID": 4,
+          "UnlockHandbookMiracleID": 4
+        }
+      ],
+      "rowSelectionSHA256": "2ba744ef3c364af7e58af30679f877f079d320aa561842522dde06d80077b39f"
+    },
+    {
+      "path": "ExcelOutput/RogueMiracleEffect.json",
+      "sourceSHA256": "877b6440ced886761062403df6bc50d1a97bab77dda4e2ddc8f7e8cc26b8b5f6",
+      "normalizedSHA256": "877b6440ced886761062403df6bc50d1a97bab77dda4e2ddc8f7e8cc26b8b5f6",
+      "rows": [
+        {
+          "MiracleEffectID": 4,
+          "MiracleDesc": {
+            "Hash": 8973088295288943442
+          },
+          "ParamList": [
+            {
+              "Value": 1
+            }
+          ]
+        }
+      ],
+      "rowSelectionSHA256": "9536e3a5b13bf6d99d3a8ff070081787730bb258bd7f3d3d74467fe42516da63"
+    }
+  ]
+}

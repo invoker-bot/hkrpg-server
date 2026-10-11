@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Set;
 import org.hkrpg.server.gameplay.*;
 
-/** Existing pinned 4.6 lifecycle messages; bullets and group scripts need independent evidence. */
+/** Pinned lifecycle and ammo messages, with explicit source-bound server quantities. */
 public final class WolfBro46 {
   private static final Set<String> REQUESTS =
       Set.of(
@@ -17,23 +17,27 @@ public final class WolfBro46 {
           "GetWolfBroGameDataCsReq",
           "ArchiveWolfBroGameCsReq",
           "RestoreWolfBroGameArchiveCsReq",
-          "QuitWolfBroGameCsReq");
+          "QuitWolfBroGameCsReq",
+          "WolfBroGameActivateBulletCsReq",
+          "WolfBroGamePickupBulletCsReq");
 
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
     if (!session.getProtocol().experimental()) return false;
-    var name =
-        REQUESTS.stream()
+    // Frozen CmdWolfBroType_HPHNFDIPEIE and the actual OKEFGCNNEKI sender both use 6514.
+    // It has no named command entry; retain the original descriptor and raw command identity.
+    var name = command == 6514 ? "OKEFGCNNEKI" : REQUESTS.stream()
             .filter(n -> session.getProtocol().clientCommand(n) == command)
             .findFirst()
             .orElse(null);
     if (name == null) return false;
     if (session.getState() != SessionState.ACTIVE) return true;
     var req = session.getProtocol().clientSchema().parse(name, bytes);
-    int id = number(req, "id");
+    int id = req.getDescriptorForType().findFieldByName("id") == null
+        ? session.getPlayer().getGameplay().getWolfBro().getActiveId() : number(req, "id");
     synchronized (session.getPlayer()) {
       var manager = new WolfBroManager(session.getPlayer());
       WolfBroManager.Result result;
-      if (!Parkour46.wireValid(req.getDescriptorForType(), bytes, 0) || !known(req, 0))
+      if (!wireValid(req.getDescriptorForType(), bytes, 0) || !known(req, 0))
         result = new WolfBroManager.Result(Retcode.REQ_PARA_INVALID, id, null, false);
       else
         result =
@@ -54,6 +58,19 @@ public final class WolfBro46 {
               case "ArchiveWolfBroGameCsReq" -> manager.archive(id, motion(req));
               case "RestoreWolfBroGameArchiveCsReq" -> manager.restore(id);
               case "QuitWolfBroGameCsReq" -> manager.quit(id);
+              case "WolfBroGameActivateBulletCsReq" -> new WolfBroAmmunition(session.getPlayer())
+                  .activate(number(req, "group_id"), number(req, "DAKENPDMDDJ"));
+              case "WolfBroGamePickupBulletCsReq" -> new WolfBroAmmunition(session.getPlayer())
+                  .pickup(req.hasField(req.getDescriptorForType().findFieldByName("GGDCDJDBCCN"))
+                      ? point((DynamicMessage) value(req, "GGDCDJDBCCN")) : null);
+              case "OKEFGCNNEKI" -> {
+                // The pinned ordinary shot sender leaves its optional vector unset.
+                if (req.hasField(req.getDescriptorForType().findFieldByName("GGDCDJDBCCN")))
+                  yield new WolfBroManager.Result(Retcode.REQ_PARA_INVALID, id, null, false);
+                @SuppressWarnings("unchecked")
+                var ids = (java.util.List<Integer>) value(req, "assist_monster_entity_id_list");
+                yield new WolfBroAmmunition(session.getPlayer()).use(ids);
+              }
               default -> throw new ProtocolException("Unsupported WolfBro request");
             };
       DynamicMessage data =
@@ -63,13 +80,47 @@ public final class WolfBro46 {
         set(notify, "game_data", data);
         session.sendClientPacket("WolfBroGameDataChangeScNotify", notify.build().toByteArray());
       }
-      var response = name.replace("CsReq", "ScRsp");
+      var response = name.equals("OKEFGCNNEKI") ? "WolfBroGameUseBulletScRsp" : name.replace("CsReq", "ScRsp");
       var b = builder(session, response);
       set(b, "retcode", result.code().getVal());
-      if (data != null) set(b, "game_data", data);
+      if (data != null && b.getDescriptorForType().findFieldByName("game_data") != null) set(b, "game_data", data);
       session.sendClientPacket(response, b.build().toByteArray());
     }
     return true;
+  }
+
+  /** Ordinary shots use proto3 packed IDs; check full raw varints before using parsed entity IDs. */
+  private static boolean wireValid(com.google.protobuf.Descriptors.Descriptor descriptor, byte[] bytes, int depth) {
+    if (depth > 4 || bytes.length > 16384) return false;
+    var input = com.google.protobuf.CodedInputStream.newInstance(bytes);
+    var seen = new java.util.HashSet<Integer>();
+    try {
+      int tag;
+      while ((tag = input.readTag()) != 0) {
+        int number = tag >>> 3, wire = tag & 7;
+        var field = descriptor.findFieldByNumber(number);
+        if (field == null || !field.isRepeated() && !seen.add(number)) return false;
+        if (field.getJavaType() == com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE) {
+          if (wire != 2 || !wireValid(field.getMessageType(), input.readByteArray(), depth + 1)) return false;
+        } else if (field.isRepeated() && field.getType() == com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT32
+            && wire == 2) {
+          int previous = input.pushLimit(input.readRawVarint32()), count = 0;
+          while (input.getBytesUntilLimit() > 0) {
+            if (++count > 128 || Long.compareUnsigned(input.readUInt64(), 0xffffffffL) > 0) return false;
+          }
+          input.popLimit(previous);
+        } else {
+          if (wire != 0) return false;
+          long value = input.readUInt64();
+          if (Long.compareUnsigned(value, 0xffffffffL) > 0
+              || field.getJavaType() == com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM
+                  && field.getEnumType().findValueByNumber((int) value) == null
+              || field.getJavaType() == com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BOOLEAN && value > 1)
+            return false;
+        }
+      }
+      return true;
+    } catch (IOException invalid) { return false; }
   }
 
   private static boolean known(DynamicMessage m, int depth) {
@@ -80,6 +131,13 @@ public final class WolfBro46 {
           && n < 0) return false;
       if (entry.getValue() instanceof DynamicMessage nested && !known(nested, depth + 1))
         return false;
+      if (entry.getValue() instanceof java.util.List<?> list) {
+        if (list.size() > 128) return false;
+        for (Object item : list) {
+          if (item instanceof Integer n && n < 0) return false;
+          if (item instanceof DynamicMessage nested && !known(nested, depth + 1)) return false;
+        }
+      }
     }
     return true;
   }
@@ -116,9 +174,19 @@ public final class WolfBro46 {
       set(m, "pos", vector(s, run.getArchive().getPos()));
       set(m, "rot", vector(s, run.getArchive().getRot()));
       set(a, "motion", m.build());
+      ammo(s, a, run.getArchiveAmmo());
       set(b, "BBEMIGELGJC", a.build());
+      ammo(s, b, run.getAmmo());
     }
     return b.build();
+  }
+
+  private static void ammo(GameSession s, DynamicMessage.Builder data, WolfBroAmmoState ammo) {
+    if (ammo == null) return;
+    set(data, "is_bullet_activated", ammo.isActivated());
+    set(data, "CHCOPKAKBNO", ammo.getCount());
+    set(data, "PAOEJKABFEP", ammo.getBullets().entrySet().stream().sorted(java.util.Map.Entry.comparingByKey())
+        .map(e -> vector(s, e.getValue())).toList());
   }
 
   private WolfBro46() {}

@@ -38,6 +38,7 @@ public final class Gameplay46 {
           "MusicRhythmFinishLevelCsReq",
           "MusicRhythmSaveSongConfigDataCsReq",
           "SceneCastSkillCsReq",
+          "SceneCastSkillCostMpCsReq",
           "GetCurBattleInfoCsReq",
           "QuitBattleCsReq");
 
@@ -105,7 +106,8 @@ public final class Gameplay46 {
                 "MusicRhythmFinishLevelCsReq",
                 "MusicRhythmSaveSongConfigDataCsReq" ->
             Music46.handle(session, name, req);
-        case "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "QuitBattleCsReq" ->
+        case "SceneCastSkillCsReq", "SceneCastSkillCostMpCsReq",
+                "GetCurBattleInfoCsReq", "QuitBattleCsReq" ->
             Battle46.handle(session, name, req);
         case "GetMissionDataCsReq" -> {
           if (MissionSnapshotRecords.valid(player)) player.getMissionManager().refresh();

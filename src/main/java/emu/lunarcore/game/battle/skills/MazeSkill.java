@@ -29,6 +29,7 @@ public class MazeSkill {
 
   public enum CallbackPhase {
     DIRECT,
+    COMBINED,
     PROJECTILE_HIT,
     PROJECTILE_LIFETIME_FINISH
   }

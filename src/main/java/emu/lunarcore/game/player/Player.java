@@ -948,6 +948,43 @@ public class Player implements Tickable, Syncable {
         return this.loadScene(entry.getPlaneID(), entry.getFloorID(), entry.getId(), anchor.getPos(), anchor.getRot(), sendPacket);
     }
 
+    /** Location rollback for a gameplay transaction whose player save did not commit. */
+    public static final class SceneLocationSnapshot {
+        private final Player owner;
+        private final int planeId, floorId, entryId, worldId, sceneEntryId;
+        private final Scene scene;
+        private final Position pos, rot;
+
+        private SceneLocationSnapshot(Player owner) {
+            this.owner = owner;
+            this.planeId = owner.planeId;
+            this.floorId = owner.floorId;
+            this.entryId = owner.entryId;
+            this.worldId = owner.worldId;
+            this.scene = owner.scene;
+            this.sceneEntryId = scene == null ? 0 : scene.getEntryId();
+            this.pos = new Position(owner.getPos());
+            this.rot = new Position(owner.getRot());
+        }
+    }
+
+    public final SceneLocationSnapshot captureSceneLocation() {
+        return new SceneLocationSnapshot(this);
+    }
+
+    public final void restoreSceneLocation(SceneLocationSnapshot snapshot) {
+        Objects.requireNonNull(snapshot);
+        if (snapshot.owner != this) throw new IllegalArgumentException("Scene location belongs to another player");
+        this.planeId = snapshot.planeId;
+        this.floorId = snapshot.floorId;
+        this.entryId = snapshot.entryId;
+        this.worldId = snapshot.worldId;
+        this.scene = snapshot.scene;
+        this.getPos().set(snapshot.pos);
+        this.getRot().set(snapshot.rot);
+        if (this.scene != null) this.scene.setEntryId(snapshot.sceneEntryId);
+    }
+
     public boolean loadScene(int planeId, int floorId, int entryId, Position pos, Position rot, boolean sendPacket) {
         int dimension = 0;
         if (getGameplay().getStoryLines().getCurrentId() != 0) {

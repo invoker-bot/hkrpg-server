@@ -1,0 +1,515 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "descriptorSHA256": "a9de1824e9892e236d7ce0f2d19f5531ffb259c125c4d22da89dfb7ac23c08fd",
+  "types": {
+    "AdventureSkillCharacterComponent": {
+      "typeIndex": 56863,
+      "fields": {
+        "_CurrentUseSkillUseId": {
+          "offset": 180,
+          "kind": 9
+        }
+      },
+      "constants": {}
+    },
+    "AEEKMHCMBPL": {
+      "typeIndex": 54409,
+      "fields": {
+        "GEEJAJPPGDG": {
+          "offset": 164,
+          "kind": 9
+        },
+        "KJHKGCBPNMB": {
+          "offset": 160,
+          "kind": 8
+        }
+      },
+      "constants": {}
+    },
+    "TaskContext": {
+      "typeIndex": 54774,
+      "fields": {
+        "SourceAbilityInst": {
+          "offset": 112,
+          "kind": 18,
+          "typeIndex": 54402
+        },
+        "<OwnerAbilityInstance>k__BackingField": {
+          "offset": 40,
+          "kind": 18,
+          "typeIndex": 54402
+        }
+      },
+      "constants": {}
+    },
+    "OHHPOGMFPBF": {
+      "typeIndex": 54755,
+      "fields": {
+        "GIIMOAOFKOM": {
+          "offset": 28,
+          "kind": 9
+        },
+        "KBAPBCNJHDB": {
+          "offset": 24,
+          "kind": 8
+        }
+      },
+      "constants": {}
+    },
+    "AbilityComponent": {
+      "typeIndex": 56856,
+      "fields": {
+        "LastFinishProjectile": {
+          "offset": 32,
+          "kind": 18,
+          "typeIndex": 54757
+        }
+      },
+      "constants": {}
+    },
+    "NAOKFLDEDBJ": {
+      "typeIndex": 54757,
+      "fields": {
+        "<SkillContext>k__BackingField": {
+          "offset": 40,
+          "kind": 18,
+          "typeIndex": 54755
+        },
+        "<IsHit>k__BackingField": {
+          "offset": 229,
+          "kind": 2
+        }
+      },
+      "constants": {}
+    },
+    "NCGKGFAJMGM": {
+      "typeIndex": 57898,
+      "fields": {
+        "DDDNLILNMKA": {
+          "offset": 40,
+          "kind": 18,
+          "typeIndex": 54774
+        },
+        "OFKGLJOAMLD": {
+          "offset": 48,
+          "kind": 18,
+          "typeIndex": 20209
+        }
+      },
+      "constants": {}
+    },
+    "INBDPGBJIFA": {
+      "typeIndex": 33980,
+      "fields": {
+        "KHMPKKJMHNM": {
+          "offset": 80,
+          "kind": 9
+        },
+        "HHKEHNKMILI": {
+          "offset": 84,
+          "kind": 9
+        },
+        "CHMFPHPJAIA": {
+          "offset": 88,
+          "kind": 9
+        },
+        "GHLJCNJGGKE": {
+          "offset": 24,
+          "kind": 21
+        }
+      },
+      "constants": {
+        "HKNDKELEGHC": 11
+      }
+    },
+    "GDGMINPNACD": {
+      "typeIndex": 33984,
+      "fields": {
+        "KHMPKKJMHNM": {
+          "offset": 24,
+          "kind": 9
+        },
+        "HHKEHNKMILI": {
+          "offset": 32,
+          "kind": 9
+        },
+        "CHMFPHPJAIA": {
+          "offset": 28,
+          "kind": 9
+        }
+      },
+      "constants": {}
+    },
+    "AdventureSkillConfig": {
+      "typeIndex": 17509,
+      "fields": {
+        "SkillCostMpPhase": {
+          "offset": 80,
+          "kind": 17,
+          "typeIndex": 17508
+        },
+        "SubmitSkillWhenCast": {
+          "offset": 25,
+          "kind": 2
+        }
+      },
+      "constants": {}
+    },
+    "AdventureTriggerAttack": {
+      "typeIndex": 20207,
+      "fields": {
+        "CostMP": {
+          "offset": 124,
+          "kind": 9
+        },
+        "CostMpPhaseType": {
+          "offset": 128,
+          "kind": 17,
+          "typeIndex": 17508
+        }
+      },
+      "constants": {}
+    },
+    "MazeSkillRow": {
+      "typeIndex": 12589,
+      "fields": {
+        "MPCost": {
+          "offset": 76,
+          "kind": 9
+        },
+        "RelatedAvatarSkill": {
+          "offset": 68,
+          "kind": 9
+        },
+        "MazeSkilltype": {
+          "offset": 64,
+          "kind": 9
+        }
+      },
+      "constants": {}
+    },
+    "CostMpPhase": {
+      "typeIndex": 17508,
+      "fields": {},
+      "constants": {
+        "OnUse": 0,
+        "OnHitEnemy": 1,
+        "OnFirstHitEnemy": 2
+      }
+    },
+    "MEEPKFKOAHA": {
+      "typeIndex": 33883,
+      "fields": {},
+      "constants": {
+        "BIJPFBEMNIA": 0,
+        "GPFIPODCKBD": 1,
+        "BGGAIDCMDLM": 2
+      }
+    }
+  },
+  "methods": [
+    {
+      "index": 524585,
+      "name": "UseSkill",
+      "typeIndex": 56863,
+      "rva": "0xe55e310",
+      "endRVA": "0xe55e880",
+      "bodySHA256": "2e28be30af529a98030a139bdb95a2b991c6c9d8e555ce030ba1ba4436640a5f",
+      "instructions": [
+        "e55e3ac: mov eax, dword ptr [rip - 0x5208be2]",
+        "e55e3bf: mov dword ptr [rip - 0x5208bf5], ebx",
+        "e55e429: cmp dword ptr [rax + 0x50], 0",
+        "e55e451: call 0x18e575700",
+        "e55e470: mov dword ptr [rsi + 0xb4], ebx",
+        "e55e49e: mov dword ptr [rax + 0x2c], ebx",
+        "e55e66d: call 0x18e576340",
+        "e55e6bb: call 0x18e576280"
+      ]
+    },
+    {
+      "index": 524614,
+      "name": "_GetNextSkillUseID",
+      "typeIndex": 56863,
+      "rva": "0xe578160",
+      "endRVA": "0xe5781b5",
+      "bodySHA256": "0b569723efaf19ba23a648e77ccc3395bdc7394f4f6f64b8e69b78b2877e7467",
+      "instructions": [
+        "e578160: push rsi"
+      ]
+    },
+    {
+      "index": 526387,
+      "name": "UseAbility",
+      "typeIndex": 56995,
+      "rva": "0xe5369d0",
+      "endRVA": "0xe536b7d",
+      "bodySHA256": "a73a24816754cac1ce92de4d36aaa1038d781b210cfcf33eb07541c711fa270b",
+      "instructions": [
+        "e536ad1: mov eax, dword ptr [rsi + 0x2c]",
+        "e536ad4: mov dword ptr [rbx + 0xa4], eax"
+      ]
+    },
+    {
+      "index": 535693,
+      "name": "OnTaskBegin",
+      "typeIndex": 57898,
+      "rva": "0xbb09c10",
+      "endRVA": "0xbb0a35e",
+      "bodySHA256": "18bcb5743fcaa6413662d892bac3b8d53b741cd7e871d2144feecec712ff6374",
+      "instructions": [
+        "bb09d7a: mov rax, qword ptr [rbx + 0x70]",
+        "bb09dac: mov rdx, qword ptr [rip - 0x2790083]",
+        "bb09de3: mov rcx, qword ptr [rip - 0x278f4ba]",
+        "bb09e46: mov dword ptr [r12 + 0x18], eax",
+        "bb09e53: mov eax, dword ptr [rsi + 0xa4]",
+        "bb09e59: mov dword ptr [r12 + 0x1c], eax",
+        "bb09fae: mov r8, r12",
+        "bb09fb4: call rsi"
+      ]
+    },
+    {
+      "index": 535694,
+      "name": "EEKEIPKOEKN",
+      "typeIndex": 57898,
+      "rva": "0xbb0a360",
+      "endRVA": "0xbb0a539",
+      "bodySHA256": "af8e5411ed4e5a3ddb308a1bdcf160ec79bf76d29322f1b0cd25fcc4a89181f2",
+      "instructions": [
+        "bb0a36f: mov r15, r8",
+        "bb0a473: mov qword ptr [rsp + 0x28], r15",
+        "bb0a48e: call 0x195daba00",
+        "bb0a493: mov qword ptr [rsi + 0x20], rax"
+      ]
+    },
+    {
+      "index": 508178,
+      "name": "HBKLKBJOFGG",
+      "typeIndex": 54403,
+      "rva": "0x15daba00",
+      "endRVA": "0x15dabc49",
+      "bodySHA256": "115193dd77b3b2b4f7974ef17dc29fa8eab400a958bfd8a3eaa5353c86979a91",
+      "instructions": [
+        "15daba34: mov rax, qword ptr [rsp + 0xc0]",
+        "15daba4c: mov r15, qword ptr [rcx + 0x1e0]",
+        "15daba77: mov qword ptr [rsp + 0x20], rax",
+        "15daba88: call r15"
+      ]
+    },
+    {
+      "index": 508533,
+      "name": "NLDOADDIDIO",
+      "typeIndex": 54409,
+      "rva": "0xb14be40",
+      "endRVA": "0xb14bf54",
+      "bodySHA256": "7384dab5a1162d2af0658a1bbdcd1f76c95255a378e9dab04abbcbbed1bdd94f",
+      "instructions": [
+        "b14be5c: mov rbp, qword ptr [rsp + 0xe0]",
+        "b14bea9: mov qword ptr [rsp + 0x48], rbp",
+        "b14bee3: call 0x18baa38b0"
+      ]
+    },
+    {
+      "index": 509577,
+      "name": ".ctor",
+      "typeIndex": 54757,
+      "rva": "0xbaa38b0",
+      "endRVA": "0xbaa3f7c",
+      "bodySHA256": "ac8a259e93f392500e04044aee23cd7b45259f5ca150da2d656b981906760dd7",
+      "instructions": [
+        "baa39fc: mov qword ptr [rsi + 0x80], r15",
+        "baa3a03: mov qword ptr [rsi + 0x28], r13"
+      ]
+    },
+    {
+      "index": 635593,
+      "name": "MHAHLFKCLKI",
+      "typeIndex": 69400,
+      "rva": "0xe84dab0",
+      "endRVA": "0xe84e112",
+      "bodySHA256": "6858cebf1bcc95f58796ca3009fd0b5d1594abbeb2dacb1bc78173c0ca095ef7",
+      "instructions": [
+        "e84db21: mov eax, dword ptr [rdi + 0xa4]",
+        "e84db27: mov dword ptr [rsi], eax",
+        "e84dcdd: mov rbx, qword ptr [rax + 0x20]",
+        "e84dd2c: mov eax, dword ptr [rax + 0x1c]",
+        "e84dec0: mov rcx, qword ptr [rip - 0x54616f7]",
+        "e84dee2: mov qword ptr [rsi + 0x18], rax"
+      ]
+    },
+    {
+      "index": 635592,
+      "name": ".cctor",
+      "typeIndex": 69400,
+      "rva": "0xe84e120",
+      "endRVA": "0xe84e1e6",
+      "bodySHA256": "ccd9ada8be098b66e626814b8a6ffccf341106715091148edd2bbeed5f2390a4",
+      "instructions": [
+        "e84e148: mov dword ptr [rax + 0x20], 1",
+        "e84e156: mov qword ptr [rcx + 0x63f40], rax",
+        "e84e179: mov dword ptr [rax + 0x20], 2",
+        "e84e187: mov qword ptr [rcx + 0x63f30], rax",
+        "e84e1ab: mov dword ptr [rax + 0x20], 1",
+        "e84e1b7: mov dword ptr [rax + 0x24], 2",
+        "e84e1c5: mov qword ptr [rcx + 0x63f38], rax"
+      ]
+    },
+    {
+      "index": 635460,
+      "name": "PHBADCBNPAK",
+      "typeIndex": 69368,
+      "rva": "0xd9c4ce0",
+      "endRVA": "0xd9c512a",
+      "bodySHA256": "63d03fd9b4fca5f7876ee4c26d9640cad406fef5c1442d7d6796072c4cc1fee9",
+      "instructions": [
+        "d9c4d47: mov rax, qword ptr [r14 + 4]",
+        "d9c4d4b: mov qword ptr [r12 + 0x50], rax",
+        "d9c4d75: mov eax, dword ptr [r14]",
+        "d9c4d78: mov dword ptr [r12 + 0x58], eax",
+        "d9c4f36: mov rdx, qword ptr [r14 + 0x18]",
+        "d9c5100: mov dx, 0x5b4",
+        "d9c510a: call 0x18d9912e0"
+      ]
+    },
+    {
+      "index": 232578,
+      "name": "WriteTo",
+      "typeIndex": 33980,
+      "rva": "0x1e690a10",
+      "endRVA": "0x1e690d9e",
+      "bodySHA256": "a84a21722d89d0b346c18a102b11285266b6635c5190d7d3b9be53d2b8aefe12",
+      "instructions": [
+        "1e690a10: push rsi",
+        "1e690a5d: mov byte ptr [rcx + rax + 0x20], 0x10",
+        "1e690a62: mov edx, dword ptr [rdi + 0x50]",
+        "1e690aad: mov byte ptr [rcx + rax + 0x20], 0x20",
+        "1e690ab2: mov edx, dword ptr [rdi + 0x54]",
+        "1e690c2d: mov rcx, qword ptr [rdi + 0x18]",
+        "1e690c41: mov r8, qword ptr [rax + 0x53248]",
+        "1e690c52: call 0x198789b20",
+        "1e690c97: mov byte ptr [rcx + rax + 0x20], 0x68",
+        "1e690c9c: mov edx, dword ptr [rdi + 0x58]"
+      ]
+    },
+    {
+      "index": 552535,
+      "name": "TrySendSceneCastSkillCsReq",
+      "typeIndex": 60117,
+      "rva": "0xc603fc0",
+      "endRVA": "0xc60423f",
+      "bodySHA256": "c037a3e277043106d3c789dd5fe7a0f61ff1c2f89a23c029a7d6de03ad9037be",
+      "instructions": [
+        "c603fc0: push r15",
+        "c604177: call 0x18d9c4ce0"
+      ]
+    },
+    {
+      "index": 524573,
+      "name": "PreCostMpWhenHitValidTarget",
+      "typeIndex": 56863,
+      "rva": "0xe5752d0",
+      "endRVA": "0xe5756f2",
+      "bodySHA256": "6661c1a437db38218053608fadef2b3fce1981c622105cc7f8872b9141386068",
+      "instructions": [
+        "e5753dc: mov ebp, dword ptr [rax + 0x50]",
+        "e575405: test r14d, r14d",
+        "e575408: je 0x18e575582",
+        "e575419: cmp ebp, 2",
+        "e575421: cmove r14d, eax",
+        "e57550c: mov byte ptr [rsp + 0x28], 0",
+        "e57551d: call 0x18e575700"
+      ]
+    },
+    {
+      "index": 524577,
+      "name": "_CostMazeSkillMp",
+      "typeIndex": 56863,
+      "rva": "0xe575700",
+      "endRVA": "0xe575b8b",
+      "bodySHA256": "ec78cbca7535a040187d28bf83a8c674ccfb19c6020e76ac65c8c49898f150f6",
+      "instructions": [
+        "e57570c: mov r14d, r9d",
+        "e575717: movzx r15d, byte ptr [rsp + 0x98]",
+        "e5758f7: mov dword ptr [rax + 0x18], edi",
+        "e5758fa: mov dword ptr [rax + 0x20], ebx",
+        "e5758fd: mov dword ptr [rax + 0x1c], r14d",
+        "e575904: mov dx, 0x580",
+        "e57590e: call 0x18d9912e0"
+      ]
+    },
+    {
+      "index": 232627,
+      "name": "WriteTo",
+      "typeIndex": 33984,
+      "rva": "0x1e41c990",
+      "endRVA": "0x1e41cabf",
+      "bodySHA256": "485639f6cf6f2de1008d44ecb3252e053077e00fb3a9051bb3ad7185e07ade6c",
+      "instructions": [
+        "1e41c990: push rsi",
+        "1e41c9dc: mov byte ptr [rcx + rax + 0x20], 0x10",
+        "1e41c9e1: mov edx, dword ptr [rdi + 0x18]",
+        "1e41ca28: mov byte ptr [rcx + rax + 0x20], 0x38",
+        "1e41ca2d: mov edx, dword ptr [rdi + 0x20]",
+        "1e41ca6c: mov byte ptr [rcx + rax + 0x20], 0x68",
+        "1e41ca71: mov edx, dword ptr [rdi + 0x1c]"
+      ]
+    }
+  ],
+  "typeSlots": [
+    {
+      "slot": "0x9379d30",
+      "typeIndex": 54409
+    },
+    {
+      "slot": "0x937a930",
+      "typeIndex": 54755
+    },
+    {
+      "slot": "0x93694f8",
+      "typeIndex": 33984
+    }
+  ],
+  "fields": {
+    "SceneCastSkillCsReq": {
+      "command": 1460,
+      "cast_entity_id": 13,
+      "attacked_by_entity_id": 2,
+      "skill_index": 4,
+      "skill_extra_tags": 11
+    },
+    "SceneCastSkillCostMpCsReq": {
+      "command": 1408,
+      "cast_entity_id": 13,
+      "attacked_by_entity_id": 2,
+      "skill_index": 7
+    },
+    "SceneCastSkillCostMpScRsp": {
+      "command": 1468,
+      "cast_entity_id": 7,
+      "retcode": 15
+    },
+    "SceneCastSkillMpUpdateScNotify": {
+      "command": 1464,
+      "cast_entity_id": 1,
+      "mp": 10
+    }
+  },
+  "directTagValues": [
+    1,
+    2
+  ],
+  "projectileHitTagValues": [
+    1
+  ],
+  "projectileFinishTagValues": [
+    2
+  ],
+  "limitations": [
+    "间接虚调用保留实际寄存器转发证据，不将方法邻接当作调用。",
+    "原AdventureCharacterConfig完整SkillCostMpPhase配置不在固定资源中。",
+    "只读静态证据，不代表真实官方客户端发包序列或UI验收。"
+  ]
+}

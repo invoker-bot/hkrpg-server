@@ -43,44 +43,67 @@ public final class DailyManager {
       long today = day(clock.instant());
       if (today <= state.getDailyDay()) {
         if (today == state.getDailyDay()) {
+          var added = selectMissingPoolTypes(today);
+          if (!added.isEmpty()) {
+            state.getDailyQuests().putAll(added);
+            try {
+              player.save();
+            } catch (RuntimeException failure) {
+              added.forEach((id, acceptance) -> state.getDailyQuests().remove(id, acceptance));
+              throw failure;
+            }
+            sync();
+          }
           refreshTodayMissions();
           refreshCycleQuests(false);
         }
         return state.getDailyDay();
       }
       state.resetDaily(today);
-      var choices = new TreeMap<Integer, List<Integer>>();
-      for (var pool : GameplayDefinitions.dailyPool) {
-        var config = GameData.getQuestExcelMap().get(pool.QuestID());
-        var rule =
-            config == null ? null : GameData.getFinishWayExcelMap().get(config.getFinishWayID());
-        if (config == null
-            || config.getQuestType() != 5
-            || rule == null
-            || rule.getProgress() <= 0
-            || !supported(rule)
-                && !new DailyCycleQuests(player).supportedDaily(config.getId(), clock.instant())
-            || !unlocked(config)) continue;
-        choices.computeIfAbsent(pool.Type(), k -> new ArrayList<>()).add(config.getId());
-      }
-      // Explicit server policy: one supported, unlocked objective per pool type; deterministic
-      // daily rotation.
-      for (var ids : choices.values()) {
-        ids.sort(Integer::compareTo);
-        int id = ids.get(Math.floorMod(today, ids.size()));
-        var progress = new QuestState(id);
-        state.getDailyQuests().put(id, progress);
-        var config = GameData.getQuestExcelMap().get(id);
-        var rule = GameData.getFinishWayExcelMap().get(config.getFinishWayID());
-        if ("AutoFinish".equals(rule.getFinishType()))
-          progress.advance(
-              rule.getProgress(), rule.getProgress(), clock.instant().getEpochSecond());
-      }
+      state.getDailyQuests().putAll(selectMissingPoolTypes(today));
       player.save();
       event("Login", r -> true, 1);
       sync();
       return today;
     }
+  }
+
+  private Map<Integer, QuestState> selectMissingPoolTypes(long today) {
+    var saved = player.getGameplay().getDailyQuests();
+    var occupied = new HashSet<Integer>();
+    for (var pool : GameplayDefinitions.dailyPool)
+      if (saved.containsKey(pool.QuestID())) occupied.add(pool.Type());
+    var choices = new TreeMap<Integer, List<Integer>>();
+    for (var pool : GameplayDefinitions.dailyPool) {
+      // A saved acceptance occupies its type even after completion or reward reservation.
+      if (occupied.contains(pool.Type())) continue;
+      var config = GameData.getQuestExcelMap().get(pool.QuestID());
+      var rule =
+          config == null ? null : GameData.getFinishWayExcelMap().get(config.getFinishWayID());
+      if (config == null
+          || config.getQuestType() != 5
+          || rule == null
+          || rule.getProgress() <= 0
+          || !supported(rule)
+              && !new DailyCycleQuests(player).supportedDaily(config.getId(), clock.instant())
+          || !unlocked(config)) continue;
+      choices.computeIfAbsent(pool.Type(), k -> new ArrayList<>()).add(config.getId());
+    }
+    // Preserve the original policy: one supported, unlocked objective per missing pool type,
+    // sorted ids and deterministic rotation for this same reset day.
+    var added = new LinkedHashMap<Integer, QuestState>();
+    for (var ids : choices.values()) {
+      ids.sort(Integer::compareTo);
+      int id = ids.get(Math.floorMod(today, ids.size()));
+      if (saved.containsKey(id)) continue;
+      var acceptance = new QuestState(id);
+      var config = GameData.getQuestExcelMap().get(id);
+      var rule = GameData.getFinishWayExcelMap().get(config.getFinishWayID());
+      if ("AutoFinish".equals(rule.getFinishType()))
+        acceptance.advance(rule.getProgress(), rule.getProgress(), clock.instant().getEpochSecond());
+      added.put(id, acceptance);
+    }
+    return added;
   }
 
   boolean unlocked(QuestExcel q) {

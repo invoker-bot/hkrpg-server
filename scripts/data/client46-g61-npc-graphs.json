@@ -1,0 +1,6898 @@
+{
+  "schema": 1,
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "restProfileSHA256": "3661c886777d497695bae42cd4386cc33547c80a96337c2f0cf2568da80d22ba",
+  "classes": {
+    "OptionTalkInfo": {
+      "typeIndex": 15477,
+      "fields": [
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76061,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "OptionTextmapID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76062,
+          "type": {
+            "kind": 17,
+            "name": "TextID",
+            "typeIndex": 6564
+          }
+        },
+        {
+          "name": "OptionIconType",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76063,
+          "type": {
+            "kind": 18,
+            "name": "JsonEnum",
+            "typeIndex": 10869
+          }
+        },
+        {
+          "name": "TriggerCustomString",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76064,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "HasTriggered",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76065,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "DeleteAfterSelection",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76066,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SubmissionID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76067,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "FinishKey",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76068,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "TalkEventID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76069,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "IsSkipDefault",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76070,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "VisibleFilter",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76071,
+          "type": {
+            "kind": 18,
+            "name": "PredicateConfig",
+            "typeIndex": 23740
+          }
+        }
+      ]
+    },
+    "TriggerPerformance": {
+      "typeIndex": 20299,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "PerformanceType",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92441,
+          "type": {
+            "kind": 17,
+            "name": "ELevelPerformanceType",
+            "typeIndex": 10484
+          }
+        },
+        {
+          "name": "PerformanceID",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92442,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "PerformanceType_DS",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92443,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "PerformanceID_DS",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92444,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "SaveProgress",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92445,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "MaskConfig",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92446,
+          "type": {
+            "kind": 18,
+            "name": "TriggerPerformanceMask",
+            "typeIndex": 20300
+          }
+        },
+        {
+          "name": "InheritOwnerEntityCustomData",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92447,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ValueSource",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92448,
+          "type": {
+            "kind": 18,
+            "name": "LevelGraphValueSource",
+            "typeIndex": 18312
+          }
+        },
+        {
+          "name": "CloseScreenCrack",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92449,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "CloseMaskAndCrack",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92450,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "TriggerPerformanceMask": {
+      "typeIndex": 20300,
+      "fields": [
+        {
+          "name": "UseExcelData",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92451,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StartBlack",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92452,
+          "type": {
+            "kind": 17,
+            "name": "StoryBlackType",
+            "typeIndex": 10468
+          }
+        },
+        {
+          "name": "EndBlack",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92453,
+          "type": {
+            "kind": 17,
+            "name": "StoryBlackType",
+            "typeIndex": 10468
+          }
+        },
+        {
+          "name": "MaskColor",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92454,
+          "type": {
+            "kind": 17,
+            "name": "ScreenTransferType",
+            "typeIndex": 24784
+          }
+        },
+        {
+          "name": "EndCrack",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92455,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "EndScrCut",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92456,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StartCustomSrcTrf",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92457,
+          "type": {
+            "kind": 17,
+            "name": "CustomScreenTransferType",
+            "typeIndex": 24494
+          }
+        },
+        {
+          "name": "EndCustomSrcTrf",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92458,
+          "type": {
+            "kind": 17,
+            "name": "CustomScreenTransferType",
+            "typeIndex": 24494
+          }
+        }
+      ]
+    },
+    "ByComparePerformance": {
+      "typeIndex": 20315,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Inverse",
+          "declaringType": "PredicateConfig",
+          "fieldIndex": 102141,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "PerformanceID_DS",
+          "declaringType": "ByComparePerformance",
+          "fieldIndex": 92488,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "PerformanceID",
+          "declaringType": "ByComparePerformance",
+          "fieldIndex": 92489,
+          "type": {
+            "kind": 9
+          }
+        }
+      ]
+    },
+    "TriggerCustomStringOnDialogEnd": {
+      "typeIndex": 20750,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "CustomString",
+          "declaringType": "TriggerCustomString",
+          "fieldIndex": 102294,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        }
+      ]
+    },
+    "SwitchCharacterAnchor": {
+      "typeIndex": 20825,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "IsLocalPlayer",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93958,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "CharacterUniqueName",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93959,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "AreaName",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93960,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "AnchorName",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93961,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "LevelAreaKey",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93962,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "Target",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93963,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          }
+        },
+        {
+          "name": "AttachPoint",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93964,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "ResetAnimation",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93965,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ResetCamera",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93966,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ResetTurnInPlace",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93967,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ClearSpecialVision",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93968,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "PlaySimpleTalk": {
+      "typeIndex": 20844,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SimpleTalkList",
+          "declaringType": "SimpleTalkListConfig",
+          "fieldIndex": 94074,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkInfo",
+              "typeIndex": 24391
+            }
+          }
+        },
+        {
+          "name": "KeepDisplay",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94075,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "BlackMask",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94076,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "BlackMaskColor",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94077,
+          "type": {
+            "kind": 17,
+            "name": "SimpleTalkBlackMaskColor",
+            "typeIndex": 24539
+          }
+        },
+        {
+          "name": "NeedFadeBlackMask",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94078,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "BlackMaskFadeDuration",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94079,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "UseBackground",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94080,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SkipFirstTalkBgFadeIn",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94081,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Backgrounds",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94082,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkBackground",
+              "typeIndex": 21121
+            }
+          }
+        },
+        {
+          "name": "UseTargetBehavior",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94083,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TargetBehaviors",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94084,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkTargetBehavior",
+              "typeIndex": 21122
+            }
+          }
+        },
+        {
+          "name": "ChangeStyle",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94085,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StyleList",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94086,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkStyle",
+              "typeIndex": 20842
+            }
+          }
+        },
+        {
+          "name": "IsFromTimeline",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94087,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "WaitSimpleTalkFinish": {
+      "typeIndex": 20845,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "PlayOptionTalk": {
+      "typeIndex": 20851,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "OptionList",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94092,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "OptionTalkInfo",
+              "typeIndex": 15477
+            }
+          }
+        },
+        {
+          "name": "HideSelected",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94093,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideButtonAuto",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94094,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TriggerStringWhenAllSelected",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94095,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TriggerString",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94096,
+          "type": {
+            "kind": 14
+          }
+        }
+      ]
+    },
+    "FinishPerformanceMission": {
+      "typeIndex": 21099,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Key",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94737,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "MainMissionID",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94738,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "KeepScreenTransferUntilGroupRefresh",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94739,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "UseSpecifiedLoading",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94740,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StratageType",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94741,
+          "type": {
+            "kind": 17,
+            "name": "LoadingStratageType",
+            "typeIndex": 10567
+          }
+        },
+        {
+          "name": "LoadingType",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94742,
+          "type": {
+            "kind": 17,
+            "name": "TransitionLoadingType",
+            "typeIndex": 17637
+          }
+        }
+      ]
+    },
+    "EndPerformance": {
+      "typeIndex": 21847,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "PerformanceTransition": {
+      "typeIndex": 21859,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SwitchInTime",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96257,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "SwitchKeepTime",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96258,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "SwitchOutTime",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96259,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "TextEnabled",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96260,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96261,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "NotAuto",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96262,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "CreateNpcList",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96263,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "CreateNPC",
+              "typeIndex": 21944
+            }
+          }
+        },
+        {
+          "name": "CaptureNpcList",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96264,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "CaptureNPCToCharacter",
+              "typeIndex": 20292
+            }
+          }
+        },
+        {
+          "name": "DestroyNpcList",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96265,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "DestroyNPC",
+              "typeIndex": 21946
+            }
+          }
+        },
+        {
+          "name": "CreateProp",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96266,
+          "type": {
+            "kind": 18,
+            "name": "CreateProp",
+            "typeIndex": 21947
+          }
+        },
+        {
+          "name": "DestroyProp",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96267,
+          "type": {
+            "kind": 18,
+            "name": "DestroyProp",
+            "typeIndex": 21949
+          }
+        },
+        {
+          "name": "AdvCreateGroupEntity",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96268,
+          "type": {
+            "kind": 18,
+            "name": "AdvCreateGroupEntity",
+            "typeIndex": 20285
+          }
+        },
+        {
+          "name": "AdvDestroyGroupEntity",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96269,
+          "type": {
+            "kind": 18,
+            "name": "AdvDestroyGroupEntity",
+            "typeIndex": 20287
+          }
+        },
+        {
+          "name": "DisactiveVCamOnGraphEnd",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96270,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ActiveVirtualCamera",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96271,
+          "type": {
+            "kind": 18,
+            "name": "ActiveVirtualCamera_PerformanceTransition",
+            "typeIndex": 21860
+          }
+        },
+        {
+          "name": "ActiveTemplateVirtualCamera",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96272,
+          "type": {
+            "kind": 18,
+            "name": "ActiveTemplateVirtualCamera",
+            "typeIndex": 20827
+          }
+        },
+        {
+          "name": "SwitchCharacterAnchor",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96273,
+          "type": {
+            "kind": 18,
+            "name": "SwitchCharacterAnchor",
+            "typeIndex": 20825
+          }
+        },
+        {
+          "name": "AdvNpcFaceToPlayer",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96274,
+          "type": {
+            "kind": 18,
+            "name": "AdvNpcFaceToPlayer",
+            "typeIndex": 20337
+          }
+        },
+        {
+          "name": "WaitStreamingFinish",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96275,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "ActiveVirtualCamera_PerformanceTransition": {
+      "typeIndex": 21860,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "AreaName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96276,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "AnchorName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96277,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "LevelAreaCameraKey",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96278,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "IsEntryPointCamera",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96279,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "IsActive",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96280,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "FollowTargetUniqueName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96281,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "FollowTargetAttachPoint",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96282,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "FollowTargetAnchorName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96283,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "LookAtTargetUniqueName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96284,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "LookAtTargetAnchorName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96285,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "LevelAreaLookAtKey",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96286,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "WaitBlendFinish",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96287,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "BlendConfig",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96288,
+          "type": {
+            "kind": 18,
+            "name": "VCameraBlend_PerformanceTransition",
+            "typeIndex": 16420
+          }
+        },
+        {
+          "name": "VCameraDitherNPCOn",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96289,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "VCameraDitherMaxDistance",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96290,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "VCameraDitherAlphaMin",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96291,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "KeepMainCameraRotation",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96292,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "CenterPosX",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96293,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "CenterPosY",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96294,
+          "type": {
+            "kind": 12
+          }
+        }
+      ]
+    },
+    "CreateNPC": {
+      "typeIndex": 21944,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "GroupID",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96494,
+          "type": {
+            "kind": 18,
+            "name": "DynamicFloat",
+            "typeIndex": 10836
+          }
+        },
+        {
+          "name": "GroupNpcID",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96495,
+          "type": {
+            "kind": 18,
+            "name": "DynamicFloat",
+            "typeIndex": 10836
+          }
+        },
+        {
+          "name": "NPCUniqueName",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96496,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "DefaultIdleStateName",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96497,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          }
+        },
+        {
+          "name": "CreateList",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96498,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "NpcEntityInfo",
+              "typeIndex": 20288
+            }
+          }
+        }
+      ]
+    },
+    "DestroyNPC": {
+      "typeIndex": 21946,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "GroupID",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96504,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "GroupNpcID",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96505,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "Hide",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96506,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TargetType",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96507,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          }
+        },
+        {
+          "name": "DestroyList",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96508,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "GroupEntityInfo",
+              "typeIndex": 20289
+            }
+          }
+        }
+      ]
+    },
+    "AdvNpcFaceToPlayer": {
+      "typeIndex": 20337,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "FromDialog",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92530,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "GroupID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92531,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "GroupNpcID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92532,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "TargetNpcType",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92533,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          }
+        },
+        {
+          "name": "PlayerInGroupID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92534,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "PlayerInGroupNpcID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92535,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "TargetPlayerType",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92536,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          }
+        },
+        {
+          "name": "Duration",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92537,
+          "type": {
+            "kind": 12
+          }
+        },
+        {
+          "name": "TryFaceToFace",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92538,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "OnlyPlayerFaceToNpc",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92539,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "NpcLookAtPlayer",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92540,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "PlayerLookAtNpc",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92541,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StopLookAtOnGraphEnd",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92542,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TurnBackOnGraphEnd",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92543,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SteerImmediately",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92544,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "FinishImmadiate",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92545,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "WaitFinishMode",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92546,
+          "type": {
+            "kind": 17,
+            "name": "EWaitFaceToTaskFinishMode",
+            "typeIndex": 10517
+          }
+        },
+        {
+          "name": "ForceToStandBy",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92547,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "FinishLevelGraph": {
+      "typeIndex": 20625,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "MakeOwnerEntityDie",
+          "declaringType": "FinishLevelGraph",
+          "fieldIndex": 93460,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "PlayAndWaitSimpleTalk": {
+      "typeIndex": 21123,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SimpleTalkList",
+          "declaringType": "SimpleTalkListConfig",
+          "fieldIndex": 94074,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkInfo",
+              "typeIndex": 24391
+            }
+          }
+        },
+        {
+          "name": "KeepDisplay",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94776,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "BlackMask",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94777,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "NeedFadeBlackMask",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94778,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "UseBackground",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94779,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "SkipFirstTalkBgFadeIn",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94780,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "Backgrounds",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94781,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkBackground",
+              "typeIndex": 21121
+            }
+          }
+        },
+        {
+          "name": "UseTargetBehavior",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94782,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TargetBehaviors",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94783,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkTargetBehavior",
+              "typeIndex": 21122
+            }
+          }
+        },
+        {
+          "name": "ChangeStyle",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94784,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StyleList",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94785,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkStyle",
+              "typeIndex": 20842
+            }
+          }
+        }
+      ]
+    },
+    "PlayMultiVoiceTalk": {
+      "typeIndex": 21124,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "PlayMultiVoiceTalk",
+          "fieldIndex": 94786,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "SelectType",
+          "declaringType": "PlayMultiVoiceTalk",
+          "fieldIndex": 94787,
+          "type": {
+            "kind": 17,
+            "name": "MultiVoiceSelectType",
+            "typeIndex": 24550
+          }
+        },
+        {
+          "name": "KeepDisplay",
+          "declaringType": "PlayMultiVoiceTalk",
+          "fieldIndex": 94788,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "WaitPerformanceEnd": {
+      "typeIndex": 21848,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "LevelPerformanceInitialize": {
+      "typeIndex": 21856,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "PerformanceType",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96226,
+          "type": {
+            "kind": 17,
+            "name": "ELevelPerformanceType",
+            "typeIndex": 10484
+          }
+        },
+        {
+          "name": "AreaPrefabPath",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96227,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "IsLocal",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96228,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "MuteSFX",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96229,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "CreateCharacterList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96230,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "CreateCharacter",
+              "typeIndex": 20819
+            }
+          }
+        },
+        {
+          "name": "CaptureNPCList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96231,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "PerformanceCaptureNPC",
+              "typeIndex": 21855
+            }
+          }
+        },
+        {
+          "name": "HideNPC",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96232,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "EntityVisiableList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96233,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "EntityVisiableInfo",
+              "typeIndex": 21853
+            }
+          }
+        },
+        {
+          "name": "HideStillNPC",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96234,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideMunicipalCrowd",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96235,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideMunicipalPedestrian",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96236,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideMunicipalAudience",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96237,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideMunicipalOther",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96238,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideMonster",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96239,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "HideProp",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96240,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "PropVisiableList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96241,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "PerformancePropVisiableInfo",
+              "typeIndex": 21854
+            }
+          }
+        },
+        {
+          "name": "HideLocalPlayer",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96242,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "FirstCameraAnchor",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96243,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "UseNewStreamingSourceType",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96244,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "StreamingSourcesInBlackMask",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96245,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 14
+            }
+          }
+        },
+        {
+          "name": "StreamingSourcesAfterBlackMask",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96246,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 14
+            }
+          }
+        },
+        {
+          "name": "MarkStreamingItems",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96247,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "StageItemAlias",
+              "typeIndex": 22251
+            }
+          }
+        },
+        {
+          "name": "ResetEnvironment",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96248,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ResetMonster",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96249,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "AudioStateList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96250,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "AudioStateConfig",
+              "typeIndex": 16383
+            }
+          }
+        },
+        {
+          "name": "OverrideCharacterOutfits",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96251,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "PerformanceOverrideCharacterOutfit",
+              "typeIndex": 21857
+            }
+          }
+        },
+        {
+          "name": "OnLoadBeginImmediately",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96252,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "TaskConfig",
+              "typeIndex": 23738
+            }
+          }
+        }
+      ]
+    }
+  },
+  "enums": {
+    "10484": {
+      "name": "ELevelPerformanceType",
+      "values": {
+        "0": "Unknown",
+        "1": "A",
+        "2": "C",
+        "3": "D",
+        "4": "E",
+        "10": "PlayVideo"
+      }
+    }
+  },
+  "tasks": {
+    "1586": {
+      "name": "LevelPerformanceInitialize",
+      "noReaderPayload": false
+    },
+    "1136": {
+      "name": "CreateNPC",
+      "noReaderPayload": false
+    },
+    "1192": {
+      "name": "DestroyNPC",
+      "noReaderPayload": false
+    },
+    "3664": {
+      "name": "TriggerPerformance",
+      "noReaderPayload": false
+    },
+    "1910": {
+      "name": "PerformanceTransition",
+      "noReaderPayload": false
+    },
+    "188": {
+      "name": "AdvNpcFaceToPlayer",
+      "noReaderPayload": false
+    },
+    "1364": {
+      "name": "FinishLevelGraph",
+      "noReaderPayload": false
+    },
+    "1932": {
+      "name": "PlayAndWaitSimpleTalk",
+      "noReaderPayload": false
+    },
+    "1973": {
+      "name": "PlaySimpleTalk",
+      "noReaderPayload": false
+    },
+    "1947": {
+      "name": "PlayMultiVoiceTalk",
+      "noReaderPayload": false
+    },
+    "1954": {
+      "name": "PlayOptionTalk",
+      "noReaderPayload": false
+    },
+    "1367": {
+      "name": "FinishPerformanceMission",
+      "noReaderPayload": false
+    },
+    "3917": {
+      "name": "WaitSimpleTalkFinish",
+      "noReaderPayload": false
+    },
+    "1265": {
+      "name": "EndPerformance",
+      "noReaderPayload": false
+    },
+    "3864": {
+      "name": "WaitPerformanceEnd",
+      "noReaderPayload": false
+    },
+    "3600": {
+      "name": "TriggerCustomStringOnDialogEnd",
+      "noReaderPayload": false
+    }
+  },
+  "predicates": {
+    "217": "ByComparePerformance"
+  },
+  "jsonTypeNames": {
+    "LevelPerformanceInitialize": "RPG.GameCore.LevelPerformanceInitialize",
+    "CreateNPC": "RPG.GameCore.CreateNPC",
+    "DestroyNPC": "RPG.GameCore.DestroyNPC",
+    "TriggerPerformance": "RPG.GameCore.TriggerPerformance",
+    "PerformanceTransition": "RPG.GameCore.PerformanceTransition",
+    "AdvNpcFaceToPlayer": "RPG.GameCore.AdvNpcFaceToPlayer",
+    "FinishLevelGraph": "RPG.GameCore.FinishLevelGraph",
+    "PlayAndWaitSimpleTalk": "RPG.GameCore.PlayAndWaitSimpleTalk",
+    "PlaySimpleTalk": "RPG.GameCore.PlaySimpleTalk",
+    "PlayMultiVoiceTalk": "RPG.GameCore.PlayMultiVoiceTalk",
+    "PlayOptionTalk": "RPG.GameCore.PlayOptionTalk",
+    "FinishPerformanceMission": "RPG.GameCore.FinishPerformanceMission",
+    "WaitSimpleTalkFinish": "RPG.GameCore.WaitSimpleTalkFinish",
+    "EndPerformance": "RPG.GameCore.EndPerformance",
+    "WaitPerformanceEnd": "RPG.GameCore.WaitPerformanceEnd",
+    "TriggerCustomStringOnDialogEnd": "RPG.GameCore.TriggerCustomStringOnDialogEnd",
+    "ByComparePerformance": "RPG.GameCore.ByComparePerformance",
+    "OptionTalkInfo": "RPG.GameCore.OptionTalkInfo"
+  },
+  "nativeFieldLayouts": {
+    "OptionTalkInfo": {
+      "typeIndex": 15477,
+      "fields": [
+        {
+          "name": "OptionIconPath",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76057,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "MenuItemExtraInfo",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76058,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "SubMissionIDForMenuItem",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76059,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "HasBeenTriggeredLogic",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76060,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76061,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 36
+        },
+        {
+          "name": "OptionTextmapID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76062,
+          "type": {
+            "kind": 17,
+            "name": "TextID",
+            "typeIndex": 6564
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "OptionIconType",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76063,
+          "type": {
+            "kind": 18,
+            "name": "JsonEnum",
+            "typeIndex": 10869
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "TriggerCustomString",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76064,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "HasTriggered",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76065,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "DeleteAfterSelection",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76066,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 73
+        },
+        {
+          "name": "SubmissionID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76067,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 76
+        },
+        {
+          "name": "FinishKey",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76068,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "TalkEventID",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76069,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 88
+        },
+        {
+          "name": "IsSkipDefault",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76070,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 92
+        },
+        {
+          "name": "VisibleFilter",
+          "declaringType": "OptionTalkInfo",
+          "fieldIndex": 76071,
+          "type": {
+            "kind": 18,
+            "name": "PredicateConfig",
+            "typeIndex": 23740
+          },
+          "instanceOffset": 96
+        }
+      ]
+    },
+    "TriggerPerformance": {
+      "typeIndex": 20299,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "PerformanceType",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92441,
+          "type": {
+            "kind": 17,
+            "name": "ELevelPerformanceType",
+            "typeIndex": 10484
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "PerformanceID",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92442,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "PerformanceType_DS",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92443,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "PerformanceID_DS",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92444,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "SaveProgress",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92445,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "MaskConfig",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92446,
+          "type": {
+            "kind": 18,
+            "name": "TriggerPerformanceMask",
+            "typeIndex": 20300
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "InheritOwnerEntityCustomData",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92447,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "ValueSource",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92448,
+          "type": {
+            "kind": 18,
+            "name": "LevelGraphValueSource",
+            "typeIndex": 18312
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "CloseScreenCrack",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92449,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "CloseMaskAndCrack",
+          "declaringType": "TriggerPerformance",
+          "fieldIndex": 92450,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 81
+        }
+      ]
+    },
+    "TriggerPerformanceMask": {
+      "typeIndex": 20300,
+      "fields": [
+        {
+          "name": "UseExcelData",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92451,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "StartBlack",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92452,
+          "type": {
+            "kind": 17,
+            "name": "StoryBlackType",
+            "typeIndex": 10468
+          },
+          "instanceOffset": 20
+        },
+        {
+          "name": "EndBlack",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92453,
+          "type": {
+            "kind": 17,
+            "name": "StoryBlackType",
+            "typeIndex": 10468
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "MaskColor",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92454,
+          "type": {
+            "kind": 17,
+            "name": "ScreenTransferType",
+            "typeIndex": 24784
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "EndCrack",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92455,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "EndScrCut",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92456,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 33
+        },
+        {
+          "name": "StartCustomSrcTrf",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92457,
+          "type": {
+            "kind": 17,
+            "name": "CustomScreenTransferType",
+            "typeIndex": 24494
+          },
+          "instanceOffset": 36
+        },
+        {
+          "name": "EndCustomSrcTrf",
+          "declaringType": "TriggerPerformanceMask",
+          "fieldIndex": 92458,
+          "type": {
+            "kind": 17,
+            "name": "CustomScreenTransferType",
+            "typeIndex": 24494
+          },
+          "instanceOffset": 40
+        }
+      ]
+    },
+    "ByComparePerformance": {
+      "typeIndex": 20315,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "Inverse",
+          "declaringType": "PredicateConfig",
+          "fieldIndex": 102141,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "PerformanceID_DS",
+          "declaringType": "ByComparePerformance",
+          "fieldIndex": 92488,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "PerformanceID",
+          "declaringType": "ByComparePerformance",
+          "fieldIndex": 92489,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 40
+        }
+      ]
+    },
+    "TriggerCustomStringOnDialogEnd": {
+      "typeIndex": 20750,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "CustomString",
+          "declaringType": "TriggerCustomString",
+          "fieldIndex": 102294,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 24
+        }
+      ]
+    },
+    "SwitchCharacterAnchor": {
+      "typeIndex": 20825,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "IsLocalPlayer",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93958,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "CharacterUniqueName",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93959,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "AreaName",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93960,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "AnchorName",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93961,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "LevelAreaKey",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93962,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "Target",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93963,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "AttachPoint",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93964,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "ResetAnimation",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93965,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "ResetCamera",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93966,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 81
+        },
+        {
+          "name": "ResetTurnInPlace",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93967,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 82
+        },
+        {
+          "name": "ClearSpecialVision",
+          "declaringType": "SwitchCharacterAnchor",
+          "fieldIndex": 93968,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 83
+        }
+      ]
+    },
+    "PlaySimpleTalk": {
+      "typeIndex": 20844,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "SimpleTalkList",
+          "declaringType": "SimpleTalkListConfig",
+          "fieldIndex": 94074,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkInfo",
+              "typeIndex": 24391
+            }
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "KeepDisplay",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94075,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "BlackMask",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94076,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 33
+        },
+        {
+          "name": "BlackMaskColor",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94077,
+          "type": {
+            "kind": 17,
+            "name": "SimpleTalkBlackMaskColor",
+            "typeIndex": 24539
+          },
+          "instanceOffset": 36
+        },
+        {
+          "name": "NeedFadeBlackMask",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94078,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "BlackMaskFadeDuration",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94079,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 44
+        },
+        {
+          "name": "UseBackground",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94080,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "SkipFirstTalkBgFadeIn",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94081,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 49
+        },
+        {
+          "name": "Backgrounds",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94082,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkBackground",
+              "typeIndex": 21121
+            }
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "UseTargetBehavior",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94083,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "TargetBehaviors",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94084,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkTargetBehavior",
+              "typeIndex": 21122
+            }
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "ChangeStyle",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94085,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "StyleList",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94086,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkStyle",
+              "typeIndex": 20842
+            }
+          },
+          "instanceOffset": 88
+        },
+        {
+          "name": "IsFromTimeline",
+          "declaringType": "PlaySimpleTalk",
+          "fieldIndex": 94087,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 96
+        }
+      ]
+    },
+    "WaitSimpleTalkFinish": {
+      "typeIndex": 20845,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        }
+      ]
+    },
+    "PlayOptionTalk": {
+      "typeIndex": 20851,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "OptionList",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94092,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "OptionTalkInfo",
+              "typeIndex": 15477
+            }
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "HideSelected",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94093,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "HideButtonAuto",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94094,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 33
+        },
+        {
+          "name": "TriggerStringWhenAllSelected",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94095,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 34
+        },
+        {
+          "name": "TriggerString",
+          "declaringType": "PlayOptionTalk",
+          "fieldIndex": 94096,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 40
+        }
+      ]
+    },
+    "FinishPerformanceMission": {
+      "typeIndex": 21099,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "Key",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94737,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "MainMissionID",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94738,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "KeepScreenTransferUntilGroupRefresh",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94739,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 36
+        },
+        {
+          "name": "UseSpecifiedLoading",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94740,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 37
+        },
+        {
+          "name": "StratageType",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94741,
+          "type": {
+            "kind": 17,
+            "name": "LoadingStratageType",
+            "typeIndex": 10567
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "LoadingType",
+          "declaringType": "FinishPerformanceMission",
+          "fieldIndex": 94742,
+          "type": {
+            "kind": 17,
+            "name": "TransitionLoadingType",
+            "typeIndex": 17637
+          },
+          "instanceOffset": 44
+        }
+      ]
+    },
+    "EndPerformance": {
+      "typeIndex": 21847,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        }
+      ]
+    },
+    "PerformanceTransition": {
+      "typeIndex": 21859,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "SwitchInTime",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96257,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "SwitchKeepTime",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96258,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "SwitchOutTime",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96259,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "TextEnabled",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96260,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 36
+        },
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96261,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "NotAuto",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96262,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 44
+        },
+        {
+          "name": "CreateNpcList",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96263,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "CreateNPC",
+              "typeIndex": 21944
+            }
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "CaptureNpcList",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96264,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "CaptureNPCToCharacter",
+              "typeIndex": 20292
+            }
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "DestroyNpcList",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96265,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "DestroyNPC",
+              "typeIndex": 21946
+            }
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "CreateProp",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96266,
+          "type": {
+            "kind": 18,
+            "name": "CreateProp",
+            "typeIndex": 21947
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "DestroyProp",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96267,
+          "type": {
+            "kind": 18,
+            "name": "DestroyProp",
+            "typeIndex": 21949
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "AdvCreateGroupEntity",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96268,
+          "type": {
+            "kind": 18,
+            "name": "AdvCreateGroupEntity",
+            "typeIndex": 20285
+          },
+          "instanceOffset": 88
+        },
+        {
+          "name": "AdvDestroyGroupEntity",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96269,
+          "type": {
+            "kind": 18,
+            "name": "AdvDestroyGroupEntity",
+            "typeIndex": 20287
+          },
+          "instanceOffset": 96
+        },
+        {
+          "name": "DisactiveVCamOnGraphEnd",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96270,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 104
+        },
+        {
+          "name": "ActiveVirtualCamera",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96271,
+          "type": {
+            "kind": 18,
+            "name": "ActiveVirtualCamera_PerformanceTransition",
+            "typeIndex": 21860
+          },
+          "instanceOffset": 112
+        },
+        {
+          "name": "ActiveTemplateVirtualCamera",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96272,
+          "type": {
+            "kind": 18,
+            "name": "ActiveTemplateVirtualCamera",
+            "typeIndex": 20827
+          },
+          "instanceOffset": 120
+        },
+        {
+          "name": "SwitchCharacterAnchor",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96273,
+          "type": {
+            "kind": 18,
+            "name": "SwitchCharacterAnchor",
+            "typeIndex": 20825
+          },
+          "instanceOffset": 128
+        },
+        {
+          "name": "AdvNpcFaceToPlayer",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96274,
+          "type": {
+            "kind": 18,
+            "name": "AdvNpcFaceToPlayer",
+            "typeIndex": 20337
+          },
+          "instanceOffset": 136
+        },
+        {
+          "name": "WaitStreamingFinish",
+          "declaringType": "PerformanceTransition",
+          "fieldIndex": 96275,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 144
+        }
+      ]
+    },
+    "ActiveVirtualCamera_PerformanceTransition": {
+      "typeIndex": 21860,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "AreaName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96276,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "AnchorName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96277,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "LevelAreaCameraKey",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96278,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "IsEntryPointCamera",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96279,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "IsActive",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96280,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 49
+        },
+        {
+          "name": "FollowTargetUniqueName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96281,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "FollowTargetAttachPoint",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96282,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "FollowTargetAnchorName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96283,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "LookAtTargetUniqueName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96284,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "LookAtTargetAnchorName",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96285,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 88
+        },
+        {
+          "name": "LevelAreaLookAtKey",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96286,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 96
+        },
+        {
+          "name": "WaitBlendFinish",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96287,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 104
+        },
+        {
+          "name": "BlendConfig",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96288,
+          "type": {
+            "kind": 18,
+            "name": "VCameraBlend_PerformanceTransition",
+            "typeIndex": 16420
+          },
+          "instanceOffset": 112
+        },
+        {
+          "name": "VCameraDitherNPCOn",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96289,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 120
+        },
+        {
+          "name": "VCameraDitherMaxDistance",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96290,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 124
+        },
+        {
+          "name": "VCameraDitherAlphaMin",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96291,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 128
+        },
+        {
+          "name": "KeepMainCameraRotation",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96292,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 132
+        },
+        {
+          "name": "CenterPosX",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96293,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 136
+        },
+        {
+          "name": "CenterPosY",
+          "declaringType": "ActiveVirtualCamera_PerformanceTransition",
+          "fieldIndex": 96294,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 140
+        }
+      ]
+    },
+    "CreateNPC": {
+      "typeIndex": 21944,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "GroupID",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96494,
+          "type": {
+            "kind": 18,
+            "name": "DynamicFloat",
+            "typeIndex": 10836
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "GroupNpcID",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96495,
+          "type": {
+            "kind": 18,
+            "name": "DynamicFloat",
+            "typeIndex": 10836
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "NPCUniqueName",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96496,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "DefaultIdleStateName",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96497,
+          "type": {
+            "kind": 18,
+            "name": "DynamicString",
+            "typeIndex": 16479
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "CreateList",
+          "declaringType": "CreateNPC",
+          "fieldIndex": 96498,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "NpcEntityInfo",
+              "typeIndex": 20288
+            }
+          },
+          "instanceOffset": 56
+        }
+      ]
+    },
+    "DestroyNPC": {
+      "typeIndex": 21946,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "GroupID",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96504,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "GroupNpcID",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96505,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "Hide",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96506,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "TargetType",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96507,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "DestroyList",
+          "declaringType": "DestroyNPC",
+          "fieldIndex": 96508,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "GroupEntityInfo",
+              "typeIndex": 20289
+            }
+          },
+          "instanceOffset": 48
+        }
+      ]
+    },
+    "AdvNpcFaceToPlayer": {
+      "typeIndex": 20337,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "FromDialog",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92530,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "GroupID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92531,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "GroupNpcID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92532,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "TargetNpcType",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92533,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "PlayerInGroupID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92534,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "PlayerInGroupNpcID",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92535,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 52
+        },
+        {
+          "name": "TargetPlayerType",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92536,
+          "type": {
+            "kind": 18,
+            "name": "TargetEvaluator",
+            "typeIndex": 23744
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "Duration",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92537,
+          "type": {
+            "kind": 12
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "TryFaceToFace",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92538,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 68
+        },
+        {
+          "name": "OnlyPlayerFaceToNpc",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92539,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 69
+        },
+        {
+          "name": "NpcLookAtPlayer",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92540,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 70
+        },
+        {
+          "name": "PlayerLookAtNpc",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92541,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 71
+        },
+        {
+          "name": "StopLookAtOnGraphEnd",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92542,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "TurnBackOnGraphEnd",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92543,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 73
+        },
+        {
+          "name": "SteerImmediately",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92544,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 74
+        },
+        {
+          "name": "FinishImmadiate",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92545,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 75
+        },
+        {
+          "name": "WaitFinishMode",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92546,
+          "type": {
+            "kind": 17,
+            "name": "EWaitFaceToTaskFinishMode",
+            "typeIndex": 10517
+          },
+          "instanceOffset": 76
+        },
+        {
+          "name": "ForceToStandBy",
+          "declaringType": "AdvNpcFaceToPlayer",
+          "fieldIndex": 92547,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 80
+        }
+      ]
+    },
+    "FinishLevelGraph": {
+      "typeIndex": 20625,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "MakeOwnerEntityDie",
+          "declaringType": "FinishLevelGraph",
+          "fieldIndex": 93460,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 24
+        }
+      ]
+    },
+    "PlayAndWaitSimpleTalk": {
+      "typeIndex": 21123,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "SimpleTalkList",
+          "declaringType": "SimpleTalkListConfig",
+          "fieldIndex": 94074,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkInfo",
+              "typeIndex": 24391
+            }
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "KeepDisplay",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94776,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "BlackMask",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94777,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 33
+        },
+        {
+          "name": "NeedFadeBlackMask",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94778,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 34
+        },
+        {
+          "name": "UseBackground",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94779,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 35
+        },
+        {
+          "name": "SkipFirstTalkBgFadeIn",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94780,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 36
+        },
+        {
+          "name": "Backgrounds",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94781,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkBackground",
+              "typeIndex": 21121
+            }
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "UseTargetBehavior",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94782,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "TargetBehaviors",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94783,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkTargetBehavior",
+              "typeIndex": 21122
+            }
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "ChangeStyle",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94784,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "StyleList",
+          "declaringType": "PlayAndWaitSimpleTalk",
+          "fieldIndex": 94785,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "SimpleTalkStyle",
+              "typeIndex": 20842
+            }
+          },
+          "instanceOffset": 72
+        }
+      ]
+    },
+    "PlayMultiVoiceTalk": {
+      "typeIndex": 21124,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "TalkSentenceID",
+          "declaringType": "PlayMultiVoiceTalk",
+          "fieldIndex": 94786,
+          "type": {
+            "kind": 9
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "SelectType",
+          "declaringType": "PlayMultiVoiceTalk",
+          "fieldIndex": 94787,
+          "type": {
+            "kind": 17,
+            "name": "MultiVoiceSelectType",
+            "typeIndex": 24550
+          },
+          "instanceOffset": 28
+        },
+        {
+          "name": "KeepDisplay",
+          "declaringType": "PlayMultiVoiceTalk",
+          "fieldIndex": 94788,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 32
+        }
+      ]
+    },
+    "WaitPerformanceEnd": {
+      "typeIndex": 21848,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        }
+      ]
+    },
+    "LevelPerformanceInitialize": {
+      "typeIndex": 21856,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 16
+        },
+        {
+          "name": "PerformanceType",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96226,
+          "type": {
+            "kind": 17,
+            "name": "ELevelPerformanceType",
+            "typeIndex": 10484
+          },
+          "instanceOffset": 24
+        },
+        {
+          "name": "AreaPrefabPath",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96227,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 32
+        },
+        {
+          "name": "IsLocal",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96228,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 40
+        },
+        {
+          "name": "MuteSFX",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96229,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 41
+        },
+        {
+          "name": "CreateCharacterList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96230,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "CreateCharacter",
+              "typeIndex": 20819
+            }
+          },
+          "instanceOffset": 48
+        },
+        {
+          "name": "CaptureNPCList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96231,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "PerformanceCaptureNPC",
+              "typeIndex": 21855
+            }
+          },
+          "instanceOffset": 56
+        },
+        {
+          "name": "HideNPC",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96232,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 64
+        },
+        {
+          "name": "EntityVisiableList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96233,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "EntityVisiableInfo",
+              "typeIndex": 21853
+            }
+          },
+          "instanceOffset": 72
+        },
+        {
+          "name": "HideStillNPC",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96234,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 80
+        },
+        {
+          "name": "HideMunicipalCrowd",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96235,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 81
+        },
+        {
+          "name": "HideMunicipalPedestrian",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96236,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 82
+        },
+        {
+          "name": "HideMunicipalAudience",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96237,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 83
+        },
+        {
+          "name": "HideMunicipalOther",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96238,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 84
+        },
+        {
+          "name": "HideMonster",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96239,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 85
+        },
+        {
+          "name": "HideProp",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96240,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 86
+        },
+        {
+          "name": "PropVisiableList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96241,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "PerformancePropVisiableInfo",
+              "typeIndex": 21854
+            }
+          },
+          "instanceOffset": 88
+        },
+        {
+          "name": "HideLocalPlayer",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96242,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 96
+        },
+        {
+          "name": "FirstCameraAnchor",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96243,
+          "type": {
+            "kind": 14
+          },
+          "instanceOffset": 104
+        },
+        {
+          "name": "UseNewStreamingSourceType",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96244,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 112
+        },
+        {
+          "name": "StreamingSourcesInBlackMask",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96245,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 14
+            }
+          },
+          "instanceOffset": 120
+        },
+        {
+          "name": "StreamingSourcesAfterBlackMask",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96246,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 14
+            }
+          },
+          "instanceOffset": 128
+        },
+        {
+          "name": "MarkStreamingItems",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96247,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "StageItemAlias",
+              "typeIndex": 22251
+            }
+          },
+          "instanceOffset": 136
+        },
+        {
+          "name": "ResetEnvironment",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96248,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 144
+        },
+        {
+          "name": "ResetMonster",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96249,
+          "type": {
+            "kind": 2
+          },
+          "instanceOffset": 145
+        },
+        {
+          "name": "AudioStateList",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96250,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "AudioStateConfig",
+              "typeIndex": 16383
+            }
+          },
+          "instanceOffset": 152
+        },
+        {
+          "name": "OverrideCharacterOutfits",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96251,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "PerformanceOverrideCharacterOutfit",
+              "typeIndex": 21857
+            }
+          },
+          "instanceOffset": 160
+        },
+        {
+          "name": "OnLoadBeginImmediately",
+          "declaringType": "LevelPerformanceInitialize",
+          "fieldIndex": 96252,
+          "type": {
+            "kind": 29,
+            "elementType": {
+              "kind": 18,
+              "name": "TaskConfig",
+              "typeIndex": 23738
+            }
+          },
+          "instanceOffset": 168
+        }
+      ]
+    }
+  },
+  "serializedFieldExceptions": {
+    "OptionTalkInfo": {
+      "readerRVA": "0x1d8b7680",
+      "omittedRuntimeFields": [
+        76057,
+        76058,
+        76059,
+        76060
+      ],
+      "firstSerializedField": {
+        "fieldIndex": 76061,
+        "offset": 36,
+        "mask": 1,
+        "testRVA": "0x1d8b76b0",
+        "assignmentRVA": "0x1d8b76da"
+      }
+    }
+  },
+  "ordinaryJSONTypeNames": [
+    "OptionTalkInfo"
+  ],
+  "indexSHA256": "2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89",
+  "records": {
+    "Config/Level/NPCDialogue/P20002/F20002001_G61/DialogueMain_F20002001_G61_N400001.json": {
+      "entryKey": "28d90e25310bec7f",
+      "length": 49,
+      "sha256": "8f341d2400bb69b1fbecfb676b5e0654a44ca59ebd7c3f629fb16032eab0e74a"
+    },
+    "Config/Level/NPCDialogue/P20002/F20002001_G61/DialoguePack_Transferred_F20002001_G61_N400001.json": {
+      "entryKey": "5c8d3553ccba0ea0",
+      "length": 398,
+      "sha256": "affa8ce887467a0470520167705cb9ca323a5cc9038d981d3c5565a7d48ec499"
+    },
+    "Config/Level/Mission/3000602/Mission_300060201.json": {
+      "entryKey": "3493633c9a6d17c0",
+      "length": 98,
+      "sha256": "e2ad4f9f102c360d1f4f6afe0fad5ba63f480e45248f8a066bf9791b56316d19"
+    },
+    "Config/Level/Mission/3000602/Mission_300060203.json": {
+      "entryKey": "dc39f903e481841b",
+      "length": 14,
+      "sha256": "82183bb16cf6b8039a58acc843a32563b72e9d87c578fe55e3b50054cf01dc83"
+    },
+    "Config/Level/Mission/3000602/Talk/Talk_300060201.json": {
+      "entryKey": "5934d698bc19919c",
+      "length": 19,
+      "sha256": "c71cb2a0fc90483b6bec1638e10b7b9cf6db50956017a519dd76c79d0c0c681e"
+    },
+    "Config/Level/Mission/3000602/Act/Act300060201.json": {
+      "entryKey": "6946b714afeb6688",
+      "length": 1355,
+      "sha256": "a3bdf55dd0d5ba1fea2db7e6dd1d82bb326d833247f2380d8f0502c12cd3457c"
+    },
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001301.json": {
+      "entryKey": "6e9a9a88f100096c",
+      "length": 421,
+      "sha256": "5a73e38baf5c19d95156cbf6e295500d74ca3a01ce5aaedcce6d6bf17bddd006"
+    },
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001300.json": {
+      "entryKey": "808a8e4b69ada3f8",
+      "length": 77,
+      "sha256": "f4821dcdc4fa1d5317a39a24fd4ab1c6a0f82bc6ecd5f77b212bd8664253ff96"
+    },
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001302.json": {
+      "entryKey": "49b0823818f4d74a",
+      "length": 595,
+      "sha256": "03f2a0589f1542e2fed3d4f090dcb69415e70187e5c8a5e960b002f318abb3a6"
+    },
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001303.json": {
+      "entryKey": "a3e4d20a0308335a",
+      "length": 141,
+      "sha256": "4aef3dd9730b3950e3f2113bd73118afe64a209490753d3b066db90055a47453"
+    }
+  },
+  "functions": {
+    "reader-OptionTalkInfo-factory": {
+      "beginRVA": "0x1d8b7310",
+      "endRVA": "0x1d8b7640",
+      "sha256": "47e8db286fc78f32221af1666b2b8cf56c387bbe3c5de257ac853c583d513e45",
+      "points": [
+        {
+          "rva": "0x1d8b7310",
+          "bytes": "56",
+          "text": "push rsi"
+        },
+        {
+          "rva": "0x1d8b7311",
+          "bytes": "57",
+          "text": "push rdi"
+        },
+        {
+          "rva": "0x1d8b7312",
+          "bytes": "53",
+          "text": "push rbx"
+        },
+        {
+          "rva": "0x1d8b7313",
+          "bytes": "4883ec30",
+          "text": "sub rsp, 0x30"
+        },
+        {
+          "rva": "0x1d8b7317",
+          "bytes": "4889d7",
+          "text": "mov rdi, rdx"
+        },
+        {
+          "rva": "0x1d8b731a",
+          "bytes": "4889ce",
+          "text": "mov rsi, rcx"
+        },
+        {
+          "rva": "0x1d8b731d",
+          "bytes": "488b0d344baaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b4cc]"
+        },
+        {
+          "rva": "0x1d8b7324",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b732b",
+          "bytes": "0f8455020000",
+          "text": "je 0x19d8b7586"
+        },
+        {
+          "rva": "0x1d8b7331",
+          "bytes": "4889f1",
+          "text": "mov rcx, rsi"
+        },
+        {
+          "rva": "0x1d8b7334",
+          "bytes": "e8277a8fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b7339",
+          "bytes": "8944242c",
+          "text": "mov dword ptr [rsp + 0x2c], eax"
+        },
+        {
+          "rva": "0x1d8b733d",
+          "bytes": "83f804",
+          "text": "cmp eax, 4"
+        },
+        {
+          "rva": "0x1d8b7340",
+          "bytes": "0f879d020000",
+          "text": "ja 0x19d8b75e3"
+        },
+        {
+          "rva": "0x1d8b7346",
+          "bytes": "89c0",
+          "text": "mov eax, eax"
+        },
+        {
+          "rva": "0x1d8b7348",
+          "bytes": "488d0ddd020000",
+          "text": "lea rcx, [rip + 0x2dd]"
+        },
+        {
+          "rva": "0x1d8b734f",
+          "bytes": "48630481",
+          "text": "movsxd rax, dword ptr [rcx + rax*4]"
+        },
+        {
+          "rva": "0x1d8b7353",
+          "bytes": "4801c8",
+          "text": "add rax, rcx"
+        },
+        {
+          "rva": "0x1d8b7356",
+          "bytes": "ffe0",
+          "text": "jmp rax"
+        },
+        {
+          "rva": "0x1d8b7358",
+          "bytes": "488b0df151adeb",
+          "text": "mov rcx, qword ptr [rip - 0x1452ae0f]"
+        },
+        {
+          "rva": "0x1d8b735f",
+          "bytes": "e8cc2d48e6",
+          "text": "call 0x183d3a130"
+        },
+        {
+          "rva": "0x1d8b7364",
+          "bytes": "4889c3",
+          "text": "mov rbx, rax"
+        },
+        {
+          "rva": "0x1d8b7367",
+          "bytes": "488b0d02d6aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x145529fe]"
+        },
+        {
+          "rva": "0x1d8b736e",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7375",
+          "bytes": "0f842e020000",
+          "text": "je 0x19d8b75a9"
+        },
+        {
+          "rva": "0x1d8b737b",
+          "bytes": "488b0526c1a8eb",
+          "text": "mov rax, qword ptr [rip - 0x14573eda]"
+        },
+        {
+          "rva": "0x1d8b7382",
+          "bytes": "488b80d8d40000",
+          "text": "mov rax, qword ptr [rax + 0xd4d8]"
+        },
+        {
+          "rva": "0x1d8b7389",
+          "bytes": "48894338",
+          "text": "mov qword ptr [rbx + 0x38], rax"
+        },
+        {
+          "rva": "0x1d8b738d",
+          "bytes": "48891f",
+          "text": "mov qword ptr [rdi], rbx"
+        },
+        {
+          "rva": "0x1d8b7390",
+          "bytes": "4889f1",
+          "text": "mov rcx, rsi"
+        },
+        {
+          "rva": "0x1d8b7393",
+          "bytes": "4889da",
+          "text": "mov rdx, rbx"
+        },
+        {
+          "rva": "0x1d8b7396",
+          "bytes": "4883c430",
+          "text": "add rsp, 0x30"
+        },
+        {
+          "rva": "0x1d8b739a",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b739b",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b739c",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b739d",
+          "bytes": "e9de020000",
+          "text": "jmp 0x19d8b7680"
+        },
+        {
+          "rva": "0x1d8b73a2",
+          "bytes": "488b0dcfd5aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x14552a31]"
+        },
+        {
+          "rva": "0x1d8b73a9",
+          "bytes": "e8822d48e6",
+          "text": "call 0x183d3a130"
+        },
+        {
+          "rva": "0x1d8b73ae",
+          "bytes": "4889c3",
+          "text": "mov rbx, rax"
+        },
+        {
+          "rva": "0x1d8b73b1",
+          "bytes": "488b0db8d5aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x14552a48]"
+        },
+        {
+          "rva": "0x1d8b73b8",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b73bf",
+          "bytes": "0f84ee010000",
+          "text": "je 0x19d8b75b3"
+        },
+        {
+          "rva": "0x1d8b73c5",
+          "bytes": "488b05dcc0a8eb",
+          "text": "mov rax, qword ptr [rip - 0x14573f24]"
+        },
+        {
+          "rva": "0x1d8b73cc",
+          "bytes": "488b80d8d40000",
+          "text": "mov rax, qword ptr [rax + 0xd4d8]"
+        },
+        {
+          "rva": "0x1d8b73d3",
+          "bytes": "48894338",
+          "text": "mov qword ptr [rbx + 0x38], rax"
+        },
+        {
+          "rva": "0x1d8b73d7",
+          "bytes": "48891f",
+          "text": "mov qword ptr [rdi], rbx"
+        },
+        {
+          "rva": "0x1d8b73da",
+          "bytes": "488b1597d5aaeb",
+          "text": "mov rdx, qword ptr [rip - 0x14552a69]"
+        },
+        {
+          "rva": "0x1d8b73e1",
+          "bytes": "488b03",
+          "text": "mov rax, qword ptr [rbx]"
+        },
+        {
+          "rva": "0x1d8b73e4",
+          "bytes": "4839d0",
+          "text": "cmp rax, rdx"
+        },
+        {
+          "rva": "0x1d8b73e7",
+          "bytes": "7422",
+          "text": "je 0x19d8b740b"
+        },
+        {
+          "rva": "0x1d8b73e9",
+          "bytes": "0fb68ab4000000",
+          "text": "movzx ecx, byte ptr [rdx + 0xb4]"
+        },
+        {
+          "rva": "0x1d8b73f0",
+          "bytes": "3888b4000000",
+          "text": "cmp byte ptr [rax + 0xb4], cl"
+        },
+        {
+          "rva": "0x1d8b73f6",
+          "bytes": "0f82df010000",
+          "text": "jb 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b73fc",
+          "bytes": "488b4068",
+          "text": "mov rax, qword ptr [rax + 0x68]"
+        },
+        {
+          "rva": "0x1d8b7400",
+          "bytes": "483954c8f8",
+          "text": "cmp qword ptr [rax + rcx*8 - 8], rdx"
+        },
+        {
+          "rva": "0x1d8b7405",
+          "bytes": "0f85d0010000",
+          "text": "jne 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b740b",
+          "bytes": "4889f1",
+          "text": "mov rcx, rsi"
+        },
+        {
+          "rva": "0x1d8b740e",
+          "bytes": "4889da",
+          "text": "mov rdx, rbx"
+        },
+        {
+          "rva": "0x1d8b7411",
+          "bytes": "4883c430",
+          "text": "add rsp, 0x30"
+        },
+        {
+          "rva": "0x1d8b7415",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b7416",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b7417",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b7418",
+          "bytes": "e9d355d2ff",
+          "text": "jmp 0x19d5dc9f0"
+        },
+        {
+          "rva": "0x1d8b741d",
+          "bytes": "488b0dc44db2eb",
+          "text": "mov rcx, qword ptr [rip - 0x144db23c]"
+        },
+        {
+          "rva": "0x1d8b7424",
+          "bytes": "e8072d48e6",
+          "text": "call 0x183d3a130"
+        },
+        {
+          "rva": "0x1d8b7429",
+          "bytes": "4889c3",
+          "text": "mov rbx, rax"
+        },
+        {
+          "rva": "0x1d8b742c",
+          "bytes": "488b0d3dd5aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x14552ac3]"
+        },
+        {
+          "rva": "0x1d8b7433",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b743a",
+          "bytes": "0f847d010000",
+          "text": "je 0x19d8b75bd"
+        },
+        {
+          "rva": "0x1d8b7440",
+          "bytes": "488b0561c0a8eb",
+          "text": "mov rax, qword ptr [rip - 0x14573f9f]"
+        },
+        {
+          "rva": "0x1d8b7447",
+          "bytes": "488b80d8d40000",
+          "text": "mov rax, qword ptr [rax + 0xd4d8]"
+        },
+        {
+          "rva": "0x1d8b744e",
+          "bytes": "48894338",
+          "text": "mov qword ptr [rbx + 0x38], rax"
+        },
+        {
+          "rva": "0x1d8b7452",
+          "bytes": "48891f",
+          "text": "mov qword ptr [rdi], rbx"
+        },
+        {
+          "rva": "0x1d8b7455",
+          "bytes": "488b158c4db2eb",
+          "text": "mov rdx, qword ptr [rip - 0x144db274]"
+        },
+        {
+          "rva": "0x1d8b745c",
+          "bytes": "488b03",
+          "text": "mov rax, qword ptr [rbx]"
+        },
+        {
+          "rva": "0x1d8b745f",
+          "bytes": "4839d0",
+          "text": "cmp rax, rdx"
+        },
+        {
+          "rva": "0x1d8b7462",
+          "bytes": "7422",
+          "text": "je 0x19d8b7486"
+        },
+        {
+          "rva": "0x1d8b7464",
+          "bytes": "0fb68ab4000000",
+          "text": "movzx ecx, byte ptr [rdx + 0xb4]"
+        },
+        {
+          "rva": "0x1d8b746b",
+          "bytes": "3888b4000000",
+          "text": "cmp byte ptr [rax + 0xb4], cl"
+        },
+        {
+          "rva": "0x1d8b7471",
+          "bytes": "0f8264010000",
+          "text": "jb 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b7477",
+          "bytes": "488b4068",
+          "text": "mov rax, qword ptr [rax + 0x68]"
+        },
+        {
+          "rva": "0x1d8b747b",
+          "bytes": "483954c8f8",
+          "text": "cmp qword ptr [rax + rcx*8 - 8], rdx"
+        },
+        {
+          "rva": "0x1d8b7480",
+          "bytes": "0f8555010000",
+          "text": "jne 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b7486",
+          "bytes": "4889f1",
+          "text": "mov rcx, rsi"
+        },
+        {
+          "rva": "0x1d8b7489",
+          "bytes": "4889da",
+          "text": "mov rdx, rbx"
+        },
+        {
+          "rva": "0x1d8b748c",
+          "bytes": "4883c430",
+          "text": "add rsp, 0x30"
+        },
+        {
+          "rva": "0x1d8b7490",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b7491",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b7492",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b7493",
+          "bytes": "e9c8aea3ff",
+          "text": "jmp 0x19d2f2360"
+        },
+        {
+          "rva": "0x1d8b7498",
+          "bytes": "488b0df1d6aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455290f]"
+        },
+        {
+          "rva": "0x1d8b749f",
+          "bytes": "e88c2c48e6",
+          "text": "call 0x183d3a130"
+        },
+        {
+          "rva": "0x1d8b74a4",
+          "bytes": "4889c3",
+          "text": "mov rbx, rax"
+        },
+        {
+          "rva": "0x1d8b74a7",
+          "bytes": "488b0dc2d4aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x14552b3e]"
+        },
+        {
+          "rva": "0x1d8b74ae",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b74b5",
+          "bytes": "0f840c010000",
+          "text": "je 0x19d8b75c7"
+        },
+        {
+          "rva": "0x1d8b74bb",
+          "bytes": "488b05e6bfa8eb",
+          "text": "mov rax, qword ptr [rip - 0x1457401a]"
+        },
+        {
+          "rva": "0x1d8b74c2",
+          "bytes": "488b80d8d40000",
+          "text": "mov rax, qword ptr [rax + 0xd4d8]"
+        },
+        {
+          "rva": "0x1d8b74c9",
+          "bytes": "48894338",
+          "text": "mov qword ptr [rbx + 0x38], rax"
+        },
+        {
+          "rva": "0x1d8b74cd",
+          "bytes": "48891f",
+          "text": "mov qword ptr [rdi], rbx"
+        },
+        {
+          "rva": "0x1d8b74d0",
+          "bytes": "488b15b9d6aaeb",
+          "text": "mov rdx, qword ptr [rip - 0x14552947]"
+        },
+        {
+          "rva": "0x1d8b74d7",
+          "bytes": "488b03",
+          "text": "mov rax, qword ptr [rbx]"
+        },
+        {
+          "rva": "0x1d8b74da",
+          "bytes": "4839d0",
+          "text": "cmp rax, rdx"
+        },
+        {
+          "rva": "0x1d8b74dd",
+          "bytes": "7422",
+          "text": "je 0x19d8b7501"
+        },
+        {
+          "rva": "0x1d8b74df",
+          "bytes": "0fb68ab4000000",
+          "text": "movzx ecx, byte ptr [rdx + 0xb4]"
+        },
+        {
+          "rva": "0x1d8b74e6",
+          "bytes": "3888b4000000",
+          "text": "cmp byte ptr [rax + 0xb4], cl"
+        },
+        {
+          "rva": "0x1d8b74ec",
+          "bytes": "0f82e9000000",
+          "text": "jb 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b74f2",
+          "bytes": "488b4068",
+          "text": "mov rax, qword ptr [rax + 0x68]"
+        },
+        {
+          "rva": "0x1d8b74f6",
+          "bytes": "483954c8f8",
+          "text": "cmp qword ptr [rax + rcx*8 - 8], rdx"
+        },
+        {
+          "rva": "0x1d8b74fb",
+          "bytes": "0f85da000000",
+          "text": "jne 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b7501",
+          "bytes": "4889f1",
+          "text": "mov rcx, rsi"
+        },
+        {
+          "rva": "0x1d8b7504",
+          "bytes": "4889da",
+          "text": "mov rdx, rbx"
+        },
+        {
+          "rva": "0x1d8b7507",
+          "bytes": "4883c430",
+          "text": "add rsp, 0x30"
+        },
+        {
+          "rva": "0x1d8b750b",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b750c",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b750d",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b750e",
+          "bytes": "e93db3a3ff",
+          "text": "jmp 0x19d2f2850"
+        },
+        {
+          "rva": "0x1d8b7513",
+          "bytes": "488b0d56c8aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x145537aa]"
+        },
+        {
+          "rva": "0x1d8b751a",
+          "bytes": "e8112c48e6",
+          "text": "call 0x183d3a130"
+        },
+        {
+          "rva": "0x1d8b751f",
+          "bytes": "4889c3",
+          "text": "mov rbx, rax"
+        },
+        {
+          "rva": "0x1d8b7522",
+          "bytes": "488b0d47d4aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x14552bb9]"
+        },
+        {
+          "rva": "0x1d8b7529",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7530",
+          "bytes": "0f849b000000",
+          "text": "je 0x19d8b75d1"
+        },
+        {
+          "rva": "0x1d8b7536",
+          "bytes": "488b056bbfa8eb",
+          "text": "mov rax, qword ptr [rip - 0x14574095]"
+        },
+        {
+          "rva": "0x1d8b753d",
+          "bytes": "488b80d8d40000",
+          "text": "mov rax, qword ptr [rax + 0xd4d8]"
+        },
+        {
+          "rva": "0x1d8b7544",
+          "bytes": "48894338",
+          "text": "mov qword ptr [rbx + 0x38], rax"
+        },
+        {
+          "rva": "0x1d8b7548",
+          "bytes": "48891f",
+          "text": "mov qword ptr [rdi], rbx"
+        },
+        {
+          "rva": "0x1d8b754b",
+          "bytes": "488b151ec8aaeb",
+          "text": "mov rdx, qword ptr [rip - 0x145537e2]"
+        },
+        {
+          "rva": "0x1d8b7552",
+          "bytes": "488b03",
+          "text": "mov rax, qword ptr [rbx]"
+        },
+        {
+          "rva": "0x1d8b7555",
+          "bytes": "4839d0",
+          "text": "cmp rax, rdx"
+        },
+        {
+          "rva": "0x1d8b7558",
+          "bytes": "741a",
+          "text": "je 0x19d8b7574"
+        },
+        {
+          "rva": "0x1d8b755a",
+          "bytes": "0fb68ab4000000",
+          "text": "movzx ecx, byte ptr [rdx + 0xb4]"
+        },
+        {
+          "rva": "0x1d8b7561",
+          "bytes": "3888b4000000",
+          "text": "cmp byte ptr [rax + 0xb4], cl"
+        },
+        {
+          "rva": "0x1d8b7567",
+          "bytes": "7272",
+          "text": "jb 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b7569",
+          "bytes": "488b4068",
+          "text": "mov rax, qword ptr [rax + 0x68]"
+        },
+        {
+          "rva": "0x1d8b756d",
+          "bytes": "483954c8f8",
+          "text": "cmp qword ptr [rax + rcx*8 - 8], rdx"
+        },
+        {
+          "rva": "0x1d8b7572",
+          "bytes": "7567",
+          "text": "jne 0x19d8b75db"
+        },
+        {
+          "rva": "0x1d8b7574",
+          "bytes": "4889f1",
+          "text": "mov rcx, rsi"
+        },
+        {
+          "rva": "0x1d8b7577",
+          "bytes": "4889da",
+          "text": "mov rdx, rbx"
+        },
+        {
+          "rva": "0x1d8b757a",
+          "bytes": "4883c430",
+          "text": "add rsp, 0x30"
+        },
+        {
+          "rva": "0x1d8b757e",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b757f",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b7580",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b7581",
+          "bytes": "e95a551400",
+          "text": "jmp 0x19d9fcae0"
+        },
+        {
+          "rva": "0x1d8b7586",
+          "bytes": "e8f54747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b758b",
+          "bytes": "488b0dc648aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b73a]"
+        },
+        {
+          "rva": "0x1d8b7592",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7599",
+          "bytes": "0f8592fdffff",
+          "text": "jne 0x19d8b7331"
+        },
+        {
+          "rva": "0x1d8b759f",
+          "bytes": "e8dc4747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b75a4",
+          "bytes": "e988fdffff",
+          "text": "jmp 0x19d8b7331"
+        },
+        {
+          "rva": "0x1d8b75a9",
+          "bytes": "e8d24747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b75ae",
+          "bytes": "e9c8fdffff",
+          "text": "jmp 0x19d8b737b"
+        },
+        {
+          "rva": "0x1d8b75b3",
+          "bytes": "e8c84747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b75b8",
+          "bytes": "e908feffff",
+          "text": "jmp 0x19d8b73c5"
+        },
+        {
+          "rva": "0x1d8b75bd",
+          "bytes": "e8be4747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b75c2",
+          "bytes": "e979feffff",
+          "text": "jmp 0x19d8b7440"
+        },
+        {
+          "rva": "0x1d8b75c7",
+          "bytes": "e8b44747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b75cc",
+          "bytes": "e9eafeffff",
+          "text": "jmp 0x19d8b74bb"
+        },
+        {
+          "rva": "0x1d8b75d1",
+          "bytes": "e8aa4747e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b75d6",
+          "bytes": "e95bffffff",
+          "text": "jmp 0x19d8b7536"
+        },
+        {
+          "rva": "0x1d8b75db",
+          "bytes": "4889d9",
+          "text": "mov rcx, rbx"
+        },
+        {
+          "rva": "0x1d8b75de",
+          "bytes": "e8bd0c41e6",
+          "text": "call 0x183cc82a0"
+        },
+        {
+          "rva": "0x1d8b75e3",
+          "bytes": "488d4c242c",
+          "text": "lea rcx, [rsp + 0x2c]"
+        },
+        {
+          "rva": "0x1d8b75e8",
+          "bytes": "e893528afe",
+          "text": "call 0x19c15c880"
+        },
+        {
+          "rva": "0x1d8b75ed",
+          "bytes": "488b0dcc15e4eb",
+          "text": "mov rcx, qword ptr [rip - 0x141bea34]"
+        },
+        {
+          "rva": "0x1d8b75f4",
+          "bytes": "4889c2",
+          "text": "mov rdx, rax"
+        },
+        {
+          "rva": "0x1d8b75f7",
+          "bytes": "e804d47efe",
+          "text": "call 0x19c0a4a00"
+        },
+        {
+          "rva": "0x1d8b75fc",
+          "bytes": "4889c6",
+          "text": "mov rsi, rax"
+        },
+        {
+          "rva": "0x1d8b75ff",
+          "bytes": "488b0d1a21aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455dee6]"
+        },
+        {
+          "rva": "0x1d8b7606",
+          "bytes": "e8d50841e6",
+          "text": "call 0x183cc7ee0"
+        },
+        {
+          "rva": "0x1d8b760b",
+          "bytes": "4889c7",
+          "text": "mov rdi, rax"
+        },
+        {
+          "rva": "0x1d8b760e",
+          "bytes": "4889c1",
+          "text": "mov rcx, rax"
+        },
+        {
+          "rva": "0x1d8b7611",
+          "bytes": "4889f2",
+          "text": "mov rdx, rsi"
+        },
+        {
+          "rva": "0x1d8b7614",
+          "bytes": "e8671891fe",
+          "text": "call 0x19c1c8e80"
+        },
+        {
+          "rva": "0x1d8b7619",
+          "bytes": "488b1548e9bdeb",
+          "text": "mov rdx, qword ptr [rip - 0x144216b8]"
+        },
+        {
+          "rva": "0x1d8b7620",
+          "bytes": "4889f9",
+          "text": "mov rcx, rdi"
+        },
+        {
+          "rva": "0x1d8b7623",
+          "bytes": "e8180a41e6",
+          "text": "call 0x183cc8040"
+        },
+        {
+          "rva": "0x1d8b7628",
+          "bytes": "cc",
+          "text": "int3 "
+        },
+        {
+          "rva": "0x1d8b7629",
+          "bytes": "0f1f00",
+          "text": "nop dword ptr [rax]"
+        },
+        {
+          "rva": "0x1d8b762c",
+          "bytes": "2cfd",
+          "text": "sub al, 0xfd"
+        }
+      ]
+    },
+    "reader-OptionTalkInfo": {
+      "beginRVA": "0x1d8b7680",
+      "endRVA": "0x1d8b7a97",
+      "sha256": "bf758d29f8bf5edca185ed92ed9e968273bba04ddd6864a28da4e36c2c7ad644",
+      "points": [
+        {
+          "rva": "0x1d8b7680",
+          "bytes": "4157",
+          "text": "push r15"
+        },
+        {
+          "rva": "0x1d8b7682",
+          "bytes": "4156",
+          "text": "push r14"
+        },
+        {
+          "rva": "0x1d8b7684",
+          "bytes": "56",
+          "text": "push rsi"
+        },
+        {
+          "rva": "0x1d8b7685",
+          "bytes": "57",
+          "text": "push rdi"
+        },
+        {
+          "rva": "0x1d8b7686",
+          "bytes": "53",
+          "text": "push rbx"
+        },
+        {
+          "rva": "0x1d8b7687",
+          "bytes": "4883ec20",
+          "text": "sub rsp, 0x20"
+        },
+        {
+          "rva": "0x1d8b768b",
+          "bytes": "4889d6",
+          "text": "mov rsi, rdx"
+        },
+        {
+          "rva": "0x1d8b768e",
+          "bytes": "4989cf",
+          "text": "mov r15, rcx"
+        },
+        {
+          "rva": "0x1d8b7691",
+          "bytes": "488b0dc047aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b840]"
+        },
+        {
+          "rva": "0x1d8b7698",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b769f",
+          "bytes": "0f84ab020000",
+          "text": "je 0x19d8b7950"
+        },
+        {
+          "rva": "0x1d8b76a5",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b76a8",
+          "bytes": "e8b3768fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b76ad",
+          "bytes": "4889c3",
+          "text": "mov rbx, rax"
+        },
+        {
+          "rva": "0x1d8b76b0",
+          "bytes": "f6c301",
+          "text": "test bl, 1"
+        },
+        {
+          "rva": "0x1d8b76b3",
+          "bytes": "7428",
+          "text": "je 0x19d8b76dd"
+        },
+        {
+          "rva": "0x1d8b76b5",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b76b8",
+          "bytes": "0f84ce020000",
+          "text": "je 0x19d8b798c"
+        },
+        {
+          "rva": "0x1d8b76be",
+          "bytes": "488b0d9347aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b86d]"
+        },
+        {
+          "rva": "0x1d8b76c5",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b76cc",
+          "bytes": "0f84c9020000",
+          "text": "je 0x19d8b799b"
+        },
+        {
+          "rva": "0x1d8b76d2",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b76d5",
+          "bytes": "e886768fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b76da",
+          "bytes": "894624",
+          "text": "mov dword ptr [rsi + 0x24], eax"
+        },
+        {
+          "rva": "0x1d8b76dd",
+          "bytes": "f6c302",
+          "text": "test bl, 2"
+        },
+        {
+          "rva": "0x1d8b76e0",
+          "bytes": "7447",
+          "text": "je 0x19d8b7729"
+        },
+        {
+          "rva": "0x1d8b76e2",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b76e5",
+          "bytes": "0f84a6020000",
+          "text": "je 0x19d8b7991"
+        },
+        {
+          "rva": "0x1d8b76eb",
+          "bytes": "488b0d6647aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b89a]"
+        },
+        {
+          "rva": "0x1d8b76f2",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b76f9",
+          "bytes": "0f84ab020000",
+          "text": "je 0x19d8b79aa"
+        },
+        {
+          "rva": "0x1d8b76ff",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7702",
+          "bytes": "e859768fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b7707",
+          "bytes": "4889c7",
+          "text": "mov rdi, rax"
+        },
+        {
+          "rva": "0x1d8b770a",
+          "bytes": "d1e8",
+          "text": "shr eax, 1"
+        },
+        {
+          "rva": "0x1d8b770c",
+          "bytes": "83e701",
+          "text": "and edi, 1"
+        },
+        {
+          "rva": "0x1d8b770f",
+          "bytes": "f7df",
+          "text": "neg edi"
+        },
+        {
+          "rva": "0x1d8b7711",
+          "bytes": "31c7",
+          "text": "xor edi, eax"
+        },
+        {
+          "rva": "0x1d8b7713",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7716",
+          "bytes": "e845768fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b771b",
+          "bytes": "897e28",
+          "text": "mov dword ptr [rsi + 0x28], edi"
+        },
+        {
+          "rva": "0x1d8b771e",
+          "bytes": "c7462c00000000",
+          "text": "mov dword ptr [rsi + 0x2c], 0"
+        },
+        {
+          "rva": "0x1d8b7725",
+          "bytes": "48894630",
+          "text": "mov qword ptr [rsi + 0x30], rax"
+        },
+        {
+          "rva": "0x1d8b7729",
+          "bytes": "f6c304",
+          "text": "test bl, 4"
+        },
+        {
+          "rva": "0x1d8b772c",
+          "bytes": "743d",
+          "text": "je 0x19d8b776b"
+        },
+        {
+          "rva": "0x1d8b772e",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b7731",
+          "bytes": "0f845f020000",
+          "text": "je 0x19d8b7996"
+        },
+        {
+          "rva": "0x1d8b7737",
+          "bytes": "488b0d1a47aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b8e6]"
+        },
+        {
+          "rva": "0x1d8b773e",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7745",
+          "bytes": "0f84a0020000",
+          "text": "je 0x19d8b79eb"
+        },
+        {
+          "rva": "0x1d8b774b",
+          "bytes": "488b0d1654aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455abea]"
+        },
+        {
+          "rva": "0x1d8b7752",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7759",
+          "bytes": "0f84a5020000",
+          "text": "je 0x19d8b7a04"
+        },
+        {
+          "rva": "0x1d8b775f",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7762",
+          "bytes": "e839adebff",
+          "text": "call 0x19d7724a0"
+        },
+        {
+          "rva": "0x1d8b7767",
+          "bytes": "48894638",
+          "text": "mov qword ptr [rsi + 0x38], rax"
+        },
+        {
+          "rva": "0x1d8b776b",
+          "bytes": "f6c308",
+          "text": "test bl, 8"
+        },
+        {
+          "rva": "0x1d8b776e",
+          "bytes": "742c",
+          "text": "je 0x19d8b779c"
+        },
+        {
+          "rva": "0x1d8b7770",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b7773",
+          "bytes": "0f842c020000",
+          "text": "je 0x19d8b79a5"
+        },
+        {
+          "rva": "0x1d8b7779",
+          "bytes": "4c8d7640",
+          "text": "lea r14, [rsi + 0x40]"
+        },
+        {
+          "rva": "0x1d8b777d",
+          "bytes": "488b0dd446aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b92c]"
+        },
+        {
+          "rva": "0x1d8b7784",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b778b",
+          "bytes": "0f847d020000",
+          "text": "je 0x19d8b7a0e"
+        },
+        {
+          "rva": "0x1d8b7791",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7794",
+          "bytes": "4c89f2",
+          "text": "mov rdx, r14"
+        },
+        {
+          "rva": "0x1d8b7797",
+          "bytes": "e8b40d90ff",
+          "text": "call 0x19d1b8550"
+        },
+        {
+          "rva": "0x1d8b779c",
+          "bytes": "f6c310",
+          "text": "test bl, 0x10"
+        },
+        {
+          "rva": "0x1d8b779f",
+          "bytes": "7443",
+          "text": "je 0x19d8b77e4"
+        },
+        {
+          "rva": "0x1d8b77a1",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b77a4",
+          "bytes": "0f843c020000",
+          "text": "je 0x19d8b79e6"
+        },
+        {
+          "rva": "0x1d8b77aa",
+          "bytes": "488b0da746aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b959]"
+        },
+        {
+          "rva": "0x1d8b77b1",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b77b8",
+          "bytes": "0f845f020000",
+          "text": "je 0x19d8b7a1d"
+        },
+        {
+          "rva": "0x1d8b77be",
+          "bytes": "4d85ff",
+          "text": "test r15, r15"
+        },
+        {
+          "rva": "0x1d8b77c1",
+          "bytes": "0f8464020000",
+          "text": "je 0x19d8b7a2b"
+        },
+        {
+          "rva": "0x1d8b77c7",
+          "bytes": "498b4f10",
+          "text": "mov rcx, qword ptr [r15 + 0x10]"
+        },
+        {
+          "rva": "0x1d8b77cb",
+          "bytes": "418b5718",
+          "text": "mov edx, dword ptr [r15 + 0x18]"
+        },
+        {
+          "rva": "0x1d8b77cf",
+          "bytes": "e8fcb07cfe",
+          "text": "call 0x19c0828d0"
+        },
+        {
+          "rva": "0x1d8b77d4",
+          "bytes": "884648",
+          "text": "mov byte ptr [rsi + 0x48], al"
+        },
+        {
+          "rva": "0x1d8b77d7",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b77da",
+          "bytes": "ba01000000",
+          "text": "mov edx, 1"
+        },
+        {
+          "rva": "0x1d8b77df",
+          "bytes": "e8cc7a4500",
+          "text": "call 0x19dd0f2b0"
+        },
+        {
+          "rva": "0x1d8b77e4",
+          "bytes": "f6c320",
+          "text": "test bl, 0x20"
+        },
+        {
+          "rva": "0x1d8b77e7",
+          "bytes": "7443",
+          "text": "je 0x19d8b782c"
+        },
+        {
+          "rva": "0x1d8b77e9",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b77ec",
+          "bytes": "0f8426020000",
+          "text": "je 0x19d8b7a18"
+        },
+        {
+          "rva": "0x1d8b77f2",
+          "bytes": "488b0d5f46aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b9a1]"
+        },
+        {
+          "rva": "0x1d8b77f9",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7800",
+          "bytes": "0f842f020000",
+          "text": "je 0x19d8b7a35"
+        },
+        {
+          "rva": "0x1d8b7806",
+          "bytes": "4d85ff",
+          "text": "test r15, r15"
+        },
+        {
+          "rva": "0x1d8b7809",
+          "bytes": "0f8434020000",
+          "text": "je 0x19d8b7a43"
+        },
+        {
+          "rva": "0x1d8b780f",
+          "bytes": "498b4f10",
+          "text": "mov rcx, qword ptr [r15 + 0x10]"
+        },
+        {
+          "rva": "0x1d8b7813",
+          "bytes": "418b5718",
+          "text": "mov edx, dword ptr [r15 + 0x18]"
+        },
+        {
+          "rva": "0x1d8b7817",
+          "bytes": "e8b4b07cfe",
+          "text": "call 0x19c0828d0"
+        },
+        {
+          "rva": "0x1d8b781c",
+          "bytes": "884649",
+          "text": "mov byte ptr [rsi + 0x49], al"
+        },
+        {
+          "rva": "0x1d8b781f",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7822",
+          "bytes": "ba01000000",
+          "text": "mov edx, 1"
+        },
+        {
+          "rva": "0x1d8b7827",
+          "bytes": "e8847a4500",
+          "text": "call 0x19dd0f2b0"
+        },
+        {
+          "rva": "0x1d8b782c",
+          "bytes": "f6c340",
+          "text": "test bl, 0x40"
+        },
+        {
+          "rva": "0x1d8b782f",
+          "bytes": "7428",
+          "text": "je 0x19d8b7859"
+        },
+        {
+          "rva": "0x1d8b7831",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b7834",
+          "bytes": "0f84f6010000",
+          "text": "je 0x19d8b7a30"
+        },
+        {
+          "rva": "0x1d8b783a",
+          "bytes": "488b0d1746aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455b9e9]"
+        },
+        {
+          "rva": "0x1d8b7841",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7848",
+          "bytes": "0f8404020000",
+          "text": "je 0x19d8b7a52"
+        },
+        {
+          "rva": "0x1d8b784e",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7851",
+          "bytes": "e80a758fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b7856",
+          "bytes": "89464c",
+          "text": "mov dword ptr [rsi + 0x4c], eax"
+        },
+        {
+          "rva": "0x1d8b7859",
+          "bytes": "f6c380",
+          "text": "test bl, 0x80"
+        },
+        {
+          "rva": "0x1d8b785c",
+          "bytes": "742c",
+          "text": "je 0x19d8b788a"
+        },
+        {
+          "rva": "0x1d8b785e",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b7861",
+          "bytes": "0f84e1010000",
+          "text": "je 0x19d8b7a48"
+        },
+        {
+          "rva": "0x1d8b7867",
+          "bytes": "4c8d7650",
+          "text": "lea r14, [rsi + 0x50]"
+        },
+        {
+          "rva": "0x1d8b786b",
+          "bytes": "488b0de645aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455ba1a]"
+        },
+        {
+          "rva": "0x1d8b7872",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7879",
+          "bytes": "0f84e2010000",
+          "text": "je 0x19d8b7a61"
+        },
+        {
+          "rva": "0x1d8b787f",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b7882",
+          "bytes": "4c89f2",
+          "text": "mov rdx, r14"
+        },
+        {
+          "rva": "0x1d8b7885",
+          "bytes": "e8c60c90ff",
+          "text": "call 0x19d1b8550"
+        },
+        {
+          "rva": "0x1d8b788a",
+          "bytes": "f7c300010000",
+          "text": "test ebx, 0x100"
+        },
+        {
+          "rva": "0x1d8b7890",
+          "bytes": "7428",
+          "text": "je 0x19d8b78ba"
+        },
+        {
+          "rva": "0x1d8b7892",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b7895",
+          "bytes": "0f84b2010000",
+          "text": "je 0x19d8b7a4d"
+        },
+        {
+          "rva": "0x1d8b789b",
+          "bytes": "488b0db645aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455ba4a]"
+        },
+        {
+          "rva": "0x1d8b78a2",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b78a9",
+          "bytes": "0f84bc010000",
+          "text": "je 0x19d8b7a6b"
+        },
+        {
+          "rva": "0x1d8b78af",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b78b2",
+          "bytes": "e8a9748fff",
+          "text": "call 0x19d1aed60"
+        },
+        {
+          "rva": "0x1d8b78b7",
+          "bytes": "894658",
+          "text": "mov dword ptr [rsi + 0x58], eax"
+        },
+        {
+          "rva": "0x1d8b78ba",
+          "bytes": "f7c300020000",
+          "text": "test ebx, 0x200"
+        },
+        {
+          "rva": "0x1d8b78c0",
+          "bytes": "7443",
+          "text": "je 0x19d8b7905"
+        },
+        {
+          "rva": "0x1d8b78c2",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b78c5",
+          "bytes": "0f8491010000",
+          "text": "je 0x19d8b7a5c"
+        },
+        {
+          "rva": "0x1d8b78cb",
+          "bytes": "488b0d8645aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455ba7a]"
+        },
+        {
+          "rva": "0x1d8b78d2",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b78d9",
+          "bytes": "0f849b010000",
+          "text": "je 0x19d8b7a7a"
+        },
+        {
+          "rva": "0x1d8b78df",
+          "bytes": "4d85ff",
+          "text": "test r15, r15"
+        },
+        {
+          "rva": "0x1d8b78e2",
+          "bytes": "0f84a0010000",
+          "text": "je 0x19d8b7a88"
+        },
+        {
+          "rva": "0x1d8b78e8",
+          "bytes": "498b4f10",
+          "text": "mov rcx, qword ptr [r15 + 0x10]"
+        },
+        {
+          "rva": "0x1d8b78ec",
+          "bytes": "418b5718",
+          "text": "mov edx, dword ptr [r15 + 0x18]"
+        },
+        {
+          "rva": "0x1d8b78f0",
+          "bytes": "e8dbaf7cfe",
+          "text": "call 0x19c0828d0"
+        },
+        {
+          "rva": "0x1d8b78f5",
+          "bytes": "88465c",
+          "text": "mov byte ptr [rsi + 0x5c], al"
+        },
+        {
+          "rva": "0x1d8b78f8",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b78fb",
+          "bytes": "ba01000000",
+          "text": "mov edx, 1"
+        },
+        {
+          "rva": "0x1d8b7900",
+          "bytes": "e8ab794500",
+          "text": "call 0x19dd0f2b0"
+        },
+        {
+          "rva": "0x1d8b7905",
+          "bytes": "f7c300040000",
+          "text": "test ebx, 0x400"
+        },
+        {
+          "rva": "0x1d8b790b",
+          "bytes": "750c",
+          "text": "jne 0x19d8b7919"
+        },
+        {
+          "rva": "0x1d8b790d",
+          "bytes": "4883c420",
+          "text": "add rsp, 0x20"
+        },
+        {
+          "rva": "0x1d8b7911",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b7912",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b7913",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b7914",
+          "bytes": "415e",
+          "text": "pop r14"
+        },
+        {
+          "rva": "0x1d8b7916",
+          "bytes": "415f",
+          "text": "pop r15"
+        },
+        {
+          "rva": "0x1d8b7918",
+          "bytes": "c3",
+          "text": "ret "
+        },
+        {
+          "rva": "0x1d8b7919",
+          "bytes": "4885f6",
+          "text": "test rsi, rsi"
+        },
+        {
+          "rva": "0x1d8b791c",
+          "bytes": "0f8453010000",
+          "text": "je 0x19d8b7a75"
+        },
+        {
+          "rva": "0x1d8b7922",
+          "bytes": "4883c660",
+          "text": "add rsi, 0x60"
+        },
+        {
+          "rva": "0x1d8b7926",
+          "bytes": "488b0d6b3db0eb",
+          "text": "mov rcx, qword ptr [rip - 0x144fc295]"
+        },
+        {
+          "rva": "0x1d8b792d",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7934",
+          "bytes": "0f8453010000",
+          "text": "je 0x19d8b7a8d"
+        },
+        {
+          "rva": "0x1d8b793a",
+          "bytes": "4c89f9",
+          "text": "mov rcx, r15"
+        },
+        {
+          "rva": "0x1d8b793d",
+          "bytes": "4889f2",
+          "text": "mov rdx, rsi"
+        },
+        {
+          "rva": "0x1d8b7940",
+          "bytes": "4883c420",
+          "text": "add rsp, 0x20"
+        },
+        {
+          "rva": "0x1d8b7944",
+          "bytes": "5b",
+          "text": "pop rbx"
+        },
+        {
+          "rva": "0x1d8b7945",
+          "bytes": "5f",
+          "text": "pop rdi"
+        },
+        {
+          "rva": "0x1d8b7946",
+          "bytes": "5e",
+          "text": "pop rsi"
+        },
+        {
+          "rva": "0x1d8b7947",
+          "bytes": "415e",
+          "text": "pop r14"
+        },
+        {
+          "rva": "0x1d8b7949",
+          "bytes": "415f",
+          "text": "pop r15"
+        },
+        {
+          "rva": "0x1d8b794b",
+          "bytes": "e950108eff",
+          "text": "jmp 0x19d1989a0"
+        },
+        {
+          "rva": "0x1d8b7950",
+          "bytes": "e82b4447e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7955",
+          "bytes": "488b0dfc44aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455bb04]"
+        },
+        {
+          "rva": "0x1d8b795c",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b7963",
+          "bytes": "0f853cfdffff",
+          "text": "jne 0x19d8b76a5"
+        },
+        {
+          "rva": "0x1d8b7969",
+          "bytes": "e8124447e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b796e",
+          "bytes": "488b0de344aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455bb1d]"
+        },
+        {
+          "rva": "0x1d8b7975",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b797c",
+          "bytes": "0f8523fdffff",
+          "text": "jne 0x19d8b76a5"
+        },
+        {
+          "rva": "0x1d8b7982",
+          "bytes": "e8f94347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7987",
+          "bytes": "e919fdffff",
+          "text": "jmp 0x19d8b76a5"
+        },
+        {
+          "rva": "0x1d8b798c",
+          "bytes": "e8bf0641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7991",
+          "bytes": "e8ba0641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7996",
+          "bytes": "e8b50641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b799b",
+          "bytes": "e8e04347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b79a0",
+          "bytes": "e92dfdffff",
+          "text": "jmp 0x19d8b76d2"
+        },
+        {
+          "rva": "0x1d8b79a5",
+          "bytes": "e8a60641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b79aa",
+          "bytes": "e8d14347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b79af",
+          "bytes": "488b0da244aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455bb5e]"
+        },
+        {
+          "rva": "0x1d8b79b6",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b79bd",
+          "bytes": "0f853cfdffff",
+          "text": "jne 0x19d8b76ff"
+        },
+        {
+          "rva": "0x1d8b79c3",
+          "bytes": "e8b84347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b79c8",
+          "bytes": "488b0d8944aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455bb77]"
+        },
+        {
+          "rva": "0x1d8b79cf",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b79d6",
+          "bytes": "0f8523fdffff",
+          "text": "jne 0x19d8b76ff"
+        },
+        {
+          "rva": "0x1d8b79dc",
+          "bytes": "e89f4347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b79e1",
+          "bytes": "e919fdffff",
+          "text": "jmp 0x19d8b76ff"
+        },
+        {
+          "rva": "0x1d8b79e6",
+          "bytes": "e8650641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b79eb",
+          "bytes": "e8904347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b79f0",
+          "bytes": "488b0d7151aaeb",
+          "text": "mov rcx, qword ptr [rip - 0x1455ae8f]"
+        },
+        {
+          "rva": "0x1d8b79f7",
+          "bytes": "80b9b700000000",
+          "text": "cmp byte ptr [rcx + 0xb7], 0"
+        },
+        {
+          "rva": "0x1d8b79fe",
+          "bytes": "0f855bfdffff",
+          "text": "jne 0x19d8b775f"
+        },
+        {
+          "rva": "0x1d8b7a04",
+          "bytes": "e8774347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a09",
+          "bytes": "e951fdffff",
+          "text": "jmp 0x19d8b775f"
+        },
+        {
+          "rva": "0x1d8b7a0e",
+          "bytes": "e86d4347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a13",
+          "bytes": "e979fdffff",
+          "text": "jmp 0x19d8b7791"
+        },
+        {
+          "rva": "0x1d8b7a18",
+          "bytes": "e8330641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a1d",
+          "bytes": "e85e4347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a22",
+          "bytes": "4d85ff",
+          "text": "test r15, r15"
+        },
+        {
+          "rva": "0x1d8b7a25",
+          "bytes": "0f859cfdffff",
+          "text": "jne 0x19d8b77c7"
+        },
+        {
+          "rva": "0x1d8b7a2b",
+          "bytes": "e8200641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a30",
+          "bytes": "e81b0641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a35",
+          "bytes": "e8464347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a3a",
+          "bytes": "4d85ff",
+          "text": "test r15, r15"
+        },
+        {
+          "rva": "0x1d8b7a3d",
+          "bytes": "0f85ccfdffff",
+          "text": "jne 0x19d8b780f"
+        },
+        {
+          "rva": "0x1d8b7a43",
+          "bytes": "e8080641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a48",
+          "bytes": "e8030641e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a4d",
+          "bytes": "e8fe0541e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a52",
+          "bytes": "e8294347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a57",
+          "bytes": "e9f2fdffff",
+          "text": "jmp 0x19d8b784e"
+        },
+        {
+          "rva": "0x1d8b7a5c",
+          "bytes": "e8ef0541e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a61",
+          "bytes": "e81a4347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a66",
+          "bytes": "e914feffff",
+          "text": "jmp 0x19d8b787f"
+        },
+        {
+          "rva": "0x1d8b7a6b",
+          "bytes": "e8104347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a70",
+          "bytes": "e93afeffff",
+          "text": "jmp 0x19d8b78af"
+        },
+        {
+          "rva": "0x1d8b7a75",
+          "bytes": "e8d60541e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a7a",
+          "bytes": "e8014347e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a7f",
+          "bytes": "4d85ff",
+          "text": "test r15, r15"
+        },
+        {
+          "rva": "0x1d8b7a82",
+          "bytes": "0f8560feffff",
+          "text": "jne 0x19d8b78e8"
+        },
+        {
+          "rva": "0x1d8b7a88",
+          "bytes": "e8c30541e6",
+          "text": "call 0x183cc8050"
+        },
+        {
+          "rva": "0x1d8b7a8d",
+          "bytes": "e8ee4247e6",
+          "text": "call 0x183d2bd80"
+        },
+        {
+          "rva": "0x1d8b7a92",
+          "bytes": "e9a3feffff",
+          "text": "jmp 0x19d8b793a"
+        }
+      ]
+    },
+    "reader-TriggerPerformance": {
+      "beginRVA": "0x1dc29cf0",
+      "endRVA": "0x1dc29fef",
+      "sha256": "422342be524be3b4b13be44aae274ff27699daf6505e8c3498fc36c5cd97dde6"
+    },
+    "reader-TriggerPerformanceMask-factory": {
+      "beginRVA": "0x1dc29ff0",
+      "endRVA": "0x1dc2a32d",
+      "sha256": "94a474df27609b31b1d7de0413fab3fd80d44333adfffa32b129e6bec3bcf999"
+    },
+    "reader-ByComparePerformance": {
+      "beginRVA": "0x1d4994b0",
+      "endRVA": "0x1d499639",
+      "sha256": "490c7b41085019279e5ab490d3facffca62b43b2ef6624aa45920039c9d82293"
+    },
+    "reader-TriggerCustomStringOnDialogEnd": {
+      "beginRVA": "0x1dc181e0",
+      "endRVA": "0x1dc182d1",
+      "sha256": "8a17f10764bd361738f53c5e7115b646a18f851095d956d496a07ecc9bd5370a"
+    },
+    "reader-SwitchCharacterAnchor": {
+      "beginRVA": "0x1db13520",
+      "endRVA": "0x1db13901",
+      "sha256": "4883903a56f70eeb7825adf0e3b6051c172500f9a7f54614c821cd2e1816ab71"
+    },
+    "reader-PlaySimpleTalk-factory": {
+      "beginRVA": "0x1d904100",
+      "endRVA": "0x1d90413b",
+      "sha256": "6a007cdf7e6cf63d9c17f34786feaaf738072a74229a143fa8718d14439e5649"
+    },
+    "reader-PlaySimpleTalk": {
+      "beginRVA": "0x1d904150",
+      "endRVA": "0x1d9046da",
+      "sha256": "f3c686d21348a23146769cfc8a317ba5366dbb3e3437dc6b69ee1bf19de7ab39"
+    },
+    "reader-WaitSimpleTalkFinish": {
+      "beginRVA": "0x1dc742a0",
+      "endRVA": "0x1dc74351",
+      "sha256": "fc0798a0599803c93ddbf7edf6aafde7b623574bdc3abca898ab48060ddcf1b6"
+    },
+    "reader-PlayOptionTalk": {
+      "beginRVA": "0x1d901c50",
+      "endRVA": "0x1d901ee0",
+      "sha256": "9ad13470078e48bec6610b93055659a6a743405076a5a415f7459a1e14217a6c"
+    },
+    "reader-FinishPerformanceMission": {
+      "beginRVA": "0x1d67bdf0",
+      "endRVA": "0x1d67c094",
+      "sha256": "fe3a012e6b6093bee0b6c871fe618c2231fe0c878d8516e4b81e77d4ccbbb6c6"
+    },
+    "reader-EndPerformance": {
+      "beginRVA": "0x1d613b60",
+      "endRVA": "0x1d613c11",
+      "sha256": "a142cd526427899b226baad17a77a843e2c7934540d8080463f2167870167df5"
+    },
+    "reader-PerformanceTransition": {
+      "beginRVA": "0x1d8d99e0",
+      "endRVA": "0x1d8da088",
+      "sha256": "7bcc4ac64c0d5fe1da1d7a6e82a95fc05e8e95fe38633b4a8d8cfb505e2cb13e"
+    },
+    "reader-ActiveVirtualCamera_PerformanceTransition": {
+      "beginRVA": "0x1d31ed80",
+      "endRVA": "0x1d31f384",
+      "sha256": "156a76edfd34b65815fcb5515748dde3fdc952acd7b0a50b57451713d3bfd391"
+    },
+    "reader-CreateNPC": {
+      "beginRVA": "0x1d5b6400",
+      "endRVA": "0x1d5b666b",
+      "sha256": "64919868854e10712593686ccc05c65145f1ffadf1588a0ddf796b25710fdb1d"
+    },
+    "reader-DestroyNPC": {
+      "beginRVA": "0x1d5cf190",
+      "endRVA": "0x1d5cf406",
+      "sha256": "de78d996b7193d97ee6d2f149cec55450684dc4b0c2636ce81cf4d3ddb86d9ef"
+    },
+    "reader-AdvNpcFaceToPlayer": {
+      "beginRVA": "0x1d3786b0",
+      "endRVA": "0x1d378d5b",
+      "sha256": "a782c17581b5d055e07e1a622781e0fe13f931d11c2bb6ffd69e1a4aae1392c9"
+    },
+    "reader-FinishLevelGraph": {
+      "beginRVA": "0x1d67b9f0",
+      "endRVA": "0x1d67bb26",
+      "sha256": "aa7551ed3fe3abfecc3da5524da64e9b4a7b8ee509c773a3b138f69aca2d20f5"
+    },
+    "reader-PlayAndWaitSimpleTalk-factory": {
+      "beginRVA": "0x1d8fe9e0",
+      "endRVA": "0x1d8fea14",
+      "sha256": "0c2f503a85a4e155910737b518acf86dc076e6b8b6c7be26da725091782b314d"
+    },
+    "reader-PlayAndWaitSimpleTalk": {
+      "beginRVA": "0x1d8fea30",
+      "endRVA": "0x1d8feefb",
+      "sha256": "e7394020901691553eba2efd47ae64c561222bce5b26d983c2bf93d710bf76bd"
+    },
+    "reader-PlayMultiVoiceTalk-factory": {
+      "beginRVA": "0x1d900960",
+      "endRVA": "0x1d900994",
+      "sha256": "5cfe99362b2fbfca0a7d0532cde52ffec1f2de9ae0438d9bfd5bd4bb3c13271f"
+    },
+    "reader-PlayMultiVoiceTalk": {
+      "beginRVA": "0x1d9009b0",
+      "endRVA": "0x1d900ba4",
+      "sha256": "f1c54032461c3a9beab272aefd97b0c55ec290f8701d2e69816ac4bf68df2bc8"
+    },
+    "reader-WaitPerformanceEnd": {
+      "beginRVA": "0x1dc6f920",
+      "endRVA": "0x1dc6f9d1",
+      "sha256": "a3bcef5068ec0259bb9380efd9b45de39a2f8c4133014e12d4f247a25502d1ae"
+    },
+    "reader-LevelPerformanceInitialize": {
+      "beginRVA": "0x1d79c0f0",
+      "endRVA": "0x1d79cb46",
+      "sha256": "e8c6cf3f73b07073cd72344486b618366cd882fff550b14c67107cc2e118fdd4"
+    },
+    "tasks-factory-1586": {
+      "beginRVA": "0x1d1f2470",
+      "endRVA": "0x1d1f24ba",
+      "sha256": "30f98ffef023d604eef7aa6eec78e62c481e20379e21d5d002851fa3c95828f3"
+    },
+    "tasks-factory-1136": {
+      "beginRVA": "0x1d1ead80",
+      "endRVA": "0x1d1eadb1",
+      "sha256": "3cb4c3479f6effaac9b608b685d584dbc29fad9a42684ec75ab1159a028e7f33"
+    },
+    "tasks-factory-1192": {
+      "beginRVA": "0x1d1ebd80",
+      "endRVA": "0x1d1ebdb1",
+      "sha256": "01624ef452dc628eb786793bd37db19f568ae2cd01425b3e168d5ed91eecab79"
+    },
+    "tasks-factory-3664": {
+      "beginRVA": "0x1d6222b0",
+      "endRVA": "0x1d6222e1",
+      "sha256": "2477a3cbc3865441038bcea2d7d298bd7c7ce1ddc07559190b1a2149aa5bd70a"
+    },
+    "tasks-factory-1910": {
+      "beginRVA": "0x1d1f79c0",
+      "endRVA": "0x1d1f7a09",
+      "sha256": "013e4b53517fa707f04ef89e934b187fe0ee8595c73f62aa9def4f96e65e4db7"
+    },
+    "tasks-factory-188": {
+      "beginRVA": "0x1ceceb00",
+      "endRVA": "0x1ceceb4b",
+      "sha256": "7d870061136e0048b3e378ba6e0adac49d33589275e7c48252ced4a57af2d685"
+    },
+    "tasks-factory-1364": {
+      "beginRVA": "0x1d1ee990",
+      "endRVA": "0x1d1ee9c1",
+      "sha256": "a127da2773e3ee9abc55d7063a35c349cdbfb2999b56aa85eca14d5ed0742b9d"
+    },
+    "tasks-factory-1932": {
+      "beginRVA": "0x1d1f8010",
+      "endRVA": "0x1d1f8045",
+      "sha256": "edb56744b81865ee27cf96940afd5f59baf6b5d9e6ea3e7ee4eb5c30f8510179"
+    },
+    "tasks-factory-1973": {
+      "beginRVA": "0x1d1f8ad0",
+      "endRVA": "0x1d1f8b0c",
+      "sha256": "ae8a9394d4699b724904470436606022bdadadce93c984c0343d1cb6afa9157d"
+    },
+    "tasks-factory-1947": {
+      "beginRVA": "0x1d1f83f0",
+      "endRVA": "0x1d1f8425",
+      "sha256": "39a9ebef49c513e380a4b2c552add158a428301578bf153c95df7aa681fbe9ee"
+    },
+    "tasks-factory-1954": {
+      "beginRVA": "0x1d1f85d0",
+      "endRVA": "0x1d1f8601",
+      "sha256": "82c80f460ab3c634b9a924717c0a516f87260446551b56f691446661028c0916"
+    },
+    "tasks-factory-1367": {
+      "beginRVA": "0x1d1eea50",
+      "endRVA": "0x1d1eea81",
+      "sha256": "d98509e571b6b57e8b6079accea2b52647c7621cce1e972ecacb790a5e4e7fc4"
+    },
+    "tasks-factory-3917": {
+      "beginRVA": "0x1d6265c0",
+      "endRVA": "0x1d6265f1",
+      "sha256": "4d972e35a1d4aa6afc501bea01ef02bf3500ac660c2a27ec06b646827b45ed56"
+    },
+    "tasks-factory-1265": {
+      "beginRVA": "0x1d1ed010",
+      "endRVA": "0x1d1ed041",
+      "sha256": "796480767ac3d3331269ada8ec2db3f2277fa8d24567bd43b235d760707a06ba"
+    },
+    "tasks-factory-3864": {
+      "beginRVA": "0x1d625820",
+      "endRVA": "0x1d625851",
+      "sha256": "b9b4852f2aa0e80f0dd3ff2cd97e248bf436a0bd88d48704be219f4f7bba3d5d"
+    },
+    "tasks-factory-3600": {
+      "beginRVA": "0x1d6210d0",
+      "endRVA": "0x1d621101",
+      "sha256": "84902bf0fe12b1be52545daa83bfe73d8abf3e19fa6bea9b63b90c1aded3ed87"
+    },
+    "predicates-factory-217": {
+      "beginRVA": "0x1d191710",
+      "endRVA": "0x1d191741",
+      "sha256": "1d19a7919d590a781035153e9bab71f8fe0da730680f5b8b5d03d6a899667e32"
+    },
+    "taskFactoryInitializer": {
+      "beginRVA": "0x1d6275b0",
+      "endRVA": "0x1d64073c",
+      "sha256": "f0b631e3d608e265977cff0e8b5794abc4ed234443b48d0426d189eab65d8d64"
+    },
+    "predicateFactoryInitializer": {
+      "beginRVA": "0x1d198b50",
+      "endRVA": "0x1d19cbd9",
+      "sha256": "efc933393e56fc344b246fd26d6652602ec79dd3230c3f1ab48e6e35c338008b"
+    }
+  },
+  "branches": [
+    {
+      "tag": 1586,
+      "assignmentRVA": "0x1d631574",
+      "arrayOffset": "0x31b0",
+      "methodSlot": "0x9534270",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131535,
+        "name": "NNECBEGDLHI",
+        "rva": "0x1d1f2470",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x937fb60",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d79c0f0",
+      "name": "LevelPerformanceInitialize",
+      "readerMethod": {
+        "index": 123789,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d79c0f0",
+        "typeIndex": 21856,
+        "typeName": "LevelPerformanceInitialize"
+      }
+    },
+    {
+      "tag": 1136,
+      "assignmentRVA": "0x1d62e7c0",
+      "arrayOffset": "0x23a0",
+      "methodSlot": "0x9533410",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131085,
+        "name": "DFIFHAMGEJJ",
+        "rva": "0x1d1ead80",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x937fd38",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d5b6400",
+      "name": "CreateNPC",
+      "readerMethod": {
+        "index": 124069,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d5b6400",
+        "typeIndex": 21944,
+        "typeName": "CreateNPC"
+      }
+    },
+    {
+      "tag": 1192,
+      "assignmentRVA": "0x1d62ed70",
+      "arrayOffset": "0x2560",
+      "methodSlot": "0x95335d8",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131141,
+        "name": "GADAIPAALOI",
+        "rva": "0x1d1ebd80",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x937fd48",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d5cf190",
+      "name": "DestroyNPC",
+      "readerMethod": {
+        "index": 124075,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d5cf190",
+        "typeIndex": 21946,
+        "typeName": "DestroyNPC"
+      }
+    },
+    {
+      "tag": 3664,
+      "assignmentRVA": "0x1d63e869",
+      "arrayOffset": "0x72a0",
+      "methodSlot": "0x9538638",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 133603,
+        "name": "DJDKFFBIJJB",
+        "rva": "0x1d6222b0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936b240",
+      "noReaderPayload": false,
+      "readerRVA": "0x1dc29cf0",
+      "name": "TriggerPerformance",
+      "readerMethod": {
+        "index": 118835,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1dc29cf0",
+        "typeIndex": 20299,
+        "typeName": "TriggerPerformance"
+      }
+    },
+    {
+      "tag": 1910,
+      "assignmentRVA": "0x1d633653",
+      "arrayOffset": "0x3bd0",
+      "methodSlot": "0x9534d28",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131856,
+        "name": "CJBCIOAHFOM",
+        "rva": "0x1d1f79c0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x937fb70",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d8d99e0",
+      "name": "PerformanceTransition",
+      "readerMethod": {
+        "index": 123799,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d8d99e0",
+        "typeIndex": 21859,
+        "typeName": "PerformanceTransition"
+      }
+    },
+    {
+      "tag": 188,
+      "assignmentRVA": "0x1d62877a",
+      "arrayOffset": "0x600",
+      "methodSlot": "0x95315e0",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 130139,
+        "name": "MLKPONNHKHM",
+        "rva": "0x1ceceb00",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936b300",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d3786b0",
+      "name": "AdvNpcFaceToPlayer",
+      "readerMethod": {
+        "index": 118956,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d3786b0",
+        "typeIndex": 20337,
+        "typeName": "AdvNpcFaceToPlayer"
+      }
+    },
+    {
+      "tag": 1364,
+      "assignmentRVA": "0x1d62fee8",
+      "arrayOffset": "0x2ac0",
+      "methodSlot": "0x9533b48",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131313,
+        "name": "NKEPMMBABGC",
+        "rva": "0x1d1ee990",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936ba08",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d67b9f0",
+      "name": "FinishLevelGraph",
+      "readerMethod": {
+        "index": 119862,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d67b9f0",
+        "typeIndex": 20625,
+        "typeName": "FinishLevelGraph"
+      }
+    },
+    {
+      "tag": 1932,
+      "assignmentRVA": "0x1d63388f",
+      "arrayOffset": "0x3c80",
+      "methodSlot": "0x9534df0",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131878,
+        "name": "DDPCLCGGEJB",
+        "rva": "0x1d1f8010",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x9378aa8",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d8fea30",
+      "name": "PlayAndWaitSimpleTalk",
+      "readerMethod": {
+        "index": 121494,
+        "name": "FromBinaryImpl",
+        "rva": "0x1d8fea30",
+        "typeIndex": 21123,
+        "typeName": "PlayAndWaitSimpleTalk"
+      }
+    },
+    {
+      "tag": 1973,
+      "assignmentRVA": "0x1d633cb9",
+      "arrayOffset": "0x3dc8",
+      "methodSlot": "0x9534f38",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131919,
+        "name": "GCFPBPPGHLD",
+        "rva": "0x1d1f8ad0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936bea0",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d904150",
+      "name": "PlaySimpleTalk",
+      "readerMethod": {
+        "index": 120633,
+        "name": "FromBinaryImpl",
+        "rva": "0x1d904150",
+        "typeIndex": 20844,
+        "typeName": "PlaySimpleTalk"
+      }
+    },
+    {
+      "tag": 1947,
+      "assignmentRVA": "0x1d633a15",
+      "arrayOffset": "0x3cf8",
+      "methodSlot": "0x9534e68",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131893,
+        "name": "HBEDEKDBCLA",
+        "rva": "0x1d1f83f0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x9378ab0",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d9009b0",
+      "name": "PlayMultiVoiceTalk",
+      "readerMethod": {
+        "index": 121497,
+        "name": "FromBinaryImpl",
+        "rva": "0x1d9009b0",
+        "typeIndex": 21124,
+        "typeName": "PlayMultiVoiceTalk"
+      }
+    },
+    {
+      "tag": 1954,
+      "assignmentRVA": "0x1d633acb",
+      "arrayOffset": "0x3d30",
+      "methodSlot": "0x9534ea0",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131900,
+        "name": "KNIOLBOCKAG",
+        "rva": "0x1d1f85d0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936bed0",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d901c50",
+      "name": "PlayOptionTalk",
+      "readerMethod": {
+        "index": 120654,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d901c50",
+        "typeIndex": 20851,
+        "typeName": "PlayOptionTalk"
+      }
+    },
+    {
+      "tag": 1367,
+      "assignmentRVA": "0x1d62ff36",
+      "arrayOffset": "0x2ad8",
+      "methodSlot": "0x9533b60",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131316,
+        "name": "JKNECOMOIII",
+        "rva": "0x1d1eea50",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x9378a18",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d67bdf0",
+      "name": "FinishPerformanceMission",
+      "readerMethod": {
+        "index": 121423,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d67bdf0",
+        "typeIndex": 21099,
+        "typeName": "FinishPerformanceMission"
+      }
+    },
+    {
+      "tag": 3917,
+      "assignmentRVA": "0x1d64021b",
+      "arrayOffset": "0x7a88",
+      "methodSlot": "0x9538e58",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 133856,
+        "name": "MNKDCEFHFLA",
+        "rva": "0x1d6265c0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936bea8",
+      "noReaderPayload": false,
+      "readerRVA": "0x1dc742a0",
+      "name": "WaitSimpleTalkFinish",
+      "readerMethod": {
+        "index": 120636,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1dc742a0",
+        "typeIndex": 20845,
+        "typeName": "WaitSimpleTalkFinish"
+      }
+    },
+    {
+      "tag": 1265,
+      "assignmentRVA": "0x1d62f4da",
+      "arrayOffset": "0x27a8",
+      "methodSlot": "0x9533828",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 131214,
+        "name": "PJEMJDECAKM",
+        "rva": "0x1d1ed010",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x937fb38",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d613b60",
+      "name": "EndPerformance",
+      "readerMethod": {
+        "index": 123765,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d613b60",
+        "typeIndex": 21847,
+        "typeName": "EndPerformance"
+      }
+    },
+    {
+      "tag": 3864,
+      "assignmentRVA": "0x1d63fcb9",
+      "arrayOffset": "0x78e0",
+      "methodSlot": "0x9538cb0",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 133803,
+        "name": "FKEGLABLJHL",
+        "rva": "0x1d625820",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x937fb40",
+      "noReaderPayload": false,
+      "readerRVA": "0x1dc6f920",
+      "name": "WaitPerformanceEnd",
+      "readerMethod": {
+        "index": 123768,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1dc6f920",
+        "typeIndex": 21848,
+        "typeName": "WaitPerformanceEnd"
+      }
+    },
+    {
+      "tag": 3600,
+      "assignmentRVA": "0x1d63e1e9",
+      "arrayOffset": "0x70a0",
+      "methodSlot": "0x9538420",
+      "factory": "tasks",
+      "factoryMethod": {
+        "index": 133539,
+        "name": "BIEHEKKFMML",
+        "rva": "0x1d6210d0",
+        "typeIndex": 23737,
+        "typeName": "BEMKAFNMJIK"
+      },
+      "typeSlot": "0x936bcd8",
+      "noReaderPayload": false,
+      "readerRVA": "0x1dc181e0",
+      "name": "TriggerCustomStringOnDialogEnd",
+      "readerMethod": {
+        "index": 120300,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1dc181e0",
+        "typeIndex": 20750,
+        "typeName": "TriggerCustomStringOnDialogEnd"
+      }
+    },
+    {
+      "tag": 217,
+      "assignmentRVA": "0x1d19a009",
+      "arrayOffset": "0x6e8",
+      "methodSlot": "0x951e320",
+      "factory": "predicates",
+      "factoryMethod": {
+        "index": 134129,
+        "name": "IMPPNEABMMM",
+        "rva": "0x1d191710",
+        "typeIndex": 23739,
+        "typeName": "MKIOEPLIEIH"
+      },
+      "typeSlot": "0x93655d8",
+      "noReaderPayload": false,
+      "readerRVA": "0x1d4994b0",
+      "name": "ByComparePerformance",
+      "readerMethod": {
+        "index": 118889,
+        "name": "MGMEGEDLMAK",
+        "rva": "0x1d4994b0",
+        "typeIndex": 20315,
+        "typeName": "ByComparePerformance"
+      }
+    }
+  ],
+  "optionTalkInfoFactory": {
+    "tag": 0,
+    "factoryRVA": "0x1d8b7310",
+    "jumpTableRVA": "0x1d8b762c",
+    "branchRVA": "0x1d8b7358",
+    "typeSlot": "0x938c550",
+    "readerRVA": "0x1d8b7680",
+    "allocationRVA": "0x1d8b7358",
+    "readerJumpRVA": "0x1d8b739d"
+  },
+  "fixedPointUnit": 8589934592,
+  "float32JSON": "shortest_decimal_with_identical_ieee754_binary32_bits",
+  "requiredInstallPaths": [
+    "Config/Level/NPCDialogue/P20002/F20002001_G61/DialogueMain_F20002001_G61_N400001.json",
+    "Config/Level/NPCDialogue/P20002/F20002001_G61/DialoguePack_Transferred_F20002001_G61_N400001.json",
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001301.json",
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001300.json",
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001302.json",
+    "Config/Level/NPC/W0/NPC_DefaultStory_500001303.json"
+  ]
+}

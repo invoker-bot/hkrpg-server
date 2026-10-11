@@ -168,9 +168,10 @@ class MazeCallbackPhases46Test {
 
   @ParameterizedTest
   @ValueSource(ints = {0, 1, 2})
-  void duplicateContradictoryOrUnknownTagsCannotApplyEffects(int kind) throws Exception {
+  void duplicateReverseOrUnknownTagsCannotApplyEffects(int kind) throws Exception {
     phaseMarkers();
-    int[] tags = kind == 0 ? new int[] {1, 1} : kind == 1 ? new int[] {1, 2} : new int[] {99};
+    // The new frozen constructor/Writer proof establishes canonical [1,2] as native default.
+    int[] tags = kind == 0 ? new int[] {1, 1} : kind == 1 ? new int[] {2, 1} : new int[] {99};
     var response = dispatch(0, tags, base.monster("[]"));
     assertNotEquals(0, MazeAttackResults46Test.number(response, "retcode"));
     assertFalse(base.actor.getBuffs().containsKey(199998101));

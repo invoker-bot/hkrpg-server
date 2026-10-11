@@ -63,6 +63,13 @@ public final class FirstTalkDefinitions {
         if (!row.has("IsIntroDialogue") || !row.get("IsIntroDialogue").getAsBoolean()) continue;
         int id = row.get("PerformanceID").getAsInt();
         String relative = row.get("PerformancePath").getAsString();
+        if (NpcFirstTalks.belongs(id)) {
+          var rules = NpcFirstTalkRules.read(root);
+          boolean readable = rules != null && rules.intro(row);
+          if (performances.putIfAbsent(id, new Performance(id, relative, Set.of(), readable)) != null)
+            throw new IllegalStateException("Conflicting original NPC intro performance: " + id);
+          continue;
+        }
         Path script = root.resolve(relative).normalize();
         var tasks = new HashSet<String>();
         var effects = new HashSet<String>();

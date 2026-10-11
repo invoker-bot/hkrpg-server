@@ -411,6 +411,8 @@ public class BattleService extends BaseGameService {
                     || active instanceof org.hkrpg.server.gameplay.StageEventDifficultyBattle adjusted && !adjusted.matches(player)
                     || result == BattleEndStatus.BATTLE_END_WIN && player.getStamina() < active.getStaminaCost()
                     || active.isSettling()) return null;
+            var chess = player.getUniverseManager().chess();
+            if (chess.owns(active)) return chess.finishReport(active, result, stats);
             if (!org.hkrpg.server.gameplay.ActivityKillQuests.record(player, active, result, monsters)) return null;
             if (!active.beginSettlement()) return null;
             org.hkrpg.server.gameplay.RogueResonance.saveReport(active, energies);

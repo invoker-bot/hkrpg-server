@@ -272,6 +272,7 @@ public final class MissionManager {
   }
 
   public boolean hasSeenFirstTalk(int performanceId) {
+    if (NpcFirstTalks.belongs(performanceId)) return NpcFirstTalks.seen(player, performanceId);
     if (WorldFirstTalks.belongs(performanceId)) return WorldFirstTalks.seen(player, performanceId);
     var report = player.getGameplay().getFirstTalkReports().get(performanceId);
     return report != null && report.isCompleted();
@@ -295,6 +296,7 @@ public final class MissionManager {
 
   public Retcode finishFirstTalkPerformance(int performance) {
     synchronized (player) {
+      if (NpcFirstTalks.belongs(performance)) return NpcFirstTalks.finish(player, performance);
       if (WorldFirstTalks.belongs(performance)) return WorldFirstTalks.finish(player, performance);
       var definition = FirstTalkDefinitions.performances.get(performance);
       if (definition == null) return Retcode.MISSION_NOT_EXIST;

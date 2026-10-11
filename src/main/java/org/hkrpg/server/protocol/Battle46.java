@@ -4,6 +4,7 @@ import static org.hkrpg.server.protocol.Gameplay46.*;
 
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import emu.lunarcore.game.avatar.GameAvatar;
 import emu.lunarcore.game.battle.skills.MazeSkill;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus;
@@ -15,6 +16,8 @@ import emu.lunarcore.server.packet.send.PacketSceneCastSkillMpUpdateScNotify;
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import java.io.IOException;
 import java.util.*;
+import org.hkrpg.server.gameplay.MazeCastState;
+import org.hkrpg.server.gameplay.MazeSkillCosts;
 
 final class Battle46 {
   static void handle(GameSession s, String name, DynamicMessage req) throws IOException {
@@ -34,6 +37,10 @@ final class Battle46 {
                     s.getProtocol()
                         .translate("SceneBattleInfo", active.toProto().toByteArray(), true)));
       s.sendClientPacket("GetCurBattleInfoScRsp", response.build().toByteArray());
+      return;
+    }
+    if (name.equals("SceneCastSkillCostMpCsReq")) {
+      payOnUse(s, req);
       return;
     }
     if (name.equals("QuitBattleCsReq")) {
@@ -139,7 +146,7 @@ final class Battle46 {
     if (error == Retcode.SUCC
         && !abilityName.isEmpty()
         && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
-    if (error == Retcode.SUCC && phase != MazeSkill.CallbackPhase.DIRECT
+    if (error == Retcode.SUCC && projectileEvent(phase)
         && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
     if (error == Retcode.SUCC && player.getGameplay().getStoryLines().isTransitionPending())
       error = Retcode.SYSTEM_BUSY;
@@ -153,22 +160,34 @@ final class Battle46 {
         else if (skill == null) error = Retcode.REQ_PARA_INVALID;
         else if (!abilityName.isEmpty() && !abilityName.equals(skill.getAbilityName()))
           error = Retcode.REQ_PARA_INVALID;
-        else if (phase != MazeSkill.CallbackPhase.DIRECT && !skill.isProjectileDeclared())
+        else if (projectileEvent(phase) && !skill.isProjectileDeclared())
           error = Retcode.REQ_PARA_INVALID;
-        else if (index == 1 && avatar.getActorId() != 1308 && player.getCurrentLineup().getMp() < 1)
-          error = Retcode.MAZE_MP_NOT_ENOUGH;
+        MazeCastState.Cast binding = null;
+        if (error == Retcode.SUCC) {
+          binding = player.getGameplay().getMazeCasts().find(s, cast);
+          if (binding != null && !binding.matches(avatar, skill, index)) error = Retcode.REQ_PARA_INVALID;
+          else if (index == 1 && (binding == null || !binding.prepaid())
+              && avatar.getActorId() != 1308 && player.getCurrentLineup().getMp() < 1)
+            error = Retcode.MAZE_MP_NOT_ENOUGH;
+        }
         if (error == Retcode.SUCC && index == 1) {
-          if (avatar.getActorId() != 1308) player.getCurrentLineup().removeMp(1);
-          var motion =
-              MotionInfo.parseFrom(
-                  s.getProtocol()
-                      .translate(
-                          "MotionInfo",
-                          ((DynamicMessage) value(req, "target_motion")).toByteArray(),
-                          false));
-          skill.onCast(avatar, motion);
-          player.getDailyManager().onMazeSkill();
-          s.send(new PacketSceneCastSkillMpUpdateScNotify(cast, player.getCurrentLineup().getMp()));
+          if (binding == null && MazeCastState.validUseId(cast)) {
+            binding = player.getGameplay().getMazeCasts().begin(s, cast, avatar, skill, index);
+            if (binding == null) error = Retcode.SYSTEM_BUSY;
+          }
+          if (error == Retcode.SUCC) {
+            boolean prepaid = binding != null && binding.prepaid();
+            // Unpaid requests keep the existing simplified hit-payment rule. Only the proven
+            // native OnUse receipt suppresses a second payment; HIT is not globally deduplicated.
+            if (!prepaid && avatar.getActorId() != 1308) player.getCurrentLineup().removeMp(1);
+            boolean firstRelease = binding == null || !binding.released();
+            var motion = MotionInfo.parseFrom(s.getProtocol().translate("MotionInfo",
+                ((DynamicMessage) value(req, "target_motion")).toByteArray(), false));
+            if (binding == null) skill.onCast(avatar, motion);
+            else binding.release(motion);
+            if (firstRelease) player.getDailyManager().onMazeSkill();
+            if (!prepaid) notifyMp(s, cast);
+          }
         }
       }
     }
@@ -199,7 +218,12 @@ final class Battle46 {
     @SuppressWarnings("unchecked")
     var tags = (List<EnumValueDescriptor>) value(request, "skill_extra_tags");
     if (tags.isEmpty()) return MazeSkill.CallbackPhase.DIRECT;
-    // Each request describes one event. Duplicate and contradictory tags are not two callbacks.
+    // DGOAKJNHIFJ's actual no-LastFinishProjectile constructor supplies [HIT, FINISH].
+    // Its singleton arrays represent actual projectile events. Only the emitted order is known.
+    if (tags.size() == 2)
+      return tags.get(0).getName().equals("SCENE_CAST_SKILL_PROJECTILE_HIT")
+              && tags.get(1).getName().equals("SCENE_CAST_SKILL_PROJECTILE_LIFETIME_FINISH")
+          ? MazeSkill.CallbackPhase.COMBINED : null;
     if (tags.size() != 1) return null;
     return switch (tags.getFirst().getName()) {
       case "SCENE_CAST_SKILL_NONE" -> MazeSkill.CallbackPhase.DIRECT;
@@ -207,6 +231,64 @@ final class Battle46 {
       case "SCENE_CAST_SKILL_PROJECTILE_LIFETIME_FINISH" -> MazeSkill.CallbackPhase.PROJECTILE_LIFETIME_FINISH;
       default -> null;
     };
+  }
+
+  private static boolean projectileEvent(MazeSkill.CallbackPhase phase) {
+    return phase == MazeSkill.CallbackPhase.PROJECTILE_HIT
+        || phase == MazeSkill.CallbackPhase.PROJECTILE_LIFETIME_FINISH;
+  }
+
+  private static void notifyMp(GameSession session, int use) {
+    // Keep existing packet interception and translate its verified attacked_group_id alias
+    // to the native cast_entity_id field, carrying the actual Ability UseID.
+    session.send(new PacketSceneCastSkillMpUpdateScNotify(use, session.getPlayer().getCurrentLineup().getMp()));
+  }
+
+  /** 1408 is sent before starting an OnUse Ability and contains its actual uint UseID. */
+  private static void payOnUse(GameSession session, DynamicMessage req) {
+    var player = session.getPlayer();
+    int use = number(req, "cast_entity_id"), caster = number(req, "attacked_by_entity_id"),
+        index = number(req, "skill_index");
+    Retcode error = Retcode.SUCC;
+    var scene = player.getScene();
+    GameAvatar avatar = scene == null ? null : scene.getAvatarByEntityId(caster);
+    if (!only(req, "cast_entity_id", "attacked_by_entity_id", "skill_index")
+        || !MazeCastState.validUseId(use) || index != 1 || scene == null
+        || !scene.getAvatarEntityIds().contains(caster) || avatar == null
+        || avatar.getOwner() != player || avatar.getEntityId() != caster
+        || !avatar.isAlive(player.getCurrentLineup()) || avatar.isMazeSkillLocked()
+        || player.getSession() != session) error = Retcode.REQ_PARA_INVALID;
+    var skill = avatar == null ? null : avatar.getExcel().getMazeSkill();
+    if (error == Retcode.SUCC && (skill == null || skill.getAbilityName().isEmpty()))
+      error = Retcode.REQ_PARA_INVALID;
+    MazeCastState.Cast binding = null;
+    if (error == Retcode.SUCC) {
+      binding = player.getGameplay().getMazeCasts().find(session, use);
+      if (binding != null && !binding.matches(avatar, skill, index)) error = Retcode.REQ_PARA_INVALID;
+      else if (binding != null && binding.prepaid()) {
+        send(session, "SceneCastSkillCostMpScRsp", Map.of("retcode", 0, "cast_entity_id", use));
+        return;
+      } else if (binding != null && binding.released()) error = Retcode.REQ_PARA_INVALID;
+      else if (player.getBattle() != null || player.getGameplay().getStoryLines().isTransitionPending())
+        error = Retcode.SYSTEM_BUSY;
+    }
+    int amount = 0;
+    if (error == Retcode.SUCC) {
+      var quote = MazeSkillCosts.onUse(avatar, skill);
+      if (quote.isEmpty()) error = Retcode.REQ_PARA_INVALID;
+      else if (player.getCurrentLineup().getMp() < quote.getAsInt()) error = Retcode.MAZE_MP_NOT_ENOUGH;
+      else amount = quote.getAsInt();
+    }
+    if (error == Retcode.SUCC) {
+      if (binding == null) binding = player.getGameplay().getMazeCasts().begin(session, use, avatar, skill, index);
+      if (binding == null) error = Retcode.SYSTEM_BUSY;
+      else {
+        player.getCurrentLineup().removeMp(amount);
+        binding.pay(amount);
+        notifyMp(session, use);
+      }
+    }
+    send(session, "SceneCastSkillCostMpScRsp", Map.of("retcode", error.getVal(), "cast_entity_id", use));
   }
 
   private Battle46() {}

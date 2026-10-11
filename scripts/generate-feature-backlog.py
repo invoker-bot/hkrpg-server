@@ -1166,6 +1166,62 @@ append_review(
     '与固定完整原件一致，97相关Python和13完整本机函数通过；原菜单仅强化/退出，'
     '本服配方默认关闭，原奇物商店的Chess/DLC真实入口和游戏UI仍待补齐。')
 
+append_review(
+    ('SceneCastSkillCsReq',),
+    ['src/test/java/org/hkrpg/server/gameplay/MazeCastSequence46Test.java',
+     'scripts/inspect-maze-cast-sequence-client.py', 'scripts/smoke-maze-cast-sequence.py',
+     'docs/maze-cast-sequence-4.6.md', 'docs/gameplay-entry-batch-4.6.md'],
+    '实际1408预付与1460回调按原UseID绑定当前会话、场景、角色和技能；已支付的'
+    'NONE/HIT/FINISH回调不重复扣MP，源成本1/2及非法标签、身份替换、重连清理有回归。'
+    '冻结F2原生187请求/212检查、3正常停服/2同UID H2恢复通过；此瞬时付款记录不存H2。'
+    '未预付多次HIT费用、输入变体、完整动作时序及真实游戏客户端仍待补齐。')
+
+append_review(
+    ('GetFirstTalkByPerformanceNpcCsReq', 'FinishFirstTalkByPerformanceNpcCsReq',
+     'GetMissionStatusCsReq', 'FinishTalkMissionCsReq', 'GetDailyActiveInfoCsReq',
+     'GetNpcStatusCsReq', 'GetNpcMessageGroupCsReq', 'GetMissionMessageCsReq',
+     'FinishItemIdCsReq', 'FinishSectionIdCsReq'),
+    ['src/test/java/org/hkrpg/server/gameplay/G61NpcFirstTalk46Test.java',
+     'src/test/java/org/hkrpg/server/gameplay/DailyActiveLateUnlock46Test.java',
+     'scripts/recover-client-g61-npc-graphs.py', 'scripts/smoke-g61-first-talk.py',
+     'docs/g61-npc-first-talk-4.6.md', 'docs/gameplay-entry-batch-4.6.md'],
+    '原G61/10206/实例400001的90000103初遇独立保存，原菜单资格可接到3000602短信日常。'
+    '同日空池晚解锁仅补尚未占用的原活跃Type，不重抽旧对象；保存失败撤回新增对象。'
+    '40初遇和21晚解锁回归通过，冻结F2原生140请求/160检查、5正常停服/4同UID H2恢复、'
+    '18独立Player读取通过；受控两日各5000信用/200活跃防重保持。'
+    '前置和时钟是隔离夹具，完整剧情脚本、其它短信日常、自然跨日及真实游戏UI仍待完成。')
+
+_chess_entry_tests = [
+    'src/test/java/org/hkrpg/server/protocol/ChessRogueMerchantEntry46Test.java',
+    'scripts/smoke-chess-rogue-merchant.py', 'scripts/tests/test_smoke_chess_rogue_guard.py',
+    'docs/chess-rogue-merchant-entry-4.6.md', 'docs/chess-rogue-native-guide-4.6.md',
+    'docs/gameplay-entry-batch-4.6.md']
+_chess_entry_commands = (("ChessRogueStartCsReq", 5426), ("ChessRogueEnterCsReq", 5437),
+                         ("ChessRogueSelectCellCsReq", 5534), ("ChessRogueEnterCellCsReq", 5468),
+                         ("ChessRogueEnterNextLayerCsReq", 5447), ("ChessRogueQueryCsReq", 5547))
+_chess_entry_gap = (
+    '原教程10111四场绑定原怪物的WIN、下一层10121休息区原NPC商店已接到独立Chess运行；'
+    '普通/经典Rogue队伍、余额、任务掉落隔离，购买奇物4保存后发送实际5647取得动作。'
+    '61项Java回归与冻结F2原生92请求/252检查、3正常停服/2同UID H2恢复通过；'
+    '实际5000信用是原资格任务自动奖励，四战未发普通掉落。配方默认关闭且数字为本服政策。'
+    'Query当前仅返回运行字段8，客户端读取的永久玩法资料字段10待补；'
+    '真实首次入口/退出、完整骰子/三层生成、祝福与奇物后续效果及游戏UI仍未完成。')
+append_review(('GetRogueShopMiracleInfoCsReq', 'BuyRogueShopMiracleCsReq'),
+              _chess_entry_tests, _chess_entry_gap)
+
+_wolf_ammo_tests = [
+    'src/test/java/org/hkrpg/server/protocol/WolfBroAmmo46Test.java',
+    'src/test/resources/fixtures/wolfbro-g21-original-4.6.json',
+    'scripts/inspect-wolfbro-ammo-client.py', 'scripts/smoke-wolfbro-ammo.py',
+    'scripts/tests/test_wolfbro_ammo_client.py', 'scripts/tests/test_smoke_wolfbro_ammo_guard.py',
+    'docs/wolfbro-ammo-4.6.md', 'docs/gameplay-entry-batch-4.6.md']
+_wolf_ammo_gap = (
+    '实际6525激活、6514普通射击及6508原掉落拾取使用UID/运行/完整来源绑定账本，'
+    'packed/unpacked uint32均校验，保存失败撤回，重复恢复不补弹或复活已提交怪物。'
+    '原JSON数字词法现保留科学计数法，86整文件/41完整原行核对，30项Java与25项来源/工具'
+    'Python通过；冻结F2原生110请求/149检查、3正常停服/2同UID H2恢复通过。'
+    '数量和掉落规则为本服政策；爆炸6502、移动怪物AI、其余关卡完整机关和游戏UI待完成。')
+
 
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
@@ -1214,9 +1270,24 @@ def main():
                     "kind": "protocol-definition-and-local-client-static-evidence"}],
                 "acceptance": {"serverBehavior": False, "resourceVersion": False, "client46": False}}
         requests[name]["javaEvidence"] = "src/main/java/org/hkrpg/server/protocol/BoxingClub46.java"
+    # Fixed protocol names/IDs plus local full native writers; these are finite
+    # server paths, not evidence that the original game's UI accepted them.
+    for name, command in _chess_entry_commands:
+        row = requests.setdefault(name, {"request": name, "sources": []})
+        row["sources"].append({"project": "March7thHoney-OpenSource",
+            "commit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083", "license": "AGPL-3.0",
+            "paths": ["Proto/4.6/CmdChessRogueType.proto"],
+            "kind": "protocol-definition-and-local-client-static-evidence"})
+        row.update(status="partial", nativeCommand=command, protocolName=name,
+            javaEvidence="src/main/java/org/hkrpg/server/protocol/ChessRogue46.java",
+            acceptance={"serverBehavior": True, "resourceVersion": True, "client46": False},
+            testEvidence=_chess_entry_tests, gap=_chess_entry_gap)
+        for evidence in row["testEvidence"]:
+            if not (ROOT / evidence).is_file():
+                raise SystemExit(f"验证证据文件缺失: {evidence}")
     for path in (ROOT / "src/main/java/emu/lunarcore/server/packet/recv").glob("*.java"):
         for name in re.findall(r"@Opcodes\(CmdId\.(\w+)", path.read_text(encoding="utf-8")):
-            if name in requests:
+            if name in requests and name not in dict(_chess_entry_commands):
                 requests[name]["status"] = "source-present-review-required"
                 requests[name]["javaEvidence"] = path.relative_to(ROOT).as_posix()
     # This command is implemented directly by the new version adapter.
@@ -1237,8 +1308,8 @@ def main():
             requests[name]["javaEvidence"] = "src/main/java/org/hkrpg/server/protocol/ClockPark46.java"
     for name, adapter in {"MarkReadMailCsReq": "Mail46", "TakeMailAttachmentCsReq": "Mail46", "DelMailCsReq": "Mail46", "GetExpeditionDataCsReq": "Expedition46", "AcceptMultipleExpeditionCsReq": "Expedition46", "TakeMultipleExpeditionRewardCsReq": "Expedition46", "ReplaceLineupCsReq": "VersionedPacketHandler", "PVEBattleResultCsReq": "BattleResult46", "InteractPropCsReq": "SceneInteraction46", "GetUnlockTeleportCsReq": "SceneMap46",
                           "GetSceneMapInfoCsReq": "SceneMap46", "EnterSceneCsReq": "SceneMap46",
-                          "GetFirstTalkByPerformanceNpcCsReq": "FirstTalk46",
-                          "FinishFirstTalkByPerformanceNpcCsReq": "FirstTalk46",
+                          "GetFirstTalkByPerformanceNpcCsReq": "Gameplay46",
+                          "FinishFirstTalkByPerformanceNpcCsReq": "Gameplay46",
                           "GetRogueTalentInfoCsReq": "RogueTalent46",
                           "EnableRogueTalentCsReq": "RogueTalent46",
                           "ReviveRogueAvatarCsReq": "RogueRevival46",
@@ -1246,8 +1317,8 @@ def main():
                           "EnhanceRogueBuffCsReq": "RogueEnhancement46",
                           "GetRogueShopBuffInfoCsReq": "RogueBuffShop46",
                           "BuyRogueShopBuffCsReq": "RogueBuffShop46",
-                          "GetRogueShopMiracleInfoCsReq": "RogueMiracleShop46",
-                          "BuyRogueShopMiracleCsReq": "RogueMiracleShop46",
+                          "GetRogueShopMiracleInfoCsReq": "VersionedPacketHandler",
+                          "BuyRogueShopMiracleCsReq": "VersionedPacketHandler",
                           "PickRogueAvatarCsReq": "RogueDownload46",
                           "ReplaceLineupCsReq": "RogueLineup46",
                           "ParkourGetDataCsReq": "Parkour46",
@@ -1295,6 +1366,22 @@ def main():
             javaEvidence="src/main/java/org/hkrpg/server/protocol/WolfBro46.java",
             testEvidence=["src/test/java/org/hkrpg/server/protocol/WolfBro46Test.java", "src/test/java/org/hkrpg/server/protocol/WolfBroRestore46Test.java", "src/test/java/org/hkrpg/server/protocol/WolfBroControl46Test.java", "src/test/java/org/hkrpg/server/protocol/WolfBroTransitionComments46Test.java", "scripts/smoke-wolfbro-lifecycle.py"],
             gap="原始关卡3身份、坐标与原始控制组状态1/2/0持久化；存档捕获控制状态，恢复位置/旋转/控制后保存，失败回退，同状态重复不重写。旧存档不猜控制快照、损坏/矛盾保留拒绝。新增28项控制回归、13项行为先失败，真实KCP控制查询13次/请求4次/场景通知7次及正常H2恢复。弹药、完整物件恢复、模型变身、完整脚本及游戏UI未完成。其他16关未逐关联网验收。见docs/wolfbro-control-4.6.md。")
+        for evidence in row["testEvidence"]:
+            if not (ROOT / evidence).is_file():
+                raise SystemExit(f"验证证据文件缺失: {evidence}")
+        row["testEvidence"] = list(dict.fromkeys(row["testEvidence"] + _wolf_ammo_tests))
+        row["gap"] = _wolf_ammo_gap + " 历史验证范围：" + row["gap"]
+    for name, command in (("WolfBroGameActivateBulletCsReq", 6525),
+                          ("OKEFGCNNEKI", 6514), ("WolfBroGamePickupBulletCsReq", 6508)):
+        row = requests.setdefault(name, {"request": name, "sources": []})
+        row["sources"].append({"project": "March7thHoney-OpenSource",
+            "commit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083", "license": "AGPL-3.0",
+            "paths": ["Proto/4.6/CmdWolfBroType.proto"],
+            "kind": "protocol-definition-and-local-client-static-evidence"})
+        row.update(status="partial", nativeCommand=command, protocolName=name,
+            javaEvidence="src/main/java/org/hkrpg/server/protocol/WolfBro46.java",
+            acceptance={"serverBehavior": True, "resourceVersion": True, "client46": False},
+            testEvidence=_wolf_ammo_tests, gap=_wolf_ammo_gap)
         for evidence in row["testEvidence"]:
             if not (ROOT / evidence).is_file():
                 raise SystemExit(f"验证证据文件缺失: {evidence}")

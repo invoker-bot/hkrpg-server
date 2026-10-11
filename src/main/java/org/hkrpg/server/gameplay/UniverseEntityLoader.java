@@ -25,6 +25,10 @@ public final class UniverseEntityLoader extends SceneEntityLoader {
 
   @Override
   public void onSceneLoad(Scene scene) {
+    if (scene.getPlayer().getGameplay().getChessRogue().isInside()) {
+      ChessRogueManager.onSceneLoad(scene);
+      return;
+    }
     var run = scene.getPlayer().getGameplay().getRogue();
     var room = GameplayDefinitions.rooms.get(run.getRoomId());
     if (!run.isInside()
@@ -44,6 +48,8 @@ public final class UniverseEntityLoader extends SceneEntityLoader {
   @Override
   public emu.lunarcore.game.scene.entity.EntityProp loadProp(
       Scene scene, GroupInfo group, PropInfo info) {
+    if (scene.getPlayer().getGameplay().getChessRogue().isInside())
+      return super.loadProp(scene, group, info);
     if (RoguePropDestruction.alreadyDestroyed(scene, group, info)
         || RoguePropRecovery.alreadyDestroyed(scene, group, info)) return null;
     if (info.getPropID() == 1001) {
@@ -110,6 +116,8 @@ public final class UniverseEntityLoader extends SceneEntityLoader {
 
   @Override
   public EntityMonster loadMonster(Scene scene, GroupInfo group, MonsterInfo info) {
+    if (scene.getPlayer().getGameplay().getChessRogue().isInside())
+      return ChessRogueManager.loadMonster(scene, group, info);
     if (RogueBattleKills.alreadyDefeated(scene, group, info)) return null;
     if (info.isIsDelete() || info.isIsClientOnly() || !info.isLoadOnInitial()) return null;
     var run = scene.getPlayer().getGameplay().getRogue();

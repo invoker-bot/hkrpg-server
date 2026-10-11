@@ -7,7 +7,7 @@ import java.util.List;
 public final class DefaultData {
     public static void install(Path directory) throws IOException {
         Files.createDirectories(directory);
-        for (String name : List.of("Banners.json", "ActivityScheduling.json", "RogueMapGen.json", "RogueMapGenByMap.json", "RogueBossGen.json", "RogueDialogueRewards.json", "RogueRestMerchants.json", "Gameplay46.json")) {
+        for (String name : List.of("Banners.json", "ActivityScheduling.json", "RogueMapGen.json", "RogueMapGenByMap.json", "RogueBossGen.json", "RogueDialogueRewards.json", "RogueRestMerchants.json", "ChessRogueGuideRoutes.json", "Gameplay46.json")) {
             Path target = directory.resolve(name);
             if (Files.exists(target)) continue;
             try (var stream = DefaultData.class.getResourceAsStream("/defaults/" + name)) {

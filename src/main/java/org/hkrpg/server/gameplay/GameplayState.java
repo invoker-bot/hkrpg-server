@@ -9,6 +9,15 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  // Client UseID belongs to a live session; it must never become an H2/Mongo receipt.
+  @dev.morphia.annotations.Transient
+  private transient MazeCastState mazeCasts = new MazeCastState();
+
+  public MazeCastState getMazeCasts() {
+    if (mazeCasts == null) mazeCasts = new MazeCastState();
+    return mazeCasts;
+  }
+
   private KraterOfferingState kraterOffering = new KraterOfferingState();
   public KraterOfferingState getKraterOffering() {
     if (kraterOffering == null) kraterOffering = new KraterOfferingState();
@@ -33,6 +42,22 @@ public class GameplayState {
     return worldFirstTalks;
   }
   void worldFirstTalks(WorldFirstTalkState value) { worldFirstTalks = Objects.requireNonNull(value); }
+  private NpcFirstTalkState npcFirstTalks = new NpcFirstTalkState();
+
+  public NpcFirstTalkState getNpcFirstTalks() {
+    if (npcFirstTalks == null) npcFirstTalks = new NpcFirstTalkState();
+    return npcFirstTalks;
+  }
+
+  void npcFirstTalks(NpcFirstTalkState value) { npcFirstTalks = Objects.requireNonNull(value); }
+  private ChessRogueState chessRogue = new ChessRogueState();
+
+  public ChessRogueState getChessRogue() {
+    if (chessRogue == null) chessRogue = new ChessRogueState();
+    return chessRogue;
+  }
+
+  public void setChessRogue(ChessRogueState value) { chessRogue = Objects.requireNonNull(value); }
   private CavalryBeastState cavalryBeasts = new CavalryBeastState();
   public CavalryBeastState getCavalryBeasts() {
     if (cavalryBeasts == null) cavalryBeasts = new CavalryBeastState();

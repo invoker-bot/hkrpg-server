@@ -121,6 +121,9 @@ public class LineupManager {
             return getPlayer().getStoryLineManager().lineup();
         if (type == 13 && getPlayer().getRaidTrialManager().inside())
             return getPlayer().getRaidTrialManager().lineup();
+        var chess = this.getPlayer().getGameplay().getChessRogue();
+        if (type == 2 && chess.isInside() && !chess.getRoster().isEmpty())
+            return this.getPlayer().getUniverseManager().chess().lineup();
         var run = this.getPlayer().getGameplay().getRogue();
         if (type == 2 && run.isInside() && !run.getRoster().isEmpty())
             return this.getPlayer().getUniverseManager().lineup();
@@ -138,6 +141,9 @@ public class LineupManager {
                 return getPlayer().getStoryLineManager().lineup();
             if (getPlayer().getRaidTrialManager().inside())
                 return getPlayer().getRaidTrialManager().lineup();
+            var chess = this.getPlayer().getGameplay().getChessRogue();
+            if (chess.isInside() && !chess.getRoster().isEmpty())
+                return this.getPlayer().getUniverseManager().chess().lineup();
             var run = this.getPlayer().getGameplay().getRogue();
             if (run.isInside() && !run.getRoster().isEmpty())
                 return this.getPlayer().getUniverseManager().lineup();

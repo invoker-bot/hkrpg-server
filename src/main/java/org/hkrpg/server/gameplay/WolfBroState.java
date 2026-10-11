@@ -93,6 +93,8 @@ public final class WolfBroState {
     private Motion archive;
     private Integer archiveControlState;
     private String controlSignature;
+    private WolfBroAmmoState ammo;
+    private WolfBroAmmoState archiveAmmo;
 
     private Run() {}
 
@@ -110,6 +112,24 @@ public final class WolfBroState {
       this.controlSignature = WolfBroControl.signature(level);
     }
 
+    Run copy() {
+      var next = new Run();
+      next.id = id; next.sourceSignature = sourceSignature; next.uuid = uuid; next.active = active;
+      next.archive = archive; next.archiveControlState = archiveControlState; next.controlSignature = controlSignature;
+      next.ammo = ammo; next.archiveAmmo = archiveAmmo;
+      return next;
+    }
+
+    Run ammo(WolfBroAmmoState value) { var next = copy(); next.ammo = value; return next; }
+
+    Run checkpoint(Motion motion, Integer control) {
+      var next = copy(); next.archive = motion; next.archiveControlState = control;
+      next.archiveAmmo = ammo == null ? null : ammo.copy(); return next;
+    }
+
+    Run rewind() { return ammo(ammo == null ? archiveAmmo : ammo.rewind(archiveAmmo)); }
+    Run stop() { var next = copy(); next.active = false; return next; }
+
     boolean valid(WolfBroCatalog.Level level) {
       if (id != level.WolfBroID()
           || !level.signature().equals(sourceSignature)
@@ -118,6 +138,7 @@ public final class WolfBroState {
           || archive == null
           || !archive.valid()) return false;
       if ((archiveControlState == null) != (controlSignature == null)) return false;
+      if (ammo != null && !ammo.valid(uuid) || archiveAmmo != null && !archiveAmmo.valid(uuid)) return false;
       if (archiveControlState != null
           && (!controlSignature.equals(WolfBroControl.signature(level))
               || !WolfBroControl.stateKnown(level, archiveControlState))) return false;

@@ -80,6 +80,8 @@ public final class WolfBroManager {
     synchronized (player) {
       var code = context(id);
       if (code != Retcode.SUCC) return rejected(code, id);
+      if (!WolfBroAmmunition.valid(player, player.getGameplay().getWolfBro().run(id)))
+        return rejected(Retcode.PLAYER_DATA_ERROR, id);
       return new Result(Retcode.SUCC, id, player.getGameplay().getWolfBro().run(id), false);
     }
   }
@@ -119,10 +121,8 @@ public final class WolfBroManager {
       var level = WolfBroCatalog.level(id);
       var control = WolfBroControl.current(player, level);
       if (control == null) return rejected(Retcode.PLAYER_DATA_ERROR, id);
-      var next =
-          run.getArchiveControlState() == null
-              ? new WolfBroState.Run(level, run.getUuid(), true, motion)
-              : new WolfBroState.Run(level, run.getUuid(), true, motion, control);
+      if (!WolfBroAmmunition.valid(player, run)) return rejected(Retcode.PLAYER_DATA_ERROR, id);
+      var next = run.checkpoint(motion, run.getArchiveControlState() == null ? null : control);
       return commit(id, next, id, control);
     }
   }
@@ -133,6 +133,10 @@ public final class WolfBroManager {
       if (code != Retcode.SUCC) return rejected(code, id);
       var run = player.getGameplay().getWolfBro().run(id);
       if (run == null || !run.isActive()) return rejected(Retcode.REQ_PARA_INVALID, id);
+      if (!WolfBroAmmunition.valid(player, run)) return rejected(Retcode.PLAYER_DATA_ERROR, id);
+      var rewound = run.rewind();
+      boolean ammoChanged = !WolfBroAmmoState.same(run.getAmmo(), rewound.getAmmo());
+      var next = ammoChanged ? rewound : run;
       var pos = player.getPos();
       var rot = player.getRot();
       if (pos == null || rot == null || pos == rot) return rejected(Retcode.PLAYER_DATA_ERROR, id);
@@ -146,26 +150,28 @@ public final class WolfBroManager {
         return rejected(Retcode.PLAYER_DATA_ERROR, id);
       if (same(pos, motion.getPos())
           && same(rot, motion.getRot())
-          && (control == null || !control.changed()))
+          && (control == null || !control.changed()) && !ammoChanged)
         return new Result(Retcode.SUCC, id, run, false);
       var oldPos = new emu.lunarcore.util.Position(pos);
       var oldRot = new emu.lunarcore.util.Position(rot);
       pos.set(motion.getPos().getX(), motion.getPos().getY(), motion.getPos().getZ());
       rot.set(motion.getRot().getX(), motion.getRot().getY(), motion.getRot().getZ());
       if (control != null) control.apply();
+      player.getGameplay().getWolfBro().replace(id, next);
       try {
         player.save();
       } catch (RuntimeException failed) {
         pos.set(oldPos);
         rot.set(oldRot);
         if (control != null) control.rollback();
+        player.getGameplay().getWolfBro().replace(id, run);
         emu.lunarcore.LunarCore.getLogger().debug("WolfBro position restore save failed", failed);
         return rejected(Retcode.SYSTEM_BUSY, id);
       }
       if (control != null) control.publish();
       // The compiled client applies archive.motion from the restore response itself.
-      // This updates player coordinates, not the game snapshot or a new 6548 notification.
-      return new Result(Retcode.SUCC, id, run, false);
+      // Ammo uses its real nested checkpoint fields; committed defeats are kept across rewind.
+      return new Result(Retcode.SUCC, id, next, ammoChanged);
     }
   }
 
@@ -182,11 +188,8 @@ public final class WolfBroManager {
       var run = player.getGameplay().getWolfBro().run(id);
       if (run == null || !run.isActive()) return rejected(Retcode.REQ_PARA_INVALID, id);
       var level = WolfBroCatalog.level(id);
-      var next =
-          run.getArchiveControlState() == null
-              ? new WolfBroState.Run(level, run.getUuid(), false, run.getArchive())
-              : new WolfBroState.Run(
-                  level, run.getUuid(), false, run.getArchive(), run.getArchiveControlState());
+      if (!WolfBroAmmunition.valid(player, run)) return rejected(Retcode.PLAYER_DATA_ERROR, id);
+      var next = run.stop();
       return commit(id, next, 0, level.CloseState());
     }
   }

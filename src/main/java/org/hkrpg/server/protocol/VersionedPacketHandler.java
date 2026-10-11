@@ -47,6 +47,7 @@ public final class VersionedPacketHandler {
     if (Expedition46.handle(session, command, bytes)) return true;
     if (Mail46.handle(session, command, bytes)) return true;
     if (TrainWorld46.handle(session, command, bytes)) return true;
+    if (ChessRogue46.handle(session, command, bytes)) return true;
     if (Universe46.handle(session, command, bytes)) return true;
     if (RogueHandbook46.handle(session, command, bytes)) return true;
     if (RogueHandbookReward46.handle(session, command, bytes)) return true;
