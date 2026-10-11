@@ -58,3 +58,6 @@
 全部新增运行代码为Java21本项目实现，固定资源来源 `TurnBasedGameData@724b139d8c9c32d12552eb95745a4fee72bfe48b`；未引入未知许可运行代码、未修改生成协议或版本号。隔离账号/资格/运营窗口/时钟均明确为夹具，原目标、回复、任务完成与奖励未预写。实际骑乘输入、手机客户端与NPC演出、其他剧情/宇宙/活动、真实墙钟跨日及断电原子性仍待完成或验收，功能状态保持partial。
 
 分项说明见 [骑兽](cavalry-beast-46.md) 与 [手机日常](daily-message-3000602-4.6.md)。
+
+
+提交后最终说明包E `build/cavalry-phone-final-metadata-runtime.jar` 的SHA256为 `47a3cbfd611e4abfd369a9746d80f2f699aac53f8ff4c8a677545c65f5236f5c`。与已验收D逐个比较jar条目，只有features.json和feature-backlog.json内容改变，全部运行类字节相同（`build/cavalry-phone-final-metadata-package.json`）；两个生成器已核对39功能及477入口证据。E另实际通过Dispatch两轮认证/账户存储恢复（`build/cavalry-phone-final-metadata-dispatch-summary.json`），目录dispatch-k7284igz；旧脚本使用终止进程，不补计正常停服或玩法网络。最终源码交付仍为3557文件/151冻结协议。D的全量及玩法网络证据按原SHA保留，没有声称E再次执行完整13,444项或手机/骑兽网络。
