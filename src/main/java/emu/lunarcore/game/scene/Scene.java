@@ -176,6 +176,7 @@ public class Scene implements Tickable {
     }
 
     public void loadGroup(GroupInfo group) {
+        if (group == null || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)) return;
         // Resources from other story dimensions are retained, but do not belong to the main world.
         // Instance loaders for Rogue/Challenge/Trial already select their own authored groups.
         if (getPlaneType() != PlaneType.Rogue && getPlaneType() != PlaneType.Challenge
@@ -222,6 +223,7 @@ public class Scene implements Tickable {
         var savedState = player.getGameplay().getStoryValues().get("group-state:" + getFloorId() + ":" + group.getId());
         if (savedState != null)
             getGroups().computeIfAbsent(group.getId(), SceneGroup::new).setState(savedState);
+        org.hkrpg.server.gameplay.Mascots.restore(this, group);
 
         // Add group properties
         if (group.getGroupPropertyMap() != null && group.getGroupPropertyMap().size() > 0) {
@@ -709,11 +711,15 @@ public class Scene implements Tickable {
 
         for (var extradata : this.getFloorInfo().getExtraDatas(getDimensionId())) {
             int value = getPlayer().getGameplay().getStoryValues().getOrDefault("floor:" + getFloorId() + ":" + extradata.getName(), extradata.getDefaultValue());
+            value = org.hkrpg.server.gameplay.Mascots.floorValue(this, extradata.getName(), value);
             this.enableExtraData(proto, extradata.getName(), value);
         }
         String storyPrefix = "floor:" + getFloorId() + ":";
         getPlayer().getGameplay().getStoryValues().forEach((key,value) -> {
-            if (key.startsWith(storyPrefix)) this.enableExtraData(proto,key.substring(storyPrefix.length()),value);
+            if (key.startsWith(storyPrefix)) {
+                String name = key.substring(storyPrefix.length());
+                this.enableExtraData(proto,name,org.hkrpg.server.gameplay.Mascots.floorValue(this,name,value));
+            }
         });
 
         // Get current lineup

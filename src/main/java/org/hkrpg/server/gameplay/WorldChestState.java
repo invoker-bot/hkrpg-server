@@ -16,6 +16,7 @@ public final class WorldChestState {
   private Map<Integer, QuestState> quests = new TreeMap<>();
   private Map<Integer, Unlock> unlocks = new TreeMap<>();
   private Map<Integer, GoldenSpearRecord> spears = new TreeMap<>();
+  private Map<Integer, MascotRecord> mascots = new TreeMap<>();
 
   public enum Phase {
     PREPARED,
@@ -224,6 +225,9 @@ public final class WorldChestState {
       case 6029851 -> 10;
       case 6029852 -> 15;
       case TimeRelayFlameSources.GOAL, GoldenSpearSources.GOAL -> 1;
+      case 6029853 -> 1;
+      case 6029854 -> 2;
+      case 6029855 -> 3;
       default -> -1;
     };
   }
@@ -244,6 +248,10 @@ public final class WorldChestState {
     return spears == null ? null : Collections.unmodifiableMap(spears);
   }
 
+  public Map<Integer, MascotRecord> getMascots() {
+    return mascots == null ? null : Collections.unmodifiableMap(mascots);
+  }
+
   boolean valid(WorldChestRules rules, Player p) {
     if (rules == null
         || version != 1
@@ -251,10 +259,17 @@ public final class WorldChestState {
         || quests == null
         || unlocks == null
         || spears == null
+        || mascots == null
         || records.size() > rules.locations.size()
         || quests.size() > rules.goals().size()
         || unlocks.size() > rules.locations.keySet().stream().filter(rules::puzzle).count()
-        || spears.size() > GoldenSpearSources.PUZZLES.size()) return false;
+        || spears.size() > GoldenSpearSources.PUZZLES.size()
+        || mascots.size() > MascotSources.PUZZLES.size()) return false;
+    for (var e : mascots.entrySet())
+      if (e.getKey() == null
+          || e.getValue() == null
+          || e.getKey() != e.getValue().getChest()
+          || !e.getValue().valid(rules, p)) return false;
     for (var e : spears.entrySet())
       if (e.getKey() == null
           || e.getValue() == null
@@ -278,6 +293,10 @@ public final class WorldChestState {
             || !unlock.completed()
             || unlock.at > e.getValue().at
             || unlock.completedAt > e.getValue().at) return false;
+      }
+      if (rules.mascot(e.getKey())) {
+        var r = mascots.get(e.getKey());
+        if (r == null || r.state() != 4 || r.completedAt() > e.getValue().at) return false;
       }
     }
     var journal =
@@ -362,6 +381,13 @@ public final class WorldChestState {
     var next = copy();
     var record = next.spears.computeIfAbsent(chest, GoldenSpearRecord::new);
     record.append(p, actor, rules, index, now);
+    return next;
+  }
+
+  WorldChestState mascotStep(
+      Player p, int chest, EntityProp actor, WorldChestRules rules, int state, long now) {
+    var next = copy();
+    next.mascots.computeIfAbsent(chest, MascotRecord::new).append(p, actor, rules, state, now);
     return next;
   }
 

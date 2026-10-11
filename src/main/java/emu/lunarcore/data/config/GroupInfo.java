@@ -21,6 +21,9 @@ public class GroupInfo {
     private JsonElement AtmosphereCondition;
     private LoadConditionInfo LoadCondition;
     private LoadConditionInfo UnloadCondition;
+    private String LevelGraph;
+    private JsonElement SavedValueCondition;
+    private JsonElement ValueSource;
 
     private Map<Integer, GroupProperty> GroupPropertyMap;
     private List<StateTransition> GroupStateList;

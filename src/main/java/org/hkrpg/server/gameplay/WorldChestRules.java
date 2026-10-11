@@ -24,7 +24,7 @@ final class WorldChestRules {
   final Map<String, String> rowPins, filePins;
   final Map<Integer, WorldChestSources.Location> locations;
   private final Map<String, Object> expected = new HashMap<>();
-  private final Map<Integer, GroupInfo> groups = new HashMap<>();
+  private final Map<String, GroupInfo> groups = new HashMap<>();
 
   private WorldChestRules(
       Path root,
@@ -32,17 +32,20 @@ final class WorldChestRules {
       Map<String, Map<Integer, JsonObject>> tables,
       Map<String, JsonElement> files,
       boolean flames,
-      boolean spears) {
+      boolean spears,
+      boolean mascots) {
     this.root = root;
     this.hashes = Map.copyOf(hashes);
     this.tables = Map.copyOf(tables);
     this.files = Map.copyOf(files);
-    rowPins = rows(flames, spears);
-    filePins = files(flames, spears);
+    rowPins = rows(flames, spears, mascots);
+    filePins = files(flames, spears, mascots);
     locations =
         GoldenSpearSources.merge(
-            flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS,
-            spears ? GoldenSpearSources.PUZZLES : Map.of());
+            GoldenSpearSources.merge(
+                flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS,
+                spears ? GoldenSpearSources.PUZZLES : Map.of()),
+            mascots ? MascotSources.PUZZLES : Map.of());
     var gson = ResourceLoader.getGson();
     for (String key : rowPins.keySet()) {
       var p = key.split(":");
@@ -74,23 +77,28 @@ final class WorldChestRules {
           };
       if (value != null) expected.put(key, value);
     }
-    for (var l : locations.values()) {
-      var g = gson.fromJson(files.get(l.path()), GroupInfo.class);
-      g.setId(l.group());
-      groups.put(l.group(), g);
+    for (var path : filePins.keySet()) {
+      if (!path.contains("/SharedRuntimeGroup/")) continue;
+      var g = gson.fromJson(files.get(path), GroupInfo.class);
+      g.setId(Integer.parseInt(path.replaceAll(".*_G([0-9]+)\\.json", "$1")));
+      groups.put(path, g);
     }
   }
 
-  private static Map<String, String> rows(boolean flames, boolean spears) {
+  private static Map<String, String> rows(boolean flames, boolean spears, boolean mascots) {
     return GoldenSpearSources.merge(
-        flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS,
-        spears ? GoldenSpearSources.ROWS : Map.of());
+        GoldenSpearSources.merge(
+            flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS,
+            spears ? GoldenSpearSources.ROWS : Map.of()),
+        mascots ? MascotSources.ROWS : Map.of());
   }
 
-  private static Map<String, String> files(boolean flames, boolean spears) {
+  private static Map<String, String> files(boolean flames, boolean spears, boolean mascots) {
     return GoldenSpearSources.merge(
-        flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES,
-        spears ? GoldenSpearSources.FILES : Map.of());
+        GoldenSpearSources.merge(
+            flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES,
+            spears ? GoldenSpearSources.FILES : Map.of()),
+        mascots ? MascotSources.FILES : Map.of());
   }
 
   static synchronized WorldChestRules load() {
@@ -104,8 +112,13 @@ final class WorldChestRules {
       if (spears != (GameData.getPropExcelMap().get(GoldenSpearSources.SHIELD) != null)
           || spears != (GameData.getQuestExcelMap().get(GoldenSpearSources.GOAL) != null))
         return null;
-      var filePins = files(flames, spears);
-      var rowPins = rows(flames, spears);
+      boolean mascots = GameData.getPropExcelMap().get(MascotSources.MONSTER) != null;
+      if (mascots != (GameData.getPropExcelMap().get(MascotSources.COIN) != null)
+          || MascotSources.GOALS.stream()
+              .anyMatch(id -> mascots != (GameData.getQuestExcelMap().get(id) != null)))
+        return null;
+      var filePins = files(flames, spears, mascots);
+      var rowPins = rows(flames, spears, mascots);
       var root = Path.of(LunarCore.getConfig().getResourceDir()).toAbsolutePath().normalize();
       var hashes = new TreeMap<String, String>();
       var json = new TreeMap<String, JsonElement>();
@@ -144,7 +157,7 @@ final class WorldChestRules {
         if (row == null || !e.getValue().equals(TimelineActivityRules.fingerprint(row)))
           return null;
       }
-      var next = new WorldChestRules(root, hashes, tables, json, flames, spears);
+      var next = new WorldChestRules(root, hashes, tables, json, flames, spears, mascots);
       if (!next.loaded()) return null;
       current = next;
       return next;
@@ -208,6 +221,7 @@ final class WorldChestRules {
     var out = new ArrayList<>(List.of(FIRST, FIRST + 1, LAST));
     if (locations.keySet().stream().anyMatch(this::flame)) out.add(TimeRelayFlameSources.GOAL);
     if (locations.keySet().stream().anyMatch(this::golden)) out.add(GoldenSpearSources.GOAL);
+    if (locations.keySet().stream().anyMatch(this::mascot)) out.addAll(MascotSources.GOALS);
     return List.copyOf(out);
   }
 
@@ -219,20 +233,28 @@ final class WorldChestRules {
     return locations.containsKey(id) && GoldenSpearSources.PUZZLES.containsKey(id);
   }
 
+  boolean mascot(int id) {
+    return locations.containsKey(id) && MascotSources.PUZZLES.containsKey(id);
+  }
+
   boolean puzzle(int id) {
     return flame(id) || golden(id);
   }
 
   boolean countsGoal(int goal, int id) {
-    return goals().contains(goal)
-        && (goal == TimeRelayFlameSources.GOAL
-            ? flame(id)
-                && chest(id).getAsJsonArray("ChestType").asList().stream()
-                    .anyMatch(t -> "CHEST_PUZZLE_TIME_RELAY_FLAME".equals(t.getAsString()))
-            : goal != GoldenSpearSources.GOAL
-                || golden(id)
-                    && chest(id).getAsJsonArray("ChestType").asList().stream()
-                        .anyMatch(t -> "CHEST_PUZZLE_GOLDEN_SPEAR".equals(t.getAsString())));
+    if (!goals().contains(goal)) return false;
+    String type =
+        goal == TimeRelayFlameSources.GOAL
+            ? "CHEST_PUZZLE_TIME_RELAY_FLAME"
+            : goal == GoldenSpearSources.GOAL
+                ? "CHEST_PUZZLE_GOLDEN_SPEAR"
+                : MascotSources.GOALS.contains(goal) ? "CHEST_PUZZLE_MASCOT" : null;
+    return type == null
+        || (goal == TimeRelayFlameSources.GOAL
+                ? flame(id)
+                : goal == GoldenSpearSources.GOAL ? golden(id) : mascot(id))
+            && chest(id).getAsJsonArray("ChestType").asList().stream()
+                .anyMatch(t -> type.equals(t.getAsString()));
   }
 
   Map<Integer, Integer> loot(int id) {
@@ -259,14 +281,8 @@ final class WorldChestRules {
   PropInfo groupProp(int id, int dimension, int instance, int propId) {
     var l = locations.get(id);
     if (l == null || !l.dimensions().contains(dimension)) return null;
-    var floor = GameData.getFloorInfo(l.plane(), l.floor());
-    if (floor == null || !floor.isGroupInDimension(l.group(), dimension)) return null;
-    var actual = floor.getGroups(dimension).get(l.group());
-    var expected = groups.get(l.group());
-    if (actual == null
-        || !ResourceLoader.getGson()
-            .toJsonTree(actual)
-            .equals(ResourceLoader.getGson().toJsonTree(expected))) return null;
+    var actual = group(l.plane(), l.floor(), dimension, l.path());
+    if (actual == null) return null;
     var matches =
         actual.getPropList().stream().filter(p -> p != null && p.getID() == instance).toList();
     if (matches.size() != 1) return null;
@@ -277,6 +293,45 @@ final class WorldChestRules {
             && prop.isLoadOnInitial()
         ? prop
         : null;
+  }
+
+  GroupInfo group(int plane, int floor, int dimension, String path) {
+    var expected = groups.get(path);
+    var source = GameData.getFloorInfo(plane, floor);
+    if (expected == null
+        || source == null
+        || !source.isGroupInDimension(expected.getId(), dimension)) return null;
+    var actual = source.getGroups(dimension).get(expected.getId());
+    return actual != null
+            && ResourceLoader.getGson()
+                .toJsonTree(actual)
+                .equals(ResourceLoader.getGson().toJsonTree(expected))
+        ? actual
+        : null;
+  }
+
+  boolean mascotMission(MascotSources.Control c) {
+    if (!mascot(c.chest())) return false;
+    String prefix = "Config/Level/Mission/" + c.mission() + "/MissionInfo_" + c.mission();
+    var raw = files.get(prefix + ".json").getAsJsonObject().deepCopy();
+    files
+        .get(prefix + ".partial.json")
+        .getAsJsonObject()
+        .entrySet()
+        .forEach(e -> raw.add(e.getKey(), e.getValue()));
+    var expected =
+        ResourceLoader.getGson().fromJson(raw, emu.lunarcore.data.config.MissionInfo.class);
+    var actual = GameData.getMissionInfos().get(c.mission());
+    if (actual == null
+        || !ResourceLoader.getGson()
+            .toJsonTree(actual)
+            .equals(ResourceLoader.getGson().toJsonTree(expected))) return false;
+    for (var sub : expected.getSubMissionList())
+      if (!ResourceLoader.getGson()
+          .toJsonTree(sub)
+          .equals(ResourceLoader.getGson().toJsonTree(GameplayDefinitions.subs.get(sub.getId()))))
+        return false;
+    return true;
   }
 
   boolean entry(int plane, int floor, int entry) {

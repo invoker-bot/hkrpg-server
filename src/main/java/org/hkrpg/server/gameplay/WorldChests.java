@@ -15,7 +15,7 @@ public final class WorldChests {
   private static Integer identity(EntityProp actor) {
     if (actor == null || actor.getScene() == null) return null;
     var scene = actor.getScene();
-    return GoldenSpearSources.LOCATIONS.entrySet().stream()
+    return MascotSources.LOCATIONS.entrySet().stream()
         .filter(
             e ->
                 e.getValue().plane() == scene.getPlaneId()
@@ -35,6 +35,11 @@ public final class WorldChests {
   public static boolean golden(EntityProp actor) {
     var id = identity(actor);
     return id != null && GoldenSpearSources.PUZZLES.containsKey(id);
+  }
+
+  public static boolean mascot(EntityProp actor) {
+    var id = identity(actor);
+    return id != null && MascotSources.PUZZLES.containsKey(id);
   }
 
   public static Retcode validate(Player p, int config, int entity) {
@@ -59,6 +64,10 @@ public final class WorldChests {
       if (state.getUnlocks().containsKey(id)) return Retcode.SYSTEM_BUSY;
     } else if (rules.puzzle(id) && !state.getUnlocks().containsKey(id)) {
       return Retcode.UNSUPPORTED_PROP_STATE;
+    }
+    if (rules.mascot(id)) {
+      var r = state.getMascots().get(id);
+      if (r == null || r.state() != 4) return Retcode.UNSUPPORTED_PROP_STATE;
     }
     return rules.actor(p, id) == actor ? Retcode.SUCC : Retcode.MISSION_SCENE_NOT_MATCH;
   }
