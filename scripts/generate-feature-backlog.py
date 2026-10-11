@@ -1198,7 +1198,8 @@ _chess_entry_tests = [
     'docs/gameplay-entry-batch-4.6.md']
 _chess_entry_commands = (("ChessRogueStartCsReq", 5426), ("ChessRogueEnterCsReq", 5437),
                          ("ChessRogueSelectCellCsReq", 5534), ("ChessRogueEnterCellCsReq", 5468),
-                         ("ChessRogueEnterNextLayerCsReq", 5447), ("ChessRogueQueryCsReq", 5547))
+                         ("ChessRogueEnterNextLayerCsReq", 5447), ("ChessRogueQueryCsReq", 5547),
+                         ("ChessRogueLeaveCsReq", 5462))
 _chess_entry_gap = (
     '原教程10111四场绑定原怪物的WIN、下一层10121休息区原NPC商店已接到独立Chess运行；'
     '普通/经典Rogue队伍、余额、任务掉落隔离，购买奇物4保存后发送实际5647取得动作。'
@@ -1221,6 +1222,56 @@ _wolf_ammo_gap = (
     '原JSON数字词法现保留科学计数法，86整文件/41完整原行核对，30项Java与25项来源/工具'
     'Python通过；冻结F2原生110请求/149检查、3正常停服/2同UID H2恢复通过。'
     '数量和掉落规则为本服政策；爆炸6502、移动怪物AI、其余关卡完整机关和游戏UI待完成。')
+
+_manual_input_tests = [
+    'src/test/java/org/hkrpg/server/gameplay/MazeManualAbility46Test.java',
+    'src/test/resources/fixtures/maze-manual-ability-4.6.json',
+    'scripts/freeze-maze-manual-ability-source.py', 'scripts/inspect-maze-manual-ability-client.py',
+    'scripts/smoke-maze-manual-ability.py', 'scripts/tests/test_smoke_maze_manual_guard.py',
+    'docs/maze-manual-ability-4.6.md']
+_manual_input_gap = (
+    '1510原Input变体按真实独立UseID与先前同场景/会话/角色base施放的snapshot绑定；'
+    '不借base预付，原HIT/END仅实际成功入战扣2MP，合法多次HIT按原任务执行。'
+    '19专项、801独立相邻及433统一专项通过；同新包真实243请求/230检查、'
+    '3正常停服/2同UID H2恢复通过，瞬时施放身份不落盘。'
+    '15完整本机函数/108来源检查有证据；其他输入变体、完整动作/召唤/物理与游戏UI待完成。')
+_sibling_message_tests = [
+    'src/test/java/org/hkrpg/server/gameplay/DailyMissionMessageSibling46Test.java',
+    'scripts/verify-daily-message-sibling-sources.py', 'scripts/smoke-daily-message-sibling.py',
+    'scripts/tests/test_daily_message_sibling_native_guard.py',
+    'docs/daily-message-3000603-4.6.md']
+_sibling_message_gap = (
+    '原3000603/1211402的17完整节点与8条路径已接入按日接取/原Talk/三次回复/提交，'
+    '每轮5000信用和200活跃分别防重，不借旧global电话记录。'
+    '50整原件/240完整对象核对，34新回归与130相邻通过；同新包结算/过期各case0'
+    '实际301请求/345检查、13正常停服/11同UID H2恢复/52独立Player读通过。'
+    '其他7结算/3过期case只有单元覆盖，3000601、完整Act执行、自然跨日和真实游戏UI待完成。')
+_chess_saved_tests = [
+    'src/test/java/org/hkrpg/server/protocol/ChessRogueNativeProfile46Test.java',
+    'src/test/java/org/hkrpg/server/protocol/ChessRogueLeaveAndSave46Test.java',
+    'src/test/resources/fixtures/chess-rogue-leave-and-save-4.6.json',
+    'scripts/smoke-chess-rogue-saved-leave.py', 'scripts/tests/test_chess_rogue_saved_leave_guard.py',
+    'docs/chess-rogue-merchant-entry-4.6.md']
+_chess_saved_gap = (
+    'Query5547永久资料字段10/HIM及原8013104解锁101已补；5462保存离开回普通场景/队伍，'
+    '保留金币/四战收据/奇物UUID/HP-SP/stock，来源租约和旧存档失败屏障防止错返。'
+    'paused Query与5437恢复已有10保存和3资料回归；原61项保持，433统一专项通过。'
+    '同新包实际109请求/351检查、3正常停服/2同UID H2恢复和3只读双Player检查通过。'
+    'Nous/首奖、5472结束、完整三层/骰子/奇物后效和真实游戏UI仍待完成。')
+_wolf_explosion_tests = [
+    'src/test/java/org/hkrpg/server/protocol/WolfBroExplosion46Test.java',
+    'src/test/resources/fixtures/wolfbro-explosion-4.6.json',
+    'scripts/freeze-wolfbro-explosion-sources.py', 'scripts/tests/test_wolfbro_explosion_guard.py',
+    'docs/wolfbro-explosion-4.6.md']
+_wolf_explosion_gap = (
+    '本机LBMFCJLHNAA原6502实体列表和6518/ret15已接入，爆炸不耗弹并复用原射击击败/掉落账本。'
+    '先核对全部原NPC与四完整Ability/原爆炸道具/实际场景，再保存、移除和通知，失败可重试。'
+    '27回归/433统一专项通过；同新包原生122请求/167检查、3正常停服/2同UID H2恢复通过。'
+    '包没有道具ID/原点/半径，服务端没有重算物理；移动AI、全部机关/关卡与游戏UI仍待完成。')
+_chess_entry_tests = list(dict.fromkeys(_chess_entry_tests + _chess_saved_tests))
+_chess_entry_gap = _chess_saved_gap + ' 历史验证范围：' + _chess_entry_gap
+_wolf_ammo_tests = list(dict.fromkeys(_wolf_ammo_tests + _wolf_explosion_tests))
+_wolf_ammo_gap = _wolf_explosion_gap + ' 历史验证范围：' + _wolf_ammo_gap
 
 
 def main():
@@ -1372,7 +1423,8 @@ def main():
         row["testEvidence"] = list(dict.fromkeys(row["testEvidence"] + _wolf_ammo_tests))
         row["gap"] = _wolf_ammo_gap + " 历史验证范围：" + row["gap"]
     for name, command in (("WolfBroGameActivateBulletCsReq", 6525),
-                          ("OKEFGCNNEKI", 6514), ("WolfBroGamePickupBulletCsReq", 6508)):
+                          ("OKEFGCNNEKI", 6514), ("WolfBroGamePickupBulletCsReq", 6508),
+                          ("LBMFCJLHNAA", 6502)):
         row = requests.setdefault(name, {"request": name, "sources": []})
         row["sources"].append({"project": "March7thHoney-OpenSource",
             "commit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083", "license": "AGPL-3.0",
@@ -1382,6 +1434,8 @@ def main():
             javaEvidence="src/main/java/org/hkrpg/server/protocol/WolfBro46.java",
             acceptance={"serverBehavior": True, "resourceVersion": True, "client46": False},
             testEvidence=_wolf_ammo_tests, gap=_wolf_ammo_gap)
+        if name == "LBMFCJLHNAA":
+            row["referenceProtocolName"] = "NCJOMMAINOC"
         for evidence in row["testEvidence"]:
             if not (ROOT / evidence).is_file():
                 raise SystemExit(f"验证证据文件缺失: {evidence}")
@@ -1443,6 +1497,19 @@ def main():
     hp_review["gap"] = '当前生命比例条件追加：显式AdventureByCompareHPRatio/Caster使用当前队伍归一化生命，六种固定浮点比较/反向/复用/组合接入；生命与MP在同一玩家锁读取一次，不借用普通队伍的正式角色生命。缺失身份/越界存档/未知目标与表达式不选择分支。45项新增Java含26项实际先失败、四种各两次Player与Avatar Morphia读取，相邻156项及三项来源Python检查；原始阿那克萨完整监听任务与64字节本机构造器/原生R4字段保留。最终双源码及存活施法/H2等回归见build/maze-hp-predicate-verification.json。判断器显式验证，不证明原始Fear/目标列表/监听已执行或官方求值与真实UI；完整战斗剧情宇宙活动仍partial，见docs/maze-hp-predicate-4.6.md。' + " 历史记录：" + hp_review["gap"]
     for evidence in ["src/test/java/org/hkrpg/server/gameplay/MazeHpPredicateTest.java", "src/test/resources/fixtures/maze-hp-predicate-4.6.json", "scripts/tests/test_maze_hp_predicate_sources.py", "docs/maze-hp-predicate-4.6.md"]:
         if evidence not in hp_review["tests"]: hp_review["tests"].append(evidence)
+    REVIEWED.setdefault('SceneCastSkillCostMpCsReq', {
+        'resourceVersion': True,
+        'tests': ['src/test/java/org/hkrpg/server/gameplay/MazeCastSequence46Test.java',
+                  'scripts/smoke-maze-cast-sequence.py', 'docs/maze-cast-sequence-4.6.md'],
+        'gap': '1408预付只绑定实际角色/技能/UseID，1460回调按当前会话与场景读取付款记录。'})
+    append_review(('SceneCastSkillCsReq', 'SceneCastSkillCostMpCsReq'),
+                  _manual_input_tests, _manual_input_gap)
+    append_review(('AcceptMainMissionCsReq', 'GetNpcStatusCsReq', 'GetNpcMessageGroupCsReq',
+                   'GetMissionMessageCsReq', 'FinishItemIdCsReq', 'FinishSectionIdCsReq',
+                   'FinishTalkMissionCsReq', 'GetDailyActiveInfoCsReq'),
+                  _sibling_message_tests, _sibling_message_gap)
+    append_review(('GetRogueShopMiracleInfoCsReq', 'BuyRogueShopMiracleCsReq'),
+                  _chess_saved_tests, _chess_saved_gap)
     for name, review in REVIEWED.items():
         if name in requests:
             row = requests[name]

@@ -20,7 +20,7 @@ public final class ChessRogue46 {
     boolean shop = command == 5675 || command == 5656;
     if (shop && (session.getState() != SessionState.ACTIVE
         || !session.getPlayer().getGameplay().getChessRogue().isInside())) return false;
-    if (!shop && !Set.of(5426,5437,5534,5468,5447,5547).contains(command)) return false;
+    if (!shop && !Set.of(5426,5437,5534,5468,5447,5547,5462).contains(command)) return false;
     if (session.getState() != SessionState.ACTIVE) return true;
     synchronized (session.getPlayer()) {
       if (shop) { merchant(session,command,bytes); return true; }
@@ -34,18 +34,23 @@ public final class ChessRogue46 {
         case 5426 -> manager.start(request.number(13),request.number(9),request.avatars());
         case 5437 -> manager.resume(request.number(8)); case 5534 -> manager.select(request.number(2));
         case 5468 -> manager.enter(request.number(13),request.number(15));
-        case 5447 -> manager.nextLayer(); default -> manager.queryStatus();
+        case 5447 -> manager.nextLayer(); case 5462 -> manager.leaveAndSave(); default -> manager.queryStatus();
       };
       String name = switch (command) {
         case 5426 -> "ChessRogueStartScRsp"; case 5437 -> "ChessRogueEnterScRsp";
         case 5534 -> "ChessRogueSelectCellScRsp"; case 5468 -> "ChessRogueEnterCellScRsp";
-        case 5447 -> "ChessRogueEnterNextLayerScRsp"; default -> "ChessRogueQueryScRsp";
+        case 5447 -> "ChessRogueEnterNextLayerScRsp"; case 5462 -> "ChessRogueLeaveScRsp"; default -> "ChessRogueQueryScRsp";
       };
       var response = builder(session,name); set(response,"retcode",status.getVal());
       if (status == Retcode.SUCC) {
-        if (command == 5534) sync(session);
+        if (command == 5462) {
+          put(response,14,stage(session)); put(response,12,profile(session));
+          var aeon = builder(session,"AEMAPGKPPJA");
+          put(aeon,14,session.getPlayer().getGameplay().getChessRogue().getAeon()); put(response,6,aeon.build());
+        } else if (command == 5534) sync(session);
         else {
           put(response,switch (command) { case 5426 -> 13; case 5437 -> 3; case 5468 -> 12; case 5447 -> 11; default -> 8; },snapshot(session));
+          if (command == 5547) put(response,10,profile(session));
           if (command != 5547) {
             put(response,switch (command) { case 5426 -> 7; case 5437 -> 6; default -> 8; },stage(session));
             if (command == 5437) put(response,10,session.getPlayer().getGameplay().getChessRogue().getArea());
@@ -112,6 +117,17 @@ public final class ChessRogue46 {
   private static DynamicMessage money(GameSession session) {
     var money = builder(session,"AGEOGDOGDMM");
     put(money,13,session.getPlayer().getGameplay().getChessRogue().getCoins()); return money.build();
+  }
+  private static DynamicMessage profile(GameSession session) {
+    var source = ChessRogueProfile.current(session.getPlayer());
+    var profile = builder(session,"HIMJKAMHLMJ");
+    source.unlockedAreaIds().forEach(id -> repeat(profile,11,id));
+    source.firstRewardTakenAreaIds().forEach(id -> repeat(profile,10,id));
+    // These shared consumers require nonnull containers even in Chess201. Their collections
+    // remain empty: this guide has no Nous acquisitions or currency281013 ledger to publish.
+    put(profile,9,builder(session,"MOOKMKEKMKC").build());
+    put(profile,12,builder(session,"DDAFEPBGOHK").build());
+    return profile.build();
   }
   private static DynamicMessage cell(GameSession session,ChessRogueRoutes.Cell source) {
     var run = session.getPlayer().getGameplay().getChessRogue(); var cell = builder(session,"CGMCMAKMJDK");

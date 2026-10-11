@@ -248,6 +248,92 @@ public final class ChessRogueRoutes {
         && (!requireCurrent || scene.getEntryId() == room.entry());
   }
 
+  /** Capture the complete registered ordinary resource tree, independently of Chess/classic state. */
+  public static String returnSignature(Scene scene,int entry) {
+    if (scene == null || scene.getFloorInfo() != GameData.getFloorInfo(scene.getPlaneId(),scene.getFloorId())) return "";
+    return returnSignature(scene.getPlaneId(),scene.getFloorId(),entry,scene.getDimensionId());
+  }
+  private static String returnSignature(int plane,int floorId,int entryId,int dimension) {
+    try {
+      var planeRow = GameData.getMazePlaneExcelMap().get(plane);
+      var entry = GameData.getMapEntranceExcelMap().get(entryId);
+      var floor = GameData.getFloorInfo(plane,floorId);
+      if (planeRow == null || !Set.of(emu.lunarcore.game.enums.PlaneType.Town,
+          emu.lunarcore.game.enums.PlaneType.Maze,emu.lunarcore.game.enums.PlaneType.Train).contains(planeRow.getPlaneType())
+          || floor == null || !floor.isLoaded() || entry == null || entry.getPlaneID() != plane
+          || entry.getFloorID() != floorId || dimension < 0) return "";
+      int group = entry.getStartGroupID(), anchor = entry.getStartAnchorID();
+      if (anchor == 0) {
+        var first = floor.getGroupInfoByIndex(floor.getStartGroupIndex());
+        if (first == null) return "";
+        group = first.getId(); anchor = floor.getStartAnchorID();
+      }
+      if (!floor.isGroupInDimension(group,dimension) || floor.getAnchorInfo(group,anchor) == null) return "";
+      var tree = new JsonObject(); tree.addProperty("dimension",dimension);
+      tree.add("plane",RESOURCES.toJsonTree(planeRow)); tree.add("entry",RESOURCES.toJsonTree(entry));
+      tree.add("floor",RESOURCES.toJsonTree(floor));
+      var groups = new JsonObject();
+      for (int index : floor.getReferencedGroupIndices()) groups.add(Integer.toString(index),RESOURCES.toJsonTree(floor.getGroupInfoByIndex(index)));
+      tree.add("groups",groups);
+      return hash(canonical(tree).toString().getBytes(StandardCharsets.UTF_8));
+    } catch (Exception malformed) { return ""; }
+  }
+  private static JsonElement canonical(JsonElement value) {
+    if (value.isJsonObject()) {
+      var result = new JsonObject();
+      new TreeSet<>(value.getAsJsonObject().keySet()).forEach(key -> result.add(key,canonical(value.getAsJsonObject().get(key))));
+      return result;
+    }
+    if (value.isJsonArray()) {
+      var result = new JsonArray(); value.getAsJsonArray().forEach(child -> result.add(canonical(child))); return result;
+    }
+    return value.deepCopy();
+  }
+  /** Legacy records without a captured lease may adopt only the already pinned original return. */
+  private static boolean legacyReturnSource() {
+    var loaded = current;
+    if (loaded == null) return false;
+    try {
+      var path = inside(loaded.root(),"Config/LevelOutput/RuntimeFloor/P20001_F20001001.json");
+      if (!loaded.digests().containsKey(path)) return false;
+      var expected = RESOURCES.fromJson(Files.readString(path,StandardCharsets.UTF_8),FloorInfo.class);
+      for (int index : expected.getReferencedGroupIndices()) {
+        var simple = expected.getSimpleGroupList().get(index);
+        if (simple.getID() != 2) continue;
+        var groupPath = inside(loaded.root(),simple.getGroupPath());
+        if (!loaded.digests().containsKey(groupPath)) return false;
+        var group = RESOURCES.fromJson(Files.readString(groupPath,StandardCharsets.UTF_8),GroupInfo.class);
+        group.setId(2); expected.registerGroup(index,group);
+      }
+      expected.onLoad();
+      var actual = GameData.getFloorInfo(20001,20001001);
+      var originalGroup = expected.getGroups(0).get(2);
+      var actualGroup = actual == null ? null : actual.getGroups(0).get(2);
+      return originalGroup != null && actualGroup != null
+          && RESOURCES.toJsonTree(expected).equals(RESOURCES.toJsonTree(actual))
+          && RESOURCES.toJsonTree(originalGroup).equals(RESOURCES.toJsonTree(actualGroup));
+    } catch (Exception unreadable) { return false; }
+  }
+
+  public static String validReturnSignature(ChessRogueState run) {
+    var back = run == null ? null : run.getReturnTo();
+    if (back == null || back.getPos() == null || back.getRot() == null || !available()) return "";
+    var actual = returnSignature(back.getPlane(),back.getFloor(),back.getEntry(),back.getDimension());
+    if (actual.isEmpty()) return "";
+    var saved = back.getSourceSignature();
+    if (saved == null || saved.isEmpty()) return back.getPlane() == 20001 && back.getFloor() == 20001001
+        && back.getEntry() == 2000101 && back.getDimension() == 0 && legacyReturnSource() ? actual : "";
+    return saved.equals(actual) ? actual : "";
+  }
+  public static boolean returnedSceneSource(Scene scene,ChessRogueState run) {
+    var back = run == null ? null : run.getReturnTo();
+    return back != null && !run.isInside() && scene != null && scene.getPlayer().getGameplay().getChessRogue() == run
+        && scene.getPlayer().getScene() == scene && scene.getPlayer().getEntryId() == back.getEntry()
+        && scene.getPlaneId() == back.getPlane() && scene.getFloorId() == back.getFloor()
+        && scene.getDimensionId() == back.getDimension() && scene.getEntryId() == back.getEntry()
+        && !validReturnSignature(run).isEmpty();
+  }
+
   public static boolean valid(ChessRogueState run) {
     if (run == null || run.getSchema() != 1 || !run.active() || !SOURCE_COMMIT.equals(run.getSourceCommit())
         || !RULE_ID.equals(run.getRouteRule()) || run.getArea() != 101 || run.getAeon() != 6

@@ -53,6 +53,8 @@ public final class NativeWolfBroAmmoProbe {
     schema("WolfBroGameActivateBulletScRsp", "retcode");
     schema("OKEFGCNNEKI", "assist_monster_entity_id_list", "GGDCDJDBCCN");
     schema("WolfBroGameUseBulletScRsp", "retcode", "game_data");
+    schema("LBMFCJLHNAA", "assist_monster_entity_id_list");
+    schema("WolfBroGameExplodeMonsterScRsp", "retcode");
     schema("WolfBroGamePickupBulletCsReq", "GGDCDJDBCCN");
     schema("WolfBroGamePickupBulletScRsp", "retcode", "game_data");
     schema("WolfBroGameDataChangeScNotify", "game_data");
@@ -90,6 +92,10 @@ public final class NativeWolfBroAmmoProbe {
         && schemas.get("KDFPANILFOH").get("PAOEJKABFEP") == 1, "pinned-current-and-archive-ammo-fields");
     check(message("OKEFGCNNEKI", Map.of("assist_monster_entity_id_list", List.of())).getSerializedSize() == 0,
         "native-empty-shot-does-not-send-an-invented-vector-or-id");
+    check(protocol.clientCommand("WolfBroGameExplodeMonsterScRsp") == 6518
+        && schemas.get("LBMFCJLHNAA").equals(Map.of("assist_monster_entity_id_list",12))
+        && schemas.get("WolfBroGameExplodeMonsterScRsp").equals(Map.of("retcode",15)),
+        "pinned-6502-blast-request-and-6518-retcode-only-response");
   }
   private static Map<String, Integer> pointView(DynamicMessage point) {
     return Map.of("x", number(point, "x"), "y", number(point, "y"), "z", number(point, "z"));
@@ -173,15 +179,17 @@ public final class NativeWolfBroAmmoProbe {
   private DynamicMessage operation(String label, String name, Map<String, Object> values,
       int expected, int expectedNotifications, int ammo, boolean activated, int bullets) throws Exception {
     var before = query(); int count = notifications.size();
-    var reply = name.equals("OKEFGCNNEKI") ? reply(name, values, 6514, "WolfBroGameUseBulletScRsp")
-        : reply(name, values, protocol.clientCommand(name), name.replace("CsReq", "ScRsp"));
+    int command = name.equals("OKEFGCNNEKI") ? 6514 : name.equals("LBMFCJLHNAA") ? 6502 : protocol.clientCommand(name);
+    String response = name.equals("OKEFGCNNEKI") ? "WolfBroGameUseBulletScRsp"
+        : name.equals("LBMFCJLHNAA") ? "WolfBroGameExplodeMonsterScRsp" : name.replace("CsReq", "ScRsp");
+    var reply = reply(name, values, command, response);
     var event = new LinkedHashMap<String, Object>();
-    event.putAll(Map.of("label", label, "request", name, "command", name.equals("OKEFGCNNEKI") ? 6514 : protocol.clientCommand(name),
+    event.putAll(Map.of("label", label, "request", name, "command", command,
         "actualRetcode", number(reply, "retcode"), "expectedRetcode", expected,
         "before", gameView(before), "notificationDelta", notifications.size() - count));
     if (reply.getDescriptorForType().findFieldByName("game_data") != null && has(reply, "game_data"))
       event.put("nativeReplyData", gameView((DynamicMessage) field(reply, "game_data")));
-    if (name.equals("OKEFGCNNEKI")) {
+    if (name.equals("OKEFGCNNEKI") || name.equals("LBMFCJLHNAA")) {
       event.put("entityIDs", values.get("assist_monster_entity_id_list"));
       event.put("shotVectorSent", values.containsKey("GGDCDJDBCCN"));
     }
@@ -206,6 +214,9 @@ public final class NativeWolfBroAmmoProbe {
   private DynamicMessage shoot(String label, List<Integer> ids, int status, int notices, int ammo, int drops) throws Exception {
     return operation(label, "OKEFGCNNEKI", Map.of("assist_monster_entity_id_list", ids), status, notices, ammo, true, drops);
   }
+  private DynamicMessage blast(String label, List<Integer> ids, int status, int notices, int ammo, int drops) throws Exception {
+    return operation(label,"LBMFCJLHNAA",Map.of("assist_monster_entity_id_list",ids),status,notices,ammo,true,drops);
+  }
   private void checkpoint(DynamicMessage data, DynamicMessage expectedMotion, int ammo) {
     var archive = (DynamicMessage) field(data, "BBEMIGELGJC");
     check(number(archive, "CHCOPKAKBNO") == ammo && field(archive, "is_bullet_activated").equals(true)
@@ -214,6 +225,7 @@ public final class NativeWolfBroAmmoProbe {
   private Map<String, Object> execute(JsonObject input, java.io.BufferedReader control) throws Exception {
     verifySchemas();
     String mode = input.get("mode").getAsString();
+    boolean explosion = input.has("explosionScenario") && input.get("explosionScenario").getAsBoolean();
     require(Set.of("sequence", "resume", "restored").contains(mode), "Unknown ammo native phase");
     int uid = number(call("PlayerGetTokenCsReq", Map.of("account_uid", input.get("accountUid").getAsString(),
         "token", input.get("comboToken").getAsString(), "platform", 1), 0), "uid");
@@ -249,16 +261,24 @@ public final class NativeWolfBroAmmoProbe {
       control(1);
       call("GroupStateChangeCsReq", Map.of("group_state_info", message("GroupStateInfo", Map.of("group_id", 21, "group_state", 2))), 0);
       control(2);
+      if (explosion) operation("unactivated-gun-cannot-report-a-blast","LBMFCJLHNAA",
+          Map.of("assist_monster_entity_id_list",List.of(entity)),5,0,0,false,0);
       operation("wrong-gun-instance", "WolfBroGameActivateBulletCsReq", Map.of("group_id", 20, "DAKENPDMDDJ", 0), 5, 0, 0, false, 0);
       activate("first-source-gun-fill", 300009, 0, 1, 5);
       activate("duplicate-gun-does-not-refill-five", 300009, 0, 0, 5);
+      if (explosion) blast("empty-blast-is-read-only",List.of(),0,0,5,0);
       shoot("empty-native-shot-spends-one", List.of(), 0, 1, 4, 0);
       activate("source-gun-does-not-refill-after-empty-shot", 300009, 0, 0, 4);
       int removed = deleted.size();
-      data = shoot("actual-source-NPC-shot", List.of(entity), 0, 1, 3, 1);
+      data = explosion ? blast("actual-source-NPC-blast-without-shot-cost",List.of(entity),0,1,4,1)
+          : shoot("actual-source-NPC-shot", List.of(entity), 0, 1, 3, 1);
       check(drops(data).equals(List.of(pointView((DynamicMessage) field(checkpoint, "pos")))), "real-shot-drop-is-at-the-original-NPC-position");
       check(deleted.subList(removed, deleted.size()).equals(List.of(entity))
           && target(22, 200001, "npc_monster") == null, "real-shot-deletes-the-actual-entity-on-wire-and-in-scene");
+      if (explosion) {
+        blast("deleted-NPC-cannot-produce-a-second-blast-drop",List.of(entity),5,0,4,1);
+        shoot("ordinary-round-after-blast-still-costs-one",List.of(),0,1,3,1);
+      }
       var pos = (DynamicMessage) field(checkpoint, "pos");
       var wrong = message("Vector", Map.of("x", number(pos, "x") + 1, "y", number(pos, "y"), "z", number(pos, "z")));
       operation("wrong-pickup-position", "WolfBroGamePickupBulletCsReq", Map.of("GGDCDJDBCCN", wrong), 5, 0, 3, true, 1);
@@ -273,7 +293,7 @@ public final class NativeWolfBroAmmoProbe {
       check(field(data, "uuid").equals(uuid) && leaderMotion().equals(checkpoint), "restore-keeps-UUID-and-updates-actual-player-motion");
       operation("repeated-restore-is-read-only", "RestoreWolfBroGameArchiveCsReq", Map.of("id", 11), 0, 0, 4, true, 0);
       activate("restored-gun-still-does-not-refill", 300009, 0, 0, 4);
-      check(notifications.size() == 8, "only-eight-committed-sequence-state-changes-notify");
+      check(notifications.size() == (explosion ? 9 : 8), "only-committed-sequence-state-changes-notify");
     } else {
       data = query();
       check(hash(data).equals(input.get("gameDataHash").getAsString())

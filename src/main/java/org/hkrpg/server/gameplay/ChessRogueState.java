@@ -92,6 +92,7 @@ public final class ChessRogueState {
   void sp(int id, int amount) { vitals.get(id).sp = amount; }
   void leader(int slot) { leader = slot; }
   void mp(int amount) { mp = amount; }
+  void inside(boolean value) { inside = value; }
 
   public ChessRogueState copy() { return COPY.fromJson(COPY.toJson(this), ChessRogueState.class); }
   /** Keep the live run/lineup identity, including a battle that can retry a failed synchronous save. */
@@ -149,12 +150,16 @@ public final class ChessRogueState {
   }
   @Entity(useDiscriminator = false) @Getter
   public static final class ReturnLocation {
-    private int plane, floor, entry;
+    private int plane, floor, entry, dimension;
     private Position pos, rot;
+    private String sourceSignature = "";
     public ReturnLocation() {}
     ReturnLocation(Player player) {
       plane = player.getPlaneId(); floor = player.getFloorId(); entry = player.getEntryId();
+      dimension = player.getScene().getDimensionId();
       pos = new Position(player.getPos()); rot = new Position(player.getRot());
+      sourceSignature = ChessRogueRoutes.returnSignature(player.getScene(),entry);
     }
+    void bindSignature(String value) { sourceSignature = value; }
   }
 }

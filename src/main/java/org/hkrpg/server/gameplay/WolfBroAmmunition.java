@@ -80,12 +80,26 @@ public final class WolfBroAmmunition {
   }
 
   public WolfBroManager.Result use(List<Integer> ids) {
+    return hit(ids, false);
+  }
+
+  /** The actual 6502 sender reports blast deaths without calling the ordinary ammo spender. */
+  public WolfBroManager.Result explode(List<Integer> ids) {
+    return hit(ids, true);
+  }
+
+  private WolfBroManager.Result hit(List<Integer> ids, boolean explosion) {
     synchronized (player) {
       var code = context(); if (code != Retcode.SUCC) return reject(code);
       var old = run.getAmmo();
-      if (old == null || !old.isActivated() || old.getCount() <= 0 || ids == null
+      if (old == null || !old.isActivated() || !explosion && old.getCount() <= 0 || ids == null
           || ids.size() > 128 || ids.stream().anyMatch(i -> i == null || i <= 0)
           || new HashSet<>(ids).size() != ids.size()) return reject(Retcode.REQ_PARA_INVALID);
+      if (explosion) {
+        var source = WolfBroExplosionRules.check(player, rules);
+        if (source != Retcode.SUCC) return reject(source);
+        if (ids.isEmpty()) return new WolfBroManager.Result(Retcode.SUCC, id, run, false);
+      }
       var targets = new ArrayList<EntityMonster>();
       var keys = new HashSet<String>();
       for (int entity : ids) {
@@ -96,7 +110,7 @@ public final class WolfBroAmmunition {
         targets.add(monster);
       }
       if (old.getDefeated().size() + keys.size() > 512) return reject(Retcode.PLAYER_DATA_ERROR);
-      var next = old.copy(); next.spend();
+      var next = old.copy(); if (!explosion) next.spend();
       for (var monster : targets) next.drop(WolfBroAmmoRules.key(monster.getGroupId(), monster.getInstId()),
           new WolfBroState.Point(monster.getPos().getX(), monster.getPos().getY(), monster.getPos().getZ()));
       var result = commit(next);

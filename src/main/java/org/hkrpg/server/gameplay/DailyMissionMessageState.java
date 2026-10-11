@@ -20,12 +20,12 @@ public final class DailyMissionMessageState {
 
     protected Run() {}
 
-    Run(long day, String source, String mainAcceptance, String goalAcceptance,
+    Run(long day, int mainId, int goalId, int sectionId, String source, String mainAcceptance, String goalAcceptance,
         GameplayState.PhoneSection phone) {
       this.day = day;
-      this.mainId = DailyMissionMessageRules.MAIN;
-      this.goalId = DailyMissionMessageRules.GOAL;
-      this.sectionId = DailyMissionMessageRules.SECTION;
+      this.mainId = mainId;
+      this.goalId = goalId;
+      this.sectionId = sectionId;
       this.source = source;
       this.mainAcceptance = mainAcceptance;
       this.goalAcceptance = goalAcceptance;

@@ -142,6 +142,9 @@ final class Battle46 {
           error = Retcode.REQ_PARA_INVALID;
     }
     MazeSkill skill = null;
+    MazeSkillCosts.ManualInput manual = null;
+    int manualCost = 0;
+    boolean manualFirstRelease = false;
     var abilityName = (String) value(req, "maze_ability_str");
     if (error == Retcode.SUCC
         && !abilityName.isEmpty()
@@ -158,15 +161,40 @@ final class Battle46 {
         skill = index == 0 ? avatar.getExcel().getMazeAttack() : avatar.getExcel().getMazeSkill();
         if (index == 1 && avatar.isMazeSkillLocked()) error = Retcode.REQ_PARA_INVALID;
         else if (skill == null) error = Retcode.REQ_PARA_INVALID;
-        else if (!abilityName.isEmpty() && !abilityName.equals(skill.getAbilityName()))
-          error = Retcode.REQ_PARA_INVALID;
-        else if (projectileEvent(phase) && !skill.isProjectileDeclared())
+        else if (!abilityName.isEmpty() && !abilityName.equals(skill.getAbilityName())) {
+          // ManualTriggerAbility starts a separate original Ability; its name is field15,
+          // and its new UseID must never reuse the base 1408 payment.
+          var selected = index == 1 && projectileEvent(phase)
+              ? MazeSkillCosts.manualInput(avatar, abilityName) : Optional.<MazeSkillCosts.ManualInput>empty();
+          if (selected.isEmpty() || player.getSession() != s || avatar.getOwner() != player
+              || !MazeCastState.validUseId(cast) || !assists.isEmpty()) error = Retcode.REQ_PARA_INVALID;
+          else {
+            manual = selected.get();
+            if (!player.getGameplay().getMazeCasts().hasReleasedOrigin(s, avatar, skill, index,
+                manual.originCost(), manual.originModifier())) error = Retcode.REQ_PARA_INVALID;
+            else {
+              skill = manual.skill();
+              for (int id : hits) {
+                if (!(scene.getEntities().get(id) instanceof EntityMonster target)) {
+                  error = Retcode.REQ_PARA_INVALID;
+                  break;
+                }
+                // Native phase2 clamps the valid enemy count to one for this Attack.
+                // It is not a first-hit flag for the entire Ability UseID.
+                if (target.isAlive()) manualCost = manual.cost();
+              }
+            }
+          }
+        }
+        if (error == Retcode.SUCC && projectileEvent(phase) && !skill.isProjectileDeclared())
           error = Retcode.REQ_PARA_INVALID;
         MazeCastState.Cast binding = null;
         if (error == Retcode.SUCC) {
           binding = player.getGameplay().getMazeCasts().find(s, cast);
           if (binding != null && !binding.matches(avatar, skill, index)) error = Retcode.REQ_PARA_INVALID;
-          else if (index == 1 && (binding == null || !binding.prepaid())
+          else if (manual != null && player.getCurrentLineup().getMp() < manualCost)
+            error = Retcode.MAZE_MP_NOT_ENOUGH;
+          else if (manual == null && index == 1 && (binding == null || !binding.prepaid())
               && avatar.getActorId() != 1308 && player.getCurrentLineup().getMp() < 1)
             error = Retcode.MAZE_MP_NOT_ENOUGH;
         }
@@ -179,14 +207,16 @@ final class Battle46 {
             boolean prepaid = binding != null && binding.prepaid();
             // Unpaid requests keep the existing simplified hit-payment rule. Only the proven
             // native OnUse receipt suppresses a second payment; HIT is not globally deduplicated.
-            if (!prepaid && avatar.getActorId() != 1308) player.getCurrentLineup().removeMp(1);
+            if (manual == null && !prepaid && avatar.getActorId() != 1308) player.getCurrentLineup().removeMp(1);
             boolean firstRelease = binding == null || !binding.released();
             var motion = MotionInfo.parseFrom(s.getProtocol().translate("MotionInfo",
                 ((DynamicMessage) value(req, "target_motion")).toByteArray(), false));
             if (binding == null) skill.onCast(avatar, motion);
             else binding.release(motion);
-            if (firstRelease) player.getDailyManager().onMazeSkill();
-            if (!prepaid) notifyMp(s, cast);
+            if (manual == null) {
+              if (firstRelease) player.getDailyManager().onMazeSkill();
+              if (!prepaid) notifyMp(s, cast);
+            } else manualFirstRelease = firstRelease;
           }
         }
       }
@@ -197,6 +227,15 @@ final class Battle46 {
     }
     if (hits.isEmpty()) hits.addAll(assists);
     var result = s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists, phase);
+    // Quote before actions, commit only an accepted finite manual Attack. No fee is
+    // invented for a zero-target event or for a failed battle admission.
+    if (manual != null && result.retcode() == Retcode.SUCC) {
+      if (manualCost > 0) {
+        player.getCurrentLineup().removeMp(manualCost);
+        notifyMp(s, cast);
+      }
+      if (manualFirstRelease) player.getDailyManager().onMazeSkill();
+    }
     var response = builder(s, "SceneCastSkillScRsp");
     set(response, "retcode", result.retcode().getVal());
     set(response, "cast_entity_id", cast);

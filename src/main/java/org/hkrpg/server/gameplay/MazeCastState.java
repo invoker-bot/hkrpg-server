@@ -34,6 +34,15 @@ public final class MazeCastState {
     return result;
   }
 
+  /** A captured original release grants the finite input path, never its payment to another UseID. */
+  public boolean hasReleasedOrigin(GameSession current, GameAvatar caster, MazeSkill origin,
+      int index, int expectedCost, String modifier) {
+    bindSession(current);
+    return casts.values().stream().anyMatch(cast -> cast.matches(caster, origin, index)
+        && cast.prepaid && cast.paidAmount == expectedCost && cast.released
+        && cast.metadata != null && cast.metadata.hasAdventureModifier(modifier));
+  }
+
   private void bindSession(GameSession current) {
     if (session.get() == current) return;
     casts.clear();

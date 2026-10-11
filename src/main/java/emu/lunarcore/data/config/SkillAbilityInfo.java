@@ -12,6 +12,7 @@ import lombok.Getter;
  */
 public class SkillAbilityInfo {
     private List<AbilityInfo> AbilityList;
+    private com.google.gson.JsonObject GlobalModifiers;
 
     public boolean parse(AvatarExcel avatarExcel) {
         // Init variable
@@ -57,7 +58,41 @@ public class SkillAbilityInfo {
             }
         }
 
+        // This is the fixed 4.6 source link, not a suffix rule for arbitrary avatars.
+        var base = avatarExcel.getMazeSkill();
+        if (avatarExcel.getAvatarID() == 1510 && base != null
+                && "LocalPlayer_HimekoNova_MazeSkill".equals(base.getAbilityName())
+                && hasHimekoNovaInputLink()) {
+            for (var ability : AbilityList) {
+                if (!"LocalPlayer_HimekoNova_MazeSkill_Input".equals(ability.getName())
+                        || !"Free".equals(ability.getManualTriggerType()) || ability.getOnStart() == null) continue;
+                var manual = new MazeSkill(avatarExcel, 2, ability.getName());
+                for (var task : ability.getOnStart()) {
+                    collectProjectileDeclaration(manual, task);
+                    parseTask(manual, manual.getCastActions(), task);
+                }
+                if (manual.isProjectileDeclared()) base.addManualAbility(manual);
+            }
+        }
+
         return true;
+    }
+
+    private boolean hasHimekoNovaInputLink() {
+        try {
+            var modifier = GlobalModifiers.getAsJsonObject("ADV_StageAbility_Maze_HimekoNova_AttackRadius");
+            var loop = modifier.getAsJsonArray("ModifierTaskList").get(0).getAsJsonObject();
+            if (!"RPG.GameCore.LoopExecuteTaskList".equals(loop.get("$type").getAsString())) return false;
+            var wait = loop.getAsJsonArray("TaskList").get(0).getAsJsonObject();
+            if (!"RPG.GameCore.WaitSkillInput".equals(wait.get("$type").getAsString())
+                    || !wait.get("CheckAllowUseSkill").getAsBoolean() || !wait.get("CheckMPNeed").getAsBoolean()) return false;
+            var trigger = wait.getAsJsonArray("OnInput").get(0).getAsJsonObject();
+            return "RPG.GameCore.AdventureTriggerTargetAbility".equals(trigger.get("$type").getAsString())
+                    && "MazeSkill".equals(trigger.get("SkillType").getAsString())
+                    && "LocalPlayer_HimekoNova_MazeSkill_Input".equals(trigger.get("AbilityName").getAsString());
+        } catch (RuntimeException unsupported) {
+            return false;
+        }
     }
 
     // "Simple" way to parse maze attacks/skills
@@ -221,6 +256,7 @@ public class SkillAbilityInfo {
     @Getter
     public class AbilityInfo {
         private String Name;
+        private String ManualTriggerType;
         private List<TaskInfo> OnStart;
     }
 }

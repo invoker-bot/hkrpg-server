@@ -209,7 +209,44 @@ def fixture_inputs(source, proof):
         gunPosition=source_point(gun), checkpointMotion=dict(pos=source_point(npc), rot=dict(x=0, y=scene_coordinate(npc.get('RotY', 0)), z=0)))
 
 
-def run(jar, output):
+def explosion_inputs(source, prepared):
+    proof_path = ROOT / 'src/test/resources/fixtures/wolfbro-explosion-4.6.json'
+    proof = source_json.loads(proof_path.read_bytes())
+    if proof['sourceCommit'] != COMMIT or len(proof['sourceFiles']) != 11 or len(proof['sourceRows']) != 1:
+        raise ValueError('Incomplete original blast source fixture')
+    abilities = [row for row in proof['sourceFiles'] if row['path'].startswith('Config/ConfigAdventureAbility/NpcMonster/')]
+    required = {
+        'Config/ConfigAdventureAbility/NpcMonster/NPCMonster_W3_TV_00_Ability.json',
+        'Config/ConfigAdventureAbility/NpcMonster/NPCMonster_W3_Clock_00_Ability.json',
+        'Config/ConfigAdventureAbility/NpcMonster/NPCMonster_W3_Dinosaur_00_Ability.json',
+        'Config/ConfigAdventureAbility/NpcMonster/NPCMonster_XP_Minion01_04_Ability.json',
+    }
+    if len(abilities) != 4 or {row['path'] for row in abilities} != required:
+        raise ValueError('Four complete original blast abilities are required')
+    pins = {}
+    for row in abilities:
+        name = row['path']
+        raw = (source / name).read_bytes()
+        if (hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() != row['sourceBlobSHA256']
+                or fingerprint(source_json.loads(raw)) != row['canonicalSHA256']
+                or source_json.canonical(source_json.loads(raw)) != source_json.canonical(row['data'])):
+            raise ValueError('Complete original blast ability changed: ' + name)
+        pins[name] = sha(source / name)
+    row = proof['sourceRows'][0]
+    if row['table'] != 'MazeProp' or row['key'] != 103055:
+        raise ValueError('Wrong original explosive prop')
+    matches = [value for value in source_json.loads((source / row['sourcePath']).read_bytes())
+               if value.get(row['keyField']) == row['key']]
+    if (len(matches) != 1 or fingerprint(matches[0]) != row['canonicalSHA256']
+            or source_json.canonical(matches[0]) != source_json.canonical(row['data'])):
+        raise ValueError('Whole original explosive prop row changed')
+    prepared['sourceResourceHashes'].update(pins)
+    prepared['copiedRuntimeOriginalFiles'] = sorted(set(prepared['copiedRuntimeOriginalFiles']) | required)
+    return dict(fixtureSHA256=sha(proof_path), completeAbilityFiles=4, completeExplosivePropRows=1,
+                serverPhysicsImplemented=False, clientBlastPhysicsVerified=False)
+
+
+def run(jar, output, *, explosion=False):
     artifact = sha(jar)
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'), None)
     if not java or not java.is_file():
@@ -218,6 +255,7 @@ def run(jar, output):
     proof_file = ROOT / 'src/test/resources/fixtures/wolfbro-ammo-4.6.json'
     proof = source_json.loads(proof_file.read_text('utf-8'))
     prepared = fixture_inputs(source, proof)
+    blast_sources = explosion_inputs(source, prepared) if explosion else None
     runs = ROOT / 'build/smoke'
     runs.mkdir(parents=True, exist_ok=True)
     directory = Path(tempfile.mkdtemp(prefix='wolfbro-ammo-native-', dir=runs))
@@ -248,6 +286,7 @@ def run(jar, output):
             testFixture=True, wolfBroAmmoFixture=True, sourceCommit=COMMIT, frozenJarSHA256=artifact,
             originalLevel11FloorGroupsRowsUnchanged=True, originalChapterHistorySeeded=True,
             requiredAmmoOriginalsPhysicallyCopied=True,
+            wolfBroExplosionFixture=explosion,
             ammoRunOrDropSeeded=False)), 'utf-8')
         (directory / 'source-fixture.json').write_text(json.dumps(prepared, ensure_ascii=False, indent=2), 'utf-8')
         (directory / 'data').mkdir()
@@ -321,7 +360,7 @@ def run(jar, output):
                         child = subprocess.Popen([str(java), *options, '-cp', classpath,
                             'org.hkrpg.server.protocol.NativeWolfBroAmmoProbe', str(game)], cwd=directory,
                             stdin=subprocess.PIPE, stdout=log_probe, stderr=subprocess.STDOUT, creationflags=flags)
-                        child.stdin.write((json.dumps(dict(credentials, mode=mode, gunPosition=prepared['gunPosition'],
+                        child.stdin.write((json.dumps(dict(credentials, mode=mode, explosionScenario=explosion, gunPosition=prepared['gunPosition'],
                             checkpointMotion=prepared['checkpointMotion'])) + '\n').encode())
                         child.stdin.flush()
                         if mode != 'sequence':
@@ -392,6 +431,7 @@ def run(jar, output):
                 seededOriginalSubMission=103150120, sourceChapterComplete=True, gunRunAmmoDropOrDefeatSeeded=False),
             serverPolicy=proof['serverPolicy'], sourceResourcesModified=False, operatorDataModified=False,
             nativeAmmoSequenceVerified=True, officialNumericalRulesRecovered=False, clientGameplayVerified=False,
+            nativeExplosionReportSequenceVerified=explosion, explosionSource=blast_sources,
             explosionGameplayVerified=False, clientMovementPhysicsVerified=False, crashAtomicityVerified=False,
             wholeWolfBroGameComplete=False, wholeGameComplete=False)
         with output.open('x', encoding='utf-8') as report:
@@ -410,12 +450,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
     parser.add_argument('--output', type=Path, default=ROOT / 'build' / ('wolfbro-ammo-' + str(time.time_ns()) + '.json'))
+    parser.add_argument('--explosion', action='store_true', help='验证真实6502爆炸上报，仍使用原弹药账本与H2检查')
     args = parser.parse_args()
     jar, output = args.jar.resolve(), args.output.resolve()
     if not jar.is_file() or not jar.is_relative_to(ROOT / 'build') or not output.is_relative_to(ROOT / 'build'):
         raise ValueError('Only a local frozen build jar and fresh build report are accepted')
     reserve_output(jar, output)
-    run(jar, output)
+    run(jar, output, explosion=args.explosion)
 
 
 if __name__ == '__main__':

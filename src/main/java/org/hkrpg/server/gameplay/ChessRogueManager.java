@@ -58,7 +58,8 @@ public final class ChessRogueManager {
         return Retcode.REQ_PARA_INVALID;
       var unlock = player.getGameplay().getMainMissions().get(8013104);
       if (area != 101 || aeon != 6 || unlock == null || unlock.getPhase() == emu.lunarcore.game.quest.QuestState.Phase.DOING
-          || !ChessRogueRoutes.available()) return Retcode.ROGUE_AREA_INVALID;
+          || !ChessRogueRoutes.available() || ChessRogueRoutes.returnSignature(player.getScene(),player.getEntryId()).isEmpty())
+        return Retcode.ROGUE_AREA_INVALID;
       var prior = player.getGameplay().getChessRogue();
       var candidate = ChessRogueState.begin(player,ChessRogueRoutes.rule(),List.copyOf(ids));
       player.getGameplay().setChessRogue(candidate);
@@ -73,15 +74,18 @@ public final class ChessRogueManager {
     synchronized (player) {
       var run = player.getGameplay().getChessRogue();
       if (occupied(false) || !ChessRogueRoutes.valid(run) || run.isFailed() || area != run.getArea()
-          || !rosterValid(run.getRoster()) || !ChessRogueRoutes.available()) return Retcode.ROGUE_STATUS_NOT_MATCH;
+          || !rosterValid(run.getRoster()) || !ChessRogueRoutes.available()
+          || (run.isInside() ? !ChessRogueRoutes.sceneSource(player.getScene(),run,true)
+              : !ChessRogueRoutes.returnedSceneSource(player.getScene(),run))) return Retcode.ROGUE_STATUS_NOT_MATCH;
       return transition(run, () -> {});
     }
   }
   public Retcode queryStatus() {
     synchronized (player) {
       var run = player.getGameplay().getChessRogue();
-      return run.isInside() && ChessRogueRoutes.valid(run) && rosterValid(run.getRoster())
-          && ChessRogueRoutes.sceneSource(player.getScene(),run,true)
+      return ChessRogueRoutes.valid(run) && rosterValid(run.getRoster())
+          && (run.isInside() ? ChessRogueRoutes.sceneSource(player.getScene(),run,true)
+              : !occupied(false) && !run.isFailed() && ChessRogueRoutes.returnedSceneSource(player.getScene(),run))
           ? Retcode.SUCC : Retcode.ROGUE_STATUS_NOT_MATCH;
     }
   }
@@ -123,12 +127,39 @@ public final class ChessRogueManager {
     }
   }
 
+  /** Native5462 saves a healthy record; it never manufactures finished-run settlement or rewards. */
+  public Retcode leaveAndSave() {
+    synchronized (player) {
+      var run = player.getGameplay().getChessRogue();
+      var room = ChessRogueRoutes.room(run);
+      var returnSignature = ChessRogueRoutes.validReturnSignature(run);
+      if (!ready(run) || room == null || !player.getScene().getLoadedGroups().equals(new HashSet<>(room.groups()))
+          || returnSignature.isEmpty()) return Retcode.ROGUE_STATUS_NOT_MATCH;
+      var before = run.copy(); var location = player.captureSceneLocation();
+      var entityIds = new IdentityHashMap<emu.lunarcore.game.avatar.GameAvatar,Integer>();
+      for (var avatar : player.getAvatars().getAvatars().values()) entityIds.put(avatar,avatar.getEntityId());
+      try {
+        var back = run.getReturnTo(); back.bindSignature(returnSignature);
+        run.inside(false);
+        if (!player.loadScene(back.getPlane(),back.getFloor(),back.getEntry(),back.getPos(),back.getRot(),false,back.getDimension())) {
+          player.restoreSceneLocation(location); run.restore(before); entityIds.forEach((avatar,id) -> avatar.setEntityId(id));
+          return Retcode.ROGUE_AREA_INVALID;
+        }
+        return Retcode.SUCC;
+      } catch (RuntimeException failed) {
+        player.restoreSceneLocation(location); run.restore(before); entityIds.forEach((avatar,id) -> avatar.setEntityId(id));
+        throw failed;
+      }
+    }
+  }
+
   private Retcode transition(ChessRogueState run,Runnable change) {
     var before = run.copy();
     var location = player.captureSceneLocation();
     var entityIds = new IdentityHashMap<emu.lunarcore.game.avatar.GameAvatar,Integer>();
     for (var avatar : player.getAvatars().getAvatars().values()) entityIds.put(avatar,avatar.getEntityId());
     try {
+      run.inside(true);
       change.run();
       var room = ChessRogueRoutes.room(run);
       var floor = GameData.getFloorInfo(80201,80201001);

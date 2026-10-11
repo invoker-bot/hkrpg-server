@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Set;
 import org.hkrpg.server.gameplay.*;
 
-/** Pinned lifecycle and ammo messages, with explicit source-bound server quantities. */
+/** Pinned lifecycle, ordinary ammo and blast reports, with explicit server quantities. */
 public final class WolfBro46 {
   private static final Set<String> REQUESTS =
       Set.of(
@@ -25,7 +25,7 @@ public final class WolfBro46 {
     if (!session.getProtocol().experimental()) return false;
     // Frozen CmdWolfBroType_HPHNFDIPEIE and the actual OKEFGCNNEKI sender both use 6514.
     // It has no named command entry; retain the original descriptor and raw command identity.
-    var name = command == 6514 ? "OKEFGCNNEKI" : REQUESTS.stream()
+    var name = command == 6514 ? "OKEFGCNNEKI" : command == 6502 ? "LBMFCJLHNAA" : REQUESTS.stream()
             .filter(n -> session.getProtocol().clientCommand(n) == command)
             .findFirst()
             .orElse(null);
@@ -71,6 +71,11 @@ public final class WolfBro46 {
                 var ids = (java.util.List<Integer>) value(req, "assist_monster_entity_id_list");
                 yield new WolfBroAmmunition(session.getPlayer()).use(ids);
               }
+              case "LBMFCJLHNAA" -> {
+                @SuppressWarnings("unchecked")
+                var ids = (java.util.List<Integer>) value(req, "assist_monster_entity_id_list");
+                yield new WolfBroAmmunition(session.getPlayer()).explode(ids);
+              }
               default -> throw new ProtocolException("Unsupported WolfBro request");
             };
       DynamicMessage data =
@@ -80,7 +85,11 @@ public final class WolfBro46 {
         set(notify, "game_data", data);
         session.sendClientPacket("WolfBroGameDataChangeScNotify", notify.build().toByteArray());
       }
-      var response = name.equals("OKEFGCNNEKI") ? "WolfBroGameUseBulletScRsp" : name.replace("CsReq", "ScRsp");
+      var response = switch (name) {
+        case "OKEFGCNNEKI" -> "WolfBroGameUseBulletScRsp";
+        case "LBMFCJLHNAA" -> "WolfBroGameExplodeMonsterScRsp";
+        default -> name.replace("CsReq", "ScRsp");
+      };
       var b = builder(session, response);
       set(b, "retcode", result.code().getVal());
       if (data != null && b.getDescriptorForType().findFieldByName("game_data") != null) set(b, "game_data", data);
@@ -89,7 +98,7 @@ public final class WolfBro46 {
     return true;
   }
 
-  /** Ordinary shots use proto3 packed IDs; check full raw varints before using parsed entity IDs. */
+  /** Shot and blast reports use packed IDs; check full raw varints before using parsed IDs. */
   private static boolean wireValid(com.google.protobuf.Descriptors.Descriptor descriptor, byte[] bytes, int depth) {
     if (depth > 4 || bytes.length > 16384) return false;
     var input = com.google.protobuf.CodedInputStream.newInstance(bytes);

@@ -304,7 +304,9 @@ class DailyMissionMessage46Test {
   }
 
   @ParameterizedTest @ValueSource(ints = {3000601, 3000603})
-  void siblingDailyPhoneGraphsDoNotGainUnreviewedRepeatability(int id) {
+  void siblingPhoneGraphsWithoutTheirOriginalCatalogRowsDoNotGainRepeatability(int id) {
+    assertNotNull(GameData.getMissionInfos().get(id));
+    assertNull(DailyMissionCatalog.mission(id));
     assertFalse(DailyMissionRepeats.supportedGraph(id));
   }
 

@@ -1,0 +1,219 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "gameAssemblySHA256": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+  "metadataSHA256": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130",
+  "descriptorSHA256": "a9de1824e9892e236d7ce0f2d19f5531ffb259c125c4d22da89dfb7ac23c08fd",
+  "types": [
+    "AdventureAbilityManualTriggerType",
+    "AdventureAbilityConfig",
+    "AbilityConfig",
+    "AdventureTriggerTargetAbility",
+    "AdventureTriggerAttack",
+    "CostMpPhase",
+    "AdventureSkillType",
+    "TeamModule"
+  ],
+  "fields": {
+    "AdventureAbilityConfig": {
+      "ManualTriggerType": 104
+    },
+    "AdventureTriggerTargetAbility": {
+      "SkillType": 32,
+      "AbilityName": 40
+    },
+    "AdventureTriggerAttack": {
+      "CostMP": 124,
+      "CostMpPhaseType": 128
+    }
+  },
+  "enums": {
+    "AdventureAbilityManualTriggerType": {
+      "None": 0,
+      "Free": 1,
+      "BySummonUnit": 2
+    },
+    "CostMpPhase": {
+      "OnUse": 0,
+      "OnHitEnemy": 1,
+      "OnFirstHitEnemy": 2
+    }
+  },
+  "functions": [
+    {
+      "index": 535827,
+      "name": "OnTaskBegin",
+      "typeName": "CBMPNJHKPNN",
+      "rva": "0xc4a86c0",
+      "endRVA": "0xc4a88b0",
+      "bodySHA256": "0a6fec3a055a93726c1905ad307fc9f9d907d0849704d19056dc5aba3b5e929c",
+      "anchors": [
+        "c4a87e9: mov r8d, dword ptr [rcx + 0x20]",
+        "c4a87ed: mov r9, qword ptr [rcx + 0x28]",
+        "c4a87fc: call 0x18e5764a0"
+      ]
+    },
+    {
+      "index": 524586,
+      "name": "ManualTriggerAbility",
+      "typeName": "AdventureSkillCharacterComponent",
+      "rva": "0xe5764a0",
+      "endRVA": "0xe57697c",
+      "bodySHA256": "c506070e6ead1e4f8a78d2a3882bc02bccfc66f32522c577575dcfbc0ca46829",
+      "anchors": [
+        "e5766c8: inc eax",
+        "e5766ca: cmp eax, -1",
+        "e5766f3: mov dword ptr [rax + 0x2c], ebx",
+        "e576741: mov rdx, rsi",
+        "e57674a: call 0x18e5369d0"
+      ]
+    },
+    {
+      "index": 526387,
+      "name": "UseAbility",
+      "typeName": "AdventureAbilityComponent",
+      "rva": "0xe5369d0",
+      "endRVA": "0xe536b7d",
+      "bodySHA256": "a73a24816754cac1ce92de4d36aaa1038d781b210cfcf33eb07541c711fa270b",
+      "anchors": []
+    },
+    {
+      "index": 535693,
+      "name": "OnTaskBegin",
+      "typeName": "NCGKGFAJMGM",
+      "rva": "0xbb09c10",
+      "endRVA": "0xbb0a35e",
+      "bodySHA256": "18bcb5743fcaa6413662d892bac3b8d53b741cd7e871d2144feecec712ff6374",
+      "anchors": []
+    },
+    {
+      "index": 635593,
+      "name": "MHAHLFKCLKI",
+      "typeName": "DGOAKJNHIFJ",
+      "rva": "0xe84dab0",
+      "endRVA": "0xe84e112",
+      "bodySHA256": "6858cebf1bcc95f58796ca3009fd0b5d1594abbeb2dacb1bc78173c0ca095ef7",
+      "anchors": [
+        "e84dd86: mov qword ptr [rsi + 0x10], rdx"
+      ]
+    },
+    {
+      "index": 635460,
+      "name": "PHBADCBNPAK",
+      "typeName": "NetworkManager",
+      "rva": "0xd9c4ce0",
+      "endRVA": "0xd9c512a",
+      "bodySHA256": "63d03fd9b4fca5f7876ee4c26d9640cad406fef5c1442d7d6796072c4cc1fee9",
+      "anchors": [
+        "d9c4d50: mov rax, qword ptr [r14 + 0x10]",
+        "d9c4d70: mov qword ptr [r12 + 0x10], rax"
+      ]
+    },
+    {
+      "index": 232578,
+      "name": "WriteTo",
+      "typeName": "INBDPGBJIFA",
+      "rva": "0x1e690a10",
+      "endRVA": "0x1e690d9e",
+      "bodySHA256": "a84a21722d89d0b346c18a102b11285266b6635c5190d7d3b9be53d2b8aefe12",
+      "anchors": []
+    },
+    {
+      "index": 535806,
+      "name": "NCJNHOFJNCF",
+      "typeName": "NJIOAKCLACC",
+      "rva": "0xbc106a0",
+      "endRVA": "0xbc1122c",
+      "bodySHA256": "7ba404b2db0245070c06259e77c6b1ba7941baa03c6ee833af6e88b7e4c79af3",
+      "anchors": [
+        "bc10fa3: mov ecx, dword ptr [rax + 0x7c]",
+        "bc10fa6: mov eax, dword ptr [rax + 0x80]",
+        "bc10fba: mov r9d, edi",
+        "bc10fbd: call 0x18e5752d0",
+        "bc110ac: call 0x18c603fc0"
+      ]
+    },
+    {
+      "index": 524573,
+      "name": "PreCostMpWhenHitValidTarget",
+      "typeName": "AdventureSkillCharacterComponent",
+      "rva": "0xe5752d0",
+      "endRVA": "0xe5756f2",
+      "bodySHA256": "6661c1a437db38218053608fadef2b3fce1981c622105cc7f8872b9141386068",
+      "anchors": [
+        "e575419: cmp ebp, 2",
+        "e575507: mov dword ptr [rsp + 0x20], r14d",
+        "e57550c: mov byte ptr [rsp + 0x28], 0"
+      ]
+    },
+    {
+      "index": 524577,
+      "name": "_CostMazeSkillMp",
+      "typeName": "AdventureSkillCharacterComponent",
+      "rva": "0xe575700",
+      "endRVA": "0xe575b8b",
+      "bodySHA256": "ec78cbca7535a040187d28bf83a8c674ccfb19c6020e76ac65c8c49898f150f6",
+      "anchors": []
+    },
+    {
+      "index": 625071,
+      "name": "PreCostMpInClient",
+      "typeName": "TeamModule",
+      "rva": "0xe1d5410",
+      "endRVA": "0xe1d55b6",
+      "bodySHA256": "3c496c157e3cdff4d3af88271fd230afff548624767d2cc3e0a9a9f255b4cea9",
+      "anchors": [
+        "e1d5450: call 0x19b1eeba0",
+        "e1d5455: mov rcx, qword ptr [rdi + 0xa0]",
+        "e1d5536: mov dword ptr [rdi + 0xac], ebp"
+      ]
+    },
+    {
+      "index": 625069,
+      "name": "GetExtraSkillMpCost",
+      "typeName": "TeamModule",
+      "rva": "0xe1d5000",
+      "endRVA": "0xe1d5119",
+      "bodySHA256": "9ba5f63ddd95e43e2b9b8eb7feb6c6727819449d033f5bfeea32f2d2eef00321",
+      "anchors": []
+    },
+    {
+      "index": 552535,
+      "name": "TrySendSceneCastSkillCsReq",
+      "typeName": "AdventurePhase",
+      "rva": "0xc603fc0",
+      "endRVA": "0xc60423f",
+      "bodySHA256": "c037a3e277043106d3c789dd5fe7a0f61ff1c2f89a23c029a7d6de03ad9037be",
+      "anchors": []
+    },
+    {
+      "index": 525204,
+      "name": "GetMazeSkillExcelIndex",
+      "typeName": "AdventureCharacterDataComponent",
+      "rva": "0xe5654c0",
+      "endRVA": "0xe565653",
+      "bodySHA256": "bf4f7a613979f5c4ba55e94ba4d8e795cf51d1878d462fb65a985db59ab00a90",
+      "anchors": []
+    },
+    {
+      "index": 524585,
+      "name": "UseSkill",
+      "typeName": "AdventureSkillCharacterComponent",
+      "rva": "0xe55e310",
+      "endRVA": "0xe55e880",
+      "bodySHA256": "2e28be30af529a98030a139bdb95a2b991c6c9d8e555ce030ba1ba4436640a5f",
+      "anchors": []
+    }
+  ],
+  "sourceFiles": {
+    "Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_HimekoNova_00_Ability.json": "ac339d288f866ec7ecac96b90e6bf0a494e5098ec5b635570ace5ddd7f4da6c3",
+    "ExcelOutput/AvatarConfig.json": "9e57b5e3700b525a3f7097895d34177f769012034ac9bd0428318c3ff47f889e",
+    "ExcelOutput/MazeSkill.json": "16a060e36ee361f40bcf604abd79d1adfbea7528ca0beb57fe1f93a51083b23e"
+  },
+  "boundaries": [
+    "完整PE函数与原metadata身份，不执行DLL",
+    "不解析GENERICINST父类为已核CLR定义",
+    "不把未知field8用作费用",
+    "OnFirstHitEnemy按每次Attack clamp，不按整个UseID去重",
+    "未实施team extra cost modifier、Out/动画或官方UI验收"
+  ]
+}

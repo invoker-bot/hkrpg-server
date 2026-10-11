@@ -23,6 +23,8 @@ public class MazeSkill {
   private Set<String> adventureModifiers;
   private Set<String> scriptedAdventureModifiers;
   private Set<String> explicitDefaultAdventureModifiers;
+  @Getter(lombok.AccessLevel.NONE)
+  private final java.util.Map<String, MazeSkill> manualAbilities = new java.util.HashMap<>();
 
   @Setter private boolean triggerBattle;
   @Setter private boolean projectileDeclared;
@@ -46,6 +48,16 @@ public class MazeSkill {
     this.castActions = new ArrayList<>();
     this.attackActions = new ArrayList<>();
   }
+
+  /** Source-owned manual abilities remain distinct from the base OnUse skill. */
+  public void addManualAbility(MazeSkill manual) {
+    if (manual == null || manual.id != id || manual.index != index
+        || manual.abilityName.isEmpty() || manual.abilityName.equals(abilityName))
+      throw new IllegalArgumentException("Manual ability does not belong to its source skill");
+    manualAbilities.put(manual.abilityName, manual);
+  }
+
+  public MazeSkill manualAbility(String name) { return manualAbilities.get(name); }
 
   public void addAdventureModifier(String modifier) {
     if (modifier == null) return;
@@ -109,6 +121,9 @@ public class MazeSkill {
       }
       this.triggerBattle = skill.triggerBattle;
     }
+
+    /** Read the actual captured release; this does not infer a modifier timeout. */
+    public boolean hasAdventureModifier(String name) { return modifiers.contains(name); }
   }
 
   private record BattleCallback(List<MazeSkillAction> actions, List<? extends GameEntity> targets) {}
