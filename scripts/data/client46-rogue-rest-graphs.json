@@ -1,0 +1,502 @@
+{
+  "schema": 1,
+  "missionProfileSHA256": "21032416c120e295a6bb1fc22d826661aeb35fd21792dae66cb46e02470e6200",
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "indexSHA256": "2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "classes": {
+    "ShowMenu": {
+      "typeIndex": 21131,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "DisplaySingleMenuItem",
+          "declaringType": "ShowMenu",
+          "fieldIndex": 94814,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "AddMenuItem": {
+      "typeIndex": 21128,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "MenuIconType",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94794,
+          "type": {
+            "kind": 18,
+            "typeIndex": 10869,
+            "name": "JsonEnum"
+          }
+        },
+        {
+          "name": "MenuItemID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94795,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "MenuItemTextID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94796,
+          "type": {
+            "kind": 17,
+            "typeIndex": 6564,
+            "name": "TextID"
+          }
+        },
+        {
+          "name": "DialoguePath",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94797,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "PerformanceType",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94798,
+          "type": {
+            "kind": 17,
+            "typeIndex": 10484,
+            "name": "ELevelPerformanceType"
+          }
+        },
+        {
+          "name": "PerformanceID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94799,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "Important",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94800,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ExtraInfo",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94801,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "MissionID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94802,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "TagContainer",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94803,
+          "type": {
+            "kind": 18,
+            "typeIndex": 18319,
+            "name": "HoyoTagContainer"
+          }
+        }
+      ]
+    }
+  },
+  "jsonTypeNames": {
+    "ShowMenu": "RPG.GameCore.ShowMenu",
+    "WaitPredicateSucc": "RPG.GameCore.WaitPredicateSucc",
+    "SetAllRogueDoorState": "RPG.GameCore.SetAllRogueDoorState",
+    "SetRogueRoomFinish": "RPG.GameCore.SetRogueRoomFinish",
+    "AddMenuItem": "RPG.GameCore.AddMenuItem"
+  },
+  "tasks": {
+    "3259": {
+      "name": "ShowMenu",
+      "noReaderPayload": false,
+      "methodSlot": "0x95378c0",
+      "assignmentRVA": "0x1d63bf47",
+      "arrayOffset": "0x65f8",
+      "typeSlot": "0x9378ae0",
+      "factoryMethodIndex": 133198,
+      "factoryRVA": "0x1d61b210",
+      "readerRVA": "0x1dab40f0"
+    },
+    "3875": {
+      "name": "WaitPredicateSucc",
+      "noReaderPayload": true,
+      "methodSlot": "0x9538d08",
+      "assignmentRVA": "0x1d63fdd7",
+      "arrayOffset": "0x7938",
+      "typeSlot": "0x93a5e10",
+      "factoryMethodIndex": 133814,
+      "factoryRVA": "0x1d625ae0",
+      "readerRVA": null
+    },
+    "2697": {
+      "name": "SetAllRogueDoorState",
+      "noReaderPayload": true,
+      "methodSlot": "0x9536628",
+      "assignmentRVA": "0x1d638636",
+      "arrayOffset": "0x5468",
+      "typeSlot": "0x93749a0",
+      "factoryMethodIndex": 132638,
+      "factoryRVA": "0x1d41ce30",
+      "readerRVA": null
+    },
+    "3067": {
+      "name": "SetRogueRoomFinish",
+      "noReaderPayload": true,
+      "methodSlot": "0x9537290",
+      "assignmentRVA": "0x1d63abc7",
+      "arrayOffset": "0x5ff8",
+      "typeSlot": "0x937cfd8",
+      "factoryMethodIndex": 133006,
+      "factoryRVA": "0x1d4230e0",
+      "readerRVA": null
+    },
+    "48": {
+      "name": "AddMenuItem",
+      "noReaderPayload": false,
+      "methodSlot": "0x9531170",
+      "assignmentRVA": "0x1d627a29",
+      "arrayOffset": "0x1a0",
+      "typeSlot": "0x9378ac8",
+      "factoryMethodIndex": 129999,
+      "factoryRVA": "0x1ccd5080",
+      "readerRVA": "0x1d35b640"
+    }
+  },
+  "predicates": {
+    "268": "ByCompareSubMissionState"
+  },
+  "predicateBranches": {
+    "268": {
+      "name": "ByCompareSubMissionState",
+      "methodSlot": "0x951e4b8",
+      "assignmentRVA": "0x1d19a537",
+      "arrayOffset": "0x880",
+      "typeSlot": "0x9366d98",
+      "factoryMethodIndex": 134180,
+      "factoryRVA": "0x1d192430",
+      "readerRVA": "0x1d4ad1d0"
+    }
+  },
+  "binaryEncodings": {
+    "JsonEnum": "zigzag32_pair"
+  },
+  "nativeFieldLayouts": {
+    "ShowMenu": {
+      "typeIndex": 21131,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "instanceOffset": 16,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "DisplaySingleMenuItem",
+          "declaringType": "ShowMenu",
+          "fieldIndex": 94814,
+          "instanceOffset": 24,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "AddMenuItem": {
+      "typeIndex": 21128,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "instanceOffset": 16,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "MenuIconType",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94794,
+          "instanceOffset": 24,
+          "type": {
+            "kind": 18,
+            "typeIndex": 10869,
+            "name": "JsonEnum"
+          }
+        },
+        {
+          "name": "MenuItemID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94795,
+          "instanceOffset": 32,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "MenuItemTextID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94796,
+          "instanceOffset": 40,
+          "type": {
+            "kind": 17,
+            "typeIndex": 6564,
+            "name": "TextID"
+          }
+        },
+        {
+          "name": "DialoguePath",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94797,
+          "instanceOffset": 56,
+          "type": {
+            "kind": 14
+          }
+        },
+        {
+          "name": "PerformanceType",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94798,
+          "instanceOffset": 64,
+          "type": {
+            "kind": 17,
+            "typeIndex": 10484,
+            "name": "ELevelPerformanceType"
+          }
+        },
+        {
+          "name": "PerformanceID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94799,
+          "instanceOffset": 68,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "Important",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94800,
+          "instanceOffset": 72,
+          "type": {
+            "kind": 2
+          }
+        },
+        {
+          "name": "ExtraInfo",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94801,
+          "instanceOffset": 76,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "MissionID",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94802,
+          "instanceOffset": 80,
+          "type": {
+            "kind": 9
+          }
+        },
+        {
+          "name": "TagContainer",
+          "declaringType": "AddMenuItem",
+          "fieldIndex": 94803,
+          "instanceOffset": 88,
+          "type": {
+            "kind": 18,
+            "typeIndex": 18319,
+            "name": "HoyoTagContainer"
+          }
+        }
+      ]
+    },
+    "JsonEnum": {
+      "typeIndex": 10869,
+      "fields": [
+        {
+          "name": "JsonValueStr",
+          "declaringType": "JsonEnum",
+          "fieldIndex": 47250,
+          "instanceOffset": 16,
+          "type": {
+            "kind": 14
+          }
+        }
+      ]
+    },
+    "WaitPredicateSucc": {
+      "typeIndex": 22082,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "instanceOffset": 16,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "SetAllRogueDoorState": {
+      "typeIndex": 20481,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "instanceOffset": 16,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    },
+    "SetRogueRoomFinish": {
+      "typeIndex": 20483,
+      "fields": [
+        {
+          "name": "TaskEnabled",
+          "declaringType": "TaskConfig",
+          "fieldIndex": 102139,
+          "instanceOffset": 16,
+          "type": {
+            "kind": 2
+          }
+        }
+      ]
+    }
+  },
+  "functions": {
+    "taskFactoryInitializer": {
+      "beginRVA": "0x1d6275b0",
+      "endRVA": "0x1d64073c",
+      "sha256": "f0b631e3d608e265977cff0e8b5794abc4ed234443b48d0426d189eab65d8d64"
+    },
+    "predicateFactoryInitializer": {
+      "beginRVA": "0x1d198b50",
+      "endRVA": "0x1d19cbd9",
+      "sha256": "efc933393e56fc344b246fd26d6652602ec79dd3230c3f1ab48e6e35c338008b"
+    },
+    "task-factory-3259": {
+      "beginRVA": "0x1d61b210",
+      "endRVA": "0x1d61b241",
+      "sha256": "c76b7dde3d626f2373f4f4ab8e74f0a01eafddec3aa14e474ba510cebcfef56d"
+    },
+    "task-factory-3875": {
+      "beginRVA": "0x1d625ae0",
+      "endRVA": "0x1d625af9",
+      "sha256": "231fb3ce6c5bf9acacbb67f13d22c0f5ff38f9940dc58cf4a5ca5ee35c108cd6"
+    },
+    "predicate-factory-268": {
+      "beginRVA": "0x1d192430",
+      "endRVA": "0x1d192461",
+      "sha256": "ea47257d30b07cd070fd59c898be18bc85883eb2d0909d7cb02938e37fbbe50b"
+    },
+    "task-factory-2697": {
+      "beginRVA": "0x1d41ce30",
+      "endRVA": "0x1d41ce49",
+      "sha256": "76c60cec7abfff2a7abef1a4012c7b5cdccf4c74e35f62e5f104d9ef72a8b8bc"
+    },
+    "task-factory-48": {
+      "beginRVA": "0x1ccd5080",
+      "endRVA": "0x1ccd50b1",
+      "sha256": "263dcf18f2b57dae524c0f873ba6139a7ed5508302e3c6ca382fe47f0ca7919c"
+    },
+    "task-factory-3067": {
+      "beginRVA": "0x1d4230e0",
+      "endRVA": "0x1d423115",
+      "sha256": "05a907e9118331799319dfe877ad58721cef3c95a043855491be83fe6c7751bb"
+    },
+    "reader-AddMenuItem": {
+      "beginRVA": "0x1d35b640",
+      "endRVA": "0x1d35ba1c",
+      "sha256": "0791efc12a669e6be1c397ac4e25272cd00405f724f6de63e8d5837371645237"
+    },
+    "reader-ByCompareSubMissionState": {
+      "beginRVA": "0x1d4ad1d0",
+      "endRVA": "0x1d4ad3ee",
+      "sha256": "da41e3bf9debbc9d6e634da710d30d7e46263312b86a30f0622202d5027f5bd5"
+    },
+    "reader-CollectDataConditions": {
+      "beginRVA": "0x1d59c460",
+      "endRVA": "0x1d59c6c7",
+      "sha256": "f03f3af5489c97fe7594cd204fa66f964473fa8b0477903f7b4819ef762fad21"
+    },
+    "reader-JsonEnum.ParseFromBinary": {
+      "beginRVA": "0x1d7724a0",
+      "endRVA": "0x1d77264a",
+      "sha256": "60958ecb510177df681371882cb497706e741fb2b905843293fbd4a0918a8a48"
+    },
+    "reader-ShowMenu": {
+      "beginRVA": "0x1dab40f0",
+      "endRVA": "0x1dab4226",
+      "sha256": "8d6347b9043ab8e5ff35caccb09918eaa0cc554ff2cdaa20673618a71bfd37cf"
+    }
+  },
+  "records": {
+    "Config/Level/NPCDialogue/P80001/F80001002_G34/DialogueMain_F80001002_G34_N400001.json": {
+      "entryKey": "655f93fea15e870e",
+      "length": 8,
+      "sha256": "e1cbd6d63d93abcdf1ec182595ac1438bf28cc757b616b14799b40f65aa1f240",
+      "sourceJsonSHA256": "f01716e60025b4da6453963d5eb2cae1dfd004f8504c5d706aaf0f808abb7cb2"
+    },
+    "Config/Level/NPCDialogue/P80001/F80001002_G34/DialoguePack_Transferred_F80001002_G34_N400001.json": {
+      "entryKey": "388e9b7a7d663be9",
+      "length": 178,
+      "sha256": "3c423df9b1ccbbb3fef72e3cc7d4a4b762e27e4917fe54338300cc79ea32e0f7",
+      "sourceJsonSHA256": "5ee27b1650e819f55ab7e6cf64d40283d36e5a9b34f04f0fab160c8b121cf74b"
+    },
+    "Config/Level/Maze/MazeRogue/Maze_Rogue_Tutorial_RestRoom_S1.json": {
+      "entryKey": "cfb03f9d124878e7",
+      "length": 13,
+      "sha256": "1c8928b268a61cd3d8dbeeca55ffe23648c09c3c263abd401cd0d7c136b483c4",
+      "sourceJsonSHA256": "3eaa9e7574121ae8b1589b09113ad7d71c86440d71ceb1ad050bb66045cfceb3"
+    },
+    "Config/Level/Maze/MazeRogue/Maze_Rogue_Group_RestRoom.json": {
+      "entryKey": "a27881af41fd7abc",
+      "length": 13,
+      "sha256": "1c8928b268a61cd3d8dbeeca55ffe23648c09c3c263abd401cd0d7c136b483c4",
+      "sourceJsonSHA256": "3eaa9e7574121ae8b1589b09113ad7d71c86440d71ceb1ad050bb66045cfceb3"
+    }
+  }
+}

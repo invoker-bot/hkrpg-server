@@ -107,6 +107,11 @@ class Reader:
             return [self.read(description['elementType']) for _ in range(length)]
         if name == 'TextID':
             return {'id': self.integer(32, True), 'hash': self.uvar()}
+        if name == 'JsonEnum' and self.profile.get('binaryEncodings', {}).get(name) == 'zigzag32_pair':
+            # The pinned ParseFromBinary reader has two varuint/zigzag32 reads, no object mask.
+            offset = self.pos
+            return {'$type': name, '$offset': offset,
+                    'EnumIndex': self.integer(32, True), 'Value': self.integer(32, True)}
         if name == 'MVector3':
             return {axis: self.read({'kind': 12}) for axis in ('x', 'y', 'z')}
         if name == 'DynamicFloat':
