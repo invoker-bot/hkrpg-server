@@ -15,7 +15,8 @@ final class DailyMissionRepeats {
 
   static boolean historyValid(Player player, Instant now) {
     return valid(player, player.getGameplay().getDailyMissionPeriods(), now)
-        && DailyMissionExpiry.valid(player, now);
+        && DailyMissionExpiry.valid(player, now)
+        && DailyMissionMessageRules.historyValid(player, now);
   }
 
   static boolean payoutAllowed(Player player, int id, Instant now) {
@@ -65,7 +66,8 @@ final class DailyMissionRepeats {
         || source.getId() != id
         || !"Daily".equals(source.getType())
         || !safeGraph(graph)
-        || !valid(player, periods, now)) return false;
+        || !valid(player, periods, now)
+        || !DailyMissionMessageRules.historyValid(player, now)) return false;
     Long prior = selectedDay(player, id);
     if (prior == null
         || prior >= today
@@ -189,9 +191,10 @@ final class DailyMissionRepeats {
       if (!ids.contains(end) || !ends.add(end)) return false;
     for (var sub : graph.getSubMissionList()) {
       boolean monster = DailyMissionMonsterRules.repeatable(sub);
+      boolean message = DailyMissionMessageRules.repeatable(sub);
       if (sub.getProgress() <= 0
           || sub.getSubRewardID() < 0
-          || sub.isBackTrack() && !monster
+          || sub.isBackTrack() && !monster && !message
           || sub.getStoryTrialTask() != null
           || sub.getFinishActionList() == null
           || sub.getFinishActionList().length != 0
@@ -204,7 +207,7 @@ final class DailyMissionRepeats {
           || sub.getParamInt1() != 0
               && !"StageWin".equals(sub.getFinishType())
               && !"EnterFloor".equals(sub.getFinishType())
-              && !monster
+              && !monster && !message
           || sub.getParamInt2() != 0 && !"EnterFloor".equals(sub.getFinishType()) && !monster
           || sub.getParamInt3() != 0
           || sub.getParamIntList() == null
@@ -229,6 +232,8 @@ final class DailyMissionRepeats {
         if (!DailyMissionTravelRules.enterFloor(sub)) return false;
       } else if ("KillMonster".equals(sub.getFinishType())) {
         if (!monster) return false;
+      } else if ("MessageSectionFinish".equals(sub.getFinishType())) {
+        if (!message) return false;
       } else if (!"SubMissionFinishCnt".equals(sub.getFinishType())
           || !"ListContain".equals(sub.getParamType())
           || !"".equals(sub.getParamStr1())

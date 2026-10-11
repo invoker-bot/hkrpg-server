@@ -33,7 +33,7 @@ public final class Message46 {
               .noneMatch(
                   g ->
                       g.MessageSectionIDList().stream()
-                          .anyMatch(p.getGameplay().getPhoneSections()::containsKey))) continue;
+                          .anyMatch(manager.states()::containsKey))) continue;
           var row = builder(s, "NpcStatus");
           set(row, "npc_id", contact);
           set(
@@ -69,7 +69,7 @@ public final class Message46 {
       case "GetMissionMessageCsReq" -> {
         p.getMissionManager().refresh();
         var b = builder(s, "GetMissionMessageScRsp");
-        for (var state : new TreeMap<>(p.getGameplay().getPhoneSections()).values()) {
+        for (var state : new TreeMap<>(manager.states()).values()) {
           var config = GameplayDefinitions.messageSections.get(state.getId());
           if (config != null && config.IsPerformMessage() && state.isFinished())
             add(b, "HNIPIODEBNN", state.getId());
@@ -168,7 +168,7 @@ public final class Message46 {
   private static int status(GameSession s, GameplayDefinitions.MessageGroup g) {
     var states =
         g.MessageSectionIDList().stream()
-            .map(s.getPlayer().getGameplay().getPhoneSections()::get)
+            .map(new MessageManager(s.getPlayer()).states()::get)
             .filter(Objects::nonNull)
             .toList();
     return states.isEmpty()
@@ -181,8 +181,9 @@ public final class Message46 {
     set(b, "id", g.ID());
     enumValue(b, "status", status(s, g));
     GameplayState.PhoneSection current = null;
+    var states = new MessageManager(s.getPlayer()).states();
     for (int id : g.MessageSectionIDList()) {
-      var state = s.getPlayer().getGameplay().getPhoneSections().get(id);
+      var state = states.get(id);
       if (state == null) continue;
       var row = builder(s, "MessageSection");
       set(row, "id", id);

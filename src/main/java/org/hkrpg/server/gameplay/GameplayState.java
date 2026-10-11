@@ -454,6 +454,7 @@ public class GameplayState {
   private RogueBattleKillState rogueBattleKills = new RogueBattleKillState();
   private RogueBattleDeathState rogueBattleDeaths = new RogueBattleDeathState();
   private Map<Integer, PhoneSection> phoneSections = new HashMap<>();
+  private DailyMissionMessageState dailyMissionMessages = new DailyMissionMessageState();
   private Map<Integer, FirstTalkReport> firstTalkReports = new HashMap<>();
   private Map<String, RogueResult> rogueResults = new HashMap<>();
   private Set<Integer> rogueTalents = new HashSet<>();

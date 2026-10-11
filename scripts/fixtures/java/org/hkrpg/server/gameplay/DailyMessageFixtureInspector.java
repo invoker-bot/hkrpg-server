@@ -1,0 +1,165 @@
+package org.hkrpg.server.gameplay;
+
+import com.google.gson.*;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.model.Filters;
+import de.bwaldvogel.mongo.MongoServer;
+import de.bwaldvogel.mongo.backend.h2.H2Backend;
+import dev.morphia.Morphia;
+import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.quest.QuestState;
+import emu.lunarcore.util.Position;
+import java.nio.file.*;
+import java.security.MessageDigest;
+import java.time.Instant;
+import java.util.*;
+import org.h2.mvstore.MVStore;
+
+/** Two independent Player reads from a stopped, owned fixture MVStore opened read-only. */
+public final class DailyMessageFixtureInspector {
+  private static final int MAIN=3000602,FIRST=300060201,GOAL=300060202,SECTION=1211401;
+  private static final String SOURCE="4.6:3000602:e113776a2deadc2cc09a5890856aad4a661a0529f9daf2d06309ff9c14d43a4d:7531517089dcbd63b3fde9889a3923f988e2232a89b075fa865e606840b3e775";
+
+  private static void require(boolean value,String why) { if(!value) throw new IllegalStateException(why); }
+  private static String sha(Path path) throws Exception {
+    return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path)));
+  }
+  private static List<Integer> ints(JsonArray rows) { return rows.asList().stream().map(JsonElement::getAsInt).toList(); }
+
+  private static Map<String,Object> state(QuestState state,int id,QuestState.Phase phase,long day) {
+    require(state!=null && state.getQuestId()==id && state.getPhase()==phase,"Wrong stored state: "+id+" expected="+phase);
+    boolean done=phase!=QuestState.Phase.DOING;
+    require(state.getProgress()==(done?1:0),"Wrong stored progress: "+id);
+    require(done?state.getFinishTime()>0 && DailyManager.day(Instant.ofEpochSecond(state.getFinishTime()))==day
+        :state.getFinishTime()==0,"Stored finishTime is outside the accepted day: "+id);
+    var value=new TreeMap<String,Object>();
+    value.put("id",id);value.put("phase",phase.name());value.put("progress",state.getProgress());
+    value.put("finishTime",state.getFinishTime());value.put("runDay",day);
+    if(state.getObservationKey()!=null) value.put("acceptance",state.getObservationKey());
+    return value;
+  }
+
+  private static List<Integer> prefix(int first,int second,int size) {
+    var full=List.of(121140201,121140212,121140213,first,121140204,second,
+        second==121140205?121140206:121140208,121140209,121140210);
+    require(Set.of(3,5,9).contains(size),"Invalid original Phone prefix");
+    return full.subList(0,size);
+  }
+
+  private static Map<String,Object> run(JsonObject lease,QuestState main,Map<Integer,QuestState> subs,
+      long day,boolean completed,int first,int second,int size) {
+    require(lease!=null && lease.get("day").getAsLong()==day && lease.get("mainId").getAsInt()==MAIN
+        && lease.get("goalId").getAsInt()==GOAL && lease.get("sectionId").getAsInt()==SECTION
+        && SOURCE.equals(lease.get("source").getAsString()),"Wrong persisted Phone source/run identity");
+    var mainProof=state(main,MAIN,completed?QuestState.Phase.CLOSED:QuestState.Phase.DOING,day);
+    var firstProof=state(subs.get(FIRST),FIRST,QuestState.Phase.FINISHED,day);
+    var goalProof=state(subs.get(GOAL),GOAL,completed?QuestState.Phase.FINISHED:QuestState.Phase.DOING,day);
+    String mainKey=lease.get("mainAcceptance").getAsString(),goalKey=lease.get("goalAcceptance").getAsString();
+    require(UUID.fromString(mainKey).toString().equals(mainKey) && UUID.fromString(goalKey).toString().equals(goalKey)
+        && !mainKey.equals(goalKey) && mainKey.equals(main.getObservationKey())
+        && goalKey.equals(subs.get(GOAL).getObservationKey()),"Phone does not bind the actual persisted Main/Goal acceptances");
+    var phone=lease.getAsJsonObject("phone");
+    var history=ints(phone.getAsJsonArray("history"));var offered=ints(phone.getAsJsonArray("offered"));
+    var options=size==3?List.of(121140202,121140203):size==5?List.of(121140205,121140207):List.<Integer>of();
+    require(phone.get("id").getAsInt()==SECTION && phone.get("finished").getAsBoolean()==completed
+        && phone.get("refreshed").getAsLong()>0 && history.equals(prefix(first,second,size)) && offered.equals(options),
+        "Stored actual choices/Phone prefix differ");
+    return Map.of("main",mainProof,"first",firstProof,"goal",goalProof,"history",history,"offered",offered,
+        "phoneFinished",completed,"source",SOURCE,"mainAcceptance",mainKey,"goalAcceptance",goalKey);
+  }
+
+  private static void reward(GameplayState g,String key,boolean earned) {
+    var receipt=g.getRewards().get(key);var plan=g.getMissionRewardPlans().get(key);
+    if(!earned) { require(receipt==null && plan==null,"Unpaid period acquired a main reward: "+key);return; }
+    require(receipt!=null && receipt.isGranted() && plan!=null && plan.isReady()
+        && plan.getRewardIds().equals(List.of(231)) && plan.getChoices().isEmpty()
+        && plan.getItems().equals(Map.of(2,5000)),"Source main reward proof differs: "+key);
+  }
+
+  public static void main(String[] args) throws Exception {
+    var root=Path.of("").toRealPath();var dir=Path.of(args[0]).toRealPath();var input=Path.of(args[1]).toRealPath();
+    require(dir.startsWith(root.resolve("build/smoke")) && dir.getFileName().toString().startsWith("daily-message-")
+        && input.startsWith(dir),"Unowned stopped fixture");
+    var control=JsonParser.parseString(Files.readString(input)).getAsJsonObject();
+    int uid=control.get("uid").getAsInt(),first=control.get("firstChoice").getAsInt(),second=control.get("secondChoice").getAsInt();
+    long firstDay=control.get("firstDay").getAsLong(),day=control.get("runDay").getAsLong();
+    String scenario=control.get("scenario").getAsString(),at=control.get("expiredAt").getAsString();
+    int size=control.get("phoneSize").getAsInt();boolean completed=control.get("completed").getAsBoolean();
+    require(uid>0 && Set.of(121140202,121140203).contains(first) && Set.of(121140205,121140207).contains(second)
+        && Set.of("settled","expired-unpaid").contains(scenario) && Set.of("noReplies","oneReply","bothReplies").contains(at)
+        && (day==firstDay || day==firstDay+1) && (!completed || size==9),"Invalid inspection controls");
+    var marker=JsonParser.parseString(Files.readString(dir.resolve("resources-fixture/resource-manifest.json"))).getAsJsonObject();
+    require(marker.get("testFixture").getAsBoolean() && marker.get("dailyMessageFixture").getAsBoolean()
+        && marker.get("originalMission").getAsInt()==MAIN,"Wrong fixture marker");
+    var config=dir.resolve("config.json");var file=dir.resolve("data/database.mv");
+    require(Files.isRegularFile(file),"Stopped H2 database missing");
+    String configSha=sha(config),beforeSha=sha(file);var proof=new TreeMap<String,Object>();
+    var mv=new MVStore.Builder().fileName(file.toString()).readOnly().open();
+    var server=new MongoServer(new H2Backend(mv));var address=server.bind();
+    try(var client=MongoClients.create("mongodb://127.0.0.1:"+address.getPort()+"/?directConnection=true")) {
+      var players=client.getDatabase("hkrpg").getCollection("players");var filter=Filters.eq("_id",uid);
+      require(players.countDocuments()==1 && players.countDocuments(filter)==1,"Not one isolated player");
+      var before=Objects.requireNonNull(players.find(filter).first());
+      var store=Morphia.createDatastore(client,"hkrpg");store.getMapper().mapPackage("org.hkrpg.server.gameplay");
+      store.getMapper().map(Player.class,QuestState.class,Position.class);
+      var firstRead=store.find(Player.class).filter(dev.morphia.query.filters.Filters.eq("_id",uid)).first();
+      var secondRead=store.find(Player.class).filter(dev.morphia.query.filters.Filters.eq("_id",uid)).first();
+      require(firstRead!=null && secondRead!=null && firstRead!=secondRead,"Independent Morphia Player reads failed");
+      var gson=new Gson();var g=firstRead.getGameplay();
+      require(gson.toJson(g).equals(gson.toJson(secondRead.getGameplay())) && firstRead.getScoin()==secondRead.getScoin(),
+          "Independent stored Player views differ");
+      // This compiles on the old protocol jar, but the new domain must actually survive Morphia at runtime.
+      var json=gson.toJsonTree(g).getAsJsonObject();
+      require(json.has("dailyMissionMessages"),"Runtime does not preserve the accepted Phone domain");
+      var runs=json.getAsJsonObject("dailyMissionMessages").getAsJsonObject("runs");
+      boolean later=day>firstDay,expired=scenario.equals("expired-unpaid");
+      require(runs.size()==(later?2:1) && !g.getPhoneSections().containsKey(SECTION),"Phone leaked into global history or lost an accepted run");
+      proof.put("currentRun",run(runs.getAsJsonObject(MAIN+":"+day),g.getMainMissions().get(MAIN),g.getSubMissions(),
+          day,completed,first,second,size));
+      var periods=g.getDailyMissionPeriods();
+      require(periods.getRunDays().equals(later?Map.of(MAIN,day):Map.of())
+          && periods.getArchives().size()==(later&&!expired?1:0) && periods.getExpired().size()==(later&&expired?1:0),
+          "Old period was not correctly archived/expired");
+      var goals=Map.of(FIRST,1,GOAL,1);
+      if(later) {
+        int oldFirst=control.get("oldFirstChoice").getAsInt(),oldSecond=control.get("oldSecondChoice").getAsInt();
+        var oldLease=runs.getAsJsonObject(MAIN+":"+firstDay);
+        if(expired) {
+          var old=periods.getExpired().get(MAIN+":"+firstDay);
+          require(old!=null && old.getMainId()==MAIN && old.getDay()==firstDay && old.getGoals().equals(goals)
+              && DailyManager.day(Instant.ofEpochSecond(old.getExpiredAt()))==day,"Wrong stored unpaid expiry");
+          int oldSize=at.equals("noReplies")?3:at.equals("oneReply")?5:9;
+          proof.put("expiredRun",run(oldLease,old.getMain(),old.getSubs(),firstDay,false,oldFirst,oldSecond,oldSize));
+          proof.put("expiredAt",old.getExpiredAt());
+        } else {
+          var old=periods.getArchives().get(MAIN+":"+firstDay);
+          require(old!=null && old.getMainId()==MAIN && old.getDay()==firstDay && old.getGoals().equals(goals)
+              && old.getRewardKeys().equals(List.of("mission:"+MAIN)),"Wrong stored paid archive");
+          proof.put("archivedRun",run(oldLease,old.getMain(),old.getSubs(),firstDay,true,oldFirst,oldSecond,9));
+        }
+        var current=runs.getAsJsonObject(MAIN+":"+day);
+        require(!current.get("mainAcceptance").equals(oldLease.get("mainAcceptance"))
+            && !current.get("goalAcceptance").equals(oldLease.get("goalAcceptance")),"New accepted day reused old Main/Goal identity");
+      }
+      var selections=g.getDailyMissionSelections();var days=later?Set.of(Long.toString(firstDay),Long.toString(day)):Set.of(Long.toString(day));
+      require(selections.getLatestDay()==day && selections.getDays().keySet().equals(days),"Stored source selections differ");
+      for(var choices:selections.getDays().values()) {
+        require(choices.size()==1,"Source daily quota is not one");var choice=choices.getFirst();
+        require(choice.getId()==MAIN && choice.getType()==1 && choice.getGroup()==30003,"Wrong source commission selection");
+      }
+      reward(g,"mission:"+MAIN,(later&&!expired)||(!later&&completed));
+      reward(g,"daily-mission:"+(firstDay+1)+":mission:"+MAIN,later&&completed);
+      int credits=(later&&!expired?5000:0)+(completed?5000:0);
+      require(firstRead.getScoin()==credits && g.getDailyDay()==day && g.getDailyPoints()==(completed?200:0),
+          "Stored credit/active points/day differ: "+firstRead.getScoin()+"/"+g.getDailyPoints()+"/"+g.getDailyDay());
+      proof.put("dailyQuest",state(g.getDailyQuests().get(2100003),2100003,completed?QuestState.Phase.CLOSED:QuestState.Phase.DOING,day));
+      require(before.equals(players.find(filter).first()) && players.countDocuments()==1,"Inspector mutated player documents");
+      proof.put("credit",credits);proof.put("activePoints",g.getDailyPoints());proof.put("runDays",periods.getRunDays());
+      proof.put("persistedPhoneRuns",runs);proof.put("independentMorphiaReadCount",2);proof.put("changedPlayerDocumentCount",0);
+    } finally { server.shutdownNow();if(!mv.isClosed())mv.close(); }
+    require(beforeSha.equals(sha(file)) && configSha.equals(sha(config)),"Read-only H2/config bytes changed");
+    proof.put("databaseSHA256",beforeSha);proof.put("databaseFileBytesUnchanged",true);proof.put("mvStoreReadOnly",true);
+    proof.put("uid",uid);proof.put("scenario",scenario);proof.put("expiredAt",at);proof.put("runDay",day);
+    proof.put("completed",completed);proof.put("passed",true);System.out.println(new Gson().toJson(proof));
+  }
+}

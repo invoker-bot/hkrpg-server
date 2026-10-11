@@ -1194,7 +1194,7 @@ public final class MissionManager {
               && c.getProgress() <= 1
               && new MusicManager(player).completedAtMost(c.getParamInt1(), c.getParamInt2());
       case "MessageSectionFinish", "MessagePerformSectionFinish" ->
-          MessageManager.matches(c) && new MessageManager(player).finished(c.getParamInt1());
+          MessageManager.matches(c) && new MessageManager(player).finished(c);
       case "SubMissionMultiFinish" -> MissionRelations.finished(player, c) && matchesPlace(c);
       case "WaitDays" ->
           "Equal".equals(c.getParamType())

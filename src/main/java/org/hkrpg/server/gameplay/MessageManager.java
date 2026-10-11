@@ -82,6 +82,8 @@ public final class MessageManager {
   }
 
   private boolean eligible(GameplayDefinitions.MessageSection s) {
+    if (DailyMissionMessageRules.declared(s.ID()))
+      return DailyMissionMessageRules.eligible(player, s);
     var group = group(s.ID());
     if (group == null
         || group.ActivityModuleID() != 0
@@ -109,7 +111,7 @@ public final class MessageManager {
   public boolean activateEligible() {
     synchronized (player) {
       var prepared = new LinkedHashMap<Integer, GameplayState.PhoneSection>();
-      var current = player.getGameplay().getPhoneSections();
+      var current = states();
       for (var section :
           GameplayDefinitions.messageSections.values().stream()
               .sorted(Comparator.comparingInt(GameplayDefinitions.MessageSection::ID))
@@ -129,8 +131,20 @@ public final class MessageManager {
     }
   }
 
+  /** A daily goal is completed by its own accepted period, never by global phone history. */
+  public boolean finished(MissionInfo.SubMissionInfo goal) {
+    return DailyMissionMessageRules.declared(goal.getParamInt1())
+        ? DailyMissionMessageRules.completed(player, goal)
+        : finished(goal.getParamInt1());
+  }
+
+  /** The same accepted view backs requests, status, history and synchronization. */
+  public Map<Integer, GameplayState.PhoneSection> states() {
+    return DailyMissionMessageRules.view(player);
+  }
+
   public boolean finished(int section) {
-    var state = player.getGameplay().getPhoneSections().get(section);
+    var state = states().get(section);
     return state != null && state.isFinished();
   }
 
@@ -187,7 +201,7 @@ public final class MessageManager {
       var row = GameplayDefinitions.messageItems.get(item);
       if (row == null) return Retcode.MESSAGE_CONFIG_NOT_EXIST;
       var config = GameplayDefinitions.messageSections.get(row.SectionID());
-      var state = player.getGameplay().getPhoneSections().get(row.SectionID());
+      var state = states().get(row.SectionID());
       if (config == null || state == null) return Retcode.MESSAGE_SECTION_NOT_TAKE;
       if (config.IsPerformMessage()
           || state.isFinished()
@@ -206,7 +220,7 @@ public final class MessageManager {
   public Retcode finishSection(int id) {
     synchronized (player) {
       var config = GameplayDefinitions.messageSections.get(id);
-      var state = player.getGameplay().getPhoneSections().get(id);
+      var state = states().get(id);
       if (config == null) return Retcode.MESSAGE_CONFIG_NOT_EXIST;
       if (state == null) return Retcode.MESSAGE_SECTION_NOT_TAKE;
       if (state.isFinished()
@@ -246,7 +260,7 @@ public final class MessageManager {
 
   private Preview previewPerformance(int id, List<Integer> choices) {
     var config = GameplayDefinitions.messageSections.get(id);
-    var state = player.getGameplay().getPhoneSections().get(id);
+    var state = states().get(id);
     if (config == null) return new Preview(Retcode.MESSAGE_CONFIG_NOT_EXIST, null);
     if (state == null) return new Preview(Retcode.MESSAGE_SECTION_NOT_TAKE, null);
     if (state.isFinished()
@@ -289,12 +303,16 @@ public final class MessageManager {
   private void persist(Collection<GameplayState.PhoneSection> prepared) {
     var current = player.getGameplay().getPhoneSections();
     var previous = new HashMap<>(current);
-    prepared.forEach(state -> current.put(state.getId(), state));
+    var daily = DailyMissionMessageRules.prepare(player, prepared);
     try {
+      daily.apply();
+      prepared.stream().filter(state -> !DailyMissionMessageRules.declared(state.getId()))
+          .forEach(state -> current.put(state.getId(), state));
       player.save();
     } catch (RuntimeException | Error failure) {
       current.clear();
       current.putAll(previous);
+      daily.rollback();
       throw failure;
     }
     prepared.forEach(state -> Message46.sync(player, group(state.getId()), state));
