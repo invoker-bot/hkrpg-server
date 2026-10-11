@@ -42,6 +42,7 @@ class UniverseDialogueEntry46Test {
     GameplayState state = new GameplayState();
     Scene scene;
     int saves;
+    boolean interruptSave;
     final PlayerLineup lineup = new PlayerLineup(this, 0);
 
     public GameplayState getGameplay() {
@@ -61,6 +62,7 @@ class UniverseDialogueEntry46Test {
     }
 
     public void save() {
+      if (interruptSave) throw new IllegalStateException("Injected dialogue save failure");
       saves++;
     }
   }

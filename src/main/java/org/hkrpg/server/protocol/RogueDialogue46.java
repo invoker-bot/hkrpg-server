@@ -9,6 +9,7 @@ import emu.lunarcore.server.packet.*;
 import java.io.IOException;
 import java.util.*;
 import org.hkrpg.server.gameplay.RogueEventNpc;
+import org.hkrpg.server.gameplay.RogueDialogueRewards;
 
 /** Native NPC/option reads and sender are recorded in client46-rogue-dialogue-evidence.json. */
 public final class RogueDialogue46 {
@@ -24,6 +25,8 @@ public final class RogueDialogue46 {
 
   public static void persist(Scene scene) {
     var actors = active(scene);
+    for (var actor : actors)
+      if (RogueDialogueRewards.bind(scene.getPlayer(), actor.binding())) actor.markChanged();
     if (actors.stream().anyMatch(RogueEventNpc::needsPersistence)) {
       scene.getPlayer().save();
       actors.forEach(RogueEventNpc::markPersisted);
@@ -50,8 +53,8 @@ public final class RogueDialogue46 {
     for (var source : actor.options()) {
       var option = builder(session, "KDODFHMDAJI");
       set(option, "HAFOKMHCGFM", source.id());
-      // No matching 4.6 server effect rows exist in the locked resource commit.
-      // Preserve authored options as unavailable until their effects and costs are implemented.
+      set(option, "is_valid", RogueDialogueRewards.selectable(session.getPlayer(), actor, source.id()));
+      set(option, "is_selected", RogueDialogueRewards.selected(actor, source.id()));
       add(row, "KFNMIEMBJGD", option.build());
     }
     return row.build();
@@ -67,6 +70,12 @@ public final class RogueDialogue46 {
     if (session.getState() != SessionState.ACTIVE) return true;
     String name =
         query ? "GetRogueCommonDialogueDataCsReq" : "SelectRogueCommonDialogueOptionCsReq";
+    if (select && !NativeUnsignedActionWire.valid(session.getProtocol().clientSchema().message(name), bytes, 0)) {
+      var response = builder(session, "SelectRogueCommonDialogueOptionScRsp");
+      set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
+      session.sendClientPacket("SelectRogueCommonDialogueOptionScRsp", response.build().toByteArray());
+      return true;
+    }
     var request = session.getProtocol().clientSchema().parse(name, bytes);
     if (!request.getUnknownFields().asMap().isEmpty()
         || (query
@@ -83,19 +92,24 @@ public final class RogueDialogue46 {
         session.sendClientPacket("GetRogueCommonDialogueDataScRsp", response.build().toByteArray());
       } else {
         int unique = number(request, "AIAFEKGBFIF"), option = number(request, "HAFOKMHCGFM");
-        boolean owned =
+        var actor =
             actors.stream()
-                .anyMatch(
+                .filter(
                     n ->
                         n.binding().getUniqueId() == unique
-                            && n.options().stream().anyMatch(o -> o.id() == option));
+                            && n.options().stream().anyMatch(o -> o.id() == option))
+                .findFirst().orElse(null);
+        if (actor != null) persist(scene);
+        var result = actor == null ? Retcode.REQ_PARA_INVALID
+            : RogueDialogueRewards.select(session.getPlayer(), actor, option);
         var response = builder(session, "SelectRogueCommonDialogueOptionScRsp");
         set(
             response,
             "retcode",
-            (owned ? Retcode.ROGUE_STATUS_NOT_MATCH : Retcode.REQ_PARA_INVALID).getVal());
+            result.getVal());
         set(response, "AIAFEKGBFIF", unique);
         set(response, "HAFOKMHCGFM", option);
+        if (result == Retcode.SUCC) set(response, "ONOLNGOHEMF", dialogue(session, actor));
         session.sendClientPacket(
             "SelectRogueCommonDialogueOptionScRsp", response.build().toByteArray());
       }

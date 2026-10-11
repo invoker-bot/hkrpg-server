@@ -1492,6 +1492,12 @@ public class GameplayState {
   @Getter
   public static class RogueDialogue {
     private int uniqueId, site, room, group, instance, npc, dialogue, progress;
+    private RogueDialogueRewardState rewardState;
+    public RogueDialogueRewardState getRewardState() { return rewardState; }
+    void rewardState(RogueDialogueRewardState value) {
+      if (rewardState != null) throw new IllegalStateException("Event recipe already frozen");
+      rewardState = java.util.Objects.requireNonNull(value);
+    }
     protected RogueDialogue() {}
     private RogueDialogue(int uniqueId,int site,int room,int group,int instance,int npc,int dialogue,int progress) {
       this.uniqueId=uniqueId; this.site=site; this.room=room; this.group=group; this.instance=instance;
@@ -1585,6 +1591,8 @@ public class GameplayState {
     private int initialAvatarSp = -1;
     private List<Integer> offers = new ArrayList<>();
     private int selectionId;
+    private String eventRewardLease = "";
+    void eventRewardLease(String key) { eventRewardLease = java.util.Objects.requireNonNull(key); }
     private int coins = 100;
     private Set<Integer> selectionRooms = new HashSet<>();
     private Set<Integer> talents = new HashSet<>();
@@ -1939,6 +1947,33 @@ public class GameplayState {
 
     public void addCoins(int count) {
       coins = Math.addExact(coins, count);
+    }
+
+    /** Revert only the fields changed by one event reward before an acknowledged save. */
+    public void restoreEventReward(RogueRun prior) {
+      if (prior == null || !java.util.Objects.equals(runId, prior.runId)
+          || siteId != prior.siteId || roomId != prior.roomId)
+        throw new IllegalArgumentException("Foreign event reward snapshot");
+      coins = prior.coins;
+      cleared = prior.cleared;
+      blessings = prior.blessings;
+      offers = prior.offers;
+      selectionId = prior.selectionId;
+      eventRewardLease = prior.eventRewardLease;
+      offerPool = prior.offerPool;
+      offerLevels = prior.offerLevels;
+      offerWeights = prior.offerWeights;
+      offerRerollCosts = prior.offerRerollCosts;
+      offerExcluded = prior.offerExcluded;
+      offerChoiceTotal = prior.offerChoiceTotal;
+      offerChoiceIndex = prior.offerChoiceIndex;
+      offerOptionLimit = prior.offerOptionLimit;
+      offerFragmentCosts = prior.offerFragmentCosts;
+      offerEnhancementCount = prior.offerEnhancementCount;
+      offerBaseLevels = prior.offerBaseLevels;
+      offerEnhanceable = prior.offerEnhanceable;
+      offerRerolls = prior.offerRerolls;
+      resonanceSp = prior.resonanceSp;
     }
 
     protected RogueRun() {}

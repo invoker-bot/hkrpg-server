@@ -1,4 +1,4 @@
-"""原始事件房间305与NPC/选项经实际KCP/重连/H2重启；首房/钱包为隔离夹具，效果仍不可用。"""
+"""原始事件房间305与NPC/选项经实际KCP/重连/H2重启；本隔离夹具显式禁用本服奖励配方。"""
 from pathlib import Path
 import json,hashlib,os,subprocess,socket,tempfile,time,urllib.request,urllib.error
 ROOT=Path(__file__).resolve().parents[1]; source=ROOT/'resources/4.6'; artifact=ROOT/'build/libs/hkrpg-server.jar'
@@ -21,6 +21,8 @@ if os.name=='nt':subprocess.run(['powershell','-NoProfile','-NonInteractive','-C
 else:(fixture/'Config').symlink_to(source/'Config',target_is_directory=True)
 (fixture/'resource-manifest.json').write_text(json.dumps(dict(clientVersion='4.6.0',testFixture=True,originalValue=original_coins)),'utf-8')
 (directory/'data').mkdir();pool=json.loads((ROOT/'src/main/resources/defaults/RogueMapGen.json').read_text('utf-8-sig'));original_pool=pool['1'];pool['1']=[305];(directory/'data/RogueMapGen.json').write_text(json.dumps(pool),'utf-8')
+# Keep this probe focused on the unsupported-effect refusal path; the seven-site probe tests the installed recipe.
+(directory/'data/RogueDialogueRewards.json').write_text(json.dumps(dict(schema=1,eventId=40398,fragmentReward=100,enabled=False)),'utf-8')
 def free(kind=socket.SOCK_STREAM):
  with socket.socket(type=kind) as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 http,db,game=free(),free(),free(socket.SOCK_DGRAM)
@@ -58,4 +60,4 @@ for iteration in range(2):
    try:process.wait(timeout=15)
    except subprocess.TimeoutExpired:process.kill();process.wait(timeout=5)
 assert hashes=={name:hashlib.sha256((source/name).read_bytes()).hexdigest() for name in names}
-print(json.dumps(dict(passed=True,checks=['native-source-event-npc','native-original-options','native-repeat-query-stable','native-unsupported-effect-rejected','native-foreign-option-rejected','event-wallet-unchanged','event-lease-reconnect','event-lease-h2-restart'],directory=str(directory),snapshots=snapshots,sourceSha256=hashes,fixture=dict(firstRoomOnly=True,originalFirstRoomPool=original_pool,room=305,sourceRoomAndGroupUnmodified=True,initialWallet=300,originalInitialWallet=original_coins),sourceResourcesModified=False,completeEventEffects=False,clientGameplayVerified=False)))
+print(json.dumps(dict(passed=True,checks=['native-source-event-npc','native-original-options','native-repeat-query-stable','native-disabled-recipe-rejected','native-foreign-option-rejected','event-wallet-unchanged','event-lease-reconnect','event-lease-h2-restart'],directory=str(directory),snapshots=snapshots,sourceSha256=hashes,fixture=dict(firstRoomOnly=True,originalFirstRoomPool=original_pool,room=305,sourceRoomAndGroupUnmodified=True,initialWallet=300,originalInitialWallet=original_coins,serverRecipeEnabled=False),sourceResourcesModified=False,completeEventEffects=False,clientGameplayVerified=False,normalStopRecoveryVerified=False,forcedProcessTermination=True)))

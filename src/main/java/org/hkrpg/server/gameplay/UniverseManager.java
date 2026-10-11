@@ -653,6 +653,8 @@ public final class UniverseManager {
   public Retcode rerollBlessings(int batch) {
     synchronized (player) {
       var run = player.getGameplay().getRogue();
+      if (!Objects.toString(run.getEventRewardLease(), "").isEmpty())
+        return Retcode.REQ_PARA_INVALID;
       if (run.getPhase() != EXPLORING
           || (!run.getRoster().isEmpty() && !run.isInside())
           || player.isInBattle()
@@ -696,16 +698,19 @@ public final class UniverseManager {
           || !run.getOffers().contains(buff)
           || !run.validOfferLevels()
           || run.offerLevel(buff) <= 0
+          || !RogueDialogueRewards.blessingAllowed(player, selectionId, buff)
           || run.getBlessings().containsKey(buff)) return Retcode.REQ_PARA_INVALID;
       var binding =
           emu.lunarcore.data.GameData.getMazeBuffExcelMap().get(buff, run.offerLevel(buff));
       if (binding == null || binding.getID() != buff || binding.getLv() != run.offerLevel(buff))
         return Retcode.REQ_PARA_INVALID;
-      run.select(buff);
-      run.activateResonance(buff);
-      player.getGameplay().getRogueCollectedBuffs().add(buff);
-      RogueResonance.queue(run);
-      player.save();
+      if (!RogueDialogueRewards.acquireBlessing(player, selectionId, buff)) {
+        run.select(buff);
+        run.activateResonance(buff);
+        player.getGameplay().getRogueCollectedBuffs().add(buff);
+        RogueResonance.queue(run);
+        player.save();
+      }
       player.getQuestManager().onRogueHandbookProgress();
       org.hkrpg.server.protocol.Universe46.syncBlessing(player, buff, selectionId);
       org.hkrpg.server.protocol.Universe46.syncMap(player);

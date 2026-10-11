@@ -51,6 +51,7 @@ public final class RogueEventNpc extends EntityNpc {
             .getGameplay()
             .registerRogueDialogue(
                 group.getId(), info.getID(), info.getNPCID(), definition.id(), dialogue.progress());
+    if (binding != null) RogueDialogueRewards.bind(player, binding);
     return binding == null
         ? null
         : new RogueEventNpc(scene, group, info, definition, dialogue, binding);
@@ -114,6 +115,10 @@ public final class RogueEventNpc extends EntityNpc {
 
   public boolean needsPersistence() {
     return !persisted;
+  }
+
+  public void markChanged() {
+    persisted = false;
   }
 
   public void markPersisted() {

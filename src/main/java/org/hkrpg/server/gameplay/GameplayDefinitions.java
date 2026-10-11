@@ -462,6 +462,7 @@ public final class GameplayDefinitions {
     StoryLineDefinitions.load(root);
     HeartDialDefinitions.load(root);
     RogueDialogueDefinitions.load(root);
+    RogueDialogueRewards.load(root, Path.of(LunarCore.getConfig().getDataDir(), "RogueDialogueRewards.json"));
   }
 
   public static void loadMissions(Path root) {
