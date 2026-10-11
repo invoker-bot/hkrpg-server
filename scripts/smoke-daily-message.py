@@ -1,5 +1,6 @@
 """3000602 原 Phone 四分支、两日真实付款/未交付到期与正常 H2 恢复；原演出和游戏 UI 未验。"""
 import argparse
+from decimal import Decimal
 import hashlib
 import json
 import os
@@ -23,6 +24,10 @@ COMMIT = '724b139d8c9c32d12552eb95745a4fee72bfe48b'
 BRANCHES = {'202-205': (121140202, 121140205), '202-207': (121140202, 121140207),
             '203-205': (121140203, 121140205), '203-207': (121140203, 121140207)}
 EXPIRY_POINTS = ['noReplies', 'oneReply', 'bothReplies']
+G61_SOURCE_ONLY_GRAPHS = {
+    'Config/Level/NPCDialogue/P20002/F20002001_G61/DialogueMain_F20002001_G61_N400001.json',
+    'Config/Level/NPCDialogue/P20002/F20002001_G61/DialoguePack_Transferred_F20002001_G61_N400001.json',
+}
 
 
 def sha(path):
@@ -86,6 +91,48 @@ def cleanup(process, primary, normal_stop=False):
                 current_failure.add_note('Owned stdin close failed: ' + repr(close_error))
 
 
+def source_preflight(source, records, load_blob=None):
+    """Check the complete fixed original files before creating an isolated runtime."""
+    source = source.resolve()
+    def whole_object(data):
+        # Preserve JSON booleans as booleans; Python's True == 1 must not authorize altered source.
+        number = lambda value: ('json-number', Decimal(value))
+        return json.loads(data, parse_int=number, parse_float=number)
+    if load_blob is None:
+        def load_blob(relative):
+            return subprocess.run(['git', '-C', str(ROOT / 'references/TurnBasedGameData'), 'show',
+                                   COMMIT + ':' + relative], check=True, capture_output=True).stdout
+    source_only, files, guarded, historical_missing = [], {}, set(), set()
+    for record in records:
+        assert record['sourceCommit'] == COMMIT, 'Reference commit changed'
+        relative = Path(record['source']).relative_to('resources/4.6').as_posix()
+        if relative in files:
+            assert files[relative] == (record['installation'], record['sha256'], record['sourceBlobSHA256'])
+            continue
+        files[relative] = (record['installation'], record['sha256'], record['sourceBlobSHA256'])
+        origin = source / relative
+        assert origin.resolve().is_relative_to(source), 'Source path escaped the verified resource root'
+        blob = load_blob(relative)
+        assert hashlib.sha256(blob).hexdigest() == record['sourceBlobSHA256']
+        if record['installation'] == 'missing':
+            assert relative in G61_SOURCE_ONLY_GRAPHS and record['sha256'] is None
+            historical_missing.add(relative)
+            if origin.exists():
+                assert origin.is_file() and whole_object(origin.read_bytes()) == whole_object(blob), 'Installed complete G61 dialogue differs from the fixed original'
+                guarded.add(origin)
+            else:
+                source_only.append(relative)
+        else:
+            assert record['installation'] == 'present'
+            assert origin.is_file() and sha(origin) == record['sha256']
+            assert whole_object(origin.read_bytes()) == whole_object(blob)
+            guarded.add(origin)
+    assert len(files) == 39 and historical_missing == G61_SOURCE_ONLY_GRAPHS
+    assert len(source_only) in (0, 2), 'Partial G61 dialogue installation is not a complete verified source state'
+    return dict(files=files, source_only=source_only, guarded=guarded,
+                historical_source_only_status='absent' if source_only else 'complete_present_matching')
+
+
 def one(branch, at, jar, java, records, scenario, artifact):
     source = (ROOT / 'resources/4.6').resolve()
     assert sha(jar) == artifact, 'Frozen jar changed between Phone cases'
@@ -101,26 +148,9 @@ def one(branch, at, jar, java, records, scenario, artifact):
     replacements = {'ExcelOutput/MainMission.json': mains, 'ExcelOutput/DailyMissionData.json': daily,
                     'ExcelOutput/DailyActiveQuestPool.json': pool}
     guarded = {source / 'resource-manifest.json'}
-    source_only = []
-    files = {}
-    for record in records:
-        relative = Path(record['source']).relative_to('resources/4.6').as_posix()
-        if relative in files:
-            assert files[relative] == (record['installation'], record['sha256'], record['sourceBlobSHA256'])
-            continue
-        files[relative] = (record['installation'], record['sha256'], record['sourceBlobSHA256'])
-        origin = source / relative
-        blob = subprocess.run(['git', '-C', str(ROOT / 'references/TurnBasedGameData'), 'show',
-                               COMMIT + ':' + relative], check=True, capture_output=True).stdout
-        assert hashlib.sha256(blob).hexdigest() == record['sourceBlobSHA256']
-        if record['installation'] == 'missing':
-            assert not origin.exists() and record['sha256'] is None
-            source_only.append(relative)
-        else:
-            assert origin.is_file() and sha(origin) == record['sha256']
-            assert json.loads(origin.read_bytes()) == json.loads(blob)
-            guarded.add(origin)
-    assert len(files) == 39 and len(source_only) == 2
+    preflight = source_preflight(source, records)
+    source_only = preflight['source_only']
+    guarded |= preflight['guarded']
     original_folder = source / 'Config/Level/Mission/3000602'
     guarded |= {path for path in original_folder.rglob('*') if path.is_file()}
     hashes = {path.relative_to(source).as_posix(): sha(path) for path in sorted(guarded)}
@@ -345,6 +375,7 @@ def one(branch, at, jar, java, records, scenario, artifact):
         checks=sum(len(s['checks']) for s in snapshots), normalStopCount=stops,
         sameUIDNormalH2RestartCount=stops - 1, independentStoppedH2MorphiaReadCount=2 * len(h2_views),
         wireFields=wire_fields, sourceCommit=COMMIT, sourceSHA256=hashes, sourceOnlyMissingDialogueGraphs=source_only,
+        historicalSourceOnlyDialogueCurrentStatus=preflight['historical_source_only_status'],
         actualOriginalMainCreditPerCompletedPeriod=5000, actualOriginalActivePointsPerCompletedPeriod=200,
         completedPeriodCount=2 if scenario == 'settled' else 1, sourceResourcesModified=False,
         fixture=dict(isolatedAutoUnlockMissions=prerequisites, singleOriginalCatalog=[3000602],
