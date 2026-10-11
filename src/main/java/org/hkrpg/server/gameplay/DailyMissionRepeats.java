@@ -7,7 +7,7 @@ import emu.lunarcore.game.quest.QuestState;
 import java.time.Instant;
 import java.util.*;
 
-/** Only settled, stateless source talk/aggregation/travel graphs can install a fresh daily view. */
+/** Only settled source graphs with repeatable owned goals can install a fresh daily view. */
 final class DailyMissionRepeats {
   static boolean supportedGraph(int id) {
     return safeGraph(GameData.getMissionInfos().get(id));
@@ -188,9 +188,10 @@ final class DailyMissionRepeats {
     for (int end : graph.getFinishSubMissionList())
       if (!ids.contains(end) || !ends.add(end)) return false;
     for (var sub : graph.getSubMissionList()) {
+      boolean monster = DailyMissionMonsterRules.repeatable(sub);
       if (sub.getProgress() <= 0
           || sub.getSubRewardID() < 0
-          || sub.isBackTrack()
+          || sub.isBackTrack() && !monster
           || sub.getStoryTrialTask() != null
           || sub.getFinishActionList() == null
           || sub.getFinishActionList().length != 0
@@ -203,7 +204,8 @@ final class DailyMissionRepeats {
           || sub.getParamInt1() != 0
               && !"StageWin".equals(sub.getFinishType())
               && !"EnterFloor".equals(sub.getFinishType())
-          || sub.getParamInt2() != 0 && !"EnterFloor".equals(sub.getFinishType())
+              && !monster
+          || sub.getParamInt2() != 0 && !"EnterFloor".equals(sub.getFinishType()) && !monster
           || sub.getParamInt3() != 0
           || sub.getParamIntList() == null
           || sub.getTakeParamIntList() == null
@@ -225,6 +227,8 @@ final class DailyMissionRepeats {
         if (!MissionStageWins.repeatable(sub)) return false;
       } else if ("EnterFloor".equals(sub.getFinishType())) {
         if (!DailyMissionTravelRules.enterFloor(sub)) return false;
+      } else if ("KillMonster".equals(sub.getFinishType())) {
+        if (!monster) return false;
       } else if (!"SubMissionFinishCnt".equals(sub.getFinishType())
           || !"ListContain".equals(sub.getParamType())
           || !"".equals(sub.getParamStr1())

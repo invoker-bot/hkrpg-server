@@ -46,6 +46,9 @@ public class SceneEntityLoader {
         if (monsterInfo.isIsDelete() || monsterInfo.isIsClientOnly() || !monsterInfo.isLoadOnInitial()) {
             return null;
         }
+        if (!org.hkrpg.server.gameplay.DailyMissionMonsterRules.spawns(scene, group, monsterInfo)) {
+            return null;
+        }
 
         // Get excels from game data
         NpcMonsterExcel npcMonsterExcel = GameData.getNpcMonsterExcelMap().get(monsterInfo.getNPCMonsterID());

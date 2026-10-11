@@ -110,6 +110,8 @@ final class DailyMissionExpiry {
       g.getStoryActions().remove(sid);
     }
     periods.getRunDays().remove(id);
+    // Let authored groups observe the expired run's absence before assigning the same main again.
+    if (player.getScene() != null) player.getScene().refreshMissionGroups();
     return true;
   }
 
