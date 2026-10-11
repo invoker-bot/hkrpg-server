@@ -2,6 +2,7 @@ package emu.lunarcore.game.battle.skills;
 
 import com.google.gson.JsonElement;
 import emu.lunarcore.game.avatar.GameAvatar;
+import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.game.scene.entity.GameEntity;
 import java.util.List;
@@ -56,6 +57,21 @@ public final class MazeSkillInstantKillCondition extends MazeSkillAction {
 
   @Override
   public void onAttack(GameAvatar caster, List<? extends GameEntity> targets) {
+    forSelected(caster, targets, (action, target) -> action.onAttack(caster, List.of(target)));
+  }
+
+  @Override
+  public void prepareAttack(GameAvatar caster, List<? extends GameEntity> targets) {
+    forSelected(caster, targets, (action, target) -> action.prepareAttack(caster, List.of(target)));
+  }
+
+  @Override
+  public void onBattle(GameAvatar caster, List<? extends GameEntity> targets, Battle battle) {
+    forSelected(caster, targets, (action, target) -> action.onBattle(caster, List.of(target), battle));
+  }
+
+  private void forSelected(GameAvatar caster, List<? extends GameEntity> targets,
+      java.util.function.BiConsumer<MazeSkillAction, EntityMonster> callback) {
     if (caster == null || caster.getOwner() == null || targets == null) return;
     var player = caster.getOwner();
     synchronized (player) {
@@ -73,7 +89,7 @@ public final class MazeSkillInstantKillCondition extends MazeSkillAction {
         var result = MazeInstantKillTargets.evaluate(scene, monster);
         if (result.isEmpty()) continue;
         var actions = result.get() != inverse ? success : failure;
-        for (var action : actions) action.onAttack(caster, List.of(monster));
+        for (var action : actions) callback.accept(action, monster);
       }
     }
   }

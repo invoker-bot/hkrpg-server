@@ -54,7 +54,16 @@ public class BattleService extends BaseGameService {
     public MazeAttackResult resolveAttack(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
         synchronized (player) { return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters); }
     }
+    public MazeAttackResult resolveAttack(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets,
+            IntSet assistMonsters, MazeSkill.CallbackPhase phase) {
+        synchronized (player) { return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters,phase); }
+    }
     private MazeAttackResult attackLocked(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
+        // Existing non-native callers retain their established hit dispatch.
+        return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters,MazeSkill.CallbackPhase.PROJECTILE_HIT);
+    }
+    private MazeAttackResult attackLocked(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets,
+            IntSet assistMonsters, MazeSkill.CallbackPhase phase) {
         if (activityBlocksBattle(player)) {
             return MazeAttackResult.failure(Retcode.SYSTEM_BUSY);
         }
@@ -139,6 +148,10 @@ public class BattleService extends BaseGameService {
                 }
             }
 
+            if (castedSkill != null && castingAvatar != null) {
+                castedSkill.prepareAttack(castingAvatar, targets, phase);
+            }
+
             // Check if we are using a skill that doesnt trigger a battle
             if (castedSkill != null && !castedSkill.isTriggerBattle(castingAvatar)) {
                 // Apply buffs to monsters
@@ -185,6 +198,10 @@ public class BattleService extends BaseGameService {
                     return MazeAttackResult.failure(Retcode.FAIL);
                 }
 
+                if (castedSkill != null && castingAvatar != null) {
+                    castedSkill.onBattle(castingAvatar, battle);
+                }
+
                 // Add buffs to battle
                 if (castingAvatar != null) {
                     // The player is the one attacking
@@ -224,6 +241,8 @@ public class BattleService extends BaseGameService {
             }
 
             return outcomes.success(null);
+        } finally {
+            if (castedSkill != null && castingAvatar != null) castedSkill.finishAttack(castingAvatar);
         }
     }
 

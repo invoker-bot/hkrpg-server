@@ -29,6 +29,8 @@ public class Battle {
     private final Player player;
     private final PlayerLineup lineup;
     private final List<EntityMonster> npcMonsters;
+    @Getter(lombok.AccessLevel.NONE)
+    private final java.util.Map<EntityMonster, IntList> npcWaveNumbers = new java.util.IdentityHashMap<>();
     private final List<BattleMonsterWave> waves;
     private final List<GameItem> drops;
     private final Int2ObjectMap<MazeBuff> buffs;
@@ -192,6 +194,8 @@ public class Battle {
 
             // Add buffs from npc monsters
             if (npcMonster != null) {
+                this.npcWaveNumbers.computeIfAbsent(npcMonster, ignored -> new IntArrayList())
+                        .add(this.getWaves().size());
                 // Set wave custom level
                 wave.setCustomLevel(npcMonster.getCustomLevel());
 
@@ -260,6 +264,17 @@ public class Battle {
             return existing;
         }
         return addBuff(buffId, ownerIndex, waveFlag);
+    }
+
+    public boolean hasMazeSkillTarget(EntityMonster monster) {
+        return this.npcWaveNumbers.containsKey(monster);
+    }
+
+    /** OnBattle runs after construction, so bind directly to the NPC's constructed waves. */
+    public void addMazeSkillNpcBuff(EntityMonster monster, int buffId, int ownerIndex) {
+        var waveNumbers = this.npcWaveNumbers.get(monster);
+        if (waveNumbers == null) return;
+        for (int waveNumber : waveNumbers) addNpcWaveBuff(buffId, ownerIndex, waveNumber);
     }
 
     public boolean hasBuff(int buffId) {

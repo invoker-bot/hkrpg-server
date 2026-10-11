@@ -2,6 +2,8 @@ package emu.lunarcore.game.battle.skills;
 
 import emu.lunarcore.data.excel.AvatarExcel;
 import emu.lunarcore.game.avatar.GameAvatar;
+import emu.lunarcore.game.battle.Battle;
+import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.game.scene.entity.GameEntity;
 import emu.lunarcore.proto.MotionInfoOuterClass.MotionInfo;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -23,6 +25,13 @@ public class MazeSkill {
   private Set<String> explicitDefaultAdventureModifiers;
 
   @Setter private boolean triggerBattle;
+  @Setter private boolean projectileDeclared;
+
+  public enum CallbackPhase {
+    DIRECT,
+    PROJECTILE_HIT,
+    PROJECTILE_LIFETIME_FINISH
+  }
 
   public MazeSkill(AvatarExcel excel, int index) {
     this(excel, index, "");
@@ -84,6 +93,8 @@ public class MazeSkill {
     private final MazeSkill skill;
     private final Set<String> modifiers;
     private boolean triggerBattle;
+    private CallbackPhase phase = CallbackPhase.PROJECTILE_HIT;
+    private final List<BattleCallback> battleCallbacks = new ArrayList<>();
 
     private CastMetadata(MazeSkill skill) {
       this.skill = skill;
@@ -96,6 +107,49 @@ public class MazeSkill {
         this.modifiers.addAll(skill.explicitDefaultAdventureModifiers);
       }
       this.triggerBattle = skill.triggerBattle;
+    }
+  }
+
+  private record BattleCallback(List<MazeSkillAction> actions, List<? extends GameEntity> targets) {}
+
+  CallbackPhase callbackPhase(GameAvatar caster) {
+    var metadata = metadata(caster, false);
+    return metadata == null ? CallbackPhase.DIRECT : metadata.phase;
+  }
+
+  void deferBattle(GameAvatar caster, List<MazeSkillAction> actions, List<? extends GameEntity> targets) {
+    if (caster != null && !actions.isEmpty()) {
+      metadata(caster, false).battleCallbacks.add(new BattleCallback(actions, List.copyOf(targets)));
+    }
+  }
+
+  /** One actual attack request owns its phase and deferred callbacks. */
+  public void prepareAttack(GameAvatar caster, List<? extends GameEntity> targets, CallbackPhase phase) {
+    var metadata = metadata(caster, false);
+    if (metadata == null) return;
+    metadata.phase = java.util.Objects.requireNonNull(phase);
+    metadata.battleCallbacks.clear();
+    for (var action : attackActions) action.prepareAttack(caster, targets);
+  }
+
+  public void finishAttack(GameAvatar caster) {
+    var metadata = metadata(caster, false);
+    if (metadata == null) return;
+    metadata.battleCallbacks.clear();
+    metadata.phase = CallbackPhase.PROJECTILE_HIT;
+  }
+
+  public void onBattle(GameAvatar caster, Battle battle) {
+    if (caster == null || battle == null || battle.getPlayer() != caster.getOwner()) return;
+    var metadata = metadata(caster, false);
+    var callbacks = List.copyOf(metadata.battleCallbacks);
+    metadata.battleCallbacks.clear();
+    for (var callback : callbacks) {
+      var targets = callback.targets().stream()
+          .filter(target -> target instanceof EntityMonster monster && battle.hasMazeSkillTarget(monster))
+          .toList();
+      if (targets.isEmpty()) continue;
+      for (var action : callback.actions()) action.onBattle(caster, targets, battle);
     }
   }
 

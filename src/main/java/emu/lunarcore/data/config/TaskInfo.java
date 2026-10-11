@@ -35,6 +35,8 @@ public class TaskInfo {
     private com.google.gson.JsonElement ModifyFunction;
     private com.google.gson.JsonElement ModifyValue;
     private com.google.gson.JsonElement SpecifyTargetType;
+    private com.google.gson.JsonElement Projectile;
+    private com.google.gson.JsonElement NewProjectile;
     private List<String> TriggerNames;
     // Other task kinds use a string in this same field (for example LookAt).
     private com.google.gson.JsonElement TargetType;
@@ -53,6 +55,27 @@ public class TaskInfo {
 
     public boolean IsClientOnly() {
         return this.IsClientOnly;
+    }
+
+    /** A source-owned projectile body, never a declaration supplied by a client request. */
+    public boolean hasProjectileDeclaration() {
+        var body = "RPG.GameCore.AdventureFireProjectile".equals($type) ? Projectile
+                : "RPG.GameCore.NewAdventureFireProjectile".equals($type) ? NewProjectile : null;
+        if (body == null || !body.isJsonObject()) return false;
+        if ("RPG.GameCore.AdventureFireProjectile".equals($type)) {
+            // ProjectileData is concrete in 4.6: original records have Behavior, not $type.
+            var behavior = body.getAsJsonObject().get("Behavior");
+            return behavior != null && behavior.isJsonPrimitive() && behavior.getAsJsonPrimitive().isString()
+                    && java.util.Set.of("Unknow", "Linear", "RandomTrace", "Boomerang", "HalfBoomerang",
+                        "Parabola", "Bezier", "BGCurvePrefab", "LinearWithHitDetect", "FollowWithDetect",
+                        "Static", "Bouncy", "HalfBoomerangWithDetect", "TraceWithDetect",
+                        "BGCurvePrefabWithDetect", "CameraForwardWithDetect", "ClimbableLinearWithHitDetect")
+                        .contains(behavior.getAsString());
+        }
+        var type = body.getAsJsonObject().get("$type");
+        return type != null && type.isJsonPrimitive() && type.getAsJsonPrimitive().isString()
+                && type.getAsString().startsWith("RPG.GameCore.")
+                && type.getAsString().length() > "RPG.GameCore.".length();
     }
 
     public int getLifeTime() {

@@ -1,0 +1,224 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "descriptorSHA256": "a9de1824e9892e236d7ce0f2d19f5531ffb259c125c4d22da89dfb7ac23c08fd",
+  "types": {
+    "AdventureTriggerAttack": {
+      "typeIndex": 20207,
+      "fields": {
+        "TriggerBattle": {
+          "offset": 40,
+          "kind": 2
+        },
+        "TriggerBattleDelay": {
+          "offset": 44,
+          "kind": 12
+        },
+        "OnAttack": {
+          "offset": 72,
+          "kind": 29
+        },
+        "OnBattle": {
+          "offset": 80,
+          "kind": 29
+        }
+      },
+      "constants": {}
+    },
+    "AdventureFireProjectileBase": {
+      "typeIndex": 20209,
+      "fields": {
+        "OnProjectileHit": {
+          "offset": 32,
+          "kind": 29
+        },
+        "OnProjectileLifetimeFinish": {
+          "offset": 40,
+          "kind": 29
+        },
+        "WaitProjectileFinish": {
+          "offset": 48,
+          "kind": 2
+        }
+      },
+      "constants": {}
+    },
+    "AdventureFireProjectile": {
+      "typeIndex": 20210,
+      "fields": {
+        "Projectile": {
+          "offset": 64,
+          "kind": 18,
+          "typeIndex": 15655
+        }
+      },
+      "constants": {}
+    },
+    "NewAdventureFireProjectile": {
+      "typeIndex": 20211,
+      "fields": {
+        "NewProjectile": {
+          "offset": 64,
+          "kind": 18,
+          "typeIndex": 15656
+        }
+      },
+      "constants": {}
+    },
+    "ProjectileData": {
+      "typeIndex": 15655,
+      "fields": {
+        "Behavior": {
+          "offset": 24,
+          "kind": 17,
+          "typeIndex": 15651
+        },
+        "MaxLifeTime": {
+          "offset": 76,
+          "kind": 12
+        }
+      },
+      "constants": {}
+    },
+    "ProjectileMoveBehavior": {
+      "typeIndex": 15651,
+      "fields": {},
+      "constants": {
+        "Unknow": 0,
+        "Linear": 1,
+        "RandomTrace": 2,
+        "Boomerang": 3,
+        "HalfBoomerang": 4,
+        "Parabola": 5,
+        "Bezier": 6,
+        "BGCurvePrefab": 7,
+        "LinearWithHitDetect": 8,
+        "FollowWithDetect": 9,
+        "Static": 10,
+        "Bouncy": 11,
+        "HalfBoomerangWithDetect": 12,
+        "TraceWithDetect": 13,
+        "BGCurvePrefabWithDetect": 14,
+        "CameraForwardWithDetect": 15,
+        "ClimbableLinearWithHitDetect": 16
+      }
+    },
+    "NAOKFLDEDBJ": {
+      "typeIndex": 54757,
+      "fields": {
+        "<OnProjectileHit>k__BackingField": {
+          "offset": 64,
+          "kind": 18,
+          "typeIndex": 54752
+        },
+        "<OnProjectileLifetimeFinish>k__BackingField": {
+          "offset": 112,
+          "kind": 18,
+          "typeIndex": 54753
+        },
+        "<EnsureCallbackOrder>k__BackingField": {
+          "offset": 230,
+          "kind": 2
+        }
+      },
+      "constants": {}
+    },
+    "INBDPGBJIFA": {
+      "typeIndex": 33980,
+      "fields": {
+        "GHLJCNJGGKE": {
+          "offset": 24,
+          "kind": 21
+        }
+      },
+      "constants": {
+        "HKNDKELEGHC": 11
+      }
+    },
+    "MEEPKFKOAHA": {
+      "typeIndex": 33883,
+      "fields": {},
+      "constants": {
+        "BIJPFBEMNIA": 0,
+        "GPFIPODCKBD": 1,
+        "BGGAIDCMDLM": 2
+      }
+    }
+  },
+  "methods": [
+    {
+      "index": 635460,
+      "name": "PHBADCBNPAK",
+      "rva": "0xd9c4ce0",
+      "typeIndex": 69368,
+      "instructions": [
+        "d9c4d27: mov rcx, qword ptr [rip - 0x45e7aae]",
+        "d9c4f36: mov rdx, qword ptr [r14 + 0x18]",
+        "d9c4f3f: mov rcx, qword ptr [r12 + 0x18]",
+        "d9c4f54: call 0x19878a080",
+        "d9c5100: mov dx, 0x5b4",
+        "d9c510a: call 0x18d9912e0"
+      ]
+    },
+    {
+      "index": 232553,
+      "name": ".cctor",
+      "rva": "0x1e691740",
+      "typeIndex": 33980,
+      "instructions": [
+        "1e69189c: mov ecx, 0x5a",
+        "1e6918aa: call 0x1967cddb0",
+        "1e6918b6: mov qword ptr [rcx + 0x53248], rax"
+      ]
+    },
+    {
+      "index": 232578,
+      "name": "WriteTo",
+      "rva": "0x1e690a10",
+      "typeIndex": 33980,
+      "instructions": [
+        "1e690c2d: mov rcx, qword ptr [rdi + 0x18]",
+        "1e690c41: mov r8, qword ptr [rax + 0x53248]",
+        "1e690c52: call 0x198789b20"
+      ]
+    },
+    {
+      "index": 552535,
+      "name": "TrySendSceneCastSkillCsReq",
+      "rva": "0xc603fc0",
+      "typeIndex": 60117,
+      "instructions": [
+        "c604177: call 0x18d9c4ce0"
+      ]
+    },
+    {
+      "index": 535806,
+      "name": "NCJNHOFJNCF",
+      "rva": "0xbc106a0",
+      "typeIndex": 57922,
+      "instructions": [
+        "bc110ac: call 0x18c603fc0"
+      ]
+    },
+    {
+      "index": 509577,
+      "name": ".ctor",
+      "rva": "0xbaa38b0",
+      "typeIndex": 54757,
+      "instructions": [
+        "baa3a0c: mov qword ptr [rsi + 0x40], rcx",
+        "baa3a15: mov qword ptr [rsi + 0x70], rcx"
+      ]
+    }
+  ],
+  "typeSlots": [
+    {
+      "slot": "0x93dd280",
+      "typeIndex": 33980
+    }
+  ],
+  "boundary": "只读布局、独立回调容器、原生请求发送与字段11序列化；未验证官方客户端动作画面、实际回调派发和多包秘技MP时序。"
+}

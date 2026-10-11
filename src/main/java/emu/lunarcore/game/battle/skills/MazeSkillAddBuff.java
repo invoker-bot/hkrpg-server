@@ -1,6 +1,7 @@
 package emu.lunarcore.game.battle.skills;
 
 import emu.lunarcore.game.avatar.GameAvatar;
+import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.scene.SceneBuff;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.game.scene.entity.GameEntity;
@@ -98,6 +99,20 @@ public class MazeSkillAddBuff extends MazeSkillAction {
         // Set as temp buff
         monster.addTempBuff(new SceneBuff(caster.getAvatarId(), buffId));
       }
+    }
+  }
+
+  @Override
+  public void onBattle(GameAvatar caster, List<? extends GameEntity> targets, Battle battle) {
+    if (casterTarget) {
+      onCast(caster, null);
+      return;
+    }
+    if (!canApply(caster) || getLifetime(caster).isEmpty()) return;
+    int owner = battle.getLineup().indexOf(caster.getAvatarId());
+    if (owner < 0) return;
+    for (var target : targets) {
+      if (target instanceof EntityMonster monster) battle.addMazeSkillNpcBuff(monster, buffId, owner);
     }
   }
 

@@ -3,6 +3,7 @@ package org.hkrpg.server.protocol;
 import static org.hkrpg.server.protocol.Gameplay46.*;
 
 import com.google.protobuf.DynamicMessage;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import emu.lunarcore.game.battle.skills.MazeSkill;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus;
@@ -64,6 +65,8 @@ final class Battle46 {
         attacked = number(req, "attacked_by_entity_id"),
         index = number(req, "skill_index");
     Retcode error = Retcode.SUCC;
+    var phase = callbackPhase(req);
+    if (phase == null) error = Retcode.REQ_PARA_INVALID;
     var scene = player.getScene();
     var hits = new IntLinkedOpenHashSet();
     var assists = new IntLinkedOpenHashSet();
@@ -76,6 +79,7 @@ final class Battle46 {
             "skill_index",
             "maze_ability_str",
             "target_motion",
+            "skill_extra_tags",
             "hit_target_entity_id_list",
             "assist_monster_entity_id_list",
             "assist_monster_entity_info")) error = Retcode.REQ_PARA_INVALID;
@@ -135,6 +139,8 @@ final class Battle46 {
     if (error == Retcode.SUCC
         && !abilityName.isEmpty()
         && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
+    if (error == Retcode.SUCC && phase != MazeSkill.CallbackPhase.DIRECT
+        && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
     if (error == Retcode.SUCC && player.getGameplay().getStoryLines().isTransitionPending())
       error = Retcode.SYSTEM_BUSY;
     if (error == Retcode.SUCC && scene.getAvatarEntityIds().contains(caster)) {
@@ -146,6 +152,8 @@ final class Battle46 {
         if (index == 1 && avatar.isMazeSkillLocked()) error = Retcode.REQ_PARA_INVALID;
         else if (skill == null) error = Retcode.REQ_PARA_INVALID;
         else if (!abilityName.isEmpty() && !abilityName.equals(skill.getAbilityName()))
+          error = Retcode.REQ_PARA_INVALID;
+        else if (phase != MazeSkill.CallbackPhase.DIRECT && !skill.isProjectileDeclared())
           error = Retcode.REQ_PARA_INVALID;
         else if (index == 1 && avatar.getActorId() != 1308 && player.getCurrentLineup().getMp() < 1)
           error = Retcode.MAZE_MP_NOT_ENOUGH;
@@ -169,7 +177,7 @@ final class Battle46 {
       return;
     }
     if (hits.isEmpty()) hits.addAll(assists);
-    var result = s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists);
+    var result = s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists, phase);
     var response = builder(s, "SceneCastSkillScRsp");
     set(response, "retcode", result.retcode().getVal());
     set(response, "cast_entity_id", cast);
@@ -185,6 +193,20 @@ final class Battle46 {
       add(response, "monster_battle_info", row.build());
     }
     s.sendClientPacket("SceneCastSkillScRsp", response.build().toByteArray());
+  }
+
+  private static MazeSkill.CallbackPhase callbackPhase(DynamicMessage request) {
+    @SuppressWarnings("unchecked")
+    var tags = (List<EnumValueDescriptor>) value(request, "skill_extra_tags");
+    if (tags.isEmpty()) return MazeSkill.CallbackPhase.DIRECT;
+    // Each request describes one event. Duplicate and contradictory tags are not two callbacks.
+    if (tags.size() != 1) return null;
+    return switch (tags.getFirst().getName()) {
+      case "SCENE_CAST_SKILL_NONE" -> MazeSkill.CallbackPhase.DIRECT;
+      case "SCENE_CAST_SKILL_PROJECTILE_HIT" -> MazeSkill.CallbackPhase.PROJECTILE_HIT;
+      case "SCENE_CAST_SKILL_PROJECTILE_LIFETIME_FINISH" -> MazeSkill.CallbackPhase.PROJECTILE_LIFETIME_FINISH;
+      default -> null;
+    };
   }
 
   private Battle46() {}

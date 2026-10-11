@@ -1,6 +1,7 @@
 package emu.lunarcore.game.battle.skills;
 
 import emu.lunarcore.game.avatar.GameAvatar;
+import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.scene.entity.GameEntity;
 import emu.lunarcore.proto.MotionInfoOuterClass.MotionInfo;
 import java.util.List;
@@ -72,5 +73,15 @@ public final class MazeSkillBuffCondition extends MazeSkillAction {
   @Override
   public void onAttack(GameAvatar caster, List<? extends GameEntity> targets) {
     for (var action : select(caster)) action.onAttack(caster, targets);
+  }
+
+  @Override
+  public void prepareAttack(GameAvatar caster, List<? extends GameEntity> targets) {
+    for (var action : select(caster)) action.prepareAttack(caster, targets);
+  }
+
+  @Override
+  public void onBattle(GameAvatar caster, List<? extends GameEntity> targets, Battle battle) {
+    for (var action : select(caster)) action.onBattle(caster, targets, battle);
   }
 }

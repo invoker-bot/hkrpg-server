@@ -1,6 +1,7 @@
 package emu.lunarcore.game.battle.skills;
 
 import emu.lunarcore.game.avatar.GameAvatar;
+import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.scene.entity.GameEntity;
 import emu.lunarcore.proto.MotionInfoOuterClass.MotionInfo;
 import java.util.List;
@@ -32,6 +33,11 @@ public final class MazeSkillDestroySummonUnit extends MazeSkillAction {
 
   @Override
   public void onAttack(GameAvatar caster, List<? extends GameEntity> targets) {
+    destroy(caster);
+  }
+
+  @Override
+  public void onBattle(GameAvatar caster, List<? extends GameEntity> targets, Battle battle) {
     destroy(caster);
   }
 }

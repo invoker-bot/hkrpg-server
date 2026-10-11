@@ -52,6 +52,7 @@ public class SkillAbilityInfo {
 
             // Parse tasks
             for (TaskInfo task : ability.getOnStart()) {
+                collectProjectileDeclaration(skill, task);
                 parseTask(skill, actionList, task);
             }
         }
@@ -67,6 +68,11 @@ public class SkillAbilityInfo {
 
     private void parseTask(MazeSkill skill, List<MazeSkillAction> actionList,
             List<MazeSkillAction> attackActions, TaskInfo task, boolean conditional) {
+        parseTask(skill, actionList, attackActions, task, conditional, false);
+    }
+
+    private void parseTask(MazeSkill skill, List<MazeSkillAction> actionList,
+            List<MazeSkillAction> attackActions, TaskInfo task, boolean conditional, boolean projectileCallback) {
         // A known task owns its callbacks. Unknown containers cannot grant their success leaves.
         if (task == null || task.getType() == null || task.IsClientOnly()) return;
         if ("RPG.GameCore.PredicateTaskList".equals(task.getType())) {
@@ -78,10 +84,10 @@ public class SkillAbilityInfo {
             var successAttack = new java.util.ArrayList<MazeSkillAction>();
             var failureAttack = new java.util.ArrayList<MazeSkillAction>();
             if (task.getSuccessTaskList() != null) {
-                for (var child : task.getSuccessTaskList()) parseTask(skill, success, successAttack, child, true);
+                for (var child : task.getSuccessTaskList()) parseTask(skill, success, successAttack, child, true, projectileCallback);
             }
             if (task.getFailedTaskList() != null) {
-                for (var child : task.getFailedTaskList()) parseTask(skill, failure, failureAttack, child, true);
+                for (var child : task.getFailedTaskList()) parseTask(skill, failure, failureAttack, child, true, projectileCallback);
             }
             actionList.add(targetInverse.isPresent()
                     ? new MazeSkillInstantKillCondition(targetInverse.get(), success, failure)
@@ -160,31 +166,52 @@ public class SkillAbilityInfo {
         } else if ("RPG.GameCore.AdventureSetAttackTargetMonsterDie".equals(task.getType())) {
             actionList.add(new MazeSkillSetAttackTargetMonsterDie());
         } else if ("RPG.GameCore.AdventureTriggerAttack".equals(task.getType())) {
-            if (skill.getIndex() == 2) {
+            if (skill.getIndex() == 2 && !projectileCallback) {
                 if (!conditional) skill.setTriggerBattle(task.isTriggerBattle());
                 else if (!task.IsClientOnly()) actionList.add(new MazeSkillMetadata(skill, task.isTriggerBattle()));
             }
-            if (task.getOnAttack() != null) {
-                for (TaskInfo t : task.getOnAttack()) {
-                    parseTask(skill, attackActions, attackActions, t, conditional);
-                }
+            var attack = parseCallbacks(skill, task.getOnAttack(), projectileCallback);
+            var battle = parseCallbacks(skill, task.getOnBattle(), projectileCallback);
+            attackActions.add(new MazeSkillTriggerAttack(skill, task.isTriggerBattle(), projectileCallback, attack, battle));
+        } else if ("RPG.GameCore.AdventureFireProjectile".equals(task.getType())
+                || "RPG.GameCore.NewAdventureFireProjectile".equals(task.getType())) {
+            var hit = parseCallbacks(skill, task.getOnProjectileHit(), true);
+            var finish = parseCallbacks(skill, task.getOnProjectileLifetimeFinish(), true);
+            attackActions.add(new MazeSkillProjectileCallbacks(skill, hit, finish));
+        }
+    }
+
+    private List<MazeSkillAction> parseCallbacks(MazeSkill skill, List<TaskInfo> tasks, boolean projectileCallback) {
+        var actions = new java.util.ArrayList<MazeSkillAction>();
+        if (tasks != null) {
+            for (var task : tasks) parseTask(skill, actions, actions, task, true, projectileCallback);
+        }
+        return actions;
+    }
+
+    private void collectProjectileDeclarations(MazeSkill skill, List<TaskInfo> tasks) {
+        if (tasks != null) for (var task : tasks) collectProjectileDeclaration(skill, task);
+    }
+
+    private void collectProjectileDeclaration(MazeSkill skill, TaskInfo task) {
+        if (task == null || task.getType() == null || task.IsClientOnly()) return;
+        // A declaration under an unsupported predicate is still source-owned. Its leaves remain
+        // unsupported: this scan never grants actions or evaluates a predicate as successful.
+        switch (task.getType()) {
+            case "RPG.GameCore.PredicateTaskList" -> {
+                collectProjectileDeclarations(skill, task.getSuccessTaskList());
+                collectProjectileDeclarations(skill, task.getFailedTaskList());
             }
-            if (task.getOnBattle() != null) {
-                for (TaskInfo t : task.getOnBattle()) {
-                    parseTask(skill, attackActions, attackActions, t, conditional);
-                }
+            case "RPG.GameCore.AdventureTriggerAttack" -> {
+                collectProjectileDeclarations(skill, task.getOnAttack());
+                collectProjectileDeclarations(skill, task.getOnBattle());
             }
-        } else if ("RPG.GameCore.AdventureFireProjectile".equals(task.getType())) {
-            if (task.getOnProjectileHit() != null) {
-                for (TaskInfo t : task.getOnProjectileHit()) {
-                    parseTask(skill, attackActions, attackActions, t, conditional);
-                }
+            case "RPG.GameCore.AdventureFireProjectile", "RPG.GameCore.NewAdventureFireProjectile" -> {
+                if (task.hasProjectileDeclaration()) skill.setProjectileDeclared(true);
+                collectProjectileDeclarations(skill, task.getOnProjectileHit());
+                collectProjectileDeclarations(skill, task.getOnProjectileLifetimeFinish());
             }
-            if (task.getOnProjectileLifetimeFinish() != null) {
-                for (TaskInfo t : task.getOnProjectileLifetimeFinish()) {
-                    parseTask(skill, attackActions, attackActions, t, conditional);
-                }
-            }
+            default -> { }
         }
     }
 
