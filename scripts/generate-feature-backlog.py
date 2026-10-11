@@ -1104,6 +1104,69 @@ for _boxing_request46 in (
     _boxing_row46["tests"] = list(dict.fromkeys(_boxing_row46["tests"] + _boxing_story_tests46))
     _boxing_row46["gap"] = "两季七个原始剧情通关目标、四个缺省接取起始目标与BoxClub2Hide动作接入；第二季冻结接取绑定随真实三轮通关保存，避免旧成绩/替换任务借用，并支持已存通关后的目标恢复。20份Git原件/26个完整对象、126项Java/5项Python及原生/重启边界见docs/boxing-club-mission-goals-4.6.md。完整电话/NPC/演出脚本、官方入场、动作输入及游戏UI仍待完成。历史批次：" + _boxing_row46["gap"]
 
+def append_review(names, evidence, description):
+    """保留既有入口证据，并明确区分有限新增行为与整个玩法。"""
+    for name in names:
+        row = REVIEWED[name]
+        row['tests'] = list(dict.fromkeys(row['tests'] + evidence))
+        row['gap'] = description + ' 历史验证范围：' + row['gap']
+
+
+append_review(
+    ('SceneCastSkillCsReq', 'GetCurBattleInfoCsReq', 'PVEBattleResultCsReq'),
+    ['src/test/java/org/hkrpg/server/gameplay/MazeCallbackPhases46Test.java',
+     'scripts/inspect-maze-callback-phases-client.py', 'scripts/smoke-maze-callback-phases.py',
+     'docs/maze-callback-phases-46.md'],
+    '原始投射物命中/寿命结束和实际准入OnBattle已接入；13项中7项行为先失败，'
+    '冻结产物92原生请求/90检查、16施放/11来源战斗通过。多包施放身份、'
+    '组合标签与MP生命周期、完整战斗动作和真实客户端仍待补齐。')
+
+append_review(
+    ('GetMissionStatusCsReq', 'FinishTalkMissionCsReq', 'GetDailyActiveInfoCsReq'),
+    ['src/test/java/org/hkrpg/server/gameplay/DailyMissionMonster46Test.java',
+     'scripts/tests/test_daily_killmonster_sources.py',
+     'scripts/tests/test_daily_killmonster_drops_sources.py',
+     'docs/daily-monster-4.6.md', 'docs/daily-monster-drop-source-4.6.md'],
+    '三条原击怪日常及同场景旧轮未交付到期已有服务端闭环；577原生请求/463检查、'
+    '12正常停服/8同UID H2恢复通过，每轮原5000信用点/200活跃度防重保持。'
+    '普通36信用为既有本服掉落算法，21条完整原掉落证明不代表官方数量公式。'
+    '其他日常、客户端演出和真实墙钟跨日仍待完成。')
+
+append_review(
+    ('GetQuestDataCsReq', 'FinishQuestCsReq', 'TakeQuestRewardCsReq'),
+    ['src/test/java/org/hkrpg/server/protocol/CavalryActivity46Test.java',
+     'scripts/inspect-cavalry-beast-sources.py', 'scripts/inspect-cavalry-quest-client.py',
+     'scripts/tests/test_smoke_cavalry_guard.py', 'scripts/smoke-cavalry-beast.py',
+     'docs/cavalry-beast-46.md'],
+    '原骑兽6029860仅消费原Town加载NPC/组/实例及有效窗口；接取身份与来源收据保存后'
+    '按原20星琼/213×4领奖。104项专项及旧B的96项纯行为失败基线、C原生49请求/74检查、'
+    '3正常停服/2同UID H2恢复通过；实际骑乘输入、Raid摆放与整个活动/UI仍待验收。')
+
+append_review(
+    ('GetNpcStatusCsReq', 'GetNpcMessageGroupCsReq', 'GetMissionMessageCsReq',
+     'FinishItemIdCsReq', 'FinishSectionIdCsReq', 'GetMissionStatusCsReq',
+     'FinishTalkMissionCsReq', 'GetDailyActiveInfoCsReq'),
+    ['src/test/java/org/hkrpg/server/gameplay/DailyMissionMessage46Test.java',
+     'scripts/tests/test_daily_message_sources.py', 'scripts/tests/test_smoke_daily_message_guard.py',
+     'scripts/smoke-daily-message.py', 'docs/daily-message-3000602-4.6.md'],
+    '原消息日常3000602每轮绑定接取日和主/子观察身份，隔日原Talk/两次回复/最终提交，'
+    '不借用全局旧历史。35项中16项纯行为先失败，35专项全绿；D原生615请求/728检查、'
+    '24正常停服/17同UID H2恢复、24只读MVStore/48独立Player读通过，'
+    '每轮5000信用/200活跃度及未交付旧轮零奖励。完整NPC初遇/演出、其他短信日常、'
+    '真实墙钟跨日与客户端仍待完成。')
+
+append_review(
+    ('GetRogueShopMiracleInfoCsReq', 'BuyRogueShopMiracleCsReq', 'EnterRogueMapRoomCsReq'),
+    ['src/test/java/org/hkrpg/server/protocol/UniverseRestMerchantRecipe46Test.java',
+     'scripts/smoke-rogue-rest-merchants.py', 'docs/rogue-rest-merchants-4.6.md',
+     'scripts/tests/test_client46_rogue_rest_graphs.py',
+     'scripts/recover-client-rogue-rest-graphs.py', 'docs/rogue-rest-graphs-4.6.md'],
+    '原首世界休息区的可关闭本服奇物采购配方已有43项场景回归及B原生156请求、'
+    '4正常停服/3同UID H2恢复；完整Floor.onLoad源校验保持。四份G22/G34客户端原图'
+    '与固定完整原件一致，97相关Python和13完整本机函数通过；原菜单仅强化/退出，'
+    '本服配方默认关闭，原奇物商店的Chess/DLC真实入口和游戏UI仍待补齐。')
+
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}

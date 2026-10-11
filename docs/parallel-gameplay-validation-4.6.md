@@ -41,3 +41,20 @@
 首世界休息区奇物采购在同一产物A的42项场景回归通过后，隔离原生请求发现真实FloorInfo.onLoad会清除一个门框ValueSource，导致完整组校验拒绝合法原NPC。新增第43项使用完整原楼层/索引18/post-load先实际失败，再通过既有onLoad规范化源组修复，保留完整树与磁盘来源校验。修复产物B为 `build/rest-merchant-floorload-runtime.jar`，SHA256为 `04cf130bc0ddb6d19f8ea5b8492c8d4ad45bdd08d47303bc9838ec6978698e8b`；B的36类735项定向回归及shadowJar已通过（`build/rest-merchant-floorload-green-tests/test`）。A的13,304项不能作为B修改后的全量验收；B的购买/H2恢复已另行通过：`build/rogue-rest-merchants-floorload-native.json` 的6快照、156请求、26次拒绝、4正常停服和3同UID H2恢复；4次只读H2检查含8次独立Player读取。原七站/G22、原事件祝福612143和最终首领结算均实际核对，钱包258→58只扣一次200，奇物UUID/库存/图鉴/收据跨恢复保持；2,273份来源资源字节不变。该结果使用B，故单列、不混入上表A的数量。本服追加商店配方默认关闭，原G22/N1013客户端菜单只有强化及退出，不据此声称原始奇物商店UI已接通。
 
 分项规则见 [回调](maze-callback-phases-46.md)、[击怪日常](daily-monster-4.6.md) 和 [追加商店](rogue-rest-merchants-4.6.md)。功能目录继续记录partial。
+
+
+## 第三批：原骑兽目标、每轮独立手机日常与休息区完整图
+
+本批完整 `scripts/build.ps1 -RerunTests` 实际通过492类、13,444项，失败/错误/跳过为零，用时22分56秒；完整XML为 `build/cavalry-phone-full-tests/test`，证据为 `build/cavalry-phone-full-verification.json`。完整期间2,494份编译输入前后未变，验收产物D为 `build/cavalry-phone-runtime.jar`，SHA256 `8d81c933127d7f62b8c022051d5b1d8dd4d8a1a30a4ec917134109c3fd8d7412`。
+
+骑兽目标6029860按原Town/Floor/维度/加载NPC与骑兽标签验证915，保存原接取身份和来源收据，再由原预约领奖路径发放20星琼与物品213×4。104项专项通过；修正夹具后的旧B基线有96项纯行为断言失败。骑兽网络验收使用独立产物C `build/cavalry-beast-runtime.jar`，SHA256 `1bffb1356ea7a719675d06eee8ffe6ea5cb618d507a414bf6239bd61e412f58a`，49请求/74检查、3正常停服/2同UID H2恢复，3次只读存档检查；另1次明确前置补齐不能计作只读。C的原NPC与20/4实际库存防重证据不混入D的网络数量。
+
+原始消息日常3000602绑定每个接受日与主/子任务观察身份，保留全局旧历史，隔日重做原Talk、两次真实回复及最终提交。旧B的35项基线有16项纯行为断言失败；原Plane20002实际为Maze，修正该错误限制后35项全部通过。D的四条回复路径及未回复/一次回复/两次回复未提交三个到期案例共615请求/728检查/35快照、24正常停服/17同UID H2恢复；24次只读MVStore检查含48次独立Morphia Player读取。旧轮零奖励、新轮5000信用点/200活跃度、完成时间、接取UUID、归档和防重均来自实际保存。
+
+根集成独立逐份比较七个目录的探针日志、24份正常停止日志、实际h2-check文件与报告；审计为 `build/cavalry-phone-native-root-audit.json`。HTTP认证/存储的D检查为 `build/cavalry-phone-dispatch-summary.json`，两轮通过且账户恢复；该旧脚本终止进程，不能计作正常停服。70,616份原运营配置/资源逐字不变（`build/cavalry-phone-operator-audit.json`）。本批22项Python来源/脚本保护检查通过，3,557源码文件与151份冻结协议检查通过。
+
+原G22/G34的四份完整休息区原图独立恢复并与固定Git原件相等：97项相关Python通过，本机13个完整函数、7类型/5任务分支/1谓词，以及枚举双zigzag32消费已核对。原菜单仍为强化与退出，不能称原奇物商店入口已接通；工具不安装脚本、不执行客户端DLL。证据 `build/rogue-rest-graphs-root-verified.json`，分项见 [休息区完整原图](rogue-rest-graphs-4.6.md)。
+
+全部新增运行代码为Java21本项目实现，固定资源来源 `TurnBasedGameData@724b139d8c9c32d12552eb95745a4fee72bfe48b`；未引入未知许可运行代码、未修改生成协议或版本号。隔离账号/资格/运营窗口/时钟均明确为夹具，原目标、回复、任务完成与奖励未预写。实际骑乘输入、手机客户端与NPC演出、其他剧情/宇宙/活动、真实墙钟跨日及断电原子性仍待完成或验收，功能状态保持partial。
+
+分项说明见 [骑兽](cavalry-beast-46.md) 与 [手机日常](daily-message-3000602-4.6.md)。
