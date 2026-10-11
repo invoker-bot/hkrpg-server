@@ -43,6 +43,16 @@ public final class MazeCastState {
         && cast.metadata != null && cast.metadata.hasAdventureModifier(modifier));
   }
 
+  /** The actual base release and its still-current source buff, without inferring prepayment. */
+  public boolean hasReleasedBuffOrigin(GameSession current, GameAvatar caster, MazeSkill origin,
+      int index, int buff) {
+    bindSession(current);
+    long expiry = caster.getBuffs().get(buff);
+    if (expiry <= System.currentTimeMillis()) return false;
+    return casts.values().stream().anyMatch(cast -> cast.matches(caster, origin, index)
+        && cast.released && Objects.equals(cast.releasedBuffs.get(buff), expiry));
+  }
+
   private void bindSession(GameSession current) {
     if (session.get() == current) return;
     casts.clear();
@@ -58,6 +68,7 @@ public final class MazeCastState {
     private boolean prepaid, released;
     private int paidAmount;
     private MazeSkill.CastMetadata metadata;
+    private Map<Integer, Long> releasedBuffs = Map.of();
 
     private Cast(GameAvatar caster, MazeSkill skill, int index) {
       this.caster = Objects.requireNonNull(caster);
@@ -88,6 +99,7 @@ public final class MazeCastState {
       if (!released) {
         skill.onCast(caster, position);
         metadata = caster.getMazeCastMetadata();
+        releasedBuffs = new HashMap<>(caster.getBuffs());
         released = true;
       } else {
         caster.setMazeCastMetadata(metadata);

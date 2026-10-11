@@ -16,12 +16,19 @@ public final class DailyMissionMessageState {
     private long day;
     private int mainId, goalId, sectionId;
     private String source, mainAcceptance, goalAcceptance;
+    // Only the original three-stage graph freezes these completed prerequisite identities.
+    private String initialAcceptance, firstAcceptance;
     private GameplayState.PhoneSection phone;
 
     protected Run() {}
 
     Run(long day, int mainId, int goalId, int sectionId, String source, String mainAcceptance, String goalAcceptance,
         GameplayState.PhoneSection phone) {
+      this(day, mainId, goalId, sectionId, source, mainAcceptance, goalAcceptance, null, null, phone);
+    }
+
+    Run(long day, int mainId, int goalId, int sectionId, String source, String mainAcceptance, String goalAcceptance,
+        String initialAcceptance, String firstAcceptance, GameplayState.PhoneSection phone) {
       this.day = day;
       this.mainId = mainId;
       this.goalId = goalId;
@@ -29,6 +36,8 @@ public final class DailyMissionMessageState {
       this.source = source;
       this.mainAcceptance = mainAcceptance;
       this.goalAcceptance = goalAcceptance;
+      this.initialAcceptance = initialAcceptance;
+      this.firstAcceptance = firstAcceptance;
       this.phone = phone;
     }
 
@@ -39,6 +48,8 @@ public final class DailyMissionMessageState {
     public String getSource() { return source; }
     public String getMainAcceptance() { return mainAcceptance; }
     public String getGoalAcceptance() { return goalAcceptance; }
+    public String getInitialAcceptance() { return initialAcceptance; }
+    public String getFirstAcceptance() { return firstAcceptance; }
     public GameplayState.PhoneSection getPhone() { return phone; }
   }
 }

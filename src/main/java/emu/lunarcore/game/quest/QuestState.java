@@ -38,6 +38,16 @@ public class QuestState {
     return observationKey;
   }
 
+  /** Freeze a completed prerequisite inside the same document save as its new observer. */
+  public String captureCompletedObservationKey() {
+    if ((phase != Phase.FINISHED && phase != Phase.CLOSED) || progress <= 0 || finishTime <= 0)
+      throw new IllegalStateException("Acceptance is not completed");
+    if (observationKey == null) observationKey = java.util.UUID.randomUUID().toString();
+    if (!java.util.UUID.fromString(observationKey).toString().equals(observationKey))
+      throw new IllegalStateException("Invalid acceptance observation key");
+    return observationKey;
+  }
+
   public void restoreObservationKey(String expected, String previous) {
     if (!java.util.Objects.equals(observationKey, expected))
       throw new IllegalStateException("Acceptance changed during reservation");

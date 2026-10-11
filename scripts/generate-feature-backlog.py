@@ -1273,6 +1273,50 @@ _chess_entry_gap = _chess_saved_gap + ' 历史验证范围：' + _chess_entry_ga
 _wolf_ammo_tests = list(dict.fromkeys(_wolf_ammo_tests + _wolf_explosion_tests))
 _wolf_ammo_gap = _wolf_explosion_gap + ' 历史验证范围：' + _wolf_ammo_gap
 
+_cyrene_input_tests = [
+    'src/test/java/org/hkrpg/server/gameplay/MazeCyreneManualAbility46Test.java',
+    'src/test/resources/fixtures/maze-cyrene-manual-ability-4.6.json',
+    'scripts/smoke-maze-cyrene-ability.py', 'scripts/tests/test_smoke_maze_cyrene_guard.py',
+    'docs/maze-cyrene-manual-ability-4.6.md']
+_cyrene_input_gap = (
+    '1415原Free END绑定实际1460释放、141501原30秒寿命和当前角色/场景/会话/独立UseID；'
+    '不伪造1408预付，不把无UseType的原增益当作单战消费。26新回归及827独立相邻通过；'
+    '同258b新包258请求/262检查、3正常停服/2同UID H2恢复通过，含真实31秒到期及0MP合法后续。'
+    '首轮等待超过KCP空闲的工具失败单独保留；其他Input、完整动作/召唤/物理与游戏UI待补。')
+_origin_message_tests = [
+    'src/test/java/org/hkrpg/server/gameplay/DailyMissionMessageOrigin46Test.java',
+    'src/test/java/org/hkrpg/server/gameplay/QuestCompletedObservation46Test.java',
+    'src/test/resources/fixtures/daily-message-3000601-4.6.json',
+    'docs/daily-message-3000601-4.6.md']
+_origin_message_gap = (
+    '原3000601/1211400三目标和三条原回复绑定本日Main/Goal及两完成前置身份；'
+    '原G84真实加载实例作为准确报告门槛，保存失败回滚四观察键，不借旧global电话。'
+    '40新日常+14完成观察及184独立相邻通过；同新包只执行settled case0，'
+    '196请求/239检查、8正常停服/7同UID H2恢复/32独立Player读，受控两日各5000信用/200活跃。'
+    '其他两回复及过期未新增Native；CustomString/完整Act、自然跨日和真实游戏UI待完成。')
+_chess_initial_tests = [
+    'src/test/java/org/hkrpg/server/protocol/ChessRogueInitialQuery46Test.java',
+    'src/test/resources/fixtures/chess-rogue-initial-query-4.6.json',
+    'scripts/smoke-chess-rogue-initial-query.py',
+    'scripts/tests/test_chess_rogue_initial_query_guard.py',
+    'scripts/fixtures/chess-rogue-initial-query-qualification-4.6.json']
+_chess_initial_gap = (
+    '5547无局省略可空8并返回完整10/9/12资料；资格11为[]或[101]，'
+    '只允许完整默认空记录与真实普通场景，不创建局/UUID/首奖/Nous或保存。'
+    '9新回归及83独立相邻通过；同258b新包48请求/96检查、4正常停服/3同UID H2恢复。'
+    '原资格5000信用是生产refresh结算，独立归因且四次Query完整文档零增量；'
+    '23工具守卫通过。损坏资格记录已独立锁定但本批未修复；5472/首奖/Nous/三层及游戏UI待补。')
+_chess_entry_tests = list(dict.fromkeys(_chess_entry_tests + _chess_initial_tests))
+_chess_entry_gap = _chess_initial_gap + ' 历史验证范围：' + _chess_entry_gap
+_clock_query_tests = [
+    'src/test/java/org/hkrpg/server/protocol/ClockParkQueryResource46Test.java',
+    'docs/clock-park-query-resource-4.6.md']
+_clock_query_gap = (
+    '同次存档校验共享完整SHA核过的原卡牌定义，下一查询重读实际字节；'
+    '11新回归和838独立相邻全绿，等长/等mtime字节变更仍拒绝且不保存。'
+    '同258b新包既有1至3评级/存档恢复1901实际请求、25正常停服/24同UID H2恢复通过；'
+    '评分与初始属性是明确本服规则，官方正评级公式/抽牌池、完整活动及游戏UI待完成。')
+
 
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
@@ -1510,6 +1554,14 @@ def main():
                   _sibling_message_tests, _sibling_message_gap)
     append_review(('GetRogueShopMiracleInfoCsReq', 'BuyRogueShopMiracleCsReq'),
                   _chess_saved_tests, _chess_saved_gap)
+    append_review(('SceneCastSkillCsReq', 'SceneCastSkillCostMpCsReq'),
+                  _cyrene_input_tests, _cyrene_input_gap)
+    append_review(('AcceptMainMissionCsReq', 'GetNpcStatusCsReq', 'GetNpcMessageGroupCsReq',
+                   'GetMissionMessageCsReq', 'FinishItemIdCsReq', 'FinishSectionIdCsReq',
+                   'FinishTalkMissionCsReq', 'GetDailyActiveInfoCsReq'),
+                  _origin_message_tests, _origin_message_gap)
+    append_review(('ClockParkGetInfoCsReq', 'ClockParkGetOngoingScriptInfoCsReq'),
+                  _clock_query_tests, _clock_query_gap)
     for name, review in REVIEWED.items():
         if name in requests:
             row = requests[name]

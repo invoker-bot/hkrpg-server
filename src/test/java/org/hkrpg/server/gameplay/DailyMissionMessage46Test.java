@@ -526,26 +526,35 @@ class DailyMissionMessage46Test {
   }
 
   @Test
-  void aPreviouslyCompletedSiblingSectionKeepsItsActualGlobalHistoryWhileThisCommissionGetsAFreshPhone() throws Exception {
+  void aPreviouslyCompletedSiblingSectionKeepsItsActualGlobalHistoryWhileBothCommissionsGetTheirOwnPhones() throws Exception {
     catalog(3000601);
+    // A real old global document stays separate from both newly supported accepted-period views.
+    var older = new GameplayState.PhoneSection(1211400, List.of(121140101));
+    for (int id : List.of(121140101, 121140111, 121140104, 121140105, 121140108, 121140109, 121140110))
+      older.step(id, GameplayDefinitions.messageItems.get(id).NextItemIDList());
+    older.finish(); actor.getGameplay().getPhoneSections().put(1211400, older);
+    var oldHistory = List.copyOf(older.getHistory()); String oldJson = gson.toJson(older);
     floor(); assertEquals(Retcode.SUCC, actor.getMissionManager().accept(3000601));
     for (int id : List.of(300060001, 300060101))
       assertEquals(Retcode.SUCC, actor.getMissionManager().finishTalk(id, "Mission_" + id));
     assertEquals(Retcode.SUCC, new MessageManager(actor).choose(121140102, 0));
     assertEquals(Retcode.SUCC, new MessageManager(actor).finishSection(1211400));
-    var older = actor.getGameplay().getPhoneSections().get(1211400);
-    assertNotNull(older); assertTrue(older.isFinished());
-    var oldHistory = List.copyOf(older.getHistory());
+    var accepted = new MessageManager(actor).states().get(1211400);
+    assertNotSame(older, accepted); assertTrue(accepted.isFinished());
+    var acceptedHistory = List.copyOf(accepted.getHistory());
+    assertNotEquals(oldHistory, acceptedHistory); assertSame(older, actor.getGameplay().getPhoneSections().get(1211400));
     assertEquals(5000, actor.getScoin());
-    catalog(3000601, MAIN); clock(NEXT); actor.getDailyManager().ensureDay();
+    catalog(3000601, MAIN); clock(NEXT);
+    assertEquals(Retcode.SUCC, actor.getMissionManager().accept(MAIN)); actor.getDailyManager().ensureDay();
     actor.getMissionManager().refresh();
     assertTrue(MissionStateRecords.mainDoing(actor, MAIN));
     assertEquals(Retcode.SUCC, actor.getMissionManager().finishTalk(FIRST, "Mission_300060201"));
     assertSame(older, actor.getGameplay().getPhoneSections().get(1211400));
-    assertEquals(oldHistory, history(phone(1211400)));
+    assertEquals(acceptedHistory, history(phone(1211400))); assertEquals(oldJson, gson.toJson(older));
     assertEquals(List.of(121140202, 121140203), offered(phone(SECTION)));
     pay(121140202, 121140205); assertEquals(10000, actor.getScoin());
     assertSame(older, actor.getGameplay().getPhoneSections().get(1211400));
+    assertEquals(oldHistory, older.getHistory()); assertEquals(oldJson, gson.toJson(older));
   }
 
   @Test

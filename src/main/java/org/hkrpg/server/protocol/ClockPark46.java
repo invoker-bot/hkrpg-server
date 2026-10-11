@@ -40,10 +40,12 @@ public final class ClockPark46 {
               ? ClockParkCatalog.load(Path.of(LunarCore.getConfig().getResourceDir()))
               : null;
       var state = session.getPlayer().getGameplay().getClockPark();
+      boolean valid = catalog != null
+          && state != null
+          && state.valid(catalog)
+          && ClockParkEndingRewards.valid(session.getPlayer(), state);
       if (catalog == null) set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
-      else if (state == null
-          || !state.valid(catalog)
-          || !ClockParkEndingRewards.valid(session.getPlayer(), state))
+      else if (!valid)
         set(response, "retcode", Retcode.PLAYER_DATA_ERROR.getVal());
       else {
         for (var script : catalog.scripts().values()) {
@@ -54,11 +56,8 @@ public final class ClockPark46 {
         }
         set(response, "progress", state.progress(catalog));
       }
-      if (catalog != null
-          && state != null
-          && state.valid(catalog)
-          && ClockParkEndingRewards.valid(session.getPlayer(), state)
-          && state.getActive() != null) set(response, "LNKAKGOCAOF", state.getActive().getScript());
+      if (valid && state.getActive() != null)
+        set(response, "LNKAKGOCAOF", state.getActive().getScript());
       session.sendClientPacket("ClockParkGetInfoScRsp", response.build().toByteArray());
     }
     return true;

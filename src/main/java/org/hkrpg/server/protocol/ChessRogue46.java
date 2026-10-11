@@ -48,13 +48,15 @@ public final class ChessRogue46 {
           var aeon = builder(session,"AEMAPGKPPJA");
           put(aeon,14,session.getPlayer().getGameplay().getChessRogue().getAeon()); put(response,6,aeon.build());
         } else if (command == 5534) sync(session);
+        else if (command == 5547) {
+          // caf6872 skips a null DJE before first Start; caf674b still requires the complete HIM.
+          if (session.getPlayer().getGameplay().getChessRogue().active()) put(response,8,snapshot(session));
+          put(response,10,profile(session));
+        }
         else {
-          put(response,switch (command) { case 5426 -> 13; case 5437 -> 3; case 5468 -> 12; case 5447 -> 11; default -> 8; },snapshot(session));
-          if (command == 5547) put(response,10,profile(session));
-          if (command != 5547) {
-            put(response,switch (command) { case 5426 -> 7; case 5437 -> 6; default -> 8; },stage(session));
-            if (command == 5437) put(response,10,session.getPlayer().getGameplay().getChessRogue().getArea());
-          }
+          put(response,switch (command) { case 5426 -> 13; case 5437 -> 3; case 5468 -> 12; default -> 11; },snapshot(session));
+          put(response,switch (command) { case 5426 -> 7; case 5437 -> 6; default -> 8; },stage(session));
+          if (command == 5437) put(response,10,session.getPlayer().getGameplay().getChessRogue().getArea());
         }
       }
       session.sendClientPacket(name,response.build().toByteArray());

@@ -44,6 +44,7 @@ public final class ClockParkState {
   }
 
   public boolean valid(ClockParkCatalog catalog) {
+    var sources = new ValidationSources();
     if (catalog == null
         || ClockParkCards.pool(nextCardPool) == null
         || sequence < 0
@@ -73,7 +74,7 @@ public final class ClockParkState {
             || !("STORY".equals(run.phase) && !catalog.chapters().get(run.chapter).ending()
                 || "FINISHED".equals(run.phase) && catalog.chapters().get(run.chapter).ending())
             || run.roundIndex != 0
-            || !run.valid(catalog)) return false;
+            || !run.valid(catalog, sources)) return false;
         expected.add(proof.getKey());
       }
       if (!entry.getValue().equals(expected)) return false;
@@ -83,14 +84,62 @@ public final class ClockParkState {
         && (lastFailure.sequence > sequence
             || !"CHECKPOINT".equals(lastFailure.phase)
             || !Boolean.FALSE.equals(lastFailure.checkpointPassed)
-            || !lastFailure.valid(catalog)
+            || !lastFailure.valid(catalog, sources)
             || !reached(lastFailure.script).containsAll(lastFailure.chapterPath()))) return false;
     return active == null
         || sequence > 0
             && active.sequence == sequence
             && !"FINISHED".equals(active.phase)
-            && active.valid(catalog)
+            && active.valid(catalog, sources)
             && reached(active.script).containsAll(active.reachedPath(catalog));
+  }
+
+  /** One validation shares verified immutable definitions; the next call rereads current bytes. */
+  private static final class ValidationSources {
+    private java.nio.file.Path root;
+    private ClockParkCards cards;
+    private ClockParkSlots slots;
+    private ClockParkMiniGames games;
+    private ClockParkChecks checks;
+    private boolean cardsRead, slotsRead, gamesRead, checksRead;
+
+    private java.nio.file.Path root() {
+      if (root == null)
+        root = java.nio.file.Path.of(emu.lunarcore.LunarCore.getConfig().getResourceDir());
+      return root;
+    }
+
+    ClockParkCards cards() {
+      if (!cardsRead) {
+        cards = ClockParkCards.load(root());
+        cardsRead = true;
+      }
+      return cards;
+    }
+
+    ClockParkSlots slots() {
+      if (!slotsRead) {
+        slots = ClockParkSlots.load(root(), cards());
+        slotsRead = true;
+      }
+      return slots;
+    }
+
+    ClockParkMiniGames games() {
+      if (!gamesRead) {
+        games = ClockParkMiniGames.load(root(), cards());
+        gamesRead = true;
+      }
+      return games;
+    }
+
+    ClockParkChecks checks() {
+      if (!checksRead) {
+        checks = ClockParkChecks.load(root());
+        checksRead = true;
+      }
+      return checks;
+    }
   }
 
   void start(ClockParkCatalog.Script script, ClockParkCatalog catalog) {
@@ -377,17 +426,17 @@ public final class ClockParkState {
     }
 
     boolean valid(ClockParkCatalog catalog) {
+      return valid(catalog, new ValidationSources());
+    }
+
+    private boolean valid(ClockParkCatalog catalog, ValidationSources sources) {
       try {
         var definition = catalog.scripts().get(script);
         if (definition == null || history == null || history.size() >= catalog.chapters().size())
           return false;
         int expected = definition.startChapter();
         int[] attributes = {0, 0, 0};
-        var cards =
-            history.isEmpty()
-                ? null
-                : ClockParkCards.load(
-                    java.nio.file.Path.of(emu.lunarcore.LunarCore.getConfig().getResourceDir()));
+        var cards = history.isEmpty() ? null : sources.cards();
         var visited = new HashSet<Integer>();
         for (var receipt : history) {
           if (receipt == null
@@ -395,7 +444,7 @@ public final class ClockParkState {
               || receipt.chapter != expected
               || !visited.add(expected)) return false;
           var previous = receipt.asRun(this);
-          if (!previous.validPosition(catalog, attributes)
+          if (!previous.validPosition(catalog, attributes, sources)
               || !"BRANCH".equals(previous.phase)
               || receipt.card != cards.branchCard(previous.chapter)
               || !previous.dice.equals(List.of(receipt.face))) return false;
@@ -408,13 +457,14 @@ public final class ClockParkState {
             ? transitionCard != 0 || transitionFace != 0
             : transitionCard != history.getLast().card || transitionFace != history.getLast().face)
           return false;
-        return validPosition(catalog, attributes);
+        return validPosition(catalog, attributes, sources);
       } catch (RuntimeException invalid) {
         return false;
       }
     }
 
-    private boolean validPosition(ClockParkCatalog catalog, int[] initialAttributes) {
+    private boolean validPosition(
+        ClockParkCatalog catalog, int[] initialAttributes, ValidationSources sources) {
       var definition = catalog.scripts().get(script);
       var row = catalog.chapters().get(chapter);
       var graph = catalog.stories().get(story);
@@ -456,13 +506,14 @@ public final class ClockParkState {
             && sequence > 0
             && UUID.fromString(transaction).toString().equals(transaction)
             && "hkrpg.clockpark.opening-zero.v1".equals(openingRule)
-            && progressValid(catalog, initialAttributes);
+            && progressValid(catalog, initialAttributes, sources);
       } catch (IllegalArgumentException | NullPointerException invalid) {
         return false;
       }
     }
 
-    private boolean progressValid(ClockParkCatalog catalog, int[] initialAttributes) {
+    private boolean progressValid(
+        ClockParkCatalog catalog, int[] initialAttributes, ValidationSources sources) {
       if (dice == null || receipts == null || receipts.size() != roundIndex) return false;
       boolean branchPhase = "BRANCH".equals(phase);
       boolean checkpointPhase = "CHECKPOINT".equals(phase) || branchPhase;
@@ -498,9 +549,7 @@ public final class ClockParkState {
               : checkpointPhase || slotPhase || gamePhase
                   ? !dice.isEmpty()
                   : !ClockParkCards.facesValid(dice))) return false;
-      var cards =
-          ClockParkCards.load(
-              java.nio.file.Path.of(emu.lunarcore.LunarCore.getConfig().getResourceDir()));
+      var cards = sources.cards();
       if (cards == null || !cards.fingerprint().equals(cardSource)) return false;
       int[] attributes = initialAttributes.clone();
       var rounds = catalog.chapters().get(chapter).rounds();
@@ -511,9 +560,8 @@ public final class ClockParkState {
           attributes =
               cards.apply(script, attributes, receipt.faces, receipt.indices, getPoolRule());
         }
-        var root = java.nio.file.Path.of(emu.lunarcore.LunarCore.getConfig().getResourceDir());
         if (slot != null) {
-          var slots = ClockParkSlots.load(root);
+          var slots = sources.slots();
           if (!ClockParkSlots.supports(catalog, script, chapter)
               || roundIndex != rounds.size()
               || slots == null
@@ -521,7 +569,7 @@ public final class ClockParkState {
           if (slot.played) attributes[1] = slots.attributeB(attributes[1], slot.ticket);
         }
         if (mini != null) {
-          var games = ClockParkMiniGames.load(root);
+          var games = sources.games();
           var stage = ClockParkMiniGames.stage(chapter);
           if (!ClockParkMiniGames.supports(catalog, script, chapter)
               || roundIndex != rounds.size()
@@ -533,9 +581,7 @@ public final class ClockParkState {
         }
         if (checkpointPhase) {
           var definition = catalog.chapters().get(chapter);
-          var checks =
-              ClockParkChecks.load(
-                  java.nio.file.Path.of(emu.lunarcore.LunarCore.getConfig().getResourceDir()));
+          var checks = sources.checks();
           if ((!definition.gameplayRounds().isEmpty() && slot == null && mini == null)
               || !definition.checkpoints().equals(List.of(checkpoint))
               || checks == null

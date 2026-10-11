@@ -177,9 +177,12 @@ public final class ClockParkMiniGames {
   }
 
   public static ClockParkMiniGames load(Path root) {
+    return load(root, ClockParkCards.load(root));
+  }
+
+  // A single validation may reuse its verified cards; public loads always reread current bytes.
+  static ClockParkMiniGames load(Path root, ClockParkCards cards) {
     try {
-      // All four complete original inputs are hashed on every request, including cache hits.
-      var cards = ClockParkCards.load(root);
       if (cards == null) return null;
       var cached = verifiedDefinitions;
       if (cached != null) return cached;

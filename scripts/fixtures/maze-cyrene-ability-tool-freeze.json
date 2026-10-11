@@ -1,0 +1,81 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "artifactPath": "build/initial-query-cyrene-daily-origin-clock-runtime.jar",
+  "artifactSHA256": "258b6cdb5567db32e2a7a81a7907ba8e5fb71f3aa9bbfb47cd24bceeab508ff1",
+  "nativeReportPath": "build/maze-cyrene-ability-current-native-second.json",
+  "nativeReportSHA256": "f641f22d3600328df21b7ba69b47e137eb8a816625f075c82b4b409180c44d05",
+  "nativeRequests": 258,
+  "nativeChecks": 262,
+  "normalStops": 3,
+  "sameUIDNormalH2ProcessRestarts": 2,
+  "actualIndependentPlayerReads": 9,
+  "actualIndependentAvatarReads": 9,
+  "executionAndDelivery": [
+    {
+      "executedPath": "build/battle-cast-draft/cyrene-native-v1/smoke-maze-cyrene-ability.py",
+      "executedSHA256": "6ac4d3c8d08358f6783e2db788f328ea000df9b2ed30950a3a09a7bd6001e6a7",
+      "deliveredPath": "scripts/smoke-maze-cyrene-ability.py",
+      "deliveredSHA256": "ace54ffd0a42e9cd29069638fcde1f409fac0f85f6e893ba48b5c82559f94ffa",
+      "identicalBytes": false,
+      "deliveryChanges": "Only the two helper path literals now point to tracked scripts/fixtures/java; every other executed Python byte is preserved."
+    },
+    {
+      "executedPath": "build/battle-cast-draft/cyrene-native-v1/NativeMazeCyreneAbilityProbe.java",
+      "executedSHA256": "41b328aad202c9c3b790d83f24b4b30c0d1a21b8469b9cec89d6baa18bd90735",
+      "deliveredPath": "scripts/fixtures/java/org/hkrpg/server/protocol/NativeMazeCyreneAbilityProbe.java",
+      "deliveredSHA256": "41b328aad202c9c3b790d83f24b4b30c0d1a21b8469b9cec89d6baa18bd90735",
+      "identicalBytes": true,
+      "deliveryChanges": "Exact executed Java source bytes; no changes."
+    },
+    {
+      "executedPath": "build/battle-cast-draft/cyrene-native-v1/MazeCyreneAbilityFixtureInspector.java",
+      "executedSHA256": "944879727aa9e9b2d7bc46f40029d2e657f280ebb0c69f24da425ca49e93ac3c",
+      "deliveredPath": "scripts/fixtures/java/org/hkrpg/server/gameplay/MazeCyreneAbilityFixtureInspector.java",
+      "deliveredSHA256": "944879727aa9e9b2d7bc46f40029d2e657f280ebb0c69f24da425ca49e93ac3c",
+      "identicalBytes": true,
+      "deliveryChanges": "Exact executed Java source bytes; no changes."
+    },
+    {
+      "executedPath": "build/battle-cast-draft/cyrene-native-v1/test_guard.py",
+      "executedSHA256": "ddc741541b8e12928d2dbae92d06e917a68177b00cabf05cde736a585dc8fa8e",
+      "deliveredPath": "scripts/tests/test_smoke_maze_cyrene_guard.py",
+      "deliveredSHA256": "55e8dc845d799e4376942cdc3da290b963642b0d5f112c64185abd3382f28201",
+      "identicalBytes": false,
+      "deliveryChanges": "Only import/helper paths and temporary-directory location changed; all ten guard behavior assertions are retained."
+    }
+  ],
+  "guardTests": 10,
+  "guardFailures": 0,
+  "trackedGuardLog": "build/battle-cast-draft/cyrene-native-v1/tracked-guard-green.log",
+  "trackedGuardLogSHA256": "7e15cd8e38b77a6054908963491943ebd5123f7de1c650704d0f69e4f4bca8ad",
+  "trackedPreflightPath": "build/battle-cast-draft/cyrene-native-v1/tracked-preflight.json",
+  "trackedPreflightSHA256": "489c8291679afe8d96611f5766db4268cd4c7a4eac4005154c10ccaa2e86eb0d",
+  "trackedPreflightSchemas": 16,
+  "trackedPreflightChecks": 12,
+  "trackedPreflightServerStarted": false,
+  "trackedPreflightNativeExecuted": false,
+  "additionalNativeRunAfterDelivery": false,
+  "wholeSourceFixturePath": "src/test/resources/fixtures/maze-cyrene-manual-ability-4.6.json",
+  "wholeSourceFixtureSHA256": "32df50c66f6bec3de4d6a94bf2e6dd9bb76cde6700f3f3b1b2533a6847644017",
+  "firstNativeToolFailurePreserved": "build/smoke/maze-cyrene-ability-3r1ax0gr/failed-run.json",
+  "waitGuardRedPath": "build/battle-cast-draft/cyrene-native-v1/wait-guard-red-verification.json",
+  "waitGuardRedWasNative": false,
+  "deliveryFirstFailurePath": "build/battle-cast-draft/cyrene-native-v1/delivery-first-failed.json",
+  "old1510ToolSHA256Unchanged": {
+    "scripts/smoke-maze-manual-ability.py": "7d005f3e9eb5736039ecec580041f1a71c0ec528eb90209d849991d284bd5d02",
+    "scripts/fixtures/java/org/hkrpg/server/protocol/NativeMazeManualAbilityProbe.java": "67b08c0c95d4b7bd406661d89cdcf724b762a4a7273f2cfbbb9068a16f789a70",
+    "scripts/fixtures/java/org/hkrpg/server/gameplay/MazeManualAbilityFixtureInspector.java": "3e2c35ead7d02af2dfb578591520669dbec9e9c558fe632c0bff666f533a5cf4"
+  },
+  "sharedOwnedHelperAtDelivery": {
+    "scripts/smoke-maze-cast-sequence.py": "ed7cca88ab7a1d5c2a66e1cacd660c8b326765edeabdbf4bd8ef6ee15e509dfa",
+    "scripts/smoke_resource_fixture.py": "325df962fd298d266a09ae63f85202e790704d90c9f94f271a5338ae6d86acb6"
+  },
+  "sharedOwnedHelperSHAPreviouslyCapturedInNativeReport": false,
+  "documentPath": "docs/maze-cyrene-manual-ability-4.6.md",
+  "documentSHA256": "05b67728b6ec0a1a67c38ade19be18e08df508441fe8bb3d43b5ab14edc423a3",
+  "basePaymentPhaseKnown": false,
+  "originalSourceBuffLifeTimeSeconds": 30,
+  "originalSourceBuffUseTypePresent": false,
+  "clientGameplayVerified": false,
+  "physicsAndPerformanceVerified": false
+}

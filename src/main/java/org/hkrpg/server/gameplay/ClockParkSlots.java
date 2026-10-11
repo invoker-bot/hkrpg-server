@@ -89,8 +89,12 @@ public final class ClockParkSlots {
   }
 
   public static ClockParkSlots load(Path root) {
+    return load(root, ClockParkCards.load(root));
+  }
+
+  // Only a validation of this same root may reuse its already verified card definitions.
+  static ClockParkSlots load(Path root, ClockParkCards cards) {
     try {
-      var cards = ClockParkCards.load(root);
       if (cards == null) return null;
       var path = root.resolve("ExcelOutput/ClockParkLottery.json");
       if (Files.size(path) <= 0 || Files.size(path) > 65536) return null;

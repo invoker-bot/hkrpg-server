@@ -143,6 +143,7 @@ final class Battle46 {
     }
     MazeSkill skill = null;
     MazeSkillCosts.ManualInput manual = null;
+    MazeSkillCosts.FreeNormalAttack freeNormal = null;
     int manualCost = 0;
     boolean manualFirstRelease = false;
     var abilityName = (String) value(req, "maze_ability_str");
@@ -164,10 +165,25 @@ final class Battle46 {
         else if (!abilityName.isEmpty() && !abilityName.equals(skill.getAbilityName())) {
           // ManualTriggerAbility starts a separate original Ability; its name is field15,
           // and its new UseID must never reuse the base 1408 payment.
+          var free = index == 0 && phase == MazeSkill.CallbackPhase.PROJECTILE_LIFETIME_FINISH
+              ? MazeSkillCosts.cyreneFreeNormalAttack(avatar, abilityName)
+              : Optional.<MazeSkillCosts.FreeNormalAttack>empty();
           var selected = index == 1 && projectileEvent(phase)
               ? MazeSkillCosts.manualInput(avatar, abilityName) : Optional.<MazeSkillCosts.ManualInput>empty();
-          if (selected.isEmpty() || player.getSession() != s || avatar.getOwner() != player
+          if ((selected.isEmpty() && free.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
               || !MazeCastState.validUseId(cast) || !assists.isEmpty()) error = Retcode.REQ_PARA_INVALID;
+          else if (free.isPresent()) {
+            freeNormal = free.get();
+            if (!player.getCurrentLineup().getAvatars().contains(avatar.getAvatarId())
+                || player.getAvatarById(avatar.getAvatarId()) != avatar
+                || !player.getGameplay().getMazeCasts().hasReleasedBuffOrigin(s, avatar,
+                    freeNormal.origin(), 1, freeNormal.originBuff())) error = Retcode.REQ_PARA_INVALID;
+            else {
+              skill = freeNormal.skill();
+              for (int id : hits)
+                if (!(scene.getEntities().get(id) instanceof EntityMonster)) error = Retcode.REQ_PARA_INVALID;
+            }
+          }
           else {
             manual = selected.get();
             if (!player.getGameplay().getMazeCasts().hasReleasedOrigin(s, avatar, skill, index,
@@ -198,7 +214,7 @@ final class Battle46 {
               && avatar.getActorId() != 1308 && player.getCurrentLineup().getMp() < 1)
             error = Retcode.MAZE_MP_NOT_ENOUGH;
         }
-        if (error == Retcode.SUCC && index == 1) {
+        if (error == Retcode.SUCC && (index == 1 || freeNormal != null)) {
           if (binding == null && MazeCastState.validUseId(cast)) {
             binding = player.getGameplay().getMazeCasts().begin(s, cast, avatar, skill, index);
             if (binding == null) error = Retcode.SYSTEM_BUSY;
@@ -207,13 +223,14 @@ final class Battle46 {
             boolean prepaid = binding != null && binding.prepaid();
             // Unpaid requests keep the existing simplified hit-payment rule. Only the proven
             // native OnUse receipt suppresses a second payment; HIT is not globally deduplicated.
-            if (manual == null && !prepaid && avatar.getActorId() != 1308) player.getCurrentLineup().removeMp(1);
+            if (manual == null && freeNormal == null && !prepaid && avatar.getActorId() != 1308)
+              player.getCurrentLineup().removeMp(1);
             boolean firstRelease = binding == null || !binding.released();
             var motion = MotionInfo.parseFrom(s.getProtocol().translate("MotionInfo",
                 ((DynamicMessage) value(req, "target_motion")).toByteArray(), false));
             if (binding == null) skill.onCast(avatar, motion);
             else binding.release(motion);
-            if (manual == null) {
+            if (manual == null && freeNormal == null) {
               if (firstRelease) player.getDailyManager().onMazeSkill();
               if (!prepaid) notifyMp(s, cast);
             } else manualFirstRelease = firstRelease;

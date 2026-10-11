@@ -13,17 +13,40 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.*;
 
-/** Two reviewed original daily phone graphs; old global completion never closes a new acceptance. */
+/** Reviewed original daily phone graphs; old global completion never closes a new acceptance. */
 final class DailyMissionMessageRules {
+  private record Initial(int id, String path, String script) {}
   private record Definition(int mainId, int firstId, int goalId, int sectionId, int startItemId,
       String firstPath, String goalPath, String firstScript, String goalScript,
-      Map<Integer, List<Integer>> edges, Set<Integer> choices, Map<Integer, List<Integer>> streamedOffers) {
-    String sourceId() { return "4.6:" + mainId + ":" + firstScript + ":" + goalScript; }
+      Map<Integer, List<Integer>> edges, Set<Integer> choices, Map<Integer, List<Integer>> streamedOffers,
+      Initial initial) {
+    // The existing two receipts retain their exact stored identity.
+    String sourceId() { return "4.6:" + mainId + ":" + firstScript + ":" + goalScript
+        + (initial == null ? "" : ":" + initial.script()); }
+    int startId() { return initial == null ? firstId : initial.id(); }
+    int openingSize() { return Collections.min(streamedOffers.keySet()); }
   }
 
   // Complete MissionTask canonical pins at TurnBasedGameData 724b139d8c9c32d12552eb95745a4fee72bfe48b.
   // The authored goal scripts 300060203 and 300060303 are genuinely the same complete source.
   private static final List<Definition> DEFINITIONS = List.of(
+      new Definition(3000601, 300060101, 300060102, 1211400, 121140101,
+          "Config/Level/Mission/3000601/Mission_300060101.json",
+          "Config/Level/Mission/3000601/Mission_300060103.json",
+          "976d1f4da59fe8249135fbce998c2db3d7750b4354cfd46398c98f21f58661bd",
+          "7531517089dcbd63b3fde9889a3923f988e2232a89b075fa865e606840b3e775",
+          Map.ofEntries(
+              Map.entry(121140101, List.of(121140111)),
+              Map.entry(121140111, List.of(121140102, 121140104, 121140106)),
+              Map.entry(121140102, List.of(121140103)), Map.entry(121140103, List.of(121140108)),
+              Map.entry(121140104, List.of(121140105)), Map.entry(121140105, List.of(121140108)),
+              Map.entry(121140106, List.of(121140107)), Map.entry(121140107, List.of(121140108)),
+              Map.entry(121140108, List.of(121140109)), Map.entry(121140109, List.of(121140110)),
+              Map.entry(121140110, List.of())),
+          Set.of(121140102, 121140104, 121140106),
+          Map.of(2, List.of(121140102, 121140104, 121140106), 7, List.of()),
+          new Initial(300060001, "Config/Level/Mission/3000600/Mission_300060001.json",
+              "a8ad32be0fe86430775eff1a8c1f42a0073bc6eadc9505bc2eb758c32ec23ea6")),
       new Definition(3000602, 300060201, 300060202, 1211401, 121140201,
           "Config/Level/Mission/3000602/Mission_300060201.json",
           "Config/Level/Mission/3000602/Mission_300060203.json",
@@ -38,7 +61,7 @@ final class DailyMissionMessageRules {
               Map.entry(121140207, List.of(121140208)), Map.entry(121140208, List.of(121140209)),
               Map.entry(121140209, List.of(121140210)), Map.entry(121140210, List.of())),
           Set.of(121140202, 121140203, 121140205, 121140207),
-          Map.of(3, List.of(121140202, 121140203), 5, List.of(121140205, 121140207), 9, List.of())),
+          Map.of(3, List.of(121140202, 121140203), 5, List.of(121140205, 121140207), 9, List.of()), null),
       new Definition(3000603, 300060301, 300060302, 1211402, 121140301,
           "Config/Level/Mission/3000603/Mission_300060301.json",
           "Config/Level/Mission/3000603/Mission_300060303.json",
@@ -57,7 +80,7 @@ final class DailyMissionMessageRules {
               Map.entry(121140315, List.of())),
           Set.of(121140302, 121140303, 121140306, 121140308, 121140311, 121140312),
           Map.of(3, List.of(121140302, 121140303), 6, List.of(121140306, 121140308),
-              9, List.of(121140311, 121140312), 13, List.of())));
+              9, List.of(121140311, 121140312), 13, List.of()), null));
 
   private static Definition definition(int mainId) {
     return DEFINITIONS.stream().filter(row -> row.mainId() == mainId).findFirst().orElse(null);
@@ -93,13 +116,16 @@ final class DailyMissionMessageRules {
           || !List.of(new MainMissionExcel.Gate("Auto", 0)).equals(main.getBeginParam())
           || main.getSubRewardList() == null || !main.getSubRewardList().isEmpty()
           || graph == null || graph.getMainMissionID() != definition.mainId()
-          || !Arrays.equals(new int[] {definition.firstId()}, graph.getStartSubMissionList())
+          || !Arrays.equals(new int[] {definition.startId()}, graph.getStartSubMissionList())
           || !Arrays.equals(new int[] {definition.goalId()}, graph.getFinishSubMissionList())
-          || graph.getSubMissionList() == null || graph.getSubMissionList().length != 2
+          || graph.getSubMissionList() == null || graph.getSubMissionList().length != (definition.initial() == null ? 2 : 3)
           || Arrays.stream(graph.getSubMissionList()).filter(sub -> sub == first).count() != 1
           || Arrays.stream(graph.getSubMissionList()).filter(sub -> sub == goal).count() != 1
           || !common(first, definition.firstId(), definition) || !common(goal, definition.goalId(), definition)
-          || !"Auto".equals(first.getTakeType()) || first.getTakeParamIntList().length != 0
+          || !(definition.initial() == null
+              ? "Auto".equals(first.getTakeType()) && first.getTakeParamIntList().length == 0
+              : "AnySequence".equals(first.getTakeType())
+                  && Arrays.equals(new Integer[] {definition.initial().id()}, first.getTakeParamIntList()))
           || !"Talk".equals(first.getFinishType()) || first.isBackTrack()
           || first.getParamInt1() != 0 || !("Mission_" + definition.firstId()).equals(first.getParamStr1())
           || !definition.firstPath().equals(first.getMissionJsonPath())
@@ -110,6 +136,17 @@ final class DailyMissionMessageRules {
           // Each authored goal loads its actual MissionJsonPath, including original 302 -> 303.
           || !definition.goalPath().equals(goal.getMissionJsonPath())
           || !script(first, definition.firstScript()) || !script(goal, definition.goalScript())) return false;
+      if (definition.initial() != null) {
+        var initial = definition.initial();
+        var pre = GameplayDefinitions.subs.get(initial.id());
+        if (Arrays.stream(graph.getSubMissionList()).filter(sub -> sub == pre).count() != 1
+            || !common(pre, initial.id(), definition) || !"Auto".equals(pre.getTakeType())
+            || pre.getTakeParamIntList().length != 0 || !"Talk".equals(pre.getFinishType())
+            || pre.isBackTrack() || pre.getParamInt1() != 0
+            || !("Mission_" + initial.id()).equals(pre.getParamStr1())
+            || !initial.path().equals(pre.getMissionJsonPath()) || !script(pre, initial.script())
+            || !DailyMissionMessageOriginRules.source()) return false;
+      }
       var plane = GameData.getMazePlaneExcelMap().get(20002);
       var floor = GameData.getFloorInfo(20002, 20002001);
       if (plane == null || plane.getId() != 20002 || plane.getPlaneType() != PlaneType.Maze
@@ -210,20 +247,28 @@ final class DailyMissionMessageRules {
     return value.toString();
   }
 
-  private record Acceptance(Definition definition, long day, QuestState main, QuestState first, QuestState goal) {}
+  private record Acceptance(Definition definition, long day, QuestState main, QuestState initial,
+      QuestState first, QuestState goal) {}
+
+  private static QuestState initial(Definition definition, Map<Integer, QuestState> subs) {
+    return definition.initial() == null ? null : subs.get(definition.initial().id());
+  }
 
   private static Acceptance reference(Player player, Definition definition, long day) {
     var periods = player.getGameplay().getDailyMissionPeriods();
     if (periods == null || periods.getArchives() == null || periods.getExpired() == null) return null;
     var archive = periods.getArchives().get(key(definition, day));
     if (archive != null) return new Acceptance(definition, day, archive.getMain(),
+        initial(definition, archive.getSubs()),
         archive.getSubs().get(definition.firstId()), archive.getSubs().get(definition.goalId()));
     var expired = periods.getExpired().get(key(definition, day));
     if (expired != null) return new Acceptance(definition, day, expired.getMain(),
+        initial(definition, expired.getSubs()),
         expired.getSubs().get(definition.firstId()), expired.getSubs().get(definition.goalId()));
     if (!Objects.equals(DailyMissionRepeats.selectedDay(player, definition.mainId()), day)) return null;
     var g = player.getGameplay();
     return new Acceptance(definition, day, g.getMainMissions().get(definition.mainId()),
+        initial(definition, g.getSubMissions()),
         g.getSubMissions().get(definition.firstId()), g.getSubMissions().get(definition.goalId()));
   }
 
@@ -271,6 +316,13 @@ final class DailyMissionMessageRules {
         && state(acceptance.goal(), definition.goalId(), run.getDay(), now)
         && MissionStateRecords.completed(acceptance.first(), definition.firstId(), 1)
         && sameDay(acceptance.first().getFinishTime(), run.getDay(), now)
+        && (definition.initial() == null
+            ? run.getInitialAcceptance() == null && run.getFirstAcceptance() == null
+            : MissionStateRecords.completed(acceptance.initial(), definition.initial().id(), 1)
+                && sameDay(acceptance.initial().getFinishTime(), run.getDay(), now)
+                && uuid(run.getInitialAcceptance()) && uuid(run.getFirstAcceptance())
+                && Objects.equals(run.getInitialAcceptance(), acceptance.initial().getObservationKey())
+                && Objects.equals(run.getFirstAcceptance(), acceptance.first().getObservationKey()))
         && Objects.equals(run.getMainAcceptance(), acceptance.main().getObservationKey())
         && Objects.equals(run.getGoalAcceptance(), acceptance.goal().getObservationKey())
         && phone(run.getPhone(), definition)
@@ -317,9 +369,36 @@ final class DailyMissionMessageRules {
         || !MissionStateRecords.mainDoing(player, definition.mainId())
         || !MissionStateRecords.doing(g.getSubMissions().get(definition.goalId()), definition.goalId(), 1)
         || !MissionStateRecords.subCompleted(player, definition.firstId())
-        || !sameDay(g.getSubMissions().get(definition.firstId()).getFinishTime(), day, now)) return null;
+        || !sameDay(g.getSubMissions().get(definition.firstId()).getFinishTime(), day, now)
+        || definition.initial() != null
+            && (g.getCancelledSubs().contains(definition.initial().id())
+                || !MissionStateRecords.subCompleted(player, definition.initial().id())
+                || !sameDay(g.getSubMissions().get(definition.initial().id()).getFinishTime(), day, now))) return null;
     return new Acceptance(definition, day, g.getMainMissions().get(definition.mainId()),
+        initial(definition, g.getSubMissions()),
         g.getSubMissions().get(definition.firstId()), g.getSubMissions().get(definition.goalId()));
+  }
+
+  /** Source-specific report gate; only the real initial stage and loaded original G84 may pass. */
+  static boolean initialTalk(Player player) {
+    synchronized (player) {
+      var definition = definition(3000601);
+      var now = player.getMissionManager().currentInstant();
+      var day = DailyMissionRepeats.selectedDay(player, definition.mainId());
+      var g = player.getGameplay();
+      return source(definition) && DailyMissionRepeats.historyValid(player, now)
+          && DailyCommissionAcceptance.check(player, definition.mainId(), now) == Retcode.SUCC
+          && DailyCommissionAcceptance.valid(g.getDailyMissionSelections())
+          && day != null && day == DailyManager.day(now) && g.getDailyMissionSelections().getLatestDay() == day
+          && g.getDailyMissionPeriods() != null && g.getDailyMissionPeriods().getRunDays() != null
+          && (!g.getDailyMissionPeriods().getRunDays().containsKey(definition.mainId())
+              || Objects.equals(g.getDailyMissionPeriods().getRunDays().get(definition.mainId()), day))
+          && MissionStateRecords.mainDoing(player, definition.mainId())
+          && MissionStateRecords.doing(g.getSubMissions().get(definition.initial().id()), definition.initial().id(), 1)
+          && !g.getCancelledMissions().contains(definition.mainId())
+          && !g.getCancelledSubs().contains(definition.initial().id())
+          && DailyMissionMessageOriginRules.loaded(player);
+    }
   }
 
   static boolean eligible(Player player, GameplayDefinitions.MessageSection section) {
@@ -363,12 +442,15 @@ final class DailyMissionMessageRules {
     private final Map<String, DailyMissionMessageState.Run> runs;
     private final String key;
     private final DailyMissionMessageState.Run previous, replacement;
-    private final QuestState main, goal;
+    private final QuestState main, goal, initial, first;
     private final String previousMain, previousGoal, mainKey, goalKey;
+    private final String previousInitial, previousFirst, initialKey, firstKey;
 
     private Mutation() {
       runs = null; key = null; previous = null; replacement = null; main = null; goal = null;
+      initial = null; first = null;
       previousMain = null; previousGoal = null; mainKey = null; goalKey = null;
+      previousInitial = null; previousFirst = null; initialKey = null; firstKey = null;
     }
 
     private Mutation(Map<String, DailyMissionMessageState.Run> runs, Acceptance acceptance,
@@ -377,27 +459,38 @@ final class DailyMissionMessageRules {
       this.key = key(acceptance.definition(), acceptance.day());
       this.previous = previous;
       this.main = acceptance.main(); this.goal = acceptance.goal();
+      this.initial = acceptance.initial();
+      this.first = initial == null ? null : acceptance.first();
       this.previousMain = main.getObservationKey(); this.previousGoal = goal.getObservationKey();
-      String captured = null;
+      this.previousInitial = initial == null ? null : initial.getObservationKey();
+      this.previousFirst = first == null ? null : first.getObservationKey();
       try {
-        captured = main.captureObservationKey();
+        this.mainKey = main.captureObservationKey();
         this.goalKey = goal.captureObservationKey();
-        this.mainKey = captured;
+        this.initialKey = initial == null ? null : initial.captureCompletedObservationKey();
+        this.firstKey = first == null ? null : first.captureCompletedObservationKey();
         var definition = acceptance.definition();
         this.replacement = new DailyMissionMessageState.Run(acceptance.day(), definition.mainId(),
-            definition.goalId(), definition.sectionId(), definition.sourceId(), mainKey, goalKey, phone.copy());
+            definition.goalId(), definition.sectionId(), definition.sourceId(), mainKey, goalKey,
+            initialKey, firstKey, phone.copy());
       } catch (RuntimeException | Error failure) {
-        if (captured != null) main.restoreObservationKey(captured, previousMain);
-        if (!Objects.equals(goal.getObservationKey(), previousGoal))
-          goal.restoreObservationKey(goal.getObservationKey(), previousGoal);
+        restore(main, previousMain); restore(goal, previousGoal);
+        restore(initial, previousInitial); restore(first, previousFirst);
         throw failure;
       }
+    }
+
+    private static void restore(QuestState state, String previous) {
+      if (state != null && !Objects.equals(state.getObservationKey(), previous))
+        state.restoreObservationKey(state.getObservationKey(), previous);
     }
 
     void apply() {
       if (runs == null) return;
       if (runs.get(key) != previous || !Objects.equals(main.getObservationKey(), mainKey)
-          || !Objects.equals(goal.getObservationKey(), goalKey))
+          || !Objects.equals(goal.getObservationKey(), goalKey)
+          || initial != null && !Objects.equals(initial.getObservationKey(), initialKey)
+          || first != null && !Objects.equals(first.getObservationKey(), firstKey))
         throw new IllegalStateException("Daily phone acceptance changed before save");
       runs.put(key, replacement);
     }
@@ -407,6 +500,8 @@ final class DailyMissionMessageRules {
       if (previous == null) runs.remove(key); else runs.put(key, previous);
       main.restoreObservationKey(mainKey, previousMain);
       goal.restoreObservationKey(goalKey, previousGoal);
+      if (initial != null) initial.restoreObservationKey(initialKey, previousInitial);
+      if (first != null) first.restoreObservationKey(firstKey, previousFirst);
     }
   }
 
@@ -422,7 +517,7 @@ final class DailyMissionMessageRules {
     var runs = player.getGameplay().getDailyMissionMessages().getRuns();
     var previous = runs.get(key(definition, acceptance.day()));
     if (previous == null) {
-      if (next.isFinished() || next.getHistory().size() != 3)
+      if (next.isFinished() || next.getHistory().size() != definition.openingSize())
         throw new IllegalStateException("Daily phone must start at its original opening");
     } else {
       var before = previous.getPhone();

@@ -140,4 +140,29 @@ F2成功5547回包仅有当前游戏field8。新的完整PE核对证明原Query�
 
 首个快照使用原Probe只执行一次完整首次四战付款链，64请求/182检查；后续独立新Probe依次执行`saved-leave`15/62、`paused-resume`15/45、`resaved-leave`15/62，三份存档inside依次为false/true/false。实际5419含普通场景stage14、普通队伍HP/SP、完整HIM12和保留aeon6的AEM6；坏空请求与重复5462拒绝且不暴露成功stage。普通场景与已暂停的完整Query在H2重启后仍有效，原5437恢复原G34/G35/NPC1013，再查询已付款库存和拒绝重复购买。奇物4取得UUID、四胜收据UUID、运行UUID、棋盘、coins200、独立HP5000/SP2500、价格、库存与64字符返回来源租约在三份同UID存档中均保持，完整Chess文档只允许inside变化；经典运行、普通队伍/角色条、普通库存、普通币和日常均与真实首战前观察基线相等。
 
-入口、每个快照和结束均核对同一jar、隔离config/policy、默认关闭配方、工具/source fixture和2342份原资源hash；loopback HTTP显式禁用代理，正常stop失败不遮蔽首个实际协议失败。资格夹具仅种入原8013104完成历史，原资格奖励在真实Start前后只读观察；没有预塞Chess运行、入场、碎片、胜利或奇物。这个新网络/H2结果不声明官方物理返回映射、原菜单task执行、完整客户端GUI、Quit/finished、Nous骰子/天赋/币、祝福商品、未来奇物复活效果或崩溃原子性。此时新jar的完整项目全量由主代理另行运行，433项专项与109/351网络/H2不能代替其结果。
+入口、每个快照和结束均核对同一jar、隔离config/policy、默认关闭配方、工具/source fixture和2342份原资源hash；loopback HTTP显式禁用代理，正常stop失败不遮蔽首个实际协议失败。资格夹具仅种入原8013104完成历史，原资格奖励在真实Start前后只读观察；没有预塞Chess运行、入场、碎片、胜利或奇物。这个新网络/H2结果不声明官方物理返回映射、原菜单task执行、完整客户端GUI、Quit/finished、Nous骰子/天赋/币、祝福商品、未来奇物复活效果或崩溃原子性。主代理的`build/manual-sibling-save-blast-full-build-verification.json`随后确认502类/13715项完整通过、2535项编译输入稳定、构建成功；这份全量、433项专项与同SHA的109/351网络/H2各自成立，均不覆盖下节后来发现的初次Query缺口。
+
+## 没有运行记录时的初次Query
+
+进一步完整原生核对发现，5547不是只查已开始的运行。原Query消费者index615324把field8 `DJEKEGMEHLK`交给index615326 `_SyncChessRogueInfo`；其完整PE区间`caf6850..caf697b`为299字节，SHA256 `b4f970d53a8a2d892bd119ca7a695a41758649c4c2c0311b8b1f18ee6a8dabff`。`caf686f test rsi,rsi`、`caf6872 je caf68f8`到`caf6902 ret`是正常空运行返回，不触发Start、骰子选择或运行创建。后续`caf6744/caf674b`仍无条件消费field10 HIM及其必需9/12子结构。原资格链仍为area101→unlock1000020→FinishMission/ListContain8013104/Progress1；资格未完成时可以查询完整锁定资料，HIM11为空，不能因此授予任务资格或把HIM10当首奖领取。
+
+新`src/test/resources/fixtures/chess-rogue-initial-query-4.6.json`保留15份完整原生函数字节、metadata、匹配4.6 descriptor与5条完整资格/Nous原行。只读复核逐份重读本机DLL的PE unwind边界、完整字节和全部指令树，并对固定source commit的完整五张表作LF规范化比较；原88份场景/棋盘/Act与23份原表fixture不变，没有安装或修改资源。静态原消费链证明不等于客户端页面执行。
+
+独立草稿和正式六项分别对不可变6525 jar的9个生产CodeSource执行真实5547；`build/universe-miracle4-draft/initial-query-draft-red/verification.json`和`initial-query-formal-red/verification.json`均确认6项/2纯AssertionFailedError/4通过、0errors/skips/容器失败。资格完成及未完成的普通账户都预期成功却实际返回2901；已有运行、四战购买后暂停并同文档重载、完整Act漂移和非空原空请求体四项对照通过。独立工具完整src文件清单分别为2532与2534且前后稳定，这是仅src目录的计数，不能混用主代理包含额外构建输入的2535项。上述真实RED没有使用新生产源码，也没有启动服务或游戏。
+
+最小修复仅限Manager/Profile/46：只在没有其它玩法占用、独立记录是完整空schema1默认状态、当前普通场景/入口/Player身份一致、原guide全来源和现有普通返回树校验有效时允许初次只读Query。成功响应省略field8，不编造棋盘或选中aeon，提供完整field10/9/12；11只按已保存8013104资格投影101或空列表，10仍为空，不新增save、运行UUID、碎片、首奖、骰子、天赋或281013。来源受现有默认关闭guide策略约束，没有为查询绕过运营开关。已有运行仍沿原严格来源/场景校验，损坏或部分旧记录不能因失去runId而伪装成首次账户。
+
+正式独立类`ChessRogueInitialQuery46Test`扩至9项，增加首次原Act漂移、普通场景入口身份不符、已付款暂停记录丢失runId的拒绝边界。首次隔离83项中，2项旧Asta秘技因工具classpath漏复制完整Maze fixture而失败；该工具失误和另一个owned分支同时新增的源码记录均保留，不计为新行为RED。完整隔离fixture修正后的`initial-query-owned-green-second/verification.json`及`verification-seal.json`确认新9项和旧Profile3/Leave10/Merchant61共83项全部通过，XML SHA256 `2dd7197d8f0fe453ec453a1e15c731217d0c6b21df1fa5eb7d6265aed207ac20`；三个owned生产类来自隔离javac，其余六个受检生产类来自不可变6525。所有本lane正式测试、源码、完整fixture、15份复制helper与jar前后稳定；并行其它owned输入的变化逐件另列，不声称完整src全局冻结。此结果是隔离源码验证；后续项目级Gradle与统一新jar首次Query/H2证据见下节，旧109/351保存离开报告仍只属于其原范围。
+## 初次Query实际新产物与资格奖励分账
+
+主代理`build/initial-query-cyrene-daily-origin-clock-root-focused-verification.json`确认414项真实项目级回归全部通过、fail/error/skip为0、2544项编译输入稳定。统一新冻结包为`build/initial-query-cyrene-daily-origin-clock-runtime.jar`，SHA256 `258b6cdb5567db32e2a7a81a7907ba8e5fb71f3aa9bbfb47cd24bceeab508ff1`。本段不借用旧6525的502类/13715项全量，也不把当时仍运行的本批全量预记为通过。
+
+独立首次Query原生报告为`build/chess-rogue-initial-query-current-native.json`，报告SHA256 `07c340be2ddccdb73f922eed818fd816fefbb6240c150d623475c6aab3ef834e`，独占目录`build/smoke/chess-rogue-native-initial-query-8yaafcfq`。实际四个进程依次为`unqualified`、`unqualified-restart`、`qualified`、`qualified-restart`，每段12个KCP请求/24项检查，共48个请求/96项检查；4次正常stop、3次同UID进程重启、4份物理只读H2检查、8次独立实际Morphia Player读取均通过，没有复跑旧商店或保存离开路线。每段执行两次成功5547和一次原空请求的非法非空拒绝：成功省略DJE8，HIM10及必需MOOK9/DDAF12完整，资格列表为[]或[101]，首奖列表为空。实际普通scene、完整正式/extra队伍、角色、库存、日常、经典运行、live Player和真实BSON在每轮Query前后均相等，无运行UUID、棋盘、碎片、首奖或Nous取得。Native观察文档不变；零`Player.save()`调用另由单元测试的`interruptSave`屏障证明，没有假称Native方法调用计数已插桩。
+
+资格只在第三个进程显式种入原8013104的FINISHED历史，再调用真实`MissionManager.refresh()`，不制造CLOSED或已支付凭据。新增`scripts/fixtures/chess-rogue-initial-query-qualification-4.6.json`保留完整MainMission8013104与Reward18013104原行和固定commit全表SHA；实际源奖励仅item2/5000。观察信用点为0→种入历史后0→生产结算后5000，实际任务转CLOSED、`mission:8013104`收据rewardId18013104/granted=true，完整gameplay只改变mainMissions与rewards；正式/extra队伍、角色、物品和其它收据不变。资格结算不是Query奖励，也不是区域原首奖109011或资格剧情已完成的验收。
+
+原报告的第三轮`loginRefreshComparedToPreviousStop`字段曾比较资格结算后的Query基线，把已明确的资格增量同时标成登录变化。纯JSON守卫先复现23项中1项真实断言失败，再最小改为比较`qualification.before`；23项全部通过，原日志分别保留在`build/universe-miracle4-draft/initial-query-attribution-guard-red`与`initial-query-attribution-guard-green`。独立补充`build/chess-rogue-initial-query-current-native-attribution.json`只读原网络/存档观测，确认三个登录恢复均无gameplay增量，四轮Query仍完整零写；没有重启服务或重跑Native。原报告和原执行工具字节/SHA保留于独占目录`executed-tool-inputs`，补充后的新脚本不冒称用于原48/96执行。
+
+可复用的新工具为`scripts/smoke-chess-rogue-initial-query.py`及独立Probe、console命令`chessqueryfixture`、只读Inspector；旧merchant/saved-leave工具完全保留。最终tracked工具的23项Python守卫和新jar独立javac/11类schema/存储codec预检通过，证据为`build/chess-rogue-initial-query-final-tools-preflight.json`，`nativeExecuted=false`；后续使用`python -X utf8 scripts/smoke-chess-rogue-initial-query.py --jar <冻结新jar> --output <全新build报告>`，追加`--preflight-only`只做预检。每轮入口/快照/末尾守卫同jar、隔离config/policy和2342份原资源SHA，HTTP回环显式禁用代理，独占lease不覆盖失败报告。默认guide策略仍false，只有隔离目录改为true；未改运营资源、配置或数据库。完整客户端GUI、原菜单task执行、Nous、首奖、Quit/IsFinished和崩溃原子性仍待完成。
+
+另一个后续缺口已单独锁定，尚未写入本轮生产：`Profile.current`和`Manager.start`只判8013104的phase不是DOING，损坏记录可误解锁。对不可变6525的完整原图与9个生产CodeSource运行10项独立草稿，`build/universe-miracle4-draft/eligibility-record-draft-red/verification.json`确认6项纯断言失败、4项正常完成/DOING对照通过，0error/skip，源码与夹具稳定；null phase、FINISHED/CLOSED缺progress或finishTime、错questId记录均被当成资格。本服既有`MissionStateRecords.mainCompleted`已核对id、完成phase、goal1、时间和取消标记，后续最小方案复用该谓词，同时保留合法FINISHED/CLAIMING/CLOSED，不把正常资格改成必须支付首奖。该缺口不能被本段正常记录的Native通过遮蔽。

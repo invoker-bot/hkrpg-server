@@ -386,8 +386,13 @@ class DailyMissionMessageSibling46Test {
     assertFalse(daily.actor.getGameplay().getMainMissions().containsKey(MAIN));
   }
 
-  @Test void original3000601StillRequiresItsSeparateReviewedScope() throws Exception {
+  @Test void original3000601StillRequiresItsCompleteSeparateThreeStageSource() throws Exception {
     daily.catalog(3000601, 3000602, MAIN);
+    assertTrue(DailyMissionRepeats.supportedGraph(3000601));
+    // A genuinely different complete original task cannot replace original 300060001.
+    GameplayDefinitions.subs.get(300060001).setTask(GameplayDefinitions.subs.get(300060301).getTask());
     assertFalse(DailyMissionRepeats.supportedGraph(3000601));
+    assertTrue(DailyMissionRepeats.supportedGraph(3000602));
+    assertTrue(DailyMissionRepeats.supportedGraph(MAIN));
   }
 }

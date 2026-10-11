@@ -83,6 +83,7 @@ public final class ChessRogueManager {
   public Retcode queryStatus() {
     synchronized (player) {
       var run = player.getGameplay().getChessRogue();
+      if (!occupied(false) && ChessRogueProfile.initialSource(player)) return Retcode.SUCC;
       return ChessRogueRoutes.valid(run) && rosterValid(run.getRoster())
           && (run.isInside() ? ChessRogueRoutes.sceneSource(player.getScene(),run,true)
               : !occupied(false) && !run.isFailed() && ChessRogueRoutes.returnedSceneSource(player.getScene(),run))

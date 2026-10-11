@@ -75,7 +75,69 @@ public class SkillAbilityInfo {
             }
         }
 
+        // Both original ByHaveAbilityTarget branches have the same END Attack contract.
+        // Only that callback is admitted; neither target selection nor projectile physics is
+        // inferred by selecting the visual branch. Whole original blobs are checked at ingress.
+        var normal = avatarExcel.getMazeAttack();
+        if (avatarExcel.getAvatarID() == 1415 && base != null && normal != null
+                && "LocalPlayer_Cyrene_00_MazeSkill".equals(base.getAbilityName())
+                && "LocalPlayer_Cyrene_00_NormalAtk01".equals(normal.getAbilityName())
+                && hasCyreneInputLink()) {
+            for (var ability : AbilityList) {
+                if (!"LocalPlayer_Cyrene_00_NormalAtk02".equals(ability.getName())
+                        || !"Free".equals(ability.getManualTriggerType())) continue;
+                var projectile = cyreneEndProjectile(ability);
+                if (projectile == null) continue;
+                var manual = new MazeSkill(avatarExcel, 1, ability.getName());
+                collectProjectileDeclaration(manual, projectile);
+                parseTask(manual, manual.getCastActions(), projectile);
+                if (manual.isProjectileDeclared()) normal.addManualAbility(manual);
+            }
+        }
+
         return true;
+    }
+
+    private boolean hasCyreneInputLink() {
+        try {
+            var modifier = GlobalModifiers.getAsJsonObject("ADV_StageAbility_Maze_Cyrene");
+            var loop = modifier.getAsJsonArray("ModifierTaskList").get(0).getAsJsonObject();
+            if (!"RPG.GameCore.LoopExecuteTaskList".equals(loop.get("$type").getAsString())) return false;
+            var wait = loop.getAsJsonArray("TaskList").get(0).getAsJsonObject();
+            if (!"RPG.GameCore.WaitSkillInput".equals(wait.get("$type").getAsString())
+                    || !wait.get("CheckAllowUseSkill").getAsBoolean()) return false;
+            var trigger = wait.getAsJsonArray("OnInput").get(0).getAsJsonObject();
+            return "RPG.GameCore.AdventureTriggerTargetAbility".equals(trigger.get("$type").getAsString())
+                    && !trigger.has("SkillType")
+                    && "LocalPlayer_Cyrene_00_NormalAtk02".equals(trigger.get("AbilityName").getAsString());
+        } catch (RuntimeException unsupported) {
+            return false;
+        }
+    }
+
+    private TaskInfo cyreneEndProjectile(AbilityInfo ability) {
+        try {
+            var branch = ability.getOnStart().get(1);
+            var predicate = branch.getPredicate().getAsJsonObject();
+            if (!"RPG.GameCore.PredicateTaskList".equals(branch.getType())
+                    || !predicate.keySet().equals(java.util.Set.of("$type"))
+                    || !"RPG.GameCore.ByHaveAbilityTarget".equals(predicate.get("$type").getAsString())) return null;
+            TaskInfo selected = null;
+            for (var tasks : java.util.List.of(branch.getSuccessTaskList(), branch.getFailedTaskList())) {
+                var projectile = tasks.get(7);
+                if (!projectile.hasProjectileDeclaration()
+                        || !"RPG.GameCore.AdventureFireProjectile".equals(projectile.getType())
+                        || projectile.getOnProjectileHit() != null
+                        || projectile.getOnProjectileLifetimeFinish() == null
+                        || projectile.getOnProjectileLifetimeFinish().size() != 1
+                        || !"RPG.GameCore.AdventureTriggerAttack".equals(
+                            projectile.getOnProjectileLifetimeFinish().getFirst().getType())) return null;
+                selected = projectile;
+            }
+            return selected;
+        } catch (RuntimeException unsupported) {
+            return null;
+        }
     }
 
     private boolean hasHimekoNovaInputLink() {
