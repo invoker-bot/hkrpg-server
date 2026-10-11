@@ -32,6 +32,7 @@ public final class QuestCompletionRecords {
                     || TimelineActivityQuests.belongs(definition)
                     || ActivityKillQuests.belongs(definition)
                     || ActivityFirstTalkQuests.belongs(definition)
+                    || CavalryBeastQuests.belongs(definition)
                     || ActivityChestQuests.belongs(definition)
                     || ActivityKraterQuests.belongs(definition)))) return null;
     var rule = GameData.getFinishWayExcelMap().get(definition.getFinishWayID());
@@ -55,6 +56,8 @@ public final class QuestCompletionRecords {
       return ActivityKillQuests.completionState(player, id);
     if (ActivityFirstTalkQuests.belongs(definition))
       return ActivityFirstTalkQuests.completionState(player, id);
+    if (CavalryBeastQuests.belongs(definition))
+      return CavalryBeastQuests.completionState(player, id);
     if (ActivityChestQuests.belongs(definition))
       return ActivityChestQuests.completionState(player, id);
     if (ActivityKraterQuests.belongs(definition))

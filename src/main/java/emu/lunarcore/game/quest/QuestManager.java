@@ -59,6 +59,7 @@ public final class QuestManager extends BasePlayerManager {
         observed |= org.hkrpg.server.gameplay.TimelineActivityQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityKillQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityFirstTalkQuests.refresh(getPlayer());
+        observed |= org.hkrpg.server.gameplay.CavalryBeastQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityChestQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityKraterQuests.refresh(getPlayer());
         collectionChanged |= observed;
@@ -286,6 +287,8 @@ public final class QuestManager extends BasePlayerManager {
         state = org.hkrpg.server.gameplay.ActivityKillQuests.state(getPlayer(), questId);
       if (org.hkrpg.server.gameplay.ActivityFirstTalkQuests.belongs(definition))
         state = org.hkrpg.server.gameplay.ActivityFirstTalkQuests.state(getPlayer(), questId);
+      if (org.hkrpg.server.gameplay.CavalryBeastQuests.belongs(definition))
+        state = org.hkrpg.server.gameplay.CavalryBeastQuests.state(getPlayer(), questId);
       if (org.hkrpg.server.gameplay.ActivityChestQuests.belongs(definition))
         state = org.hkrpg.server.gameplay.ActivityChestQuests.state(getPlayer(), questId);
       if (org.hkrpg.server.gameplay.ActivityKraterQuests.belongs(definition))
@@ -358,6 +361,8 @@ public final class QuestManager extends BasePlayerManager {
                                 || org.hkrpg.server.gameplay.ActivityKillQuests.state(getPlayer(), q.getQuestId()) == q)
                             && (!org.hkrpg.server.gameplay.ActivityFirstTalkQuests.belongs(definition)
                                 || org.hkrpg.server.gameplay.ActivityFirstTalkQuests.state(getPlayer(), q.getQuestId()) == q)
+                            && (!org.hkrpg.server.gameplay.CavalryBeastQuests.belongs(definition)
+                                || org.hkrpg.server.gameplay.CavalryBeastQuests.state(getPlayer(), q.getQuestId()) == q)
                             && (!org.hkrpg.server.gameplay.ActivityChestQuests.belongs(definition)
                                 || org.hkrpg.server.gameplay.ActivityChestQuests.state(getPlayer(), q.getQuestId()) == q)
                             && (!org.hkrpg.server.gameplay.ActivityKraterQuests.belongs(definition)
@@ -369,6 +374,7 @@ public final class QuestManager extends BasePlayerManager {
       states.addAll(org.hkrpg.server.gameplay.TimelineActivityQuests.states(getPlayer()).values());
       states.addAll(org.hkrpg.server.gameplay.ActivityKillQuests.states(getPlayer()).values());
       states.addAll(org.hkrpg.server.gameplay.ActivityFirstTalkQuests.states(getPlayer()));
+      states.addAll(org.hkrpg.server.gameplay.CavalryBeastQuests.states(getPlayer()));
       states.addAll(org.hkrpg.server.gameplay.ActivityChestQuests.states(getPlayer()));
       states.addAll(org.hkrpg.server.gameplay.ActivityKraterQuests.states(getPlayer()));
       states.addAll(org.hkrpg.server.gameplay.RogueBlessingQuests.permanentStates(getPlayer()));

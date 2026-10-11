@@ -33,6 +33,12 @@ public class GameplayState {
     return worldFirstTalks;
   }
   void worldFirstTalks(WorldFirstTalkState value) { worldFirstTalks = Objects.requireNonNull(value); }
+  private CavalryBeastState cavalryBeasts = new CavalryBeastState();
+  public CavalryBeastState getCavalryBeasts() {
+    if (cavalryBeasts == null) cavalryBeasts = new CavalryBeastState();
+    return cavalryBeasts;
+  }
+  void cavalryBeasts(CavalryBeastState value) { cavalryBeasts = Objects.requireNonNull(value); }
   private ActivityKillState activityKillQuests = new ActivityKillState();
   public ActivityKillState getActivityKillQuests() {
     if (activityKillQuests == null) activityKillQuests = new ActivityKillState();
