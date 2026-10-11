@@ -237,7 +237,7 @@ public class FloorInfo {
                     }
 
                     // Keep the authored graph identity for instance loaders and script dispatch.
-                    prop.setValueSource(null);
+                    if(!org.hkrpg.server.gameplay.GoldenSpears.keepsSourceValues(group)) prop.setValueSource(null);
                 }
             }
         }

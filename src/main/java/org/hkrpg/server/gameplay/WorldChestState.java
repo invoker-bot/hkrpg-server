@@ -15,6 +15,7 @@ public final class WorldChestState {
   private Map<Integer, Opening> records = new TreeMap<>();
   private Map<Integer, QuestState> quests = new TreeMap<>();
   private Map<Integer, Unlock> unlocks = new TreeMap<>();
+  private Map<Integer, GoldenSpearRecord> spears = new TreeMap<>();
 
   public enum Phase {
     PREPARED,
@@ -28,6 +29,10 @@ public final class WorldChestState {
     private int chest, plane, floor, entry, dimension, story, group, instance, prop, entity;
     private long at, runtime;
     private String event, propSource, groupSource, chestSource;
+    private Phase phase;
+    private int triggerEntity;
+    private String triggerSource;
+    private long completedAt;
 
     private Unlock() {}
 
@@ -51,11 +56,40 @@ public final class WorldChestState {
       chestSource = rules.rowPins.get("MazeChest:" + id);
     }
 
+    Unlock(
+        Player p,
+        int id,
+        EntityProp chestActor,
+        EntityProp shield,
+        WorldChestRules rules,
+        long now) {
+      this(p, id, chestActor, rules, now);
+      phase = Phase.PREPARED;
+      triggerEntity = shield.getEntityId();
+      triggerSource = PropTimelines.source(shield.getPropInfo());
+    }
+
+    public boolean completed() {
+      return phase == null || phase == Phase.OPEN;
+    }
+
     boolean valid(WorldChestRules rules) {
       try {
         var l = rules.locations.get(chest);
         var original = rules.original(chest, dimension);
-        return rules.flame(chest)
+        boolean sourceEvent =
+            rules.flame(chest)
+                ? phase == null && triggerEntity == 0 && triggerSource == null && completedAt == 0
+                : rules.golden(chest)
+                    && phase != null
+                    && triggerEntity > 0
+                    && triggerEntity != entity
+                    && Objects.equals(
+                        triggerSource,
+                        PropTimelines.source(
+                            rules.groupProp(chest, dimension, 300001, GoldenSpearSources.SHIELD)))
+                    && (phase == Phase.PREPARED ? completedAt == 0 : completedAt >= at);
+        return sourceEvent
             && l != null
             && original != null
             && plane == l.plane()
@@ -189,7 +223,7 @@ public final class WorldChestState {
       case 6029850 -> 5;
       case 6029851 -> 10;
       case 6029852 -> 15;
-      case TimeRelayFlameSources.GOAL -> 1;
+      case TimeRelayFlameSources.GOAL, GoldenSpearSources.GOAL -> 1;
       default -> -1;
     };
   }
@@ -206,15 +240,26 @@ public final class WorldChestState {
     return unlocks == null ? null : Collections.unmodifiableMap(unlocks);
   }
 
+  public Map<Integer, GoldenSpearRecord> getSpears() {
+    return spears == null ? null : Collections.unmodifiableMap(spears);
+  }
+
   boolean valid(WorldChestRules rules, Player p) {
     if (rules == null
         || version != 1
         || records == null
         || quests == null
         || unlocks == null
+        || spears == null
         || records.size() > rules.locations.size()
         || quests.size() > rules.goals().size()
-        || unlocks.size() > TimeRelayFlameSources.PUZZLES.size()) return false;
+        || unlocks.size() > rules.locations.keySet().stream().filter(rules::puzzle).count()
+        || spears.size() > GoldenSpearSources.PUZZLES.size()) return false;
+    for (var e : spears.entrySet())
+      if (e.getKey() == null
+          || e.getValue() == null
+          || e.getKey() != e.getValue().getChest()
+          || !e.getValue().valid(rules)) return false;
     for (var e : unlocks.entrySet())
       if (e.getKey() == null
           || e.getValue() == null
@@ -227,9 +272,12 @@ public final class WorldChestState {
           || e.getKey() != e.getValue().chest
           || !e.getValue().valid(rules, p)
           || !keys.add(e.getValue().rewardKey())) return false;
-      if (rules.flame(e.getKey())) {
+      if (rules.puzzle(e.getKey())) {
         var unlock = unlocks.get(e.getKey());
-        if (unlock == null || unlock.at > e.getValue().at) return false;
+        if (unlock == null
+            || !unlock.completed()
+            || unlock.at > e.getValue().at
+            || unlock.completedAt > e.getValue().at) return false;
       }
     }
     var journal =
@@ -296,6 +344,24 @@ public final class WorldChestState {
     var next = copy();
     if (next.unlocks.putIfAbsent(observation.chest, observation) != null)
       throw new IllegalStateException("Already unlocked original puzzle chest");
+    return next;
+  }
+
+  WorldChestState revealed(int chest, long now) {
+    var next = copy();
+    var record = next.unlocks.get(chest);
+    if (record == null || record.phase != Phase.PREPARED)
+      throw new IllegalStateException("Reveal reservation changed");
+    record.phase = Phase.OPEN;
+    record.completedAt = now;
+    return next;
+  }
+
+  WorldChestState spearStep(
+      Player p, int chest, EntityProp actor, WorldChestRules rules, int index, long now) {
+    var next = copy();
+    var record = next.spears.computeIfAbsent(chest, GoldenSpearRecord::new);
+    record.append(p, actor, rules, index, now);
     return next;
   }
 

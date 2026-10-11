@@ -742,6 +742,9 @@ public class Player implements Tickable, Syncable {
     }
 
     public synchronized EntityProp interactWithProp(int interactId, int propEntityId) {
+        if (getScene() != null && getScene().getEntityById(propEntityId) instanceof EntityProp golden
+            && org.hkrpg.server.gameplay.GoldenSpears.applies(golden))
+            return org.hkrpg.server.gameplay.GoldenSpears.interact(this, interactId, propEntityId).prop();
         if (getScene() != null && getScene().getEntityById(propEntityId) instanceof EntityProp candidate
             && org.hkrpg.server.gameplay.WorldChests.applies(candidate))
             return org.hkrpg.server.gameplay.WorldChests.open(this, interactId, propEntityId).prop();

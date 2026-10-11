@@ -34,7 +34,9 @@ public enum PropType {
     PROP_MAP_ROTATION_SWITCHER (27),
     PROP_BOXMAN_BINDED (28),
     PROP_TIMELINE_CONTROL (29),
-    PROP_MAZE_JIGSAW (30);
+    PROP_MAZE_JIGSAW (30),
+    // Verified from the fixed 4.6 client's PropType enum (type 10462).
+    PROP_DYNAMIC_POSITION (31);
 
     private final int val;
 

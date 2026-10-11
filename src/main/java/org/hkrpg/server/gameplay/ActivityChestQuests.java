@@ -28,7 +28,8 @@ public final class ActivityChestQuests {
 
   public static List<QuestState> states(Player p) {
     var out = new ArrayList<QuestState>();
-    for (int id : List.of(6029850, 6029851, 6029852, TimeRelayFlameSources.GOAL)) {
+    for (int id :
+        List.of(6029850, 6029851, 6029852, TimeRelayFlameSources.GOAL, GoldenSpearSources.GOAL)) {
       var q = state(p, id);
       if (q != null) out.add(q);
     }

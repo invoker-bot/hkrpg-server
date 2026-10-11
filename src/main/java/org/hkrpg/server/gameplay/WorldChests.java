@@ -15,7 +15,7 @@ public final class WorldChests {
   private static Integer identity(EntityProp actor) {
     if (actor == null || actor.getScene() == null) return null;
     var scene = actor.getScene();
-    return TimeRelayFlameSources.LOCATIONS.entrySet().stream()
+    return GoldenSpearSources.LOCATIONS.entrySet().stream()
         .filter(
             e ->
                 e.getValue().plane() == scene.getPlaneId()
@@ -32,6 +32,11 @@ public final class WorldChests {
     return identity(actor) != null;
   }
 
+  public static boolean golden(EntityProp actor) {
+    var id = identity(actor);
+    return id != null && GoldenSpearSources.PUZZLES.containsKey(id);
+  }
+
   public static Retcode validate(Player p, int config, int entity) {
     var base = SceneInteractions.validate(p, config, entity);
     if (base != Retcode.SUCC) return base;
@@ -46,11 +51,13 @@ public final class WorldChests {
     if (!state.valid(rules, p)) return Retcode.PLAYER_DATA_ERROR;
     if (state.getRecords().values().stream()
         .anyMatch(r -> r.getPhase() == WorldChestState.Phase.PREPARED)) return Retcode.SYSTEM_BUSY;
+    if (state.getUnlocks().values().stream().anyMatch(r -> !r.completed()))
+      return Retcode.SYSTEM_BUSY;
     if (state.getRecords().containsKey(id)) return Retcode.SYSTEM_BUSY;
     if (config == TimeRelayFlameSources.UNLOCK) {
       if (!rules.flame(id)) return Retcode.INTERACT_TYPE_INVALID;
       if (state.getUnlocks().containsKey(id)) return Retcode.SYSTEM_BUSY;
-    } else if (rules.flame(id) && !state.getUnlocks().containsKey(id)) {
+    } else if (rules.puzzle(id) && !state.getUnlocks().containsKey(id)) {
       return Retcode.UNSUPPORTED_PROP_STATE;
     }
     return rules.actor(p, id) == actor ? Retcode.SUCC : Retcode.MISSION_SCENE_NOT_MATCH;
@@ -160,6 +167,7 @@ public final class WorldChests {
       else {
         var unlock = state.getUnlocks().get(id);
         if (unlock != null
+            && unlock.completed()
             && Objects.equals(unlock.getPropSource(), PropTimelines.source(actor.getPropInfo())))
           actor.setState(PropState.ChestClosed, false);
       }

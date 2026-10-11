@@ -31,14 +31,18 @@ final class WorldChestRules {
       Map<String, String> hashes,
       Map<String, Map<Integer, JsonObject>> tables,
       Map<String, JsonElement> files,
-      boolean flames) {
+      boolean flames,
+      boolean spears) {
     this.root = root;
     this.hashes = Map.copyOf(hashes);
     this.tables = Map.copyOf(tables);
     this.files = Map.copyOf(files);
-    rowPins = flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS;
-    filePins = flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES;
-    locations = flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS;
+    rowPins = rows(flames, spears);
+    filePins = files(flames, spears);
+    locations =
+        GoldenSpearSources.merge(
+            flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS,
+            spears ? GoldenSpearSources.PUZZLES : Map.of());
     var gson = ResourceLoader.getGson();
     for (String key : rowPins.keySet()) {
       var p = key.split(":");
@@ -77,6 +81,18 @@ final class WorldChestRules {
     }
   }
 
+  private static Map<String, String> rows(boolean flames, boolean spears) {
+    return GoldenSpearSources.merge(
+        flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS,
+        spears ? GoldenSpearSources.ROWS : Map.of());
+  }
+
+  private static Map<String, String> files(boolean flames, boolean spears) {
+    return GoldenSpearSources.merge(
+        flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES,
+        spears ? GoldenSpearSources.FILES : Map.of());
+  }
+
   static synchronized WorldChestRules load() {
     if (GameData.getQuestExcelMap().get(FIRST) == null
         || GameData.getPropExcelMap().get(60401) == null) return null;
@@ -84,8 +100,12 @@ final class WorldChestRules {
       boolean flames = GameData.getPropExcelMap().get(104046) != null;
       if (flames != (GameData.getQuestExcelMap().get(TimeRelayFlameSources.GOAL) != null))
         return null;
-      var filePins = flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES;
-      var rowPins = flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS;
+      boolean spears = GameData.getPropExcelMap().get(GoldenSpearSources.SPEAR) != null;
+      if (spears != (GameData.getPropExcelMap().get(GoldenSpearSources.SHIELD) != null)
+          || spears != (GameData.getQuestExcelMap().get(GoldenSpearSources.GOAL) != null))
+        return null;
+      var filePins = files(flames, spears);
+      var rowPins = rows(flames, spears);
       var root = Path.of(LunarCore.getConfig().getResourceDir()).toAbsolutePath().normalize();
       var hashes = new TreeMap<String, String>();
       var json = new TreeMap<String, JsonElement>();
@@ -124,7 +144,7 @@ final class WorldChestRules {
         if (row == null || !e.getValue().equals(TimelineActivityRules.fingerprint(row)))
           return null;
       }
-      var next = new WorldChestRules(root, hashes, tables, json, flames);
+      var next = new WorldChestRules(root, hashes, tables, json, flames, spears);
       if (!next.loaded()) return null;
       current = next;
       return next;
@@ -185,21 +205,34 @@ final class WorldChestRules {
   }
 
   List<Integer> goals() {
-    return locations.size() > WorldChestSources.LOCATIONS.size()
-        ? List.of(FIRST, FIRST + 1, LAST, TimeRelayFlameSources.GOAL)
-        : List.of(FIRST, FIRST + 1, LAST);
+    var out = new ArrayList<>(List.of(FIRST, FIRST + 1, LAST));
+    if (locations.keySet().stream().anyMatch(this::flame)) out.add(TimeRelayFlameSources.GOAL);
+    if (locations.keySet().stream().anyMatch(this::golden)) out.add(GoldenSpearSources.GOAL);
+    return List.copyOf(out);
   }
 
   boolean flame(int id) {
     return locations.containsKey(id) && TimeRelayFlameSources.PUZZLES.containsKey(id);
   }
 
+  boolean golden(int id) {
+    return locations.containsKey(id) && GoldenSpearSources.PUZZLES.containsKey(id);
+  }
+
+  boolean puzzle(int id) {
+    return flame(id) || golden(id);
+  }
+
   boolean countsGoal(int goal, int id) {
     return goals().contains(goal)
-        && (goal != TimeRelayFlameSources.GOAL
-            || flame(id)
+        && (goal == TimeRelayFlameSources.GOAL
+            ? flame(id)
                 && chest(id).getAsJsonArray("ChestType").asList().stream()
-                    .anyMatch(t -> "CHEST_PUZZLE_TIME_RELAY_FLAME".equals(t.getAsString())));
+                    .anyMatch(t -> "CHEST_PUZZLE_TIME_RELAY_FLAME".equals(t.getAsString()))
+            : goal != GoldenSpearSources.GOAL
+                || golden(id)
+                    && chest(id).getAsJsonArray("ChestType").asList().stream()
+                        .anyMatch(t -> "CHEST_PUZZLE_GOLDEN_SPEAR".equals(t.getAsString())));
   }
 
   Map<Integer, Integer> loot(int id) {
@@ -209,6 +242,21 @@ final class WorldChestRules {
   }
 
   PropInfo original(int id, int dimension) {
+    var l = locations.get(id);
+    if (l == null) return null;
+    var prop = groupProp(id, dimension, l.instance(), l.prop());
+    return prop != null
+            && prop.getState()
+                == (flame(id)
+                    ? emu.lunarcore.game.enums.PropState.ChestLocked
+                    : golden(id)
+                        ? emu.lunarcore.game.enums.PropState.Hidden
+                        : emu.lunarcore.game.enums.PropState.ChestClosed)
+        ? prop
+        : null;
+  }
+
+  PropInfo groupProp(int id, int dimension, int instance, int propId) {
     var l = locations.get(id);
     if (l == null || !l.dimensions().contains(dimension)) return null;
     var floor = GameData.getFloorInfo(l.plane(), l.floor());
@@ -220,17 +268,13 @@ final class WorldChestRules {
             .toJsonTree(actual)
             .equals(ResourceLoader.getGson().toJsonTree(expected))) return null;
     var matches =
-        actual.getPropList().stream().filter(p -> p != null && p.getID() == l.instance()).toList();
+        actual.getPropList().stream().filter(p -> p != null && p.getID() == instance).toList();
     if (matches.size() != 1) return null;
     var prop = matches.getFirst();
-    return prop.getPropID() == l.prop()
+    return prop.getPropID() == propId
             && !prop.isIsDelete()
             && !prop.isIsClientOnly()
             && prop.isLoadOnInitial()
-            && prop.getState()
-                == (flame(id)
-                    ? emu.lunarcore.game.enums.PropState.ChestLocked
-                    : emu.lunarcore.game.enums.PropState.ChestClosed)
         ? prop
         : null;
   }
@@ -243,6 +287,11 @@ final class WorldChestRules {
   }
 
   EntityProp actor(Player p, int id) {
+    var l = locations.get(id);
+    return l == null ? null : actor(p, id, l.instance(), l.prop());
+  }
+
+  EntityProp actor(Player p, int id, int instance, int propId) {
     var l = locations.get(id);
     var scene = p.getScene();
     if (l == null
@@ -262,18 +311,21 @@ final class WorldChestRules {
         || scene.getPlaneType() != PlaneType.Town && scene.getPlaneType() != PlaneType.Maze
         || !entry(scene.getPlaneId(), scene.getFloorId(), scene.getEntryId())
         || !scene.getLoadedGroups().contains(l.group())) return null;
-    var original = original(id, scene.getDimensionId());
+    var original =
+        instance == l.instance() && propId == l.prop()
+            ? original(id, scene.getDimensionId())
+            : groupProp(id, scene.getDimensionId(), instance, propId);
     if (original == null) return null;
     var matches =
         scene.getEntitiesByGroup(EntityProp.class, l.group()).stream()
-            .filter(e -> e.getInstId() == l.instance())
+            .filter(e -> e.getInstId() == instance)
             .toList();
     if (matches.size() != 1) return null;
     var actor = matches.getFirst();
     return actor.getScene() == scene
             && actor.getEntityId() > 0
             && scene.getEntityById(actor.getEntityId()) == actor
-            && actor.getPropId() == l.prop()
+            && actor.getPropId() == propId
             && actor.getPropInfo() != null
             && PropTimelines.source(actor.getPropInfo()).equals(PropTimelines.source(original))
         ? actor

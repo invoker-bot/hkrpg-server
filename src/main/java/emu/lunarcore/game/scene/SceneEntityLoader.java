@@ -66,6 +66,7 @@ public class SceneEntityLoader {
         if (propInfo.isIsDelete() /* || propInfo.isIsClientOnly() */ || !propInfo.isLoadOnInitial()) {
             return null;
         }
+        if(org.hkrpg.server.gameplay.GoldenSpears.removed(scene,group,propInfo)) return null;
 
         // Get prop excel to make sure prop exists
         PropExcel propExcel = GameData.getPropExcelMap().get(propInfo.getPropID());
@@ -117,6 +118,7 @@ public class SceneEntityLoader {
         org.hkrpg.server.gameplay.SceneInteractions.restore(prop);
         org.hkrpg.server.gameplay.ScenePropTransitions.restore(prop);
         org.hkrpg.server.gameplay.WorldChests.restore(prop);
+        org.hkrpg.server.gameplay.GoldenSpears.restore(prop);
         return prop;
     }
 

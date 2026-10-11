@@ -36,6 +36,7 @@ public final class SceneInteractions {
     return switch (prop.getPropType()) {
       case PROP_ORDINARY, PROP_PLATFORM, PROP_ELEVATOR, PROP_SPRING -> Retcode.SUCC;
       case PROP_TREASURE_CHEST -> WorldChests.validate(player, config, entity);
+      case PROP_DYNAMIC_POSITION -> GoldenSpears.validate(player, config, entity);
       default -> Retcode.INTERACT_TYPE_INVALID;
     };
   }
@@ -70,6 +71,7 @@ public final class SceneInteractions {
 
   public static void restore(EntityProp prop) {
     if (!persistent(prop)) return;
+    if (GoldenSpears.applies(prop) || WorldChests.golden(prop)) return;
     var scene = prop.getScene();
     if (ScenePropTransitions.applies(prop)) {
       var states = scene.getPlayer().getGameplay().getScenePropStates();

@@ -30,6 +30,10 @@ public final class SceneInteraction46 {
           var transition = org.hkrpg.server.gameplay.WorldChests.open(player, config, entity);
           result = transition.retcode();
           prop = transition.prop();
+        } else if (org.hkrpg.server.gameplay.GoldenSpears.applies(target)) {
+          var transition = org.hkrpg.server.gameplay.GoldenSpears.interact(player, config, entity);
+          result = transition.retcode();
+          prop = transition.prop();
         } else if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(target)) {
           var transition =
               org.hkrpg.server.gameplay.ScenePropTransitions.interact(player, config, entity);
