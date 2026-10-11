@@ -15,7 +15,7 @@ public final class WorldChests {
   private static Integer identity(EntityProp actor) {
     if (actor == null || actor.getScene() == null) return null;
     var scene = actor.getScene();
-    return WorldChestSources.LOCATIONS.entrySet().stream()
+    return TimeRelayFlameSources.LOCATIONS.entrySet().stream()
         .filter(
             e ->
                 e.getValue().plane() == scene.getPlaneId()
@@ -35,7 +35,8 @@ public final class WorldChests {
   public static Retcode validate(Player p, int config, int entity) {
     var base = SceneInteractions.validate(p, config, entity);
     if (base != Retcode.SUCC) return base;
-    if (config != 112131) return Retcode.INTERACT_TYPE_INVALID;
+    if (config != 112131 && config != TimeRelayFlameSources.UNLOCK)
+      return Retcode.INTERACT_TYPE_INVALID;
     var actor = (EntityProp) p.getScene().getEntityById(entity);
     var id = identity(actor);
     var rules = WorldChestRules.load();
@@ -46,6 +47,12 @@ public final class WorldChests {
     if (state.getRecords().values().stream()
         .anyMatch(r -> r.getPhase() == WorldChestState.Phase.PREPARED)) return Retcode.SYSTEM_BUSY;
     if (state.getRecords().containsKey(id)) return Retcode.SYSTEM_BUSY;
+    if (config == TimeRelayFlameSources.UNLOCK) {
+      if (!rules.flame(id)) return Retcode.INTERACT_TYPE_INVALID;
+      if (state.getUnlocks().containsKey(id)) return Retcode.SYSTEM_BUSY;
+    } else if (rules.flame(id) && !state.getUnlocks().containsKey(id)) {
+      return Retcode.UNSUPPORTED_PROP_STATE;
+    }
     return rules.actor(p, id) == actor ? Retcode.SUCC : Retcode.MISSION_SCENE_NOT_MATCH;
   }
 
@@ -59,6 +66,23 @@ public final class WorldChests {
       if (rules == null) return new Result(Retcode.REWARD_CONFIG_NOT_EXIST, null);
       var old = p.getGameplay().getWorldChests();
       var now = Instant.now();
+      if (config == TimeRelayFlameSources.UNLOCK) {
+        var unlocked =
+            old.unlocked(new WorldChestState.Unlock(p, id, actor, rules, now.getEpochSecond()));
+        p.getGameplay().worldChests(unlocked);
+        if (!unlocked.valid(rules, p)) {
+          p.getGameplay().worldChests(old);
+          return new Result(Retcode.PLAYER_DATA_ERROR, null);
+        }
+        try {
+          p.save();
+        } catch (RuntimeException failed) {
+          p.getGameplay().worldChests(old);
+          return new Result(Retcode.SYSTEM_BUSY, null);
+        }
+        actor.setState(PropState.ChestClosed);
+        return new Result(Retcode.SUCC, actor);
+      }
       var observation =
           new WorldChestState.Opening(
               p, id, actor, rules, old.getQuests(), rules.window(p, now), now.getEpochSecond());
@@ -128,11 +152,17 @@ public final class WorldChests {
       var state = p.getGameplay().getWorldChests();
       if (!state.valid(rules, p)) return;
       var record = state.getRecords().get(id);
+      if (rules.original(id, actor.getScene().getDimensionId()) == null) return;
       if (record != null
           && record.getPhase() == WorldChestState.Phase.OPEN
-          && rules.original(id, actor.getScene().getDimensionId()) != null
           && Objects.equals(record.getPropSource(), PropTimelines.source(actor.getPropInfo())))
         actor.setState(PropState.ChestUsed, false);
+      else {
+        var unlock = state.getUnlocks().get(id);
+        if (unlock != null
+            && Objects.equals(unlock.getPropSource(), PropTimelines.source(actor.getPropInfo())))
+          actor.setState(PropState.ChestClosed, false);
+      }
     }
   }
 

@@ -14,10 +14,68 @@ public final class WorldChestState {
   private int version = 1;
   private Map<Integer, Opening> records = new TreeMap<>();
   private Map<Integer, QuestState> quests = new TreeMap<>();
+  private Map<Integer, Unlock> unlocks = new TreeMap<>();
 
   public enum Phase {
     PREPARED,
     OPEN
+  }
+
+  /** A source-bound client finish report; it grants no loot or activity credit. */
+  @Getter
+  @Entity(useDiscriminator = false)
+  public static final class Unlock {
+    private int chest, plane, floor, entry, dimension, story, group, instance, prop, entity;
+    private long at, runtime;
+    private String event, propSource, groupSource, chestSource;
+
+    private Unlock() {}
+
+    Unlock(Player p, int id, EntityProp actor, WorldChestRules rules, long now) {
+      var scene = p.getScene();
+      chest = id;
+      plane = scene.getPlaneId();
+      floor = scene.getFloorId();
+      entry = scene.getEntryId();
+      dimension = scene.getDimensionId();
+      story = scene.getStoryLineId();
+      runtime = scene.getRuntimeId();
+      group = actor.getGroupId();
+      instance = actor.getInstId();
+      prop = actor.getPropId();
+      entity = actor.getEntityId();
+      at = now;
+      event = UUID.randomUUID().toString();
+      propSource = PropTimelines.source(actor.getPropInfo());
+      groupSource = rules.filePins.get(rules.locations.get(id).path());
+      chestSource = rules.rowPins.get("MazeChest:" + id);
+    }
+
+    boolean valid(WorldChestRules rules) {
+      try {
+        var l = rules.locations.get(chest);
+        var original = rules.original(chest, dimension);
+        return rules.flame(chest)
+            && l != null
+            && original != null
+            && plane == l.plane()
+            && floor == l.floor()
+            && group == l.group()
+            && instance == l.instance()
+            && prop == l.prop()
+            && entity > 0
+            && runtime > 0
+            && story >= 0
+            && at > 0
+            && rules.entry(plane, floor, entry)
+            && UUID.fromString(event).toString().equals(event)
+            && Objects.equals(propSource, PropTimelines.source(original))
+            && Objects.equals(groupSource, rules.filePins.get(l.path()))
+            && Objects.equals(chestSource, rules.rowPins.get("MazeChest:" + chest));
+      } catch (RuntimeException invalid) {
+        return false;
+      }
+    }
   }
 
   @Getter
@@ -59,13 +117,13 @@ public final class WorldChestState {
       loot = new TreeMap<>(rules.loot(id));
       acceptances = new TreeMap<>();
       propSource = PropTimelines.source(actor.getPropInfo());
-      groupSource = WorldChestSources.FILES.get(WorldChestSources.LOCATIONS.get(id).path());
-      chestSource = WorldChestSources.ROWS.get("MazeChest:" + id);
+      groupSource = rules.filePins.get(rules.locations.get(id).path());
+      chestSource = rules.rowPins.get("MazeChest:" + id);
       if (window != null) {
         states.forEach(
             (goal, state) -> {
               int target = goal(goal);
-              if (MissionStateRecords.doing(state, goal, target))
+              if (rules.countsGoal(goal, id) && MissionStateRecords.doing(state, goal, target))
                 acceptances.put(goal, state.getObservationKey());
             });
         if (!acceptances.isEmpty()) {
@@ -81,7 +139,7 @@ public final class WorldChestState {
 
     boolean valid(WorldChestRules rules, Player p) {
       try {
-        var l = WorldChestSources.LOCATIONS.get(chest);
+        var l = rules.locations.get(chest);
         var original = rules.original(chest, dimension);
         if (l == null
             || original == null
@@ -99,11 +157,11 @@ public final class WorldChestState {
             || !rules.entry(plane, floor, entry)
             || !UUID.fromString(event).toString().equals(event)
             || !Objects.equals(propSource, PropTimelines.source(original))
-            || !Objects.equals(groupSource, WorldChestSources.FILES.get(l.path()))
-            || !Objects.equals(chestSource, WorldChestSources.ROWS.get("MazeChest:" + chest))
+            || !Objects.equals(groupSource, rules.filePins.get(l.path()))
+            || !Objects.equals(chestSource, rules.rowPins.get("MazeChest:" + chest))
             || !Objects.equals(loot, rules.loot(chest))
             || acceptances == null
-            || acceptances.size() > 3) return false;
+            || acceptances.size() > rules.goals().size()) return false;
         var receipt = p.getGameplay().getRewards().get(rewardKey());
         if (receipt == null
             || receipt.getRewardId() != 0
@@ -117,8 +175,7 @@ public final class WorldChestState {
                 .allMatch(
                     e ->
                         e.getKey() != null
-                            && e.getKey() >= WorldChestRules.FIRST
-                            && e.getKey() <= WorldChestRules.LAST
+                            && rules.countsGoal(e.getKey(), chest)
                             && e.getValue() != null
                             && UUID.fromString(e.getValue()).toString().equals(e.getValue()));
       } catch (RuntimeException invalid) {
@@ -132,6 +189,7 @@ public final class WorldChestState {
       case 6029850 -> 5;
       case 6029851 -> 10;
       case 6029852 -> 15;
+      case TimeRelayFlameSources.GOAL -> 1;
       default -> -1;
     };
   }
@@ -144,13 +202,24 @@ public final class WorldChestState {
     return quests == null ? null : Collections.unmodifiableMap(quests);
   }
 
+  public Map<Integer, Unlock> getUnlocks() {
+    return unlocks == null ? null : Collections.unmodifiableMap(unlocks);
+  }
+
   boolean valid(WorldChestRules rules, Player p) {
     if (rules == null
         || version != 1
         || records == null
         || quests == null
-        || records.size() > 24
-        || quests.size() > 3) return false;
+        || unlocks == null
+        || records.size() > rules.locations.size()
+        || quests.size() > rules.goals().size()
+        || unlocks.size() > TimeRelayFlameSources.PUZZLES.size()) return false;
+    for (var e : unlocks.entrySet())
+      if (e.getKey() == null
+          || e.getValue() == null
+          || e.getKey() != e.getValue().chest
+          || !e.getValue().valid(rules)) return false;
     var keys = new HashSet<String>();
     for (var e : records.entrySet()) {
       if (e.getKey() == null
@@ -158,6 +227,10 @@ public final class WorldChestState {
           || e.getKey() != e.getValue().chest
           || !e.getValue().valid(rules, p)
           || !keys.add(e.getValue().rewardKey())) return false;
+      if (rules.flame(e.getKey())) {
+        var unlock = unlocks.get(e.getKey());
+        if (unlock == null || unlock.at > e.getValue().at) return false;
+      }
     }
     var journal =
         p.getGameplay().getRewards().keySet().stream()
@@ -169,6 +242,7 @@ public final class WorldChestState {
         var state = e.getValue();
         int target = e.getKey() == null ? -1 : goal(e.getKey());
         if (target < 1
+            || !rules.goals().contains(e.getKey())
             || state == null
             || state.getObservationKey() == null
             || !UUID.fromString(state.getObservationKey())
@@ -201,9 +275,9 @@ public final class WorldChestState {
     }
   }
 
-  boolean accept() {
+  boolean accept(WorldChestRules rules) {
     boolean changed = false;
-    for (int id = WorldChestRules.FIRST; id <= WorldChestRules.LAST; id++)
+    for (int id : rules.goals())
       if (!quests.containsKey(id)) {
         var state = new QuestState(id);
         state.captureObservationKey();
@@ -216,6 +290,13 @@ public final class WorldChestState {
   private WorldChestState copy() {
     return ResourceLoader.getGson()
         .fromJson(ResourceLoader.getGson().toJson(this), WorldChestState.class);
+  }
+
+  WorldChestState unlocked(Unlock observation) {
+    var next = copy();
+    if (next.unlocks.putIfAbsent(observation.chest, observation) != null)
+      throw new IllegalStateException("Already unlocked original puzzle chest");
+    return next;
   }
 
   WorldChestState prepared(Opening observation) {

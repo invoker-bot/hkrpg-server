@@ -7,12 +7,12 @@ import emu.lunarcore.game.quest.QuestState;
 import java.time.Instant;
 import java.util.*;
 
-/** The original three world-501 goals consume successful new chest openings only. */
+/** Source-bound world and time-flame goals consume successful new chest openings only. */
 public final class ActivityChestQuests {
   public static boolean belongs(QuestExcel definition) {
     if (definition == null) return false;
     var rule = GameData.getFinishWayExcelMap().get(definition.getFinishWayID());
-    return definition.getId() >= WorldChestRules.FIRST && definition.getId() <= WorldChestRules.LAST
+    return WorldChestState.goal(definition.getId()) > 0
         || definition.getQuestType() == 3
             && rule != null
             && "TreasureChestOpenWithWorld".equals(rule.getFinishType());
@@ -22,13 +22,13 @@ public final class ActivityChestQuests {
     synchronized (p) {
       var rules = WorldChestRules.load();
       var state = p.getGameplay().getWorldChests();
-      return state.valid(rules, p) && rules.window(p, Instant.now()) != null && state.accept();
+      return state.valid(rules, p) && rules.window(p, Instant.now()) != null && state.accept(rules);
     }
   }
 
   public static List<QuestState> states(Player p) {
     var out = new ArrayList<QuestState>();
-    for (int id = WorldChestRules.FIRST; id <= WorldChestRules.LAST; id++) {
+    for (int id : List.of(6029850, 6029851, 6029852, TimeRelayFlameSources.GOAL)) {
       var q = state(p, id);
       if (q != null) out.add(q);
     }

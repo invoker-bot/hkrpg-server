@@ -21,6 +21,8 @@ final class WorldChestRules {
   final Map<String, String> hashes;
   final Map<String, Map<Integer, JsonObject>> tables;
   final Map<String, JsonElement> files;
+  final Map<String, String> rowPins, filePins;
+  final Map<Integer, WorldChestSources.Location> locations;
   private final Map<String, Object> expected = new HashMap<>();
   private final Map<Integer, GroupInfo> groups = new HashMap<>();
 
@@ -28,13 +30,17 @@ final class WorldChestRules {
       Path root,
       Map<String, String> hashes,
       Map<String, Map<Integer, JsonObject>> tables,
-      Map<String, JsonElement> files) {
+      Map<String, JsonElement> files,
+      boolean flames) {
     this.root = root;
     this.hashes = Map.copyOf(hashes);
     this.tables = Map.copyOf(tables);
     this.files = Map.copyOf(files);
+    rowPins = flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS;
+    filePins = flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES;
+    locations = flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS;
     var gson = ResourceLoader.getGson();
-    for (String key : WorldChestSources.ROWS.keySet()) {
+    for (String key : rowPins.keySet()) {
       var p = key.split(":");
       var row = tables.get(p[0]).get(Integer.parseInt(p[1])).deepCopy();
       Object value =
@@ -64,7 +70,7 @@ final class WorldChestRules {
           };
       if (value != null) expected.put(key, value);
     }
-    for (var l : WorldChestSources.LOCATIONS.values()) {
+    for (var l : locations.values()) {
       var g = gson.fromJson(files.get(l.path()), GroupInfo.class);
       g.setId(l.group());
       groups.put(l.group(), g);
@@ -75,10 +81,15 @@ final class WorldChestRules {
     if (GameData.getQuestExcelMap().get(FIRST) == null
         || GameData.getPropExcelMap().get(60401) == null) return null;
     try {
+      boolean flames = GameData.getPropExcelMap().get(104046) != null;
+      if (flames != (GameData.getQuestExcelMap().get(TimeRelayFlameSources.GOAL) != null))
+        return null;
+      var filePins = flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES;
+      var rowPins = flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS;
       var root = Path.of(LunarCore.getConfig().getResourceDir()).toAbsolutePath().normalize();
       var hashes = new TreeMap<String, String>();
       var json = new TreeMap<String, JsonElement>();
-      var paths = new TreeSet<>(WorldChestSources.FILES.keySet());
+      var paths = new TreeSet<>(filePins.keySet());
       for (String table : WorldChestSources.KEYS.keySet())
         paths.add("ExcelOutput/" + table + ".json");
       for (String path : paths) {
@@ -92,7 +103,7 @@ final class WorldChestRules {
       }
       if (current != null && current.root.equals(root) && current.hashes.equals(hashes))
         return current.loaded() ? current : null;
-      for (var e : WorldChestSources.FILES.entrySet())
+      for (var e : filePins.entrySet())
         if (!e.getValue().equals(hashes.get(e.getKey()))) return null;
       var tables = new HashMap<String, Map<Integer, JsonObject>>();
       for (var e : WorldChestSources.KEYS.entrySet()) {
@@ -107,13 +118,13 @@ final class WorldChestRules {
         }
         tables.put(e.getKey(), Map.copyOf(rows));
       }
-      for (var e : WorldChestSources.ROWS.entrySet()) {
+      for (var e : rowPins.entrySet()) {
         var p = e.getKey().split(":");
         var row = tables.get(p[0]).get(Integer.parseInt(p[1]));
         if (row == null || !e.getValue().equals(TimelineActivityRules.fingerprint(row)))
           return null;
       }
-      var next = new WorldChestRules(root, hashes, tables, json);
+      var next = new WorldChestRules(root, hashes, tables, json, flames);
       if (!next.loaded()) return null;
       current = next;
       return next;
@@ -173,6 +184,24 @@ final class WorldChestRules {
     return tables.get("MazeChest").get(id);
   }
 
+  List<Integer> goals() {
+    return locations.size() > WorldChestSources.LOCATIONS.size()
+        ? List.of(FIRST, FIRST + 1, LAST, TimeRelayFlameSources.GOAL)
+        : List.of(FIRST, FIRST + 1, LAST);
+  }
+
+  boolean flame(int id) {
+    return locations.containsKey(id) && TimeRelayFlameSources.PUZZLES.containsKey(id);
+  }
+
+  boolean countsGoal(int goal, int id) {
+    return goals().contains(goal)
+        && (goal != TimeRelayFlameSources.GOAL
+            || flame(id)
+                && chest(id).getAsJsonArray("ChestType").asList().stream()
+                    .anyMatch(t -> "CHEST_PUZZLE_TIME_RELAY_FLAME".equals(t.getAsString())));
+  }
+
   Map<Integer, Integer> loot(int id) {
     var row = chest(id);
     if (row == null || row.get("WorldID").getAsInt() != 501) return null;
@@ -180,7 +209,7 @@ final class WorldChestRules {
   }
 
   PropInfo original(int id, int dimension) {
-    var l = WorldChestSources.LOCATIONS.get(id);
+    var l = locations.get(id);
     if (l == null || !l.dimensions().contains(dimension)) return null;
     var floor = GameData.getFloorInfo(l.plane(), l.floor());
     if (floor == null || !floor.isGroupInDimension(l.group(), dimension)) return null;
@@ -198,7 +227,10 @@ final class WorldChestRules {
             && !prop.isIsDelete()
             && !prop.isIsClientOnly()
             && prop.isLoadOnInitial()
-            && prop.getState() == emu.lunarcore.game.enums.PropState.ChestClosed
+            && prop.getState()
+                == (flame(id)
+                    ? emu.lunarcore.game.enums.PropState.ChestLocked
+                    : emu.lunarcore.game.enums.PropState.ChestClosed)
         ? prop
         : null;
   }
@@ -211,7 +243,7 @@ final class WorldChestRules {
   }
 
   EntityProp actor(Player p, int id) {
-    var l = WorldChestSources.LOCATIONS.get(id);
+    var l = locations.get(id);
     var scene = p.getScene();
     if (l == null
         || scene == null
