@@ -34,6 +34,11 @@ public final class MazeCastState {
     return result;
   }
 
+  public boolean isCurrentCast(GameSession current, Cast binding) {
+    bindSession(current);
+    return binding != null && casts.containsValue(binding);
+  }
+
   /** A captured original release grants the finite input path, never its payment to another UseID. */
   public boolean hasReleasedOrigin(GameSession current, GameAvatar caster, MazeSkill origin,
       int index, int expectedCost, String modifier) {
@@ -88,6 +93,32 @@ public final class MazeCastState {
     public boolean prepaid() { return prepaid; }
     public boolean released() { return released; }
     public int paidAmount() { return paidAmount; }
+    /** One finite direct Attack attempt can restore its caster effects and unreleased native binding. */
+    public Attempt attempt() { return new Attempt(); }
+
+    public final class Attempt implements AutoCloseable {
+      private final Map<Integer, Long> buffs = new HashMap<>(caster.getBuffs());
+      private final MazeSkill.CastMetadata casterMetadata = caster.getMazeCastMetadata();
+      private final MazeSkill.CastMetadata castMetadata = metadata;
+      private final Map<Integer, Long> priorReleasedBuffs = releasedBuffs;
+      private final boolean priorReleased = released;
+      private boolean accepted;
+
+      private Attempt() {}
+      public void commit() { accepted = true; }
+
+      @Override public void close() {
+        if (accepted) return;
+        synchronized (caster.getBuffs()) {
+          caster.getBuffs().clear();
+          caster.getBuffs().putAll(buffs);
+        }
+        caster.setMazeCastMetadata(casterMetadata);
+        metadata = castMetadata;
+        releasedBuffs = priorReleasedBuffs;
+        released = priorReleased;
+      }
+    }
     public void pay(int amount) {
       if (prepaid || amount <= 0) throw new IllegalStateException("Invalid native OnUse receipt");
       paidAmount = amount;

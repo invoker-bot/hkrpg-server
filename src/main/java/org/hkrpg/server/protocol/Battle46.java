@@ -6,6 +6,7 @@ import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import emu.lunarcore.game.avatar.GameAvatar;
 import emu.lunarcore.game.battle.skills.MazeSkill;
+import emu.lunarcore.game.battle.MazeAttackResult;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus;
 import emu.lunarcore.proto.BattleStatisticsOuterClass.BattleStatistics;
@@ -144,6 +145,9 @@ final class Battle46 {
     MazeSkill skill = null;
     MazeSkillCosts.ManualInput manual = null;
     MazeSkillCosts.FreeNormalAttack freeNormal = null;
+    MazeSkillCosts.FreeDirectInput freeDirect = null;
+    MazeCastState.Cast directRelease = null;
+    MotionInfo directMotion = null;
     int manualCost = 0;
     boolean manualFirstRelease = false;
     var abilityName = (String) value(req, "maze_ability_str");
@@ -170,8 +174,23 @@ final class Battle46 {
               : Optional.<MazeSkillCosts.FreeNormalAttack>empty();
           var selected = index == 1 && projectileEvent(phase)
               ? MazeSkillCosts.manualInput(avatar, abilityName) : Optional.<MazeSkillCosts.ManualInput>empty();
-          if ((selected.isEmpty() && free.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
+          var direct = index == 1 && phase == MazeSkill.CallbackPhase.COMBINED
+              ? MazeSkillCosts.castoriceFreeDirectInput(avatar, abilityName)
+              : Optional.<MazeSkillCosts.FreeDirectInput>empty();
+          if ((selected.isEmpty() && free.isEmpty() && direct.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
               || !MazeCastState.validUseId(cast) || !assists.isEmpty()) error = Retcode.REQ_PARA_INVALID;
+          else if (direct.isPresent()) {
+            freeDirect = direct.get();
+            if (!player.getCurrentLineup().getAvatars().contains(avatar.getAvatarId())
+                || player.getAvatarById(avatar.getAvatarId()) != avatar
+                || !player.getGameplay().getMazeCasts().hasReleasedBuffOrigin(s, avatar,
+                    freeDirect.origin(), 1, freeDirect.originBuff())) error = Retcode.REQ_PARA_INVALID;
+            else {
+              skill = freeDirect.skill();
+              for (int id : hits)
+                if (!(scene.getEntities().get(id) instanceof EntityMonster)) error = Retcode.REQ_PARA_INVALID;
+            }
+          }
           else if (free.isPresent()) {
             freeNormal = free.get();
             if (!player.getCurrentLineup().getAvatars().contains(avatar.getAvatarId())
@@ -208,9 +227,11 @@ final class Battle46 {
         if (error == Retcode.SUCC) {
           binding = player.getGameplay().getMazeCasts().find(s, cast);
           if (binding != null && !binding.matches(avatar, skill, index)) error = Retcode.REQ_PARA_INVALID;
+          else if (freeDirect != null && binding != null && binding.released())
+            error = Retcode.REQ_PARA_INVALID;
           else if (manual != null && player.getCurrentLineup().getMp() < manualCost)
             error = Retcode.MAZE_MP_NOT_ENOUGH;
-          else if (manual == null && index == 1 && (binding == null || !binding.prepaid())
+          else if (manual == null && freeDirect == null && index == 1 && (binding == null || !binding.prepaid())
               && avatar.getActorId() != 1308 && player.getCurrentLineup().getMp() < 1)
             error = Retcode.MAZE_MP_NOT_ENOUGH;
         }
@@ -223,14 +244,19 @@ final class Battle46 {
             boolean prepaid = binding != null && binding.prepaid();
             // Unpaid requests keep the existing simplified hit-payment rule. Only the proven
             // native OnUse receipt suppresses a second payment; HIT is not globally deduplicated.
-            if (manual == null && freeNormal == null && !prepaid && avatar.getActorId() != 1308)
+            if (manual == null && freeNormal == null && freeDirect == null && !prepaid && avatar.getActorId() != 1308)
               player.getCurrentLineup().removeMp(1);
             boolean firstRelease = binding == null || !binding.released();
             var motion = MotionInfo.parseFrom(s.getProtocol().translate("MotionInfo",
                 ((DynamicMessage) value(req, "target_motion")).toByteArray(), false));
-            if (binding == null) skill.onCast(avatar, motion);
+            if (freeDirect != null) {
+              // Source removal is after Attack. Commit it only after actual battle admission;
+              // a missing Stage leaves both the captured origin and this UseID retryable.
+              directRelease = binding;
+              directMotion = motion;
+            } else if (binding == null) skill.onCast(avatar, motion);
             else binding.release(motion);
-            if (manual == null && freeNormal == null) {
+            if (manual == null && freeNormal == null && freeDirect == null) {
               if (firstRelease) player.getDailyManager().onMazeSkill();
               if (!prepaid) notifyMp(s, cast);
             } else manualFirstRelease = firstRelease;
@@ -243,7 +269,26 @@ final class Battle46 {
       return;
     }
     if (hits.isEmpty()) hits.addAll(assists);
-    var result = s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists, phase);
+    var acceptedRelease = directRelease;
+    var acceptedCaster = freeDirect == null ? null : scene.getAvatarByEntityId(caster);
+    java.util.function.Consumer<emu.lunarcore.game.battle.Battle> beforeActivation = freeDirect == null ? null : battle -> {
+      if (!battle.excludeCastoriceRadius(acceptedCaster, acceptedRelease))
+        throw new IllegalStateException("Original Castorice entry binding is no longer valid");
+    };
+    MazeAttackResult result = null;
+    try (var attempt = freeDirect == null ? null : directRelease.attempt()) {
+      result = freeDirect == null
+          ? s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists, phase)
+          : s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists, phase, beforeActivation);
+      if (freeDirect != null && result.retcode() == Retcode.SUCC) {
+        directRelease.release(directMotion);
+        attempt.commit();
+      }
+    } catch (RuntimeException rejected) {
+      if (freeDirect == null) throw rejected;
+      if (result != null && result.battle() != null && player.getBattle() == result.battle()) player.setBattle(null);
+      result = MazeAttackResult.failure(Retcode.FAIL);
+    }
     // Quote before actions, commit only an accepted finite manual Attack. No fee is
     // invented for a zero-target event or for a failed battle admission.
     if (manual != null && result.retcode() == Retcode.SUCC) {

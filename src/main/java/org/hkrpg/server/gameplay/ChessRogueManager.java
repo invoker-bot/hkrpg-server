@@ -56,8 +56,7 @@ public final class ChessRogueManager {
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       if (!rosterValid(ids) || ordinary.getLeader() < 0 || ordinary.getLeader() >= ordinary.size())
         return Retcode.REQ_PARA_INVALID;
-      var unlock = player.getGameplay().getMainMissions().get(8013104);
-      if (area != 101 || aeon != 6 || unlock == null || unlock.getPhase() == emu.lunarcore.game.quest.QuestState.Phase.DOING
+      if (area != 101 || aeon != 6 || !MissionStateRecords.mainCompleted(player,8013104)
           || !ChessRogueRoutes.available() || ChessRogueRoutes.returnSignature(player.getScene(),player.getEntryId()).isEmpty())
         return Retcode.ROGUE_AREA_INVALID;
       var prior = player.getGameplay().getChessRogue();

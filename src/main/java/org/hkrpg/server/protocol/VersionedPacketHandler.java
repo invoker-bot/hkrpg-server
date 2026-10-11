@@ -31,6 +31,7 @@ public final class VersionedPacketHandler {
     if (Cocoon46.handle(session, command, bytes)) return true;
     if (Music46.handle(session, command, bytes)) return true;
     if (ClockPark46.handle(session, command, bytes)) return true;
+    if (AetherDivide46.handle(session, command, bytes)) return true;
     if (BoxingClub46.handle(session, command, bytes)) return true;
     if (MatchThree46.handle(session, command, bytes)) return true;
     if (DiceCombat46.handle(session, command, bytes)) return true;

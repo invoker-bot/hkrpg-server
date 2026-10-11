@@ -1,7 +1,6 @@
 package org.hkrpg.server.gameplay;
 
 import emu.lunarcore.game.player.Player;
-import emu.lunarcore.game.quest.QuestState;
 import java.util.List;
 
 /**
@@ -21,8 +20,7 @@ public record ChessRogueProfile(List<Integer> unlockedAreaIds, List<Integer> fir
         ? !ChessRogueRoutes.sceneSource(player.getScene(),run,true)
         : !ChessRogueRoutes.returnedSceneSource(player.getScene(),run))))
       throw new IllegalStateException("Chess native profile requires the complete original guide source");
-    var mission = player.getGameplay().getMainMissions().get(8013104);
-    var unlocked = mission != null && mission.getPhase() != QuestState.Phase.DOING
+    var unlocked = MissionStateRecords.mainCompleted(player,8013104)
         ? List.of(101) : List.<Integer>of();
     // No original first-reward payment path exists in this bounded guide implementation.
     return new ChessRogueProfile(unlocked,List.of());

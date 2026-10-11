@@ -397,6 +397,14 @@ public final class MissionManager {
       if (config.getLevelFloorID() != 0 && config.getLevelFloorID() != player.getFloorId())
         return Retcode.MISSION_SCENE_NOT_MATCH;
       if (!MissionTalkScriptGates.allows(player, id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+      if (DailyOriginEffects.handles(id)) {
+        var result = DailyOriginEffects.finishInitial(player, config, state, values, now());
+        if (result == Retcode.SUCC) {
+          refresh();
+          sync();
+        }
+        return result;
+      }
       var customUpdates = new HashMap<String, Integer>();
       var main = GameData.getMissionInfos().get(config.getMainMissionID());
       for (var entry : values.entrySet()) {

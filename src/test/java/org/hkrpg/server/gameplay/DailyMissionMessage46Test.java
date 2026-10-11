@@ -527,6 +527,29 @@ class DailyMissionMessage46Test {
 
   @Test
   void aPreviouslyCompletedSiblingSectionKeepsItsActualGlobalHistoryWhileBothCommissionsGetTheirOwnPhones() throws Exception {
+    // This one three-stage case needs the complete original Act/Performance source binding.
+    // The in-memory phone fixture alone does not install files under Config's default root.
+    String previousRoot = emu.lunarcore.LunarCore.getConfig().getResourceDir();
+    try (var input = getClass().getResourceAsStream("/fixtures/daily-origin-effects-4.6.json")) {
+      var original = JsonParser.parseString(new String(Objects.requireNonNull(input).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();
+      assertEquals("724b139d8c9c32d12552eb95745a4fee72bfe48b", original.get("sourceCommit").getAsString());
+      for (var file : original.getAsJsonObject("sourceFiles").entrySet()) {
+        var source = file.getValue().getAsJsonObject();
+        if (!source.has("sourceBlobBase64")) continue;
+        byte[] bytes = Base64.getDecoder().decode(source.get("sourceBlobBase64").getAsString());
+        assertEquals(source.get("sourceBlobSHA256").getAsString(), java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes)));
+        var target = temp.resolve(file.getKey());
+        java.nio.file.Files.createDirectories(target.getParent()); java.nio.file.Files.write(target, bytes);
+      }
+      var performances = new JsonArray();
+      original.getAsJsonArray("records").asList().stream().map(JsonElement::getAsJsonObject)
+          .filter(row -> row.get("kind").getAsString().equals("PerformanceE"))
+          .forEach(row -> performances.add(row.getAsJsonObject("row").deepCopy()));
+      assertEquals(1, performances.size());
+      java.nio.file.Files.writeString(temp.resolve("ExcelOutput/PerformanceE.json"), performances.toString());
+    }
+    DailyMissionAcceptance46Test.set(emu.lunarcore.LunarCore.getConfig(), "resourceDir", temp.toString());
+    try {
     catalog(3000601);
     // A real old global document stays separate from both newly supported accepted-period views.
     var older = new GameplayState.PhoneSection(1211400, List.of(121140101));
@@ -555,6 +578,9 @@ class DailyMissionMessage46Test {
     pay(121140202, 121140205); assertEquals(10000, actor.getScoin());
     assertSame(older, actor.getGameplay().getPhoneSections().get(1211400));
     assertEquals(oldHistory, older.getHistory()); assertEquals(oldJson, gson.toJson(older));
+    } finally {
+      DailyMissionAcceptance46Test.set(emu.lunarcore.LunarCore.getConfig(), "resourceDir", previousRoot);
+    }
   }
 
   @Test

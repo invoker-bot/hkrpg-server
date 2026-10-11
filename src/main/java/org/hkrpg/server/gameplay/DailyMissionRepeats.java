@@ -125,6 +125,10 @@ final class DailyMissionRepeats {
       gameplay.getSubMissions().remove(sub.getId());
       gameplay.getStoryActions().remove(sub.getId());
     }
+    // The original 3000601 group can have been loaded explicitly after its CLOSED run.
+    // Let its original owner gate unload that old period before assigning the new main;
+    // otherwise loadedGroups prevents the next period's original NPCs from spawning.
+    if (id == 3000601 && player.getScene() != null) player.getScene().refreshMissionGroups();
     periods.getRunDays().put(id, today);
     gameplay.getMainMissions().put(id, new QuestState(id));
     DailyCommissionAcceptance.record(player, id, now);

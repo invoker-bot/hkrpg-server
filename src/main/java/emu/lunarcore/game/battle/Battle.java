@@ -38,6 +38,8 @@ public class Battle {
     private final List<MazeBuff> avatarBuffs = new ArrayList<>();
     @Getter(lombok.AccessLevel.NONE)
     private volatile boolean avatarBuffsPrepared;
+    @Getter(lombok.AccessLevel.NONE)
+    private GameAvatar castoriceRadiusOwner;
     private final long timestamp;
     private final int logicRandomSeed;
     private boolean settling;
@@ -290,6 +292,24 @@ public class Battle {
     private record AvatarBuffSnapshot(GameAvatar avatar, int id, long expiry,
                                       MazeBuff binding, boolean consumable) {}
 
+    /** The proven1407 Input removes only its own radius after an accepted Attack. */
+    public boolean excludeCastoriceRadius(GameAvatar caster, org.hkrpg.server.gameplay.MazeCastState.Cast input) {
+        if (this.avatarBuffsPrepared || caster == null || input == null || input.released()
+                || this.stage == null || this.stage.getId() <= 0 || this.player.getBattle() != null
+                || caster.getOwner() != this.player || caster.getActorId() != 1407
+                || this.player.getAvatarById(caster.getAvatarId()) != caster
+                || !this.lineup.getAvatars().contains(caster.getAvatarId())) return false;
+        var original = org.hkrpg.server.gameplay.MazeSkillCosts.castoriceFreeDirectInput(
+                caster, "LocalPlayer_Castorice_MazeSkill_Input");
+        var current = this.player.getGameplay().getMazeCasts();
+        if (original.isEmpty() || !current.isCurrentCast(this.player.getSession(), input)
+                || !input.matches(caster, original.get().skill(), 1)
+                || !current.hasReleasedBuffOrigin(this.player.getSession(), caster, original.get().origin(), 1, 140704))
+            return false;
+        this.castoriceRadiusOwner = caster;
+        return true;
+    }
+
     private List<AvatarBuffSnapshot> snapshotAvatarBuffs() {
         synchronized (this.player) {
             var snapshots = new ArrayList<AvatarBuffSnapshot>();
@@ -299,6 +319,7 @@ public class Battle {
                 synchronized (avatar.getBuffs()) {
                     for (var entry : avatar.getBuffs().int2LongEntrySet()) {
                         if (entry.getLongValue() < this.timestamp) continue;
+                        if (avatar == this.castoriceRadiusOwner && entry.getIntKey() == 140704) continue;
                         var binding = new MazeBuff(entry.getIntKey(), 1, slot, -1);
                         binding.setOwner(avatar);
                         binding.addTargetIndex(slot);

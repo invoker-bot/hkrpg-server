@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "initialQueryProofSHA256": "c8499dd6035cdb7dfc4eb63d763b31556fd780c1fb40d580d38e16e33b15a703",
+  "originalQualificationSourceProofSHA256": "9790573116bcb3fe0d3c619162687f1c38797cee257077f935ee924cf1a675c7",
+  "descriptorSHA256": "a9de1824e9892e236d7ce0f2d19f5531ffb259c125c4d22da89dfb7ac23c08fd",
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "completeOriginalRows": [
+    {
+      "path": "ExcelOutput/RogueDLCArea.json",
+      "sourceFileSHA256": "a0c16a1c8b0054b1cbf7c862d8fe3a02f4b7ea5bc0c3606ad72f11ddb7b1d1fd",
+      "diskFileSHA256": "e149637009e4d26783350589155d1d67c6d9dd3de367fa87f6a29f8c808739a6",
+      "row": {
+        "AreaID": 101,
+        "SubType": "ChessRogue",
+        "AreaNameID": {
+          "Hash": 12571336509673901180
+        },
+        "AreaGroupID": "Guide",
+        "UnlockID": 1000020,
+        "Difficulty": "Difficulty_1",
+        "DifficultyID": [
+          1011,
+          1012
+        ],
+        "LayerIDList": [
+          1011,
+          1012
+        ],
+        "RecommendLevel": 59,
+        "RecommendNature": [
+          "Fire",
+          "Ice"
+        ],
+        "DisplayMonsterMap": {
+          "8003051": 56
+        },
+        "FirstReward": 109011,
+        "AreaScoreMap": []
+      }
+    },
+    {
+      "path": "ExcelOutput/RogueDLCUnlock.json",
+      "sourceFileSHA256": "cbd90ca3bcc56f76426c86c7b42aa629dc171ab38c4922bbcf5d2c8446e9e260",
+      "diskFileSHA256": "490e246d317441e236b65fb38f4bdf16dd2493f722cd0e0defdd2a987d6bab1e",
+      "row": {
+        "RogueUnlockID": 1000020,
+        "UnlockFinishWay": 1000020
+      }
+    },
+    {
+      "path": "ExcelOutput/RogueDLCFinishWay.json",
+      "sourceFileSHA256": "d25e7df510ae2f312691a716e876672e63e736a754ae460b1496db924d7bb16f",
+      "diskFileSHA256": "278a1b0d154f1e527a0bc5a4991fa507657e3adff278540839ffdb3a80562864",
+      "row": {
+        "ID": 1000020,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          8013104
+        ],
+        "ParamItemList": [],
+        "Progress": 1
+      }
+    },
+    {
+      "path": "ExcelOutput/MainMission.json",
+      "sourceFileSHA256": "7d2fc8212d52119c47c3e1cf847f43bc9df74126a5f8290061cc5f61f0b8b967",
+      "referenceDiskSHA256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+      "row": {
+        "MainMissionID": 8013104,
+        "Type": "Branch",
+        "SubType": "System",
+        "DisplayPriority": 8013104,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 13574943068837953664
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 8013103
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 8013101,
+        "RewardID": 18013104,
+        "DisplayRewardID": 18013104,
+        "SubRewardList": []
+      }
+    }
+  ],
+  "wholeNativeUnlockedConsumer": {
+    "method": {
+      "index": 614962,
+      "name": "SyncGameplayInfo",
+      "rva": "0xcadb680",
+      "typeIndex": 66903,
+      "typeName": "ChessRogueAreaDataItem"
+    },
+    "beginRVA": "0xcadb680",
+    "endRVA": "0xcadb709",
+    "byteCount": 137,
+    "sha256": "415f065221fb104f5a6ec512feeedd16803f78fbe1a4b430d0e3daffcd195ea4",
+    "boundarySource": "PE exception directory",
+    "rawBase64": "VldIg+woSInXSInOgD1v24P8AHU8SIX/dFpIi08wSIXJdFaLVjDohYDLC4P4/w+VRi5Ii08QSIXJdEOLVjDobYDLC4P4/w+VRi1Ig8QoX17DuTJiCQDoNYGQCUiFwHQjSInBSInySYn4SIPEKF9e6dxEQQnoV8ke9+hSyR736E3JHvfoSMke98w="
+  },
+  "originalClientConsumption": {
+    "profileType": "HIMJKAMHLMJ",
+    "unlockedAreasField": 11,
+    "firstRewardTakenAreasField": 10,
+    "clientReceivesQuestPhaseOrCompletionCounters": false,
+    "clientGameplayVerified": false
+  },
+  "serverRecordIntegrityPolicy": {
+    "rule": "existing MissionStateRecords.mainCompleted(player,8013104)",
+    "savedMissionId": 8013104,
+    "completedPhases": [
+      "FINISHED",
+      "CLAIMING",
+      "CLOSED"
+    ],
+    "exactGoal": 1,
+    "finishTimePositive": true,
+    "mustNotBeCancelled": true,
+    "requiresFirstReward109011": false,
+    "requiresQualificationPayoutReceipt": false,
+    "queryWritesProgressOrWallet": false,
+    "rejectStartBeforeAllocatingRun": true,
+    "officialQuestRecordSerializationRecovered": false
+  },
+  "casesPerActualEndpoint": 12,
+  "actualEndpoints": [
+    {
+      "command": 5547,
+      "name": "ChessRogueQueryCsReq"
+    },
+    {
+      "command": 5426,
+      "name": "ChessRogueStartCsReq"
+    }
+  ],
+  "sourceInstalled": false,
+  "clientStarted": false,
+  "classCodeSourceEvidence": "qualification-records-draft-red/test-report.json",
+  "clientGameplayVerified": false
+}

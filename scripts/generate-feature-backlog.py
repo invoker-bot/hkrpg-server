@@ -1562,6 +1562,68 @@ def main():
                   _origin_message_tests, _origin_message_gap)
     append_review(('ClockParkGetInfoCsReq', 'ClockParkGetOngoingScriptInfoCsReq'),
                   _clock_query_tests, _clock_query_gap)
+    append_review(('SceneCastSkillCsReq', 'SceneCastSkillCostMpCsReq'), [
+        'src/test/java/org/hkrpg/server/gameplay/MazeCastoriceManualAbility46Test.java',
+        'src/test/java/org/hkrpg/server/gameplay/MazeCastoriceActivationFailure46Test.java',
+        'src/test/resources/fixtures/maze-castorice-manual-ability-4.6.json',
+        'scripts/smoke-maze-castorice-ability.py', 'scripts/tests/test_smoke_maze_castorice_guard.py',
+        'docs/maze-castorice-manual-ability-4.6.md', 'docs/castorice-daily-chess-aether-4.6.md'],
+        '1407原始Free/Input仅按已核身份、原始20秒与14071/140704状态进入战斗，'
+        '失败同输入重试及旧ID/场景/会话拒绝有回归；40行为与3激活恢复项，'
+        '同f586原生294请求/330检查、3正常停服/2同UID重启、9实际Player及9Avatar读通过。'
+        '运营LocalPlayer原件仍缺，仅隔离夹具装入；基础付款阶段、完整召唤/其他手动动作和真实UI未完成。')
+    append_review(('AcceptMainMissionCsReq', 'GetMissionStatusCsReq', 'FinishTalkMissionCsReq',
+                   'GetDailyActiveInfoCsReq', 'GetNpcStatusCsReq', 'GetNpcMessageGroupCsReq',
+                   'GetMissionMessageCsReq', 'FinishItemIdCsReq', 'FinishSectionIdCsReq'), [
+        'src/test/java/org/hkrpg/server/gameplay/DailyMissionInitialNpcLifecycle46Test.java',
+        'src/test/resources/fixtures/daily-origin-effects-4.6.json',
+        'scripts/smoke-daily-origin-effects.py', 'scripts/verify-daily-origin-effects-native.py',
+        'scripts/tests/test_daily_origin_effects_native_guard.py',
+        'scripts/tests/test_daily_origin_effects_source_path.py',
+        'docs/daily-origin-effects-4.6.md', 'docs/castorice-daily-chess-aether-4.6.md'],
+        '3000601原初段结算保存日期/任务/实例绑定收据后删除两原NPC，保留3道具，'
+        '重新进入/H2恢复抑制旧NPC；主任务CLOSED及次日新身份有29项回归。'
+        '同f586单settled分支受控两日212请求/255检查、8正常停服/7同UID重启、32实际Player读通过，'
+        '每期原5000信用/200活跃防重。Effects复用Phone读取不额外累计；其他分支/Act/自然跨日/UI未验收。')
+    qualification_tests = [
+        'src/test/java/org/hkrpg/server/protocol/ChessRogueQualificationIntegrity46Test.java',
+        'src/test/resources/fixtures/chess-rogue-qualification-integrity-4.6.json',
+        'scripts/smoke-chess-rogue-qualification.py',
+        'scripts/tests/test_smoke_chess_rogue_qualification_guard.py',
+        'docs/chess-rogue-qualification-integrity-4.6.md', 'docs/castorice-daily-chess-aether-4.6.md']
+    for name in ('ChessRogueQueryCsReq', 'ChessRogueStartCsReq'):
+        row = requests[name]
+        row['testEvidence'] = list(dict.fromkeys(row['testEvidence'] + qualification_tests))
+        row['gap'] = (
+            '8013104解锁和首次Start共同核对完整mainCompleted记录；24项中16真实失败基线，'
+            '同f586实际22请求/67检查、1正常停服/1物理只读H2/2独立Player恢复，无进程重启。'
+            '两种损坏资格不创建局或改钱包，合法原资格生产refresh支付18013104的5000信用后进入source201；'
+            '未支付109011。首轮通知采样失败经只读场景屏障修工具后复验，原报告保留；'
+            '完整资格剧情、结束/首奖/Nous与真实UI仍待完成。历史验证范围：' + row['gap'])
+    aether_tests = [
+        'src/test/java/org/hkrpg/server/protocol/AetherDivideRoster46Test.java',
+        'src/test/resources/fixtures/aether-divide-roster-4.6.json',
+        'scripts/smoke-aether-divide-roster.py', 'scripts/tests/test_aether_roster_native_guard.py',
+        'docs/aether-divide-roster-4.6.md', 'docs/castorice-daily-chess-aether-4.6.md']
+    for name, command in (('GetAetherDivideInfoCsReq', 4848),
+                          ('SetAetherDivideLineUpCsReq', 4840),
+                          ('SwitchAetherDivideLineUpSlotCsReq', 4818)):
+        row = requests.setdefault(name, {'request': name, 'sources': []})
+        row['sources'].append({'project': 'March7thHoney-OpenSource',
+            'commit': 'fe00bdbda3c28ca33d01f171566aa35b5ab95083', 'license': 'AGPL-3.0',
+            'paths': ['Proto/4.6/CmdAetherDivideType.proto'],
+            'kind': 'protocol-definition-and-local-client-static-evidence'})
+        row.update(status='partial', nativeCommand=command, protocolName=name,
+            javaEvidence='src/main/java/org/hkrpg/server/protocol/AetherDivide46.java',
+            acceptance={'serverBehavior': True, 'resourceVersion': True, 'client46': False},
+            testEvidence=aether_tests, gap=(
+                '已保存持有灵与真实背包碎片/芯片分别投影，六槽四明确位置与当前槽接入；'
+                '43项Java、六完整原表/27完整本机函数/5完整Lua，短0..4完整替换补0为本服政策。'
+                '同f586原生59请求/212检查、2正常停服/1同UID重启/4实际Player恢复通过；'
+                '只持碎片不创建灵。持有集合是隔离存档夹具；捕获、升级、装备、挑战、战斗和真实客户端UI仍待完成。'))
+        for evidence in row['testEvidence']:
+            if not (ROOT / evidence).is_file():
+                raise SystemExit(f'验证证据文件缺失: {evidence}')
     for name, review in REVIEWED.items():
         if name in requests:
             row = requests[name]

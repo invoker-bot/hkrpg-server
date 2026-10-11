@@ -50,6 +50,22 @@ public class GameplayState {
   }
 
   void npcFirstTalks(NpcFirstTalkState value) { npcFirstTalks = Objects.requireNonNull(value); }
+  private DailyOriginEffectsState dailyOriginEffects = new DailyOriginEffectsState();
+
+  public DailyOriginEffectsState getDailyOriginEffects() {
+    if (dailyOriginEffects == null) dailyOriginEffects = new DailyOriginEffectsState();
+    return dailyOriginEffects;
+  }
+
+  void dailyOriginEffects(DailyOriginEffectsState value) {
+    dailyOriginEffects = Objects.requireNonNull(value);
+  }
+  private AetherDivideState aetherDivide = new AetherDivideState();
+
+  // Explicit null is damaged saved data. Do not repair it while answering a query.
+  public AetherDivideState getAetherDivide() { return aetherDivide; }
+
+  void aetherDivide(AetherDivideState value) { aetherDivide = Objects.requireNonNull(value); }
   private ChessRogueState chessRogue = new ChessRogueState();
 
   public ChessRogueState getChessRogue() {

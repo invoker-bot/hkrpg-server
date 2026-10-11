@@ -58,12 +58,23 @@ public class BattleService extends BaseGameService {
             IntSet assistMonsters, MazeSkill.CallbackPhase phase) {
         synchronized (player) { return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters,phase); }
     }
+    /** Stage source-specific entry bindings without consuming scene state before activation succeeds. */
+    public MazeAttackResult resolveAttack(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets,
+            IntSet assistMonsters, MazeSkill.CallbackPhase phase, java.util.function.Consumer<Battle> beforeActivation) {
+        synchronized (player) {
+            return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters,phase,beforeActivation);
+        }
+    }
     private MazeAttackResult attackLocked(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
         // Existing non-native callers retain their established hit dispatch.
         return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters,MazeSkill.CallbackPhase.PROJECTILE_HIT);
     }
     private MazeAttackResult attackLocked(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets,
             IntSet assistMonsters, MazeSkill.CallbackPhase phase) {
+        return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters,phase,null);
+    }
+    private MazeAttackResult attackLocked(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets,
+            IntSet assistMonsters, MazeSkill.CallbackPhase phase, java.util.function.Consumer<Battle> beforeActivation) {
         if (activityBlocksBattle(player)) {
             return MazeAttackResult.failure(Retcode.SYSTEM_BUSY);
         }
@@ -234,7 +245,18 @@ public class BattleService extends BaseGameService {
 
                 battle.setDailyWeaknessEntry(org.hkrpg.server.gameplay.DailyWeaknessEntries.capture(player, battle, casterId, castedSkill, targets));
                 // Set the accepted battle before its response is serialized.
-                player.setBattle(battle);
+                if (beforeActivation == null) player.setBattle(battle);
+                else {
+                    var previousBattle = player.getBattle();
+                    try {
+                        beforeActivation.accept(battle);
+                        player.setBattle(battle);
+                    } catch (RuntimeException rejected) {
+                        // Only this opt-in activation owns this newly created Battle pointer.
+                        if (player.getBattle() == battle) player.setBattle(previousBattle);
+                        return MazeAttackResult.failure(Retcode.FAIL);
+                    }
+                }
                 battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
                 battle.setMissionChallengeWin(org.hkrpg.server.gameplay.MissionChallengeWin.capture(player, battle));
                 return outcomes.success(battle);

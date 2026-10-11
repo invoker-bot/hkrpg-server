@@ -1,4 +1,4 @@
-本批补入4.6首次棋盘查询、昔涟Free END、3000601三段短信日常，并减少钟表查询的重复资源读取。507类 / 13,815项Java及同产物2,403次KCP请求、40次正常停服和36次同UID H2恢复通过；全部玩法与游戏客户端验收仍待完成，见[本批验证](docs/initial-query-cyrene-daily-origin-clock-4.6.md)。
+本批补入4.6遐蝶Free/Input、3000601初段NPC生命周期、损坏宇宙资格拒绝和以太库存/六槽编队。512类/13,954项Java及同产物587次KCP请求、14次正常停服、10次同UID重启和47次实际Player读取通过；全部玩法与游戏客户端验收继续待完成，见[本批验证](docs/castorice-daily-chess-aether-4.6.md)。
 
 钟表活动的已结算进度已接入五个原始剧情目标，见 [剧情进度说明](docs/clock-park-mission-progress-4.6.md)。完整剧情演出和游戏客户端验收继续待完成。
 

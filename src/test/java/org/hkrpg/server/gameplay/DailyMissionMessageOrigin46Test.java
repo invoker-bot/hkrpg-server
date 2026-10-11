@@ -38,6 +38,19 @@ class DailyMissionMessageOrigin46Test {
     assertEquals(extra.get("sourceBlobSHA256").getAsString(), java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(raw)));
     var extraPath=root.resolve("Config/Level/Mission/3000600/Act/Act300060001.json");
     Files.createDirectories(extraPath.getParent()); Files.write(extraPath,raw);
+    // The complete original initial Act is reached through this authored non-intro E row.
+    var initialPerformance=source.getAsJsonArray("records").asList().stream().map(JsonElement::getAsJsonObject)
+        .filter(record->record.get("kind").getAsString().equals("PerformanceE")
+            && record.getAsJsonObject("row").get("PerformanceID").getAsInt()==PRE)
+        .findFirst().orElseThrow().getAsJsonObject("row");
+    var performancePath=root.resolve("ExcelOutput/PerformanceE.json");
+    var performances=JsonParser.parseString(Files.readString(performancePath)).getAsJsonArray();
+    var existing=performances.asList().stream().map(JsonElement::getAsJsonObject)
+        .filter(row->row.get("PerformanceID").getAsInt()==PRE).toList();
+    assertTrue(existing.size()<=1);
+    if(existing.isEmpty())performances.add(initialPerformance.deepCopy());
+    else assertEquals(initialPerformance,existing.getFirst());
+    Files.writeString(performancePath,performances.toString());
     assertEquals(List.of(PRE,FIRST,GOAL),Arrays.stream(GameData.getMissionInfos().get(MAIN).getSubMissionList()).map(MissionInfo.SubMissionInfo::getId).toList());
     assertEquals(11,GameplayDefinitions.messageItems.values().stream().filter(row->row.SectionID()==SECTION).count());
     daily.catalog(MAIN); daily.clock(DailyMissionMessage46Test.TODAY);
@@ -210,10 +223,11 @@ class DailyMissionMessageOrigin46Test {
   }
   @ParameterizedTest @ValueSource(ints={0,1,2,3})
   void allUnpaidOriginalStagesExpireAndRecreateG84OnTheSameFloor(int stage){
-    accept(); if(stage>=1)initial(); if(stage>=2)assertEquals(Retcode.SUCC,daily.actor.getMissionManager().finishTalk(FIRST,"Mission_"+FIRST));
+    accept(); var oldNpc=daily.actor.getScene().getEntitiesByGroup(EntityNpc.class,84).getFirst();
+    if(stage>=1)initial(); if(stage>=2)assertEquals(Retcode.SUCC,daily.actor.getMissionManager().finishTalk(FIRST,"Mission_"+FIRST));
     if(stage==3)reply(121140102);
     var oldMain=daily.actor.getGameplay().getMainMissions().get(MAIN); String oldKey=oldMain.getObservationKey();
-    var oldPre=sub(PRE); var oldNpc=daily.actor.getScene().getEntitiesByGroup(EntityNpc.class,84).getFirst();
+    var oldPre=sub(PRE);
     var oldPhone=stage>=2?messages().states().get(SECTION):null; String before=saved();
     daily.clock(DailyMissionMessage46Test.NEXT);
     assertNotEquals(Retcode.SUCC,stage>=2?messages().choose(121140104,0):daily.actor.getMissionManager().finishTalk(stage==0?PRE:FIRST,"Mission_"+(stage==0?PRE:FIRST)));

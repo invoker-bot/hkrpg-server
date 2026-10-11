@@ -95,7 +95,39 @@ public class SkillAbilityInfo {
             }
         }
 
+        // The original1407 input is a direct Attack followed by caster-buff cleanup.
+        // It has no projectile declaration; only the full fixed ingress contract admits it.
+        if (avatarExcel.getAvatarID() == 1407 && base != null
+                && "LocalPlayer_Castorice_MazeSkill".equals(base.getAbilityName())
+                && hasCastoriceInputLink()) {
+            for (var ability : AbilityList) {
+                if (!"LocalPlayer_Castorice_MazeSkill_Input".equals(ability.getName())
+                        || !"Free".equals(ability.getManualTriggerType()) || ability.getOnStart() == null) continue;
+                var manual = new MazeSkill(avatarExcel, 2, ability.getName());
+                for (var task : ability.getOnStart()) {
+                    collectProjectileDeclaration(manual, task);
+                    parseTask(manual, manual.getCastActions(), task);
+                }
+                if (!manual.isProjectileDeclared()) base.addManualAbility(manual);
+            }
+        }
+
         return true;
+    }
+
+    private boolean hasCastoriceInputLink() {
+        try {
+            var wait = GlobalModifiers.getAsJsonObject("ADV_StageAbility_Maze_Castorice_Radius")
+                    .getAsJsonArray("ModifierTaskList").get(0).getAsJsonObject();
+            if (!"RPG.GameCore.WaitSkillInput".equals(wait.get("$type").getAsString())
+                    || !wait.get("CheckAllowUseSkill").getAsBoolean()) return false;
+            var trigger = wait.getAsJsonArray("OnInput").get(0).getAsJsonObject();
+            return "RPG.GameCore.AdventureTriggerTargetAbility".equals(trigger.get("$type").getAsString())
+                    && "MazeSkill".equals(trigger.get("SkillType").getAsString())
+                    && "LocalPlayer_Castorice_MazeSkill_Input".equals(trigger.get("AbilityName").getAsString());
+        } catch (RuntimeException unsupported) {
+            return false;
+        }
     }
 
     private boolean hasCyreneInputLink() {
