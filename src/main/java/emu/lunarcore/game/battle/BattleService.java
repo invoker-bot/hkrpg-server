@@ -2,6 +2,7 @@ package emu.lunarcore.game.battle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,16 +43,23 @@ public class BattleService extends BaseGameService {
     }
 
     public void attack(Player player, int casterId, int attackedGroupId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
-        synchronized (player) { attackLocked(player,casterId,attackedGroupId,castedSkill,hitTargets,assistMonsters); }
+        synchronized (player) {
+            var result = attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters);
+            if (result.battle() != null) player.sendPacket(new PacketSceneCastSkillScRsp(result.battle(), attackedGroupId));
+            else if (result.retcode() == Retcode.FAIL) player.sendPacket(new PacketSceneCastSkillScRsp());
+            else player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, result.retcode()));
+        }
     }
-    private void attackLocked(Player player, int casterId, int attackedGroupId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
+    /** Resolve gameplay once; versioned callers serialize its actual per-monster results. */
+    public MazeAttackResult resolveAttack(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
+        synchronized (player) { return attackLocked(player,casterId,castedSkill,hitTargets,assistMonsters); }
+    }
+    private MazeAttackResult attackLocked(Player player, int casterId, MazeSkill castedSkill, IntSet hitTargets, IntSet assistMonsters) {
         if (activityBlocksBattle(player)) {
-            player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.SYSTEM_BUSY));
-            return;
+            return MazeAttackResult.failure(Retcode.SYSTEM_BUSY);
         }
         if (player.isInBattle() || player.getScene() == null) {
-            player.sendPacket(new PacketSceneCastSkillScRsp());
-            return;
+            return MazeAttackResult.failure(Retcode.FAIL);
         }
         // Setup variables
         List<GameEntity> targets = new ArrayList<>();
@@ -62,8 +70,7 @@ public class BattleService extends BaseGameService {
             // Get casting avatar
             castingAvatar = player.getScene().getAvatarByEntityId(casterId);
             if (castingAvatar == null) {
-                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.REQ_PARA_INVALID));
-                return;
+                return MazeAttackResult.failure(Retcode.REQ_PARA_INVALID);
             }
 
             // Player is the attacker, add hit targets to the battle
@@ -94,137 +101,130 @@ public class BattleService extends BaseGameService {
                 }
             } else {
                 // Skip battle since the monster didnt attack anyone
-                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId));
-                return;
+                return MazeAttackResult.empty();
             }
         }
 
         // Skip battle if no attacked entities detected
         if (targets.size() == 0) {
-            player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId));
-            return;
+            return MazeAttackResult.empty();
         }
 
         for (var target : targets) {
             if (target instanceof EntityMonster monster && org.hkrpg.server.gameplay.BoxingClubManager.genericMonsterRequiresMatch(monster)) {
-                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.REQ_PARA_INVALID));
-                return;
+                return MazeAttackResult.failure(Retcode.REQ_PARA_INVALID);
             }
         }
         for (int id : assistMonsters) {
             if (player.getScene().getEntities().get(id) instanceof EntityMonster monster && org.hkrpg.server.gameplay.BoxingClubManager.genericMonsterRequiresMatch(monster)) {
-                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.REQ_PARA_INVALID));
-                return;
+                return MazeAttackResult.failure(Retcode.REQ_PARA_INVALID);
             }
         }
 
-        // Separate entities into monster list
-        Set<EntityMonster> monsters = new HashSet<>();
+        try (var outcomes = MazeAttackResult.observe(player, targets, assistMonsters)) {
+            // Separate entities into monster list
+            Set<EntityMonster> monsters = new LinkedHashSet<>();
 
-        // Destroy props
-        for (var it = targets.iterator(); it.hasNext();) {
-            GameEntity entity = it.next();
+            // Destroy props
+            for (var it = targets.iterator(); it.hasNext();) {
+                GameEntity entity = it.next();
 
-            if (entity instanceof EntityMonster monster) {
-                monsters.add(monster);
-            } else if (entity instanceof EntityProp prop) {
-                it.remove();
-                player.getScene().destroyProp(prop);
-            } else {
-                it.remove();
-            }
-        }
-
-        // Check if we are using a skill that doesnt trigger a battle
-        if (castedSkill != null && !castedSkill.isTriggerBattle(castingAvatar)) {
-            // Apply buffs to monsters
-            if (castingAvatar == null) {
-                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId, Retcode.REQ_PARA_INVALID));
-                return;
-            }
-            castedSkill.onCastHit(castingAvatar, targets);
-            // Skip battle if our technique does not trigger a battle
-            player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId));
-            return;
-        }
-
-        // Start battle
-        if (monsters.size() > 0) {
-            // Maze skill attack event
-            if (castedSkill != null && castingAvatar != null) {
-                castedSkill.onAttack(castingAvatar, targets);
-            }
-
-            // Skip battle if monsters were killed
-            if (monsters.stream().filter(m -> m.isAlive()).count() == 0) {
-                player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId));
-                return;
-            }
-
-            // Add any assisting monsters from monster assist list
-            for (int entityId : assistMonsters) {
-                GameEntity entity = player.getScene().getEntities().get(entityId);
-
-                if (entity != null && entity instanceof EntityMonster monster) {
+                if (entity instanceof EntityMonster monster) {
                     monsters.add(monster);
+                } else if (entity instanceof EntityProp prop) {
+                    it.remove();
+                    player.getScene().destroyProp(prop);
+                } else {
+                    it.remove();
                 }
             }
 
-            // Create battle and add npc monsters to it
-            Battle battle = new Battle(player, player.getLineupManager().getCurrentLineup(), monsters);
-
-            // Make sure we have at least one stage for the battle
-            if (battle.getStage() == null) {
-                player.sendPacket(new PacketSceneCastSkillScRsp());
-                return;
+            // Check if we are using a skill that doesnt trigger a battle
+            if (castedSkill != null && !castedSkill.isTriggerBattle(castingAvatar)) {
+                // Apply buffs to monsters
+                if (castingAvatar == null) {
+                    return MazeAttackResult.failure(Retcode.REQ_PARA_INVALID);
+                }
+                castedSkill.onCastHit(castingAvatar, targets);
+                // Skip battle if our technique does not trigger a battle
+                return outcomes.success(null);
             }
 
-            if (battle.getStoryChallengeBinding().required() && battle.getStoryChallengeBinding().context() == null) {
-                player.sendPacket(new PacketSceneCastSkillScRsp());
-                return;
-            }
+            // Start battle
+            if (monsters.size() > 0) {
+                // Maze skill attack event
+                if (castedSkill != null && castingAvatar != null) {
+                    castedSkill.onAttack(castingAvatar, targets);
+                }
 
-            // Add buffs to battle
-            if (castingAvatar != null) {
-                // The player is the one attacking
-                if (castedSkill != null) {
-                    // Get elemental weakness debuff id
-                    int buffId = castingAvatar.getExcel().getDamageType().getEnterBattleBuff();
+                // Callbacks may defeat only some targets or remove them administratively. Neither
+                // may reappear in the encounter's NPC roster or stage waves.
+                monsters.removeIf(monster -> !outcomes.present(monster));
+                if (monsters.isEmpty()) {
+                    return outcomes.success(null);
+                }
 
-                    // Replace with a special debuff that ignores all toughness
-                    if (castedSkill.hasAdventureModifier(castingAvatar, "ADV_StageAbility_Maze_IgnoreWeakness_MazeSkillMark")) {
-                        buffId = 1000119;
-                    }
+                // Add any assisting monsters from monster assist list
+                for (int entityId : assistMonsters) {
+                    GameEntity entity = player.getScene().getEntities().get(entityId);
 
-                    // Add buff to battle
-                    int casterSlot = battle.getLineup().getAvatars().indexOf(castingAvatar.getAvatarId());
-                    MazeBuff buff = battle.addBuff(buffId, casterSlot);
-                    if (buff != null) {
-                        buff.addTargetIndex(casterSlot);
-                        buff.addDynamicValue("SkillIndex", castedSkill.getIndex());
+                    if (entity instanceof EntityMonster monster && outcomes.present(monster)) {
+                        monsters.add(monster);
                     }
                 }
-            } else {
-                // Ambush debuff (from monsters)
-                battle.addBuff(GameConstants.BATTLE_AMBUSH_BUFF_ID, -1, 1);
+
+                // Create battle and add npc monsters to it
+                Battle battle = new Battle(player, player.getLineupManager().getCurrentLineup(), monsters);
+
+                // Make sure we have at least one stage for the battle
+                if (battle.getStage() == null) {
+                    return MazeAttackResult.failure(Retcode.FAIL);
+                }
+
+                if (battle.getStoryChallengeBinding().required() && battle.getStoryChallengeBinding().context() == null) {
+                    return MazeAttackResult.failure(Retcode.FAIL);
+                }
+
+                // Add buffs to battle
+                if (castingAvatar != null) {
+                    // The player is the one attacking
+                    if (castedSkill != null) {
+                        // Get elemental weakness debuff id
+                        int buffId = castingAvatar.getExcel().getDamageType().getEnterBattleBuff();
+
+                        // Replace with a special debuff that ignores all toughness
+                        if (castedSkill.hasAdventureModifier(castingAvatar, "ADV_StageAbility_Maze_IgnoreWeakness_MazeSkillMark")) {
+                            buffId = 1000119;
+                        }
+
+                        // Add buff to battle
+                        int casterSlot = battle.getLineup().getAvatars().indexOf(castingAvatar.getAvatarId());
+                        MazeBuff buff = battle.addBuff(buffId, casterSlot);
+                        if (buff != null) {
+                            buff.addTargetIndex(casterSlot);
+                            buff.addDynamicValue("SkillIndex", castedSkill.getIndex());
+                        }
+                    }
+                } else {
+                    // Ambush debuff (from monsters)
+                    battle.addBuff(GameConstants.BATTLE_AMBUSH_BUFF_ID, -1, 1);
+                }
+
+                // Player game instance callback
+                if (player.getInstance() != null) {
+                    player.getInstance().onBattleStart(battle);
+                }
+
+                battle.setDailyWeaknessEntry(org.hkrpg.server.gameplay.DailyWeaknessEntries.capture(player, battle, casterId, castedSkill, targets));
+                // Set the accepted battle before its response is serialized.
+                player.setBattle(battle);
+                battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
+                battle.setMissionChallengeWin(org.hkrpg.server.gameplay.MissionChallengeWin.capture(player, battle));
+                return outcomes.success(battle);
             }
 
-            // Player game instance callback
-            if (player.getInstance() != null) {
-                player.getInstance().onBattleStart(battle);
-            }
-
-            battle.setDailyWeaknessEntry(org.hkrpg.server.gameplay.DailyWeaknessEntries.capture(player, battle, casterId, castedSkill, targets));
-            // Set battle and send rsp packet
-            player.setBattle(battle);
-            battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
-            battle.setMissionChallengeWin(org.hkrpg.server.gameplay.MissionChallengeWin.capture(player, battle));
-            player.sendPacket(new PacketSceneCastSkillScRsp(battle, attackedGroupId));
-            return;
+            return outcomes.success(null);
         }
-
-        // Send packet
-        player.sendPacket(new PacketSceneCastSkillScRsp(attackedGroupId));
     }
 
     public Battle startBattle(Player player, int stageId, int worldLevel) {

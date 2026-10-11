@@ -3,6 +3,7 @@ package emu.lunarcore.game.battle.skills;
 import java.util.List;
 
 import emu.lunarcore.game.avatar.GameAvatar;
+import emu.lunarcore.game.battle.MazeAttackResult;
 import emu.lunarcore.game.inventory.ItemParamMap;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.game.scene.entity.GameEntity;
@@ -18,8 +19,10 @@ public class MazeSkillSetAttackTargetMonsterDie extends MazeSkillAction {
                     || scene.getAvatarByEntityId(caster.getEntityId()) != caster) return;
             for (var entity : entities) {
                 if (entity instanceof EntityMonster monster
-                        && org.hkrpg.server.gameplay.MazeInstantKillTargets.allows(scene, monster)
-                        && scene.defeatMonster(monster)) {
+                        && org.hkrpg.server.gameplay.MazeInstantKillTargets.allows(scene, monster)) {
+                    int entityId = monster.getEntityId();
+                    if (!scene.defeatMonster(monster)) continue;
+                    MazeAttackResult.recordDirectDefeat(player, monster, entityId);
                     var drops = new ItemParamMap();
                     monster.calculateDrops(drops);
                     player.getInventory().addItems(drops.toItemList(), true);

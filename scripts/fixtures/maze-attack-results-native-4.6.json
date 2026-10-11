@@ -1,0 +1,115 @@
+{
+  "clientFiles": {
+    "GameAssembly.dll": "8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3",
+    "global-metadata.dat": "09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130"
+  },
+  "descriptorSHA256": "a9de1824e9892e236d7ce0f2d19f5531ffb259c125c4d22da89dfb7ac23c08fd",
+  "namedProtocolSource": {
+    "repository": "March7thHoney-OpenSource",
+    "sourceCommit": "fe00bdbda3c28ca33d01f171566aa35b5ab95083",
+    "path": "Proto/4.6/CmdSceneType.proto",
+    "command": {"SceneCastSkillScRsp": 1416},
+    "fields": {
+      "SceneCastSkillScRsp.battle_info": 4,
+      "SceneCastSkillScRsp.retcode": 6,
+      "SceneCastSkillScRsp.cast_entity_id": 8,
+      "SceneCastSkillScRsp.monster_battle_info": 13,
+      "HitMonsterBattleInfo.target_monster_entity_id": 5,
+      "HitMonsterBattleInfo.monster_battle_type": 11
+    },
+    "outcomes": {"TRIGGER_BATTLE": 1, "DIRECT_DIE_SIMULATE": 2, "DIRECT_DIE_SKIP_BATTLE": 3, "NO_BATTLE": 4}
+  },
+  "resourceSourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "types": {
+    "JFJPIJJDNDC": {
+      "typeIndex": 33974,
+      "namedType": "HitMonsterBattleInfo",
+      "constants": {"PKDBEGDNIFK": 11, "KNGHAAMKLCC": 5},
+      "fields": {
+        "HEOJOPAOBGB": {"namedField": "target_monster_entity_id", "offset": 24, "kind": 9},
+        "PCOGOBLACGK": {"namedField": "monster_battle_type", "offset": 28, "kind": 17, "typeIndex": 33884}
+      }
+    },
+    "MAPFMHHMKIM": {
+      "typeIndex": 33982,
+      "namedType": "SceneCastSkillScRsp",
+      "constants": {"PLDKENJLKME": 6, "NKLILADIPNI": 8, "JMJOBJOPBPL": 13, "HNBHJOFPFLM": 4},
+      "fields": {
+        "LKDEFKKLEDJ": {"namedField": "battle_info", "offset": 16, "kind": 18, "typeIndex": 27819},
+        "AJBHJNGPGOH": {"namedField": "monster_battle_info", "offset": 24, "kind": 21},
+        "NAEACGPKNNH": {"namedField": "retcode", "offset": 40, "kind": 9},
+        "CHMFPHPJAIA": {"namedField": "cast_entity_id", "offset": 44, "kind": 9}
+      }
+    },
+    "OGGNBCHLCKH": {
+      "typeIndex": 33884,
+      "namedType": "MonsterBattleType",
+      "constants": {"DPOLCIMNIPB": 0, "DOLGJFJBLNI": 1, "KACNMBEBBCA": 2, "LLKOKAKIHJB": 3, "FPDHDGGANFB": 4}
+    }
+  },
+  "typeSlots": [{"slot": "0x9361ad0", "typeIndex": 33982}],
+  "methods": [
+    {
+      "index": 232505, "name": "WriteTo", "rva": "0x1e6ffba0", "typeIndex": 33974,
+      "instructions": [
+        "1e6ffbec: mov byte ptr [rcx + rax + 0x20], 0x28",
+        "1e6ffbf1: mov edx, dword ptr [rdi + 0x18]",
+        "1e6ffc30: mov byte ptr [rcx + rax + 0x20], 0x58",
+        "1e6ffc35: movsxd rdx, dword ptr [rdi + 0x1c]"
+      ]
+    },
+    {
+      "index": 232607, "name": "MergeFrom", "rva": "0x1e9b2db0", "typeIndex": 33982,
+      "instructions": [
+        "1e9b2df5: cmp eax, 0x22",
+        "1e9b2e07: mov dword ptr [rdi + 0x28], eax",
+        "1e9b2e10: cmp eax, 0x40",
+        "1e9b2e15: cmp eax, 0x6a",
+        "1e9b2e1a: mov rbx, qword ptr [rdi + 0x18]",
+        "1e9b2e91: mov dword ptr [rdi + 0x2c], eax"
+      ]
+    },
+    {
+      "index": 572204, "name": "_OnCmdSceneCastSkillScRsp", "rva": "0xc5edbc0", "typeIndex": 62008,
+      "instructions": [
+        "c5edbe8: cmp rax, qword ptr [rip - 0x328c11f]",
+        "c5edbf5: mov edx, dword ptr [rsi + 0x28]",
+        "c5edc61: mov ecx, 0x6c3",
+        "c5edc6c: call 0x18d9be560",
+        "c5edc71: mov rdi, qword ptr [rsi + 0x10]",
+        "c5edc96: call 0x18c5d5350"
+      ]
+    },
+    {
+      "index": 552541, "name": "_DoCheckServerSkillRspResult", "rva": "0xc6048c0", "typeIndex": 60117,
+      "instructions": [
+        "c6048fa: cmp rax, qword ptr [rip - 0x32a2e31]",
+        "c604956: mov ebp, dword ptr [rbx + 0x2c]",
+        "c604995: mov rsi, qword ptr [rbx + 0x10]",
+        "c60499c: setne r8b",
+        "c6049a0: mov rdx, qword ptr [rbx + 0x18]",
+        "c6049a7: call 0x18c20f860"
+      ]
+    },
+    {
+      "index": 524542, "name": "NIDJAOOIODC", "rva": "0xc20f860", "typeIndex": 56859,
+      "instructions": [
+        "c20fa71: mov r12d, dword ptr [rax + 0x1c]",
+        "c20fa75: mov edx, dword ptr [rax + 0x18]",
+        "c20fa7b: call 0x19b20ad80",
+        "c20faa8: cmp eax, r12d",
+        "c20fab1: and eax, 0xfffffffe",
+        "c20fab4: cmp eax, 2",
+        "c20fabd: and r12d, 0xfffffffe",
+        "c20fac1: cmp r12d, 2"
+      ]
+    }
+  ],
+  "boundaries": {
+    "clientExecutableStarted": false,
+    "clientModified": false,
+    "clientGameplayVerified": false,
+    "directDieSimulateImplemented": false,
+    "notes": "原生偏移来自当前哈希文件，不能沿用Raw proto旁边的旧偏移注释；静态核对不等于客户端实际动作验收。"
+  }
+}

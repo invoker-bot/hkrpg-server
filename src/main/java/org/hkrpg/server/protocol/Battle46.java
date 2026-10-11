@@ -169,7 +169,22 @@ final class Battle46 {
       return;
     }
     if (hits.isEmpty()) hits.addAll(assists);
-    s.getServer().getBattleService().attack(player, caster, cast, skill, hits, assists);
+    var result = s.getServer().getBattleService().resolveAttack(player, caster, skill, hits, assists);
+    var response = builder(s, "SceneCastSkillScRsp");
+    set(response, "retcode", result.retcode().getVal());
+    set(response, "cast_entity_id", cast);
+    if (result.battle() != null)
+      set(response, "battle_info", s.getProtocol().clientSchema().parse("SceneBattleInfo",
+          s.getProtocol().translate("SceneBattleInfo", result.battle().toProto().toByteArray(), true)));
+    var rowType = response.getDescriptorForType().findFieldByName("monster_battle_info").getMessageType();
+    var outcome = rowType.findFieldByName("monster_battle_type");
+    for (var monster : result.monsters()) {
+      var row = DynamicMessage.newBuilder(rowType);
+      set(row, "target_monster_entity_id", monster.entityId());
+      row.setField(outcome, outcome.getEnumType().findValueByName("MONSTER_BATTLE_TYPE_" + monster.outcome().name()));
+      add(response, "monster_battle_info", row.build());
+    }
+    s.sendClientPacket("SceneCastSkillScRsp", response.build().toByteArray());
   }
 
   private Battle46() {}

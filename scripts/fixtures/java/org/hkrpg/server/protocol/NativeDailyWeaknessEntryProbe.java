@@ -112,6 +112,17 @@ public final class NativeDailyWeaknessEntryProbe {
     var battle = (DynamicMessage) field(attack, "battle_info");
     int id = number(battle, "battle_id");
     require(id > 0 && number(battle, "stage_id") == stage, "Wrong actual attack battle");
+    var outcomes = (List<?>) field(attack, "monster_battle_info");
+    require(outcomes.size() == 1, "Actual attack must acknowledge exactly its primary monster");
+    var outcome = (DynamicMessage) outcomes.getFirst();
+    check(number(attack, "cast_entity_id") == number(scene, "leader_entity_id")
+        && number(outcome, "target_monster_entity_id") == number(target, "entity_id")
+        && ((Descriptors.EnumValueDescriptor) field(outcome, "monster_battle_type")).getName()
+            .equals("MONSTER_BATTLE_TYPE_TRIGGER_BATTLE"),
+        "native-attack-acknowledges-actual-primary-entity-and-trigger-result-" + stage);
+    var current = (DynamicMessage) field(call("GetCurBattleInfoCsReq"), "battle_info");
+    check(number(current, "battle_id") == id && number(current, "stage_id") == stage,
+        "native-acknowledged-battle-is-current-and-settleable-" + stage);
     var waves = new ArrayList<List<Integer>>();
     for (var raw : (List<?>) field(battle, "monster_wave_list")) {
       var wave = (DynamicMessage) raw;
