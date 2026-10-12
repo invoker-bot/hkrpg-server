@@ -1,6 +1,6 @@
 param(
     [switch]$SkipTests,
-    [ValidateRange(1, 4)][int]$TestForks = [Math]::Min(4, [Environment]::ProcessorCount),
+    [ValidateRange(1, 8)][int]$TestForks = [Math]::Min(4, [Environment]::ProcessorCount),
     [switch]$RerunTests
 )
 $ErrorActionPreference = 'Stop'

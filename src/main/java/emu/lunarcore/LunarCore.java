@@ -318,7 +318,13 @@ public class LunarCore {
                     continue;
                 }
 
-                LunarCore.getCommandManager().invoke(null, input);
+                try {
+                    LunarCore.getCommandManager().invoke(null, input);
+                } catch (UserInterruptException | EndOfFileException e) {
+                    throw e;
+                } catch (Exception e) {
+                    LunarCore.getLogger().error("Command error: ", e);
+                }
             }
         } catch (UserInterruptException | EndOfFileException e) {
             // CTRL + C / CTRL + D

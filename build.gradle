@@ -44,8 +44,8 @@ test {
     // 测试类在独立 JVM 中执行；每个 JVM 内保持顺序，避免共享静态游戏数据并发变更。
     maxParallelForks = providers.gradleProperty('testForks').map { it.toInteger() }
         .getOrElse(Math.min(4, Runtime.getRuntime().availableProcessors()))
-    if (maxParallelForks < 1 || maxParallelForks > 4) {
-        throw new GradleException('testForks 必须在 1..4；使用 -PtestForks=1 可顺序执行。')
+    if (maxParallelForks < 1 || maxParallelForks > 8) {
+        throw new GradleException('testForks 必须在 1..8；使用 -PtestForks=1 可顺序执行。')
     }
     // 测试数据库只使用少量连接；按大型机器 CPU 数创建选择器会耗尽 Windows 临时端口。
     systemProperty 'io.netty.eventLoopThreads', '2'
