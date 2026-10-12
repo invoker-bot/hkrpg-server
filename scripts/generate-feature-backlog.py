@@ -1318,6 +1318,143 @@ _clock_query_gap = (
     '评分与初始属性是明确本服规则，官方正评级公式/抽牌池、完整活动及游戏UI待完成。')
 
 
+def review_out_followup_core_material(requests):
+    # 本批只增加有原表与本机4.6字段证明的有限入口，完整玩法/client46仍未通过。
+    owned = {'GetMaterialSubmitActivityDataCsReq': {'request': 'GetMaterialSubmitActivityDataCsReq',
+                                            'status': 'partial',
+                                            'sources': [{'project': 'March7thHoney-OpenSource',
+                                                         'commit': 'fe00bdbda3c28ca33d01f171566aa35b5ab95083',
+                                                         'license': 'AGPL-3.0',
+                                                         'paths': ['Proto/4.6/CmdActivityType.proto'],
+                                                         'kind': 'protocol-definition-and-local-client-static-evidence'}],
+                                            'acceptance': {'serverBehavior': True,
+                                                           'resourceVersion': True,
+                                                           'client46': False},
+                                            'nativeCommand': 2621,
+                                            'protocolName': 'GetMaterialSubmitActivityDataCsReq',
+                                            'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/MaterialSubmit46.java',
+                                            'testEvidence': ['src/test/java/org/hkrpg/server/protocol/MaterialSubmitActivity46Test.java',
+                                                             'src/test/resources/fixtures/material-submit-activity-4.6.json',
+                                                             'scripts/smoke-material-submit-activity.py',
+                                                             'scripts/tests/test_material_submit_native_guard.py',
+                                                             'docs/material-submit-activity-4.6.md',
+                                                             'docs/out-followup-core-material-4.6.md'],
+                                            'gap': '本批材料提交30014的301..307按原七份成本、前一项提交和21级/运营窗口接通三原生命令；实际库存扣除、真实原奖励和一次性凭据保存，47项新回归。同39601原生74请求/271检查、2正常停服/1同UID重启、4Player读取通过，180005实际文档耗尽删除。其它21份提交、对应Main/Act脚本、自动崩溃对账及UI仍待完成，见docs/material-submit-activity-4.6.md。'},
+     'SubmitMaterialSubmitActivityMaterialCsReq': {'request': 'SubmitMaterialSubmitActivityMaterialCsReq',
+                                                   'status': 'partial',
+                                                   'sources': [{'project': 'March7thHoney-OpenSource',
+                                                                'commit': 'fe00bdbda3c28ca33d01f171566aa35b5ab95083',
+                                                                'license': 'AGPL-3.0',
+                                                                'paths': ['Proto/4.6/CmdActivityType.proto'],
+                                                                'kind': 'protocol-definition-and-local-client-static-evidence'}],
+                                                   'acceptance': {'serverBehavior': True,
+                                                                  'resourceVersion': True,
+                                                                  'client46': False},
+                                                   'nativeCommand': 2611,
+                                                   'protocolName': 'SubmitMaterialSubmitActivityMaterialCsReq',
+                                                   'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/MaterialSubmit46.java',
+                                                   'testEvidence': ['src/test/java/org/hkrpg/server/protocol/MaterialSubmitActivity46Test.java',
+                                                                    'src/test/resources/fixtures/material-submit-activity-4.6.json',
+                                                                    'scripts/smoke-material-submit-activity.py',
+                                                                    'scripts/tests/test_material_submit_native_guard.py',
+                                                                    'docs/material-submit-activity-4.6.md',
+                                                                    'docs/out-followup-core-material-4.6.md'],
+                                                   'gap': '本批材料提交30014的301..307按原七份成本、前一项提交和21级/运营窗口接通三原生命令；实际库存扣除、真实原奖励和一次性凭据保存，47项新回归。同39601原生74请求/271检查、2正常停服/1同UID重启、4Player读取通过，180005实际文档耗尽删除。其它21份提交、对应Main/Act脚本、自动崩溃对账及UI仍待完成，见docs/material-submit-activity-4.6.md。'},
+     'TakeMaterialSubmitActivityRewardCsReq': {'request': 'TakeMaterialSubmitActivityRewardCsReq',
+                                               'status': 'partial',
+                                               'sources': [{'project': 'March7thHoney-OpenSource',
+                                                            'commit': 'fe00bdbda3c28ca33d01f171566aa35b5ab95083',
+                                                            'license': 'AGPL-3.0',
+                                                            'paths': ['Proto/4.6/CmdActivityType.proto'],
+                                                            'kind': 'protocol-definition-and-local-client-static-evidence'}],
+                                               'acceptance': {'serverBehavior': True,
+                                                              'resourceVersion': True,
+                                                              'client46': False},
+                                               'nativeCommand': 2638,
+                                               'protocolName': 'TakeMaterialSubmitActivityRewardCsReq',
+                                               'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/MaterialSubmit46.java',
+                                               'testEvidence': ['src/test/java/org/hkrpg/server/protocol/MaterialSubmitActivity46Test.java',
+                                                                'src/test/resources/fixtures/material-submit-activity-4.6.json',
+                                                                'scripts/smoke-material-submit-activity.py',
+                                                                'scripts/tests/test_material_submit_native_guard.py',
+                                                                'docs/material-submit-activity-4.6.md',
+                                                                'docs/out-followup-core-material-4.6.md'],
+                                               'gap': '本批材料提交30014的301..307按原七份成本、前一项提交和21级/运营窗口接通三原生命令；实际库存扣除、真实原奖励和一次性凭据保存，47项新回归。同39601原生74请求/271检查、2正常停服/1同UID重启、4Player读取通过，180005实际文档耗尽删除。其它21份提交、对应Main/Act脚本、自动崩溃对账及UI仍待完成，见docs/material-submit-activity-4.6.md。'},
+     'TakeOffSkillCoreCsReq': {'request': 'TakeOffSkillCoreCsReq',
+                               'status': 'partial',
+                               'sources': [{'project': 'March7thHoney-OpenSource',
+                                            'commit': 'fe00bdbda3c28ca33d01f171566aa35b5ab95083',
+                                            'license': 'AGPL-3.0',
+                                            'paths': ['Proto/4.6/CmdAetherDivideType.proto'],
+                                            'kind': 'protocol-definition-and-local-client-static-evidence'}],
+                               'acceptance': {'serverBehavior': True,
+                                              'resourceVersion': True,
+                                              'client46': False},
+                               'nativeCommand': 4823,
+                               'protocolName': 'TakeOffSkillCoreCsReq',
+                               'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/AetherDivide46.java',
+                               'testEvidence': ['src/test/java/org/hkrpg/server/protocol/AetherDivideSkillCore46Test.java',
+                                                'src/test/resources/fixtures/aether-divide-core-4.6.json',
+                                                'scripts/smoke-aether-divide-skill-core.py',
+                                                'scripts/tests/test_aether_divide_skill_core_native_guard.py',
+                                                'docs/aether-divide-skill-core-4.6.md',
+                                                'docs/out-followup-core-material-4.6.md'],
+                               'gap': '仅明确持有灵/原类型槽的实际芯片允许卸下，返回必需core与spirit；实际48请求/319检查含装配、重启恢复和卸下后装另一灵。库存不消费、不授予，真实UI/覆盖转移/挑战/战斗待完成。见docs/aether-divide-skill-core-4.6.md。'}}
+    for name, row in owned.items():
+        assert name not in requests, f"Duplicate source-bound local request: {name}"
+        requests[name] = row
+    equip = requests['EquipAetherDividePassiveSkillCsReq']
+    equip.update({'status': 'partial',
+     'acceptance': {'serverBehavior': True, 'resourceVersion': True, 'client46': False},
+     'nativeCommand': 4847,
+     'protocolName': 'EquipAetherDividePassiveSkillCsReq',
+     'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/AetherDivide46.java',
+     'testEvidence': ['src/test/java/org/hkrpg/server/protocol/AetherDivideSkillCore46Test.java',
+                      'src/test/resources/fixtures/aether-divide-core-4.6.json',
+                      'scripts/smoke-aether-divide-skill-core.py',
+                      'scripts/tests/test_aether_divide_skill_core_native_guard.py',
+                      'docs/aether-divide-skill-core-4.6.md',
+                      'docs/out-followup-core-material-4.6.md'],
+     'gap': '真实库存芯片按灵/晋阶原1基类型槽装备，仅空槽；响应为4825 '
+            'EquipSkillCoreScRsp，含完整core与spirit。同绑定重试无保存，不支持占用覆盖/直接跨灵转移；31新/43旧回归、真实48请求/319检查及4Player恢复通过，获取/升级/挑战/战斗/UI继续待完成。'})
+    equip['sources'].append({'project': 'March7thHoney-OpenSource',
+     'commit': 'fe00bdbda3c28ca33d01f171566aa35b5ab95083',
+     'license': 'AGPL-3.0',
+     'paths': ['Proto/4.6/CmdAetherDivideType.proto'],
+     'kind': 'protocol-definition-and-local-client-static-evidence'})
+    updates = {'AcceptMainMissionCsReq': {'gap': '本批3000603实际D0电话分支完成后接取非池3000604，原列车往返进入400、实际G85两NPC及Prop与1205对话推进401；34项新增回归。同39601原生141请求/171检查、7正常停服/6同UID重启和28独立Player读取通过；父/后续各原5000奖励防重。只验证一个原电话分支，source-only '
+                                       'G85演出未安装，完整剧情与UI继续待完成，见docs/daily-followup-3000604-4.6.md。',
+                                'testEvidence': ['src/test/java/org/hkrpg/server/gameplay/DailyMissionFollowup46Test.java',
+                                                 'src/test/resources/fixtures/daily-followup-3000604-4.6.json',
+                                                 'docs/daily-followup-3000604-4.6.md']},
+     'FinishTalkMissionCsReq': {'gap': '本批3000603实际D0电话分支完成后接取非池3000604，原列车往返进入400、实际G85两NPC及Prop与1205对话推进401；34项新增回归。同39601原生141请求/171检查、7正常停服/6同UID重启和28独立Player读取通过；父/后续各原5000奖励防重。只验证一个原电话分支，source-only '
+                                       'G85演出未安装，完整剧情与UI继续待完成，见docs/daily-followup-3000604-4.6.md。',
+                                'testEvidence': ['src/test/java/org/hkrpg/server/gameplay/DailyMissionFollowup46Test.java',
+                                                 'src/test/resources/fixtures/daily-followup-3000604-4.6.json',
+                                                 'docs/daily-followup-3000604-4.6.md']},
+     'SceneCastSkillCsReq': {'gap': '本批原1407 Free '
+                                    'OUT：绑定原释放身份与140704寿命，只执行原移除叶，0MP可用、不造攻击目标、不创建新战斗；40项新回归、旧Input边界保留。同39601原生290请求/319检查、3正常停服/2同UID重启、9Player及9Avatar读取通过。原始LocalPlayer仅装入隔离夹具，完整召唤、基础付款及真实UI继续待完成，见docs/maze-castorice-out-4.6.md。',
+                             'testEvidence': ['src/test/java/org/hkrpg/server/gameplay/MazeCastoriceOut46Test.java',
+                                              'src/test/resources/fixtures/maze-castorice-out-4.6.json',
+                                              'scripts/smoke-maze-castorice-out.py',
+                                              'docs/maze-castorice-out-4.6.md']},
+     'GetAetherDivideInfoCsReq': {'gap': '本批真实库存与已装备1基芯片关系查询和拒绝全状态屏障补充，芯片装卸边界见docs/aether-divide-skill-core-4.6.md。',
+                                  'testEvidence': ['src/test/java/org/hkrpg/server/protocol/AetherDivideSkillCore46Test.java',
+                                                   'src/test/resources/fixtures/aether-divide-core-4.6.json',
+                                                   'docs/aether-divide-skill-core-4.6.md',
+                                                   'docs/out-followup-core-material-4.6.md']}}
+    for name, update in updates.items():
+        row = requests[name]
+        row['gap'] = update['gap'] + ' 历史验证范围：' + row.get('gap', '')
+        evidence = list(row.get('testEvidence', []))
+        row['testEvidence'] = evidence
+        evidence.extend(path for path in update['testEvidence'] if path not in evidence)
+    for name in [*owned, 'EquipAetherDividePassiveSkillCsReq', *updates]:
+        for path in requests[name]['testEvidence']:
+            if not (ROOT / path).is_file():
+                raise SystemExit(f'验证证据文件缺失: {path}')
+
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
@@ -1636,6 +1773,7 @@ def main():
             for evidence in review["tests"]:
                 if not (ROOT / evidence).is_file():
                     raise SystemExit(f"验证证据文件缺失: {evidence}")
+    review_out_followup_core_material(requests)
     catalog = {"designTarget": "4.6.0", "referenceSnapshot": lock["snapshotDate"],
         "note": "名称合并仅提供逐项移植入口；未审查的源码入口不计为已实现玩法，客户端验收均待完成。",
         "entries": [requests[name] for name in sorted(requests)]}

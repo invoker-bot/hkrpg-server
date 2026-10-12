@@ -40,6 +40,15 @@ public final class AetherDivideState {
   }
   void lineup(int slot,List<Integer> ids,String fingerprint) { lineups.put(slot,new ArrayList<>(ids));sourceFingerprint=fingerprint; }
   void currentSlot(int slot,String fingerprint) { currentSlot=slot;sourceFingerprint=fingerprint; }
+  void equip(int avatar,int slot,int item,int actualCount,String fingerprint) {
+    spirits.get(avatar).skills.put(slot,item);
+    var core=skillCores.get(item);
+    if(core==null) {core=new SkillCore();core.itemId=item;core.count=actualCount;skillCores.put(item,core);}
+    core.dressedSpirit=avatar;sourceFingerprint=fingerprint;
+  }
+  void takeOff(int avatar,int slot,String fingerprint) {
+    int item=spirits.get(avatar).skills.remove(slot);skillCores.get(item).dressedSpirit=0;sourceFingerprint=fingerprint;
+  }
   public boolean valid(AetherDivideDefinitions definitions) {
     try {
       if(definitions==null || version!=1 || sourceFingerprint==null || spirits==null || skillCores==null || lineups==null
@@ -53,10 +62,9 @@ public final class AetherDivideState {
         if(value==null || definition==null || value.id!=entry.getKey() || !definitions.promotion(value.id,value.promotion)
             || value.exp<0 || value.fragmentCount<0 || value.curSp<0 || value.curSp>definition.maxSp() || value.skills==null) return false;
         for(var skill:value.skills.entrySet()) {
-          // The passive mutation interpreter has not been connected in this lane. Preserve only
-          // source-known saved cores with distinct bounded native indices; never create a core.
-          if(skill.getKey()==null || skill.getKey()<0 || skill.getKey()>3 || skill.getValue()==null
-              || !definitions.skills().contains(skill.getValue()) || dressed.putIfAbsent(skill.getValue(),value.id)!=null) return false;
+          if(skill.getKey()==null || skill.getValue()==null
+              || !definitions.canEquip(value.id,value.promotion,skill.getKey(),skill.getValue())
+              || dressed.putIfAbsent(skill.getValue(),value.id)!=null) return false;
         }
       }
       for(var entry:skillCores.entrySet()) {

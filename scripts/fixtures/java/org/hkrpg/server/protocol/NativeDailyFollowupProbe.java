@@ -1,0 +1,647 @@
+package org.hkrpg.server.protocol;
+
+import com.google.gson.*;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import com.google.protobuf.DynamicMessage;
+import emu.lunarcore.server.packet.*;
+import io.netty.buffer.*;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
+import kcp.highway.*;
+
+/**
+ * Original 3000603 three-choice Phone, G61 menu and independent normal H2 recovery; no client UI claim.
+ */
+public final class NativeDailyFollowupProbe {
+  private record Frame(int command, byte[] body) {}
+
+  private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
+  private final BlockingQueue<Frame> inbox = new LinkedBlockingQueue<>();
+  private final AtomicReference<Throwable> failure = new AtomicReference<>();
+  private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
+  private final List<String> checks = new ArrayList<>();
+  private final Map<String, Object> wireFields = verifyWireFields();
+  private Ukcp channel;
+  private int mainMission, dayIndex, requests;
+  private boolean mainRewardNotify;
+  private int observedWallet = -1;
+  private Map<String,Object> actorWire=Map.of();
+  private Map<String,Object> followupWire=Map.of();
+  private int awaitedQuest;
+  private boolean questCompletionNotify;
+
+  private static Object field(DynamicMessage m, String name) {
+    var descriptor=m.getDescriptorForType().findFieldByName(name);
+    require(descriptor!=null,"Undeclared 4.6 field: "+m.getDescriptorForType().getFullName()+"."+name);
+    return m.getField(descriptor);
+  }
+
+  private Map<String,Object> verifyWireFields() {
+    var paths=Map.ofEntries(
+        Map.entry("GetFirstTalkByPerformanceNpcCsReq",List.of("performance_id_list")),
+        Map.entry("GetFirstTalkByPerformanceNpcScRsp",List.of("retcode","npc_meet_status_list/performance_id","npc_meet_status_list/is_meet")),
+        Map.entry("FinishFirstTalkByPerformanceNpcCsReq",List.of("performance_id")),
+        Map.entry("FinishFirstTalkByPerformanceNpcScRsp",List.of("retcode","performance_id","reward")),
+        Map.entry("PlayerGetTokenCsReq",List.of("account_uid","token","platform")),
+        Map.entry("PlayerGetTokenScRsp",List.of("retcode","uid")),
+        Map.entry("PlayerLoginCsReq",List.<String>of()),
+        Map.entry("PlayerLoginScRsp",List.of("retcode","basic_info/scoin")),
+        Map.entry("PlayerLoginFinishCsReq",List.<String>of()),
+        Map.entry("PlayerLoginFinishScRsp",List.of("retcode")),
+        Map.entry("FinishTalkMissionCsReq",List.of("sub_mission_id","talk_str")),
+        Map.entry("FinishTalkMissionScRsp",List.of("retcode")),
+        Map.entry("AcceptMainMissionCsReq",List.of("main_mission_id")),
+        Map.entry("AcceptMainMissionScRsp",List.of("retcode")),
+        Map.entry("GetMissionDataCsReq",List.<String>of()),
+        Map.entry("GetMissionDataScRsp",List.of("retcode","main_mission_list/id","main_mission_list/status",
+            "finished_main_mission_id_list","mission_list/id","mission_list/status","mission_list/progress")),
+        Map.entry("EnterSceneCsReq",List.of("entry_id")),
+        Map.entry("EnterSceneScRsp",List.of("retcode")),
+        Map.entry("GetCurSceneInfoCsReq",List.<String>of()),
+        Map.entry("GetCurSceneInfoScRsp",List.of("retcode","scene/entry_id","scene/plane_id","scene/floor_id",
+            "scene/leader_entity_id","scene/entity_group_list/entity_list/entity_id","scene/entity_group_list/entity_list/group_id",
+            "scene/entity_group_list/entity_list/inst_id","scene/entity_group_list/entity_list/npc/npc_id",
+            "scene/entity_group_list/entity_list/prop/prop_id")),
+        Map.entry("GetNpcMessageGroupCsReq",List.of("BJIPBBFIBPD")),
+        Map.entry("GetNpcMessageGroupScRsp",List.of("retcode","message_group_list/id","message_group_list/status",
+            "message_group_list/message_section_list/id","message_group_list/message_section_list/status",
+            "message_group_list/message_section_list/item_list/item_id",
+            "message_group_list/message_section_list/message_item_list")),
+        Map.entry("FinishItemIdCsReq",List.of("item_id","text_id")),
+        Map.entry("FinishItemIdScRsp",List.of("retcode","item_id","text_id")),
+        Map.entry("FinishSectionIdCsReq",List.of("section_id")),
+        Map.entry("FinishSectionIdScRsp",List.of("retcode","section_id")),
+        Map.entry("GetQuestDataCsReq",List.<String>of()),
+        Map.entry("GetQuestDataScRsp",List.of("retcode","quest_list/id","quest_list/progress","quest_list/status","quest_list/finish_time")),
+        Map.entry("GetDailyActiveInfoCsReq",List.<String>of()),
+        Map.entry("GetDailyActiveInfoScRsp",List.of("retcode","daily_active_point")),
+        Map.entry("TakeQuestRewardCsReq",List.of("ODJIJFJCHHB")),
+        Map.entry("TakeQuestRewardScRsp",List.of("retcode","succ_quest_id_list")),
+        Map.entry("MissionRewardScNotify",List.of("main_mission_id","reward/item_list/item_id","reward/item_list/num")),
+        Map.entry("PlayerSyncScNotify",List.of("basic_info/scoin")));
+    var proof=new TreeMap<String,Object>();
+    for(var entry:paths.entrySet()) {
+      var fields=new TreeMap<String,Object>();
+      for(var path:entry.getValue()) {
+        var type=protocol.clientSchema().message(entry.getKey());
+        var numbers=new ArrayList<Integer>();
+        com.google.protobuf.Descriptors.FieldDescriptor terminal=null;
+        var names=path.split("/");
+        for(int i=0;i<names.length;i++) {
+          terminal=type.findFieldByName(names[i]);
+          require(terminal!=null,"Undeclared 4.6 path: "+entry.getKey()+"."+path);
+          numbers.add(terminal.getNumber());
+          if(i+1<names.length) type=terminal.getMessageType();
+        }
+        fields.put(path,Map.of("tags",numbers,"type",terminal.getType().name(),"repeated",terminal.isRepeated()));
+      }
+      proof.put(entry.getKey(),Map.of("command",protocol.clientCommand(entry.getKey()),"fields",fields));
+    }
+    require(protocol.clientSchema().message("Mission").findFieldByName("finish_time")==null,
+        "The frozen 4.6 Mission wire shape changed; inspect its declared fields");
+    proof.put("MissionTimestampDeclared",false);
+    require(protocol.clientCommand("GetFirstTalkByPerformanceNpcCsReq")==2142
+        && protocol.clientCommand("GetFirstTalkByPerformanceNpcScRsp")==2139
+        && protocol.clientCommand("FinishFirstTalkByPerformanceNpcCsReq")==2161
+        && protocol.clientCommand("FinishFirstTalkByPerformanceNpcScRsp")==2108,"Original G61 4.6 command IDs differ");
+    require(protocol.clientSchema().message("GetFirstTalkByPerformanceNpcCsReq").findFieldByName("performance_id_list").getNumber()==4
+        && protocol.clientSchema().message("FinishFirstTalkByPerformanceNpcCsReq").findFieldByName("performance_id").getNumber()==13,
+        "Original G61 native query/finish field numbers differ");
+    return proof;
+  }
+
+  private static int number(DynamicMessage m, String name) {
+    return (Integer) field(m, name);
+  }
+
+  private static void require(boolean value, String reason) {
+    if (!value) throw new IllegalStateException(reason);
+  }
+
+  private void check(boolean value, String reason) {
+    require(value, reason);
+    checks.add(reason);
+  }
+
+  private DynamicMessage.Builder request(String name, Map<String, Object> fields) {
+    var b = DynamicMessage.newBuilder(protocol.clientSchema().message(name));
+    fields.forEach(
+        (key, value) -> b.setField(b.getDescriptorForType().findFieldByName(key), value));
+    return b;
+  }
+
+  private DynamicMessage call(String name, Map<String, Object> fields, int code) throws Exception {
+    var packet =
+        Unpooled.wrappedBuffer(
+            PacketCodec.encode(
+                protocol.clientCommand(name),
+                new byte[0],
+                request(name, fields).build().toByteArray()));
+    try {
+      channel.write(packet);
+      requests++;
+    } finally {
+      packet.release();
+    }
+    String response = name.replace("CsReq", "ScRsp");
+    int command = protocol.clientCommand(response);
+    long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20);
+    while (System.nanoTime() < deadline) {
+      if (failure.get() != null)
+        throw new IllegalStateException("KCP connection failed", failure.get());
+      var frame = inbox.poll(1, TimeUnit.SECONDS);
+      if (frame == null) continue;
+      if (awaitedQuest != 0 && frame.command() == protocol.clientCommand("GetQuestDataScRsp")) {
+        var data = protocol.clientSchema().parse("GetQuestDataScRsp", frame.body());
+        require(data.getUnknownFields().asMap().isEmpty(), "Unknown quest notification fields");
+        for (var raw : (List<?>) field(data, "quest_list")) {
+          var row = (DynamicMessage) raw;
+          if (number(row, "id") == awaitedQuest
+              && number(row, "progress") == 1
+              && ((EnumValueDescriptor) field(row, "status")).getNumber() == 2)
+            questCompletionNotify = true;
+        }
+      }
+      if (frame.command() == protocol.clientCommand("MissionRewardScNotify")) {
+        var notify = protocol.clientSchema().parse("MissionRewardScNotify", frame.body());
+        require(notify.getUnknownFields().asMap().isEmpty(), "Unknown main reward fields");
+        if (number(notify, "main_mission_id") != mainMission) continue;
+        var reward = (DynamicMessage) field(notify, "reward");
+        var items = (List<?>) field(reward, "item_list");
+        require(items.size() == 1, "Wrong daily main reward item count");
+        var item = (DynamicMessage) items.getFirst();
+        require(
+            number(item, "item_id") == 2 && number(item, "num") == 5000,
+            "Wrong original daily credit notification");
+        mainRewardNotify = true;
+      }
+      if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
+        var notify = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
+        var basic = notify.getDescriptorForType().findFieldByName("basic_info");
+        if (basic != null && notify.hasField(basic))
+          observedWallet = number((DynamicMessage) notify.getField(basic), "scoin");
+      }
+      if (frame.command() != command) continue;
+      var m = protocol.clientSchema().parse(response, frame.body());
+      require(m.getUnknownFields().asMap().isEmpty(), "Unknown response fields: " + response);
+      require(
+          number(m, "retcode") == code,
+          "Response rejected: " + response + " code=" + number(m, "retcode"));
+      return m;
+    }
+    throw new TimeoutException(response);
+  }
+
+  private DynamicMessage call(String name) throws Exception {
+    return call(name, Map.of(), 0);
+  }
+
+  private void quest(int status, String label) throws Exception {
+    var data = call("GetQuestDataCsReq");
+    var matches = new ArrayList<DynamicMessage>();
+    for (var raw : (List<?>) field(data, "quest_list")) {
+      var row = (DynamicMessage) raw;
+      if (number(row, "id") == 2100003) matches.add(row);
+    }
+    require(matches.size() == 1, "Missing or duplicate original daily active target");
+    var row = matches.getFirst();
+    check(
+        ((EnumValueDescriptor) field(row, "status")).getNumber() == status
+            && number(row, "progress") == (status == 1 ? 0 : 1)
+            && ((Long) field(row, "finish_time") > 0) == (status != 1),
+        label);
+  }
+
+  private void points(int expected, String label) throws Exception {
+    var data = call("GetDailyActiveInfoCsReq");
+    check(number(data, "daily_active_point") == expected, label);
+  }
+
+  private void claim(int code, String label) throws Exception {
+    var data = call("TakeQuestRewardCsReq", Map.of("ODJIJFJCHHB", List.of(2100003)), code);
+    check(
+        ((List<?>) field(data, "succ_quest_id_list"))
+            .equals(code == 0 ? List.of(2100003) : List.of()),
+        label);
+  }
+
+  private static final int MAIN=3000603,FIRST=300060301,GOAL=300060302,SECTION=1211402;
+
+  private void progress(int first, int goal, boolean completed, String label) throws Exception {
+    var data=call("GetMissionDataCsReq");
+    var mains=((List<?>)field(data,"main_mission_list")).stream().map(DynamicMessage.class::cast)
+        .filter(row->number(row,"id")==MAIN).toList();
+    check(mains.size()==1 && ((EnumValueDescriptor)field(mains.getFirst(),"status")).getNumber()==(completed?2:1)
+        && ((List<?>)field(data,"finished_main_mission_id_list")).contains(MAIN)==completed,label+"-main");
+    var subs=new HashMap<Integer,DynamicMessage>();
+    for(var raw:(List<?>)field(data,"mission_list")) { var row=(DynamicMessage)raw;subs.put(number(row,"id"),row); }
+    check(subs.containsKey(FIRST) && number(subs.get(FIRST),"progress")==first
+        && ((EnumValueDescriptor)field(subs.get(FIRST),"status")).getNumber()==(first==0?1:2),label+"-first-talk");
+    check(goal<0?!subs.containsKey(GOAL):subs.containsKey(GOAL) && number(subs.get(GOAL),"progress")==goal
+        && ((EnumValueDescriptor)field(subs.get(GOAL),"status")).getNumber()==(goal==0?1:2),label+"-phone-goal");
+  }
+
+  private DynamicMessage phone() throws Exception {
+    var response=call("GetNpcMessageGroupCsReq",Map.of("BJIPBBFIBPD",List.of(48)),0);
+    var groups=((List<?>)field(response,"message_group_list")).stream().map(DynamicMessage.class::cast)
+        .filter(row->number(row,"id")==11125).toList();
+    require(groups.size()==1,"Missing or duplicate original Phone group 11125");
+    var sections=((List<?>)field(groups.getFirst(),"message_section_list")).stream().map(DynamicMessage.class::cast)
+        .filter(row->number(row,"id")==SECTION).toList();
+    require(sections.size()<=1,"Duplicate original Phone section 1211402");
+    return sections.isEmpty()?null:sections.getFirst();
+  }
+
+  private static List<Integer> history(DynamicMessage phone) {
+    return ((List<?>)field(phone,"item_list")).stream().map(DynamicMessage.class::cast)
+        .map(row->number(row,"item_id")).toList();
+  }
+  @SuppressWarnings("unchecked")
+  private static List<Integer> offered(DynamicMessage phone) { return (List<Integer>)field(phone,"message_item_list"); }
+
+  private void phone(List<Integer> history, List<Integer> choices, boolean finished, String label) throws Exception {
+    var value=phone();
+    check(value!=null && history(value).equals(history) && offered(value).equals(choices)
+        && ((EnumValueDescriptor)field(value,"status")).getNumber()==(finished?2:1),label);
+  }
+
+  private void reply(int id, int text, int code, String label) throws Exception {
+    var data=call("FinishItemIdCsReq",Map.of("item_id",id,"text_id",text),code);
+    check(number(data,"item_id")==id && number(data,"text_id")==text,label);
+  }
+
+  private void finish(int id, int code, String label) throws Exception {
+    var data=call("FinishSectionIdCsReq",Map.of("section_id",id),code);
+    check(number(data,"section_id")==id,label);
+  }
+
+  private List<Integer> prefix(int first, int second, int third, int size) {
+    require(Set.of(121140302,121140303).contains(first)
+        && Set.of(121140306,121140308).contains(second)
+        && Set.of(121140311,121140312).contains(third)
+        && Set.of(3,6,9,13).contains(size),"Invalid original three-choice prefix");
+    var full=List.of(121140301,121140316,121140317,first,121140304,121140305,second,
+        second==121140306?121140307:121140309,121140310,third,121140313,121140314,121140315);
+    return full.subList(0,size);
+  }
+
+  private List<Integer> choices(int size) {
+    return switch(size) {
+      case 3 -> List.of(121140302,121140303);
+      case 6 -> List.of(121140306,121140308);
+      case 9 -> List.of(121140311,121140312);
+      case 13 -> List.of();
+      default -> throw new IllegalStateException("Invalid original three-choice offer");
+    };
+  }
+
+  private void origin() throws Exception {
+    call("EnterSceneCsReq",Map.of("entry_id",200020102),0);
+    var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
+    check(number(scene,"entry_id")==200020102 && number(scene,"plane_id")==20002 && number(scene,"floor_id")==20002001,
+        "original-Mission-entrance-and-independent-finish-gate");
+    var found=new ArrayList<DynamicMessage>();
+    for(var rawGroup:(List<?>)field(scene,"entity_group_list")) for(var raw:(List<?>)field((DynamicMessage)rawGroup,"entity_list")) {
+      var row=(DynamicMessage)raw;
+      if(number(row,"group_id")==61 && number(row,"inst_id")==400001
+          && row.hasField(row.getDescriptorForType().findFieldByName("npc"))) found.add(row);
+    }
+    check(found.size()==1 && number((DynamicMessage)field(found.getFirst(),"npc"),"npc_id")==10206,
+        "actual-source-shared-G61-NPC10206-instance400001");
+    actorWire=Map.of("entity",number(found.getFirst(),"entity_id"),"group",61,"instance",400001,"npc",10206,
+        "plane",20002,"floor",20002001,"entry",200020102);
+  }
+
+  private void seen(boolean expected,String label) throws Exception {
+    var data=call("GetFirstTalkByPerformanceNpcCsReq",Map.of("performance_id_list",List.of(90000103)),0);
+    var rows=(List<?>)field(data,"npc_meet_status_list");
+    check(rows.size()==1 && number((DynamicMessage)rows.getFirst(),"performance_id")==90000103
+        && field((DynamicMessage)rows.getFirst(),"is_meet").equals(expected),label);
+  }
+
+  private void firstMeet(int code,String label) throws Exception {
+    var data=call("FinishFirstTalkByPerformanceNpcCsReq",Map.of("performance_id",90000103),code);
+    check(number(data,"performance_id")==90000103
+        && !data.hasField(data.getDescriptorForType().findFieldByName("reward")),label);
+  }
+
+  private void noCommission(String label) throws Exception {
+    var data=call("GetMissionDataCsReq");
+    check(((List<?>)field(data,"main_mission_list")).stream().map(DynamicMessage.class::cast)
+        .noneMatch(row->number(row,"id")==MAIN)
+        && ((List<?>)field(data,"mission_list")).stream().map(DynamicMessage.class::cast)
+        .noneMatch(row->number(row,"id")==FIRST || number(row,"id")==GOAL),label);
+    check(!mainRewardNotify && observedWallet<=0,label+"-no-main-credit");
+  }
+
+  private void originalMenu(JsonObject input) throws Exception {
+    var source=JsonParser.parseString(java.nio.file.Files.readString(java.nio.file.Path.of(input.get("originalMenuPack").getAsString()))).getAsJsonObject();
+    var data=call("GetMissionDataCsReq");var states=new HashMap<Integer,Integer>();
+    for(var raw:(List<?>)field(data,"mission_list")) {
+      var row=(DynamicMessage)raw;states.put(number(row,"id"),((EnumValueDescriptor)field(row,"status")).getNumber());
+    }
+    var candidates=new ArrayList<Integer>();
+    var tasks=source.getAsJsonArray("OnStartSequece").get(0).getAsJsonObject().getAsJsonArray("TaskList");
+    for(var raw:tasks) {
+      var task=raw.getAsJsonObject();
+      if(!task.get("$type").getAsString().equals("RPG.GameCore.PredicateTaskList")) continue;
+      var predicate=task.getAsJsonObject("Predicate");
+      require(predicate.get("$type").getAsString().equals("RPG.GameCore.ByCompareSubMissionState")
+          && predicate.get("SubMissionState").getAsString().equals("Started"),"Original finite source menu predicate differs");
+      int id=predicate.get("SubMissionID").getAsInt();
+      require(Set.of(300060101,300060201,300060301).contains(id),"Unexpected original menu mission");
+      if(states.getOrDefault(id,0)==1) {
+        var menu=task.getAsJsonArray("SuccessTaskList").get(0).getAsJsonObject();
+        require(menu.get("MenuItemID").getAsInt()==id && menu.get("MissionID").getAsInt()==id,
+            "Original menu identity differs from its Started mission");
+        candidates.add(id);
+      }
+    }
+    check(candidates.equals(List.of(FIRST)),"original-source-menu-evaluated-against-actual-native-Started-mission");
+  }
+
+  private Map<String,Object> execute(JsonObject input, java.io.BufferedReader control) throws Exception {
+    mainMission=MAIN;dayIndex=input.get("dayIndex").getAsInt();
+    String phase=input.get("phase").getAsString(),scenario=input.get("scenario").getAsString();
+    String at=input.get("expiredAt").getAsString();
+    int first=input.get("firstChoice").getAsInt(),second=input.get("secondChoice").getAsInt(),third=input.get("thirdChoice").getAsInt();
+    require(Set.of(1,2).contains(dayIndex) && Set.of("intro","open","middle","finish","claimed","boundary-reject","sequel-pending","sequel-entered","sequel-complete","sequel-restored").contains(phase)
+        && Set.of("settled","expired-unpaid").contains(scenario)
+        && Set.of("noReplies","oneReply","twoReplies","allReplies").contains(at)
+        && Set.of(121140302,121140303).contains(first) && Set.of(121140306,121140308).contains(second)
+        && Set.of(121140311,121140312).contains(third),"Invalid finite original 3000603 case");
+    var token=call("PlayerGetTokenCsReq",Map.of("account_uid",input.get("accountUid").getAsString(),
+        "token",input.get("comboToken").getAsString(),"platform",1),0);
+    int uid=number(token,"uid");var login=call("PlayerLoginCsReq");call("PlayerLoginFinishCsReq");
+    int wallet=number((DynamicMessage)field(login,"basic_info"),"scoin");
+    System.out.println("HKRPG_G61_FIXTURE_READY:"+uid);System.out.flush();
+    require("resume".equals(control.readLine()),"Controlled clock did not resume");
+    int prior=scenario.equals("settled")?(dayIndex-1)*5000:0;
+    int expectedLogin=phase.startsWith("sequel-")?(phase.equals("sequel-restored")?10000:5000):(phase.equals("claimed")?prior+5000:prior);
+    check(wallet==expectedLogin,"actual-login-wallet-"+dayIndex+"-"+phase);
+    if(phase.startsWith("sequel-")) {
+      sequel(phase);
+    } else if(phase.equals("boundary-reject")) {
+      // No query, meet, mission refresh or expiry is allowed ahead of this actual boundary request.
+      require(dayIndex==2 && scenario.equals("expired-unpaid"),"Boundary request must belong to an unpaid previous run");
+      if(at.equals("allReplies")) finish(SECTION,Retcode.MESSAGE_SECTION_CAN_NOT_FINISH.getVal(),"old-finish-rejected-before-any-mission-query");
+      else reply(at.equals("noReplies")?first:at.equals("oneReply")?second:third,0,
+          Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"old-reply-rejected-before-any-mission-query");
+    } else {
+      seen(!phase.equals("intro"),"original-NPC-first-meeting-history-before-current-phase");
+      if(!phase.equals("intro")) {
+        firstMeet(0,"original-NPC-first-meeting-deduplicated-after-normal-H2-reload");
+        seen(true,"original-NPC-first-meeting-remains-global-and-UID-bound");
+      }
+      if(phase.equals("intro")) {
+        require(dayIndex==1 && wallet==0,"New initial meeting must be a fresh first day");
+        firstMeet(Retcode.MISSION_SCENE_NOT_MATCH.getVal(),"source-intro-rejected-before-original-NPC-is-loaded");
+        noCommission("intro-has-no-synthetic-Talk-or-Phone-objective-before-observation");
+        origin();seen(false,"source-NPC-is-loaded-but-not-yet-observed");
+        call("FinishFirstTalkByPerformanceNpcCsReq",Map.of("performance_id",90000104),Retcode.MISSION_NOT_EXIST.getVal());
+        check(true,"ordinary-greeting-cannot-become-an-initial-meeting-objective");
+        firstMeet(0,"actual-original-NPC-initial-meeting-only-without-reward");
+        seen(true,"actual-original-NPC-initial-meeting-is-now-persisted");
+        firstMeet(0,"same-session-initial-meeting-is-deduplicated-without-reward");
+        noCommission("intro-has-no-synthetic-Talk-or-Phone-objective-after-observation");
+      } else if(phase.equals("open")) {
+        progress(0,-1,false,"actual-automatic-source-assignment");
+        check(phone()==null,"new-goal-does-not-borrow-prior-Phone-before-source-talk");
+        quest(1,"new-active-target-doing");points(0,"new-period-active-points-zero");
+        origin();originalMenu(input);
+        call("FinishTalkMissionCsReq",Map.of("sub_mission_id",FIRST,"talk_str","foreign-phone-talk"),Retcode.MISSION_FINISH_WAY_NOT_MATCH.getVal());
+        call("FinishTalkMissionCsReq",Map.of("sub_mission_id",FIRST,"talk_str","Mission_300060301"),0);
+        check(true,"original-first-talk-accepts-source-Phone-goal");
+        progress(1,0,false,"source-first-talk-does-not-complete-Phone");
+        phone(prefix(first,second,third,3),choices(3),false,"fresh-original-three-NPC-opening");
+        finish(SECTION,Retcode.MESSAGE_SECTION_CAN_NOT_FINISH.getVal(),"section-ending-cannot-skip-original-three-choices");
+        reply(second,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"second-choice-cannot-skip-first-choice");
+        reply(third,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"third-choice-cannot-skip-first-choice");
+        reply(first,1,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"unverified-text-override-does-not-change-original-Phone");
+        boolean oldUnpaid=scenario.equals("expired-unpaid") && dayIndex==1;
+        if(!oldUnpaid || !at.equals("noReplies")) {
+          reply(first,0,0,"actual-original-first-player-reply");
+          phone(prefix(first,second,third,6),choices(6),false,"first-choice-and-second-offer-are-saved");
+        }
+        if(oldUnpaid && Set.of("twoReplies","allReplies").contains(at)) {
+          reply(second,0,0,"unpaid-original-second-player-reply");
+          phone(prefix(first,second,third,9),choices(9),false,"unpaid-third-offer-is-not-section-completion");
+        }
+        if(oldUnpaid && at.equals("allReplies")) {
+          reply(third,0,0,"unpaid-original-third-player-reply");
+          phone(prefix(first,second,third,13),choices(13),false,"unpaid-original-end-is-not-a-section-completion");
+        }
+        claim(Retcode.QUEST_NOT_FINISH.getVal(),"unfinished-active-claim-rejected");
+        progress(1,0,false,"unsubmitted-section-keeps-main-and-goal-doing");
+        check(!mainRewardNotify,"no-main-credit-for-an-unsubmitted-three-choice-prefix");
+      } else if(phase.equals("middle")) {
+        progress(1,0,false,"same-UID-first-choice-Phone-goal-restored");
+        phone(prefix(first,second,third,6),choices(6),false,"same-UID-first-choice-and-second-offer-restored");
+        quest(1,"partial-Phone-keeps-active-target-doing");points(0,"partial-Phone-keeps-points-zero");
+        reply(first,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"first-reply-cannot-replay-after-normal-H2-reload");
+        reply(third,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"third-reply-cannot-skip-second-offer-after-reload");
+        reply(second,0,0,"actual-original-second-player-reply");
+        phone(prefix(first,second,third,9),choices(9),false,"second-choice-and-third-offer-are-saved");
+        finish(SECTION,Retcode.MESSAGE_SECTION_CAN_NOT_FINISH.getVal(),"two-replies-cannot-skip-third-offer");
+        progress(1,0,false,"two-replies-alone-do-not-pay-main-commission");
+        claim(Retcode.QUEST_NOT_FINISH.getVal(),"two-replies-cannot-claim-active-reward");
+        check(!mainRewardNotify,"no-main-credit-before-third-reply-and-final-section-request");
+      } else if(phase.equals("finish")) {
+        progress(1,0,false,"same-UID-second-choice-Phone-goal-restored");
+        phone(prefix(first,second,third,9),choices(9),false,"same-UID-second-choice-and-third-offer-restored");
+        quest(1,"restored-third-offer-keeps-active-target-doing");points(0,"restored-third-offer-keeps-points-zero");
+        reply(first,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"first-reply-is-not-replayed-after-H2-or-reconnect");
+        reply(second,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"second-reply-is-not-replayed-after-H2-or-reconnect");
+        reply(third,0,0,"actual-original-third-player-reply");
+        phone(prefix(first,second,third,13),choices(13),false,"thirteen-message-end-still-requires-final-section-request");
+        progress(1,0,false,"all-three-replies-alone-do-not-pay-main-commission");
+        check(!mainRewardNotify,"no-main-credit-before-final-section-request");
+        awaitedQuest=2100003;questCompletionNotify=false;mainRewardNotify=false;
+        finish(SECTION,0,"actual-final-section-completes-only-this-accepted-period");
+        check(questCompletionNotify,"active-target-completion-notification-before-section-response");
+        check(mainRewardNotify && observedWallet==prior+5000,"original-main-5000-credit-notify-and-wallet-before-section-response");
+        awaitedQuest=0;progress(1,1,true,"actual-source-main-and-goal-finished");
+        phone(prefix(first,second,third,13),choices(13),true,"finished-Phone-query-preserves-actual-three-player-choices");
+        quest(2,"active-target-finished-before-claim");points(0,"active-points-not-auto-claimed");
+        claim(0,"actual-original-active-200-claimed");points(200,"exact-original-200-active-points");quest(3,"actual-active-target-closed");
+        claim(Retcode.QUEST_REWARD_ALREADY_TAKEN.getVal(),"active-reward-cannot-pay-twice");
+        finish(SECTION,Retcode.MESSAGE_SECTION_CAN_NOT_FINISH.getVal(),"final-section-cannot-pay-twice");
+        reply(third,0,Retcode.MESSAGE_ITEM_CAN_NOT_FINISH.getVal(),"finished-third-reply-cannot-pay-twice");
+        call("AcceptMainMissionCsReq",Map.of("main_mission_id",MAIN),Retcode.MISSION_ALREADY_DONE.getVal());
+        check(true,"same-period-main-not-reopened");
+      } else {
+        progress(1,1,true,"normal-H2-restored-main-and-goal-stay-finished");
+        phone(prefix(first,second,third,13),choices(13),true,"normal-H2-restored-three-actual-choices");
+        quest(3,"normal-H2-restored-active-target-closed");points(200,"normal-H2-restored-active-points");
+        claim(Retcode.QUEST_REWARD_ALREADY_TAKEN.getVal(),"normal-H2-restored-active-reward-not-repaid");
+        finish(SECTION,Retcode.MESSAGE_SECTION_CAN_NOT_FINISH.getVal(),"normal-H2-restored-section-not-repaid");
+        call("AcceptMainMissionCsReq",Map.of("main_mission_id",MAIN),Retcode.MISSION_ALREADY_DONE.getVal());
+        check(true,"normal-H2-restored-main-not-repaid");
+      }
+    }
+    if(phase.equals("finish"))followupProgress(0,-1,false,"actual-original-phone-completion-auto-accepts-non-pool-sequel");
+    var result=new LinkedHashMap<String,Object>();
+    result.put("passed",true);result.put("uid",uid);result.put("mainMission",MAIN);result.put("dayIndex",dayIndex);
+    result.put("phase",phase);result.put("scenario",scenario);result.put("expiredAt",at);
+    result.put("firstChoice",first);result.put("secondChoice",second);result.put("thirdChoice",third);result.put("loginWallet",wallet);
+    result.put("checks",checks);result.put("requests",requests);result.put("wireFieldsVerifiedBeforeConnect",true);
+    result.put("mainRewardNotifyBeforeResponseVerified",mainRewardNotify);
+    result.put("immediateQuestCompletionNotifyVerified",questCompletionNotify);
+    result.put("followupWire",followupWire);
+    result.put("actorWireIdentity",actorWire);result.put("originalNPCPerformance",90000103);
+    result.put("oldBoundaryRequestBeforeAnyQuery",phase.equals("boundary-reject"));
+    result.put("originalSourceMenuPredicateAgainstNativeMissionVerified",phase.equals("open"));
+    result.put("clientMenuUIVerified",false);result.put("sourceClientScriptExecutorVerified",false);result.put("clientGameplayVerified",false);
+    return result;
+  }
+
+
+  private void followupProgress(int enter,int talk,boolean completed,String label) throws Exception {
+    var data=call("GetMissionDataCsReq");
+    var mains=((List<?>)field(data,"main_mission_list")).stream().map(DynamicMessage.class::cast)
+        .filter(row->number(row,"id")==3000604).toList();
+    check(mains.size()==1 && ((EnumValueDescriptor)field(mains.getFirst(),"status")).getNumber()==(completed?2:1)
+        && ((List<?>)field(data,"finished_main_mission_id_list")).contains(3000604)==completed,label+"-main4");
+    var subs=new HashMap<Integer,DynamicMessage>();
+    for(var raw:(List<?>)field(data,"mission_list")){var row=(DynamicMessage)raw;subs.put(number(row,"id"),row);}
+    check(subs.containsKey(300060400) && number(subs.get(300060400),"progress")==enter
+        && ((EnumValueDescriptor)field(subs.get(300060400),"status")).getNumber()==(enter==0?1:2),label+"-original-enter-floor");
+    check(talk<0?!subs.containsKey(300060401):subs.containsKey(300060401) && number(subs.get(300060401),"progress")==talk
+        && ((EnumValueDescriptor)field(subs.get(300060401),"status")).getNumber()==(talk==0?1:2),label+"-original-talk");
+    followupWire=Map.of("main",3000604,"enterProgress",enter,"talkProgress",talk,"completed",completed);
+  }
+
+  private void sourceSequelActors(boolean loaded,String label) throws Exception {
+    var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
+    check(number(scene,"plane_id")==20002 && number(scene,"floor_id")==20002001 && number(scene,"entry_id")==200020102,label+"-original-floor-and-entrance");
+    var npcs=new TreeMap<Integer,Integer>();var props=new TreeMap<Integer,Integer>();
+    for(var rawGroup:(List<?>)field(scene,"entity_group_list"))for(var raw:(List<?>)field((DynamicMessage)rawGroup,"entity_list")){
+      var row=(DynamicMessage)raw;if(number(row,"group_id")!=85)continue;
+      if(row.hasField(row.getDescriptorForType().findFieldByName("npc"))){
+        int instance=number(row,"inst_id");require(npcs.put(instance,number((DynamicMessage)field(row,"npc"),"npc_id"))==null,"Duplicate G85 NPC instance");
+      }
+      if(row.hasField(row.getDescriptorForType().findFieldByName("prop"))){
+        int instance=number(row,"inst_id");require(props.put(instance,number((DynamicMessage)field(row,"prop"),"prop_id"))==null,"Duplicate G85 Prop instance");
+      }
+    }
+    check(loaded?npcs.equals(Map.of(400001,10209,400002,10215)) && props.equals(Map.of(300001,100)):npcs.isEmpty()&&props.isEmpty(),label+"-source-owned-two-npcs-and-prop");
+  }
+
+  private void sequel(String phase) throws Exception {
+    require(dayIndex==1,"The finite sequel lane does not invent a daily reset policy");
+    mainMission=3000604;
+    seen(true,"original-global-initial-meeting-remains-UID-bound");
+    progress(1,1,true,"actual-source-parent-phone-remains-finished");
+    phone(prefix(121140302,121140306,121140311,13),choices(13),true,"actual-parent-three-original-replies-preserved");
+    quest(3,"parent-original-active-target-remains-closed");points(200,"no-second-active-200-created-by-non-pool-sequel");
+    if(phase.equals("sequel-pending")){
+      followupProgress(0,-1,false,"same-UID-H2-restored-original-sequel-awaits-real-floor-entry");
+      call("FinishTalkMissionCsReq",Map.of("sub_mission_id",300060401,"talk_str","Mission_300060401"),Retcode.MISSION_NOT_DOING.getVal());
+      check(true,"sequel-talk-cannot-skip-original-enter-floor");
+      call("AcceptMainMissionCsReq",Map.of("main_mission_id",3000604),0);
+      followupProgress(0,-1,false,"repeat-accept-does-not-fabricate-floor-event");
+    }else if(phase.equals("sequel-entered")){
+      call("EnterSceneCsReq",Map.of("entry_id",100000102),0);
+      var train=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
+      check(number(train,"plane_id")==10000 && number(train,"floor_id")==10000000,"real-original-train-entry-before-source-target-floor");
+      followupProgress(0,-1,false,"foreign-original-floor-does-not-complete-target-enter-floor");
+      call("EnterSceneCsReq",Map.of("entry_id",200020102),0);
+      followupProgress(1,0,false,"real-original-floor-return-completes-only-source-enter-target");
+      sourceSequelActors(true,"real-original-G85-is-loaded");
+      call("FinishTalkMissionCsReq",Map.of("sub_mission_id",300060401,"talk_str","Mission_300060301"),Retcode.MISSION_FINISH_WAY_NOT_MATCH.getVal());
+      check(true,"foreign-old-menu-talk-cannot-complete-original-G85-talk");
+      points(200,"floor-entry-does-not-reward-another-active-target");
+    }else if(phase.equals("sequel-complete")){
+      followupProgress(1,0,false,"normal-H2-restored-original-talk-is-still-unfinished");
+      sourceSequelActors(true,"normal-H2-restored-original-G85-actors");
+      mainRewardNotify=false;observedWallet=-1;
+      call("FinishTalkMissionCsReq",Map.of("sub_mission_id",300060401,"talk_str","Mission_300060401"),0);
+      check(mainRewardNotify && observedWallet==10000,"actual-original-main4-5000-credit-notify-before-report-response");
+      followupProgress(1,1,true,"actual-original-server-report-finishes-source-non-pool-sequel");
+      sourceSequelActors(false,"closed-original-owner-unloads-G85");
+      call("FinishTalkMissionCsReq",Map.of("sub_mission_id",300060401,"talk_str","Mission_300060401"),Retcode.MISSION_NOT_DOING.getVal());
+      points(200,"actual-main4-credit-does-not-pay-duplicate-active-200");
+      check(true,"same-session-original-final-talk-does-not-pay-twice");
+    }else{
+      followupProgress(1,1,true,"normal-H2-restored-source-non-pool-main4-and-both-targets-finished");
+      sourceSequelActors(false,"normal-H2-restored-completed-owner-remains-unloaded");
+      call("FinishTalkMissionCsReq",Map.of("sub_mission_id",300060401,"talk_str","Mission_300060401"),Retcode.MISSION_NOT_DOING.getVal());
+      call("AcceptMainMissionCsReq",Map.of("main_mission_id",3000604),Retcode.MISSION_ALREADY_DONE.getVal());
+      claim(Retcode.QUEST_REWARD_ALREADY_TAKEN.getVal(),"normal-H2-recovered-original-active-target-cannot-pay-again");
+      points(200,"normal-H2-recovered-original-active-points-stay-exactly-200");
+      check(!mainRewardNotify,"normal-H2-recovered-original-main4-credit-not-repaid");
+    }
+  }
+
+  public static void main(String[] args) {
+    var probe = new NativeDailyFollowupProbe();
+    if(args.length==1 && args[0].equals("--wire-fields")) {
+      System.out.println(new Gson().toJson(probe.wireFields));
+      return;
+    }
+    var client = new KcpClient();
+    Ukcp connection = null;
+    int exit = 1;
+    try {
+      var control =
+          new java.io.BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
+      var credentials = JsonParser.parseString(control.readLine()).getAsJsonObject();
+      var config = new ChannelConfig();
+      config.nodelay(true, 40, 2, true);
+      config.setMtu(1400);
+      config.setSndwnd(256);
+      config.setRcvwnd(256);
+      config.setUseConvChannel(true);
+      config.setConv(ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE));
+      config.setTimeoutMillis(25000);
+      config.setAckNoDelay(true);
+      client.init(
+          config,
+          new KcpListener() {
+            public void onConnected(Ukcp c) {
+              probe.connected.complete(c);
+            }
+
+            public void handleReceive(ByteBuf bytes, Ukcp c) {
+              try {
+                while (bytes.isReadable()) {
+                  var frame = PacketCodec.decodeNext(bytes);
+                  require(frame != null, "Truncated mission frame");
+                  probe.inbox.add(new Frame(frame.cmdId(), frame.body()));
+                }
+              } catch (Throwable error) {
+                probe.failure.set(error);
+              }
+            }
+
+            public void handleException(Throwable error, Ukcp c) {
+              probe.failure.set(error);
+              probe.connected.completeExceptionally(error);
+            }
+
+            public void handleClose(Ukcp c) {
+              probe.failure.compareAndSet(
+                  null, new IllegalStateException("Mission probe disconnected"));
+            }
+          });
+      connection =
+          client.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(args[0])), config);
+      probe.channel = probe.connected.get(10, TimeUnit.SECONDS);
+      System.out.write(
+          (new Gson().toJson(probe.execute(credentials, control)) + "\n")
+              .getBytes(StandardCharsets.UTF_8));
+      System.out.flush();
+      exit = 0;
+    } catch (Exception error) {
+      error.printStackTrace(System.err);
+    } finally {
+      if (connection != null) connection.close();
+      client.stop();
+    }
+    System.exit(exit);
+  }
+}

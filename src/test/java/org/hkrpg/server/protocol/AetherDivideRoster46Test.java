@@ -216,9 +216,10 @@ class AetherDivideRoster46Test {
     assertEquals(2,rows(response,15).size());unchanged(before,0);
   }
   @Test void equippedCoreWithoutActualStockIsRefusedWithoutRepairOrUnequip() throws Exception {
-    existingRoster();fixtureRoster.getAsJsonObject("spirits").getAsJsonObject("6001").getAsJsonObject("skills").addProperty("0",250201);
-    fixtureRoster.getAsJsonObject("skillCores").getAsJsonObject("250201").addProperty("dressedSpirit",6001);
-    editRoster("skillCores",fixtureRoster.get("skillCores"));removeMaterial(250201);
+    existingRoster();fixtureRoster.getAsJsonObject("spirits").getAsJsonObject("6001").getAsJsonObject("skills").addProperty("1",250202);
+    var core=JsonParser.parseString("{\"itemId\":250202,\"count\":1,\"dressedSpirit\":6001}").getAsJsonObject();
+    fixtureRoster.getAsJsonObject("skillCores").add("250202",core);material(250202,1);
+    editRoster("skillCores",fixtureRoster.get("skillCores"));assertEquals(0,number(query(),6));removeMaterial(250202);
     String before=gson.toJson(state);assertEquals(Retcode.PLAYER_DATA_ERROR.getVal(),number(query(),6));unchanged(before,0);
   }
   @ParameterizedTest @ValueSource(ints={250201,250300})

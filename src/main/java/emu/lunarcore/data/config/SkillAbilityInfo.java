@@ -110,9 +110,51 @@ public class SkillAbilityInfo {
                 }
                 if (!manual.isProjectileDeclared()) base.addManualAbility(manual);
             }
+            // Original Input.OnAbort starts this separate Free Ability. Its only server
+            // effect is the caster140704 removal after a leader-conditioned Submit.
+            if (hasCastoriceOutLink()) for (var ability : AbilityList) {
+                var remove = castoriceOutCleanupTask(ability);
+                if (remove == null) continue;
+                var cleanup = new MazeSkill(avatarExcel, 2, ability.getName());
+                cleanup.setTriggerBattle(false);
+                cleanup.getCastActions().add(new MazeSkillRemoveBuff(140704));
+                base.addManualAbility(cleanup);
+            }
         }
 
         return true;
+    }
+
+    private boolean hasCastoriceOutLink() {
+        for (var ability : AbilityList) {
+            if (!"LocalPlayer_Castorice_MazeSkill_Input".equals(ability.getName()) || ability.getOnAbort() == null
+                    || ability.getOnAbort().isEmpty()) continue;
+            return ability.getOnAbort().get(0).equals(com.google.gson.JsonParser.parseString(
+                    "{\"$type\":\"RPG.GameCore.AdventureTriggerTargetAbility\",\"SkillType\":\"MazeSkill\","
+                    + "\"AbilityName\":\"LocalPlayer_Castorice_MazeSkill_Out\"}"));
+        }
+        return false;
+    }
+
+    private TaskInfo castoriceOutCleanupTask(AbilityInfo ability) {
+        if (!"LocalPlayer_Castorice_MazeSkill_Out".equals(ability.getName())
+                || !"Free".equals(ability.getManualTriggerType()) || ability.getOnStart() == null) return null;
+        try {
+            var branch = ability.getOnStart().get(2);
+            if (!"RPG.GameCore.PredicateTaskList".equals(branch.getType())
+                    || !com.google.gson.JsonParser.parseString("{\"$type\":\"RPG.GameCore.ByCompareTarget\","
+                        + "\"TargetType\":{\"$type\":\"RPG.GameCore.TargetAlias\",\"Alias\":\"Caster\"},"
+                        + "\"CompareType\":{\"$type\":\"RPG.GameCore.TargetAlias\",\"Alias\":\"LatestAdvTeamLeader\"}}")
+                        .equals(branch.getPredicate())
+                    || branch.getSuccessTaskList() == null || branch.getSuccessTaskList().size() != 2
+                    || (branch.getFailedTaskList() != null && !branch.getFailedTaskList().isEmpty())
+                    || !"RPG.GameCore.AdventureSubmitSkill".equals(branch.getSuccessTaskList().get(0).getType())) return null;
+            var remove = branch.getSuccessTaskList().get(1);
+            return "RPG.GameCore.RemoveMazeBuff".equals(remove.getType()) && remove.getID() == 140704
+                    && remove.hasExactCasterTarget() && !remove.IsClientOnly() ? remove : null;
+        } catch (RuntimeException unsupported) {
+            return null;
+        }
     }
 
     private boolean hasCastoriceInputLink() {
@@ -352,5 +394,6 @@ public class SkillAbilityInfo {
         private String Name;
         private String ManualTriggerType;
         private List<TaskInfo> OnStart;
+        private com.google.gson.JsonArray OnAbort;
     }
 }

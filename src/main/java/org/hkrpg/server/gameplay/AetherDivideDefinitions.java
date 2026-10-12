@@ -19,17 +19,39 @@ public final class AetherDivideDefinitions {
   private final Map<Integer, Spirit> spirits;
   private final Map<Integer, Set<Integer>> promotions;
   private final Set<Integer> skills;
+  private final Map<Integer,List<String>> spiritSlotTypes;
+  private final Map<Integer,Map<Integer,Integer>> slotUnlocks;
+  private final Map<Integer,String> coreTypes;
   private final String fingerprint;
   private AetherDivideDefinitions(Map<Integer,Spirit> spirits, Map<Integer,Set<Integer>> promotions,
-      Set<Integer> skills, String fingerprint) {
+      Set<Integer> skills, String fingerprint,Map<Integer,List<String>> spiritSlotTypes,
+      Map<Integer,Map<Integer,Integer>> slotUnlocks,Map<Integer,String> coreTypes) {
     this.spirits=Collections.unmodifiableMap(new TreeMap<>(spirits));
     var levels=new TreeMap<Integer,Set<Integer>>(); promotions.forEach((id,values)->levels.put(id,Set.copyOf(values)));
     this.promotions=Collections.unmodifiableMap(levels); this.skills=Set.copyOf(skills); this.fingerprint=fingerprint;
+    var slots=new TreeMap<Integer,List<String>>();spiritSlotTypes.forEach((id,types)->slots.put(id,List.copyOf(types)));
+    this.spiritSlotTypes=Collections.unmodifiableMap(slots);
+    var unlocks=new TreeMap<Integer,Map<Integer,Integer>>();slotUnlocks.forEach((id,values)->unlocks.put(id,Map.copyOf(values)));
+    this.slotUnlocks=Collections.unmodifiableMap(unlocks);this.coreTypes=Map.copyOf(coreTypes);
   }
   public Map<Integer,Spirit> spirits() { return spirits; }
   public Set<Integer> skills() { return skills; }
   public String fingerprint() { return fingerprint; }
   public boolean promotion(int id,int value) { return promotions.getOrDefault(id,Set.of()).contains(value); }
+  /** Native slots are 1..original list length; only explicit reached Promotion.Slot rows open them. */
+  public boolean canEquip(int avatar,int promotion,int slot,int item) {
+    var types=spiritSlotTypes.get(avatar);var unlock=slotUnlocks.getOrDefault(avatar,Map.of()).get(slot);
+    return types!=null && slot>=1 && slot<=types.size() && unlock!=null && unlock>0 && promotion>=unlock
+        && types.get(slot-1).equals(coreTypes.get(item));
+  }
+  private static String skillType(JsonObject row) {
+    var value=row.get("PassiveSkillType");
+    // The full native AetherDividePassiveSkillRow constructor is RET. A missing enum field
+    // retains zero; independently decoded AetherPassiveSkillType.Defend is exactly zero.
+    if(value==null)return "Defend";
+    if(!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString())throw new IllegalArgumentException("PassiveSkillType");
+    return value.getAsString();
+  }
   private static int number(JsonObject row,String name) {
     var value=row.get(name);
     if(value==null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()
@@ -52,20 +74,35 @@ public final class AetherDivideDefinitions {
         fingerprint.append(name).append(':').append(entry.getValue().get(1)).append('\n');
       }
       var spirits=new TreeMap<Integer,Spirit>();
+      var slotTypes=new TreeMap<Integer,List<String>>();var knownTypes=Set.of("Defend","Assist","Storm","Trick");
       for(var element:tables.get("AetherDivideSpirit")) {
         var row=element.getAsJsonObject();int id=number(row,"AvatarID");
         int maxSp=number(row.getAsJsonObject("SPMax"),"Value");
         var spirit=new Spirit(id,number(row,"MaxPromotion"),Math.multiplyExact(maxSp,1000),number(row,"ExpItemID"));
         if(id<=0 || maxSp<=0 || spirit.maxPromotion()<=0 || spirits.putIfAbsent(id,spirit)!=null) return null;
+        var types=new ArrayList<String>();
+        for(var type:row.getAsJsonArray("PassiveSkillSlotList")) {
+          if(!type.isJsonPrimitive() || !type.getAsJsonPrimitive().isString() || !knownTypes.contains(type.getAsString()))return null;
+          types.add(type.getAsString());
+        }
+        if(types.isEmpty() || types.size()>4)return null;slotTypes.put(id,types);
       }
       var promotions=new TreeMap<Integer,Set<Integer>>();
+      var unlocks=new TreeMap<Integer,Map<Integer,Integer>>();
       for(var element:tables.get("AetherDivideSpiritPromotion")) {
         var row=element.getAsJsonObject();int id=number(row,"AvatarID"),level=number(row,"Promotion");
         if(!spirits.containsKey(id) || !promotions.computeIfAbsent(id,key->new TreeSet<>()).add(level)) return null;
+        if(row.has("Slot")) {
+          int slot=number(row,"Slot");
+          if(slot!=0 && (slot>slotTypes.get(id).size() || unlocks.computeIfAbsent(id,key->new TreeMap<>()).putIfAbsent(slot,level)!=null))return null;
+        }
       }
       var skills=new TreeSet<Integer>();
-      for(var element:tables.get("AetherDividePassiveSkill"))
-        if(!skills.add(number(element.getAsJsonObject(),"ItemID"))) return null;
+      var coreTypes=new TreeMap<Integer,String>();
+      for(var element:tables.get("AetherDividePassiveSkill")) {
+        var row=element.getAsJsonObject();int id=number(row,"ItemID");String type=skillType(row);
+        if(!skills.add(id) || !knownTypes.contains(type))return null;coreTypes.put(id,type);
+      }
       if(spirits.size()!=19 || skills.size()!=32 || tables.get("AetherDivideSpiritPromotion").size()!=114
           || tables.get("AetherDivideTrainerLevel").size()!=5 || tables.get("AetherDivideConstCommon").size()!=5
           || tables.get("AetherDivideChallengeList").size()!=42) return null;
@@ -73,7 +110,7 @@ public final class AetherDivideDefinitions {
         for(int level=1;level<=spirit.maxPromotion();level++)
           if(!promotions.getOrDefault(spirit.id(),Set.of()).contains(level)) return null;
       var lease=HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(fingerprint.toString().getBytes(StandardCharsets.UTF_8)));
-      return new AetherDivideDefinitions(spirits,promotions,skills,lease);
+      return new AetherDivideDefinitions(spirits,promotions,skills,lease,slotTypes,unlocks,coreTypes);
     } catch(Exception invalid) { return null; }
   }
 }

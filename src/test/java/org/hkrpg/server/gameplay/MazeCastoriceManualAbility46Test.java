@@ -292,10 +292,11 @@ class MazeCastoriceManualAbility46Test {
   }
 
   @ParameterizedTest @ValueSource(strings = {"LocalPlayer_Castorice_MazeSkill_Out", "unknown_Input"})
-  void sourceInputAuthorizationDoesNotOpenOutOrUnknownAbilities(String name) throws Exception {
+  void sourceInputAuthorizationKeepsUnknownClosedAndAllowsTheProvenOut(String name) throws Exception {
     activate();
-    assertEquals(5, code(named(CHILD_USE, name, 1, new int[] {1, 2})));
-    assertTrue(casts.base.actor.getBuffs().containsKey(140704));
+    boolean provenOut = name.equals("LocalPlayer_Castorice_MazeSkill_Out");
+    assertEquals(provenOut ? 0 : 5, code(named(CHILD_USE, name, 1, new int[] {1, 2})));
+    assertEquals(!provenOut, casts.base.actor.getBuffs().containsKey(140704));
     assertEquals(4, casts.mp());
   }
 

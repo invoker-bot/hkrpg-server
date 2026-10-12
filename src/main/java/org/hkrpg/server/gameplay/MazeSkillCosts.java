@@ -43,6 +43,7 @@ public final class MazeSkillCosts {
   public record ManualInput(MazeSkill skill, int cost, int originCost, String originModifier) {}
   public record FreeNormalAttack(MazeSkill skill, MazeSkill origin, int originBuff) {}
   public record FreeDirectInput(MazeSkill skill, MazeSkill origin, int originBuff) {}
+  public record FreeOut(MazeSkill skill, MazeSkill origin, int originBuff) {}
   private record Row(int relatedSkill, int type, String trigger, int cost) {}
   private static Path previousFile;
   private static byte[] previousHash;
@@ -133,6 +134,21 @@ public final class MazeSkillCosts {
     } catch (RuntimeException unsupported) {
       return Optional.empty();
     }
+  }
+
+  /** Same full original base contract; Out only removes the source-owned radius, without Attack. */
+  public static Optional<FreeOut> castoriceFreeOut(GameAvatar caster, String name) {
+    if (!"LocalPlayer_Castorice_MazeSkill_Out".equals(name)) return Optional.empty();
+    var input = castoriceFreeDirectInput(caster, "LocalPlayer_Castorice_MazeSkill_Input");
+    if (input.isEmpty()) return Optional.empty();
+    var source = input.get();
+    var cleanup = source.origin().manualAbility(name);
+    if (cleanup == null || cleanup.getId() != 1407 || cleanup.getIndex() != 2
+        || cleanup.isProjectileDeclared() || cleanup.isTriggerBattle()
+        || !cleanup.getAttackActions().isEmpty() || cleanup.getCastActions().size() != 1
+        || !(cleanup.getCastActions().getFirst() instanceof emu.lunarcore.game.battle.skills.MazeSkillRemoveBuff))
+      return Optional.empty();
+    return Optional.of(new FreeOut(cleanup, source.origin(), source.originBuff()));
   }
 
   private static Map<String, JsonElement> castoriceOriginals() {

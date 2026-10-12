@@ -255,6 +255,8 @@ final class MissionTalkScriptGates {
   }
 
   static boolean allows(Player player, int id) {
+    if (id == DailyMissionFollowupSources.TALK && DailyMissionFollowupRules.handles(DailyMissionFollowupSources.MAIN))
+      return DailyMissionFollowupRules.loaded(player);
     if (id == 300060001) return DailyMissionMessageRules.initialTalk(player);
     if (id == STUDIO_TALK) return false;
     if (id != MESSAGE_TALK) return true;

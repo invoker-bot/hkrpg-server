@@ -9,6 +9,7 @@ import java.util.*;
 /** Commission acceptance consumes the source quota in the same player save as the mission. */
 final class DailyCommissionAcceptance {
   static Retcode check(Player player, int id, Instant now) {
+    if (DailyMissionFollowupRules.handles(id)) return DailyMissionFollowupRules.check(player, now);
     if (!applies(id)) return Retcode.SUCC;
     var periods = player.getGameplay().getDailyMissionPeriods();
     if (periods == null
@@ -41,6 +42,8 @@ final class DailyCommissionAcceptance {
 
   static boolean applies(int id) {
     if (!DailyMissionCatalog.configured()) return false;
+    // Original 3000604 follows its pool parent; it is absent from the original daily pool.
+    if (DailyMissionFollowupRules.handles(id)) return false;
     var main = GameData.getMainMissionExcelMap().get(id);
     return DailyMissionCatalog.mission(id) != null
         || main != null && "Daily".equals(main.getType());

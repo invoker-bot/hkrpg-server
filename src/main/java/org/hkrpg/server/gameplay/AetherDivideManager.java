@@ -10,6 +10,10 @@ import java.util.*;
 public final class AetherDivideManager {
   public record CoreStock(int itemId,int count,int dressedSpirit) {}
   public record Stock(Map<Integer,Integer> fragments,Map<Integer,CoreStock> cores) {}
+  public record CoreResult(Retcode code,AetherDivideState state,int avatar,int slot,int item,
+      AetherDivideDefinitions definitions,Stock stock) {
+    static CoreResult rejected(Retcode code) {return new CoreResult(code,null,0,0,0,null,null);}
+  }
   public record Result(Retcode code,AetherDivideState state,int slot,AetherDivideDefinitions definitions,Stock stock) {
     public Result(Retcode code,AetherDivideState state,int slot) { this(code,state,slot,null,null); }
     public Result(Retcode code,AetherDivideState state,int slot,AetherDivideDefinitions definitions) {
@@ -78,6 +82,45 @@ public final class AetherDivideManager {
       if(old.getCurrentSlot()==slot) return new Result(Retcode.SUCC,old,slot,definitions);
       var next=old.copy();next.currentSlot(slot,definitions.fingerprint());return save(old,next,slot,definitions);
     }
+  }
+  /** Finite empty-slot binding. Source-compatible replacements/transfers use an explicit TakeOff first. */
+  public CoreResult equip(int avatar,int slot,int item) {
+    synchronized(player) {
+      var definitions=AetherDivideDefinitions.load(Path.of(LunarCore.getConfig().getResourceDir()));
+      if(definitions==null)return CoreResult.rejected(Retcode.REQ_PARA_INVALID);
+      var old=player.getGameplay().getAetherDivide();
+      if(old==null || !old.valid(definitions))return CoreResult.rejected(Retcode.PLAYER_DATA_ERROR);
+      var stock=stock(old,definitions);if(stock==null)return CoreResult.rejected(Retcode.PLAYER_DATA_ERROR);
+      var spirit=old.getSpirits().get(avatar);var core=stock.cores().get(item);
+      if(player.getBattle()!=null || spirit==null || !definitions.canEquip(avatar,spirit.getPromotion(),slot,item)
+          || core==null || core.count()<=0)return CoreResult.rejected(Retcode.REQ_PARA_INVALID);
+      var current=spirit.getSkills().get(slot);
+      if(current!=null && current==item)return new CoreResult(Retcode.SUCC,old,avatar,slot,item,definitions,stock);
+      if(current!=null || core.dressedSpirit()!=0)return CoreResult.rejected(Retcode.REQ_PARA_INVALID);
+      var next=old.copy();next.equip(avatar,slot,item,core.count(),definitions.fingerprint());
+      return saveCore(old,next,avatar,slot,item,definitions);
+    }
+  }
+  public CoreResult takeOff(int avatar,int slot) {
+    synchronized(player) {
+      var definitions=AetherDivideDefinitions.load(Path.of(LunarCore.getConfig().getResourceDir()));
+      if(definitions==null)return CoreResult.rejected(Retcode.REQ_PARA_INVALID);
+      var old=player.getGameplay().getAetherDivide();
+      if(old==null || !old.valid(definitions))return CoreResult.rejected(Retcode.PLAYER_DATA_ERROR);
+      var stock=stock(old,definitions);if(stock==null)return CoreResult.rejected(Retcode.PLAYER_DATA_ERROR);
+      var spirit=old.getSpirits().get(avatar);var item=spirit==null?null:spirit.getSkills().get(slot);
+      if(player.getBattle()!=null || item==null)return CoreResult.rejected(Retcode.REQ_PARA_INVALID);
+      var next=old.copy();next.takeOff(avatar,slot,definitions.fingerprint());
+      return saveCore(old,next,avatar,slot,item,definitions);
+    }
+  }
+  private CoreResult saveCore(AetherDivideState old,AetherDivideState next,int avatar,int slot,int item,AetherDivideDefinitions definitions) {
+    var stock=stock(next,definitions);
+    if(!next.valid(definitions) || stock==null)return CoreResult.rejected(Retcode.PLAYER_DATA_ERROR);
+    player.getGameplay().aetherDivide(next);
+    try {player.save();}
+    catch(RuntimeException failure) {player.getGameplay().aetherDivide(old);return CoreResult.rejected(Retcode.PLAYER_DATA_ERROR);}
+    return new CoreResult(Retcode.SUCC,next,avatar,slot,item,definitions,stock);
   }
   private Result save(AetherDivideState old,AetherDivideState next,int slot,AetherDivideDefinitions definitions) {
     player.getGameplay().aetherDivide(next);

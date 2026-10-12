@@ -66,6 +66,10 @@ public class GameplayState {
   public AetherDivideState getAetherDivide() { return aetherDivide; }
 
   void aetherDivide(AetherDivideState value) { aetherDivide = Objects.requireNonNull(value); }
+  private MaterialSubmitState materialSubmission = new MaterialSubmitState();
+  public MaterialSubmitState getMaterialSubmission() { return materialSubmission; }
+  void materialSubmission(MaterialSubmitState state) { materialSubmission = Objects.requireNonNull(state); }
+
   private ChessRogueState chessRogue = new ChessRogueState();
 
   public ChessRogueState getChessRogue() {

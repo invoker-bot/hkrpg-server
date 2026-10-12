@@ -73,6 +73,7 @@ public final class VersionedPacketHandler {
     if (ItemSale46.handle(session, command, bytes)) return true;
     if (ItemComposition46.handle(session, command, bytes)) return true;
     if (SelectedRelic46.handle(session, command, bytes)) return true;
+    if (MaterialSubmit46.handle(session, command, bytes)) return true;
     if (TrialActivity46.handle(session, command, bytes)) return true;
     if (StoryLine46.handle(session, command, bytes)) return true;
     if (command == protocol.clientCommand("ContentPackageGetDataCsReq")) {

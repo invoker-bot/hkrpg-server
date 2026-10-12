@@ -177,8 +177,17 @@ final class Battle46 {
           var direct = index == 1 && phase == MazeSkill.CallbackPhase.COMBINED
               ? MazeSkillCosts.castoriceFreeDirectInput(avatar, abilityName)
               : Optional.<MazeSkillCosts.FreeDirectInput>empty();
-          if ((selected.isEmpty() && free.isEmpty() && direct.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
+          var cleanup = index == 1 && phase == MazeSkill.CallbackPhase.COMBINED
+              ? MazeSkillCosts.castoriceFreeOut(avatar, abilityName)
+              : Optional.<MazeSkillCosts.FreeOut>empty();
+          if ((selected.isEmpty() && free.isEmpty() && direct.isEmpty() && cleanup.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
               || !MazeCastState.validUseId(cast) || !assists.isEmpty()) error = Retcode.REQ_PARA_INVALID;
+          else if (cleanup.isPresent()) {
+            // Original Submit has no target lists and no Attack. Do not enter resolveAttack.
+            error = castoriceOut(s, req, avatar, cast, cleanup.get());
+            send(s, "SceneCastSkillScRsp", Map.of("retcode", error.getVal(), "cast_entity_id", cast));
+            return;
+          }
           else if (direct.isPresent()) {
             freeDirect = direct.get();
             if (!player.getCurrentLineup().getAvatars().contains(avatar.getAvatarId())
@@ -313,6 +322,35 @@ final class Battle46 {
       add(response, "monster_battle_info", row.build());
     }
     s.sendClientPacket("SceneCastSkillScRsp", response.build().toByteArray());
+  }
+
+  private static Retcode castoriceOut(GameSession session, DynamicMessage request,
+      GameAvatar caster, int use, MazeSkillCosts.FreeOut source) throws IOException {
+    var player = session.getPlayer();
+    var lineup = player.getCurrentLineup();
+    if (!((List<?>) value(request, "hit_target_entity_id_list")).isEmpty()
+        || !((List<?>) value(request, "assist_monster_entity_id_list")).isEmpty()
+        || !((List<?>) value(request, "assist_monster_entity_info")).isEmpty()
+        || !lineup.getAvatars().contains(caster.getAvatarId()) || player.getAvatarById(caster.getAvatarId()) != caster
+        || lineup.getLeader() < 0 || lineup.getLeader() >= lineup.size()
+        || lineup.getAvatars().get(lineup.getLeader()) != caster.getAvatarId()
+        || !player.getGameplay().getMazeCasts().hasReleasedBuffOrigin(session, caster,
+            source.origin(), 1, source.originBuff())) return Retcode.REQ_PARA_INVALID;
+    var state = player.getGameplay().getMazeCasts();
+    var binding = state.find(session, use);
+    if (binding != null && (!binding.matches(caster, source.skill(), 1) || binding.released()))
+      return Retcode.REQ_PARA_INVALID;
+    if (binding == null) binding = state.begin(session, use, caster, source.skill(), 1);
+    if (binding == null) return Retcode.SYSTEM_BUSY;
+    var motion = MotionInfo.parseFrom(session.getProtocol().translate("MotionInfo",
+        ((DynamicMessage) value(request, "target_motion")).toByteArray(), false));
+    try (var attempt = binding.attempt()) {
+      binding.release(motion);
+      attempt.commit();
+      return Retcode.SUCC;
+    } catch (RuntimeException rejected) {
+      return Retcode.FAIL;
+    }
   }
 
   private static MazeSkill.CallbackPhase callbackPhase(DynamicMessage request) {
