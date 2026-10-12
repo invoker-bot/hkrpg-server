@@ -27,10 +27,10 @@
 
 三个实际进程分别为 218/228 请求与检查、MP1；41/52、MP0；31/39、MP0。7 次实际 base1460 共产生 7 次兼容点费/通知；5 次新 Out 各产生一次实际 caster140704 删除，Out 没有额外点费通知、没有 BattleInfo 或目标结算行。真实领队切换、不同 actor/slot、旧 ID、未知/反序/重复标签、实际 NPC 攻击输入、缺 LocalPlayer 原件后同 ID 恢复、完整 21 秒墙钟等待和已计数只读心跳、实际场景切换与新 Session 均按预期响应。
 
-运行使用 13 个完整物理资源副本，其中 12 个固定原 blob 在每次 H2 读前复核；LocalPlayer 只补入受控目录，运营资源仍无该件。临时 buff、caster metadata、UseID/来源账本没有持久化。资格、MP 或完成状态没有直接写库；有限 MP 恢复来自已注明的受控回收箱摆放及真实 1460 请求。
+运行使用 13 个完整物理资源副本，其中 12 个固定原 blob 在每次 H2 读前复核；上述39601验证时LocalPlayer只补入受控目录；后续已将同一完整原件补入运营目录，来源及既有文件保护见[角色配置安装](maze-player-config-install.md)。临时 buff、caster metadata、UseID/来源账本没有持久化。资格、MP 或完成状态没有直接写库；有限 MP 恢复来自已注明的受控回收箱摆放及真实 1460 请求。
 
 可重复工具为 `scripts/smoke-maze-castorice-out.py`、`NativeMazeCastoriceOutProbe.java`、`MazeCastoriceOutFixtureInspector.java` 和对应 14 项保护测试。它们是新独立文件；原 Input 工具未改。复制的旧 Input 探针曾把成功 Out 的删除数计成 0，该工具语义先以 1 项 guard RED 锁定并留存原 Java，随后改正，14 guards 全绿。另有 6 项原生来源守卫通过。descriptor/javac 预检明确未启动服务器、不能计 Native。正式工具交付副本与此次实际执行的四个源 SHA 完全相同。
 
 本批只清理原 caster 的 140704。原 radius modifier.OnDestroy 中的 14071 销毁、14071 创建/跟随/触发区域、整套 modifier 生命周期、动画、距离与官方客户端 UI 尚未验收。原召唤 Duration 省略，不能由 buff 的 20 秒推造召唤持续时间。旧 Input 的原生 294 请求/330 检查属于已提交的上一批，不作为本批 Out Native 结果。
 
-运行只读取已配置资源目录内、完整物理路径闭包中的固定原件，缺件或变更时拒绝。LocalPlayer 原件本批仍仅用于受控夹具，不安装或覆盖运营 resources/config/database；references 不成为运行依赖。
+运行只读取已配置资源目录内、完整物理路径闭包中的固定原件，缺件或变更时拒绝。上述Out批的LocalPlayer原件仅用于受控夹具；后续两份原配置补充不覆盖已有运营文件。当前遐蝶八份完整物理来源的规范LF SHA已核对，记录为 `build/maze-player-config-installed-source-pins-v2.json`；references仍不成为运行依赖，配置检查不等于完整玩法或新包客户端验收。
