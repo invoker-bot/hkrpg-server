@@ -367,4 +367,3 @@ class MazeFeixiaoAbort46Test {
     assertFalse(casts.base.actor.getBuffs().containsKey(122001));
   }
 }
-
