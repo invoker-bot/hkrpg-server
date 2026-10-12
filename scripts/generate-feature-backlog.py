@@ -1455,6 +1455,53 @@ def review_out_followup_core_material(requests):
                 raise SystemExit(f'验证证据文件缺失: {path}')
 
 
+def review_feixiao_blessing_native(requests):
+    # 限定原动作及真实取得流程；静态字段/KCP通过不升级全客户端验收。
+    updates = {
+        'SceneCastSkillCsReq': {
+            'nativeCommand': 1460,
+            'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/Battle46.java',
+            'gap': ('原飞霄122001按122007一级参数20秒绑定，原NormalAtk.OnAbort的Caster Free清理只移除122001；'
+                    '36新回归/946独立相邻和同3eee原生584请求/473检查、3正常停服/2同UID重启、9Player+9Avatar读取通过。'
+                    '真实15base各扣1MP、5原盒恢复及13cleanup无额外MP/战斗；原付款phase未核定，不制造1408。'
+                    '源122004另一表达式、完整召唤/物理/移动/动画/游戏UI仍缺，见docs/maze-feixiao-abort-4.6.md。'),
+            'testEvidence': [
+                'src/test/java/org/hkrpg/server/gameplay/MazeFeixiaoAbort46Test.java',
+                'src/test/resources/fixtures/maze-feixiao-abort-4.6.json',
+                'scripts/smoke-maze-feixiao-abort.py',
+                'scripts/tests/test_smoke_maze_feixiao_abort_guard.py',
+                'docs/maze-feixiao-abort-4.6.md']},
+        'HandleRogueCommonPendingActionCsReq': {
+            'nativeCommand': 5676,
+            'javaEvidence': 'src/main/java/org/hkrpg/server/protocol/Universe46.java',
+            'gap': ('普通祝福选择/30碎片重掷在首次save前写失败时恢复原live局/菜单/钱包/共鸣且不提前通知；'
+                    '24新回归先11真实失败后全绿。新包真实首世界site1/304三战WIN形成菜单，重掷/重启/实际取得/重复拒绝'
+                    '47请求/105检查、2正常停服/1同UID重启、2只读H2/4独立Player读取通过；没有种offers/choices，'
+                    '原CLOSED资格与天赋11持有为显式夹具。实际服务器save未注入故障，跨文档部分写入/断电原子性未证明。'
+                    '奇物原入口/博士之袍11战斗参数、完整宇宙与游戏UI仍缺，见docs/rogue-blessing-persistence-4.6.md。'),
+            'testEvidence': [
+                'src/test/java/org/hkrpg/server/gameplay/RogueBlessingPersistence46Test.java',
+                'src/test/resources/fixtures/rogue-blessing-persistence-4.6.json',
+                'scripts/smoke-rogue-blessing-persistence.py',
+                'scripts/tests/test_rogue_blessing_persistence_native_guard.py',
+                'docs/rogue-blessing-persistence-4.6.md']},
+    }
+    for name, update in updates.items():
+        row = requests[name]
+        row['status'] = 'partial'
+        row['acceptance']['serverBehavior'] = True
+        row['acceptance']['client46'] = False
+        row['nativeCommand'] = update['nativeCommand']
+        row['javaEvidence'] = update['javaEvidence']
+        row['gap'] = update['gap'] + ' 历史验证范围：' + row.get('gap', '')
+        evidence = list(row.get('testEvidence', []))
+        evidence.extend(path for path in update['testEvidence'] if path not in evidence)
+        row['testEvidence'] = evidence
+        for path in update['testEvidence']:
+            if not (ROOT / path).is_file():
+                raise SystemExit(f'验证证据文件缺失: {path}')
+
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
@@ -1774,6 +1821,7 @@ def main():
                 if not (ROOT / evidence).is_file():
                     raise SystemExit(f"验证证据文件缺失: {evidence}")
     review_out_followup_core_material(requests)
+    review_feixiao_blessing_native(requests)
     catalog = {"designTarget": "4.6.0", "referenceSnapshot": lock["snapshotDate"],
         "note": "名称合并仅提供逐项移植入口；未审查的源码入口不计为已实现玩法，客户端验收均待完成。",
         "entries": [requests[name] for name in sorted(requests)]}

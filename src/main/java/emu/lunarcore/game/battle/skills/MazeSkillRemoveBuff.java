@@ -15,6 +15,8 @@ public final class MazeSkillRemoveBuff extends MazeSkillAction {
     this.buffId = buffId;
   }
 
+  public int getBuffId() { return buffId; }
+
   @Override
   public void onCast(GameAvatar caster, MotionInfo castPosition) {
     caster.removeBuff(buffId);

@@ -180,8 +180,17 @@ final class Battle46 {
           var cleanup = index == 1 && phase == MazeSkill.CallbackPhase.COMBINED
               ? MazeSkillCosts.castoriceFreeOut(avatar, abilityName)
               : Optional.<MazeSkillCosts.FreeOut>empty();
-          if ((selected.isEmpty() && free.isEmpty() && direct.isEmpty() && cleanup.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
+          var abort = index == 0 && phase == MazeSkill.CallbackPhase.COMBINED
+              ? org.hkrpg.server.gameplay.MazeFeixiaoSources.abortCleanup(avatar, abilityName)
+              : Optional.<org.hkrpg.server.gameplay.MazeFeixiaoSources.Cleanup>empty();
+          if ((selected.isEmpty() && free.isEmpty() && direct.isEmpty() && cleanup.isEmpty() && abort.isEmpty()) || player.getSession() != s || avatar.getOwner() != player
               || !MazeCastState.validUseId(cast) || !assists.isEmpty()) error = Retcode.REQ_PARA_INVALID;
+          else if (abort.isPresent()) {
+            // This original Submit has no Attack or target lists; keep it outside resolveAttack.
+            error = feixiaoAbort(s, req, avatar, cast, abort.get());
+            send(s, "SceneCastSkillScRsp", Map.of("retcode", error.getVal(), "cast_entity_id", cast));
+            return;
+          }
           else if (cleanup.isPresent()) {
             // Original Submit has no target lists and no Attack. Do not enter resolveAttack.
             error = castoriceOut(s, req, avatar, cast, cleanup.get());
@@ -341,6 +350,33 @@ final class Battle46 {
     if (binding != null && (!binding.matches(caster, source.skill(), 1) || binding.released()))
       return Retcode.REQ_PARA_INVALID;
     if (binding == null) binding = state.begin(session, use, caster, source.skill(), 1);
+    if (binding == null) return Retcode.SYSTEM_BUSY;
+    var motion = MotionInfo.parseFrom(session.getProtocol().translate("MotionInfo",
+        ((DynamicMessage) value(request, "target_motion")).toByteArray(), false));
+    try (var attempt = binding.attempt()) {
+      binding.release(motion);
+      attempt.commit();
+      return Retcode.SUCC;
+    } catch (RuntimeException rejected) {
+      return Retcode.FAIL;
+    }
+  }
+
+  private static Retcode feixiaoAbort(GameSession session, DynamicMessage request, GameAvatar caster,
+      int use, org.hkrpg.server.gameplay.MazeFeixiaoSources.Cleanup source) throws IOException {
+    var player = session.getPlayer();
+    if (!((List<?>) value(request, "hit_target_entity_id_list")).isEmpty()
+        || !((List<?>) value(request, "assist_monster_entity_id_list")).isEmpty()
+        || !((List<?>) value(request, "assist_monster_entity_info")).isEmpty()
+        || !player.getCurrentLineup().getAvatars().contains(caster.getAvatarId())
+        || player.getAvatarById(caster.getAvatarId()) != caster
+        || !player.getGameplay().getMazeCasts().hasReleasedBuffOrigin(session, caster,
+            source.origin(), 1, source.originBuff())) return Retcode.REQ_PARA_INVALID;
+    var state = player.getGameplay().getMazeCasts();
+    var binding = state.find(session, use);
+    if (binding != null && (!binding.matches(caster, source.skill(), 0) || binding.released()))
+      return Retcode.REQ_PARA_INVALID;
+    if (binding == null) binding = state.begin(session, use, caster, source.skill(), 0);
     if (binding == null) return Retcode.SYSTEM_BUSY;
     var motion = MotionInfo.parseFrom(session.getProtocol().translate("MotionInfo",
         ((DynamicMessage) value(request, "target_motion")).toByteArray(), false));

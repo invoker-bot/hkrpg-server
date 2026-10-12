@@ -122,7 +122,39 @@ public class SkillAbilityInfo {
             }
         }
 
+        // Original1220 NormalAtk.OnAbort starts this separate Free normal-slot cleanup.
+        if (avatarExcel.getAvatarID() == 1220 && base != null && normal != null
+                && "LocalPlayer_Feixiao_00_MazeSkill".equals(base.getAbilityName())
+                && "LocalPlayer_Feixiao_00_NormalAtk01".equals(normal.getAbilityName())
+                && hasFeixiaoAbortLink()) {
+            for (var ability : AbilityList) {
+                if (!"LocalPlayer_Feixiao_00_NormalAtk01_RemoveMazebuff".equals(ability.getName())
+                        || !"Free".equals(ability.getManualTriggerType()) || ability.getOnStart() == null
+                        || ability.getOnStart().size() != 2) continue;
+                var remove = ability.getOnStart().get(0);
+                var submit = ability.getOnStart().get(1);
+                if (!"RPG.GameCore.RemoveMazeBuff".equals(remove.getType()) || !remove.hasExactCasterTarget()
+                        || remove.getID() != 122001 || !"RPG.GameCore.AdventureSubmitSkill".equals(submit.getType())) continue;
+                var cleanup = new MazeSkill(avatarExcel, 1, ability.getName());
+                cleanup.setTriggerBattle(false);
+                cleanup.getCastActions().add(new MazeSkillRemoveBuff(122001));
+                normal.addManualAbility(cleanup);
+            }
+        }
+
         return true;
+    }
+
+    private boolean hasFeixiaoAbortLink() {
+        for (var ability : AbilityList) {
+            if (!"LocalPlayer_Feixiao_00_NormalAtk01".equals(ability.getName())
+                    || ability.getOnAbort() == null || ability.getOnAbort().isEmpty()) continue;
+            return ability.getOnAbort().get(0).equals(com.google.gson.JsonParser.parseString(
+                    "{\"$type\":\"RPG.GameCore.AdventureTriggerTargetAbility\","
+                    + "\"AbilityName\":\"LocalPlayer_Feixiao_00_NormalAtk01_RemoveMazebuff\","
+                    + "\"AbilityTargetType\":{\"$type\":\"RPG.GameCore.TargetAlias\",\"Alias\":\"Caster\"}}"));
+        }
+        return false;
     }
 
     private boolean hasCastoriceOutLink() {

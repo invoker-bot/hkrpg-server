@@ -41,6 +41,12 @@ public final class MazeBuffValues {
     if (raw == null) return Optional.of(caster -> OptionalDouble.of(20));
     var fixed = literalLifetimeSeconds(raw);
     if (fixed.isPresent()) return Optional.of(caster -> fixed);
+    if (skill.getId() == 1220
+        && org.hkrpg.server.gameplay.MazeFeixiaoSources.BASE.equals(skill.getAbilityName())
+        && task.getID() == 122001 && task.hasExactCasterTarget()
+        && MazeRecoveryValues.isSingleHash(raw, 692437857)) {
+      return Optional.of(caster -> org.hkrpg.server.gameplay.MazeFeixiaoSources.originLifetime(caster, skill));
+    }
     var binding = BINDINGS.get(skill.getId());
     if (binding == null
         || !binding.ability().equals(skill.getAbilityName())

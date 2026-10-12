@@ -11,6 +11,7 @@ import java.util.*;
  * Classical universe exploration domain; the complete 4.6 client entry flow is still unverified.
  */
 public final class UniverseManager {
+  private static final com.google.gson.Gson GSON = new com.google.gson.Gson();
   private final Player player;
   private ChessRogueManager chess;
 
@@ -18,6 +19,7 @@ public final class UniverseManager {
     if (chess == null) chess = new ChessRogueManager(player);
     return chess;
   }
+
   private GameplayState.RogueRun lineupRun;
   private RogueLineup lineup;
   private Battle boundBattle;
@@ -680,19 +682,27 @@ public final class UniverseManager {
                   Objects.hash(run.getRunId(), run.getSelectionId(), run.getOfferRerolls() + 1)));
       var selected =
           List.copyOf(candidates.subList(0, Math.min(run.offerOptionLimit(), candidates.size())));
-      var debit = RogueMiracles.pay(run, run.rerollPlan(run.getOfferRerolls()));
-      if (debit.retcode() != Retcode.SUCC) return debit.retcode();
-      run.reroll(selected);
-      if (run.getOfferEnhancementCount() == 1)
-        run.replaceBeaconLevels(
-            RogueMiracles.beaconLevels(
-                run.getOfferBaseLevels(),
-                run.getOfferEnhanceable(),
-                selected,
-                new Random(
-                    Objects.hash(run.getRunId(), run.getSelectionId(), run.getOfferRerolls()))));
-      // Fragment debit, menu and count share this single Player document.
-      player.save();
+      var before = GSON.fromJson(GSON.toJson(player.getGameplay()), GameplayState.class);
+      RogueMiracles.FragmentPayment debit;
+      try {
+        debit = RogueMiracles.pay(run, run.rerollPlan(run.getOfferRerolls()));
+        if (debit.retcode() != Retcode.SUCC) return debit.retcode();
+        run.reroll(selected);
+        if (run.getOfferEnhancementCount() == 1)
+          run.replaceBeaconLevels(
+              RogueMiracles.beaconLevels(
+                  run.getOfferBaseLevels(),
+                  run.getOfferEnhanceable(),
+                  selected,
+                  new Random(
+                      Objects.hash(run.getRunId(), run.getSelectionId(), run.getOfferRerolls()))));
+        // Freeze payment and menu together; a failure before persistence leaves this request
+        // retryable.
+        player.save();
+      } catch (RuntimeException failed) {
+        player.getGameplay().restoreMiracleShop(before);
+        throw failed;
+      }
       debit.syncEffects(player);
       org.hkrpg.server.protocol.RogueTalent46.syncCurrency(player);
       return Retcode.SUCC;
@@ -716,11 +726,17 @@ public final class UniverseManager {
       if (binding == null || binding.getID() != buff || binding.getLv() != run.offerLevel(buff))
         return Retcode.REQ_PARA_INVALID;
       if (!RogueDialogueRewards.acquireBlessing(player, selectionId, buff)) {
-        run.select(buff);
-        run.activateResonance(buff);
-        player.getGameplay().getRogueCollectedBuffs().add(buff);
-        RogueResonance.queue(run);
-        player.save();
+        var before = GSON.fromJson(GSON.toJson(player.getGameplay()), GameplayState.class);
+        try {
+          run.select(buff);
+          run.activateResonance(buff);
+          player.getGameplay().getRogueCollectedBuffs().add(buff);
+          RogueResonance.queue(run);
+          player.save();
+        } catch (RuntimeException failed) {
+          player.getGameplay().restoreMiracleShop(before);
+          throw failed;
+        }
       }
       player.getQuestManager().onRogueHandbookProgress();
       org.hkrpg.server.protocol.Universe46.syncBlessing(player, buff, selectionId);
