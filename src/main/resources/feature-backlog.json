@@ -11948,7 +11948,7 @@
     },
     {
       "request": "MatchThreeSetBirdPosCsReq",
-      "status": "planned",
+      "status": "partial",
       "sources": [
         {
           "project": "hkrpg-go",
@@ -11961,10 +11961,12 @@
         }
       ],
       "acceptance": {
-        "serverBehavior": false,
+        "serverBehavior": true,
         "resourceVersion": false,
         "client46": false
-      }
+      },
+      "nativeCommand": 7432,
+      "gap": "经典折纸小鸟新摆放、移动和移除保存抛异常时恢复原记录与原位置；不推进剧情或发布成功同步，重试必须再次保存。三种失败先由真实回归复现，修复后53项原生入口/剧情摆放与23项既有小鸟回归通过。仅证明写入前异常的内存回滚，部分落库/断电原子性和客户端验收未证明，见docs/match-three-bird-position-4.6.md。 历史验证范围："
     },
     {
       "request": "MazeKillDirectCsReq",

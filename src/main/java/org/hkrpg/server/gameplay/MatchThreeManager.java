@@ -63,10 +63,18 @@ public final class MatchThreeManager {
           && records.entrySet().stream()
               .anyMatch(e -> e.getKey() != id && e.getValue().getPosition() == position))
         return Retcode.REQ_PARA_INVALID;
+      var previous = records.get(id);
       var record = records.computeIfAbsent(id, k -> new GameplayState.MatchThreeBird());
       if (record.getPosition() != position) {
+        int previousPosition = record.getPosition();
         record.position(position);
-        player.save();
+        try {
+          player.save();
+        } catch (RuntimeException failure) {
+          if (previous == null) records.remove(id);
+          else previous.position(previousPosition);
+          throw failure;
+        }
       }
       player.getMissionManager().onMatchThreeBirdPosition(id, position);
       return Retcode.SUCC;

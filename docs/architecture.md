@@ -190,6 +190,8 @@ Java 显式表达式可调用原生身份匹配的 floor/round；标准round与R
 
 # Java 架构与补齐顺序
 
+2026-10-14日常与小鸟保存追加：3011605/3011608付款收据保存到Player内的独立按日状态，绑定原来源和主/交付/尾对话三接取身份，旧付款归档后新轮重新收费。经典小鸟摆放失败恢复原记录/位置，保存成功后才消费剧情事件。两者仅覆盖明确验证的保存边界，不推定库存跨文档或断电原子性，见[日常说明](daily-selected-item-4.6.md)和[小鸟说明](match-three-bird-position-4.6.md)。
+
 原始更高世界追加：43306/source1的实际世界2至6按Default/合法空偏好冻结actual/actual/0，Easy冻结actual/(actual-1)/1，试用成长仍用实际世界行及原始完整预设。75项新增含15种阶段/队伍组合、12种各两次Player恢复、旧World0与NPC边界；原件和原生逐模式证据见docs/higher-world-raid-difficulty-4.6.md。
 
 未选择World1追加：仅原始43306/source1、合法空偏好的新局采用Default并冻结1/1/0，查询保持空列表；损坏集合不回退。旧World0局缺少快照时仍禁止升级重入，暂停改选不重解释已有局。15项Java与三种原生模式的证据和本机空数据分支边界见docs/unselected-world-one-raid-4.6.md。

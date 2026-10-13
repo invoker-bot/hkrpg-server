@@ -1540,6 +1540,21 @@ def review_daily_selected_item_native(requests):
             raise SystemExit(f'验证证据文件缺失: {path}')
 
 
+def review_match_three_position_save_failure(requests):
+    row = requests['MatchThreeSetBirdPosCsReq']
+    row['status'] = 'partial'
+    row['acceptance']['serverBehavior'] = True
+    row['acceptance']['client46'] = False
+    row['nativeCommand'] = 7432
+    row['gap'] = (
+        '经典折纸小鸟新摆放、移动和移除保存抛异常时恢复原记录与原位置；'
+        '不推进剧情或发布成功同步，重试必须再次保存。三种失败先由真实回归复现，'
+        '修复后53项原生入口/剧情摆放与23项既有小鸟回归通过。'
+        '仅证明写入前异常的内存回滚，部分落库/断电原子性和客户端验收未证明，'
+        '见docs/match-three-bird-position-4.6.md。 历史验证范围：' + row.get('gap', '')
+    )
+
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
@@ -1861,6 +1876,7 @@ def main():
     review_out_followup_core_material(requests)
     review_feixiao_blessing_native(requests)
     review_daily_selected_item_native(requests)
+    review_match_three_position_save_failure(requests)
     catalog = {"designTarget": "4.6.0", "referenceSnapshot": lock["snapshotDate"],
         "note": "名称合并仅提供逐项移植入口；未审查的源码入口不计为已实现玩法，客户端验收均待完成。",
         "entries": [requests[name] for name in sorted(requests)]}

@@ -32,6 +32,7 @@ class MatchThree46Test {
     int saves, calls, granted;
     boolean partial;
     boolean interruptResultSave;
+    boolean interruptNextSave;
     final Inventory inventory =
         new Inventory(this) {
           public GrantResult grantItems(ItemParamMap items, boolean hint) {
@@ -48,6 +49,10 @@ class MatchThree46Test {
 
     public void save() {
       saves++;
+      if (interruptNextSave) {
+        interruptNextSave = false;
+        throw new IllegalStateException("simulated placement save failure");
+      }
       if (interruptResultSave
           && getGameplay().getMatchThree().getReports().values().stream()
               .anyMatch(GameplayState.MatchThreeReport::isApplied)) {

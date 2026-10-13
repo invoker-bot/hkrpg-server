@@ -105,6 +105,73 @@ class MatchThreeBirdPosition46Test {
   }
 
   @ParameterizedTest
+  @ValueSource(strings = {"new", "move", "remove"})
+  void failedPlacementSaveRestoresExactStateAndRetryActuallySaves(String kind) throws Exception {
+    var c = target(802310206);
+    var records = player().getGameplay().getMatchThree().getBirds();
+    if (!kind.equals("new")) {
+      position(301, kind.equals("move") ? 2 : 1);
+      records.get(301).result(7, 99);
+    }
+    accept(c);
+    var beforeRecord = records.get(301);
+    var beforeQuest = player().getMissionManager().sub(c.getId());
+    int requested = kind.equals("remove") ? 0 : 1;
+    String before = gson.toJson(player().getGameplay());
+    int syncs = f.session.syncs;
+    int saves = f.session.player.saves;
+    f.session.player.interruptNextSave = true;
+
+    var failure = assertThrows(IllegalStateException.class, () -> f.position(301, requested));
+    assertEquals("simulated placement save failure", failure.getMessage());
+    assertEquals(before, gson.toJson(player().getGameplay()));
+    assertSame(beforeRecord, records.get(301));
+    assertSame(beforeQuest, player().getMissionManager().sub(c.getId()));
+    assertEquals(QuestState.Phase.DOING, beforeQuest.getPhase());
+    assertTrue(player().getGameplay().getStoryValues().isEmpty());
+    assertEquals(syncs, f.session.syncs);
+    assertEquals(saves + 1, f.session.player.saves);
+    assertEquals(0, f.session.player.calls);
+    assertEquals(kind.equals("new") ? 0 : kind.equals("move") ? 2 : 1,
+        Gameplay46.number(f.bird(301), "pos"));
+
+    saves = f.session.player.saves;
+    position(301, requested);
+    assertTrue(f.session.player.saves > saves, "A retry must persist the placement before success");
+    assertEquals(requested, Gameplay46.number(f.bird(301), "pos"));
+    if (beforeRecord != null) {
+      assertSame(beforeRecord, records.get(301));
+      assertEquals(7, records.get(301).getCount());
+      assertEquals(99, records.get(301).getMaximum());
+    }
+    if (kind.equals("remove")) {
+      assertEquals(QuestState.Phase.DOING, beforeQuest.getPhase());
+      assertTrue(player().getGameplay().getStoryValues().isEmpty());
+    } else {
+      assertEquals(QuestState.Phase.FINISHED, player().getMissionManager().sub(c.getId()).getPhase());
+      assertEquals(2, player().getGameplay().getStoryValues().get("floor:10341001:Activity230DIYEntrance"));
+    }
+    String applied = gson.toJson(player().getGameplay());
+    saves = f.session.player.saves;
+    position(301, requested);
+    assertEquals(saves, f.session.player.saves);
+    assertEquals(applied, gson.toJson(player().getGameplay()));
+    assertEquals(0, f.session.player.calls);
+  }
+
+  @Test
+  void unchangedPlacementDoesNotAttemptAnotherPlacementSave() throws Exception {
+    position(301, 2);
+    String before = gson.toJson(player().getGameplay());
+    int saves = f.session.player.saves;
+    f.session.player.interruptNextSave = true;
+    position(301, 2);
+    assertTrue(f.session.player.interruptNextSave);
+    assertEquals(saves, f.session.player.saves);
+    assertEquals(before, gson.toJson(player().getGameplay()));
+  }
+
+  @ParameterizedTest
   @ValueSource(ints = {802310205, 802310206, 802310305, 802310405, 802310506})
   void originalNativePlacementCompletesItsAuthoredTargetAndActionsOnce(int id) throws Exception {
     var c = target(id);

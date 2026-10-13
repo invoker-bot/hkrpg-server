@@ -152,6 +152,8 @@
 
 # HKRPG Server
 
+2026-10-14正式收尾3011605/3011608自选材料日常，并修复折纸小鸟摆放保存失败后的内存残留；来源、回归及实际运行边界分别见[日常验证](docs/daily-selected-item-4.6.md)和[小鸟验证](docs/match-three-bird-position-4.6.md)。完整玩法与游戏客户端验收继续待完成。
+
 奇物商店、骰子和大乐透的首次保存修复见 [交易说明](docs/rogue-resonance-transactions-4.6.md)；原始怪物遭遇中的能量报告与正常重启验证见 [网络证据](docs/rogue-energy-network-4.6.md)。全部玩法继续逐项完善。
 
 九条原始回响角色配置的有限读取、技能绑定和 MaxSP 交叉证据见 [角色配置说明](docs/rogue-resonance-character-4.6.md)。未知格式停止，尚未安装能力脚本。
