@@ -397,6 +397,11 @@ public final class MissionManager {
       if (config.getLevelFloorID() != 0 && config.getLevelFloorID() != player.getFloorId())
         return Retcode.MISSION_SCENE_NOT_MATCH;
       if (!MissionTalkScriptGates.allows(player, id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+      if (DailyMissionSelectedItemRules.talk(id) && DailyMissionSelectedItemRules.handles(config.getMainMissionID())) {
+        var result = DailyMissionSelectedItemRules.finishTalk(player, config, state, values, clock.instant());
+        if (result == Retcode.SUCC) { refresh(); sync(); }
+        return result;
+      }
       if (DailyOriginEffects.handles(id)) {
         var result = DailyOriginEffects.finishInitial(player, config, state, values, now());
         if (result == Retcode.SUCC) {
@@ -566,6 +571,8 @@ public final class MissionManager {
           || c.getParamIntList().length != 0
           || !c.getParamStr1().isEmpty()) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
       if (!matchesPlace(c)) return Retcode.MISSION_SCENE_NOT_MATCH;
+      var originalSelection = DailyMissionSelectedItemRules.submission(player, c, clock.instant());
+      if (originalSelection != Retcode.SUCC) return originalSelection;
       var costs = new TreeMap<Integer, Integer>();
       try {
         for (var cost : c.getParamItemList()) {
@@ -633,6 +640,7 @@ public final class MissionManager {
           payments.put(id, payment);
           plans.put(id, new GameplayState.MissionPaymentPlan(c.getFinishType(), costs));
           payment.reserve();
+          DailyMissionSelectedItemRules.bindPayment(player, c, costs, clock.instant());
           player.save();
           for (var cost : costs.entrySet()) {
             if (cost.getKey() == 2) {

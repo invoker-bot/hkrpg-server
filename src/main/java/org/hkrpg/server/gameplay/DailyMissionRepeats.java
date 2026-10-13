@@ -16,7 +16,8 @@ final class DailyMissionRepeats {
   static boolean historyValid(Player player, Instant now) {
     return valid(player, player.getGameplay().getDailyMissionPeriods(), now)
         && DailyMissionExpiry.valid(player, now)
-        && DailyMissionMessageRules.historyValid(player, now);
+        && DailyMissionMessageRules.historyValid(player, now)
+        && DailyMissionSelectedItemRules.historyValid(player, now);
   }
 
   static boolean payoutAllowed(Player player, int id, Instant now) {
@@ -52,6 +53,11 @@ final class DailyMissionRepeats {
   }
 
   static boolean reopen(Player player, int id, Instant now) {
+    if (DailyMissionSelectedItemRules.handles(id)) return DailyMissionSelectedItemRules.reopen(player, id, now);
+    return reopenOrdinary(player, id, now);
+  }
+
+  static boolean reopenOrdinary(Player player, int id, Instant now) {
     if (!DailyCommissionAcceptance.applies(id)) return false;
     var gameplay = player.getGameplay();
     var main = gameplay.getMainMissions().get(id);
@@ -165,6 +171,7 @@ final class DailyMissionRepeats {
   }
 
   private static boolean safeGraph(MissionInfo graph) {
+    if (graph != null && DailyMissionSelectedItemRules.handles(graph.getMainMissionID())) return DailyMissionSelectedItemRules.original(graph);
     if (graph == null
         || graph.getMainMissionID() <= 0
         || graph.getSubMissionList() == null

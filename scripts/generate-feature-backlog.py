@@ -1502,6 +1502,44 @@ def review_feixiao_blessing_native(requests):
                 raise SystemExit(f'验证证据文件缺失: {path}')
 
 
+def review_daily_selected_item_native(requests):
+    common = [
+        'src/test/java/org/hkrpg/server/gameplay/DailyMissionSelectedItem46Test.java',
+        'src/test/resources/fixtures/daily-selected-item-3011605-8-4.6.json',
+        'scripts/smoke-daily-selected-item.py',
+        'scripts/verify-daily-selected-item-native.py',
+        'scripts/tests/test_daily_selected_item_native_guard.py',
+        'docs/daily-selected-item-4.6.md',
+    ]
+    notes = {
+        'FinishCosumeItemMissionCsReq': (1261,
+            '原3011605/3011608七种自选材料按UID/日/源与主子目标三UUID绑定真实单件扣费；'
+            '借错ID或Main的候选问题另有真实RED，最终55新/318独立相邻通过。'
+            '同3eee两隔离库case0各受控两日：140请求/164检查、10正常stop/8各库同UID重启/20实际Player读取；'
+            'D0/D1实际401004/401012与401007/401009各扣1，未种付款或目标。'
+            '实际只执行每Main一个选项分支，不是全部七选项KCP/UI；库存跨文档断电原子性未证明。'),
+        'FinishTalkMissionCsReq': (1205,
+            '原3011605/3011608仅本期真实付款收据才能报告，未付/错源/换期/损坏尾目标拒绝；'
+            '保存失败恢复原身份，成功后原5000信用/200活跃每期一次，次日旧报告先于query也拒绝。'
+            '两原Native成功case来自独立v3 completedCases[0]与v4 cases[0]，整v3仍失败，失败额外stop不汇总。'
+            '55新/318独立相邻及140请求/164检查、20实际Player重读通过；'
+            '原NPC图仍source-only，Act/CustomString/全部分支/自然墙钟跨日/客户端验收待完成。'),
+    }
+    for name, (command, note) in notes.items():
+        row = requests[name]
+        row['status'] = 'partial'
+        row['acceptance']['serverBehavior'] = True
+        row['acceptance']['client46'] = False
+        row['nativeCommand'] = command
+        row['gap'] = note + ' 见docs/daily-selected-item-4.6.md。 历史验证范围：' + row.get('gap', '')
+        evidence = list(row.get('testEvidence', []))
+        evidence.extend(path for path in common if path not in evidence)
+        row['testEvidence'] = evidence
+    for path in common:
+        if not (ROOT / path).is_file():
+            raise SystemExit(f'验证证据文件缺失: {path}')
+
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
@@ -1822,6 +1860,7 @@ def main():
                     raise SystemExit(f"验证证据文件缺失: {evidence}")
     review_out_followup_core_material(requests)
     review_feixiao_blessing_native(requests)
+    review_daily_selected_item_native(requests)
     catalog = {"designTarget": "4.6.0", "referenceSnapshot": lock["snapshotDate"],
         "note": "名称合并仅提供逐项移植入口；未审查的源码入口不计为已实现玩法，客户端验收均待完成。",
         "entries": [requests[name] for name in sorted(requests)]}

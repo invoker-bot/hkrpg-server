@@ -9,6 +9,7 @@ import java.util.*;
 /** The source reset policy is limited to safe, unpaid talk/internal-aggregation graphs. */
 final class DailyMissionExpiry {
   static boolean current(Player player, int id, Instant now) {
+    if (DailyMissionSelectedItemRules.handles(id)) return DailyMissionSelectedItemRules.current(player, id, now);
     if (!DailyCommissionAcceptance.applies(id) || !DailyMissionRepeats.supportedGraph(id))
       return true;
     if (!DailyMissionRepeats.historyValid(player, now)) return false;
@@ -25,6 +26,13 @@ final class DailyMissionExpiry {
   }
 
   static boolean expire(Player player, Instant now) {
+    var active = DailyMissionCatalog.missions().stream().filter(row -> MissionStateRecords.mainDoing(player, row.ID())).toList();
+    if (active.size() == 1 && DailyMissionSelectedItemRules.handles(active.getFirst().ID()))
+      return DailyMissionSelectedItemRules.expire(player, active.getFirst().ID(), now);
+    return expireOrdinary(player, now);
+  }
+
+  static boolean expireOrdinary(Player player, Instant now) {
     var g = player.getGameplay();
     var selections = g.getDailyMissionSelections();
     if (!DailyCommissionAcceptance.valid(selections)
@@ -111,7 +119,7 @@ final class DailyMissionExpiry {
     }
     periods.getRunDays().remove(id);
     // Let authored groups observe the expired run's absence before assigning the same main again.
-    if (player.getScene() != null) player.getScene().refreshMissionGroups();
+    if (!DailyMissionSelectedItemRules.handles(id) && player.getScene() != null) player.getScene().refreshMissionGroups();
     return true;
   }
 

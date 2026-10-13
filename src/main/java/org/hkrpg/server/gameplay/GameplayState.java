@@ -204,6 +204,13 @@ public class GameplayState {
   }
   private DailyMissionSelections dailyMissionSelections = new DailyMissionSelections();
   private DailyMissionPeriodState dailyMissionPeriods = new DailyMissionPeriodState();
+  private DailyMissionSelectedItemState dailyMissionSelectedItems = new DailyMissionSelectedItemState();
+  public DailyMissionSelectedItemState getDailyMissionSelectedItems() {
+    if (dailyMissionSelectedItems == null) dailyMissionSelectedItems = new DailyMissionSelectedItemState();
+    return dailyMissionSelectedItems;
+  }
+  void dailyMissionSelectedItems(DailyMissionSelectedItemState value) { dailyMissionSelectedItems = Objects.requireNonNull(value); }
+  void dailyMissionSelections(DailyMissionSelections value) { dailyMissionSelections = Objects.requireNonNull(value); }
   private Map<String, Receipt> rewards = new HashMap<>();
   private Map<String, MissionRewardPlan> missionRewardPlans = new HashMap<>();
   private Map<Integer, LoginDays> activityDays = new HashMap<>();
