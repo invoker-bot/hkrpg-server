@@ -120,17 +120,23 @@ def compile_helpers(jar,java,directory):
     return classpath
 
 
-def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted):
+def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted,performances=False):
     runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True)
     directory=Path(tempfile.mkdtemp(prefix=f'daily-recover-delivery-native-{index}-',dir=runs)).resolve();attempted.append(str(directory))
     print(json.dumps(dict(stage='owned-runtime-prepared',caseIndex=index,runtimeDirectory=str(directory))),flush=True)
-    input_paths=[Path(__file__),FIXTURE,TOOLS/'smoke-daily-selected-item.py',TOOLS/'smoke-g61-first-talk.py',
+    input_paths=[Path(__file__),FIXTURE,ROOT/'src/test/resources/fixtures/daily-recover-performance-entrances-4.6.json',TOOLS/'smoke-daily-selected-item.py',TOOLS/'smoke-g61-first-talk.py',
         JAVA/'org/hkrpg/server/protocol/NativeDailyRecoverDeliveryProbe.java',JAVA/'org/hkrpg/server/gameplay/RecoverDeliveryFixtureInspector.java',
         JAVA/'emu/lunarcore/command/commands/RecoverDeliveryFixtureCommand.java']
     input_hashes={str(path):sha(path)for path in input_paths}
     (directory/'native-tool-inputs-before.json').write_text(json.dumps(input_hashes,indent=2),'utf-8')
     shutil.copyfile(Path(__file__),directory/'wrapper-executed.py')
-    mirror=materialize(source,directory/'resources-fixture',blobs,optional);classpath=compile_helpers(jar,java,directory)
+    mirror=materialize(source,directory/'resources-fixture',blobs,optional)
+    if performances:
+        for relative in optional:shared.detached_write(directory/'resources-fixture'/relative,(source/relative).read_bytes(),directory/'resources-fixture')
+        extra=json.loads((ROOT/'src/test/resources/fixtures/daily-recover-performance-entrances-4.6.json').read_text('utf-8'))
+        for relative in extra['sourceFiles']:shared.detached_write(directory/'resources-fixture'/relative,(source/relative).read_bytes(),directory/'resources-fixture')
+        mirror.update(sourceOnlyInstalled=True,performanceEntranceCopies=14)
+    classpath=compile_helpers(jar,java,directory)
     (directory/'original-source-preflight.json').write_text(json.dumps(proof,indent=2),'utf-8')
     http,mongo,game=support.transport_ports();assert http!=mongo
     config=directory/'config.json';config.write_text(json.dumps(dict(protocol=dict(wireVersion='4.6.0'),resourceDir=str(directory/'resources-fixture'),
@@ -165,7 +171,7 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
                     available.put(None)
                 reader=threading.Thread(target=consume_output,daemon=True);reader.start();child_error=None
                 try:
-                    child.stdin.write(json.dumps(dict(credentials,caseIndex=index,dayIndex=day,phase=phase))+'\n');child.stdin.flush();deadline=time.monotonic()+240
+                    child.stdin.write(json.dumps(dict(credentials,caseIndex=index,dayIndex=day,phase=phase,performances=performances))+'\n');child.stdin.flush();deadline=time.monotonic()+240
                     while True:
                         line=available.get(timeout=max(.1,deadline-time.monotonic()));assert line is not None,directory
                         if line.startswith('HKRPG_RECOVER_DELIVERY_FIXTURE_READY:'):uid=int(line.strip().rsplit(':',1)[1]);break
@@ -200,7 +206,7 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
                         if primary is None:raise
                     finally:
                         if server.stdin:server.stdin.close()
-        control=directory/f'phase-{iteration}.json';control.write_text(json.dumps(dict(uid=uid,caseIndex=index,dayIndex=day,phase=phase,firstDay=(anchor+14400)//86400)),'utf-8')
+        control=directory/f'phase-{iteration}.json';control.write_text(json.dumps(dict(uid=uid,caseIndex=index,dayIndex=day,phase=phase,performances=performances,firstDay=(anchor+14400)//86400)),'utf-8')
         observed=subprocess.run([str(java),*java_flags,'-cp',classpath,'org.hkrpg.server.gameplay.RecoverDeliveryFixtureInspector',str(directory),str(control)],cwd=ROOT,capture_output=True,text=True,encoding='utf-8',timeout=90,creationflags=flags)
         (directory/f'h2-{iteration}.log').write_text(observed.stdout+observed.stderr,'utf-8');assert observed.returncode==0,directory/f'h2-{iteration}.log'
         view=json.loads(next(line for line in reversed(observed.stdout.splitlines())if line.startswith('{')));assert view['passed']and view['databaseFileBytesUnchanged']
@@ -212,18 +218,26 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
     return dict(passed=True,caseIndex=index,runtimeDirectory=str(directory),snapshots=snapshots,readOnlyH2Inspections=views,requests=sum(row['requests']for row in snapshots),
         checks=sum(len(row['checks'])for row in snapshots),normalStopCount=stops,sameUIDNormalH2RestartCount=3,independentStoppedH2MorphiaReadCount=8,
         originalWholeSourceProof=proof,mirrorLayout=mirror,prerequisites=prerequisites,nativeToolInputSHA256=input_hashes,nativeToolInputsStable=True,
-        sourceFilesSHA256=hashes,giftChoicePaymentOrGoalSeeded=False,clientUIVerified=False,clientActOrCustomStringExecuted=False)
+        sourceFilesSHA256=hashes,giftChoicePaymentOrGoalSeeded=False,performanceRelaysVerified=performances,clientUIVerified=False,clientActOrCustomStringExecuted=False)
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--jar',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--case-index',type=int,choices=range(3),action='append');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--jar',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--case-index',type=int,choices=range(3),action='append');parser.add_argument('--performances',action='store_true');args=parser.parse_args()
     jar=args.jar.resolve();output=args.output.resolve();assert jar.is_file()and jar.is_relative_to(ROOT/'build')and output.is_relative_to(ROOT/'build')and not output.exists()
     java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'));artifact=sha(jar);source=ROOT/'resources/4.6';attempted=[];cases=[]
     support.reserve_output(jar,output)
     result=dict(passed=False,jarSHA256=artifact,cases=cases,attemptedRuntimeDirectories=attempted,clientUIVerified=False,realWallClockCrossDayVerified=False)
     try:
         blobs,hashes,optional,proof=preflight(source,json.loads(FIXTURE.read_text('utf-8')));extra,prerequisites=prerequisite_sources(source,blobs);blobs.update(extra);hashes.update(prerequisites['additionalOriginalSourceSHA256'])
-        for index in args.case_index or range(3):cases.append(one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted))
+        if args.performances:
+            assert all((source/p).is_file()for p in optional),'Missing original performance NPC entrances'
+            entrances=json.loads((ROOT/'src/test/resources/fixtures/daily-recover-performance-entrances-4.6.json').read_text('utf-8'))
+            assert entrances['sourceCommit']==COMMIT
+            for relative,metadata in entrances['sourceFiles'].items():
+                raw=base64.b64decode(metadata['sourceBlobBase64'],validate=True)
+                assert hashlib.sha256(raw).hexdigest()==metadata['sourceBlobSHA256']and shared.complete_json((source/relative).read_bytes())==shared.complete_json(raw)
+                hashes[relative]=sha(source/relative)
+        for index in args.case_index or range(3):cases.append(one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted,args.performances))
         result.update(passed=True,executedCaseIndexes=[case['caseIndex']for case in cases],requests=sum(case['requests']for case in cases),checks=sum(case['checks']for case in cases),
             normalStopCount=sum(case['normalStopCount']for case in cases),sameUIDNormalH2RestartCount=sum(case['sameUIDNormalH2RestartCount']for case in cases),
             independentStoppedH2MorphiaReadCount=sum(case['independentStoppedH2MorphiaReadCount']for case in cases))

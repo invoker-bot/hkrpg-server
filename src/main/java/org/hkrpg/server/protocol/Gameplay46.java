@@ -27,6 +27,7 @@ public final class Gameplay46 {
           "AcceptMainMissionCsReq",
           "GetMainMissionCustomValueCsReq",
           "FinishTalkMissionCsReq",
+          "StarPerformanceRelayCsReq",
           "FinishCosumeItemMissionCsReq",
           "TakeApRewardCsReq",
           "TakeAllApRewardCsReq",
@@ -61,6 +62,13 @@ public final class Gameplay46 {
     var player = session.getPlayer();
     synchronized (player) {
       switch (name) {
+        case "StarPerformanceRelayCsReq" -> {
+          var code = Parkour46.wireValid(req.getDescriptorForType(), bytes, 0)
+                  && only(req, "performance_id", "performance_type")
+              ? DailyRecoverPerformances.start(player, number(req, "performance_id"), number(req, "performance_type"))
+              : Retcode.REQ_PARA_INVALID;
+          send(session, "StarPerformanceRelayScRsp", Map.of("retcode", code.getVal()));
+        }
         case "GetNpcStatusCsReq",
                 "GetNpcMessageGroupCsReq",
                 "GetMissionMessageCsReq",

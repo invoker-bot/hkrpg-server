@@ -130,7 +130,8 @@ public class SceneEntityLoader {
         if (org.hkrpg.server.gameplay.DailyOriginEffects.suppresses(scene, group, npcInfo)) return null;
         // Don't spawn entity if they have certain flags in their info
         if (npcInfo.isIsDelete() || npcInfo.isIsClientOnly()
-            || !npcInfo.isLoadOnInitial() && !org.hkrpg.server.gameplay.MissionTrialRemovals.spawns(scene, group, npcInfo)) {
+            || !npcInfo.isLoadOnInitial() && !org.hkrpg.server.gameplay.MissionTrialRemovals.spawns(scene, group, npcInfo)
+                && !org.hkrpg.server.gameplay.DailyRecoverPerformances.spawns(scene, group, npcInfo)) {
             return null;
         }
 

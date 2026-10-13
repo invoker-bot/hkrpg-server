@@ -69,6 +69,17 @@ public final class RecoverDeliveryFixtureInspector {
       require(first!=null && second!=null && first!=second && new Gson().toJson(first.getGameplay()).equals(new Gson().toJson(second.getGameplay())) && first.getScoin()==second.getScoin(),"Independent actual Player reads differ");
       var g=first.getGameplay();require(g.getDailyMissionRecoverDelivery().valid() && Objects.equals(DailyMissionRepeats.selectedDay(first,3011014),day),"Invalid stored recovery day");
       run(g,uid,day,choice,settled,false,g.getMainMissions().get(3011014),g.getSubMissions());
+      if(c.has("performances") && c.get("performances").getAsBoolean()){
+        var starts=g.getDailyRecoverPerformances();require(starts.valid(),"Invalid saved performance witnesses");
+        require(starts.getStarts().size()==(index==1?(settled?4:2):8),"Wrong actual performance witness count");
+        for(var witness:starts.getStarts().values()){
+          var archive=g.getDailyMissionPeriods().getArchives().get("3011014:"+witness.day());
+          var main=archive==null?g.getMainMissions().get(3011014):archive.getMain();
+          var subs=archive==null?g.getSubMissions():archive.getSubs();
+          require(witness.uid()==uid && witness.main().equals(main.getObservationKey()) && witness.sub().equals(subs.get(witness.performance()).getObservationKey()),"Saved E relay acceptance mismatch");
+        }
+        result.put("performanceStarts",new Gson().toJsonTree(starts));
+      }
       if(index==2){
         var archive=g.getDailyMissionPeriods().getArchives().get("3011014:"+firstDay);require(archive!=null && archive.getMainId()==3011014 && archive.getDay()==firstDay,"First settled source run missing archive");
         run(g,uid,firstDay,firstChoice,true,true,archive.getMain(),archive.getSubs());

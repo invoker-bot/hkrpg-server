@@ -195,6 +195,7 @@ final class DailyMissionRecoverDeliveryRules {
   private static DailyMissionRecoverDeliveryState.Receipt receipt(Player player,long day){return player.getGameplay().getDailyMissionRecoverDelivery().getRecords().get(DailyMissionRecoverDeliveryState.key(day));}
   static boolean allowsTalk(Player player,int id){
     if(!talk(id))return !sub(id);var g=player.getGameplay();var now=player.getMissionManager().currentInstant();
+    if(!DailyRecoverPerformances.allowsReport(player,id))return false;
     if(!current(player,MAIN,now) || !MissionStateRecords.mainDoing(player,MAIN) || !MissionStateRecords.doing(g.getSubMissions().get(id),id,1))return false;
     if(id==FIRST)return receipt(player,DailyManager.day(now))==null && npc(player,10102,10102001,99,400002,11302);
     var record=receipt(player,DailyManager.day(now));if(record==null || record.getRetiredAt()!=0)return false;
@@ -207,6 +208,7 @@ final class DailyMissionRecoverDeliveryRules {
   static Retcode submission(Player player,MissionInfo.SubMissionInfo goal,Instant now){
     if(!consume(goal.getId()) && !handles(goal.getMainMissionID()))return Retcode.SUCC;
     if(!consume(goal.getId()) || goal.getMainMissionID()!=MAIN)return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+    if(!DailyRecoverPerformances.allowsReport(player,goal.getId()))return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
     if(!current(player,MAIN,now))return Retcode.MISSION_NOT_DOING;
     var record=receipt(player,DailyManager.day(now));var g=player.getGameplay();
     if(record==null || record.getConsume()!=goal.getId() || record.getGrantedAt()==0 || record.getFeedbackAt()!=0

@@ -316,6 +316,7 @@ public class Scene implements Tickable {
         }
         // Remove obsolete actors before spawning replacements with the same NPC id.
         for (var group : toLoad) loadGroup(group);
+        org.hkrpg.server.gameplay.DailyRecoverPerformances.reconcile(this);
     }
 
     public void syncLineup() {

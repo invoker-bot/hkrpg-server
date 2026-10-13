@@ -25,6 +25,7 @@ public final class NativeDailyRecoverDeliveryProbe {
   private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
   private final List<String> checks = new ArrayList<>();
   private final Map<String, Object> wireFields = verifyWireFields();
+  private boolean performances;
   private Ukcp channel;
   private int mainMission, dayIndex, requests;
   private boolean mainRewardNotify;
@@ -41,6 +42,8 @@ public final class NativeDailyRecoverDeliveryProbe {
 
   private Map<String,Object> verifyWireFields() {
     var paths=Map.ofEntries(
+        Map.entry("StarPerformanceRelayCsReq",List.of("performance_id","performance_type")),
+        Map.entry("StarPerformanceRelayScRsp",List.of("retcode")),
         Map.entry("GetFirstTalkByPerformanceNpcCsReq",List.of("performance_id_list")),
         Map.entry("GetFirstTalkByPerformanceNpcScRsp",List.of("retcode","npc_meet_status_list/performance_id","npc_meet_status_list/is_meet")),
         Map.entry("FinishFirstTalkByPerformanceNpcCsReq",List.of("performance_id")),
@@ -208,6 +211,20 @@ public final class NativeDailyRecoverDeliveryProbe {
   private static final int[] ENTRIES={2012101,2012301,1010203};
   private static final int[] PLANES={20121,20123,10102},FLOORS={20121001,20123001,10102003};
   private static final int[] GROUPS={93,76,23},NPCS={11104,11205,11403};
+  private void relay(int id)throws Exception{
+    if(!performances)return;
+    call("StarPerformanceRelayCsReq",Map.of("performance_id",id,"performance_type",4),0);check(true,"original-E-relay-"+id);
+    call("StarPerformanceRelayCsReq",Map.of("performance_id",id,"performance_type",4),0);check(true,"duplicate-E-relay-"+id);
+  }
+  private void temporary(int choice,boolean present,String label)throws Exception{
+    if(!performances)return;
+    int group=choice<0?122:new int[]{94,75,23}[choice],instance=choice==2?400002:400001;
+    var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");var matches=new ArrayList<DynamicMessage>();
+    for(var raw:(List<?>)field(scene,"entity_group_list"))for(var value:(List<?>)field((DynamicMessage)raw,"entity_list")){
+      var entity=(DynamicMessage)value;if(number(entity,"group_id")==group && number(entity,"inst_id")==instance)matches.add(entity);
+    }
+    check(matches.size()==(present?1:0) && (!present || number((DynamicMessage)field(matches.getFirst(),"npc"),"npc_id")==11302),label);
+  }
   private void report(int id,int code,String label)throws Exception{
     call("FinishTalkMissionCsReq",Map.of("sub_mission_id",id,"talk_str","Mission_"+id),code);check(true,label);
   }
@@ -263,31 +280,37 @@ public final class NativeDailyRecoverDeliveryProbe {
     var entities=scene(1010201,10102,10102001);
     var npc=entities.stream().filter(e->number(e,"group_id")==99 && number(e,"inst_id")==400002).toList();
     check(npc.size()==1 && number((DynamicMessage)field(npc.getFirst(),"npc"),"npc_id")==11302,"actual-original-initial-npc");
-    report(FIRST,0,"actual-original-initial-talk");
+    relay(FIRST);report(FIRST,0,"actual-original-initial-talk");
     var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");var props=new ArrayList<DynamicMessage>();
     for(var group:(List<?>)field(scene,"entity_group_list"))for(var raw:(List<?>)field((DynamicMessage)group,"entity_list")){
       var entity=(DynamicMessage)raw;if(number(entity,"group_id")==122 && Set.of(300001,300002).contains(number(entity,"inst_id")))props.add(entity);
     }
     check(props.size()==2 && props.stream().allMatch(e->number((DynamicMessage)field(e,"prop"),"prop_id")==100),"actual-both-original-menu-props");
+    temporary(-1,false,"menu-actor-absent-before-relay");relay(MENU);temporary(-1,true,"menu-actor-created-by-relay");
     stock(140146+choice,0,"no-choice-item-prewritten");
     if(menuFirst)report(MENU,0,"actual-menu-before-parallel-option");
     report(301101403+choice,0,"actual-original-option-grants-one-item");stock(140146+choice,1,"actual-original-gift-owned");
     report(301101403+(choice+1)%3,-1,"another-original-option-rejected");stock(140146+(choice+1)%3,0,"rejected-option-gives-no-item");
     if(!menuFirst)report(MENU,0,"actual-menu-after-parallel-option");
+    temporary(-1,false,"menu-actor-released-after-report");
     missions(false,Map.of(FIRST,1,MENU,1,301101403+choice,1,301101406+choice,0),"actual-gift-and-accepted-consume");
   }
   private void settle(int choice,int wallet)throws Exception{
     int item=140146+choice,consume=301101406+choice,feedback=301101409+choice;
     contact(choice);report(feedback,-1,"unpaid-feedback-rejected");stock(item,1,"unpaid-feedback-keeps-real-gift");
+    temporary(choice,false,"recipient-actor-absent-before-relay");relay(consume);temporary(choice,true,"recipient-actor-created-by-relay");
     submit(consume,Map.of(item,2),-1,"wrong-quantity-does-not-debit");stock(item,1,"bad-debit-keeps-real-gift");
     submit(consume,Map.of(item,1),0,"actual-one-original-item-debit");stock(item,0,"real-gift-consumed-once");
+    temporary(choice,false,"recipient-actor-released-after-debit");relay(feedback);temporary(choice,true,"feedback-actor-created-by-relay");
     awaitedQuest=2100003;report(feedback,0,"actual-paid-original-feedback");
+    temporary(choice,false,"feedback-actor-released-after-report");
     missions(true,Map.of(consume,1,feedback,1,301101412,1),"one-feedback-finishes-original-main");
     check(mainRewardNotify && observedWallet==wallet,"actual-original-main-credit-notification-"+wallet);
     quest(2,"actual-daily-target-finished");claim(0);points(200);
     submit(consume,Map.of(item,1),-1,"settled-debit-not-repeated");report(feedback,-1,"settled-credit-not-repeated");claim(-1);
   }
   private Map<String,Object> execute(JsonObject input,java.io.BufferedReader control)throws Exception{
+    performances=input.has("performances") && input.get("performances").getAsBoolean();
     mainMission=MAIN;dayIndex=input.get("dayIndex").getAsInt();int firstChoice=input.get("caseIndex").getAsInt(),secondChoice=(firstChoice+1)%3;
     String phase=input.get("phase").getAsString();require(firstChoice>=0 && firstChoice<3 && Set.of("grant","settled","repeat","restored").contains(phase),"Unowned recovery lane");
     var token=call("PlayerGetTokenCsReq",Map.of("account_uid",input.get("accountUid").getAsString(),"token",input.get("comboToken").getAsString(),"platform",1),0);

@@ -948,3 +948,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 4.6 施放与入口批次：`MazeCastState` 仅保存当前会话的 UseID 预付身份；H2 不恢复旧会话的付款许可。`NpcFirstTalkState` 将原 G61 初遇与旧通用演出记录分开，原菜单资格读取实际任务及首次观察。`DailyManager` 同日仅补新解锁且未占用的原池 Type，新增记录保存失败撤回，已有接受身份和奖励状态保持。`ChessRogueState`、`ChessRogueLineup` 与原经典 `RogueRun`、普通队伍隔离，四战收据、商店库存及奇物取得身份在玩家文档保存；操作保存成功后才发布通知。`WolfBroAmmoState` 按 UID/Run/来源保存扣弹、击败和掉落记录，数字来源身份按 Gson 原 JSON 词法核对，不借用 Python 浮点重写后的摘要。
 
 上述有限路径共同497类/13,622项 Java 全绿，冻结产物529请求/773检查、14正常停服/10同 UID H2恢复通过，70,624个运营文件不变。Chess Query永久玩法资料字段10、真实退出、完整剧情/骰子/祝福效果、哈努爆炸及客户端UI仍在补齐；配方默认关闭和本服数值政策明确区分。来源、失败基线及产物验收见[本批记录](gameplay-entry-batch-4.6.md)。
+
+3011014演出入口追加：DailyRecoverPerformanceState仅保存原E演出开始证据，按日、UID和主/子目标实际接取UUID绑定。DailyRecoverPerformances在保存后发布原开场NPC，完成目标后的场景刷新释放；缺失/变化原图或替换接取不恢复。客户端仍负责完整原Act的画面、动作及中间替换；服务端未解释或伪造这些本地字符串，边界见[daily-recover-performance-4.6.md](daily-recover-performance-4.6.md)。
