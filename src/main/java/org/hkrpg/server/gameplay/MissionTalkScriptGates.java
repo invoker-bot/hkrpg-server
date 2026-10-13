@@ -255,6 +255,7 @@ final class MissionTalkScriptGates {
   }
 
   static boolean allows(Player player, int id) {
+    if (DailyMissionRecoverDeliveryRules.sub(id)) return DailyMissionRecoverDeliveryRules.allowsTalk(player, id);
     if (DailyMissionSelectedItemRules.talk(id) && DailyMissionSelectedItemRules.handles(id / 100))
       return DailyMissionSelectedItemRules.allowsTalk(player, id);
     if (id == DailyMissionFollowupSources.TALK && DailyMissionFollowupRules.handles(DailyMissionFollowupSources.MAIN))

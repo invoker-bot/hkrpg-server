@@ -17,7 +17,8 @@ final class DailyMissionRepeats {
     return valid(player, player.getGameplay().getDailyMissionPeriods(), now)
         && DailyMissionExpiry.valid(player, now)
         && DailyMissionMessageRules.historyValid(player, now)
-        && DailyMissionSelectedItemRules.historyValid(player, now);
+        && DailyMissionSelectedItemRules.historyValid(player, now)
+        && DailyMissionRecoverDeliveryRules.historyValid(player, now);
   }
 
   static boolean payoutAllowed(Player player, int id, Instant now) {
@@ -53,6 +54,7 @@ final class DailyMissionRepeats {
   }
 
   static boolean reopen(Player player, int id, Instant now) {
+    if (DailyMissionRecoverDeliveryRules.handles(id)) return DailyMissionRecoverDeliveryRules.reopen(player, id, now);
     if (DailyMissionSelectedItemRules.handles(id)) return DailyMissionSelectedItemRules.reopen(player, id, now);
     return reopenOrdinary(player, id, now);
   }
@@ -171,6 +173,7 @@ final class DailyMissionRepeats {
   }
 
   private static boolean safeGraph(MissionInfo graph) {
+    if (graph != null && DailyMissionRecoverDeliveryRules.handles(graph.getMainMissionID())) return DailyMissionRecoverDeliveryRules.original(graph);
     if (graph != null && DailyMissionSelectedItemRules.handles(graph.getMainMissionID())) return DailyMissionSelectedItemRules.original(graph);
     if (graph == null
         || graph.getMainMissionID() <= 0
@@ -316,7 +319,8 @@ final class DailyMissionRepeats {
             || !snapshot.getSubs().containsKey(action.getKey())
             || action.getValue() == null
             || action.getValue().isPending()
-            || action.getValue().getNext() != 0) return false;
+            || action.getValue().getNext() != 0
+                && !DailyMissionRecoverDeliveryRules.archivedAction(player, snapshot.getMainId(), snapshot.getDay(), action.getKey(), action.getValue())) return false;
       var keys = new HashSet<String>();
       boolean mainReward = false;
       for (var key : snapshot.getRewardKeys()) {

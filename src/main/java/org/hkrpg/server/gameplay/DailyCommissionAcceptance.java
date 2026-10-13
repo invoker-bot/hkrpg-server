@@ -9,6 +9,7 @@ import java.util.*;
 /** Commission acceptance consumes the source quota in the same player save as the mission. */
 final class DailyCommissionAcceptance {
   static Retcode check(Player player, int id, Instant now) {
+    if (DailyMissionRecoverDeliveryRules.handles(id) && !DailyMissionRecoverDeliveryRules.source()) return Retcode.MISSION_NOT_DOING;
     if (DailyMissionSelectedItemRules.handles(id) && !DailyMissionSelectedItemRules.source(id)) return Retcode.MISSION_NOT_DOING;
     if (DailyMissionFollowupRules.handles(id)) return DailyMissionFollowupRules.check(player, now);
     if (!applies(id)) return Retcode.SUCC;

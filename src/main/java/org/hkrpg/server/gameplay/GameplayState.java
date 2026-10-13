@@ -205,6 +205,12 @@ public class GameplayState {
   private DailyMissionSelections dailyMissionSelections = new DailyMissionSelections();
   private DailyMissionPeriodState dailyMissionPeriods = new DailyMissionPeriodState();
   private DailyMissionSelectedItemState dailyMissionSelectedItems = new DailyMissionSelectedItemState();
+  private DailyMissionRecoverDeliveryState dailyMissionRecoverDelivery = new DailyMissionRecoverDeliveryState();
+  public DailyMissionRecoverDeliveryState getDailyMissionRecoverDelivery() {
+    if (dailyMissionRecoverDelivery == null) dailyMissionRecoverDelivery = new DailyMissionRecoverDeliveryState();
+    return dailyMissionRecoverDelivery;
+  }
+  void dailyMissionRecoverDelivery(DailyMissionRecoverDeliveryState value) { dailyMissionRecoverDelivery = Objects.requireNonNull(value); }
   public DailyMissionSelectedItemState getDailyMissionSelectedItems() {
     if (dailyMissionSelectedItems == null) dailyMissionSelectedItems = new DailyMissionSelectedItemState();
     return dailyMissionSelectedItems;

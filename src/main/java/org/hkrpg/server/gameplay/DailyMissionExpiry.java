@@ -9,6 +9,7 @@ import java.util.*;
 /** The source reset policy is limited to safe, unpaid talk/internal-aggregation graphs. */
 final class DailyMissionExpiry {
   static boolean current(Player player, int id, Instant now) {
+    if (DailyMissionRecoverDeliveryRules.handles(id)) return DailyMissionRecoverDeliveryRules.current(player, id, now);
     if (DailyMissionSelectedItemRules.handles(id)) return DailyMissionSelectedItemRules.current(player, id, now);
     if (!DailyCommissionAcceptance.applies(id) || !DailyMissionRepeats.supportedGraph(id))
       return true;
@@ -27,6 +28,8 @@ final class DailyMissionExpiry {
 
   static boolean expire(Player player, Instant now) {
     var active = DailyMissionCatalog.missions().stream().filter(row -> MissionStateRecords.mainDoing(player, row.ID())).toList();
+    if (active.size() == 1 && DailyMissionRecoverDeliveryRules.handles(active.getFirst().ID()))
+      return DailyMissionRecoverDeliveryRules.expire(player, active.getFirst().ID(), now);
     if (active.size() == 1 && DailyMissionSelectedItemRules.handles(active.getFirst().ID()))
       return DailyMissionSelectedItemRules.expire(player, active.getFirst().ID(), now);
     return expireOrdinary(player, now);
@@ -170,7 +173,8 @@ final class DailyMissionExpiry {
             || !s.getSubs().containsKey(action.getKey())
             || action.getValue() == null
             || action.getValue().isPending()
-            || action.getValue().getNext() != 0) return false;
+            || action.getValue().getNext() != 0
+                && !DailyMissionRecoverDeliveryRules.archivedAction(player, s.getMainId(), s.getDay(), action.getKey(), action.getValue())) return false;
     }
     return true;
   }

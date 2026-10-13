@@ -152,6 +152,8 @@
 
 # HKRPG Server
 
+3011014回收物日常的原三选一、真实发物/交物及隔日身份已补入正式实现，完整来源、失败回归和实际运行边界见[回收物日常验证](docs/daily-recover-delivery-4.6.md)。原临时NPC、Act演出和游戏客户端验收继续待完成。
+
 2026-10-14正式收尾3011605/3011608自选材料日常，并修复折纸小鸟摆放保存失败后的内存残留；来源、回归及实际运行边界分别见[日常验证](docs/daily-selected-item-4.6.md)和[小鸟验证](docs/match-three-bird-position-4.6.md)。完整玩法与游戏客户端验收继续待完成。
 
 奇物商店、骰子和大乐透的首次保存修复见 [交易说明](docs/rogue-resonance-transactions-4.6.md)；原始怪物遭遇中的能量报告与正常重启验证见 [网络证据](docs/rogue-energy-network-4.6.md)。全部玩法继续逐项完善。

@@ -1555,6 +1555,33 @@ def review_match_three_position_save_failure(requests):
     )
 
 
+def review_daily_recover_delivery(requests):
+    evidence = [
+        'src/test/java/org/hkrpg/server/gameplay/DailyMissionRecoverDelivery46Test.java',
+        'src/test/resources/fixtures/daily-recover-delivery-3011014-4.6.json',
+        'scripts/smoke-daily-recover-delivery.py',
+        'scripts/tests/test_daily_recover_delivery_native_guard.py',
+        'docs/daily-recover-delivery-4.6.md',
+    ]
+    for name, command in [('FinishTalkMissionCsReq', 1205), ('FinishCosumeItemMissionCsReq', 1261)]:
+        row = requests[name]
+        row['status'] = 'partial'
+        row['acceptance']['serverBehavior'] = True
+        row['acceptance']['client46'] = False
+        row['nativeCommand'] = command
+        row['gap'] = (
+            '原3011014回收物日常的三选一、真实给物/单件交物、原现场、反馈计数和日轮身份已接入；'
+            '给物凭据按日期/事件/实际接取UUID隔离，旧付款归档后新轮重新发物和扣费。'
+            '57项正式回归及当前1585包49项先37个行为失败锁定资格/单选/保存/日轮缺口；'
+            '11份NPC图仍source-only，临时NPC/Act/CustomString、自然跨日、库存故障对账及游戏UI未验收，'
+            '见docs/daily-recover-delivery-4.6.md。 历史验证范围：' + row.get('gap', '')
+        )
+        row['testEvidence'] = list(dict.fromkeys(row.get('testEvidence', []) + evidence))
+    for path in evidence:
+        if not (ROOT / path).is_file():
+            raise SystemExit(f'验证证据文件缺失: {path}')
+
+
 def main():
     lock = json.loads((ROOT / "references.lock.json").read_text(encoding="utf-8"))
     requests = {}
@@ -1877,6 +1904,7 @@ def main():
     review_feixiao_blessing_native(requests)
     review_daily_selected_item_native(requests)
     review_match_three_position_save_failure(requests)
+    review_daily_recover_delivery(requests)
     catalog = {"designTarget": "4.6.0", "referenceSnapshot": lock["snapshotDate"],
         "note": "名称合并仅提供逐项移植入口；未审查的源码入口不计为已实现玩法，客户端验收均待完成。",
         "entries": [requests[name] for name in sorted(requests)]}

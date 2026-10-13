@@ -127,6 +127,7 @@ public final class MissionManager {
               assignmentTime,
               id -> eligible(GameData.getMainMissionExcelMap().get(id), true));
       boolean pass;
+      try (var recoverySource = DailyMissionRecoverDeliveryRules.sourceScope()) {
       do {
         pass = false;
         pass |= new MissionRaid(player).advance();
@@ -213,6 +214,7 @@ public final class MissionManager {
         }
         changed |= pass;
       } while (pass);
+      }
       player.getMissionTrialManager().reconcile();
       if (changed) player.save();
       new MissionRewards(player).settleSubRewards();
@@ -402,6 +404,11 @@ public final class MissionManager {
         if (result == Retcode.SUCC) { refresh(); sync(); }
         return result;
       }
+      if (DailyMissionRecoverDeliveryRules.sub(id)) {
+        var result = DailyMissionRecoverDeliveryRules.finishTalk(player, config, state, values, clock.instant());
+        if (result == Retcode.SUCC) { refresh(); sync(); }
+        return result;
+      }
       if (DailyOriginEffects.handles(id)) {
         var result = DailyOriginEffects.finishInitial(player, config, state, values, now());
         if (result == Retcode.SUCC) {
@@ -571,6 +578,8 @@ public final class MissionManager {
           || c.getParamIntList().length != 0
           || !c.getParamStr1().isEmpty()) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
       if (!matchesPlace(c)) return Retcode.MISSION_SCENE_NOT_MATCH;
+      var originalRecovery = DailyMissionRecoverDeliveryRules.submission(player, c, clock.instant());
+      if (originalRecovery != Retcode.SUCC) return originalRecovery;
       var originalSelection = DailyMissionSelectedItemRules.submission(player, c, clock.instant());
       if (originalSelection != Retcode.SUCC) return originalSelection;
       var costs = new TreeMap<Integer, Integer>();
@@ -637,6 +646,7 @@ public final class MissionManager {
                 || item.getCount() < cost.getValue()) return Retcode.ITEM_NOT_ENOUGH;
           }
           payment = new GameplayState.ActionCursor();
+          DailyMissionRecoverDeliveryRules.bindPayment(player, c, costs, clock.instant());
           payments.put(id, payment);
           plans.put(id, new GameplayState.MissionPaymentPlan(c.getFinishType(), costs));
           payment.reserve();
@@ -1376,6 +1386,7 @@ public final class MissionManager {
   }
 
   Retcode finishFromAction(int id) {
+    if (DailyMissionRecoverDeliveryRules.sub(id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
     if (!canFinishFromAction(id)) return Retcode.MISSION_NOT_DOING;
     // Resource 8024111's mutually completing loss/quit branches reach an already active root.
     // The root will finish after its own actions succeed; executing it again would deadlock its

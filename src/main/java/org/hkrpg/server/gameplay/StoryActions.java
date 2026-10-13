@@ -58,7 +58,7 @@ public final class StoryActions {
           return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
         }
       }
-      String key = "story:" + sub.getId() + ":" + cursor.getNext();
+      String key = DailyMissionRecoverDeliveryRules.actionKey(player, sub, cursor.getNext());
       cursor.reserve();
       player.save();
       // Interrupted actions remain reserved for explicit operator reconciliation.
