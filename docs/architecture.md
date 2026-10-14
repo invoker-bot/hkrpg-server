@@ -950,3 +950,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 上述有限路径共同497类/13,622项 Java 全绿，冻结产物529请求/773检查、14正常停服/10同 UID H2恢复通过，70,624个运营文件不变。Chess Query永久玩法资料字段10、真实退出、完整剧情/骰子/祝福效果、哈努爆炸及客户端UI仍在补齐；配方默认关闭和本服数值政策明确区分。来源、失败基线及产物验收见[本批记录](gameplay-entry-batch-4.6.md)。
 
 3011014演出入口追加：DailyRecoverPerformanceState仅保存原E演出开始证据，按日、UID和主/子目标实际接取UUID绑定。DailyRecoverPerformances在保存后发布原开场NPC，完成目标后的场景刷新释放；缺失/变化原图或替换接取不恢复。客户端仍负责完整原Act的画面、动作及中间替换；服务端未解释或伪造这些本地字符串，边界见[daily-recover-performance-4.6.md](daily-recover-performance-4.6.md)。
+
+3011014原NPC初遇追加：三名NPC的六份原对话图绑定实际加载实体与固定来源，初遇记录独立于每日接取并随Player保存；保存失败撤回、重复回报不重写，换日与取消日常不删除初遇。原FinishPerformanceMission经本机调用链核对仍发送1205，未新增猜测的同步协议。77份完整原件核对与实际客户端连接边界见[演出入口验证](daily-recover-performance-4.6.md)。

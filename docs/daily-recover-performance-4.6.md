@@ -1,6 +1,6 @@
 # 3011014 演出入口与临时 NPC
 
-本批补入原始 E 演出的开始回执、开场临时 NPC 的服务端生命周期和缺失入口。**尚不能宣称完整客户端演出通过**：真实游戏客户端没有执行本批相机、动作、捕获、台词分支和中间 NPC 替换。原始演出图保持完整，不把开始确认或任务回报标作已播放证据。
+已补入原始 E 演出的开始回执、开场临时 NPC 的服务端生命周期、14 份缺失入口和三名相关 NPC 的初次对话记录。**尚不能宣称完整客户端演出通过**：真实游戏客户端没有连接本地测试服执行相机、动作、捕获、台词分支和中间 NPC 替换。原始演出图保持完整，不把开始确认或任务回报标作已播放证据。
 
 ## 固定原图与本机协议
 
@@ -8,7 +8,27 @@
 
 `StarPerformanceRelayCsReq` 命令 1224：performance_id 字段 1，performance_type 字段 12；响应 1296 的 retcode 字段 10。固定本机国服 4.6 的 `ELevelPerformanceType` 常量表读取到 E=4。静态读取使用 `scripts/analyze-client-46.py`，证据为 `build/recover-performance-native-20261014.json`，客户端文件 SHA 为 `GameAssembly.dll=8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3`、metadata=`09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130`。字段由冻结描述符检查；将该请求作为本项目开始见证属于服务端实现选择，未取得官方客户端实际发送顺序的证明。
 
-只接通 301101401、402、406—411。未知演出、类型、场景、未接取目标、重复 wire 身份、变化资源和损坏记录明确拒绝。开始不完成目标、不选分支、不发奖，也不扣物。
+委托本身只接通 301101401、402、406—411；三名 NPC 的初遇及后续对话开始见下节。未知演出、类型、场景、未接取目标、重复 wire 身份、变化资源和损坏记录明确拒绝。开始不完成目标、不选分支、不发奖，也不扣物。
+
+## NPC 初次对话与结束回报
+
+原 DialogueMain 先查询初遇记录，播放对应初遇或后续图，再显示菜单。这三项原本没有匹配的 FinishFirstTalkPerformance 任务，不能沿用通用任务回报来保存 NPC 初遇。
+
+| 原 NPC / 组 / 实例 | 初遇 | 后续对话 |
+|---|---|---|
+| 11302 / 99 / 400002 | 501028201 | 501028202 |
+| 11104 / 93 / 400001 | 501028001 | 501028002 |
+| 11205 / 76 / 400001 | 501030700 | 501030701 |
+
+`DailyRecoverIntroductions` 对六份完整原图、六条 PerformanceE 原行、既有完整委托来源与 14 份入口进行核对。初次回报还要求实际普通场景中有对应原 NPC：包括楼层、组、实例、NPC、位置、旋转及真实加载组。六项 E 开始只开放对应位置；后续对话要求已记录原初遇。初遇成功后不完成日常目标、不发物、不扣物、不发奖励。
+
+`DailyRecoverIntroductionState` 在 Player 内单独保存 UID、原初遇、实际场景/实体/运行编号、观察时间、随机事件身份与固定来源。它是全局历史，不随日常委托换日或取消清除；旧通用 FirstTalkReport 不可替代。保存失败撤回新记录，重复回报不再次保存；损坏 UID、来源、时间或显式 null 拒绝。原生 2161 的重复身份字段现在按 wire 核对，不再接受 protobuf 合并后的最后一个值。
+
+六份完整图和六条原行保存于 `src/test/resources/fixtures/daily-recover-introductions-4.6.json`，同样来自上述固定数据提交。它们在运营资源中原已存在，本次只读核对。原图中的音频、动作和本地结束字符串由客户端执行，初遇回报处理器不解释这些字符串。
+
+本机静态调用证实，`FinishPerformanceMission` 配置的 Key 由运行任务 `DGMIJNGMGOP.OnTaskBegin` 读取，经过 `NetworkManager` 方法 634886 发送命令 **1205**，原 Key 进入 string 字段 2，子目标身份进入字段 6。未知的 1216 请求属于 `SyncWait` 任务，不是本图的结束回调，因此没有新增该协议或改写冻结描述符。复核工具 `scripts/verify-recover-performance-graphs.py` 对完整 PE 方法边界、原字节 SHA、配置/运行类型槽及实际发送指令留证。
+
+只读整图报告 `build/recover-introductions-graphs-20261014.json` 将 77 份 fixture 原字节与固定 Git blob 核对，再与实际运营资源逐完整 JSON 对象核对，包含 14 份补入入口、8 份完整 Act 和 6 份 NPC 初遇/后续图。14 份补入入口还逐原字节相等；其余 63 份保留运营文件已有格式，不声称原字节相等，见 `build/recover-introductions-20261014/whole-source-byte-proof.json`。报告列出原创建、捕获、动作、替换和退场任务，明确 `clientActExecuted=false`；静态图存在不等于实际播放。
 
 ## 开场 NPC 与恢复
 
@@ -32,7 +52,7 @@ G76 的原对话项路径名沿用 `DialogueItem301101101`，其中实际 Perfor
 
 原 Act 已包含 409 的 400001→400003、410 的说唱动作与 400001→400003、411 的 400002→400004 以及最终退场。**这些中间步骤仍由客户端原图承担，服务端没有逐帧执行它们**。本批没有通用客户端演出解释器，也没有接收任意 CustomString 的新协议。只有实际客户端完整播放、两日三支路及中断重进通过后，才能将“完整演出”改为已验收。
 
-## 验证记录
+## 前批验证记录
 
 新增回归先在原实现复现未处理开始请求；修复后验证正常流程、拒绝路径、重复请求、保存失败、原 Player/Morphia 读取、资源缺失及接取替换。完整构建与实际 KCP/H2 结果如下。
 
@@ -45,3 +65,20 @@ G76 的原对话项路径名沿用 `DialogueItem301101101`，其中实际 Perfor
 - `scripts/smoke-server.py` 同产物两次 HTTP/Dispatch 及同账号恢复通过，见 `build/recover-performance-dispatch-20261014.json`。最初 CLI 调用使用了不支持的参数、原生输出名与静态报告重名，均在启动前拒绝；对应日志保留，不计为验证成功。
 
 自然时间跨日、完整客户端画面、客户端演出过程中断重进、其他 NPC/任务的 E 演出、异常断电原子性和原给物/付款未决收据仍待后续验收。本次提交范围是已验证的服务端入口、开场 NPC 与固定资源安装。
+
+## 本轮初遇与原图验证
+
+- `scripts/build.ps1 -RerunTests` 全量 523 类 / 14,311 项通过，失败、错误、跳过均为 0，包含新增初遇类 10 项；耗时 24 分 29 秒。3,457 份源码、协议、fixture、构建及验证脚本输入前后原字节相同，最终 jar 与所有本轮网络/存档检查使用的冻结产物 SHA 相同。XML 与完整证明见 `build/recover-introductions-20261014/full-xml`、`full-build-proof.json`。
+- 首批 6 项新初遇回归在前实现有 4 项纯 AssertionFailedError，错误/跳过均为 0；保留 `build/recover-introductions-20261014/red-xml` 与对应 red 日志。修复后的初遇 9 项、原演出 14 项、G61 初遇 40 项及原协议 3 项，共 66 项专项通过；之后新增取消日常不删除初遇的回归，由全量执行。
+- 既有安装/原生工具保护 8 项 Python 通过；77 份完整原对象及本机 1205 发送链只读核对通过。冻结产物为 `build/recover-introductions-20261014/runtime.jar`，SHA256 `588dd4b73373eef7ae90895a20de91900b08cacab97e31c956af5b8c044cd0aa`。
+- 相比前批 5bc6 产物，新增五个 class，改变五个相关外层 class 和功能目录；47 个嵌套 class 字节变化，独立 `javap -c -p -s` 核对代码与签名相同，不宣称所有属性相同。生成协议保持原字节，见 `payload-diff.json` 与 `nested-class-code-proof.json`。
+- 同一 SHA 实际 UDP/KCP 三组两日流程全部通过：528 请求 / 564 检查、12 次正常停服、9 次同 UID H2 重启、24 次独立实际 Player 读取。三名初遇的查询、原在场实体、回报无奖励、重复回报，以及后续原三选一给物/交物/反馈、每日奖励和防重同时核对。每组 230 份完整来源与 9 份工具输入 SHA 稳定，隔离资源明确复制 14 份入口和 6 份既有原初遇/后续图。只隔离前置历史、单任务池与时钟，未预写初遇、选择、物品、付款或完成状态。
+- 原生全程报告 `build/recover-introductions-kcp-20261014.json`；`build/recover-introductions-kcp-audit-20261014.json` 另将每份原始协议日志、停服日志、实际 H2 读取和工具/来源 SHA 独立复核。三项初遇的整个历史对象在两日与重启之间保持不变，日常委托接取身份仍各日独立。
+- 另用新产物只读加载前批真实 H2：确认旧 Player 文档缺少新字段，实际 Player 读取后得到空且有效的新初遇状态，不伪造见面记录，旧数据库前后 SHA 相同。证据为 `build/recover-introductions-20261014/legacy-proof.json`。
+- 同 SHA 的 `scripts/smoke-server.py` 两次 HTTP/Dispatch 与账号正常进程重启恢复通过，见 `build/recover-introductions-dispatch-20261014.json`。这些服务端检查不包含官方客户端画面或演出中途实际客户端重连。
+
+## 本轮客户端连接边界
+
+本机游戏只到达标题画面，尚未连接本地测试服，随后由用户退出。只读检查发现系统代理为本机 10809 的 v2rayN/sing-box，采用 Rule 分流；已检查的配置没有把游戏入口改写到本地 HKRPG HTTP 8080 / KCP 23301，未捕获实际游戏连接的终点。诊断报告为 `build/recover-introductions-client-connection-20261014.json`。本轮没有改系统代理或证书。
+
+启动时游戏自动下载了资源更新，屏幕资源标签从 D16566615/A16566615/L16566587 变为 D16728363/A16704710/L16700845；不能声称整个客户端目录原字节不变。DLL 与 metadata 仍匹配已固定 SHA，因此前述 1205 静态调用核对成立。进一步尝试直接读取本机八份 Act 时，当前 DesignV 索引不再匹配旧固定索引 SHA `2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89`，工具在读取图之前拒绝。失败日志保留于 `build/recover-introductions-20261014/client-original-acts.log`；没有放宽固定索引保护，也没有把这次尝试记为八份当前客户端图通过。77 份服务端完整原图核对、真实协议/H2 与客户端画面验收分别记录。

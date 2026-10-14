@@ -45,7 +45,7 @@ public final class FirstTalk46 {
       } else {
         int id = number(req, "performance_id");
         var code =
-            id > 0 && only(req, "performance_id")
+            id > 0 && only(req, "performance_id") && Parkour46.wireValid(req.getDescriptorForType(), bytes, 0)
                 ? player.getMissionManager().finishFirstTalkPerformance(id)
                 : Retcode.REQ_PARA_INVALID;
         // Authored mission rewards are emitted through SubMissionRewardScNotify; no independent

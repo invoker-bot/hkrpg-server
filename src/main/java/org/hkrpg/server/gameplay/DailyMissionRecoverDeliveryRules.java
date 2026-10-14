@@ -162,7 +162,7 @@ final class DailyMissionRecoverDeliveryRules {
     if(!place(player,plane,floor))return null;var scene=player.getScene();var group=scene.getFloorInfo().getGroups(0).get(id);
     return group!=null && scene.getResourceGroups().get(id)==group && scene.getLoadedGroups().contains(id)?group:null;
   }
-  private static boolean npc(Player player,int plane,int floor,int groupId,int instance,int npcId){
+  static boolean npc(Player player,int plane,int floor,int groupId,int instance,int npcId){
     var group=loadedGroup(player,plane,floor,groupId);if(group==null)return false;
     var placements=group.getNPCList().stream().filter(info->info.getID()==instance && info.getNPCID()==npcId && info.isLoadOnInitial() && !info.isIsDelete() && !info.isIsClientOnly()).toList();
     var actors=player.getScene().getEntitiesByGroup(EntityNpc.class,groupId).stream().filter(entity->entity.getInstId()==instance).toList();

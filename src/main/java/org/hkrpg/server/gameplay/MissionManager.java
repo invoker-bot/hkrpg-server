@@ -274,6 +274,7 @@ public final class MissionManager {
   }
 
   public boolean hasSeenFirstTalk(int performanceId) {
+    if (DailyRecoverIntroductions.belongs(performanceId)) return DailyRecoverIntroductions.seen(player, performanceId);
     if (NpcFirstTalks.belongs(performanceId)) return NpcFirstTalks.seen(player, performanceId);
     if (WorldFirstTalks.belongs(performanceId)) return WorldFirstTalks.seen(player, performanceId);
     var report = player.getGameplay().getFirstTalkReports().get(performanceId);
@@ -298,6 +299,7 @@ public final class MissionManager {
 
   public Retcode finishFirstTalkPerformance(int performance) {
     synchronized (player) {
+      if (DailyRecoverIntroductions.belongs(performance)) return DailyRecoverIntroductions.finish(player, performance);
       if (NpcFirstTalks.belongs(performance)) return NpcFirstTalks.finish(player, performance);
       if (WorldFirstTalks.belongs(performance)) return WorldFirstTalks.finish(player, performance);
       var definition = FirstTalkDefinitions.performances.get(performance);

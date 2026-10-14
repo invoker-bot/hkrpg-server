@@ -50,6 +50,8 @@ public class GameplayState {
   }
 
   void npcFirstTalks(NpcFirstTalkState value) { npcFirstTalks = Objects.requireNonNull(value); }
+  private DailyRecoverIntroductionState dailyRecoverIntroductions = new DailyRecoverIntroductionState();
+  void dailyRecoverIntroductions(DailyRecoverIntroductionState value) { dailyRecoverIntroductions = Objects.requireNonNull(value); }
   private DailyOriginEffectsState dailyOriginEffects = new DailyOriginEffectsState();
 
   public DailyOriginEffectsState getDailyOriginEffects() {

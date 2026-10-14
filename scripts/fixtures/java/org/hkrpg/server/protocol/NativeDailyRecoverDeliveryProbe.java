@@ -26,6 +26,7 @@ public final class NativeDailyRecoverDeliveryProbe {
   private final List<String> checks = new ArrayList<>();
   private final Map<String, Object> wireFields = verifyWireFields();
   private boolean performances;
+  private boolean introductions;
   private Ukcp channel;
   private int mainMission, dayIndex, requests;
   private boolean mainRewardNotify;
@@ -211,6 +212,20 @@ public final class NativeDailyRecoverDeliveryProbe {
   private static final int[] ENTRIES={2012101,2012301,1010203};
   private static final int[] PLANES={20121,20123,10102},FLOORS={20121001,20123001,10102003};
   private static final int[] GROUPS={93,76,23},NPCS={11104,11205,11403};
+  private void introductions(boolean fresh)throws Exception{
+    int[] ids={501028201,501028001,501030700},entries={1010201,2012101,2012301},planes={10102,20121,20123},floors={10102001,20121001,20123001};
+    for(int i=0;i<ids.length;i++){
+      int id=ids[i];var before=call("GetFirstTalkByPerformanceNpcCsReq",Map.of("performance_id_list",List.of(id)),0);
+      var rows=(List<?>)field(before,"npc_meet_status_list");check(rows.size()==1 && (boolean)field((DynamicMessage)rows.getFirst(),"is_meet")==!fresh,"source-introduction-prior-history-"+id+"-"+fresh);
+      if(fresh){scene(entries[i],planes[i],floors[i]);call("StarPerformanceRelayCsReq",Map.of("performance_id",id,"performance_type",4),0);}
+      var completed=call("FinishFirstTalkByPerformanceNpcCsReq",Map.of("performance_id",id),0);
+      check(number(completed,"performance_id")==id && !completed.hasField(completed.getDescriptorForType().findFieldByName("reward")),"source-introduction-report-without-reward-"+id);
+      var after=call("GetFirstTalkByPerformanceNpcCsReq",Map.of("performance_id_list",List.of(id)),0);
+      check((boolean)field((DynamicMessage)((List<?>)field(after,"npc_meet_status_list")).getFirst(),"is_meet"),"source-introduction-history-"+id);
+      call("FinishFirstTalkByPerformanceNpcCsReq",Map.of("performance_id",id),0);check(true,"duplicate-source-introduction-"+id);
+    }
+    if(fresh){stock(140146,0,"introductions-create-no-first-gift");stock(140147,0,"introductions-create-no-second-gift");stock(140148,0,"introductions-create-no-third-gift");}
+  }
   private void relay(int id)throws Exception{
     if(!performances)return;
     call("StarPerformanceRelayCsReq",Map.of("performance_id",id,"performance_type",4),0);check(true,"original-E-relay-"+id);
@@ -311,12 +326,17 @@ public final class NativeDailyRecoverDeliveryProbe {
   }
   private Map<String,Object> execute(JsonObject input,java.io.BufferedReader control)throws Exception{
     performances=input.has("performances") && input.get("performances").getAsBoolean();
+    introductions=input.has("introductions") && input.get("introductions").getAsBoolean();
     mainMission=MAIN;dayIndex=input.get("dayIndex").getAsInt();int firstChoice=input.get("caseIndex").getAsInt(),secondChoice=(firstChoice+1)%3;
     String phase=input.get("phase").getAsString();require(firstChoice>=0 && firstChoice<3 && Set.of("grant","settled","repeat","restored").contains(phase),"Unowned recovery lane");
     var token=call("PlayerGetTokenCsReq",Map.of("account_uid",input.get("accountUid").getAsString(),"token",input.get("comboToken").getAsString(),"platform",1),0);
     int uid=number(token,"uid");var login=call("PlayerLoginCsReq");call("PlayerLoginFinishCsReq");int wallet=number((DynamicMessage)field(login,"basic_info"),"scoin");
     System.out.println("HKRPG_RECOVER_DELIVERY_FIXTURE_READY:"+uid);System.out.flush();require("resume".equals(control.readLine()),"Controlled fixture did not resume");
     check(wallet==(phase.equals("repeat")?5000:phase.equals("restored")?10000:0),"actual-login-wallet");
+    if(introductions){
+      introductions(phase.equals("grant"));
+      if(phase.equals("grant"))missions(false,Map.of(FIRST,0),"introductions-do-not-complete-the-daily");
+    }
     if(phase.equals("grant")){
       missions(false,Map.of(FIRST,0),"actual-original-assignment");give(firstChoice,firstChoice==1);quest(1,"given-but-unpaid-daily-doing");points(0);
     }else if(phase.equals("settled")){

@@ -29,7 +29,7 @@ public final class DailyRecoverPerformances {
     case 301101408,301101411 -> new Opening(10102,10102003,23,400002);
     default -> null;
   };}
-  private static boolean scripts(){
+  static boolean scripts(){
     if(!DailyMissionRecoverDeliveryRules.source())return false;
     try{
       Path root=Path.of(LunarCore.getConfig().getResourceDir()).toRealPath();
@@ -45,11 +45,13 @@ public final class DailyRecoverPerformances {
       return true;
     }catch(Exception invalid){return false;}
   }
-  private static boolean ordinary(Player player){
+  static boolean ordinary(Player player){
+    return ordinaryScene(player) && !player.getGameplay().getCancelledMissions().contains(MAIN);
+  }
+  static boolean ordinaryScene(Player player){
     var g=player.getGameplay();return !player.isInBattle() && player.getInstance()==null && g.getCurrentMissionRaid()==0
         && g.getTrialRun()==null && !g.getRogue().isInside() && !g.getParkourVenue().inside()
-        && g.getStoryLines().getCurrentId()==0 && !g.getStoryLines().isTransitionPending()
-        && !g.getCancelledMissions().contains(MAIN);
+        && g.getStoryLines().getCurrentId()==0 && !g.getStoryLines().isTransitionPending();
   }
   private static boolean matches(Player player,DailyRecoverPerformanceState.Start start,Scene scene){
     if(start==null || !start.valid() || start.uid()!=player.getUid() || start.at()>player.getMissionManager().currentInstant().getEpochSecond()
@@ -63,6 +65,7 @@ public final class DailyRecoverPerformances {
   }
   public static Retcode start(Player player,int id,int type){
     synchronized(player){
+      if(DailyRecoverIntroductions.presentation(id))return DailyRecoverIntroductions.start(player,id,type);
       // E=4 is read from the fixed local 4.6 ELevelPerformanceType constant table.
       if(type!=4 || !performance(id))return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
       var state=player.getGameplay().getDailyRecoverPerformances();

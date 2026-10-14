@@ -120,11 +120,11 @@ def compile_helpers(jar,java,directory):
     return classpath
 
 
-def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted,performances=False):
+def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted,performances=False,introductions=False):
     runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True)
     directory=Path(tempfile.mkdtemp(prefix=f'daily-recover-delivery-native-{index}-',dir=runs)).resolve();attempted.append(str(directory))
     print(json.dumps(dict(stage='owned-runtime-prepared',caseIndex=index,runtimeDirectory=str(directory))),flush=True)
-    input_paths=[Path(__file__),FIXTURE,ROOT/'src/test/resources/fixtures/daily-recover-performance-entrances-4.6.json',TOOLS/'smoke-daily-selected-item.py',TOOLS/'smoke-g61-first-talk.py',
+    input_paths=[Path(__file__),FIXTURE,ROOT/'src/test/resources/fixtures/daily-recover-performance-entrances-4.6.json',ROOT/'src/test/resources/fixtures/daily-recover-introductions-4.6.json',TOOLS/'smoke-daily-selected-item.py',TOOLS/'smoke-g61-first-talk.py',
         JAVA/'org/hkrpg/server/protocol/NativeDailyRecoverDeliveryProbe.java',JAVA/'org/hkrpg/server/gameplay/RecoverDeliveryFixtureInspector.java',
         JAVA/'emu/lunarcore/command/commands/RecoverDeliveryFixtureCommand.java']
     input_hashes={str(path):sha(path)for path in input_paths}
@@ -136,6 +136,10 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
         extra=json.loads((ROOT/'src/test/resources/fixtures/daily-recover-performance-entrances-4.6.json').read_text('utf-8'))
         for relative in extra['sourceFiles']:shared.detached_write(directory/'resources-fixture'/relative,(source/relative).read_bytes(),directory/'resources-fixture')
         mirror.update(sourceOnlyInstalled=True,performanceEntranceCopies=14)
+    if introductions:
+        intro=json.loads((ROOT/'src/test/resources/fixtures/daily-recover-introductions-4.6.json').read_text('utf-8'))
+        for relative in intro['sourceFiles']:shared.detached_write(directory/'resources-fixture'/relative,(source/relative).read_bytes(),directory/'resources-fixture')
+        mirror.update(originalIntroductionGraphCopies=6)
     classpath=compile_helpers(jar,java,directory)
     (directory/'original-source-preflight.json').write_text(json.dumps(proof,indent=2),'utf-8')
     http,mongo,game=support.transport_ports();assert http!=mongo
@@ -171,7 +175,7 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
                     available.put(None)
                 reader=threading.Thread(target=consume_output,daemon=True);reader.start();child_error=None
                 try:
-                    child.stdin.write(json.dumps(dict(credentials,caseIndex=index,dayIndex=day,phase=phase,performances=performances))+'\n');child.stdin.flush();deadline=time.monotonic()+240
+                    child.stdin.write(json.dumps(dict(credentials,caseIndex=index,dayIndex=day,phase=phase,performances=performances,introductions=introductions))+'\n');child.stdin.flush();deadline=time.monotonic()+240
                     while True:
                         line=available.get(timeout=max(.1,deadline-time.monotonic()));assert line is not None,directory
                         if line.startswith('HKRPG_RECOVER_DELIVERY_FIXTURE_READY:'):uid=int(line.strip().rsplit(':',1)[1]);break
@@ -206,7 +210,7 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
                         if primary is None:raise
                     finally:
                         if server.stdin:server.stdin.close()
-        control=directory/f'phase-{iteration}.json';control.write_text(json.dumps(dict(uid=uid,caseIndex=index,dayIndex=day,phase=phase,performances=performances,firstDay=(anchor+14400)//86400)),'utf-8')
+        control=directory/f'phase-{iteration}.json';control.write_text(json.dumps(dict(uid=uid,caseIndex=index,dayIndex=day,phase=phase,performances=performances,introductions=introductions,firstDay=(anchor+14400)//86400)),'utf-8')
         observed=subprocess.run([str(java),*java_flags,'-cp',classpath,'org.hkrpg.server.gameplay.RecoverDeliveryFixtureInspector',str(directory),str(control)],cwd=ROOT,capture_output=True,text=True,encoding='utf-8',timeout=90,creationflags=flags)
         (directory/f'h2-{iteration}.log').write_text(observed.stdout+observed.stderr,'utf-8');assert observed.returncode==0,directory/f'h2-{iteration}.log'
         view=json.loads(next(line for line in reversed(observed.stdout.splitlines())if line.startswith('{')));assert view['passed']and view['databaseFileBytesUnchanged']
@@ -218,11 +222,12 @@ def one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites
     return dict(passed=True,caseIndex=index,runtimeDirectory=str(directory),snapshots=snapshots,readOnlyH2Inspections=views,requests=sum(row['requests']for row in snapshots),
         checks=sum(len(row['checks'])for row in snapshots),normalStopCount=stops,sameUIDNormalH2RestartCount=3,independentStoppedH2MorphiaReadCount=8,
         originalWholeSourceProof=proof,mirrorLayout=mirror,prerequisites=prerequisites,nativeToolInputSHA256=input_hashes,nativeToolInputsStable=True,
-        sourceFilesSHA256=hashes,giftChoicePaymentOrGoalSeeded=False,performanceRelaysVerified=performances,clientUIVerified=False,clientActOrCustomStringExecuted=False)
+        sourceFilesSHA256=hashes,giftChoicePaymentOrGoalSeeded=False,performanceRelaysVerified=performances,introductionsVerified=introductions,clientUIVerified=False,clientActOrCustomStringExecuted=False)
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--jar',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--case-index',type=int,choices=range(3),action='append');parser.add_argument('--performances',action='store_true');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--jar',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--case-index',type=int,choices=range(3),action='append');parser.add_argument('--performances',action='store_true');parser.add_argument('--introductions',action='store_true');args=parser.parse_args()
+    assert not args.introductions or args.performances,'NPC introductions require the complete recovered entrances'
     jar=args.jar.resolve();output=args.output.resolve();assert jar.is_file()and jar.is_relative_to(ROOT/'build')and output.is_relative_to(ROOT/'build')and not output.exists()
     java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'));artifact=sha(jar);source=ROOT/'resources/4.6';attempted=[];cases=[]
     support.reserve_output(jar,output)
@@ -237,7 +242,13 @@ def main():
                 raw=base64.b64decode(metadata['sourceBlobBase64'],validate=True)
                 assert hashlib.sha256(raw).hexdigest()==metadata['sourceBlobSHA256']and shared.complete_json((source/relative).read_bytes())==shared.complete_json(raw)
                 hashes[relative]=sha(source/relative)
-        for index in args.case_index or range(3):cases.append(one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted,args.performances))
+        if args.introductions:
+            intros=json.loads((ROOT/'src/test/resources/fixtures/daily-recover-introductions-4.6.json').read_text('utf-8'));assert intros['sourceCommit']==COMMIT
+            for relative,metadata in intros['sourceFiles'].items():
+                raw=base64.b64decode(metadata['sourceBlobBase64'],validate=True)
+                assert hashlib.sha256(raw).hexdigest()==metadata['sourceBlobSHA256'] and shared.complete_json((source/relative).read_bytes())==shared.complete_json(raw)
+                hashes[relative]=sha(source/relative)
+        for index in args.case_index or range(3):cases.append(one(index,jar,artifact,java,source,blobs,hashes,optional,proof,prerequisites,attempted,args.performances,args.introductions))
         result.update(passed=True,executedCaseIndexes=[case['caseIndex']for case in cases],requests=sum(case['requests']for case in cases),checks=sum(case['checks']for case in cases),
             normalStopCount=sum(case['normalStopCount']for case in cases),sameUIDNormalH2RestartCount=sum(case['sameUIDNormalH2RestartCount']for case in cases),
             independentStoppedH2MorphiaReadCount=sum(case['independentStoppedH2MorphiaReadCount']for case in cases))

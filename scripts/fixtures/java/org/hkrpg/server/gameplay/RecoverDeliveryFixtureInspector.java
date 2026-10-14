@@ -68,6 +68,11 @@ public final class RecoverDeliveryFixtureInspector {
       var first=store.find(Player.class).filter(dev.morphia.query.filters.Filters.eq("_id",uid)).first();var second=store.find(Player.class).filter(dev.morphia.query.filters.Filters.eq("_id",uid)).first();
       require(first!=null && second!=null && first!=second && new Gson().toJson(first.getGameplay()).equals(new Gson().toJson(second.getGameplay())) && first.getScoin()==second.getScoin(),"Independent actual Player reads differ");
       var g=first.getGameplay();require(g.getDailyMissionRecoverDelivery().valid() && Objects.equals(DailyMissionRepeats.selectedDay(first,3011014),day),"Invalid stored recovery day");
+      if(c.has("introductions") && c.get("introductions").getAsBoolean()){
+        var meetings=g.getDailyRecoverIntroductions();require(meetings!=null && meetings.valid(first),"Invalid original NPC introduction history");
+        for(int id:new int[]{501028201,501028001,501030700})require(meetings.seen(id),"Original introduction missing after real H2 restart: "+id);
+        result.put("npcIntroductions",new Gson().toJsonTree(meetings));
+      }
       run(g,uid,day,choice,settled,false,g.getMainMissions().get(3011014),g.getSubMissions());
       if(c.has("performances") && c.get("performances").getAsBoolean()){
         var starts=g.getDailyRecoverPerformances();require(starts.valid(),"Invalid saved performance witnesses");
