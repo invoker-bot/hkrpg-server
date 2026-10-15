@@ -108,9 +108,16 @@ def resource_json(value, profile, description=None):
             return {key:value[key] for key in ('EnumIndex', 'Value')}
         if name == 'DynamicFloat':
             unit = profile['g61Extension']['fixedPointUnit']
-            if (set(value) != {'$type', '$mode', 'fixedRawSigned'} or value['$mode'] != 0
-                    or value['fixedRawSigned'] % unit):
+            if set(value) != {'$type', '$mode', 'fixedRawSigned'} or value['$mode'] != 0:
                 raise ValueError('G61 只接受本批原件中的整数字面定点值')
+            raw = value['fixedRawSigned']
+            if raw % unit:
+                # Other graph batches may pin individual noninteger literals against
+                # their complete original records. This is not a general FP conversion.
+                literals = profile.get('fixedPointJSONLiterals', {})
+                if str(raw) not in literals:
+                    raise ValueError('G61 只接受本批原件中的整数字面定点值')
+                return {'IsDynamic':False, 'FixedValue':{'Value':literals[str(raw)]}}
             return {'IsDynamic':False, 'FixedValue':{'Value':value['fixedRawSigned'] // unit}}
         fields = {field['name']:field['type'] for field in profile['classes'].get(name, {}).get('fields', [])}
         result = {}

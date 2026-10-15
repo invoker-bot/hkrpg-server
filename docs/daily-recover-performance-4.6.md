@@ -82,3 +82,25 @@ G76 的原对话项路径名沿用 `DialogueItem301101101`，其中实际 Perfor
 本机游戏只到达标题画面，尚未连接本地测试服，随后由用户退出。只读检查发现系统代理为本机 10809 的 v2rayN/sing-box，采用 Rule 分流；已检查的配置没有把游戏入口改写到本地 HKRPG HTTP 8080 / KCP 23301，未捕获实际游戏连接的终点。诊断报告为 `build/recover-introductions-client-connection-20261014.json`。本轮没有改系统代理或证书。
 
 启动时游戏自动下载了资源更新，屏幕资源标签从 D16566615/A16566615/L16566587 变为 D16728363/A16704710/L16700845；不能声称整个客户端目录原字节不变。DLL 与 metadata 仍匹配已固定 SHA，因此前述 1205 静态调用核对成立。进一步尝试直接读取本机八份 Act 时，当前 DesignV 索引不再匹配旧固定索引 SHA `2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89`，工具在读取图之前拒绝。失败日志保留于 `build/recover-introductions-20261014/client-original-acts.log`；没有放宽固定索引保护，也没有把这次尝试记为八份当前客户端图通过。77 份服务端完整原图核对、真实协议/H2 与客户端画面验收分别记录。
+
+## 2026-10-15 后续验收
+
+新增 `scripts/verify-client-recover-acts.py`，显式选择经过独立完整核对的新索引 `5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed`。固定 DLL 与 metadata 保持前述 SHA；基础 G61/休息区/任务图证据仍按原 profile 校验。八份 Act 共 4,176 字节，全部消费，并逐完整 JSON 对象同时等于 724b 固定原件和当前运营文件；当前客户端的 409、410、411 原始中间替换段也包含在核对中。报告为 `build/recover-acceptance-20261015/client-acts.json`，各记录的索引键、长度和 SHA 另固定于 `scripts/data/client46-recover-acts.json`。
+
+此次补齐的是只读解析证据，不增加服务端逐帧执行器。三类任务逐原生实例字段、实际工厂表赋值、分配类型槽、读取方法及完整 PE 函数边界/字节 SHA 核对：
+
+| 类型 | 实际任务标签 | 工厂 RVA | 读取函数 RVA |
+|---|---|---|---|
+| CaptureNPCToCharacter | 936 | 1cedb720 | 1d529d10 |
+| CharacterTriggerFreeStyle | 993 | 1cedc860 | 1d54c360 |
+| SwitchCharacterAnchor | 3428 | 1d61e260 | 1db13520 |
+
+原生读取函数中的字段掩码与赋值顺序逐项核对，不由类型字段顺序推断。两条非整数字面量仅接受本批完整原件中的固定对应：4294967300→0.5、6012954220→0.7；未实现通用 FP 转换，也不将邻近整数四舍五入成这些值。原 G61 profile 仍拒绝它们。五项新图回归覆盖八图完整对象、所有图截断/尾随字节、未知任务/字段掩码、精确字面量和报告保护。
+
+77 份原件、14 份入口、8 份 Act、6 份初遇/后续图及 1205 原生结束发送链重新核对通过，报告为 `build/recover-acceptance-20261015/whole-source-and-1205.json`。这些是静态数据和原生代码证据，报告继续明确 `clientActExecuted=false`、`clientUIVerified=false`。
+
+连接验收使用 `build/recover-acceptance-20261015/client` 中独立复制的已安装客户端，11,594 文件、约 109 GiB；原安装未改写。仅将副本 `ClientConfig.bytes` 内两个官方 Dispatch 地址替换为 `http://127.0.0.1:18080/query_dispatch`，原配置备份和双份摘要在同目录上层保存。测试服使用新配置和新 H2，HTTP 18080、UDP/KCP 23311，复用已验证的 588dd4 产物和现有只读资源；没有启动参考仓库的 launcher/DLL，没有改系统代理或证书。
+
+独立副本实际发出 `query_dispatch`，服务端日志在 15:16:31 记录；测试服 HTTP readiness 为 200。当前画面停在首次用户协议提示，自动点击和回车没有触发下一步，已请求用户手动推进。SDK 登录、本地 Gateway/KCP 登录、完整播放和播放中断重进尚未通过，不能将本次 Dispatch 请求计为游戏世界连接或完整演出验收。
+
+路径/索引/回退、新 Act、G61、休息区及基础图读取器的 74 项专项通过。扩大运行时另外两项旧索引的实机七图检查因客户端已热更新而被原 SHA 保护拒绝，日志单独保留于 `python-focused-rerun.log`，没有把它们列入通过数。`scripts/build.ps1` 成功；Java 和 JAR 任务均为 UP-TO-DATE，本次未重跑前批 14,311 项 Java，运行代码和冻结产物未改变。日志、连接配置与边界报告均位于 `build/recover-acceptance-20261015/`。

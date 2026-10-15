@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 CLIENT = Path(r'C:\Users\InvokerBot\AppData\Local\hoyo\hkrpg\versions\current')
+UPDATED_INDEX = '5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed'
 spec = importlib.util.spec_from_file_location('read_design', ROOT / 'scripts/read-client-design-data.py')
 design = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(design)
@@ -57,7 +58,8 @@ class Client46DesignPathsTest(unittest.TestCase):
 class Client46DesignRecordsTest(unittest.TestCase):
     def arguments(self, directory):
         return SimpleNamespace(client_dir=CLIENT, paths=list(PATHS), paths_file=None,
-                               extract_dir=directory / 'raw', output=directory / 'manifest.json')
+                               extract_dir=directory / 'raw', output=directory / 'manifest.json',
+                               index_sha256=UPDATED_INDEX)
 
     def test_exact_records_are_read_and_existing_identical_exports_are_reused(self):
         with tempfile.TemporaryDirectory() as directory:

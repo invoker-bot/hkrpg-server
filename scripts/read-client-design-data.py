@@ -16,6 +16,12 @@ MASK64 = (1 << 64) - 1
 P1, P2, P3 = 0x9e3779b185ebca87, 0xc2b2ae3d27d4eb4f, 0x165667b19e3779f9
 P4, P5 = 0x85ebca77c2b2ae63, 0x27d4eb2f165667c5
 INDEX_SHA256 = '2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89'
+# Keep the legacy default: graph readers also pin their own record/schema evidence.
+# The second index was checked after the installed client's D16728363 update.
+INDEX_PROFILES = {
+    INDEX_SHA256: (255, 4, 33, 141295),
+    '5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed': (255, 4, 33, 141295),
+}
 
 
 def rotate(value, bits):
@@ -74,21 +80,26 @@ def outside_client(path, client):
     return resolved
 
 
-def parse_index(directory, bundled_directory=None):
+def parse_index(directory, bundled_directory=None, *, index_sha256=INDEX_SHA256):
+    if index_sha256 not in INDEX_PROFILES:
+        raise ValueError('未核对的设计数据索引 SHA256')
     candidates = list(directory.glob('DesignV_*.bytes'))
-    verified = [path for path in candidates
-                if hashlib.sha256(path.read_bytes()).hexdigest() == INDEX_SHA256]
+    verified = []
+    for candidate in candidates:
+        raw = candidate.read_bytes()
+        if hashlib.sha256(raw).hexdigest() == index_sha256:
+            verified.append((candidate, raw))
     if len(verified) != 1:
         raise ValueError('未找到唯一匹配固定 SHA256 的设计数据索引，拒绝沿用解析常量')
-    path = verified[0]
-    data = path.read_bytes()
-    if data[:8] != bytes.fromhex('000000ff00000004'):
+    path, data = verified[0]
+    header = INDEX_PROFILES[index_sha256]
+    if len(data) < 16 or struct.unpack_from('>IIII', data) != header:
         raise ValueError('设计数据索引头不匹配')
     position = 16
     chunks = []
     entries = {}
     count = 0
-    for index in range(33):
+    for index in range(header[2]):
         if position + 36 > len(data):
             raise ValueError('设计数据块头截断')
         md5 = data[position + 8:position + 24].hex()
@@ -121,7 +132,7 @@ def parse_index(directory, bundled_directory=None):
         position += 1
         chunks.append(chunk)
         count += total
-    if position != len(data) or count != 141295:
+    if position != len(data) or count != header[3]:
         raise ValueError('设计数据索引未完整读取或记录总数不匹配')
     return path, chunks, entries
 
@@ -153,7 +164,8 @@ def extract(args):
         raise ValueError('原生 JSON 路径转换交叉核对失败')
     directory = client / 'StarRail_Data/Persistent/DesignData/Windows'
     bundled_directory = client / 'StarRail_Data/StreamingAssets/DesignData/Windows'
-    index_path, chunks, index = parse_index(directory, bundled_directory)
+    index_sha256 = getattr(args, 'index_sha256', INDEX_SHA256)
+    index_path, chunks, index = parse_index(directory, bundled_directory, index_sha256=index_sha256)
     results, writes, verified_chunks = [], [], {}
     for path in paths:
         baked = prefix + str(path.with_suffix('')) + suffix
@@ -204,7 +216,7 @@ def extract(args):
                 stream.write(raw)
     report = {'clientExecutableStarted': False, 'clientModified': False, 'clientAccepted': False,
               'jsonInstalled': False, 'files': evidence['files'], 'index': str(index_path),
-              'indexSHA256': INDEX_SHA256, 'indexFullyConsumed': True, 'indexEntryCount': 141295,
+              'indexSHA256': index_sha256, 'indexFullyConsumed': True, 'indexEntryCount': len(index),
               'verifiedChunks': {file: {key: value for key, value in row.items() if key != 'signature'}
                                  for file, row in verified_chunks.items()},
               'missingChunks': [row['index'] for row in chunks if not Path(row['file']).is_file()],
@@ -222,6 +234,8 @@ if __name__ == '__main__':
     parser.add_argument('--client-dir', type=Path, required=True)
     parser.add_argument('--paths', nargs='*', default=[])
     parser.add_argument('--paths-file', type=Path)
+    parser.add_argument('--index-sha256', choices=INDEX_PROFILES, default=INDEX_SHA256,
+                        help='显式选择已核对索引；默认继续锁定旧版，不能自动升级图读取证据')
     parser.add_argument('--extract-dir', type=Path)
     parser.add_argument('--output', type=Path, default=Path('build/client46-design-records.json'))
     arguments = parser.parse_args()

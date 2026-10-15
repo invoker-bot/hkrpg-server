@@ -2,7 +2,7 @@
 
 `scripts/read-client-design-data.py` 依据已固定客户端的原生路径转换，定位设计数据索引中的原始记录。它不启动客户端，不向客户端目录写入，不安装资源，也不表示客户端接受或玩法完成。输入 DLL、元数据和索引哈希不匹配时停止，不能用于其他补丁版本。
 
-固定 DLL 与元数据见 [静态协议证据](client-protocol-evidence.md)。设计数据索引 SHA-256 为 `2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89`；当前索引完整读取为 33 块、141,295 条记录。每个实际读取的数据块核对索引声明的长度和 MD5，并记录块及记录的 SHA-256。缺少的块和缺少的索引条目分别报告，不以相邻记录代替。
+固定 DLL 与元数据见 [静态协议证据](client-protocol-evidence.md)。原设计数据索引 SHA-256 为 `2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89`，完整读取为 33 块、141,295 条记录；它仍是工具默认值。每个实际读取的数据块核对索引声明的长度和 MD5，并记录块及记录的 SHA-256。缺少的块和缺少的索引条目分别报告，不以相邻记录代替。
 
 原生 `JsonToBinaryPath` RVA `1d6d0530` 使用字符串槽 `9729e18` 的 `BakedConfig/` 和 `96f5968` 的 `.bytes`。例如 `Config/Level/GroupGraph/F10301001/Group_F10301001_G156.json` 转换为 `BakedConfig/Config/Level/GroupGraph/F10301001/Group_F10301001_G156.bytes`，再以种子 0 的 XXH64 查找索引。大小写与斜杠不能自行调整。
 
@@ -34,3 +34,11 @@ python -m unittest discover -s scripts/tests
 本机索引第 18 块位于游戏自带目录：`3fe3df4c53e2f8389ce65eb73ec8c55e.bytes`，76,204 字节、2 条记录，MD5 与索引相符。两个目录合并后，20 个非语言数据块均可定位；13 个语言块仍缺失。新增报告分别列出 `bundledChunks`、`missingCoreChunks` 和 `missingLocaleChunks`，保留原有 `missingChunks`。文件可定位不代表其全部内容已经解析，更不代表玩法完成。
 
 新增 6 项实际目录回归，与原有 7 项联合通过。改动前，两个实际读取/导出保护断言失败；另四项检查依赖新增的双目录接口，原接口报告参数错误。原始块中一条 58,289 字节记录用于验证长度、散列和导出保护；该项测试固定索引键，测试路径是标签，未宣称已识别该记录的原始配置路径或 JSON 内容。本轮完整重跑 1,075 项 Python，通过；11,571 项 Java（440 类）、3,186 个源码文件及 151 份协议快照核对通过。封存报告为 `build/client46-design-fallback-verification.json`，JAR 为 `build/client46-design-fallback-certified.jar`，SHA-256 为 `01abbea7a9f47cbfa916a8c7e7be1fbb38296dd08450d8af3815e730a8b8bb5d`。未执行实际客户端玩法或 UI 验收。
+
+## D16728363 热更新索引
+
+2026-10-15 只读核对本机新索引 `5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed`。四个大端头字段仍为 255、4、33、141295，完整消费所有记录且没有重复键或越界；与旧索引的完整存档相比，仅块 1、13、19、23 的摘要或条目变化。两个安装目录中的 20 个现有块全部符合声明长度和 MD5，13 个缺失块仍属语言块；独立证据为 `build/recover-acceptance-20261015/index-audit.json`。
+
+读取新索引必须显式传入 `--index-sha256 5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed`，或 Python 接口的同名 `index_sha256` 参数。只允许两个已固定摘要，不接受调用者随意提供任意文件 SHA。索引头的块数和总记录数现在也逐项核对，报告记录所选实际摘要。省略参数仍按旧索引拒绝本次热更新；各原始图读取器自己的索引、记录和字段证据没有自动升级。
+
+新回归先复现显式选择新索引后仍被旧保护拒绝；修复后原路径/导出、双目录回退和新索引三组共 17 项检查通过，其中实际读取依赖本机客户端。原 G156 与两份弹药记录的长度和 SHA 保持原值。未知或改过字节的索引、多个相同候选、不同内容的导出和损坏块继续拒绝。现有 20 块的实际长度、MD5 和 SHA256 另记录于 `build/recover-acceptance-20261015/index-storage-proof.json`。3011014 的八份 Act 使用独立的新固定原生证据，见 [演出验收记录](daily-recover-performance-4.6.md)。
