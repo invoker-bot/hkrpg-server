@@ -81,3 +81,23 @@ python -m unittest scripts.tests.test_client46_cn_sdk_patch
 已请用户通过原桌面图标重新登录；若仍出现puzzle或其他提示，只收集用户反馈，不代做puzzle，也不把本地探针当成真实客户端登录通过。
 
 本批 `scripts/build.ps1 -RerunTests` 在15分4秒完成：524类 / 14,318项，失败、错误、跳过均为0，包含既有无效登录及新增两项回归。2,600份运行/资源/测试/构建输入前后SHA相同；最终JAR与所有本批HTTP/H2检查使用的冻结产物同为 `216c39ba…`。完整XML、输入摘要及构建证明保存于 `build/sdk-managed-login-20261016/full-xml`、`build-inputs-before.json`、`build-inputs-after.json`、`full-build-proof.json`。原入口三份安装文件和备份、公私钥配对、原GameAssembly/metadata完整SHA又经独立读回复核，见 `installed-path-proof.json`。测试服保持就绪；真实客户端通过原入口的登录结果继续等用户反馈。
+
+## 国服 Dispatch 误选外服 SDK 环境
+
+用户反馈原入口出现外服账号页面，并要求参考本机 LunaGC 的登录。只读对照 `D:\Projects\Experiment\LunaGC`，源码提交 `111694c7185618bf3daa0aecb2b7fb7fda6d7c98` 的 `RegionHandler` 按客户端版本前缀区分国服/外服；其 patch 子模块提交 `2b883e9dbbe7971f5763c6fd73667663c8d55072` 对 Unity HTTP 和原生 WinHTTP 分别转发。没有运行、复制该项目的 launcher/DLL，也未修改它的工作区。本次沿用本项目既有 HTTP/SDK 实现，独立修正区服响应。
+
+本项目 `RegionInfo.toProto()` 继承的 `env_type="2"` 被用于所有客户端。这是 SDK 的外服生产环境；国服生产环境为 `0`。在修复前，对仍在运行的冻结产物 `216c39ba…` 分别发送 `CNPRODWin4.6.0`、`OSPRODWin4.6.0`，用仓库匹配的4.6 descriptor解码，两个实际HTTP响应均为 `2`，见 `build/sdk-managed-login-20261016/live-dispatch-env-red.json`。此前只修补环境0的SDK地址，无法覆盖客户端被Dispatch切换到环境2后的外服页面/账号路径。
+
+新增 `CnDispatchRoutesTest` 在本机内存Mongo和真实HTTP上先复现：3项中2项纯断言失败，均为期望0、实际2，错误/跳过为0；原始XML及日志保存于 `dispatch-cn-red.xml/.log`。`QueryDispatchHandler` 现在在原版本校验之后选择 SDK 环境：`CNPROD`/`CNREL` 返回0；外服、未声明渠道及旧兼容调用保持2。`HttpServer` 按0/2缓存各自序列化结果，刷新时一起失效，共享同一份区服快照，不改持久化区服记录。日志仅补入环境编号，不记录请求参数或账号资料。
+
+三个新增HTTP测试覆盖国服/外服交替请求、移动端前缀、缺省与非渠道前缀、兼容API、区服刷新及版本不匹配拒绝。自动建号、不同密码复用同一账号、原生RSA会话及旧无效登录继续由原有测试和隔离HTTP/H2检查验证。原桌面快捷方式与三份客户端数据补丁沿用上一批，不需要重新修改客户端文件。
+
+本节修复的是服务端SDK环境选择。用户要求不再查看或操作客户端，页面结果、实际SDK登录、Gateway/KCP会话与3011014完整演出继续以用户实测及对应服务日志为准；不能用Dispatch或探针通过替代这些验收。
+
+修复后的四类聚焦Java测试共13项通过，打包产物冻结为 `build/sdk-cn-dispatch-20261016/runtime.jar`，SHA256 `ac9ef94bafb6cf40d1cf677c29646042549e87311265ff2cc637b37a44f408a3`。同产物的原生/MDK隔离HTTP/H2检查24项、两次原stop正常退出，以及既有Dispatch/账号两轮检查通过。只读4.6 descriptor解码的现场HTTP检查11项通过，覆盖国服/外服交替、旧缺省行为和错误版本拒绝，见该目录 `native-dispatch-http.json`；它记录探针开始/结束时间，不属于游戏登录流量。
+
+测试服升级时旧进程48052经原 `stop` 退出（1000），69,632字节H2文件和原验收配置在停服后保存至 `before-upgrade`。新产物继续使用原验收目录 `build/sdk-managed-login-20261016/server` 的配置、资源和H2，HTTP18080/KCP23311/内部Mongo27079保持原值。配置SHA256 `2972e00f778dcc923f7a912af88e6f02a53508d657219f457f1b8b08ad3a437f` 读回未变。新控制脚本和日志位于 `build/sdk-cn-dispatch-20261016`，对应正常停服请求也改为该目录的 `stop.request`；旧目录已完成的stop请求只供历史留证。
+
+独立读回原桌面快捷方式、三份客户端数据补丁、原GameAssembly和metadata的摘要均与上一批相同；本次没有写客户端文件。证据为 `installed-path-proof.json`、`upgrade-preflight.json` 和新服务端日志。LunaGC工作区仍干净。
+
+最终 `scripts/build.ps1` 全量525类 / 14,321项通过，失败、错误、跳过均为0，耗时16分19秒；本次test任务实际执行，编译与打包沿用前述已完成的聚焦构建产物。2,601份运行、资源、测试和构建输入前后SHA相同，最终JAR、冻结JAR及已运行验证的产物同为 `ac9ef94b…`。全部XML归档于 `build/sdk-cn-dispatch-20261016/full-xml`，完整汇总为该目录 `full-build-proof.json`。提交前测试服readiness再次通过，尚未将真实客户端登录标记为通过。

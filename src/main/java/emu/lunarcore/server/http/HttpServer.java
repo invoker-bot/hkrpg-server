@@ -32,13 +32,14 @@ public class HttpServer {
 
     private long nextRegionUpdate;
     private Object2ObjectMap<String, RegionInfo> regions;
-    private String regionList;
+    private final Object2ObjectMap<String, String> regionLists;
 
     public HttpServer(ServerType type) {
         this.type = type;
         this.app = Javalin.create();
         this.modes = new LinkedList<>();
         this.regions = new Object2ObjectOpenHashMap<>();
+        this.regionLists = new Object2ObjectOpenHashMap<>();
 
         this.addRoutes();
     }
@@ -77,9 +78,16 @@ public class HttpServer {
     }
 
     public String getRegionList() {
+        return getRegionList("2");
+    }
+
+    public String getRegionList(String sdkEnvironment) {
+        if (!"0".equals(sdkEnvironment) && !"2".equals(sdkEnvironment)) {
+            throw new IllegalArgumentException("Unsupported release SDK environment");
+        }
         synchronized (this.regions) {
             // Check if region list needs to be cached
-            if (System.currentTimeMillis() > this.nextRegionUpdate || this.regionList == null) {
+            if (System.currentTimeMillis() > this.nextRegionUpdate || this.regionLists.isEmpty()) {
                 // Clear regions first
                 this.regions.clear();
 
@@ -89,19 +97,23 @@ public class HttpServer {
                         this.regions.put(region.getId(), region);
                     });
 
-                // Serialize to proto
+                this.regionLists.clear();
+                this.nextRegionUpdate = System.currentTimeMillis() + getServerConfig().regionListRefresh;
+            }
+
+            // Cache by SDK environment so a CN request cannot change the OS
+            // response (or vice versa), while sharing the same region snapshot.
+            return this.regionLists.computeIfAbsent(sdkEnvironment, (String environment) -> {
                 DispatchRegionData regionData = DispatchRegionData.newInstance();
-                regions.values().stream().map(RegionInfo::toProto).forEach(regionData::addRegionList);
+                regions.values().stream().map(region -> region.toProto().setEnvType(environment))
+                        .forEach(regionData::addRegionList);
 
                 // Set region list cache
                 var protocol = org.hkrpg.server.protocol.ActiveProtocol.get();
                 byte[] bytes = protocol.experimental() ? protocol.translate("DispatchRegionData", regionData.toByteArray(), true) : regionData.toByteArray();
-                this.regionList = Utils.base64Encode(bytes);
-                this.nextRegionUpdate = System.currentTimeMillis() + getServerConfig().regionListRefresh;
-            }
+                return Utils.base64Encode(bytes);
+            });
         }
-
-        return regionList;
     }
 
     public void start() {
