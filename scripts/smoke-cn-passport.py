@@ -61,7 +61,7 @@ def run(jar, output):
         return base64.b64encode(key.public_key().encrypt(text.encode(), padding.PKCS1v15())).decode()
 
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
-    accounts, checks, stops = [], [], 0
+    accounts, mdk_accounts, checks, stops = [], [], [], 0
     for iteration in range(2):
         assert checksum(jar) == expected and checksum(config) == config_sha
         with (directory / f'server-{iteration}.log').open('x', encoding='utf-8') as log:
@@ -114,6 +114,32 @@ def run(jar, output):
                     'uid': uid, 'token': exchanged['data']['token']['token']})})
                 assert combo['retcode'] == 0 and combo['data']['combo_token']
                 checks.append(f'{iteration}:combo-token')
+                if not mdk_accounts:
+                    for name in ('mdk-smoke-one', 'mdk-smoke-two'):
+                        result = request('/hkrpg_cn/mdk/shield/api/login', {'account': name, 'password': 'first-password'})
+                        assert result['retcode'] == 0
+                        first_login = result['data']['account']
+                        changed = request('/hkrpg_cn/mdk/shield/api/login', {'account': name, 'password': 'different-password'})
+                        assert changed['retcode'] == 0
+                        changed = changed['data']['account']
+                        assert first_login['uid'] == changed['uid']
+                        mdk_accounts.append(changed)
+                        checks.append(f'{iteration}:mdk-create-and-ignore-password-{len(mdk_accounts)}')
+                assert mdk_accounts[0]['uid'] != mdk_accounts[1]['uid']
+                checks.append(f'{iteration}:mdk-distinct-identities')
+                for account in mdk_accounts:
+                    verified = request('/hkrpg_cn/mdk/shield/api/verify', {'uid': account['uid'], 'token': account['token']})
+                    assert verified['retcode'] == 0
+                    assert verified['data']['account']['uid'] == account['uid']
+                checks.append(f'{iteration}:mdk-original-identities-and-tokens-restored')
+                rejected = request('/hkrpg_cn/mdk/shield/api/verify', {
+                    'uid': mdk_accounts[1]['uid'], 'token': mdk_accounts[0]['token']})
+                assert rejected['retcode'] != 0
+                checks.append(f'{iteration}:mdk-cross-account-rejected')
+                combo = request('/hkrpg_cn/combo/granter/login/v2/login', {'data': json.dumps({
+                    'uid': mdk_accounts[0]['uid'], 'token': mdk_accounts[0]['token']})})
+                assert combo['retcode'] == 0 and combo['data']['combo_token']
+                checks.append(f'{iteration}:mdk-combo')
             finally:
                 if process.poll() is None:
                     try:
@@ -132,6 +158,7 @@ def run(jar, output):
     report = {'passed': True, 'runtimeSHA256': expected, 'runtimeDirectory': str(directory),
               'configSHA256': config_sha, 'checks': checks, 'normalStops': stops,
               'sameAccountH2Restart': True, 'originalTokensVerifiedAfterRestart': True,
+              'defaultAutoCreationAndIgnoredPasswords': True,
               'accountNamesAndTokensOmitted': True, 'clientLoginVerified': False}
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open('x', encoding='utf-8') as stream:

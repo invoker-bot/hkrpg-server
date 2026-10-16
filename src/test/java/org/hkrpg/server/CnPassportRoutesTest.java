@@ -146,4 +146,33 @@ class CnPassportRoutesTest {
         assertEquals(-202, post("/account/ma-cn-passport/app/loginByPassword", body).get("retcode").getAsInt());
         assertEquals(0, database.getDatastore().find(Account.class).count());
     }
+
+    @Test void defaultMdkLoginCreatesByUsernameAndIgnoresChangedPasswords() throws Exception {
+        assertTrue(LunarCore.getConfig().getServerOptions().autoCreateAccount);
+        var first = post("/hkrpg_cn/mdk/shield/api/login", Map.of("account", "mdk-default-user", "password", "first-password"));
+        assertEquals(0, first.get("retcode").getAsInt());
+        var second = post("/hkrpg_cn/mdk/shield/api/login", Map.of("account", "mdk-default-user", "password", "different-password"));
+        assertEquals(0, second.get("retcode").getAsInt());
+        assertEquals(first.getAsJsonObject("data").getAsJsonObject("account").get("uid"),
+            second.getAsJsonObject("data").getAsJsonObject("account").get("uid"));
+        assertNotNull(database.getObjectByField(Account.class, "username", "mdk-default-user"));
+        assertEquals(1, database.getDatastore().find(Account.class).count());
+    }
+
+    @Test void managedCnSdkHasMatchingConfigAndProtocolRoutes() throws Exception {
+        for (String path : List.of("/hkrpg_cn/mdk/shield/api/loadConfig", "/hkrpg_cn/combo/granter/api/getConfig",
+                "/hkrpg_cn/mdk/agreement/api/getAgreementInfos")) {
+            var response = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + app.port() + path)).GET().build(),
+                HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, response.statusCode(), path);
+            var result = JsonParser.parseString(response.body()).getAsJsonObject();
+            assertEquals(0, result.get("retcode").getAsInt());
+            assertTrue(result.get("data").isJsonObject());
+            if (path.contains("loadConfig")) {
+                assertEquals("hkrpg_cn", result.getAsJsonObject("data").get("game_key").getAsString());
+                assertEquals(8, result.getAsJsonObject("data").get("id").getAsInt());
+            }
+        }
+        assertEquals(0, post("/hkrpg_cn/combo/granter/api/compareProtocolVersion", Map.of()).get("retcode").getAsInt());
+    }
 }

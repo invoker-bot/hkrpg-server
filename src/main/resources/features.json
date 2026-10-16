@@ -31,7 +31,7 @@
       "name": "Dispatch、SDK 账号和令牌链路",
       "status": "integrated",
       "evidence": "src/main/java/emu/lunarcore/server/http",
-      "gap": "原生国服账号SDK新增RSA账号解密、ma-cn密码入口、绑定UID的嵌套会话校验与1到4令牌交换；独立副本固定账号DLL数据补丁和验证边界见docs/cn-sdk-local-login-4.6.md。其他SDK配置、真实登录到游戏世界及4.6加密仍待验收。"
+      "gap": "原生国服账号SDK新增RSA账号解密、ma-cn密码入口、绑定UID的嵌套会话校验与1到4令牌交换；托管PC SDK补入国服MDK配置及协议入口，独立副本同时修正固定账号DLL和server_pc生产环境的11项账号URL。自动建号及不校验密码的默认约定保留，准确边界见docs/cn-sdk-local-login-4.6.md。其他SDK配置、真实登录到游戏世界及4.6加密仍待验收。"
     },
     {
       "id": "authentication",
