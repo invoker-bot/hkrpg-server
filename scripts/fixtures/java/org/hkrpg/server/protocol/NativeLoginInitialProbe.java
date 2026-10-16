@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +27,21 @@ public final class NativeLoginInitialProbe implements KcpListener {
     6842, 7625, 96, 1217, 8130, 1934, 8948, 8680, 4196, 9504, 9804, 8991,
     10010, 9894, 9490, 1458, 87, 78, 1222
   };
+  // Frozen 4.6 command pairs; 4583/7172/8110/10010 require the independently audited raw names.
+  private static final Set<Integer> EXPECTED_RESPONSES = Arrays.stream(new int[] {
+    67, 525, 549, 2825, 325, 6033, 4515, 2949, 738, 6125, 2616, 1225, 925, 1742,
+    5653, 5614, 1825, 5640, 6003, 7661, 5435, 6017, 7704, 156, 3475, 5725,
+    2775, 2739, 91, 6325, 27, 775, 7173, 8025, 8116, 116, 5825, 1448, 4814,
+    6839, 7617, 47, 1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982,
+    10016, 9866, 9496, 1456, 63, 4, 1249
+  }).boxed().collect(Collectors.toUnmodifiableSet());
+  private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
+      Map.entry(5653, 15), Map.entry(91, 8), Map.entry(7173, 6), Map.entry(8025, 11),
+      Map.entry(8116, 7), Map.entry(47, 8), Map.entry(9776, 4), Map.entry(8982, 14),
+      Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
+      Map.entry(27, 5), Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
+      Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(6125, 9), Map.entry(8580, 9),
+      Map.entry(8914, 13), Map.entry(9548, 8));
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final CompletableFuture<Boolean> completed = new CompletableFuture<>();
   private final Set<Integer> received = new HashSet<>();
@@ -53,6 +70,26 @@ public final class NativeLoginInitialProbe implements KcpListener {
         var frame = PacketCodec.decodeNext(bytes);
         if (frame == null) throw new IllegalStateException("Truncated initial response");
         received.add(frame.cmdId());
+        if (INACTIVE_RETCODES.containsKey(frame.cmdId())) {
+          var input = CodedInputStream.newInstance(frame.body());
+          require(input.readTag() == INACTIVE_RETCODES.get(frame.cmdId()) << 3
+              && input.readUInt32() == 0,
+              "Inactive bootstrap response has invalid result or invented state: " + frame.cmdId());
+          if (frame.cmdId() == 8025 || frame.cmdId() == 8580) {
+            var name = frame.cmdId() == 8025 ? "TrainPartyGetDataScRsp" : "GridFightGetDataScRsp";
+            var profile = protocol.clientSchema().parse(name, frame.body());
+            if (frame.cmdId() == 8025) child(child(profile, "train_party_data"), "train_party_info");
+            else {
+              var system = child(profile, "system_info");
+              child(child(system, "permanent_info"), "talent");
+              var initial = child(system, "static_info");
+              child(initial, "exp"); child(initial, "season_talent");
+              require(!profile.hasField(profile.getDescriptorForType().findFieldByName("current_info")),
+                  "Inactive profile must not start a GridFight run");
+            }
+            requireEmptyProgress(profile);
+          } else require(input.readTag() == 0, "Invented bootstrap state");
+        }
         if (frame.cmdId() == 16) {
           var response = protocol.clientSchema().parse("PlayerGetTokenScRsp", frame.body());
           require(response.getField(response.getDescriptorForType().findFieldByName("retcode")).equals(0),
@@ -98,9 +135,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           require(heartbeat.getField(heartbeat.getDescriptorForType().findFieldByName("client_time_ms"))
               .equals(1234567890123L), "Heartbeat echo changed");
         }
-        if (received.containsAll(Set.of(4515, 62, 7617, protocol.clientCommand("GetPamSkinDataScRsp"),
-            protocol.clientCommand("GetGachaInfoScRsp"),
-            protocol.clientCommand("GetCurSceneInfoScRsp"), protocol.clientCommand("PlayerLoginFinishScRsp"))))
+        if (received.containsAll(EXPECTED_RESPONSES) && received.contains(62))
           completed.complete(true);
       }
     } catch (Exception error) { completed.completeExceptionally(error); }
@@ -113,6 +148,20 @@ public final class NativeLoginInitialProbe implements KcpListener {
 
   private static void require(boolean condition, String message) {
     if (!condition) throw new IllegalStateException(message);
+  }
+
+  private static DynamicMessage child(DynamicMessage parent, String name) {
+    var field = parent.getDescriptorForType().findFieldByName(name);
+    require(field != null && parent.hasField(field), "Missing native initial container " + name);
+    return (DynamicMessage) parent.getField(field);
+  }
+
+  private static void requireEmptyProgress(DynamicMessage message) {
+    for (var entry : message.getAllFields().entrySet()) {
+      require(!entry.getKey().isRepeated() && entry.getValue() instanceof DynamicMessage,
+          "Initial profile invents progress: " + entry.getKey().getName());
+      requireEmptyProgress((DynamicMessage) entry.getValue());
+    }
   }
 
   public static void main(String[] args) throws Exception {
@@ -130,13 +179,16 @@ public final class NativeLoginInitialProbe implements KcpListener {
       client.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(args[0])), config);
       probe.completed.get(20, TimeUnit.SECONDS);
       System.out.println(new Gson().toJson(Map.of("passed", true, "initialRequests", QUERIES.length,
+          "initialResponses", EXPECTED_RESPONSES.size(),
+          "requiredNestedProfiles", true,
           "playerUid", probe.playerUid,
           "nativeResponse4515", true, "sceneAfterUnsupportedQueries", true,
           "loginFinishAndHeartbeat", true, "clientGameplayVerified", false)));
       exit = 0;
     } catch (Exception error) {
       System.err.println("Initial query probe failed: " + error.getClass().getSimpleName()
-          + "; received commands " + probe.received);
+          + "; missing initial responses " + EXPECTED_RESPONSES.stream()
+              .filter(command -> !probe.received.contains(command)).sorted().toList());
     } finally { client.stop(); }
     System.exit(exit);
   }

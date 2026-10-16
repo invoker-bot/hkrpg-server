@@ -49,6 +49,13 @@
       "gap": "仅按已核对的4583/4515和原生retcode字段3返回未激活初始状态，避免登录初始化被断开；没有创建回归资格、活动配置、进度或奖励。完整回归活动和真实游戏UI继续待完成，见docs/login-initial-queries-4.6.md。"
     },
     {
+      "id": "login-bootstrap-profiles",
+      "name": "登录批次的未激活模块资料",
+      "status": "placeholder",
+      "evidence": "src/main/java/org/hkrpg/server/protocol/LoginBootstrap46.java",
+      "gap": "为实测初始化顺序中22个缺失响应提供明确编号与retcode的初始空资料；不创造付费权益、活动/挑战记录、视频/协商密钥或奖励领取，不代表相应玩法已实现。完整58请求/58响应的隔离KCP与客户端实测边界见docs/login-initial-queries-4.6.md。"
+    },
+    {
       "id": "persistence",
       "name": "MongoDB、内置 H2 持久化",
       "status": "integrated",
@@ -212,14 +219,16 @@
     {
       "id": "grid-fight",
       "name": "货币战争",
-      "status": "planned",
-      "reference": "March7thHoney-OpenSource/GameServer/Game/GridFight"
+      "status": "placeholder",
+      "reference": "March7thHoney-OpenSource/GameServer/Game/GridFight",
+      "gap": "仅有未激活初始查询响应，完整玩法、进度、结算和重连未实现；见docs/login-initial-queries-4.6.md。 "
     },
     {
       "id": "challenge-tierce",
       "name": "列车相关新挑战",
-      "status": "planned",
-      "reference": "pearl-sr/gameserver/src/services/challenge.zig"
+      "status": "placeholder",
+      "reference": "pearl-sr/gameserver/src/services/challenge.zig",
+      "gap": "仅有未激活初始查询响应，完整玩法、进度、结算和重连未实现；见docs/login-initial-queries-4.6.md。 "
     },
     {
       "id": "events",

@@ -81,7 +81,7 @@ class PlayerReturnInitial46Test {
   }
 
   @ParameterizedTest
-  @ValueSource(ints = {10010, 8110})
+  @ValueSource(ints = {65530, 65531})
   void anUnsupportedOptionalCommandDoesNotDiscardTheFollowingInitialSnapshot(int command) {
     var session = new Session();
     var input = Unpooled.wrappedBuffer(
