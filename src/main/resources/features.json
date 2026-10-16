@@ -24,7 +24,8 @@
       "id": "packet-framing",
       "name": "UDP/KCP 包边界校验",
       "status": "tested",
-      "evidence": "src/main/java/emu/lunarcore/server/packet/PacketCodec.java"
+      "evidence": "src/main/java/emu/lunarcore/server/packet/PacketCodec.java",
+      "gap": "初始化批次中无映射的命令仅记录编号并继续后续帧，不伪造成功响应；已映射消息的未知字段仍保留拒绝边界。实际05:59登录因4583触发主动断线的原因及服务端验证范围见docs/login-initial-queries-4.6.md；未处理模块仍不能计为玩法完成。"
     },
     {
       "id": "dispatch",
@@ -38,7 +39,14 @@
       "name": "游戏会话令牌校验",
       "status": "partial",
       "evidence": "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerGetTokenCsReq.java",
-      "gap": "原生ma-cn路径按本地RSA解密账号区分用户；旧版每游戏AppLogin兼容入口仍使用上游固定账号。密码沿用本服既有不校验约定；正式账号认证、完整SDK及真实客户端登录仍待验收。"
+      "gap": "登录初始化另修正帕姆默认皮肤25200的旧拼写错误：新记录使用原表252000，旧25200/0仅在查询响应归一化且不改写选择。协议断线、外观及卡池查询边界见docs/login-initial-queries-4.6.md。原生ma-cn路径按本地RSA解密账号区分用户；旧版每游戏AppLogin兼容入口仍使用上游固定账号。密码沿用本服既有不校验约定；正式账号认证、完整SDK及真实客户端登录仍待验收。"
+    },
+    {
+      "id": "player-return",
+      "name": "回归活动初始查询",
+      "status": "placeholder",
+      "evidence": "src/main/java/org/hkrpg/server/protocol/PlayerReturn46.java",
+      "gap": "仅按已核对的4583/4515和原生retcode字段3返回未激活初始状态，避免登录初始化被断开；没有创建回归资格、活动配置、进度或奖励。完整回归活动和真实游戏UI继续待完成，见docs/login-initial-queries-4.6.md。"
     },
     {
       "id": "persistence",
@@ -94,7 +102,8 @@
       "id": "gacha",
       "name": "抽卡、卡池、保底、卡池热加载",
       "status": "integrated",
-      "evidence": "src/main/java/emu/lunarcore/game/gacha"
+      "evidence": "src/main/java/emu/lunarcore/game/gacha",
+      "gap": "4.6登录初始化的卡池查询直接按实际Banners和玩家保底记录生成，分离五星展示、四星UP及角色池详情字段，避免旧featured/up_info触发断线；没有发奖、扣费或改写保底。完整抽取/自选/概率/客户端UI仍待4.6验收，见docs/login-initial-queries-4.6.md。"
     },
     {
       "id": "shop",

@@ -1,0 +1,143 @@
+"""隔离配置/H2下重建客户端初始化命令顺序；正文为合成值，不启动或操作游戏客户端。"""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import socket
+import subprocess
+import tempfile
+import time
+import urllib.error
+import urllib.request
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def free_port(kind=socket.SOCK_STREAM):
+    with socket.socket(type=kind) as stream:
+        stream.bind(('127.0.0.1', 0))
+        return stream.getsockname()[1]
+
+
+def run(jar, output):
+    jar, output = jar.resolve(strict=True), output.resolve()
+    if not output.is_relative_to(ROOT / 'build') or output.exists():
+        raise ValueError('报告必须是build内尚不存在的文件')
+    digest = sha(jar)
+    runs = ROOT / 'build/smoke'
+    runs.mkdir(parents=True, exist_ok=True)
+    directory = Path(tempfile.mkdtemp(prefix='login-initial-', dir=runs))
+    java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
+    javac = java.with_name('javac.exe')
+    helper = ROOT / 'scripts/fixtures/java/org/hkrpg/server/protocol/NativeLoginInitialProbe.java'
+    helpers = directory / 'helpers'
+    helpers.mkdir()
+    subprocess.run([str(javac), '-encoding', 'UTF-8', '-cp', str(jar), '-d', str(helpers), str(helper)],
+                   check=True, capture_output=True, text=True)
+    http, mongo, game = free_port(), free_port(), free_port(socket.SOCK_DGRAM)
+    while mongo == http:
+        mongo = free_port()
+    config = directory / 'config.json'
+    config.write_text(json.dumps({'protocol': {'wireVersion': '4.6.0'},
+        'resourceDir': str(ROOT / 'resources/4.6'),
+        'httpServer': {'bindAddress': '127.0.0.1', 'bindPort': http},
+        'gameServer': {'bindAddress': '127.0.0.1', 'bindPort': game},
+        'internalMongoServer': {'address': '127.0.0.1', 'port': mongo, 'filePath': './data/database.mv'}}),
+        encoding='utf-8')
+    config_sha = sha(config)
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    base = f'http://127.0.0.1:{http}'
+
+    def request(path, body=None):
+        data = json.dumps(body).encode() if body is not None else None
+        message = urllib.request.Request(base + path, data, {'Content-Type': 'application/json'})
+        with opener.open(message, timeout=5) as response:
+            return json.load(response)
+
+    flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+    summaries, identities, normal_stops = [], [], 0
+    try:
+        for iteration in range(2):
+            with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
+                process = subprocess.Popen([str(java), '-Xmx1536m', '-Dfile.encoding=UTF-8',
+                    '-Dio.netty.eventLoopThreads=2', '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback'),
+                    '-jar', str(jar), '--no-handbook'], cwd=directory, stdin=subprocess.PIPE,
+                    stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
+                try:
+                    deadline = time.monotonic() + 90
+                    while True:
+                        if process.poll() is not None:
+                            raise RuntimeError('隔离服务提前退出: ' + str(directory))
+                        try:
+                            if request('/health/ready')['ready']:
+                                break
+                        except (OSError, urllib.error.URLError):
+                            pass
+                        if time.monotonic() >= deadline:
+                            raise RuntimeError('隔离服务启动超时: ' + str(directory))
+                        time.sleep(.2)
+                    login = request('/hkrpg_cn/mdk/shield/api/login', {
+                        'account': 'synthetic-initial-query', 'password': 'first' if iteration == 0 else 'different'})
+                    assert login['retcode'] == 0
+                    account = login['data']['account']
+                    identities.append(account['uid'])
+                    combo = request('/hkrpg_cn/combo/granter/login/v2/login', {'data': json.dumps({
+                        'uid': account['uid'], 'token': account['token']})})
+                    assert combo['retcode'] == 0
+                    probe = subprocess.run([str(java), '-Dio.netty.eventLoopThreads=2',
+                        '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback'),
+                        '-cp', str(helpers) + os.pathsep + str(jar),
+                        'org.hkrpg.server.protocol.NativeLoginInitialProbe', str(game)],
+                        input=json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}),
+                        cwd=directory, capture_output=True, text=True, encoding='utf-8', timeout=40,
+                        creationflags=flags)
+                    (directory / f'probe-{iteration}.log').write_text(probe.stdout + probe.stderr, encoding='utf-8')
+                    if probe.returncode:
+                        raise RuntimeError('初始化连接检查失败，见 ' + str(directory / f'probe-{iteration}.log'))
+                    summaries.append(json.loads(next(line for line in probe.stdout.splitlines()
+                                                     if line.startswith('{"'))))
+                    assert summaries[-1]['passed']
+                finally:
+                    if process.poll() is None:
+                        try:
+                            process.stdin.write(b'stop\n')
+                            process.stdin.flush()
+                            process.wait(timeout=30)
+                            assert process.returncode == (1000 if os.name == 'nt' else 1000 % 256)
+                            normal_stops += 1
+                        finally:
+                            if process.poll() is None:
+                                process.terminate()
+                                process.wait(timeout=10)
+                            process.stdin.close()
+        assert normal_stops == 2 and identities[0] == identities[1]
+        assert summaries[0].pop('playerUid') == summaries[1].pop('playerUid')
+        assert sha(jar) == digest and sha(config) == config_sha
+        report = dict(passed=True, runtimeSHA256=digest, runtimeDirectory=str(directory),
+                      configSHA256=config_sha, normalStops=normal_stops,
+                      sameAccountWithDifferentPasswordAfterH2Restart=True, snapshots=summaries,
+                      samePlayerUidAfterH2Restart=True,
+                      credentialsOmitted=True, clientLoginVerified=False)
+    except Exception as error:
+        report = dict(passed=False, runtimeSHA256=digest, runtimeDirectory=str(directory),
+                      normalStops=normal_stops, error=str(error), clientLoginVerified=False)
+        raise
+    finally:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    return report
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--jar', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    result = run(args.jar, args.output)
+    print(json.dumps(dict(passed=result['passed'], normalStops=result['normalStops'],
+                          runtimeDirectory=result['runtimeDirectory'], clientLoginVerified=False)))

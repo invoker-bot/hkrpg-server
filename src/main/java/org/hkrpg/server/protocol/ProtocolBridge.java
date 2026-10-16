@@ -97,6 +97,10 @@ public final class ProtocolBridge {
           // CN4.6 named list field 3 and LineupAvatarData id/hp/type 7/14/3;
           // Honey fe00bdb PacketGetLineupAvatarDataScRsp populates AvatarDataList.
           Map.entry("GetLineupAvatarDataScRsp.lineup_avatar_data_list", "avatar_data_list"),
+          // Named CN4.6 initial cosmetic snapshots. Ownership lists retain their actual values.
+          Map.entry("GetPetDataScRsp.pet_id_list", "unlocked_pet_id"),
+          Map.entry("GetPamSkinDataScRsp.current_pam_skin_id", "cur_skin"),
+          Map.entry("GetPamSkinDataScRsp.unlocked_pam_skins", "unlock_skin_list"),
           Map.entry("SceneInfo.floor_saved_value_map", "floor_saved_data"),
           Map.entry("SceneEntityGroupInfo.group_property_map", "BANBECDCDHG"),
           // 4.6 CmdSceneType: group list 7, GroupRefreshInfo refresh_type 3, delete_entity 14.
@@ -196,8 +200,9 @@ public final class ProtocolBridge {
   public Packet inbound(int id, byte[] bytes) {
     if (legacy) return new Packet(id, bytes);
     String name = clientNames.get(id);
-    if (name == null || !coreCommands.containsKey(name))
-      throw new ProtocolException("Unsupported 4.6 inbound command: " + id);
+    if (name == null || !coreCommands.containsKey(name)
+        || clientSchema.find(clientTypeName(name)) == null)
+      throw new UnsupportedInboundCommandException(id);
     if (FIELDLESS_CORE_HANDLERS.contains(name)) {
       parseClient(name, bytes);
       return new Packet(coreCommands.get(name), new byte[0]);
@@ -209,6 +214,7 @@ public final class ProtocolBridge {
         parseClient(name, bytes);
         return new Packet(coreCommands.get(name), new byte[0]);
       }
+      throw new UnsupportedInboundCommandException(id);
     }
     return new Packet(coreCommands.get(name), translate(name, bytes, false));
   }
@@ -299,6 +305,11 @@ public final class ProtocolBridge {
     }
     for (var entry : input.getAllFields().entrySet()) {
       var sourceField = entry.getKey();
+      // The core explicitly writes zero even when no pet is selected. CN4.6 represents that
+      // absence by omitting its current-pet union, not by reusing the old scalar field number.
+      // A nonzero selection still requires a verified union mapping and remains rejected.
+      if (outbound && sourceField.getFullName().equals("legacy.GetPetDataScRsp.cur_pet_id")
+          && entry.getValue().equals(0)) continue;
       var field = mappedField(sourceField, target, outbound);
       if (field == null) {
         // Extra client telemetry is ignored only when it has no corresponding core field.

@@ -209,7 +209,7 @@ public class Player implements Tickable, Syncable {
         this.signature = "";
         this.phoneTheme = 221000;
         this.chatBubble = 220000;
-        this.currentPamSkinId = 25200;
+        this.currentPamSkinId = 252000;
         this.stamina = GameConstants.MAX_STAMINA;
         this.nextStaminaRecover = System.currentTimeMillis();
 

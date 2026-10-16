@@ -22,6 +22,7 @@ import us.hebi.quickbuf.ProtoMessage;
 import org.hkrpg.server.protocol.ActiveProtocol;
 import org.hkrpg.server.protocol.ProtocolBridge;
 import org.hkrpg.server.protocol.ProtocolException;
+import org.hkrpg.server.protocol.UnsupportedInboundCommandException;
 import org.hkrpg.server.protocol.VersionedPacketHandler;
 
 @Getter
@@ -126,7 +127,16 @@ public class GameSession {
                 var frame = PacketCodec.decodeNext(packet);
                 if (frame == null) return;
                 if (VersionedPacketHandler.handle(this, frame.cmdId(), frame.body())) continue;
-                var converted = protocol.inbound(frame.cmdId(), frame.body());
+                ProtocolBridge.Packet converted;
+                try {
+                    converted = protocol.inbound(frame.cmdId(), frame.body());
+                } catch (UnsupportedInboundCommandException unsupported) {
+                    // Match the core's unhandled-command behavior. An optional module query must
+                    // not terminate login or discard later frames in this same KCP message.
+                    // Never guess a response command, acknowledge success, or log its payload.
+                    LunarCore.getLogger().warn("Unhandled {} inbound command: {}", protocol.version(), frame.cmdId());
+                    continue;
+                }
                 int opcode = converted.cmdId();
                 byte[] data = converted.body();
 
