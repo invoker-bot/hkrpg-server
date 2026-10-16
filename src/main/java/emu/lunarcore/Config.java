@@ -208,6 +208,8 @@ public class Config {
     @Getter
     public static class LoginOptions {
         public String accountName = "player";
+        // Explicitly configured PKCS8 RSA key for the independent CN SDK test client.
+        public String cnPassportPrivateKeyPath = "";
     }
 
     @Getter

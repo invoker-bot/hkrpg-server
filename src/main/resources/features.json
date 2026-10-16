@@ -30,14 +30,15 @@
       "id": "dispatch",
       "name": "Dispatch、SDK 账号和令牌链路",
       "status": "integrated",
-      "evidence": "src/main/java/emu/lunarcore/server/http"
+      "evidence": "src/main/java/emu/lunarcore/server/http",
+      "gap": "原生国服账号SDK新增RSA账号解密、ma-cn密码入口、绑定UID的嵌套会话校验与1到4令牌交换；独立副本固定账号DLL数据补丁和验证边界见docs/cn-sdk-local-login-4.6.md。其他SDK配置、真实登录到游戏世界及4.6加密仍待验收。"
     },
     {
       "id": "authentication",
       "name": "游戏会话令牌校验",
       "status": "partial",
       "evidence": "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerGetTokenCsReq.java",
-      "gap": "新 SDK 登录仍沿用上游固定账号方式，密码未验证"
+      "gap": "原生ma-cn路径按本地RSA解密账号区分用户；旧版每游戏AppLogin兼容入口仍使用上游固定账号。密码沿用本服既有不校验约定；正式账号认证、完整SDK及真实客户端登录仍待验收。"
     },
     {
       "id": "persistence",

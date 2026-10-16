@@ -10,6 +10,7 @@ public final class CnSdkRoutes {
         app.post("/hkrpg_cn/mdk/shield/api/verify", new TokenLoginHandler());
         app.post("/hkrpg_cn/combo/granter/login/v2/login", new ComboTokenGranterHandler());
         app.post("/hkrpg_cn/account/ma-passport/api/appLoginByPassword", new AppLoginHandler());
+        CnPassportRoutes.register(app);
     }
     private CnSdkRoutes() {}
 }
