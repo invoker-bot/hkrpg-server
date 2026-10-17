@@ -30,7 +30,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
     4193, 8170, 9244, 9604, 8280, 2274, 2275, 9073, 9090, 8364, 9294, 9034, 6600, 9560,
     9641, 9726, 9328, 10290, 6734, 2621, 2534, 379, 6434, 6950, 3983, 1734, 2248, 2634,
     2613, 3134, 4334, 6970, 3758, 4234, 3805, 3968, 3958, 5134, 7159, 8960, 7562, 8150,
-    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222
+    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222, 834
   };
   // Frozen 4.6 command pairs; 4583/7172/8110/10010 require the independently audited raw names.
   private static final Set<Integer> EXPECTED_RESPONSES = Arrays.stream(new int[] {
@@ -40,17 +40,18 @@ public final class NativeLoginInitialProbe implements KcpListener {
     1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982, 10016, 9866, 9496, 1456, 63,
     4, 1249, 2725, 8376, 2947, 3375, 5523, 4439, 6625, 6936, 7206, 7599, 4173, 9266,
     6592, 2612, 341, 3915, 1725, 2214, 2625, 2623, 3125, 4225, 3875, 5125, 8196, 8906,
-    2202
+    2202, 825
   }).boxed().collect(Collectors.toUnmodifiableSet());
   private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
       Map.entry(5653, 15), Map.entry(91, 8), Map.entry(7173, 6), Map.entry(8025, 11),
       Map.entry(8116, 7), Map.entry(47, 8), Map.entry(9776, 4), Map.entry(8982, 14),
       Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
-      Map.entry(27, 5), Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
+      Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
       Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(6125, 9), Map.entry(8580, 9),
       Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2));
   // Additional supported snapshots observed in the second real initialization burst.
   private static final Map<Integer, String> FOLLOWUP_RESPONSES = Map.ofEntries(
+      Map.entry(825, "GetMailScRsp"),
       Map.entry(2725, "GetNpcMessageGroupScRsp"),
       Map.entry(8376, "GetRechargeGiftInfoScRsp"),
       Map.entry(2947, "GetFriendLoginInfoScRsp"),
@@ -111,6 +112,17 @@ public final class NativeLoginInitialProbe implements KcpListener {
         if (frame == null) throw new IllegalStateException("Truncated initial response");
         currentResponse = frame.cmdId();
         received.add(frame.cmdId());
+        if (frame.cmdId() == 27) {
+          // Independently matched ordinary opening-movie list; no fabricated activity keys.
+          var input = CodedInputStream.newInstance(frame.body());
+          require(input.readTag() == 40 && input.readUInt32() == 0
+              && input.readTag() == 122, "Missing opening video key list");
+          var key = CodedInputStream.newInstance(input.readByteArray());
+          require(key.readTag() == 48 && key.readUInt64() == 70_220_919L
+              && key.readTag() == 112 && key.readUInt32() == 8
+              && key.readTag() == 0 && input.readTag() == 0,
+              "Opening video ID or source key differs from the pinned native contract");
+        }
         if (INACTIVE_RETCODES.containsKey(frame.cmdId())) {
           var input = CodedInputStream.newInstance(frame.body());
           require(input.readTag() == INACTIVE_RETCODES.get(frame.cmdId()) << 3
@@ -154,7 +166,14 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var retcode = data.getDescriptorForType().findFieldByName("retcode");
           if (retcode != null) require(data.getField(retcode).equals(0),
               "Follow-up response rejected: " + frame.cmdId() + " retcode=" + data.getField(retcode));
-          if (followup.equals("GetJukeboxDataScRsp")) {
+          if (followup.equals("GetMailScRsp")) {
+            int total = (Integer) data.getField(data.getDescriptorForType().findFieldByName("total_num"));
+            int rows = data.getRepeatedFieldCount(data.getDescriptorForType().findFieldByName("mail_list"));
+            require(data.getField(data.getDescriptorForType().findFieldByName("start")).equals(0)
+                && rows <= 50 && total >= rows
+                && data.getField(data.getDescriptorForType().findFieldByName("is_end")).equals(total == rows),
+                "Mail paging must report the actual offset, rows and end marker");
+          } else if (followup.equals("GetJukeboxDataScRsp")) {
             var selected = child(child(data, "GFFOBALDBPM"), "JKNLCEEDAHJ");
             require((Integer) selected.getField(selected.getDescriptorForType().findFieldByName("id")) > 0,
                 "Missing actual selected music");
@@ -190,6 +209,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
                   .build().toByteArray();
             }
             if (command == 5697) body = new byte[] {106, 2, 1, 2};
+            // Native login also sends this count-only query after scene/login-finish requests.
+            if (command == 834) body = new byte[] {72, 50};
             if (command == 31) body = new byte[] {90, 4, 0, 0, 0, 0};
             if (command == 3805) {
               var type = protocol.clientSchema().message("TextJoinQueryCsReq");

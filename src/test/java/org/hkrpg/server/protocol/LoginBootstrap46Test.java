@@ -49,7 +49,9 @@ class LoginBootstrap46Test {
     var input = CodedInputStream.newInstance(packet.body());
     assertEquals(ret << 3, input.readTag());
     assertEquals(0, input.readUInt32());
-    if (request == 8034 || request == 8680 || request == 6029) {
+    if (request == 9) {
+      VideoVersionKeys46Test.openingVideoKey(packet.body());
+    } else if (request == 8034 || request == 8680 || request == 6029) {
       var type = switch (request) {
         case 8034 -> "TrainPartyGetDataScRsp";
         case 8680 -> "GridFightGetDataScRsp";

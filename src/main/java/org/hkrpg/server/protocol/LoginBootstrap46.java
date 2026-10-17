@@ -11,6 +11,7 @@ import java.io.IOException;
 /**
  * Inactive bootstrap profiles for modules without a supported progression/claim implementation.
  * These replies finish the initial network requests; they do not implement those game modes.
+ * The separately source-matched opening movie key is delegated to VideoVersionKeys46.
  */
 final class LoginBootstrap46 {
   static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
@@ -29,11 +30,15 @@ final class LoginBootstrap46 {
     };
     if (response == 0) return false;
     if (session.getState() != SessionState.ACTIVE) return true;
+    if (command == 9) {
+      VideoVersionKeys46.send(session, bytes);
+      return true;
+    }
     int retcodeField = switch (command) {
       case 5697 -> 15; case 31, 96 -> 8; case 7172 -> 6; case 8034 -> 11;
       case 8110 -> 7; case 9804 -> 4; case 8991 -> 14; case 10010 -> 12;
       case 9894 -> 13; case 9490, 78 -> 9;
-      case 9 -> 5; case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
+      case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
       case 5734 -> 4; case 5834 -> 10; case 6134, 8680 -> 9; case 8948 -> 13;
       case 6029 -> 2;
       default -> throw new AssertionError(command);
