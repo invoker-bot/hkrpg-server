@@ -208,7 +208,8 @@
       "id": "rogue-tourn",
       "name": "差分宇宙",
       "status": "placeholder",
-      "evidence": "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueTournQueryCsReq.java"
+      "evidence": "src/main/java/emu/lunarcore/server/packet/recv/HandlerRogueTournQueryCsReq.java",
+      "gap": "4.6仅补齐登录时必读的未开局分区容器，修复实际客户端空引用；进度、玩法与客户端进入世界仍未完成验收，见docs/login-client-initial-errors-4.6.md"
     },
     {
       "id": "rogue-magic",

@@ -101,6 +101,8 @@ public final class ProtocolBridge {
           Map.entry("GetPetDataScRsp.pet_id_list", "unlocked_pet_id"),
           Map.entry("GetPamSkinDataScRsp.current_pam_skin_id", "cur_skin"),
           Map.entry("GetPamSkinDataScRsp.unlocked_pam_skins", "unlock_skin_list"),
+          // Named CN4.6 GetFriendLoginInfoScRsp wire 3 retains the friend UID snapshot.
+          Map.entry("GetFriendLoginInfoScRsp.friend_uid_list", "_friend_uid_list"),
           Map.entry("SceneInfo.floor_saved_value_map", "floor_saved_data"),
           Map.entry("SceneEntityGroupInfo.group_property_map", "BANBECDCDHG"),
           // 4.6 CmdSceneType: group list 7, GroupRefreshInfo refresh_type 3, delete_entity 14.

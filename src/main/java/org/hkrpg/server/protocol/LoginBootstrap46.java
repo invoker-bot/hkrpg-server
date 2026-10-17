@@ -24,6 +24,7 @@ final class LoginBootstrap46 {
       case 9 -> 27; case 522 -> 549; case 2922 -> 2949; case 3405 -> 3475;
       case 5734 -> 5725; case 5834 -> 5825; case 6134 -> 6125; case 8680 -> 8580;
       case 8948 -> 8914; case 9504 -> 9548;
+      case 6029 -> 6017;
       default -> 0;
     };
     if (response == 0) return false;
@@ -34,6 +35,7 @@ final class LoginBootstrap46 {
       case 9894 -> 13; case 9490, 78 -> 9;
       case 9 -> 5; case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
       case 5734 -> 4; case 5834 -> 10; case 6134, 8680 -> 9; case 8948 -> 13;
+      case 6029 -> 2;
       default -> throw new AssertionError(command);
     };
     var body = new ByteArrayOutputStream();
@@ -41,6 +43,7 @@ final class LoginBootstrap46 {
     output.writeUInt32(retcodeField, validRequest(command, bytes) ? 0 : Retcode.REQ_PARA_INVALID.getVal());
     if (command == 8034) output.writeByteArray(7, trainPartyProfile(session));
     if (command == 8680) output.writeByteArray(11, gridFightProfile(session));
+    if (command == 6029) output.writeByteArray(1, rogueTournamentProfile(session));
     output.flush();
     // There is no active profile, purchase, level-claim ledger or negotiated security key in
     // these unimplemented modules. Do not fabricate records, secret_rsp, unlocks or entitlements.
@@ -53,13 +56,30 @@ final class LoginBootstrap46 {
     // The optional gameplay state remains absent; no area, passenger or funds are invented.
     var data = Gameplay46.builder(session, "TrainPartyData");
     Gameplay46.set(data, "train_party_info", Gameplay46.builder(session, "TrainPartyInfo").build());
+    // Native MKDPFLPICJB.MergeFrom maps wire 6 to +0x30, which Sync passes to
+    // _SetCurTurnID. The descriptor's historical name is misleading: zero has no
+    // TrainPartyProgress row and throws in _CheckIsTurnLocked. Row 1 is the initial turn.
+    Gameplay46.set(data, "unlock_area_num", 1);
+    return data.build().toByteArray();
+  }
+
+  private static byte[] rogueTournamentProfile(GameSession session) {
+    // Native e002bda/e002c26 reads the static profile's division child even when
+    // there is no active game. Its empty snapshot grants no division progress.
+    var data = Gameplay46.builder(session, "KIKEAJJLAMH");
+    Gameplay46.set(data, "DLDCFHHFMID", Gameplay46.builder(session, "JGMDJIENFFH").build());
     return data.build().toByteArray();
   }
 
   private static byte[] gridFightProfile(GameSession session) {
     // The native initial callback and both talent Sync methods require these containers.
-    // Keep all progress scalars at zero and omit current_info and optional handbook records.
+    // Keep progress at zero; catalog references must resolve even for an unplayed profile.
     var initial = Gameplay46.builder(session, "GridFightStaticGameInfo");
+    // Pinned 4.6 GridFightConstCommon season/sub-season and the level-zero division
+    // in GridFightDivisionInfo. These identify configuration, not completed content.
+    Gameplay46.set(initial, "season", 1);
+    Gameplay46.set(initial, "sub_season", 4);
+    Gameplay46.set(initial, "division_id", 1);
     Gameplay46.set(initial, "exp", Gameplay46.builder(session, "GridFightSeasonExpInfo").build());
     Gameplay46.set(initial, "season_talent", Gameplay46.builder(session, "GridFightTalentInfo").build());
     var permanent = Gameplay46.builder(session, "GridFightPermanentGameInfo");

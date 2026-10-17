@@ -41,7 +41,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
       Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
       Map.entry(27, 5), Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
       Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(6125, 9), Map.entry(8580, 9),
-      Map.entry(8914, 13), Map.entry(9548, 8));
+      Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2));
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final CompletableFuture<Boolean> completed = new CompletableFuture<>();
   private final Set<Integer> received = new HashSet<>();
@@ -75,15 +75,31 @@ public final class NativeLoginInitialProbe implements KcpListener {
           require(input.readTag() == INACTIVE_RETCODES.get(frame.cmdId()) << 3
               && input.readUInt32() == 0,
               "Inactive bootstrap response has invalid result or invented state: " + frame.cmdId());
-          if (frame.cmdId() == 8025 || frame.cmdId() == 8580) {
-            var name = frame.cmdId() == 8025 ? "TrainPartyGetDataScRsp" : "GridFightGetDataScRsp";
+          if (frame.cmdId() == 8025 || frame.cmdId() == 8580 || frame.cmdId() == 6017) {
+            var name = switch (frame.cmdId()) {
+              case 8025 -> "TrainPartyGetDataScRsp";
+              case 8580 -> "GridFightGetDataScRsp";
+              default -> "RogueTournQueryScRsp";
+            };
             var profile = protocol.clientSchema().parse(name, frame.body());
-            if (frame.cmdId() == 8025) child(child(profile, "train_party_data"), "train_party_info");
-            else {
+            if (frame.cmdId() == 8025) {
+              var data = child(profile, "train_party_data");
+              child(data, "train_party_info");
+              require(data.getField(data.getDescriptorForType().findFieldByNumber(6)).equals(1),
+                  "TrainParty initial turn must resolve to ProgressID 1");
+            } else if (frame.cmdId() == 6017) {
+              child(child(profile, "LFLCDNGALME"), "DLDCFHHFMID");
+              require(!profile.hasField(profile.getDescriptorForType().findFieldByNumber(5)),
+                  "Inactive profile must not start a tournament run");
+            } else {
               var system = child(profile, "system_info");
               child(child(system, "permanent_info"), "talent");
               var initial = child(system, "static_info");
               child(initial, "exp"); child(initial, "season_talent");
+              require(initial.getField(initial.getDescriptorForType().findFieldByName("division_id")).equals(1)
+                  && initial.getField(initial.getDescriptorForType().findFieldByName("season")).equals(1)
+                  && initial.getField(initial.getDescriptorForType().findFieldByName("sub_season")).equals(4),
+                  "GridFight initial configuration references do not resolve");
               require(!profile.hasField(profile.getDescriptorForType().findFieldByName("current_info")),
                   "Inactive profile must not start a GridFight run");
             }
@@ -165,9 +181,18 @@ public final class NativeLoginInitialProbe implements KcpListener {
 
   private static void requireEmptyProgress(DynamicMessage message) {
     for (var entry : message.getAllFields().entrySet()) {
-      require(!entry.getKey().isRepeated() && entry.getValue() instanceof DynamicMessage,
-          "Initial profile invents progress: " + entry.getKey().getName());
-      requireEmptyProgress((DynamicMessage) entry.getValue());
+      require(!entry.getKey().isRepeated(), "Initial profile invents unlocked records");
+      if (entry.getValue() instanceof DynamicMessage nested) requireEmptyProgress(nested);
+      else {
+        String key = message.getDescriptorForType().getName() + "." + entry.getKey().getName();
+        int expected = switch (key) {
+          case "TrainPartyData.unlock_area_num", "GridFightStaticGameInfo.season",
+              "GridFightStaticGameInfo.division_id" -> 1;
+          case "GridFightStaticGameInfo.sub_season" -> 4;
+          default -> throw new IllegalStateException("Initial profile invents progress: " + key);
+        };
+        require(entry.getValue().equals(expected), "Invalid initial configuration reference: " + key);
+      }
     }
   }
 

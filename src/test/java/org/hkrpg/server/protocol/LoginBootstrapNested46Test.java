@@ -16,8 +16,18 @@ class LoginBootstrapNested46Test {
   static void noInventedProgress(DynamicMessage value) {
     for (var entry : value.getAllFields().entrySet()) {
       assertFalse(entry.getKey().isRepeated(), "No unlocked records or claimed rewards in an inactive profile");
-      assertInstanceOf(DynamicMessage.class, entry.getValue(), "All scalar values must retain their unplayed defaults");
-      noInventedProgress((DynamicMessage) entry.getValue());
+      if (entry.getValue() instanceof DynamicMessage nested) noInventedProgress(nested);
+      else {
+        // The native callbacks require real configuration IDs, even with zero progress.
+        String key = value.getDescriptorForType().getName() + "." + entry.getKey().getName();
+        int expected = switch (key) {
+          case "TrainPartyData.unlock_area_num", "GridFightStaticGameInfo.season",
+              "GridFightStaticGameInfo.division_id" -> 1;
+          case "GridFightStaticGameInfo.sub_season" -> 4;
+          default -> fail("Unexpected scalar in an inactive profile: " + key);
+        };
+        assertEquals(expected, entry.getValue());
+      }
     }
   }
 

@@ -26,7 +26,8 @@ class LoginBootstrap46Test {
         Arguments.of(2922, 2949, 6), Arguments.of(3405, 3475, 8),
         Arguments.of(5734, 5725, 4), Arguments.of(5834, 5825, 10),
         Arguments.of(6134, 6125, 9), Arguments.of(8680, 8580, 9),
-        Arguments.of(8948, 8914, 13), Arguments.of(9504, 9548, 8));
+        Arguments.of(8948, 8914, 13), Arguments.of(9504, 9548, 8),
+        Arguments.of(6029, 6017, 2));
   }
 
   @ParameterizedTest @MethodSource("queries")
@@ -48,8 +49,12 @@ class LoginBootstrap46Test {
     var input = CodedInputStream.newInstance(packet.body());
     assertEquals(ret << 3, input.readTag());
     assertEquals(0, input.readUInt32());
-    if (request == 8034 || request == 8680) {
-      var type = request == 8034 ? "TrainPartyGetDataScRsp" : "GridFightGetDataScRsp";
+    if (request == 8034 || request == 8680 || request == 6029) {
+      var type = switch (request) {
+        case 8034 -> "TrainPartyGetDataScRsp";
+        case 8680 -> "GridFightGetDataScRsp";
+        default -> "RogueTournQueryScRsp";
+      };
       LoginBootstrapNested46Test.noInventedProgress(session.bridge.clientSchema().parse(type, packet.body()));
     } else assertEquals(0, input.readTag(),
         "Inactive initial profiles must not grant progression, purchases, keys or rewards");
@@ -67,7 +72,8 @@ class LoginBootstrap46Test {
       var input = CodedInputStream.newInstance(session.nativePackets.getFirst().body());
       assertEquals(ret << 3, input.readTag());
       assertEquals(Retcode.REQ_PARA_INVALID.getVal(), input.readUInt32());
-      if (request == 8034 || request == 8680) assertTrue(input.skipField(input.readTag()));
+      if (request == 8034 || request == 8680 || request == 6029)
+        assertTrue(input.skipField(input.readTag()));
       assertEquals(0, input.readTag());
     }
   }
@@ -89,7 +95,7 @@ class LoginBootstrap46Test {
         session.bridge.clientCommand("ContentPackageGetDataCsReq"), new byte[0], new byte[0]));
     try { session.onMessage(input); } finally { input.release(); }
     assertFalse(session.closed);
-    assertEquals(22, session.nativePackets.size());
+    assertEquals(23, session.nativePackets.size());
     assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));
     assertEquals(SessionState.ACTIVE, session.getState());
   }
