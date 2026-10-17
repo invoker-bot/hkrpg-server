@@ -196,10 +196,21 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved) {
     (void)reserved;
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(instance);
-        wchar_t executable[32768];
-        if (!GetModuleFileNameW(NULL, executable, 32768)) return TRUE;
+        /* MinGW's TLS keeps thread notifications active. Game worker threads can
+         * reserve only 64 KiB, including this function's unconditional prologue.
+         * Keep the long path buffer off every loader callback's stack. */
+        HANDLE heap = GetProcessHeap();
+        wchar_t *executable = HeapAlloc(heap, 0, 32768 * sizeof(wchar_t));
+        if (!executable) return TRUE;
+        DWORD length = GetModuleFileNameW(NULL, executable, 32768);
+        if (!length || length == 32768) {
+            HeapFree(heap, 0, executable);
+            return TRUE;
+        }
         wchar_t *name = wcsrchr(executable, L'\\');
-        if (_wcsicmp(name ? name + 1 : executable, L"StarRail.exe")) return TRUE;
+        int game = !_wcsicmp(name ? name + 1 : executable, L"StarRail.exe");
+        HeapFree(heap, 0, executable);
+        if (!game) return TRUE;
         HANDLE thread = CreateThread(NULL, 0, worker, NULL, 0, NULL);
         if (thread) CloseHandle(thread);
         else InterlockedExchange(&status, 3);

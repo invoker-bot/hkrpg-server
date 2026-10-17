@@ -67,6 +67,25 @@ class ClientConsoleTest(unittest.TestCase):
                 process.wait(timeout=5)
         self.assertEqual(0, process.returncode)
 
+    def test_game_style_small_stack_thread_notifications_do_not_overflow(self):
+        run = self.directory / 'small-stack-host'
+        run.mkdir()
+        shutil.copy2(self.host, run / 'StarRail.exe')
+        shutil.copy2(self.production['library'], run / 'version.dll')
+        process = subprocess.Popen([str(run / 'StarRail.exe')], cwd=run,
+            env=os.environ | {'HKRPG_CONSOLE_HOST_DIR': str(run), 'HKRPG_CONSOLE_HOST_SMALL_STACK': '1'})
+        # Once proof exists, the host can exit normally without another controller step.
+        (run / 'stop').touch()
+        try:
+            exit_code = process.wait(timeout=12)
+        except subprocess.TimeoutExpired:
+            process.terminate()
+            process.wait(timeout=5)
+            self.fail('Small-stack GUI host failed to exit')
+        self.assertEqual(0, exit_code, f'Native small-stack host exit: 0x{exit_code:08x}')
+        proof = json.loads((run / 'proof.json').read_text())
+        self.assertTrue(proof['ownsConsole'])
+
     def test_client_owns_console_and_real_time_logs_survive_rewrites(self):
         run = self.directory / '中文路径 with spaces'
         run.mkdir()

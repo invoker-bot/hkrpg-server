@@ -4,8 +4,14 @@
 #include <stdio.h>
 #include <wchar.h>
 
+static DWORD WINAPI small_stack_thread(void *argument) {
+    (void)argument;
+    return 71;
+}
+
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int show) {
     (void)instance; (void)previous; (void)command; (void)show;
+    SetErrorMode(SEM_NOGPFAULTERRORBOX | SEM_FAILCRITICALERRORS);
     wchar_t folder[32768], path[32768], system[32768];
     if (!GetEnvironmentVariableW(L"HKRPG_CONSOLE_HOST_DIR", folder, 32768)) return 10;
     GetSystemDirectoryW(system, 32768);
@@ -25,6 +31,15 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int sh
     DWORD clients[16], count = GetConsoleProcessList(clients, 16);
     int owns = 0;
     for (DWORD i = 0; i < count && i < 16; ++i) if (clients[i] == GetCurrentProcessId()) owns = 1;
+    wchar_t small[2];
+    if (GetEnvironmentVariableW(L"HKRPG_CONSOLE_HOST_SMALL_STACK", small, 2)) {
+        HANDLE thread = CreateThread(NULL, 65536, small_stack_thread, NULL,
+            STACK_SIZE_PARAM_IS_A_RESERVATION, NULL);
+        if (!thread || WaitForSingleObject(thread, 5000) != WAIT_OBJECT_0) return 15;
+        DWORD exit_code;
+        if (!GetExitCodeThread(thread, &exit_code) || exit_code != 71) return 16;
+        CloseHandle(thread);
+    }
     swprintf(path, 32768, L"%ls\\proof.json", folder);
     HANDLE proof = CreateFileW(path, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW, 0, NULL);
     char json[256];
