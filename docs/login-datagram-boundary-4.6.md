@@ -41,3 +41,5 @@
 新正常停服信号为 `build/login-service-recovery-20261017/stop.request`，由新控制进程转发stop；旧目录的信号不再控制现有进程。`preserved-files-proof.json` 确认10份运营JSON、五份客户端文件和原桌面快捷方式摘要保持，`listener-ownership.json` 与 `recovery-proof.json` 保留新进程归属和就绪结果。当前启动读取到玩家文档计数为1；账号登录后的完整资料恢复仍需真实客户端重试确认。
 
 23:41重新附加相同V6元数据观察器，48小时/20,000条上限与隐私边界不变，新记录为 `build/login-service-recovery-20261017/acceptance-transport.jsonl`。该文件从合成心跳完成后开始记录，不能将前述合成连接计为用户验收。客户端由用户操作，未查看游戏窗口；实际进图、原先初始化错误是否消失及3011014完整演出继续待验。
+
+23:42用户真实重试已到达恢复后的服务，但仍反馈Login error。当前回包最大1200字节，客户端确认仍停在服务端序号17；这次重试未证明MTU调整已经解决初始化失败。进一步的固定KCP读任务队列回归与修复见 [读队列唤醒](login-kcp-read-wakeup-4.6.md)。

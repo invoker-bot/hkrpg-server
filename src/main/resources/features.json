@@ -25,7 +25,7 @@
       "name": "UDP/KCP 包边界校验",
       "status": "tested",
       "evidence": "src/main/java/emu/lunarcore/server/packet/PacketCodec.java",
-      "gap": "初始化批次中无映射的命令仅记录编号并继续后续帧，不伪造成功响应；已映射消息的未知字段仍保留拒绝边界。实际05:59登录因4583触发主动断线的原因及服务端验证范围见docs/login-initial-queries-4.6.md；未处理模块仍不能计为玩法完成。"
+      "gap": "初始化批次中无映射的命令仅记录编号并继续后续帧，不伪造成功响应；已映射消息的未知字段仍保留拒绝边界。实际05:59登录因4583触发主动断线的原因及服务端验证范围见docs/login-initial-queries-4.6.md；未处理模块仍不能计为玩法完成。 收包唤醒追加：应用处理期间入队的尾部KCP报文在当前读任务释放后重新调度，4.2/4.6四项先失败回归覆盖无后续报文时的顺序处理和缓冲释放；未代表真实客户端已进图，见docs/login-kcp-read-wakeup-4.6.md。"
     },
     {
       "id": "dispatch",

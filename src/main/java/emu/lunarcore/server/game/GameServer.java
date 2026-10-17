@@ -184,6 +184,7 @@ public class GameServer extends KcpServer {
         channelConfig.setTimeoutMillis(settings.getKcpTimeout() * 1000);
         channelConfig.setUseConvChannel(true);
         channelConfig.setAckNoDelay(true);
+        channelConfig.setiMessageExecutorPool(new org.hkrpg.server.KcpReadWakeupPool(Runtime.getRuntime().availableProcessors()));
         return channelConfig;
     }
 
