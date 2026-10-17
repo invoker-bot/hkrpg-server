@@ -3,6 +3,7 @@ package org.hkrpg.server.protocol;
 import static org.hkrpg.server.protocol.Gameplay46.*;
 
 import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.DynamicMessage;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
 import emu.lunarcore.server.packet.send.PacketGetBasicInfoScRsp;
@@ -28,6 +29,13 @@ public final class Profile46 {
               session
                   .getProtocol()
                   .translate("GetBasicInfoScRsp", core.getData().toByteArray(), true));
+          // The native basic-info callback unconditionally reads field 11 and its field 13.
+          // Build verified 4.6 containers instead of translating the unrelated legacy unk1/unk2.
+          var settingsField = response.getDescriptorForType().findFieldByName("player_setting_info");
+          var settings = DynamicMessage.newBuilder(settingsField.getMessageType());
+          var nested = settings.getDescriptorForType().findFieldByName("OJPAODIHAJE");
+          settings.setField(nested, DynamicMessage.getDefaultInstance(nested.getMessageType()));
+          response.setField(settingsField, settings.build());
           set(response, "is_gender_set", player.hasCreatedCharacter());
         } else set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
         session.sendClientPacket("GetBasicInfoScRsp", response.build().toByteArray());

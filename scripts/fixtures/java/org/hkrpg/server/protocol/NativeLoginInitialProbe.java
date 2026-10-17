@@ -117,6 +117,13 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var input = CodedInputStream.newInstance(frame.body());
           require(input.readTag() == 24 && input.readUInt32() == 0 && input.readTag() == 0,
               "Inactive return profile is not native field3 success without activity data");
+        } else if (frame.cmdId() == 67) {
+          var basic = protocol.clientSchema().parse("GetBasicInfoScRsp", frame.body());
+          require(basic.getField(basic.getDescriptorForType().findFieldByName("retcode")).equals(0),
+              "Basic information rejected");
+          var settings = child(basic, "player_setting_info");
+          child(settings, "OJPAODIHAJE");
+          requireEmptyProgress(settings);
         } else if (frame.cmdId() == protocol.clientCommand("GetCurSceneInfoScRsp")) {
           var scene = protocol.clientSchema().parse("GetCurSceneInfoScRsp", frame.body());
           require(scene.getField(scene.getDescriptorForType().findFieldByName("retcode")).equals(0)
@@ -181,6 +188,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
       System.out.println(new Gson().toJson(Map.of("passed", true, "initialRequests", QUERIES.length,
           "initialResponses", EXPECTED_RESPONSES.size(),
           "requiredNestedProfiles", true,
+          "requiredBasicSettings", true,
           "playerUid", probe.playerUid,
           "nativeResponse4515", true, "sceneAfterUnsupportedQueries", true,
           "loginFinishAndHeartbeat", true, "clientGameplayVerified", false)));

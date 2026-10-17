@@ -116,4 +116,6 @@ KCP探针进一步要求这两份嵌套结构，并递归拒绝非默认标量/�
 
 首次现场HTTP辅助检查误用旧Gateserver消息读取4.6 GateServer，造成辅助断言失败；只修正build内解码夹具后通过，服务代码和最终JAR没有因此变更。失败记录与修正后的 `live-http-final.json` 分开保存。现场升级与保留文件检查见 `upgrade-preflight.json`、`running-process-proof.json`、`listener-ownership-final.json`、`post-upgrade-proof.json`。
 
-07:56另附只读数据报元数据观察器，最多60分钟/5000条，按本次attach重新开始计时，只记包长、命令、序号及令牌响应结果/字段存在性，不记录账号、密码、token、authkey、种子值或正文。源/JAR仍只在build中，不加入运行依赖。该现场包含临时pipeline观察器；全部隔离成功检查仍来自未附观察器的进程。新的 `acceptance-transport.jsonl` 可用于接下来用户实际重试，不能把安装记录或自动检查称为客户端进入世界。
+07:56另附只读数据报元数据观察器，最多60分钟/5000条，按本次attach重新开始计时，只记包长、命令、序号及令牌响应结果/字段存在性，不记录账号、密码、token、authkey、种子值或正文。源/JAR仍只在build中，不加入运行依赖。该现场包含临时pipeline观察器；全部隔离成功检查仍来自未附观察器的进程。新的 `acceptance-transport.jsonl` 仅在上述时限内记录，不能把安装记录或自动检查称为客户端进入世界。
+
+15:26用户重试仍失败时，上述观察器已经到期，没有留下该次详细收发记录。读取现有日志后定位到基础资料回调中的设置对象空引用；后续修复及独立验证见[基础资料设置容器](login-basic-settings-4.6.md)，不把前一轮58响应通过误称为实际客户端初始化成功。
