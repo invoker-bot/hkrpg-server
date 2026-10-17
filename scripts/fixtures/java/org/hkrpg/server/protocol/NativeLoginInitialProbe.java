@@ -85,6 +85,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean queriesSent;
   private int rejectedResponseCommand;
   private int playerUid;
+  private long initialStartedAt;
+  private long initialCompletedMillis;
 
   NativeLoginInitialProbe(String account, String token) { this.account = account; this.token = token; }
 
@@ -179,6 +181,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           send(connection, 34, new byte[0]);
         } else if (frame.cmdId() == 25 && !queriesSent) {
           queriesSent = true;
+          initialStartedAt = System.nanoTime();
           for (int command : QUERIES) {
             byte[] body = new byte[0];
             if (command == 334) {
@@ -233,8 +236,12 @@ public final class NativeLoginInitialProbe implements KcpListener {
           require(heartbeat.getField(heartbeat.getDescriptorForType().findFieldByName("client_time_ms"))
               .equals(1234567890123L), "Heartbeat echo changed");
         }
-        if (received.containsAll(EXPECTED_RESPONSES) && received.contains(62))
+        if (!completed.isDone() && received.containsAll(EXPECTED_RESPONSES) && received.contains(62)) {
+          initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
+          require(initialCompletedMillis <= 4000,
+              "Initial query burst exceeded 4000 ms: " + initialCompletedMillis);
           completed.complete(true);
+        }
       }
     } catch (Exception error) {
       if (rejectedResponseCommand == 0) rejectedResponseCommand = currentResponse;
@@ -304,6 +311,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("loginFinishAndHeartbeat", true),
           Map.entry("clientGameplayVerified", false),
           Map.entry("followupSnapshotContracts", FOLLOWUP_RESPONSES.size()),
+          Map.entry("initialBurstCompletionMillis", probe.initialCompletedMillis),
+          Map.entry("initialBurstDeadlineMillis", 4000),
           Map.entry("unsupportedQueryResponsesNotInvented", QUERIES.length - EXPECTED_RESPONSES.size()))));
       exit = 0;
     } catch (Exception error) {

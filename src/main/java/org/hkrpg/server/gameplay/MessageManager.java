@@ -84,6 +84,26 @@ public final class MessageManager {
   private boolean eligible(GameplayDefinitions.MessageSection s) {
     if (DailyMissionMessageRules.declared(s.ID()))
       return DailyMissionMessageRules.eligible(player, s);
+    return eligible(s, eligibleSubSections());
+  }
+
+  /** Rebuilt under the player lock; inactive/cancelled goals never need message graph predicates. */
+  private Set<Integer> eligibleSubSections() {
+    var sections = new HashSet<Integer>();
+    for (var c : GameplayDefinitions.subs.values()) {
+      if (!activeMain(c.getMainMissionID())
+          || player.getGameplay().getCancelledSubs().contains(c.getId())) continue;
+      var state = player.getMissionManager().sub(c.getId());
+      if (state == null || state.getPhase() != QuestState.Phase.DOING) continue;
+      if (matches(c)) sections.add(c.getParamInt1());
+      else if (matchesMultiple(c)) sections.addAll(Arrays.asList(c.getParamIntList()));
+    }
+    return sections;
+  }
+
+  private boolean eligible(GameplayDefinitions.MessageSection s, Set<Integer> activeSections) {
+    if (DailyMissionMessageRules.declared(s.ID()))
+      return DailyMissionMessageRules.eligible(player, s);
     var group = group(s.ID());
     if (group == null
         || group.ActivityModuleID() != 0
@@ -95,28 +115,19 @@ public final class MessageManager {
                             && java.time.Instant.now().getEpochSecond() < w.endTime()))
       return false;
     if (s.MainMissionLink() > 0 && activeMain(s.MainMissionLink())) return true;
-    return GameplayDefinitions.subs.values().stream()
-        .anyMatch(
-            c ->
-                ((c.getParamInt1() == s.ID() && matches(c))
-                        || (matchesMultiple(c)
-                            && Arrays.asList(c.getParamIntList()).contains(s.ID())))
-                    && activeMain(c.getMainMissionID())
-                    && !player.getGameplay().getCancelledSubs().contains(c.getId())
-                    && player.getMissionManager().sub(c.getId()) != null
-                    && player.getMissionManager().sub(c.getId()).getPhase()
-                        == QuestState.Phase.DOING);
+    return activeSections.contains(s.ID());
   }
 
   public boolean activateEligible() {
     synchronized (player) {
       var prepared = new LinkedHashMap<Integer, GameplayState.PhoneSection>();
       var current = states();
+      var activeSections = eligibleSubSections();
       for (var section :
           GameplayDefinitions.messageSections.values().stream()
               .sorted(Comparator.comparingInt(GameplayDefinitions.MessageSection::ID))
               .toList()) {
-        if (current.containsKey(section.ID()) || !eligible(section) || !validGraph(section))
+        if (current.containsKey(section.ID()) || !eligible(section, activeSections) || !validGraph(section))
           continue;
         var group = group(section.ID());
         if (group.MessageSectionIDList().stream()

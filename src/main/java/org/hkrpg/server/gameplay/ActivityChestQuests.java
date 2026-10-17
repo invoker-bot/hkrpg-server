@@ -27,21 +27,26 @@ public final class ActivityChestQuests {
   }
 
   public static List<QuestState> states(Player p) {
-    var out = new ArrayList<QuestState>();
-    for (int id :
-        List.of(
-            6029850,
-            6029851,
-            6029852,
-            6029853,
-            6029854,
-            6029855,
-            TimeRelayFlameSources.GOAL,
-            GoldenSpearSources.GOAL)) {
-      var q = state(p, id);
-      if (q != null) out.add(q);
+    synchronized (p) {
+      var rules = WorldChestRules.load();
+      var state = p.getGameplay().getWorldChests();
+      var out = new ArrayList<QuestState>();
+      if (!state.valid(rules, p) || rules.window(p, Instant.now()) == null) return out;
+      for (int id :
+          List.of(
+              6029850,
+              6029851,
+              6029852,
+              6029853,
+              6029854,
+              6029855,
+              TimeRelayFlameSources.GOAL,
+              GoldenSpearSources.GOAL)) {
+        var q = state.getQuests().get(id);
+        if (q != null) out.add(q);
+      }
+      return out;
     }
-    return out;
   }
 
   public static QuestState state(Player p, int id) {
