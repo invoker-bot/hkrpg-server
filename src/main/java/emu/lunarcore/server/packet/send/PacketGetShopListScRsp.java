@@ -15,13 +15,6 @@ public class PacketGetShopListScRsp extends BasePacket {
         var data = GetShopListScRsp.newInstance()
                 .setShopType(shopType);
 
-        Shop shopRecharge = Shop.newInstance()
-                .setShopId(988)
-                .setCityLevel(1)
-                .setEndTime(Integer.MAX_VALUE);
-
-        data.addShopList(shopRecharge);
-
         for (ShopExcel shopExcel : GameData.getShopExcelMap().values()) {
             if (shopExcel.getShopType() != shopType || shopExcel.getGoods().size() == 0) {
                 continue;

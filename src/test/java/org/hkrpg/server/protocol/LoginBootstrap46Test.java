@@ -51,6 +51,8 @@ class LoginBootstrap46Test {
     assertEquals(0, input.readUInt32());
     if (request == 9) {
       VideoVersionKeys46Test.openingVideoKey(packet.body());
+    } else if (request == 31) {
+      assertEquals(72_043_514_036_987_937L, VideoBootstrap46Test.modulus(packet.body()));
     } else if (request == 8034 || request == 8680 || request == 6029) {
       var type = switch (request) {
         case 8034 -> "TrainPartyGetDataScRsp";

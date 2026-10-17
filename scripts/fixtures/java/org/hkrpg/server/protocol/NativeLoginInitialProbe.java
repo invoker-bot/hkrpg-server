@@ -30,7 +30,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
     4193, 8170, 9244, 9604, 8280, 2274, 2275, 9073, 9090, 8364, 9294, 9034, 6600, 9560,
     9641, 9726, 9328, 10290, 6734, 2621, 2534, 379, 6434, 6950, 3983, 1734, 2248, 2634,
     2613, 3134, 4334, 6970, 3758, 4234, 3805, 3968, 3958, 5134, 7159, 8960, 7562, 8150,
-    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222, 834
+    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222, 834, 2160, 1534
   };
   // Frozen 4.6 command pairs; 4583/7172/8110/10010 require the independently audited raw names.
   private static final Set<Integer> EXPECTED_RESPONSES = Arrays.stream(new int[] {
@@ -40,10 +40,10 @@ public final class NativeLoginInitialProbe implements KcpListener {
     1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982, 10016, 9866, 9496, 1456, 63,
     4, 1249, 2725, 8376, 2947, 3375, 5523, 4439, 6625, 6936, 7206, 7599, 4173, 9266,
     6592, 2612, 341, 3915, 1725, 2214, 2625, 2623, 3125, 4225, 3875, 5125, 8196, 8906,
-    2202, 825
+    2202, 825, 2116, 1525
   }).boxed().collect(Collectors.toUnmodifiableSet());
   private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
-      Map.entry(5653, 15), Map.entry(91, 8), Map.entry(7173, 6), Map.entry(8025, 11),
+      Map.entry(5653, 15), Map.entry(7173, 6), Map.entry(8025, 11),
       Map.entry(8116, 7), Map.entry(47, 8), Map.entry(9776, 4), Map.entry(8982, 14),
       Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
       Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
@@ -52,6 +52,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   // Additional supported snapshots observed in the second real initialization burst.
   private static final Map<Integer, String> FOLLOWUP_RESPONSES = Map.ofEntries(
       Map.entry(825, "GetMailScRsp"),
+      Map.entry(2116, "GetFirstTalkNpcScRsp"),
+      Map.entry(1525, "GetShopListScRsp"),
       Map.entry(2725, "GetNpcMessageGroupScRsp"),
       Map.entry(8376, "GetRechargeGiftInfoScRsp"),
       Map.entry(2947, "GetFriendLoginInfoScRsp"),
@@ -88,6 +90,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private int playerUid;
   private long initialStartedAt;
   private long initialCompletedMillis;
+  private long openingVideoPrimaryKey;
+  private long videoModulus;
 
   NativeLoginInitialProbe(String account, String token) { this.account = account; this.token = token; }
 
@@ -112,13 +116,30 @@ public final class NativeLoginInitialProbe implements KcpListener {
         if (frame == null) throw new IllegalStateException("Truncated initial response");
         currentResponse = frame.cmdId();
         received.add(frame.cmdId());
+        if (frame.cmdId() == 91) {
+          // Native video bootstrap: type 2 decimal value initializes the movie divisor.
+          var input = CodedInputStream.newInstance(frame.body());
+          require(input.readTag() == 64 && input.readUInt32() == 0
+              && input.readTag() == 122, "Missing native video bootstrap");
+          var secret = CodedInputStream.newInstance(input.readByteArray());
+          require(secret.readTag() == 16 && secret.readUInt32() == 2
+              && secret.readTag() == 114, "Invalid video bootstrap type or key field");
+          var decimal = secret.readStringRequireUtf8();
+          require(decimal.equals("10120425825329403")
+              && secret.readTag() == 0 && input.readTag() == 0,
+              "Video bootstrap differs from the pinned source or invents unrelated keys");
+          videoModulus = Long.parseUnsignedLong(decimal) ^ 0xdc0748fcc0c8daL;
+          require(videoModulus == 72_043_514_036_987_937L, "Video divisor is invalid");
+        }
         if (frame.cmdId() == 27) {
           // Independently matched ordinary opening-movie list; no fabricated activity keys.
           var input = CodedInputStream.newInstance(frame.body());
           require(input.readTag() == 40 && input.readUInt32() == 0
               && input.readTag() == 122, "Missing opening video key list");
           var key = CodedInputStream.newInstance(input.readByteArray());
-          require(key.readTag() == 48 && key.readUInt64() == 70_220_919L
+          require(key.readTag() == 48, "Missing opening video primary key");
+          openingVideoPrimaryKey = key.readUInt64();
+          require(openingVideoPrimaryKey == 70_220_919L
               && key.readTag() == 112 && key.readUInt32() == 8
               && key.readTag() == 0 && input.readTag() == 0,
               "Opening video ID or source key differs from the pinned native contract");
@@ -166,7 +187,30 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var retcode = data.getDescriptorForType().findFieldByName("retcode");
           if (retcode != null) require(data.getField(retcode).equals(0),
               "Follow-up response rejected: " + frame.cmdId() + " retcode=" + data.getField(retcode));
-          if (followup.equals("GetMailScRsp")) {
+          if (followup.equals("GetShopListScRsp")) {
+            require(data.getField(data.getDescriptorForType().findFieldByName("shop_type")).equals(1),
+                "Shop query type was changed");
+            var rows = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByName("shop_list"));
+            require(!rows.isEmpty(), "The pinned type-1 shop catalog must not be empty");
+            var ids = new HashSet<Integer>();
+            for (var value : rows) {
+              var row = (DynamicMessage) value;
+              int id = (Integer) row.getField(row.getDescriptorForType().findFieldByName("shop_id"));
+              // The pinned 4.6 runtime catalog has no 988; configured alternatives have unit coverage.
+              require(id > 0 && id != 988 && ids.add(id)
+                  && row.getRepeatedFieldCount(row.getDescriptorForType().findFieldByName("goods_list")) > 0,
+                  "Shop snapshot invents a catalog entry, duplicate or empty shop");
+            }
+          } else if (followup.equals("GetFirstTalkNpcScRsp")) {
+            var rows = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByNumber(2));
+            require(rows.size() == 2, "NPC first-talk query did not resolve both requested IDs");
+            for (int i = 0; i < rows.size(); i++) {
+              var row = (DynamicMessage) rows.get(i);
+              require(row.getField(row.getDescriptorForType().findFieldByNumber(1)).equals(10001 + i)
+                  && row.getField(row.getDescriptorForType().findFieldByNumber(3)).equals(false),
+                  "NPC first-talk identity changed or completion was invented");
+            }
+          } else if (followup.equals("GetMailScRsp")) {
             int total = (Integer) data.getField(data.getDescriptorForType().findFieldByName("total_num"));
             int rows = data.getRepeatedFieldCount(data.getDescriptorForType().findFieldByName("mail_list"));
             require(data.getField(data.getDescriptorForType().findFieldByName("start")).equals(0)
@@ -211,6 +255,16 @@ public final class NativeLoginInitialProbe implements KcpListener {
             if (command == 5697) body = new byte[] {106, 2, 1, 2};
             // Native login also sends this count-only query after scene/login-finish requests.
             if (command == 834) body = new byte[] {72, 50};
+            if (command == 1534) {
+              var type = protocol.clientSchema().message("GetShopListCsReq");
+              body = DynamicMessage.newBuilder(type).setField(type.findFieldByName("shop_type"), 1)
+                  .build().toByteArray();
+            }
+            if (command == 2160) {
+              var type = protocol.clientSchema().message("GetFirstTalkNpcCsReq");
+              body = DynamicMessage.newBuilder(type).addRepeatedField(type.findFieldByNumber(4), 10001)
+                  .addRepeatedField(type.findFieldByNumber(4), 10002).build().toByteArray();
+            }
             if (command == 31) body = new byte[] {90, 4, 0, 0, 0, 0};
             if (command == 3805) {
               var type = protocol.clientSchema().message("TextJoinQueryCsReq");
@@ -258,6 +312,12 @@ public final class NativeLoginInitialProbe implements KcpListener {
               .equals(1234567890123L), "Heartbeat echo changed");
         }
         if (!completed.isDone() && received.containsAll(EXPECTED_RESPONSES) && received.contains(62)) {
+          long nameHash = 0;
+          for (char value : "CS_Chap00_Act210".toCharArray()) nameHash = nameHash * 11 + value;
+          require(videoModulus != 0
+              && Long.remainderUnsigned(nameHash + openingVideoPrimaryKey, videoModulus)
+                  == 26_743_203_654_499_374L,
+              "Opening movie cannot derive its native decoder value from both replies");
           initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
           require(initialCompletedMillis <= 4000,
               "Initial query burst exceeded 4000 ms: " + initialCompletedMillis);
@@ -326,6 +386,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("initialResponses", EXPECTED_RESPONSES.size()),
           Map.entry("requiredNestedProfiles", true),
           Map.entry("requiredBasicSettings", true),
+          Map.entry("openingVideoBootstrapContract", true),
           Map.entry("playerUid", probe.playerUid),
           Map.entry("nativeResponse4515", true),
           Map.entry("sceneAfterUnsupportedQueries", true),

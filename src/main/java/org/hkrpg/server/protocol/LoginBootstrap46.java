@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Inactive bootstrap profiles for modules without a supported progression/claim implementation.
  * These replies finish the initial network requests; they do not implement those game modes.
- * The separately source-matched opening movie key is delegated to VideoVersionKeys46.
+ * Source-matched movie bootstrap and keys use dedicated handlers.
  */
 final class LoginBootstrap46 {
   static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
@@ -34,8 +34,12 @@ final class LoginBootstrap46 {
       VideoVersionKeys46.send(session, bytes);
       return true;
     }
+    if (command == 31) {
+      VideoBootstrap46.send(session, bytes);
+      return true;
+    }
     int retcodeField = switch (command) {
-      case 5697 -> 15; case 31, 96 -> 8; case 7172 -> 6; case 8034 -> 11;
+      case 5697 -> 15; case 96 -> 8; case 7172 -> 6; case 8034 -> 11;
       case 8110 -> 7; case 9804 -> 4; case 8991 -> 14; case 10010 -> 12;
       case 9894 -> 13; case 9490, 78 -> 9;
       case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
@@ -97,7 +101,7 @@ final class LoginBootstrap46 {
 
   private static boolean validRequest(int command, byte[] bytes) {
     if (bytes.length == 0) return true;
-    if (bytes.length > 16_384 || command != 5697 && command != 31 && command != 8110) return false;
+    if (bytes.length > 16_384 || command != 5697 && command != 8110) return false;
     var input = CodedInputStream.newInstance(bytes);
     int selectors = 0;
     boolean singleSeen = false;
@@ -113,11 +117,6 @@ final class LoginBootstrap46 {
             if (++selectors > 128) return false;
           }
           input.popLimit(limit);
-        } else if (command == 31 && tag == 90 && !singleSeen) {
-          singleSeen = true;
-          // The security challenge is opaque and has no configured negotiation implementation.
-          // Validate its framing without retaining, logging, or echoing it as a key.
-          input.readBytes();
         } else if (command == 8110 && tag == 48 && !singleSeen) {
           singleSeen = true;
           input.readUInt32();

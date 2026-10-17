@@ -103,6 +103,9 @@ public final class ProtocolBridge {
           Map.entry("GetPamSkinDataScRsp.unlocked_pam_skins", "unlock_skin_list"),
           // Named CN4.6 GetFriendLoginInfoScRsp wire 3 retains the friend UID snapshot.
           Map.entry("GetFriendLoginInfoScRsp.friend_uid_list", "_friend_uid_list"),
+          // CN4.6 TalkModule consumes list field 2 and FirstNpcTalkInfo id 1 / is_meet 3.
+          // The core has no completed-meeting flag; preserve its default false, never invent one.
+          Map.entry("GetFirstTalkNpcScRsp.npc_talk_info_list", "npc_meet_status_list"),
           // Named CN4.6 field 14; Honey fe00bdb ChallengePeak snapshot uses CurrentPeakGroupId.
           Map.entry("GetChallengePeakDataScRsp.cur_challenge_peak_group_id", "current_peak_group_id"),
           // Honey fe00bdb JukeBox packet and pinned native MusicAlbumModule callback.

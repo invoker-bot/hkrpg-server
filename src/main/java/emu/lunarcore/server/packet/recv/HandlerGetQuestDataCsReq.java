@@ -11,7 +11,7 @@ public class HandlerGetQuestDataCsReq extends PacketHandler {
 
     @Override
     public void handle(GameSession session, byte[] data) throws Exception {
-        session.getPlayer().getQuestManager().refreshUnlocks();
+        // The snapshot refreshes unlocks to a fixed point after applying the daily rollover.
         session.send(new PacketGetQuestDataScRsp(session.getPlayer()));
     }
 }
