@@ -103,6 +103,11 @@ public final class ProtocolBridge {
           Map.entry("GetPamSkinDataScRsp.unlocked_pam_skins", "unlock_skin_list"),
           // Named CN4.6 GetFriendLoginInfoScRsp wire 3 retains the friend UID snapshot.
           Map.entry("GetFriendLoginInfoScRsp.friend_uid_list", "_friend_uid_list"),
+          // Named CN4.6 field 14; Honey fe00bdb ChallengePeak snapshot uses CurrentPeakGroupId.
+          Map.entry("GetChallengePeakDataScRsp.cur_challenge_peak_group_id", "current_peak_group_id"),
+          // Honey fe00bdb JukeBox packet and pinned native MusicAlbumModule callback.
+          Map.entry("GetJukeboxDataScRsp.music_list", "IOKAJIBHLMP"),
+          Map.entry("UnlockedMusic.unkbool", "BIMDKNLMICG"),
           Map.entry("SceneInfo.floor_saved_value_map", "floor_saved_data"),
           Map.entry("SceneEntityGroupInfo.group_property_map", "BANBECDCDHG"),
           // 4.6 CmdSceneType: group list 7, GroupRefreshInfo refresh_type 3, delete_entity 14.
@@ -312,6 +317,17 @@ public final class ProtocolBridge {
       // A nonzero selection still requires a verified union mapping and remains rejected.
       if (outbound && sourceField.getFullName().equals("legacy.GetPetDataScRsp.cur_pet_id")
           && entry.getValue().equals(0)) continue;
+      if (outbound && sourceField.getFullName().equals("legacy.GetJukeboxDataScRsp.playing_id")) {
+        // CN4.6 replaces the flat selection with response 12 -> player 1 -> music id 1.
+        // Native PlayingMusicItemsInfo.SyncServerData requires the player container.
+        var playerField = target.findFieldByName("GFFOBALDBPM");
+        var selectedField = playerField.getMessageType().findFieldByName("JKNLCEEDAHJ");
+        var selected = DynamicMessage.newBuilder(selectedField.getMessageType())
+            .setField(selectedField.getMessageType().findFieldByName("id"), entry.getValue());
+        result.setField(playerField, DynamicMessage.newBuilder(playerField.getMessageType())
+            .setField(selectedField, selected.build()).build());
+        continue;
+      }
       var field = mappedField(sourceField, target, outbound);
       if (field == null) {
         // Extra client telemetry is ignored only when it has no corresponding core field.

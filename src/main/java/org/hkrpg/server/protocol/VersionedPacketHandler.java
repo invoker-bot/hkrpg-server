@@ -17,6 +17,7 @@ public final class VersionedPacketHandler {
     if (!protocol.experimental()) return false;
     if (PlayerReturn46.handle(session, command, bytes)) return true;
     if (LoginBootstrap46.handle(session, command, bytes)) return true;
+    if (TextJoin46.handle(session, command, bytes)) return true;
     if (GachaInitial46.handle(session, command, bytes)) return true;
     if (CavalryActivity46.handle(session, command, bytes)) return true;
     if (TimelineActivity46.handle(session, command, bytes)) return true;

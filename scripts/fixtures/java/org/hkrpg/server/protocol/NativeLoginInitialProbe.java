@@ -22,18 +22,25 @@ import kcp.highway.*;
 public final class NativeLoginInitialProbe implements KcpListener {
   private static final int[] QUERIES = {
     80, 534, 522, 2834, 334, 6023, 4583, 2922, 717, 6134, 2660, 1234, 934, 1715,
-    5697, 5662, 1834, 5684, 6002, 7666, 5547, 6029, 7778, 158, 3405, 5734,
-    2705, 2742, 31, 6334, 9, 705, 7172, 8034, 8110, 160, 5834, 1455, 4848,
-    6842, 7625, 96, 1217, 8130, 1934, 8948, 8680, 4196, 9504, 9804, 8991,
-    10010, 9894, 9490, 1458, 87, 78, 1222
+    5697, 5662, 1834, 5684, 6002, 7666, 5547, 6029, 7778, 158, 3405, 5734, 2705, 2742,
+    31, 6334, 9, 705, 7172, 8034, 8110, 160, 5834, 1455, 4848, 6842, 7625, 96,
+    1217, 8130, 1934, 8948, 8680, 4196, 9504, 9804, 8991, 10010, 9894, 9490, 1458, 2734,
+    1284, 10065, 1015, 8370, 958, 4113, 2996, 3305, 5489, 3634, 7162, 4634, 4675, 4105,
+    4442, 7134, 9112, 4734, 4812, 6634, 6930, 7234, 7578, 4185, 7552, 7456, 7284, 4140,
+    4193, 8170, 9244, 9604, 8280, 2274, 2275, 9073, 9090, 8364, 9294, 9034, 6600, 9560,
+    9641, 9726, 9328, 10290, 6734, 2621, 2534, 379, 6434, 6950, 3983, 1734, 2248, 2634,
+    2613, 3134, 4334, 6970, 3758, 4234, 3805, 3968, 3958, 5134, 7159, 8960, 7562, 8150,
+    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222
   };
   // Frozen 4.6 command pairs; 4583/7172/8110/10010 require the independently audited raw names.
   private static final Set<Integer> EXPECTED_RESPONSES = Arrays.stream(new int[] {
     67, 525, 549, 2825, 325, 6033, 4515, 2949, 738, 6125, 2616, 1225, 925, 1742,
-    5653, 5614, 1825, 5640, 6003, 7661, 5435, 6017, 7704, 156, 3475, 5725,
-    2775, 2739, 91, 6325, 27, 775, 7173, 8025, 8116, 116, 5825, 1448, 4814,
-    6839, 7617, 47, 1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982,
-    10016, 9866, 9496, 1456, 63, 4, 1249
+    5653, 5614, 1825, 5640, 6003, 7661, 5435, 6017, 7704, 156, 3475, 5725, 2775, 2739,
+    91, 6325, 27, 775, 7173, 8025, 8116, 116, 5825, 1448, 4814, 6839, 7617, 47,
+    1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982, 10016, 9866, 9496, 1456, 63,
+    4, 1249, 2725, 8376, 2947, 3375, 5523, 4439, 6625, 6936, 7206, 7599, 4173, 9266,
+    6592, 2612, 341, 3915, 1725, 2214, 2625, 2623, 3125, 4225, 3875, 5125, 8196, 8906,
+    2202
   }).boxed().collect(Collectors.toUnmodifiableSet());
   private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
       Map.entry(5653, 15), Map.entry(91, 8), Map.entry(7173, 6), Map.entry(8025, 11),
@@ -42,11 +49,41 @@ public final class NativeLoginInitialProbe implements KcpListener {
       Map.entry(27, 5), Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
       Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(6125, 9), Map.entry(8580, 9),
       Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2));
+  // Additional supported snapshots observed in the second real initialization burst.
+  private static final Map<Integer, String> FOLLOWUP_RESPONSES = Map.ofEntries(
+      Map.entry(2725, "GetNpcMessageGroupScRsp"),
+      Map.entry(8376, "GetRechargeGiftInfoScRsp"),
+      Map.entry(2947, "GetFriendLoginInfoScRsp"),
+      Map.entry(3375, "GetDailyActiveInfoScRsp"),
+      Map.entry(5523, "GetChessRogueNousStoryInfoScRsp"),
+      Map.entry(4439, "GetTreasureDungeonActivityDataScRsp"),
+      Map.entry(6625, "GetStrongChallengeActivityDataScRsp"),
+      Map.entry(6936, "GetOfferingInfoScRsp"),
+      Map.entry(7206, "ClockParkGetInfoScRsp"),
+      Map.entry(7599, "MusicRhythmDataScRsp"),
+      Map.entry(4173, "DifficultyAdjustmentGetDataScRsp"),
+      Map.entry(9266, "GetDiceCombatSystemDataScRsp"),
+      Map.entry(6592, "GetLocalLegendDataScRsp"),
+      Map.entry(2612, "GetMaterialSubmitActivityDataScRsp"),
+      Map.entry(341, "GetPreAvatarActivityListScRsp"),
+      Map.entry(3915, "GetChatEmojiListScRsp"),
+      Map.entry(1725, "GetChallengeScRsp"),
+      Map.entry(2214, "GetRaidInfoScRsp"),
+      Map.entry(2625, "GetLoginActivityScRsp"),
+      Map.entry(2623, "GetTrialActivityDataScRsp"),
+      Map.entry(3125, "GetJukeboxDataScRsp"),
+      Map.entry(4225, "GetBoxingClubInfoScRsp"),
+      Map.entry(3875, "TextJoinQueryScRsp"),
+      Map.entry(5125, "GetPhoneDataScRsp"),
+      Map.entry(8196, "GetMarkChestScRsp"),
+      Map.entry(8906, "GetChallengePeakDataScRsp"),
+      Map.entry(2202, "GetAllSaveRaidScRsp"));
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final CompletableFuture<Boolean> completed = new CompletableFuture<>();
   private final Set<Integer> received = new HashSet<>();
   private final String account, token;
   private boolean queriesSent;
+  private int rejectedResponseCommand;
   private int playerUid;
 
   NativeLoginInitialProbe(String account, String token) { this.account = account; this.token = token; }
@@ -65,10 +102,12 @@ public final class NativeLoginInitialProbe implements KcpListener {
   }
 
   @Override public void handleReceive(ByteBuf bytes, Ukcp connection) {
+    int currentResponse = 0;
     try {
       while (bytes.isReadable()) {
         var frame = PacketCodec.decodeNext(bytes);
         if (frame == null) throw new IllegalStateException("Truncated initial response");
+        currentResponse = frame.cmdId();
         received.add(frame.cmdId());
         if (INACTIVE_RETCODES.containsKey(frame.cmdId())) {
           var input = CodedInputStream.newInstance(frame.body());
@@ -106,6 +145,31 @@ public final class NativeLoginInitialProbe implements KcpListener {
             requireEmptyProgress(profile);
           } else require(input.readTag() == 0, "Invented bootstrap state");
         }
+        var followup = FOLLOWUP_RESPONSES.get(frame.cmdId());
+        if (followup != null) {
+          var data = protocol.clientSchema().parse(followup, frame.body());
+          require(data.getUnknownFields().asMap().isEmpty(), "Unknown follow-up response fields: " + frame.cmdId());
+          var retcode = data.getDescriptorForType().findFieldByName("retcode");
+          if (retcode != null) require(data.getField(retcode).equals(0),
+              "Follow-up response rejected: " + frame.cmdId() + " retcode=" + data.getField(retcode));
+          if (followup.equals("GetJukeboxDataScRsp")) {
+            var selected = child(child(data, "GFFOBALDBPM"), "JKNLCEEDAHJ");
+            require((Integer) selected.getField(selected.getDescriptorForType().findFieldByName("id")) > 0,
+                "Missing actual selected music");
+            require(data.getRepeatedFieldCount(data.getDescriptorForType().findFieldByNumber(4)) > 0,
+                "Missing configured music catalog");
+          } else if (followup.equals("TextJoinQueryScRsp")) {
+            var rows = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByNumber(13));
+            require(rows.size() == 2, "Text join query did not echo both synthetic public catalog IDs");
+            for (int index = 0; index < 2; index++) {
+              var row = (DynamicMessage) rows.get(index);
+              require(row.getField(row.getDescriptorForType().findFieldByNumber(10)).equals(18 + index),
+                  "Text join key changed");
+              require((Integer) row.getField(row.getDescriptorForType().findFieldByNumber(15)) > 0,
+                  "Text join selected item missing");
+            }
+          }
+        }
         if (frame.cmdId() == 16) {
           var response = protocol.clientSchema().parse("PlayerGetTokenScRsp", frame.body());
           require(response.getField(response.getDescriptorForType().findFieldByName("retcode")).equals(0),
@@ -124,6 +188,17 @@ public final class NativeLoginInitialProbe implements KcpListener {
             }
             if (command == 5697) body = new byte[] {106, 2, 1, 2};
             if (command == 31) body = new byte[] {90, 4, 0, 0, 0, 0};
+            if (command == 3805) {
+              var type = protocol.clientSchema().message("TextJoinQueryCsReq");
+              var ids = type.findFieldByNumber(3);
+              body = DynamicMessage.newBuilder(type).addRepeatedField(ids, 18)
+                  .addRepeatedField(ids, 19).build().toByteArray();
+            } else if (command == 6930) {
+              var type = protocol.clientSchema().message("GetOfferingInfoCsReq");
+              var query = DynamicMessage.newBuilder(type);
+              for (int id = 1; id <= 15; id++) query.addRepeatedField(type.findFieldByName("offering_id_list"), id);
+              body = query.build().toByteArray();
+            }
             send(connection, command, body);
           }
           var type = protocol.clientSchema().message("PlayerHeartBeatCsReq");
@@ -161,7 +236,10 @@ public final class NativeLoginInitialProbe implements KcpListener {
         if (received.containsAll(EXPECTED_RESPONSES) && received.contains(62))
           completed.complete(true);
       }
-    } catch (Exception error) { completed.completeExceptionally(error); }
+    } catch (Exception error) {
+      if (rejectedResponseCommand == 0) rejectedResponseCommand = currentResponse;
+      completed.completeExceptionally(error);
+    }
   }
 
   @Override public void handleException(Throwable error, Ukcp connection) { completed.completeExceptionally(error); }
@@ -169,8 +247,12 @@ public final class NativeLoginInitialProbe implements KcpListener {
     if (!completed.isDone()) completed.completeExceptionally(new IllegalStateException("Closed during initial queries"));
   }
 
+  private static final class ContractViolation extends IllegalStateException {
+    ContractViolation(String message) { super(message); }
+  }
+
   private static void require(boolean condition, String message) {
-    if (!condition) throw new IllegalStateException(message);
+    if (!condition) throw new ContractViolation(message);
   }
 
   private static DynamicMessage child(DynamicMessage parent, String name) {
@@ -210,18 +292,29 @@ public final class NativeLoginInitialProbe implements KcpListener {
       client.init(config, probe);
       client.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(args[0])), config);
       probe.completed.get(20, TimeUnit.SECONDS);
-      System.out.println(new Gson().toJson(Map.of("passed", true, "initialRequests", QUERIES.length,
-          "initialResponses", EXPECTED_RESPONSES.size(),
-          "requiredNestedProfiles", true,
-          "requiredBasicSettings", true,
-          "playerUid", probe.playerUid,
-          "nativeResponse4515", true, "sceneAfterUnsupportedQueries", true,
-          "loginFinishAndHeartbeat", true, "clientGameplayVerified", false)));
+      System.out.println(new Gson().toJson(Map.ofEntries(
+          Map.entry("passed", true),
+          Map.entry("initialRequests", QUERIES.length),
+          Map.entry("initialResponses", EXPECTED_RESPONSES.size()),
+          Map.entry("requiredNestedProfiles", true),
+          Map.entry("requiredBasicSettings", true),
+          Map.entry("playerUid", probe.playerUid),
+          Map.entry("nativeResponse4515", true),
+          Map.entry("sceneAfterUnsupportedQueries", true),
+          Map.entry("loginFinishAndHeartbeat", true),
+          Map.entry("clientGameplayVerified", false),
+          Map.entry("followupSnapshotContracts", FOLLOWUP_RESPONSES.size()),
+          Map.entry("unsupportedQueryResponsesNotInvented", QUERIES.length - EXPECTED_RESPONSES.size()))));
       exit = 0;
     } catch (Exception error) {
       System.err.println("Initial query probe failed: " + error.getClass().getSimpleName()
           + "; missing initial responses " + EXPECTED_RESPONSES.stream()
               .filter(command -> !probe.received.contains(command)).sorted().toList());
+      System.err.println("Rejected response command: " + probe.rejectedResponseCommand);
+      Throwable detail = error;
+      while (detail.getCause() != null) detail = detail.getCause();
+      // Only our own constant contract labels and command numbers are safe to report.
+      if (detail instanceof ContractViolation) System.err.println("Contract: " + detail.getMessage());
     } finally { client.stop(); }
     System.exit(exit);
   }
