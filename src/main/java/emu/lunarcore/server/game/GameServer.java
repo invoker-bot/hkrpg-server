@@ -157,14 +157,7 @@ public class GameServer extends KcpServer {
 
     public void start() {
         // Setup config and init server
-        ChannelConfig channelConfig = new ChannelConfig();
-        channelConfig.nodelay(true, getServerConfig().getKcpInterval(), 2, true);
-        channelConfig.setMtu(1400);
-        channelConfig.setSndwnd(256);
-        channelConfig.setRcvwnd(256);
-        channelConfig.setTimeoutMillis(getServerConfig().getKcpTimeout() * 1000);
-        channelConfig.setUseConvChannel(true);
-        channelConfig.setAckNoDelay(true);
+        ChannelConfig channelConfig = createChannelConfig(getServerConfig(), org.hkrpg.server.protocol.ActiveProtocol.get());
 
         this.init(new GameServerKcpListener(this), channelConfig, address);
         org.hkrpg.server.TransportStartup.awaitBound(this, address, java.time.Duration.ofSeconds(10));
@@ -179,6 +172,19 @@ public class GameServer extends KcpServer {
 
         // Done
         LunarCore.getLogger().info("Game Server started on " + address.getPort());
+    }
+
+    static ChannelConfig createChannelConfig(GameServerConfig settings, org.hkrpg.server.protocol.ProtocolBridge protocol) {
+        ChannelConfig channelConfig = new ChannelConfig();
+        channelConfig.nodelay(true, settings.getKcpInterval(), 2, true);
+        // Match the observed 4.6 datagram envelope, including its eight-byte conversation header.
+        channelConfig.setMtu(protocol.experimental() ? 1200 : 1400);
+        channelConfig.setSndwnd(256);
+        channelConfig.setRcvwnd(256);
+        channelConfig.setTimeoutMillis(settings.getKcpTimeout() * 1000);
+        channelConfig.setUseConvChannel(true);
+        channelConfig.setAckNoDelay(true);
+        return channelConfig;
     }
 
     private void onTick() {

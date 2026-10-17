@@ -7,11 +7,66 @@ from pathlib import Path
 import socket
 import subprocess
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class DatagramBoundary:
+    """只在隔离合成连接中转发UDP；丢弃超界数据报，仅报告尺寸与计数。"""
+    def __init__(self, server_port, limit):
+        self.server = ('127.0.0.1', server_port)
+        self.limit = limit
+        self.socket = socket.socket(type=socket.SOCK_DGRAM)
+        self.socket.bind(('127.0.0.1', 0))
+        self.socket.settimeout(.2)
+        self.port = self.socket.getsockname()[1]
+        self.stopped = threading.Event()
+        self.largest_server = self.largest_client = self.dropped = 0
+        self.error = None
+        self.thread = threading.Thread(target=self.forward, daemon=True)
+
+    def forward(self):
+        client = None
+        while not self.stopped.is_set():
+            try:
+                data, peer = self.socket.recvfrom(65535)
+                if peer == self.server:
+                    self.largest_server = max(self.largest_server, len(data))
+                    if len(data) > self.limit:
+                        self.dropped += 1
+                        continue
+                    if client is not None:
+                        self.socket.sendto(data, client)
+                else:
+                    client = peer
+                    self.largest_client = max(self.largest_client, len(data))
+                    self.socket.sendto(data, self.server)
+            except socket.timeout:
+                continue
+            except OSError as error:
+                if not self.stopped.is_set():
+                    self.error = type(error).__name__
+                break
+
+    def __enter__(self):
+        self.thread.start()
+        return self
+
+    def __exit__(self, *_):
+        self.stopped.set()
+        self.socket.close()
+        self.thread.join(2)
+        if self.thread.is_alive() or self.error:
+            raise RuntimeError('隔离UDP转发未正常退出: ' + str(self.error))
+
+    def summary(self):
+        return dict(receiveDatagramLimit=self.limit, largestServerDatagram=self.largest_server,
+                    largestClientDatagram=self.largest_client, oversizedServerDatagrams=self.dropped,
+                    payloadsRecorded=False)
 
 
 def sha(path):
@@ -60,7 +115,7 @@ def run(jar, output):
             return json.load(response)
 
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    summaries, identities, normal_stops = [], [], 0
+    summaries, identities, normal_stops, boundaries = [], [], 0, []
     try:
         for iteration in range(2):
             with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
@@ -89,16 +144,20 @@ def run(jar, output):
                     combo = request('/hkrpg_cn/combo/granter/login/v2/login', {'data': json.dumps({
                         'uid': account['uid'], 'token': account['token']})})
                     assert combo['retcode'] == 0
-                    probe = subprocess.run([str(java), '-Dio.netty.eventLoopThreads=2',
-                        '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback'),
-                        '-cp', str(helpers) + os.pathsep + str(jar),
-                        'org.hkrpg.server.protocol.NativeLoginInitialProbe', str(game)],
-                        input=json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}),
-                        cwd=directory, capture_output=True, text=True, encoding='utf-8', timeout=40,
-                        creationflags=flags)
+                    with DatagramBoundary(game, 1200) as boundary:
+                        probe = subprocess.run([str(java), '-Dio.netty.eventLoopThreads=2',
+                            '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback'),
+                            '-cp', str(helpers) + os.pathsep + str(jar),
+                            'org.hkrpg.server.protocol.NativeLoginInitialProbe', str(boundary.port)],
+                            input=json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}),
+                            cwd=directory, capture_output=True, text=True, encoding='utf-8', timeout=40,
+                            creationflags=flags)
+                    boundaries.append(boundary.summary())
                     (directory / f'probe-{iteration}.log').write_text(probe.stdout + probe.stderr, encoding='utf-8')
                     if probe.returncode:
                         raise RuntimeError('初始化连接检查失败，见 ' + str(directory / f'probe-{iteration}.log'))
+                    assert boundary.dropped == 0 and boundary.largest_server <= 1200
+                    assert boundary.largest_client <= 1200
                     summaries.append(json.loads(next(line for line in probe.stdout.splitlines()
                                                      if line.startswith('{"'))))
                     assert summaries[-1]['passed']
@@ -122,10 +181,12 @@ def run(jar, output):
                       configSHA256=config_sha, normalStops=normal_stops,
                       sameAccountWithDifferentPasswordAfterH2Restart=True, snapshots=summaries,
                       samePlayerUidAfterH2Restart=True,
+                      transportBoundaries=boundaries,
                       credentialsOmitted=True, clientLoginVerified=False)
     except Exception as error:
         report = dict(passed=False, runtimeSHA256=digest, runtimeDirectory=str(directory),
-                      normalStops=normal_stops, error=str(error), clientLoginVerified=False)
+                      normalStops=normal_stops, transportBoundaries=boundaries,
+                      error=str(error), clientLoginVerified=False)
         raise
     finally:
         output.parent.mkdir(parents=True, exist_ok=True)

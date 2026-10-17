@@ -179,7 +179,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
     try {
       var config = new ChannelConfig();
       config.nodelay(true, 40, 2, true);
-      config.setMtu(1400); config.setSndwnd(256); config.setRcvwnd(256);
+      config.setMtu(1200); config.setSndwnd(256); config.setRcvwnd(256);
       config.setUseConvChannel(true); config.setConv(1234567); config.setAckNoDelay(true);
       config.setTimeoutMillis(15_000);
       client.init(config, probe);
