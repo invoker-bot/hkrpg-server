@@ -1,3 +1,5 @@
+4.6 当前场景角色传送已补入实际位置、地图层与版本状态；验证及客户端待验收边界见[场景传送说明](docs/scene-entity-teleport-4.6.md)。
+
 本地服务已增加 Docker Compose 常驻部署、账号数据持久化和客户端补丁启动检查，使用说明与验证边界见[本地部署说明](docs/docker-compose-local.md)。
 
 4.6 加载阶段继续修复 NPC 初遇查询断连、影片初始化除零与虚构商店目录；影片播放、稳定进图和完整演出仍待客户端验收，见[本轮加载修复](docs/login-loading-first-talk-4.6.md)。

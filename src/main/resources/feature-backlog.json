@@ -15270,7 +15270,7 @@
     },
     {
       "request": "SceneEntityTeleportCsReq",
-      "status": "source-present-review-required",
+      "status": "partial",
       "sources": [
         {
           "project": "March7thHoney-OpenSource",
@@ -15322,11 +15322,17 @@
         }
       ],
       "acceptance": {
-        "serverBehavior": false,
-        "resourceVersion": false,
+        "serverBehavior": true,
+        "resourceVersion": true,
         "client46": false
       },
-      "javaEvidence": "src/main/java/emu/lunarcore/server/packet/recv/HandlerSceneEntityTeleportCsReq.java"
+      "javaEvidence": "src/main/java/org/hkrpg/server/protocol/SceneEntityTeleport46.java",
+      "testEvidence": [
+        "src/test/java/org/hkrpg/server/protocol/SceneEntityTeleport46Test.java",
+        "scripts/smoke-scene-teleport.py",
+        "docs/scene-entity-teleport-4.6.md"
+      ],
+      "gap": "1491/1487当前场景自有角色的位置、朝向、资源层与位置版本已接入，旧场景/未知变体拒绝；1439只确认权威版本，正常保存与重连边界见专项说明。特殊移动层、未知bool=true和真实客户端完整流程仍待完成或验收。"
     },
     {
       "request": "SceneReviveAfterRebattleCsReq",
@@ -17380,7 +17386,8 @@
         "serverBehavior": false,
         "resourceVersion": false,
         "client46": false
-      }
+      },
+      "javaEvidence": "src/main/java/org/hkrpg/server/protocol/Gameplay46.java"
     },
     {
       "request": "StartAetherDivideChallengeBattleCsReq",

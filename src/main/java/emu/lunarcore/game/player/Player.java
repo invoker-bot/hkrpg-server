@@ -115,6 +115,7 @@ public class Player implements Tickable, Syncable {
     private transient Scene scene;
     private Position pos;
     private Position rot;
+    @Getter @Setter private org.hkrpg.server.gameplay.SceneTeleportLocation sceneTeleportLocation;
     private int planeId;
     private int floorId;
     private int entryId;
@@ -954,6 +955,8 @@ public class Player implements Tickable, Syncable {
         private final int planeId, floorId, entryId, worldId, sceneEntryId;
         private final Scene scene;
         private final Position pos, rot;
+        private final org.hkrpg.server.gameplay.SceneTeleportLocation teleportLocation;
+        private final int teleportMapLayer;
 
         private SceneLocationSnapshot(Player owner) {
             this.owner = owner;
@@ -965,6 +968,8 @@ public class Player implements Tickable, Syncable {
             this.sceneEntryId = scene == null ? 0 : scene.getEntryId();
             this.pos = new Position(owner.getPos());
             this.rot = new Position(owner.getRot());
+            this.teleportLocation = owner.sceneTeleportLocation;
+            this.teleportMapLayer = scene == null ? 0 : scene.getTeleportMapLayer();
         }
     }
 
@@ -982,6 +987,8 @@ public class Player implements Tickable, Syncable {
         this.scene = snapshot.scene;
         this.getPos().set(snapshot.pos);
         this.getRot().set(snapshot.rot);
+        this.sceneTeleportLocation = snapshot.teleportLocation;
+        if (this.scene != null) this.scene.setTeleportMapLayer(snapshot.teleportMapLayer);
         if (this.scene != null) this.scene.setEntryId(snapshot.sceneEntryId);
     }
 
@@ -1046,6 +1053,11 @@ public class Player implements Tickable, Syncable {
         }
 
         // Set player position
+        if (nextScene == this.scene && (entryId != this.entryId
+                || !this.getPos().equals(pos) || !this.getRot().equals(rot))) {
+            // A different anchor has no layer report yet; retain the legacy initial layer.
+            nextScene.setTeleportMapLayer(1);
+        }
         this.getPos().set(pos);
         this.getRot().set(rot);
 
@@ -1060,6 +1072,7 @@ public class Player implements Tickable, Syncable {
         // Set player scene
         this.scene = nextScene;
         this.scene.setEntryId(entryId);
+        this.scene.getTeleportMapLayer(); // Bind a restored layer before the first ordinary movement.
         getMissionTrialManager().reconcile();
         getStoryLineManager().onSceneLoaded();
         this.getMissionManager().onFloorChanged(outgoingFloorObjectives);
@@ -1246,6 +1259,7 @@ public class Player implements Tickable, Syncable {
     // Database
 
     public void save() {
+        org.hkrpg.server.gameplay.SceneTeleportLocation.record(this);
         getTrialManager().recordState();
         getStoryLineManager().recordLocation();
         new org.hkrpg.server.gameplay.MissionRaid(this).recordLocation();

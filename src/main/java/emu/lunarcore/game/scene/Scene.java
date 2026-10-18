@@ -47,6 +47,9 @@ public class Scene implements Tickable {
     private final int storyLineId;
     private int entryId;
     private int worldId;
+    private int clientPosVersion;
+    private int acknowledgedClientPosVersion;
+    private int teleportMapLayer;
     @Setter private int leaveEntryId;
 
     private int lastEntityId = 0;
@@ -142,6 +145,28 @@ public class Scene implements Tickable {
     public PlaneType getPlaneType() {
         return this.getExcel().getPlaneType();
     }
+
+    /** Local revision policy: one increment per accepted native teleport, never wrap silently. */
+    public void advanceClientPosVersion() {
+        if (clientPosVersion == -1) throw new IllegalStateException("Scene position revision exhausted");
+        clientPosVersion++;
+    }
+
+    public void acknowledgeClientPosVersion(int version) {
+        if (version == clientPosVersion) acknowledgedClientPosVersion = version;
+    }
+
+    public int getTeleportMapLayer() {
+        if (teleportMapLayer > 0) return teleportMapLayer;
+        var saved = getPlayer().getSceneTeleportLocation();
+        int restored = saved == null ? 1 : saved.layerFor(this);
+        if (entryId > 0 && entryId == getPlayer().getEntryId()
+                && planeId == getPlayer().getPlaneId() && floorId == getPlayer().getFloorId())
+            teleportMapLayer = restored;
+        return restored;
+    }
+
+    public void setTeleportMapLayer(int layer) { teleportMapLayer = layer; }
 
     /** Resolve an actual current scene actor, including independent trial parties. */
     public GameAvatar getAvatarByEntityId(int entityId) {

@@ -47,6 +47,7 @@ public final class VersionedPacketHandler {
     if (Offering46.handle(session, command, bytes)) return true;
     if (FirstTalk46.handle(session, command, bytes)) return true;
     if (SceneInteraction46.handle(session, command, bytes)) return true;
+    if (SceneEntityTeleport46.handle(session, command, bytes)) return true;
     if (SceneMap46.handle(session, command, bytes)) return true;
     if (Picture46.handle(session, command, bytes)) return true;
     if (Expedition46.handle(session, command, bytes)) return true;

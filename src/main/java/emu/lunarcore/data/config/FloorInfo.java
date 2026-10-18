@@ -22,6 +22,7 @@ public class FloorInfo {
     private int FloorID;
     private int StartGroupIndex;
     private int StartAnchorID;
+    private int[] LayerToAreaMask;
 
     private List<FloorDimensionInfo> DimensionList;
     private Map<Integer, GroupInstanceCommonInfo> GroupInstanceCommonMap;

@@ -1905,6 +1905,12 @@ def main():
     review_daily_selected_item_native(requests)
     review_match_three_position_save_failure(requests)
     review_daily_recover_delivery(requests)
+    teleport = requests["SceneEntityTeleportCsReq"]
+    teleport.update(status="partial", javaEvidence="src/main/java/org/hkrpg/server/protocol/SceneEntityTeleport46.java",
+        acceptance={"serverBehavior": True, "resourceVersion": True, "client46": False},
+        testEvidence=["src/test/java/org/hkrpg/server/protocol/SceneEntityTeleport46Test.java",
+                      "scripts/smoke-scene-teleport.py", "docs/scene-entity-teleport-4.6.md"],
+        gap="1491/1487当前场景自有角色的位置、朝向、资源层与位置版本已接入，旧场景/未知变体拒绝；1439只确认权威版本，正常保存与重连边界见专项说明。特殊移动层、未知bool=true和真实客户端完整流程仍待完成或验收。")
     catalog = {"designTarget": "4.6.0", "referenceSnapshot": lock["snapshotDate"],
         "note": "名称合并仅提供逐项移植入口；未审查的源码入口不计为已实现玩法，客户端验收均待完成。",
         "entries": [requests[name] for name in sorted(requests)]}

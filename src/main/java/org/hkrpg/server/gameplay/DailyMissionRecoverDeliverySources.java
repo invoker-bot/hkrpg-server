@@ -68,10 +68,11 @@ final class DailyMissionRecoverDeliverySources {
       Map.entry("Config/LevelOutput/SharedRuntimeGroup/Groups_P20123_F20123001/LevelGroup_P20123_F20123001_G75.json","9ce447438a25790e85e531d8ff711dfbaa887c9f2878c9b59639ba0ce4c8d119"),
       Map.entry("Config/LevelOutput/SharedRuntimeGroup/Groups_P20123_F20123001/LevelGroup_P20123_F20123001_G76.json","78971b5f062150fe9985a85290ebc9cc1920129f086251ea717538611b974fdd"));
   static final Map<String,String> FLOORS=Map.ofEntries(
-      Map.entry("Config/LevelOutput/RuntimeFloor/P10102_F10102001.json","8cca99682ef460f0a6f21ce429fb3933d9a916f7d15ecb16f852be743388b1b8"),
-      Map.entry("Config/LevelOutput/RuntimeFloor/P10102_F10102003.json","787cf0b8ee39ff92f4b4840e4ca8f606981445c91b70c688455bccc03c455d7c"),
-      Map.entry("Config/LevelOutput/RuntimeFloor/P20121_F20121001.json","2bdb858ae196ea1467b7d35325b9e4428ddba0f4acfc271d86c552c8f653b4c5"),
-      Map.entry("Config/LevelOutput/RuntimeFloor/P20123_F20123001.json","c61efe46c811640d825f66df0e8bd85008fb20ea46bbc7c3cfd476a904aa8c76"));
+      // Same complete original files; the loaded model now also retains LayerToAreaMask.
+      Map.entry("Config/LevelOutput/RuntimeFloor/P10102_F10102001.json","a5e46c31af7110599f90e2307d041c960b6f8e4f46fc94c1126e18451cd90e40"),
+      Map.entry("Config/LevelOutput/RuntimeFloor/P10102_F10102003.json","457126f6a69a4d80a98f6e1660873b0db8de9756594b03bfb52462ad9f1dff44"),
+      Map.entry("Config/LevelOutput/RuntimeFloor/P20121_F20121001.json","ada9bc62ceb8b86905162f52d261ada5b2cdaca649e44fbad33fda3d05266e72"),
+      Map.entry("Config/LevelOutput/RuntimeFloor/P20123_F20123001.json","774e3a19fb060ca353203a4b93b52d8905b7649deef209edc5ea0d60c1e0094f"));
   static final Map<String,String> ROWS=Map.ofEntries(
       Map.entry("ExcelOutput/DailyActiveQuestPool.json#QuestID:2100003","a4a6761923da4f4fa57a1f1b67488363fcf3d5787f174d094da18ae2d26bba37"),
       Map.entry("ExcelOutput/DailyMissionCount.json#ID:1","4f044ba2e805dd9dd96b137036bdf618ac6631402c4955fbd4d16067c639f427"),

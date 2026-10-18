@@ -14,6 +14,17 @@ public final class Scene46 {
 
   public static byte[] enrich(ProtocolSchema schema, String name, byte[] bytes, Player player) {
     var type = schema.find(name);
+    if ("SceneEntityMoveScNotify".equals(name) && player != null && player.getScene() != null) {
+      try {
+        var original = schema.parse(name, bytes);
+        if (Gameplay46.number(original, "entry_id") != player.getScene().getEntryId()) return bytes;
+        var correction = original.toBuilder();
+        Gameplay46.set(correction, "client_pos_version", player.getScene().getClientPosVersion());
+        return correction.build().toByteArray();
+      } catch (IOException e) {
+        throw new ProtocolException("Malformed outgoing native position correction");
+      }
+    }
     if (player == null || type == null || !containsEntity(type, new HashSet<>())) return bytes;
     var scene = player.getScene();
     if (scene == null) return bytes;
@@ -70,9 +81,21 @@ public final class Scene46 {
       var selected = message.toBuilder().setField(dimension, scene.getDimensionId())
           .setField(story,scene.getStoryLineId());
       Gameplay46.set(selected, "interact_id", scene.getRuntimeId());
+      Gameplay46.set(selected, "client_pos_version", scene.getClientPosVersion());
       message = selected.build();
     }
     if (message.getDescriptorForType().getName().equals("SceneEntityInfo")) {
+      int entityId = Gameplay46.number(message, "entity_id");
+      var avatar = scene.getAvatarByEntityId(entityId);
+      var actorField = message.getDescriptorForType().findFieldByName("actor");
+      var lineup = scene.getPlayer().getCurrentLineup();
+      if (avatar != null && message.hasField(actorField) && lineup != null
+          && lineup.getLeader() >= 0 && lineup.getLeader() < lineup.getAvatars().size()
+          && lineup.getAvatars().get(lineup.getLeader()) == avatar.getAvatarId()) {
+        var actor = ((DynamicMessage) message.getField(actorField)).toBuilder();
+        Gameplay46.set(actor, "map_layer", scene.getTeleportMapLayer());
+        return message.toBuilder().setField(actorField, actor.build()).build();
+      }
       var actor = scene.getEntityById(Gameplay46.number(message, "entity_id"));
       if (actor instanceof org.hkrpg.server.gameplay.RogueEventNpc npc && npc.valid()
           && npc.getGroupId() == Gameplay46.number(message, "group_id")
