@@ -1,3 +1,4 @@
+import base64
 import copy
 import importlib.util
 import json
@@ -11,6 +12,36 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('verify_compose', ROOT / 'scripts/verify-compose.py')
 verify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(verify)
+
+
+class DispatchVoiceSwitchTest(unittest.TestCase):
+    def http(self, review_mode):
+        from google.protobuf.descriptor_pb2 import FileDescriptorSet
+        from google.protobuf.descriptor_pool import DescriptorPool
+        from google.protobuf.message_factory import GetMessageClass
+        pool = DescriptorPool()
+        schema = FileDescriptorSet.FromString((ROOT / 'src/main/resources/protocol/4.6/descriptor.pb').read_bytes())
+        for definition in schema.file:
+            pool.Add(definition)
+        def get(route, raw=False):
+            if route == '/health/ready':
+                return {'ready': True, 'mode': 'BOTH'}
+            if route.startswith('/query_dispatch'):
+                response = GetMessageClass(pool.FindMessageTypeByName('Dispatch'))()
+                response.region_list.add().env_type = '0' if 'CNPROD' in route else '2'
+            else:
+                response = GetMessageClass(pool.FindMessageTypeByName('GateServer'))(
+                    ip='127.0.0.1', port=23311, ios_exam=review_mode)
+            return base64.b64encode(response.SerializeToString())
+        return SimpleNamespace(get=get)
+
+    def test_review_gateway_is_rejected_even_when_healthy_and_on_correct_port(self):
+        with self.assertRaisesRegex(ValueError, '审核模式'):
+            verify.dispatch(self.http(True), 23311)
+
+    def test_normal_gateway_is_verified_for_both_cn_and_os_clients(self):
+        rows = verify.dispatch(self.http(False), 23311)
+        self.assertEqual(['CNPRODWin4.6.0', 'OSPRODWin4.6.0'], [row['version'] for row in rows])
 
 
 class ComposeVerificationTest(unittest.TestCase):

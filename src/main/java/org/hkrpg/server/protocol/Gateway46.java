@@ -14,10 +14,12 @@ public final class Gateway46 {
         builder.setField(type.findFieldByName("server_description"), config.gameServer.description);
         for (String flag : new String[] {"enable_design_data_bundle_version_update", "enable_video_bundle_version_update",
                 "watermark_enable", "enable_upload_battle_log", "ftc_switch", "enable_save_replay_file",
-                "android_middle_package_enable", "close_redeem_code", "ios_exam", "mtp_switch", "event_tracking_open",
+                "android_middle_package_enable", "close_redeem_code", "mtp_switch", "event_tracking_open",
                 "forbid_recharge", "network_diagnostic", "NNFLHCGDGJM", "FMLPNNMJDIC"}) {
             builder.setField(type.findFieldByName(flag), true);
         }
+        // Leave ios_exam at its normal false default. The client uses review mode
+        // to disable AudioManager.CanSwitchAudio, even with complete voice packs.
         set(builder, "asset_bundle_url", hotfix.assetBundleUrl);
         set(builder, "ex_resource_url", hotfix.exResourceUrl);
         set(builder, "lua_url", hotfix.luaUrl);

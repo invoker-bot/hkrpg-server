@@ -1,5 +1,7 @@
 # 4.6 中文配音不可选：完整索引补包
 
+后续排查：补包后客户端已将中文识别为完整下载，但服务端误开 iOS 审核模式，仍会禁用配音切换，详见[配音菜单修复](client-audio-switch-4.6.md)。下文记录资源补装的历史结果；`AudioLangRedord.txt` 的更新不等于游戏已采用中文配音。
+
 2026-10-19 用户确认文字已经变成中文，但配音仍为英文，语音设置无法选择。前一次安装完成的是 Sophon 中文基础分类的 173 个音频包；客户端现用 `AudioV` 实际列出 175 个中文包。缺少两个 `SubPackId=2002` 的章节包，不能以基础分类校验通过代替客户端语音完整。
 
 ## 本次修复
@@ -29,17 +31,17 @@
 python scripts/check-client-audio.py --client-dir "C:\Users\InvokerBot\AppData\Local\hoyo\hkrpg\versions\current" --language cn --output build/audio-check.json
 ```
 
-本次补装命令使用 `--source-dir build/client-language-prefs-20261019 --apply --select`，收据写入 `.local/client/chinese-language-20261019/audio-completion-receipt.json`。同目录的 `.before.json` 保存原始选择字节和精确新增文件清单，`audio-independent-readback.json` 保存独立读回结果。下载来源、摘要与回归日志保存在 `build/client-language-prefs-20261019/`，持久来源副本见 `.local/client/chinese-language-20261019/missing-audio-staged.json`。
+本次补装命令使用 `--source-dir build/client-language-prefs-20261019 --apply --select`，收据写入 `.local/client/chinese-language-20261019/audio-completion-receipt.json`。同目录的 `.before.json` 保存音频更新语言记录的原始字节和精确新增文件清单，`audio-independent-readback.json` 保存独立读回结果。下载来源、摘要与回归日志保存在 `build/client-language-prefs-20261019/`，持久来源副本见 `.local/client/chinese-language-20261019/missing-audio-staged.json`。
 
 验证结果：
 
 - 修复前，真实客户端完整性回归失败，明确列出上述两处缺失；10 项工具行为回归通过。
 - 补装后，11 项回归全部通过，包含重新读取本机全部 175 个中文包及标记、同长损坏拒绝、缺标记修复、重复运行、缓存隔离、并发目标保护和复制失败撤回。
-- 安装收据确认全部 175 个包完整，七项客户端补丁 SHA256 不变；独立进程确认配音选择记录为 `Chinese(PRC)`。
+- 安装收据确认全部 175 个包完整，七项客户端补丁 SHA256 不变；独立进程确认音频更新语言记录为 `Chinese(PRC)`。
 - `scripts/build.ps1` 成功，7 个 Gradle 任务均为 `UP-TO-DATE`；没有重新执行全部 Java 测试。本轮没有服务端代码、Compose 或数据库变更。
 
 ## 客户端边界
 
-文字已经由用户确认切换为中文。中文配音选项能否选择、实际开场配音是否为中文，仍需补装后重新启动客户端确认。文件完整性和选择记录不能代替播放验收。
+文字已经由用户确认切换为中文。中文配音选项能否选择、实际开场配音是否为中文，仍需补装后重新启动客户端确认。文件完整性和更新记录不能代替播放验收。
 
 持续加载遮罩及 3011014 临时 NPC、完整演出、14 份补充资源的真实客户端验收仍未完成。当前日志另有未处理的文字语言请求 51；它与本轮语音资源修复分开记录，尚未补处理，也不能据此断言它是加载遮罩根因。

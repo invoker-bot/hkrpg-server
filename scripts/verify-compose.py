@@ -240,7 +240,9 @@ def dispatch(http, game_port):
         gate.ParseFromString(base64.b64decode(http.get('/query_gateway?version=' + version, raw=True)))
         require(gate.retcode == 0 and gate.ip == '127.0.0.1' and gate.port == game_port,
                 '客户端网关不是预期的本机UDP端口')
-        checks.append(dict(version=version, sdkEnvironment=environment, gatewayHost=gate.ip, gatewayPort=gate.port))
+        require(not gate.ios_exam, '客户端网关误启用审核模式，会禁止切换已安装配音')
+        checks.append(dict(version=version, sdkEnvironment=environment, gatewayHost=gate.ip,
+                           gatewayPort=gate.port, iosReviewMode=gate.ios_exam))
     return checks
 
 
