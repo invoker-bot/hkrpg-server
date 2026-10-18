@@ -1,0 +1,14 @@
+# 已验证的 JAR 由 prepare-compose.py 放入独立小目录；不在镜像内重新构建 Java。
+ARG RUNTIME_IMAGE=eclipse-temurin:21-jre@sha256:227118764cccd3c3294617061aaa93a08309c63a395eefa83e6b35032992ea99
+FROM ${RUNTIME_IMAGE}
+WORKDIR /work
+COPY server.jar LICENSE NOTICE.md /opt/hkrpg/
+COPY healthcheck.sh resources.sha256 /opt/hkrpg/
+COPY --from=hkrpg_resources . /resources
+RUN cd /resources && test -z "$(find . -type l -print -quit)" \
+    && test "$(find . -type f | wc -l)" -eq "$(wc -l < /opt/hkrpg/resources.sha256)" \
+    && sha256sum --quiet -c /opt/hkrpg/resources.sha256
+EXPOSE 18080/tcp 23311/udp
+STOPSIGNAL SIGTERM
+ENTRYPOINT ["java", "-Xmx1536m", "-Dfile.encoding=UTF-8", "-Djava.net.preferIPv4Stack=true", "-Dio.netty.eventLoopThreads=2", "-jar", "/opt/hkrpg/server.jar"]
+CMD ["--mode=both", "--no-console", "--no-handbook"]

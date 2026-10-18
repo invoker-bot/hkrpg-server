@@ -1,0 +1,53 @@
+name: ${HKRPG_PROJECT_NAME:-hkrpg-local}
+services:
+  server:
+    build:
+      context: ${HKRPG_RUNTIME_DIR:?Run prepare-compose.py first}/artifact
+      dockerfile: ${HKRPG_REPO_DIR:?Run prepare-compose.py first}/Dockerfile.runtime
+      additional_contexts:
+        hkrpg_resources: ${HKRPG_RESOURCES_DIR:?Run prepare-compose.py first}
+      args:
+        RUNTIME_IMAGE: ${RUNTIME_IMAGE:-eclipse-temurin:21-jre@sha256:227118764cccd3c3294617061aaa93a08309c63a395eefa83e6b35032992ea99}
+    image: ${HKRPG_PROJECT_NAME:-hkrpg-local}/server:local
+    environment:
+      TZ: Asia/Singapore
+      JAVA_TOOL_OPTIONS: -Duser.timezone=Asia/Singapore
+    init: true
+    working_dir: /work
+    read_only: true
+    tmpfs:
+      - /tmp
+    command: ["--mode=both", "--no-console", "--no-handbook"]
+    ports:
+      - "127.0.0.1:18080:18080/tcp"
+      - "127.0.0.1:23311:23311/udp"
+    volumes:
+      - type: bind
+        source: ${HKRPG_RUNTIME_DIR:?Run prepare-compose.py first}/work
+        target: /work
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${HKRPG_RUNTIME_DIR:?Run prepare-compose.py first}/credentials
+        target: /run/hkrpg-secrets
+        read_only: true
+        bind:
+          create_host_path: false
+    labels:
+      io.hkrpg.managed: "true"
+      io.hkrpg.role: local-server
+      io.hkrpg.runtime-directory: ${HKRPG_RUNTIME_DIR}
+    restart: unless-stopped
+    stop_signal: SIGTERM
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD", "bash", "/opt/hkrpg/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      start_period: 120s
+      retries: 6
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
