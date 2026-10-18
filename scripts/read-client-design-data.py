@@ -107,12 +107,7 @@ def parse_index(directory, bundled_directory=None, *, index_sha256=INDEX_SHA256)
         position += 36
         if total > 200000 or position + 16 * total + 3 > len(data):
             raise ValueError('设计数据记录数量或范围非法')
-        file = directory / (md5 + '.bytes')
-        if not file.exists() and bundled_directory is not None:
-            candidate = bundled_directory / file.name
-            if candidate.is_file():
-                file = candidate
-        chunk = {'index': index, 'file': str(file),
+        chunk = {'index': index,
                  'declaredMD5': md5, 'base': base, 'size': size, 'count': total}
         for _ in range(total):
             key = data[position:position + 8].hex()
@@ -126,6 +121,15 @@ def parse_index(directory, bundled_directory=None, *, index_sha256=INDEX_SHA256)
         if tag != 0 or length >= 16 or position + length + 1 > len(data):
             raise ValueError('设计数据语言标记非法')
         chunk['locale'] = data[position:position + length].decode('utf-8')
+        if chunk['locale'] and not all('a' <= char <= 'z' for char in chunk['locale']):
+            raise ValueError('设计数据语言目录非法')
+        relative = Path(chunk['locale']) / (md5 + '.bytes')
+        file = directory / relative
+        if not file.exists() and bundled_directory is not None:
+            candidate = bundled_directory / relative
+            if candidate.is_file():
+                file = candidate
+        chunk['file'] = str(file)
         position += length
         if data[position] != 128:
             raise ValueError('设计数据块结束标记非法')
@@ -220,7 +224,7 @@ def extract(args):
               'verifiedChunks': {file: {key: value for key, value in row.items() if key != 'signature'}
                                  for file, row in verified_chunks.items()},
               'missingChunks': [row['index'] for row in chunks if not Path(row['file']).is_file()],
-              'bundledChunks': [row['index'] for row in chunks if Path(row['file']).parent == bundled_directory],
+              'bundledChunks': [row['index'] for row in chunks if bundled_directory in Path(row['file']).parents],
               'missingCoreChunks': [row['index'] for row in chunks if not row['locale'] and not Path(row['file']).is_file()],
               'missingLocaleChunks': [row['index'] for row in chunks if row['locale'] and not Path(row['file']).is_file()],
               'pathLiteralEvidence': evidence['stringLiteralSlots'], 'records': results}

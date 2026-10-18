@@ -15,6 +15,26 @@ def parse_index(directory, bundled=None):
 
 @unittest.skipUnless((CLIENT / 'GameAssembly.dll').is_file(), '没有固定的本机客户端，跳过实际目录检查')
 class DesignFallbackTest(unittest.TestCase):
+ def test_locale_chunk_uses_language_subdirectory_and_actual_english_digest(self):
+  _,chunks,_=parse_index(PERSISTENT,BUNDLED)
+  english=next(c for c in chunks if c['locale']=='en')
+  self.assertEqual(str(PERSISTENT/'en'/'fc21263410cd08ba5f5ac5ff280c1582.bytes'),english['file'])
+  self.assertEqual(60437779,Path(english['file']).stat().st_size)
+  self.assertEqual(english['declaredMD5'],hashlib.md5(Path(english['file']).read_bytes()).hexdigest())
+ def test_locale_fallback_uses_bundled_language_directory_and_preserves_primary(self):
+  index,chunks,_=parse_index(PERSISTENT)
+  english=next(c for c in chunks if c['locale']=='en')
+  with tempfile.TemporaryDirectory() as temp:
+   directory=Path(temp)/'persistent';bundled=Path(temp)/'bundled';directory.mkdir();bundled.mkdir()
+   (directory/index.name).write_bytes(index.read_bytes())
+   relative=Path('en')/(english['declaredMD5']+'.bytes')
+   (bundled/relative).parent.mkdir();(bundled/relative).write_bytes(b'bundled language')
+   _,found,_=parse_index(directory,bundled)
+   self.assertEqual(str(bundled/relative),found[english['index']]['file'])
+   (directory/relative).parent.mkdir();(directory/relative).write_bytes(b'operator language')
+   _,found,_=parse_index(directory,bundled)
+   self.assertEqual(str(directory/relative),found[english['index']]['file'])
+   self.assertEqual(b'operator language',(directory/relative).read_bytes())
  def test_bundled_nonlocale_chunk_is_selected_from_fixed_index(self):
   _,chunks,_=parse_index(PERSISTENT,BUNDLED)
   self.assertEqual(str(BUNDLED/CHUNK),chunks[18]['file'])
@@ -30,9 +50,12 @@ class DesignFallbackTest(unittest.TestCase):
  def test_missing_locations_remain_missing_and_legacy_single_directory_is_preserved(self):
   _,legacy,_=parse_index(PERSISTENT)
   self.assertEqual(str(PERSISTENT/CHUNK),legacy[18]['file']);self.assertFalse(Path(legacy[18]['file']).is_file())
-  _,chunks,_=parse_index(PERSISTENT,BUNDLED)
-  self.assertEqual([7,9,11,13,15,17,19,21,23,25,27,29,31],[c['index'] for c in chunks if not Path(c['file']).is_file()])
-  self.assertEqual(str(PERSISTENT/'f96da886871b002d752da7a11bf96a14.bytes'),chunks[17]['file'])
+  with tempfile.TemporaryDirectory() as temp:
+   directory=Path(temp);index,_,_=parse_index(PERSISTENT)
+   (directory/index.name).write_bytes(index.read_bytes())
+   _,chunks,_=parse_index(directory,BUNDLED)
+   self.assertEqual([7,9,11,13,15,17,19,21,23,25,27,29,31],[c['index'] for c in chunks if c['locale'] and not Path(c['file']).is_file()])
+   self.assertEqual(str(directory/'cn'/'f96da886871b002d752da7a11bf96a14.bytes'),chunks[17]['file'])
  def test_actual_bundled_record_read_uses_same_size_digest_and_read_only_output_checks(self):
   # Only the path-to-index-key lookup is controlled: this verifies storage fallback, not this label.
   with tempfile.TemporaryDirectory() as temp:
@@ -42,7 +65,9 @@ class DesignFallbackTest(unittest.TestCase):
    record=report['records'][0];self.assertEqual('read',record['status']);self.assertEqual((18,58289,0),(record['chunk'],record['length'],record['offset']))
    expected=(BUNDLED/CHUNK).read_bytes()[:58289]
    self.assertEqual(hashlib.sha256(expected).hexdigest(),record['sha256']);self.assertEqual(expected,Path(record['extractedFile']).read_bytes());self.assertEqual(str(BUNDLED/CHUNK),record['sourceFile'])
-   self.assertEqual([18],report['bundledChunks']);self.assertEqual([],report['missingCoreChunks']);self.assertEqual(13,len(report['missingLocaleChunks']))
+   self.assertEqual([18],report['bundledChunks']);self.assertEqual([],report['missingCoreChunks'])
+   _,chunks,_=parse_index(PERSISTENT,BUNDLED)
+   self.assertNotIn(next(c['index'] for c in chunks if c['locale']=='en'),report['missingLocaleChunks'])
    self.assertFalse(report['clientModified']);self.assertFalse(report['clientExecutableStarted']);self.assertFalse(report['jsonInstalled']);self.assertFalse(report['clientAccepted'])
  def test_different_preexisting_export_is_rejected_without_overwrite_or_report(self):
   with tempfile.TemporaryDirectory() as temp:
