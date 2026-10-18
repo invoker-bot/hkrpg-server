@@ -25,7 +25,7 @@ final class LoginBootstrap46 {
       case 9 -> 27; case 522 -> 549; case 2922 -> 2949; case 3405 -> 3475;
       case 5734 -> 5725; case 5834 -> 5825; case 6134 -> 6125; case 8680 -> 8580;
       case 8948 -> 8914; case 9504 -> 9548;
-      case 6029 -> 6017;
+      case 6029 -> 6017; case 9990 -> 9996;
       default -> 0;
     };
     if (response == 0) return false;
@@ -41,7 +41,7 @@ final class LoginBootstrap46 {
     int retcodeField = switch (command) {
       case 5697 -> 15; case 96 -> 8; case 7172 -> 6; case 8034 -> 11;
       case 8110 -> 7; case 9804 -> 4; case 8991 -> 14; case 10010 -> 12;
-      case 9894 -> 13; case 9490, 78 -> 9;
+      case 9894 -> 13; case 9490, 78, 9990 -> 9;
       case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
       case 5734 -> 4; case 5834 -> 10; case 6134, 8680 -> 9; case 8948 -> 13;
       case 6029 -> 2;
@@ -56,6 +56,9 @@ final class LoginBootstrap46 {
     output.flush();
     // There is no active profile, purchase, level-claim ledger or negotiated security key in
     // these unimplemented modules. Do not fabricate records, secret_rsp, unlocks or entitlements.
+    // B51's native GetDataAsync waits for 9996 for 30 seconds (154d0634). Its converter
+    // (154d2330) accepts absent car/cycle and creates an empty challenge locally. Keep
+    // this unplayed profile absent; sending an invented cycle would start gameplay sync.
     session.sendClientPacket(response, body.toByteArray());
     return true;
   }

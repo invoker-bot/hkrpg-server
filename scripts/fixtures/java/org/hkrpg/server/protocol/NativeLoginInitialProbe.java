@@ -40,7 +40,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
     1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982, 10016, 9866, 9496, 1456, 63,
     4, 1249, 2725, 8376, 2947, 3375, 5523, 4439, 6625, 6936, 7206, 7599, 4173, 9266,
     6592, 2612, 341, 3915, 1725, 2214, 2625, 2623, 3125, 4225, 3875, 5125, 8196, 8906,
-    2202, 825, 2116, 1525
+    2202, 825, 2116, 1525, 9996
   }).boxed().collect(Collectors.toUnmodifiableSet());
   private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
       Map.entry(5653, 15), Map.entry(7173, 6), Map.entry(8025, 11),
@@ -48,7 +48,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
       Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
       Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
       Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(6125, 9), Map.entry(8580, 9),
-      Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2));
+      Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2), Map.entry(9996, 9));
   // Additional supported snapshots observed in the second real initialization burst.
   private static final Map<Integer, String> FOLLOWUP_RESPONSES = Map.ofEntries(
       Map.entry(1825, "GetRogueInfoScRsp"),
@@ -438,6 +438,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("passed", true),
           Map.entry("initialRequests", QUERIES.length),
           Map.entry("initialResponses", EXPECTED_RESPONSES.size()),
+          Map.entry("b51InactiveInitialProfileVerified", probe.received.contains(9996)),
           Map.entry("requiredNestedProfiles", true),
           Map.entry("requiredBasicSettings", true),
           Map.entry("openingVideoBootstrapContract", true),

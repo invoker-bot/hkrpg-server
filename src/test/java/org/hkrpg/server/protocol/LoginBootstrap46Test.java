@@ -27,7 +27,7 @@ class LoginBootstrap46Test {
         Arguments.of(5734, 5725, 4), Arguments.of(5834, 5825, 10),
         Arguments.of(6134, 6125, 9), Arguments.of(8680, 8580, 9),
         Arguments.of(8948, 8914, 13), Arguments.of(9504, 9548, 8),
-        Arguments.of(6029, 6017, 2));
+        Arguments.of(6029, 6017, 2), Arguments.of(9990, 9996, 9));
   }
 
   @ParameterizedTest @MethodSource("queries")
@@ -99,7 +99,7 @@ class LoginBootstrap46Test {
         session.bridge.clientCommand("ContentPackageGetDataCsReq"), new byte[0], new byte[0]));
     try { session.onMessage(input); } finally { input.release(); }
     assertFalse(session.closed);
-    assertEquals(23, session.nativePackets.size());
+    assertEquals(24, session.nativePackets.size());
     assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));
     assertEquals(SessionState.ACTIVE, session.getState());
   }

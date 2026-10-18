@@ -281,6 +281,8 @@ def run_probe(java, jar, port, report_dir, label, helpers=None, credentials=None
     if credentials:
         require(summary.get('initialRequests') == 143 and summary.get('initialBurstDeadlineMillis') == 4000,
                 '初始化探针请求集或时限发生变化')
+        require(summary.get('b51InactiveInitialProfileVerified') is True,
+                '缺少赛车未激活资料回包核对；不能漏掉实际阻塞客户端的9996')
     return summary
 
 
