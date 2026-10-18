@@ -56,10 +56,14 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-local-clie
 
 之后仍双击原桌面图标。服务器未就绪时会提示 Compose 启动命令；七项文件任一变化时拒绝启动并保留现状。仅当 `version.dll` 缺失时，才从摘要匹配的稳定备份或数字后缀副本恢复；临时完整文件校验后原子发布，发布不会覆盖并发出现的文件。客户端运行时拒绝修复；已有不同摘要的 `version.dll` 不覆盖。游戏启动后检查脚本退出，游戏调试窗口由游戏进程自己的线程维护，不依赖常驻脚本。
 
+用户实际启动曾报告 `WinError 740`。已核对原 EXE 的 SHA256 及内嵌 manifest：它声明 `requireAdministrator`、`uiAccess=false`。启动器改用 Windows `ShellExecuteExW` 的正常 `open` 动作，由系统依据该声明处理 UAC；用户取消确认时显示明确提示且不会重试。补丁检查脚本本身不请求提升权限。启动调用取得游戏 PID 后关闭自身持有的句柄，不等待游戏退出。结构和标志依据 [Microsoft ShellExecuteEx 文档](https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shellexecuteinfow)。
+
 撤回入口时先退出游戏，将 `.local/client/original-StarRail.exe.lnk` 复制回原桌面 `StarRail.exe.lnk`。这仅恢复启动方式；登录补丁和客户端文件不随入口撤回改变。
 
 ## 验证边界
 
-先保留 13 项隔离回归中的 6 项失败，再加入恢复流程；另用 Windows PowerShell 5.1.26100.7019 的真实 WScript 快捷方式读写复现并修复短路径/长路径比较以及备份文件扩展名问题。最终 16 项检查通过，覆盖重复改名、只读预览、仅修复、并发不覆盖、运行中拒写、错误文件摘要、健康状态、快捷方式连续安装及省略 Manifest 参数的默认入口。默认清单路径在脚本正文中计算，避免 PowerShell 5.1 参数初始化期间脚本目录为空。证据位于 `build/client-launcher-persistence-20261018/`。
+先保留 13 项隔离回归中的 6 项失败，再加入恢复流程；另用 Windows PowerShell 5.1.26100.7019 的真实 WScript 快捷方式读写复现并修复短路径/长路径比较以及备份文件扩展名问题。上一轮 16 项检查通过，覆盖重复改名、只读预览、仅修复、并发不覆盖、运行中拒写、错误文件摘要、健康状态、快捷方式连续安装及省略 Manifest 参数的默认入口。默认清单路径在脚本正文中计算，避免 PowerShell 5.1 参数初始化期间脚本目录为空。证据位于 `build/client-launcher-persistence-20261018/`。
 
-测试使用临时目录中的文本伪客户端和本地健康检查替身，不启动真实游戏。实际客户端下一次启动后的调试窗口和进入地图表现仍需用户确认。
+本轮先保留模拟 `CreateProcess` 返回 740 的四项失败，再修复启动方式；最终 21 项通过，包含 UAC 取消、保留系统错误码和进程句柄释放。另用本机编译的临时无界面程序走真实 `ShellExecuteExW`，核对 PID、关闭启动句柄后子进程仍运行、无额外控制台以及正常退出码 0。证据为同目录 `elevation-red.txt`、`elevation-native-green.txt` 和 `elevation-manifest-proof.json`。
+
+测试使用临时目录中的文本伪客户端、本地健康检查替身及本机编译的无界面程序；未启动真实游戏或触发游戏 UAC。实际客户端权限确认、调试窗口和进入地图表现仍需用户确认。

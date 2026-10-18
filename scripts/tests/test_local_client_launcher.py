@@ -1,5 +1,6 @@
 """启动前恢复被改名的调试 DLL；所有文件和进程均为隔离测试替身。"""
 import hashlib
+import ctypes
 import importlib.util
 import json
 import http.server
@@ -8,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import threading
+import time
 from pathlib import Path
 import tempfile
 import unittest
@@ -216,6 +218,138 @@ class LocalClientLauncherTest(unittest.TestCase):
             server.shutdown()
             server.server_close()
             worker.join(timeout=5)
+
+
+@unittest.skipUnless(os.name == 'nt', 'Windows ShellExecute contract')
+class ShellExecuteLaunchTest(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import Mock
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.client = Path(self.directory.name) / 'client with spaces'
+        self.client.mkdir()
+        self.shell = Mock()
+        self.kernel = Mock()
+        self.kernel.GetProcessId.return_value = 2468
+        self.kernel.CloseHandle.return_value = True
+        self.captured = {}
+        def accept(pointer):
+            info = pointer._obj
+            self.captured.update(verb=info.lpVerb, file=info.lpFile,
+                directory=info.lpDirectory, parameters=info.lpParameters,
+                mask=info.fMask, show=info.nShow, size=info.cbSize)
+            info.hProcess = 1357
+            return True
+        self.shell.ShellExecuteExW.side_effect = accept
+        self.loader = patch.object(ctypes, 'WinDLL', side_effect=lambda name, **kwargs:
+                                   {'shell32': self.shell, 'kernel32': self.kernel}[name]).start()
+        # Reproduce the real CreateProcess failure without ever launching a game.
+        self.create_process = patch.object(launcher.subprocess, 'Popen', side_effect=ctypes.WinError(740)).start()
+        self.addCleanup(patch.stopall)
+
+    def test_require_administrator_exe_uses_normal_shell_launch(self):
+        self.assertEqual(2468, launcher.launch_client(self.client))
+        self.assertEqual('open', self.captured['verb'])
+        self.assertEqual(str(self.client / 'StarRail.exe'), self.captured['file'])
+        self.assertEqual(str(self.client), self.captured['directory'])
+        self.assertIsNone(self.captured['parameters'])
+        self.assertEqual(1, self.captured['show'])
+        self.assertEqual(0x140, self.captured['mask'])
+        self.shell.ShellExecuteExW.assert_called_once()
+        self.kernel.CloseHandle.assert_called_once_with(1357)
+        self.create_process.assert_not_called()
+
+    def test_uac_cancel_has_clear_message_and_never_retries(self):
+        self.shell.ShellExecuteExW.side_effect = None
+        self.shell.ShellExecuteExW.return_value = False
+        with patch.object(ctypes, 'get_last_error', return_value=1223):
+            with self.assertRaisesRegex(RuntimeError, 'Windows.*取消|取消.*Windows'):
+                launcher.launch_client(self.client)
+        self.shell.ShellExecuteExW.assert_called_once()
+        self.kernel.CloseHandle.assert_not_called()
+        self.create_process.assert_not_called()
+
+    def test_other_shell_errors_preserve_windows_error_code(self):
+        self.shell.ShellExecuteExW.side_effect = None
+        self.shell.ShellExecuteExW.return_value = False
+        with patch.object(ctypes, 'get_last_error', return_value=2):
+            with self.assertRaises(OSError) as caught:
+                launcher.launch_client(self.client)
+        self.assertEqual(2, caught.exception.winerror)
+        self.kernel.CloseHandle.assert_not_called()
+
+    def test_process_handle_is_closed_when_process_id_lookup_fails(self):
+        self.kernel.GetProcessId.return_value = 0
+        with patch.object(ctypes, 'get_last_error', return_value=6):
+            with self.assertRaises(OSError) as caught:
+                launcher.launch_client(self.client)
+        self.assertEqual(6, caught.exception.winerror)
+        self.kernel.CloseHandle.assert_called_once_with(1357)
+
+
+@unittest.skipUnless(os.name == 'nt' and shutil.which('gcc'), 'Windows native shell integration')
+class NativeShellExecuteTest(unittest.TestCase):
+    def test_real_shell_execute_closing_launch_handle_keeps_child_running(self):
+        from ctypes import wintypes
+        with tempfile.TemporaryDirectory() as directory:
+            client = Path(directory) / 'shell fixture with spaces'
+            client.mkdir()
+            source = client / 'fixture.c'
+            source.write_text(r"""#include <windows.h>
+#include <stdio.h>
+int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR arguments, int show) {
+    (void)instance; (void)previous; (void)arguments; (void)show;
+    HANDLE output = CreateFileW(L"launched.json", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                                 FILE_ATTRIBUTE_NORMAL, NULL);
+    if (output == INVALID_HANDLE_VALUE) return 10;
+    char data[100]; DWORD written;
+    int size = snprintf(data, sizeof(data), "{\"pid\":%lu,\"console\":%d}",
+                        GetCurrentProcessId(), GetConsoleWindow() != NULL);
+    if (!WriteFile(output, data, (DWORD)size, &written, NULL)) return 11;
+    CloseHandle(output);
+    for (int i = 0; i < 1000; i++) {
+        if (GetFileAttributesW(L"release") != INVALID_FILE_ATTRIBUTES) return 0;
+        Sleep(10);
+    }
+    return 12;
+}
+""", encoding='ascii')
+            subprocess.run(['gcc', '-mwindows', '-O2', '-Wall', '-Wextra', '-Werror',
+                            '-o', str(client / 'StarRail.exe'), str(source)],
+                           check=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+            kernel.OpenProcess.restype = wintypes.HANDLE
+            kernel.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+            kernel.WaitForSingleObject.restype = wintypes.DWORD
+            kernel.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+            kernel.GetExitCodeProcess.restype = wintypes.BOOL
+            kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+            kernel.CloseHandle.restype = wintypes.BOOL
+            process = None
+            try:
+                pid = launcher.launch_client(client)
+                process = kernel.OpenProcess(0x100000 | 0x1000, False, pid)
+                self.assertTrue(process, 'Shell returned the live child PID after closing its own handle')
+                deadline = time.monotonic() + 5
+                while True:
+                    try:
+                        proof = json.loads((client / 'launched.json').read_text('ascii'))
+                        break
+                    except (FileNotFoundError, PermissionError, ValueError):
+                        self.assertLess(time.monotonic(), deadline, 'Native fixture did not write its marker')
+                        time.sleep(.02)
+                self.assertEqual({'pid': pid, 'console': 0}, proof)
+                (client / 'release').touch()
+                self.assertEqual(0, kernel.WaitForSingleObject(process, 5000))
+                exit_code = wintypes.DWORD()
+                self.assertTrue(kernel.GetExitCodeProcess(process, ctypes.byref(exit_code)))
+                self.assertEqual(0, exit_code.value)
+            finally:
+                (client / 'release').touch()
+                if process:
+                    kernel.WaitForSingleObject(process, 5000)
+                    kernel.CloseHandle(process)
 
 
 if __name__ == '__main__':

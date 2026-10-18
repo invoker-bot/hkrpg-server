@@ -1,6 +1,8 @@
 """独立的本地客户端启动检查；仅恢复清单确认的调试 DLL。"""
 import argparse
 import csv
+import ctypes
+from ctypes import wintypes
 import hashlib
 import io
 import json
@@ -98,11 +100,50 @@ def load_manifest(path):
 
 
 def launch_client(root):
-    process = subprocess.Popen([str(root / 'StarRail.exe')], cwd=root,
-        stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-        close_fds=True)
-    return process.pid
+    if os.name != 'nt':
+        raise RuntimeError('仅支持 Windows 客户端')
+
+    class ShellExecuteInfo(ctypes.Structure):
+        _fields_ = [('cbSize', wintypes.DWORD), ('fMask', wintypes.ULONG),
+            ('hwnd', wintypes.HWND), ('lpVerb', wintypes.LPCWSTR),
+            ('lpFile', wintypes.LPCWSTR), ('lpParameters', wintypes.LPCWSTR),
+            ('lpDirectory', wintypes.LPCWSTR), ('nShow', ctypes.c_int),
+            ('hInstApp', wintypes.HINSTANCE), ('lpIDList', ctypes.c_void_p),
+            ('lpClass', wintypes.LPCWSTR), ('hkeyClass', wintypes.HKEY),
+            ('dwHotKey', wintypes.DWORD), ('hIconOrMonitor', wintypes.HANDLE),
+            ('hProcess', wintypes.HANDLE)]
+
+    shell = ctypes.WinDLL('shell32', use_last_error=True)
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    shell.ShellExecuteExW.argtypes = [ctypes.POINTER(ShellExecuteInfo)]
+    shell.ShellExecuteExW.restype = wintypes.BOOL
+    kernel.GetProcessId.argtypes = [wintypes.HANDLE]
+    kernel.GetProcessId.restype = wintypes.DWORD
+    kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel.CloseHandle.restype = wintypes.BOOL
+    info = ShellExecuteInfo()
+    info.cbSize = ctypes.sizeof(info)
+    # Normal Shell open honors the EXE's requireAdministrator manifest and UAC.
+    # Keep a handle for its PID; finish dispatch before this short-lived launcher exits.
+    info.fMask = 0x40 | 0x100  # SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC
+    info.lpVerb = 'open'
+    info.lpFile = str(root / 'StarRail.exe')
+    info.lpDirectory = str(root)
+    info.nShow = 1  # SW_SHOWNORMAL; the game owns its debug console.
+    if not shell.ShellExecuteExW(ctypes.byref(info)):
+        error = ctypes.get_last_error()
+        if error == 1223:  # ERROR_CANCELLED
+            raise RuntimeError('已取消 Windows 权限确认，游戏未启动；请再次点击原桌面图标并按需确认。')
+        raise ctypes.WinError(error)
+    if not info.hProcess:
+        raise RuntimeError('Windows 未返回客户端进程句柄，请确认游戏是否已启动。')
+    try:
+        pid = kernel.GetProcessId(info.hProcess)
+        if not pid:
+            raise ctypes.WinError(ctypes.get_last_error())
+        return pid
+    finally:
+        kernel.CloseHandle(info.hProcess)
 
 
 def restore_console(root, backup, expected, *, dry_run=False):
