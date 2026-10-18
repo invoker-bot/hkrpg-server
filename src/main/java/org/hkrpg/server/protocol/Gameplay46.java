@@ -14,6 +14,9 @@ import org.hkrpg.server.gameplay.*;
 
 /** Native 4.6 named gameplay fields; unverified opaque action fields never become gameplay. */
 public final class Gameplay46 {
+  // CN4.6 sends the deduplicated frame-end mission list in one request (d99e6b0),
+  // including observed batches beyond 100. Bound work above the pinned 2,184-row catalog.
+  private static final int MAX_CUSTOM_VALUE_QUERY_IDS = 4096;
   private static final Set<String> REQUESTS =
       Set.of(
           "GetMissionDataCsReq",
@@ -137,7 +140,8 @@ public final class Gameplay46 {
           var response = builder(session, "GetMainMissionCustomValueScRsp");
           @SuppressWarnings("unchecked")
           var ids = (List<Integer>) value(req, "main_mission_id_list");
-          if (ids.size() > 100) set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
+          if (ids.size() > MAX_CUSTOM_VALUE_QUERY_IDS)
+            set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
           else if (ids.stream().anyMatch(id ->
               player.getGameplay().getMainMissions().containsKey(id)
                   && !MissionSnapshotRecords.main(player, id)))

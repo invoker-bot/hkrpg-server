@@ -176,8 +176,10 @@ def run(jar, output):
                             input=json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}),
                             cwd=directory, capture_output=True, text=True, encoding='utf-8', timeout=40,
                             creationflags=flags)
+                        # Preserve the exact rejected response even if the UDP relay sees the
+                        # early-exiting probe's socket reset while closing its context.
+                        (directory / f'probe-{iteration}.log').write_text(probe.stdout + probe.stderr, encoding='utf-8')
                     boundaries.append(boundary.summary())
-                    (directory / f'probe-{iteration}.log').write_text(probe.stdout + probe.stderr, encoding='utf-8')
                     if probe.returncode:
                         raise RuntimeError('初始化连接检查失败，见 ' + str(directory / f'probe-{iteration}.log'))
                     assert boundary.dropped == 0 and boundary.largest_server <= 1200

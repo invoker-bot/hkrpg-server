@@ -90,6 +90,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean queriesSent;
   private boolean rogueInfoRetcodeVerified;
   private boolean chessRogueInitialProfileVerified;
+  private boolean inactiveBattleSnapshotVerified;
+  private boolean missionCustomBatchVerified;
   private int rejectedResponseCommand;
   private int playerUid;
   private long initialStartedAt;
@@ -265,6 +267,15 @@ public final class NativeLoginInitialProbe implements KcpListener {
                   .build().toByteArray();
             }
             if (command == 5697) body = new byte[] {106, 2, 1, 2};
+            if (command == 1222) {
+              var type = protocol.clientSchema().message("GetMainMissionCustomValueCsReq");
+              var query = DynamicMessage.newBuilder(type);
+              // Synthetic IDs, matching the observed canonical 550-byte frame-end batch size.
+              for (int i = 0; i < 137; i++) query.addRepeatedField(
+                  type.findFieldByName("main_mission_id_list"), i == 0 ? 1000000 : 3000000 + i);
+              body = query.build().toByteArray();
+              require(body.length == 550, "Mission custom-value batch fixture changed");
+            }
             // Native login also sends this count-only query after scene/login-finish requests.
             if (command == 834) body = new byte[] {72, 50};
             if (command == 1534) {
@@ -309,6 +320,30 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var settings = child(basic, "player_setting_info");
           child(settings, "OJPAODIHAJE");
           requireEmptyProgress(settings);
+        } else if (frame.cmdId() == protocol.clientCommand("GetMainMissionCustomValueScRsp")) {
+          var data = protocol.clientSchema().parse("GetMainMissionCustomValueScRsp", frame.body());
+          require(data.getField(data.getDescriptorForType().findFieldByName("retcode")).equals(0),
+              "Native frame-end mission query was rejected");
+          var rows = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByName("main_mission_list"));
+          require(rows.size() == 137, "Native frame-end mission query lost rows");
+          for (int i = 0; i < rows.size(); i++) {
+            var row = (DynamicMessage) rows.get(i);
+            require(row.getField(row.getDescriptorForType().findFieldByName("id"))
+                    .equals(i == 0 ? 1000000 : 3000000 + i)
+                && row.getField(row.getDescriptorForType().findFieldByName("status")).toString()
+                    .equals("MissionStatus_MissionNone")
+                && row.getRepeatedFieldCount(row.getDescriptorForType().findFieldByName("custom_value_list")) == 0,
+                "Mission custom-value query changed identity or invented fresh-account progress");
+          }
+          missionCustomBatchVerified = true;
+        } else if (frame.cmdId() == protocol.clientCommand("GetCurBattleInfoScRsp")) {
+          var data = protocol.clientSchema().parse("GetCurBattleInfoScRsp", frame.body());
+          require(data.getField(data.getDescriptorForType().findFieldByName("retcode")).equals(0),
+              "No active battle must be a successful initial query, not a generic failure");
+          var battle = child(data, "battle_info");
+          require(battle.getAllFields().isEmpty() && battle.getUnknownFields().asMap().isEmpty(),
+              "Inactive battle query must provide the native container without inventing a battle");
+          inactiveBattleSnapshotVerified = true;
         } else if (frame.cmdId() == protocol.clientCommand("GetCurSceneInfoScRsp")) {
           var scene = protocol.clientSchema().parse("GetCurSceneInfoScRsp", frame.body());
           require(scene.getField(scene.getDescriptorForType().findFieldByName("retcode")).equals(0)
@@ -334,8 +369,9 @@ public final class NativeLoginInitialProbe implements KcpListener {
               && Long.remainderUnsigned(nameHash + openingVideoPrimaryKey, videoModulus)
                   == 26_743_203_654_499_374L,
               "Opening movie cannot derive its native decoder value from both replies");
-          require(rogueInfoRetcodeVerified && chessRogueInitialProfileVerified,
-              "Rogue initial query contracts were not verified");
+          require(rogueInfoRetcodeVerified && chessRogueInitialProfileVerified
+                  && inactiveBattleSnapshotVerified && missionCustomBatchVerified,
+              "Rogue, battle or mission initial query contracts were not verified");
           initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
           require(initialCompletedMillis <= 4000,
               "Initial query burst exceeded 4000 ms: " + initialCompletedMillis);
@@ -450,6 +486,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("followupSnapshotContracts", FOLLOWUP_RESPONSES.size()),
           Map.entry("textJoinAvatarDefaultsRetained", true),
           Map.entry("rogueInfoRetcodeZero", probe.rogueInfoRetcodeVerified),
+          Map.entry("inactiveBattleSnapshotVerified", probe.inactiveBattleSnapshotVerified),
+          Map.entry("missionCustomBatchVerified", probe.missionCustomBatchVerified),
           Map.entry("chessRogueInitialProfile", Map.of(
               "verified", probe.chessRogueInitialProfileVerified,
               "responseCommand", 5435, "retcode", 0,

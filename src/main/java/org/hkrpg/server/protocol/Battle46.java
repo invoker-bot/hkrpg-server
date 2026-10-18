@@ -26,7 +26,11 @@ final class Battle46 {
     var active = player.getBattle();
     if (name.equals("GetCurBattleInfoCsReq")) {
       var response = builder(s, "GetCurBattleInfoScRsp");
-      set(response, "retcode", active == null ? 1 : 0);
+      set(response, "retcode", Retcode.SUCC.getVal());
+      // CN4.6 BattleModule treats zero battle/stage IDs as no active battle. AdventureModule
+      // still dereferences battle_info on success, so the empty snapshot needs its container.
+      // A query without an active battle is not a failed operation and must not show FAIL.
+      set(response, "battle_info", builder(s, "SceneBattleInfo").build());
       if (active != null)
         set(
             response,
