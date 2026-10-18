@@ -108,3 +108,13 @@ G76 的原对话项路径名沿用 `DialogueItem301101101`，其中实际 Perfor
 ## 2026-10-16 SDK 登录补正
 
 前批只处理Dispatch，原生账号SDK仍指向官方Passport，服务端也缺少原生ma-cn密码/会话路径。此次对独立副本补入固定SDK账号地址与登录公钥数据补丁，并新增本地RSA账号识别、会话校验及token交换；既有运营安装、配置和数据库保留。服务端回归、HTTP/H2与实际登录画面的不同边界见 [国服SDK登录记录](cn-sdk-local-login-4.6.md)。3011014的完整播放和中断重进继续待真实客户端登录后验收。
+
+## 2026-10-18 当前安装与专项复验
+
+从实际安装目录 `C:/Users/InvokerBot/AppData/Local/hoyo/hkrpg/versions/current` 只读复验，八份完整 Act 共 4,176 字节通过既有固定索引、DLL/metadata、原生字段与完整对象核对；77 份原件、14 份入口及 `FinishPerformanceMission` 的 1205 发送链全部通过。14 份入口逐原字节相等，77 份运营文件 SHA 均匹配 `.local/compose/artifact/resources.sha256`，此次未发现这些入口仍有缺失。本轮复验开始时，Compose 宿主产物与 `build/login-first-talk-final-20261018/runtime.jar` 同为 `bce6e60ccbab07a028eb242464ad2c7e6f00bcf2b4c2853aaf58b90ad3253093`。证据在 `build/recover-followup-20261018/client-acts.json`、`whole-source-and-1205.json`、`current-resource-audit.json`。
+
+本轮实际重跑 G61 原 NPC 初遇 40 项、回收物演出入口 14 项、回收物初遇 10 项，共 64 项 Java；使用本地 Java 21、TCP fallback 和三个测试进程，全部零失败、错误、跳过。另有 Act 解码/拒绝边界、入口安装保护和原生工具清理保护共 13 项 Python 通过；该专项阶段没有重跑 Java 全量。日志、三类 XML 及准确计数见同目录 `java-focused.log`、`focused-xml/`、`python-focused.log`、`focused-validation.json`。此前冻结全量内的回收物交物类 57 项仍是历史结果，不混入本轮 64 项。
+
+此次未启动或控制游戏客户端、未访问正式 `.local/compose/work` 存档，也未重跑三组两日 KCP/H2 矩阵。当前静态图完整不等于实际播放；客户端真实开始请求顺序、相机/动作/中间 NPC 替换、三支路完整播放、演出中断重进及自然跨日继续待验收。原池解锁任务为 2010501，G99/G93 另要求完成 1010501，G76 要求完成 1010902；新账号不能被默认视为已满足日常与地图加载条件。既有隔离探针的前置历史和受控时钟不能写入正式存档，也不能据此声称自然流程已通过。
+
+随后完成 TextJoin 修复的统一全量验证：545 类、14,473 项实际执行通过，包含上述 64 项；新 JAR 已部署到 Compose，资源清单保持不变。该更新及两轮真实 Compose 网络检查见 [Avatar 类剧情文本默认值](textjoin-avatar-default-4.6.md)。这些结果仍不能代替 3011014 的客户端演出验收。

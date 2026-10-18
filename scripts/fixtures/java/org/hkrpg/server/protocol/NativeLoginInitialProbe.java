@@ -225,7 +225,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
                 "Missing configured music catalog");
           } else if (followup.equals("TextJoinQueryScRsp")) {
             var rows = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByNumber(13));
-            require(rows.size() == 2, "Text join query did not echo both synthetic public catalog IDs");
+            require(rows.size() == 2,
+                "Text join must preserve normal selections and omit eight unset AvatarID overrides");
             for (int index = 0; index < 2; index++) {
               var row = (DynamicMessage) rows.get(index);
               require(row.getField(row.getDescriptorForType().findFieldByNumber(10)).equals(18 + index),
@@ -269,8 +270,12 @@ public final class NativeLoginInitialProbe implements KcpListener {
             if (command == 3805) {
               var type = protocol.clientSchema().message("TextJoinQueryCsReq");
               var ids = type.findFieldByNumber(3);
-              body = DynamicMessage.newBuilder(type).addRepeatedField(ids, 18)
-                  .addRepeatedField(ids, 19).build().toByteArray();
+              var query = DynamicMessage.newBuilder(type).addRepeatedField(ids, 18)
+                  .addRepeatedField(ids, 19);
+              // These DefaultItem values are text IDs (Warrior 1-4), not avatar IDs.
+              for (int id : new int[] {55, 56, 57, 58, 83, 84, 85, 86})
+                query.addRepeatedField(ids, id);
+              body = query.build().toByteArray();
             } else if (command == 6930) {
               var type = protocol.clientSchema().message("GetOfferingInfoCsReq");
               var query = DynamicMessage.newBuilder(type);
@@ -393,6 +398,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("loginFinishAndHeartbeat", true),
           Map.entry("clientGameplayVerified", false),
           Map.entry("followupSnapshotContracts", FOLLOWUP_RESPONSES.size()),
+          Map.entry("textJoinAvatarDefaultsRetained", true),
           Map.entry("initialBurstCompletionMillis", probe.initialCompletedMillis),
           Map.entry("initialBurstDeadlineMillis", 4000),
           Map.entry("unsupportedQueryResponsesNotInvented", QUERIES.length - EXPECTED_RESPONSES.size()))));

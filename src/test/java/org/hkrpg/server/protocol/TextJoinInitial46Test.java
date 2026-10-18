@@ -37,6 +37,56 @@ class TextJoinInitial46Test {
     };
   }
 
+  private static TextJoinExcel avatarDefault(int id) {
+    // Pinned 4.6 rows 55-58 and 83-86: item IDs name default text, not avatars.
+    return emu.lunarcore.util.JsonUtils.decode(
+        "{\"TextJoinID\":" + id + ",\"DefaultItem\":" + id * 10
+            + ",\"IsOverride\":true,\"Type\":\"AvatarID\",\"TextJoinItemList\":["
+            + id * 10 + "]}", TextJoinExcel.class);
+  }
+
+  @Test void avatarDefaultsRemainClientTextWithoutInventingServerAvatarOverrides() throws Exception {
+    var map = GameData.getTextJoinExcelMap();
+    var previous = new ArrayList<>(map.values());
+    map.keySet().clear();
+    int[] ids = {55, 56, 57, 58, 83, 84, 85, 86};
+    for (int id : ids) map.add(avatarDefault(id));
+    try {
+      var reply = call(query(ids));
+      assertEquals(0, InitialData46Test.field(reply, "retcode"));
+      // Native AvatarID default factory resolves DefaultItem through TextJoinItem;
+      // a response row would instead mark server state and perform an AvatarID lookup.
+      assertEquals(0, reply.getRepeatedFieldCount(reply.getDescriptorForType().findFieldByNumber(13)));
+    } finally {
+      map.keySet().clear();
+      previous.forEach(map::add);
+    }
+  }
+
+  @Test void avatarDefaultsDoNotRemoveNormalSelectionsOrTheirDuplicates() throws Exception {
+    var map = GameData.getTextJoinExcelMap();
+    var previous = new ArrayList<>(map.values());
+    map.keySet().clear();
+    map.add(avatarDefault(55));
+    map.add(avatarDefault(86));
+    map.add(row(18, 181, 180));
+    map.add(row(19, 192, 190));
+    try {
+      var reply = call(query(55, 18, 86, 19, 18, 55));
+      assertEquals(0, InitialData46Test.field(reply, "retcode"));
+      var rows = (List<?>) reply.getField(reply.getDescriptorForType().findFieldByNumber(13));
+      assertEquals(3, rows.size());
+      for (int i = 0; i < rows.size(); i++) {
+        var info = (DynamicMessage) rows.get(i);
+        assertEquals(i == 1 ? 19 : 18, info.getField(info.getDescriptorForType().findFieldByNumber(10)));
+        assertEquals(i == 1 ? 192 : 181, info.getField(info.getDescriptorForType().findFieldByNumber(15)));
+      }
+    } finally {
+      map.keySet().clear();
+      previous.forEach(map::add);
+    }
+  }
+
   @Test void nativeQueryPreservesOrderDuplicatesAndActualConfiguredSelections() throws Exception {
     var map = GameData.getTextJoinExcelMap();
     var previous = new ArrayList<>(map.values());

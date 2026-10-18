@@ -10,6 +10,7 @@ import lombok.Getter;
 public class TextJoinExcel extends GameResource {
     private int TextJoinID;
     private int DefaultItem;
+    private String Type;
     private IntArrayList TextJoinItemList;
 
     @Override

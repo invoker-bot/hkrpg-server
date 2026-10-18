@@ -31,6 +31,10 @@ final class TextJoin46 {
         int id = (Integer) entry;
         if (id <= 0) throw new IllegalArgumentException("Invalid text join id");
         var excel = GameData.getTextJoinExcelMap().get(id);
+        // The client initializes AvatarID rows from DefaultItem's localized text.
+        // A returned row is an actual avatar override, which this read-only query
+        // does not persist. Leave that default intact instead of inventing an avatar.
+        if (excel != null && "AvatarID".equals(excel.getType())) continue;
         if (excel != null && excel.getTextJoinItemList() == null) {
           code = Retcode.REWARD_CONFIG_NOT_EXIST;
           break;
