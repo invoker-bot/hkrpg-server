@@ -8,7 +8,7 @@ import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.quest.QuestState;
 import java.util.*;
 
-/** Authored decimal stage-family prefixes, frozen against the actual accepted battle-start view. */
+/** Mainline event mappings and legacy stage-family prefixes, frozen at accepted battle start. */
 public final class MissionStageWins {
   private record Clause(int main, int prefix, int progress, int plane, int floor, String script) {}
 
@@ -64,7 +64,7 @@ public final class MissionStageWins {
               : !raid.matches(player))
           || target.definition() != definition
           || !target.clause().equals(clause(definition))
-          || !condition(definition, stage.getId(), plane, floor)) return false;
+          || !condition(definition, stage.getId(), world, plane, floor)) return false;
       var g = player.getGameplay();
       return g.getMainMissions().get(definition.getMainMissionID()) == target.main()
           && MissionStateRecords.mainDoing(player, definition.getMainMissionID())
@@ -96,7 +96,12 @@ public final class MissionStageWins {
         var g = player.getGameplay();
         for (var state : g.getSubMissions().values()) {
           var c = state == null ? null : GameplayDefinitions.subs.get(state.getQuestId());
-          if (condition(c, stage.getId(), player.getPlaneId(), player.getFloorId())
+          if (condition(
+                  c,
+                  stage.getId(),
+                  player.getWorldLevel(),
+                  player.getPlaneId(),
+                  player.getFloorId())
               && (raid == null || raid.owns(c.getMainMissionID()))
               && MissionStateRecords.doing(state, c.getId(), Math.max(1, c.getProgress()))
               && player.getMissionManager().canFinishFromAction(c.getId()))
@@ -132,11 +137,31 @@ public final class MissionStageWins {
         c.getProgress(),
         c.getLevelPlaneID(),
         c.getLevelFloorID(),
-        MissionStageScripts.signature(c));
+        script(c));
+  }
+
+  private static boolean mainline(MissionInfo.SubMissionInfo c) {
+    var main = GameData.getMainMissionExcelMap().get(c.getMainMissionID());
+    return main != null && "Main".equals(main.getType()) && !main.isInRaid();
+  }
+
+  private static String script(MissionInfo.SubMissionInfo c) {
+    if (!mainline(c) || c.getTask() == null) return MissionStageScripts.signature(c);
+    // Mainline presentation scripts run on the client. Their action shape must not gate
+    // the server's StageWin condition (the opening script even declares a legacy event).
+    // Retain the complete source in the battle snapshot so a reload cannot change it.
+    var source = c.getTask().getSourceDefinition();
+    return "Mission".equals(c.getTask().getType())
+            && source != null
+            && !source.isBlank()
+            && source.length() <= 1048576
+        ? "Main:" + source
+        : null;
   }
 
   static boolean repeatable(MissionInfo.SubMissionInfo c) {
     return supported(c)
+        && MissionStageScripts.signature(c) != null
         && GameData.getStageExcelMap().values().stream()
             .anyMatch(stage -> prefix(c.getParamInt1(), stage.getId()));
   }
@@ -147,11 +172,18 @@ public final class MissionStageWins {
         && Integer.toString(stage).startsWith(Integer.toString(authored));
   }
 
-  private static boolean condition(MissionInfo.SubMissionInfo c, int stage, int plane, int floor) {
+  private static boolean condition(
+      MissionInfo.SubMissionInfo c, int stage, int world, int plane, int floor) {
     return supported(c)
-        && prefix(c.getParamInt1(), stage)
+        && stageMatches(c, stage, world)
         && (c.getLevelPlaneID() == 0 || c.getLevelPlaneID() == plane)
         && (c.getLevelFloorID() == 0 || c.getLevelFloorID() == floor);
+  }
+
+  private static boolean stageMatches(MissionInfo.SubMissionInfo c, int stage, int world) {
+    if (!mainline(c)) return prefix(c.getParamInt1(), stage);
+    var mapped = SceneEventBattles.resolve(c.getParamInt1(), world);
+    return mapped != null && mapped.getId() == stage;
   }
 
   private static boolean supported(MissionInfo.SubMissionInfo c) {
@@ -175,7 +207,7 @@ public final class MissionStageWins {
         && c.getStoryLineIDList() != null
         && c.getStoryLineIDList().isEmpty()
         && c.getStoryTrialTask() == null
-        && MissionStageScripts.signature(c) != null
+        && script(c) != null
         && c.getMazePlaneID() == 0
         && c.getMazeFloorID() == 0
         && !c.isBackTrack();
