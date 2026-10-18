@@ -1,4 +1,6 @@
-# 客户端调试窗口
+# 客户端调试窗口（历史进程内实现）
+
+2026-10-18 后续状态：此 DLL 加载方案已撤回，当前原桌面入口改用 [独立客户端日志窗口](client-external-log-console.md)。下面保留原实现及栈溢出修复的历史证据，不再按这些步骤安装到实际客户端。
 
 2026-10-18 增加 `HKRPG Client Debug`：由 `StarRail.exe` 内部的线程调用 Windows `AllocConsole` 创建。继续双击原桌面 StarRail 图标；不需要额外启动器或服务端日志窗口。
 

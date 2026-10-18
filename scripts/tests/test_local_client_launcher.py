@@ -1,4 +1,4 @@
-"""启动前恢复被改名的调试 DLL；所有文件和进程均为隔离测试替身。"""
+"""独立客户端日志启动及旧调试 DLL 撤回；使用隔离文件和进程。"""
 import hashlib
 import ctypes
 import importlib.util
@@ -37,46 +37,77 @@ class LocalClientLauncherTest(unittest.TestCase):
         self.backup = self.root / 'version.dll'
         self.backup.write_bytes(b'verified console')
         self.manifest = self.root / 'patch-manifest.json'
-        self.data = {'schema': 1, 'clientRoot': str(self.client), 'clientFiles': self.files,
-                     'debugConsole': {'sha256': launcher.sha(self.backup), 'backupPath': 'version.dll'},
+        self.data = {'schema': 2, 'clientRoot': str(self.client), 'clientFiles': self.files,
+                     'debugConsole': {'mode': 'external', 'sha256': launcher.sha(self.backup), 'backupPath': 'version.dll'},
                      'service': {'readyUrl': 'http://127.0.0.1:18080/health/ready',
                                  'startCommand': 'docker compose up -d --wait'}}
         self.write_manifest()
         self.process = patch.object(launcher, 'client_running', return_value=False).start()
         self.ready = patch.object(launcher, 'require_ready').start()
         self.spawn = patch.object(launcher, 'launch_client', return_value=1234).start()
+        self.capture = patch.object(launcher, 'capture_client_log', return_value={'exists': False}).start()
+        self.log_spawn = patch.object(launcher, 'launch_console', return_value=8765).start()
         self.addCleanup(patch.stopall)
 
     def write_manifest(self):
         self.manifest.write_text(json.dumps(self.data), encoding='utf8')
 
-    def test_restore_from_stable_backup_before_detached_launch(self):
-        result = launcher.start(self.manifest)
-        self.assertEqual(self.backup.read_bytes(), (self.client / 'version.dll').read_bytes())
-        self.assertEqual('restored', result['console'])
-        self.spawn.assert_called_once_with(self.client.resolve())
-        self.assertEqual(1234, result['pid'])
+    def test_missing_proxy_is_not_restored_from_stable_or_numeric_backup(self):
+        suffix = self.client / 'version.dll.1234'
+        suffix.write_bytes(self.backup.read_bytes())
+        with patch.object(launcher, 'capture_client_log', return_value={'exists': False}, create=True), \
+             patch.object(launcher, 'launch_console', return_value=8765, create=True):
+            result = launcher.start(self.manifest)
+        self.assertFalse((self.client / 'version.dll').exists(),
+                         'Client startup must not reintroduce the in-process debugging DLL')
+        self.assertEqual('external', result['console'])
+        self.assertEqual(8765, result['consolePid'])
+        self.assertEqual(b'verified console', suffix.read_bytes())
 
-    def test_repair_only_restores_console_without_starting_game(self):
+    def test_known_proxy_is_preserved_but_no_longer_loaded(self):
+        target = self.client / 'version.dll'
+        target.write_bytes(self.backup.read_bytes())
+        with patch.object(launcher, 'capture_client_log', return_value={'exists': False}, create=True), \
+             patch.object(launcher, 'launch_console', return_value=8765, create=True):
+            result = launcher.start(self.manifest)
+        self.assertFalse(target.exists(), 'The known debugging proxy must be retired before game startup')
+        self.assertEqual(self.backup.read_bytes(), Path(result['retiredProxy']).read_bytes())
+        self.assertEqual('retired', result['proxy'])
+
+    def test_external_console_captures_before_launch_and_receives_client_pid(self):
+        events = []
+        self.capture.side_effect = lambda: events.append('snapshot') or {'exists': False}
+        self.spawn.side_effect = lambda root: events.append('client') or 1234
+        self.log_spawn.side_effect = lambda root, pid, snapshot: events.append('console') or 8765
+        result = launcher.start(self.manifest)
+        self.assertEqual(['snapshot', 'client', 'console'], events)
+        self.assertEqual('external', result['console'])
+        self.assertEqual(1234, result['pid'])
+        self.log_spawn.assert_called_once_with(self.client.resolve(), 1234, {'exists': False})
+
+    def test_repair_only_never_starts_client_or_console(self):
         result = launcher.start(self.manifest, repair_only=True)
         self.assertTrue(result['repairOnly'])
-        self.assertEqual('restored', result['console'])
-        self.assertEqual(self.backup.read_bytes(), (self.client / 'version.dll').read_bytes())
+        self.assertEqual('absent', result['proxy'])
+        self.assertFalse((self.client / 'version.dll').exists())
         self.spawn.assert_not_called()
+        self.capture.assert_not_called()
+        self.log_spawn.assert_not_called()
 
-    def test_second_launch_repairs_numeric_rename_without_touching_suffix(self):
-        launcher.start(self.manifest)
+    def test_numeric_rename_remains_archived_across_launches(self):
         suffix = self.client / 'version.dll.4294967295'
-        (self.client / 'version.dll').rename(suffix)
+        suffix.write_bytes(self.backup.read_bytes())
         self.backup.unlink()
-        launcher.start(self.manifest)
-        self.assertEqual(b'verified console', suffix.read_bytes())
-        self.assertEqual(suffix.read_bytes(), (self.client / 'version.dll').read_bytes())
+        for _ in range(2):
+            launcher.start(self.manifest)
+            self.assertFalse((self.client / 'version.dll').exists())
+            self.assertEqual(b'verified console', suffix.read_bytes())
 
     def test_dry_run_reports_repair_and_changes_nothing(self):
         before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
         result = launcher.start(self.manifest, dry_run=True)
-        self.assertEqual('would-restore', result['console'])
+        self.assertEqual('external', result['console'])
+        self.assertEqual('absent', result['proxy'])
         self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()})
         self.spawn.assert_not_called()
 
@@ -88,10 +119,13 @@ class LocalClientLauncherTest(unittest.TestCase):
         self.assertEqual(b'not ours', target.read_bytes())
         self.spawn.assert_not_called()
 
-    def test_existing_valid_dll_does_not_require_backup(self):
+    def test_existing_valid_proxy_is_retired_even_without_old_backup(self):
         (self.client / 'version.dll').write_bytes(self.backup.read_bytes())
         self.backup.unlink()
-        self.assertEqual('verified', launcher.start(self.manifest)['console'])
+        result = launcher.start(self.manifest)
+        self.assertEqual('retired', result['proxy'])
+        self.assertEqual(b'verified console', Path(result['retiredProxy']).read_bytes())
+        self.assertFalse((self.client / 'version.dll').exists())
 
     def test_changed_sdk_is_rejected_before_repair(self):
         path = self.client / 'StarRail_Data/Plugins/x86_64/AccountPlatNative.dll'
@@ -126,11 +160,12 @@ class LocalClientLauncherTest(unittest.TestCase):
 
     def test_unknown_suffix_and_corrupt_backup_do_not_become_executable(self):
         self.backup.write_bytes(b'corrupt')
-        (self.client / 'version.dll.123').write_bytes(b'foreign')
-        with self.assertRaisesRegex(ValueError, '恢复来源'):
-            launcher.start(self.manifest)
+        suffix = self.client / 'version.dll.123'
+        suffix.write_bytes(b'foreign')
+        launcher.start(self.manifest)
         self.assertFalse((self.client / 'version.dll').exists())
-        self.spawn.assert_not_called()
+        self.assertEqual(b'foreign', suffix.read_bytes())
+        self.assertEqual(b'corrupt', self.backup.read_bytes())
 
     def test_manifest_cannot_omit_core_or_escape_client_root(self):
         del self.data['clientFiles']['GameAssembly.dll']
@@ -140,17 +175,65 @@ class LocalClientLauncherTest(unittest.TestCase):
             launcher.start(self.manifest)
         self.spawn.assert_not_called()
 
-    def test_atomic_publish_never_replaces_file_created_concurrently(self):
-        real_link = launcher.os.link
-        def competing_link(source, target):
-            Path(target).write_bytes(b'created concurrently')
-            return real_link(source, target)
-        with patch.object(launcher.os, 'link', side_effect=competing_link):
+    def test_retirement_never_overwrites_concurrently_created_backup(self):
+        target = self.client / 'version.dll'
+        target.write_bytes(self.backup.read_bytes())
+        real_rename = Path.rename
+        def competing_rename(source, destination):
+            Path(destination).write_bytes(b'created concurrently')
+            return real_rename(source, destination)
+        with patch.object(Path, 'rename', new=competing_rename):
             with self.assertRaises(FileExistsError):
                 launcher.start(self.manifest)
-        self.assertEqual(b'created concurrently', (self.client / 'version.dll').read_bytes())
-        self.assertFalse(list(self.client.glob('.hkrpg-version-*')))
+        self.assertEqual(b'verified console', target.read_bytes())
         self.spawn.assert_not_called()
+
+    def test_replaced_proxy_is_restored_instead_of_archived_as_ours(self):
+        target = self.client / 'version.dll'
+        target.write_bytes(self.backup.read_bytes())
+        real_rename = Path.rename
+        def competing_rename(source, destination):
+            if source.resolve() == target.resolve():
+                target.write_bytes(b'foreign replacement')
+            return real_rename(source, destination)
+        with patch.object(Path, 'rename', new=competing_rename):
+            with self.assertRaisesRegex(ValueError, '发生变化'):
+                launcher.start(self.manifest)
+        self.assertEqual(b'foreign replacement', target.read_bytes())
+        self.spawn.assert_not_called()
+
+    def test_console_failure_preserves_successful_game_launch(self):
+        self.log_spawn.side_effect = OSError('reader unavailable')
+        result = launcher.start(self.manifest)
+        self.assertEqual(1234, result['pid'])
+        self.assertEqual('reader unavailable', result['consoleWarning'])
+        self.assertNotIn('consolePid', result)
+        self.spawn.assert_called_once()
+
+    def test_snapshot_failure_still_starts_game_but_never_replays_unbounded_old_logs(self):
+        self.capture.side_effect = PermissionError('log unavailable')
+        result = launcher.start(self.manifest)
+        self.assertEqual(1234, result['pid'])
+        self.assertEqual('log unavailable', result['consoleWarning'])
+        self.spawn.assert_called_once()
+        self.log_spawn.assert_not_called()
+
+    def test_legacy_manifest_is_rejected_without_reintroducing_proxy(self):
+        self.data['schema'] = 1
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, '版本 2'):
+            launcher.start(self.manifest)
+        self.assertFalse((self.client / 'version.dll').exists())
+        self.spawn.assert_not_called()
+
+    def test_dry_run_preserves_known_proxy_and_reports_retirement(self):
+        target = self.client / 'version.dll'
+        target.write_bytes(self.backup.read_bytes())
+        result = launcher.start(self.manifest, dry_run=True)
+        self.assertEqual('would-retire', result['proxy'])
+        self.assertEqual(b'verified console', target.read_bytes())
+        self.spawn.assert_not_called()
+        self.capture.assert_not_called()
 
     def test_ready_response_must_be_explicit_true(self):
         for body in (b'{"ready": false}', b'{"ready": "true"}', b'{}', b'[]', b'not-json'):
@@ -218,6 +301,75 @@ class LocalClientLauncherTest(unittest.TestCase):
             server.shutdown()
             server.server_close()
             worker.join(timeout=5)
+
+
+@unittest.skipUnless(os.name == 'nt', 'Windows separate console process')
+class ExternalConsoleLaunchTest(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import Mock
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.helper = Mock()
+        self.helper.get_process_created.return_value = 133456789012345678
+        self.process = Mock()
+        self.process.pid = 4321
+        self.process.poll.return_value = None
+        self.mock_helper = patch.object(launcher, 'console_helper', return_value=self.helper).start()
+        self.environment = patch.dict(os.environ, {'LOCALAPPDATA': str(self.root)}).start()
+        self.spawn = patch.object(launcher.subprocess, 'Popen').start()
+        self.addCleanup(patch.stopall)
+        self.captured = {}
+
+    def publish_ready(self, arguments, **kwargs):
+        self.captured.update(arguments=arguments, options=kwargs)
+        ready = Path(arguments[arguments.index('--ready-file') + 1])
+        ready.write_text(json.dumps({'ready': True, 'pid': 4321, 'clientPid': 1234}), encoding='utf-8')
+        return self.process
+
+    def test_separate_console_confirms_its_own_pid_without_inherited_capture_pipes(self):
+        self.spawn.side_effect = self.publish_ready
+        snapshot = {'exists': False}
+        self.assertEqual(4321, launcher.launch_console(self.root, 1234, snapshot))
+        options = self.captured['options']
+        self.assertEqual(subprocess.CREATE_NEW_CONSOLE, options['creationflags'])
+        self.assertEqual(subprocess.DEVNULL, options['stdin'])
+        self.assertEqual(subprocess.DEVNULL, options['stdout'])
+        self.assertEqual(subprocess.DEVNULL, options['stderr'])
+        self.assertTrue(options['close_fds'])
+        arguments = self.captured['arguments']
+        self.assertEqual('133456789012345678', arguments[arguments.index('--process-created') + 1])
+        self.assertEqual(snapshot, json.loads(arguments[arguments.index('--snapshot-json') + 1]))
+        self.assertFalse(list((self.root / 'HKRPG').glob('console-ready-*.json')))
+        self.process.terminate.assert_not_called()
+
+    def test_wrong_reader_identity_is_rejected_without_terminating_game_or_reader(self):
+        def wrong_identity(arguments, **kwargs):
+            process = self.publish_ready(arguments, **kwargs)
+            ready = Path(arguments[arguments.index('--ready-file') + 1])
+            ready.write_text(json.dumps({'ready': True, 'pid': 4321, 'clientPid': 999}), encoding='utf-8')
+            return process
+        self.spawn.side_effect = wrong_identity
+        with self.assertRaisesRegex(RuntimeError, '进程核对失败'):
+            launcher.launch_console(self.root, 1234, {'exists': False})
+        self.process.terminate.assert_not_called()
+        self.process.kill.assert_not_called()
+
+    def test_exited_reader_is_reported_without_touching_the_game(self):
+        self.spawn.return_value = self.process
+        self.process.poll.return_value = 1
+        with self.assertRaisesRegex(RuntimeError, '提前退出'):
+            launcher.launch_console(self.root, 1234, {'exists': False})
+        self.process.terminate.assert_not_called()
+        self.process.kill.assert_not_called()
+
+    def test_reader_timeout_is_bounded_and_does_not_terminate_a_process(self):
+        self.spawn.return_value = self.process
+        with patch.object(launcher.time, 'monotonic', side_effect=[0, 9]):
+            with self.assertRaisesRegex(RuntimeError, '超时'):
+                launcher.launch_console(self.root, 1234, {'exists': False})
+        self.process.terminate.assert_not_called()
+        self.process.kill.assert_not_called()
 
 
 @unittest.skipUnless(os.name == 'nt', 'Windows ShellExecute contract')

@@ -1,17 +1,19 @@
-"""独立的本地客户端启动检查；仅恢复清单确认的调试 DLL。"""
+"""本地客户端启动检查与独立日志窗口；不向游戏进程加载调试 DLL。"""
 import argparse
 import csv
 import ctypes
 from ctypes import wintypes
 import hashlib
 import io
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
 import sys
-import tempfile
+import time
+import uuid
 import urllib.request
 from urllib.parse import urlsplit
 
@@ -78,11 +80,13 @@ def checked_path(root, relative):
 
 def load_manifest(path):
     data = json.loads(path.read_text(encoding='utf-8-sig'))
-    if data.get('schema') != 1 or set(data.get('clientFiles', {})) != REQUIRED_FILES:
-        raise ValueError('客户端清单必须完整包含已核对的 7 个文件')
+    if data.get('schema') != 2 or set(data.get('clientFiles', {})) != REQUIRED_FILES:
+        raise ValueError('客户端清单必须为版本 2，并完整包含已核对的 7 个文件')
     root = Path(data['clientRoot'])
     if not root.is_absolute() or not root.is_dir():
         raise ValueError('客户端清单目录无效')
+    if data.get('debugConsole', {}).get('mode') != 'external':
+        raise ValueError('仅支持独立客户端日志窗口')
     digests = list(data['clientFiles'].values()) + [data['debugConsole']['sha256']]
     if any(not isinstance(value, str) or not re.fullmatch('[0-9a-f]{64}', value) for value in digests):
         raise ValueError('客户端清单 SHA256 无效')
@@ -129,7 +133,7 @@ def launch_client(root):
     info.lpVerb = 'open'
     info.lpFile = str(root / 'StarRail.exe')
     info.lpDirectory = str(root)
-    info.nShow = 1  # SW_SHOWNORMAL; the game owns its debug console.
+    info.nShow = 1  # SW_SHOWNORMAL; client logging runs in a separate process.
     if not shell.ShellExecuteExW(ctypes.byref(info)):
         error = ctypes.get_last_error()
         if error == 1223:  # ERROR_CANCELLED
@@ -146,58 +150,98 @@ def launch_client(root):
         kernel.CloseHandle(info.hProcess)
 
 
-def restore_console(root, backup, expected, *, dry_run=False):
+def retire_console_proxy(root, expected, *, dry_run=False):
     target = checked_path(root, 'version.dll')
-    if target.exists():
-        if sha(target) != expected:
-            raise ValueError('已有其他 version.dll，拒绝覆盖或启动')
-        return 'verified'
-    candidates = [backup]
-    candidates.extend(p for p in sorted(root.glob('version.dll.*'))
-                      if re.fullmatch(r'version\.dll\.[0-9]{1,10}', p.name)
-                      and int(p.suffix[1:]) <= 0xffffffff)
-    source = next((p for p in candidates
-                   if p.is_file() and not p.is_symlink() and sha(p) == expected), None)
-    if source is None:
-        raise ValueError('没有 SHA256 匹配的 version.dll 恢复来源')
+    if not target.exists():
+        return {'proxy': 'absent'}
+    if sha(target) != expected:
+        raise ValueError('已有其他 version.dll，拒绝移动或启动')
     if dry_run:
-        return 'would-restore'
-    # Publish a complete file atomically, with no replacement if another writer wins.
-    # NTFS hard links work without administrator rights; unlinking the temporary name
-    # leaves one ordinary file at version.dll.
-    temporary = None
+        return {'proxy': 'would-retire'}
+    # A same-directory rename preserves the exact original bytes on this volume.
+    # Windows rename refuses to replace a destination created concurrently.
+    retired = checked_path(root, 'version.dll.hkrpg-retired-' + uuid.uuid4().hex)
+    require_stopped()
+    target.rename(retired)
+    if sha(retired) != expected:
+        # If another writer replaced the source after validation, put it back;
+        # never replace a newly appeared file at the original name.
+        retired.rename(target)
+        raise ValueError('version.dll 在检查后发生变化，已恢复原位置')
+    return {'proxy': 'retired', 'retiredProxy': str(retired)}
+
+
+def console_helper():
+    path = Path(__file__).with_name('client-log-console.py')
+    spec = importlib.util.spec_from_file_location('hkrpg_client_log_console', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def capture_client_log():
+    return console_helper().capture_log_snapshot()
+
+
+def launch_console(root, pid, snapshot):
+    helper = console_helper()
+    created = helper.get_process_created(pid, root)
+    directory = Path(os.environ['LOCALAPPDATA']) / 'HKRPG'
+    directory.mkdir(parents=True, exist_ok=True)
+    ready = directory / ('console-ready-' + uuid.uuid4().hex + '.json')
+    arguments = [sys.executable, '-X', 'utf8', str(Path(__file__).with_name('client-log-console.py')),
+                 '--pid', str(pid), '--client-root', str(root), '--process-created', str(created),
+                 '--snapshot-json', json.dumps(snapshot, separators=(',', ':')), '--ready-file', str(ready)]
+    process = subprocess.Popen(arguments, creationflags=subprocess.CREATE_NEW_CONSOLE,
+                               stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL, close_fds=True)
     try:
-        with tempfile.NamedTemporaryFile(prefix='.hkrpg-version-', suffix='.tmp',
-                                         dir=root, delete=False) as outgoing:
-            temporary = Path(outgoing.name)
-            with source.open('rb') as incoming:
-                while chunk := incoming.read(1024 * 1024):
-                    outgoing.write(chunk)
-            outgoing.flush()
-            os.fsync(outgoing.fileno())
-        if sha(temporary) != expected:
-            raise ValueError('version.dll 恢复来源在读取期间发生变化')
-        require_stopped()
-        os.link(temporary, target)
+        deadline = time.monotonic() + 8
+        while time.monotonic() < deadline:
+            if ready.exists():
+                try:
+                    result = json.loads(ready.read_text(encoding='utf-8'))
+                except (ValueError, PermissionError):
+                    time.sleep(.05)
+                    continue
+                if result.get('ready') is not True:
+                    raise RuntimeError('客户端日志窗口未就绪：' + str(result.get('error', '未知错误')))
+                if result.get('pid') != process.pid or result.get('clientPid') != pid:
+                    raise RuntimeError('客户端日志窗口进程核对失败')
+                return process.pid
+            if process.poll() is not None:
+                raise RuntimeError('客户端日志窗口提前退出，游戏进程未停止')
+            time.sleep(.05)
+        raise RuntimeError('客户端日志窗口启动超时，游戏进程未停止')
     finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-    return 'restored'
+        ready.unlink(missing_ok=True)
 
 
 def start(manifest, *, dry_run=False, repair_only=False):
-    data, root, backup = load_manifest(Path(manifest).resolve())
+    data, root, _backup = load_manifest(Path(manifest).resolve())
     require_stopped()
     require_ready(data['service'])
     for relative, expected in data['clientFiles'].items():
         if sha(checked_path(root, relative)) != expected:
             raise ValueError('客户端文件已变化，拒绝覆盖或启动: ' + relative)
-    state = restore_console(root, backup, data['debugConsole']['sha256'], dry_run=dry_run)
-    result = {'dryRun': dry_run, 'repairOnly': repair_only, 'console': state,
-              'clientRoot': str(root), 'clientFilesVerified': len(REQUIRED_FILES)}
+    state = retire_console_proxy(root, data['debugConsole']['sha256'], dry_run=dry_run)
+    result = {'dryRun': dry_run, 'repairOnly': repair_only, 'console': 'external',
+              'clientRoot': str(root), 'clientFilesVerified': len(REQUIRED_FILES), **state}
     if not dry_run and not repair_only:
+        snapshot = None
+        try:
+            snapshot = capture_client_log()
+        except Exception as error:
+            result['consoleWarning'] = str(error)
         require_stopped()
         result['pid'] = launch_client(root)
+        if snapshot is not None:
+            try:
+                result['consolePid'] = launch_console(root, result['pid'], snapshot)
+            except Exception as error:
+                # Logging is optional. Never report game launch failure or
+                # terminate it on a reader failure; skip readers without a baseline.
+                result['consoleWarning'] = str(error)
     return result
 
 
