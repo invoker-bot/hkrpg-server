@@ -197,6 +197,26 @@ class ReaderLifecycleTest(unittest.TestCase):
         self.assertTrue(self.process.closed)
         self.assertTrue(self.output.closed_by_reader)
 
+    def test_wait_capture_starts_after_ready_and_stops_with_reader(self):
+        from unittest.mock import Mock
+        capture = Mock()
+        def start(pid, root, created, journal):
+            self.assertTrue(json.loads(self.ready.read_text())['ready'])
+            self.assertEqual((1234, self.root, 9876), (pid, root, created))
+            self.assertEqual(self.root, Path(journal).parent)
+            return capture
+        with patch.object(console, 'start_wait_capture', side_effect=start, create=True) as factory:
+            self.assertEqual(0, self.run_reader())
+        factory.assert_called_once()
+        capture.stop.assert_called_once()
+
+    def test_wait_capture_failure_does_not_stop_game_or_log_reader(self):
+        with patch.object(console, 'start_wait_capture', side_effect=OSError('private detail'), create=True):
+            self.assertEqual(0, self.run_reader())
+        self.assertIn('Wait-state capture unavailable', self.output.getvalue())
+        self.assertNotIn('private detail', self.output.getvalue())
+        self.assertIn('Client exited', self.output.getvalue())
+
     def test_exit_drains_beyond_two_polls_even_when_filtered_chunks_are_empty(self):
         self.log.write_bytes(b'secret=redacted\n' * (3 * console.MAX_POLL // 16 + 50)
                              + b'fatal exit marker\n')
@@ -299,6 +319,24 @@ int WINAPI WinMain(HINSTANCE a,HINSTANCE b,LPSTR c,int d) {
             self.assertFalse(process.alive())
             self.assertEqual(0,process.exit_code())
         self.assertIsNone(process.handle)
+
+    def test_optional_memory_handle_reads_fixture_and_keeps_identity_checks(self):
+        spec = importlib.util.spec_from_file_location('wait_native_test', ROOT / 'scripts/client-wait-state.py')
+        wait = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(wait)
+        created = console.get_process_created(self.game.pid, self.root)
+        with self.assertRaisesRegex(console.DebugUnavailable, 'identity changed'):
+            console.ClientProcess(self.game.pid, self.root, created + 1, memory_read=True)
+        with console.ClientProcess(self.game.pid, self.root, created, memory_read=True) as process:
+            memory = wait.WindowsMemory(process, self.root)
+            modules = (ctypes.wintypes.HMODULE * 1024)()
+            needed = ctypes.wintypes.DWORD()
+            self.assertTrue(memory.psapi.EnumProcessModulesEx(process.handle, modules,
+                ctypes.sizeof(modules), ctypes.byref(needed), 3))
+            self.assertEqual(b'MZ', memory.read(modules[0], 2))
+            with self.assertRaises(wait.NotReady): memory.read(1, 8)
+            with self.assertRaises(wait.NotReady): memory.image_base()  # No pinned game DLL in the fixture.
+            self.assertTrue(process.alive())
 
     def spawn_reader(self):
         log=self.root/'Player.log'

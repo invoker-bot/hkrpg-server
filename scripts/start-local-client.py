@@ -103,7 +103,7 @@ def load_manifest(path):
     return data, root.resolve(), backup
 
 
-def launch_client(root):
+def _shell_launch(file, directory, *, parameters=None, verb='open', show=1):
     if os.name != 'nt':
         raise RuntimeError('仅支持 Windows 客户端')
 
@@ -130,10 +130,11 @@ def launch_client(root):
     # Normal Shell open honors the EXE's requireAdministrator manifest and UAC.
     # Keep a handle for its PID; finish dispatch before this short-lived launcher exits.
     info.fMask = 0x40 | 0x100  # SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC
-    info.lpVerb = 'open'
-    info.lpFile = str(root / 'StarRail.exe')
-    info.lpDirectory = str(root)
-    info.nShow = 1  # SW_SHOWNORMAL; client logging runs in a separate process.
+    info.lpVerb = verb
+    info.lpFile = str(file)
+    info.lpParameters = parameters
+    info.lpDirectory = str(directory)
+    info.nShow = show
     if not shell.ShellExecuteExW(ctypes.byref(info)):
         error = ctypes.get_last_error()
         if error == 1223:  # ERROR_CANCELLED
@@ -148,6 +149,31 @@ def launch_client(root):
         return pid
     finally:
         kernel.CloseHandle(info.hProcess)
+
+
+def launch_client(root):
+    return _shell_launch(root / 'StarRail.exe', root)
+
+
+def is_administrator():
+    if os.name != 'nt':
+        raise RuntimeError('仅支持 Windows 客户端')
+    shell = ctypes.WinDLL('shell32', use_last_error=True)
+    shell.IsUserAnAdmin.argtypes = []
+    shell.IsUserAnAdmin.restype = wintypes.BOOL
+    return bool(shell.IsUserAnAdmin())
+
+
+def relaunch_as_admin(manifest):
+    # Move the game's existing UAC boundary to its launcher so the independent
+    # diagnostic reader inherits the same integrity level. Never bypass UAC.
+    powershell = Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe'
+    arguments = ['-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden',
+                 '-File', str(ROOT / 'scripts/start-local-client.ps1'),
+                 '-Manifest', str(Path(manifest).resolve()), '-PythonExecutable', sys.executable,
+                 '-ElevationAttempted']
+    return _shell_launch(powershell, ROOT, parameters=subprocess.list2cmdline(arguments),
+                         verb='runas', show=0)
 
 
 def retire_console_proxy(root, expected, *, dry_run=False):
@@ -251,9 +277,18 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--dry-run', action='store_true')
     mode.add_argument('--repair-only', action='store_true')
+    parser.add_argument('--elevated-start', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
     try:
-        print(json.dumps(start(args.manifest, dry_run=args.dry_run, repair_only=args.repair_only), ensure_ascii=True))
+        if not args.dry_run and not args.repair_only and not is_administrator():
+            if args.elevated_start:
+                raise RuntimeError('启动器未取得管理员权限，已停止重试；游戏未启动。')
+            start(args.manifest, dry_run=True)  # Validate files and server before the UAC prompt.
+            result = {'elevatedLauncherPid': relaunch_as_admin(args.manifest),
+                      'clientStarted': False, 'delegated': True}
+        else:
+            result = start(args.manifest, dry_run=args.dry_run, repair_only=args.repair_only)
+        print(json.dumps(result, ensure_ascii=True))
         return 0
     except Exception as error:
         print(json.dumps({'error': str(error)}, ensure_ascii=True))

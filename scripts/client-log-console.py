@@ -4,6 +4,7 @@ import ctypes
 from ctypes import wintypes
 from datetime import datetime, timezone
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -243,7 +244,7 @@ class LogTail:
 
 
 class ClientProcess:
-    def __init__(self, pid, client_root, expected_created=None):
+    def __init__(self, pid, client_root, expected_created=None, *, memory_read=False):
         if os.name != 'nt':
             raise DebugUnavailable('The client debug console requires Windows.')
         if type(pid) is not int or not 0 < pid <= 0xffffffff:
@@ -263,7 +264,8 @@ class ClientProcess:
         k.GetExitCodeProcess.restype = wintypes.BOOL
         k.CloseHandle.argtypes = [wintypes.HANDLE]
         k.CloseHandle.restype = wintypes.BOOL
-        self.handle = k.OpenProcess(PROCESS_ACCESS, False, pid)
+        access = PROCESS_ACCESS | (0x410 if memory_read else 0)  # VM_READ and QUERY_INFORMATION only.
+        self.handle = k.OpenProcess(access, False, pid)
         if not self.handle:
             raise _windows_error('Cannot inspect the client process; game remains running')
         try:
@@ -345,11 +347,20 @@ def _ready(path, payload):
         os.fsync(stream.fileno())
 
 
+def start_wait_capture(pid, client_root, created, journal):
+    path = Path(__file__).with_name('client-wait-state.py')
+    spec = importlib.util.spec_from_file_location('hkrpg_client_wait_state', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    destination = Path(journal).with_name(Path(journal).stem.replace('client-debug-', 'client-waits-') + '.jsonl')
+    return module.Capture(pid, client_root, created, destination, ClientProcess)
+
+
 def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_path=None,
                output_directory=None, process_factory=ClientProcess,
                console_factory=open_console, pause=time.sleep):
     """Overrides are test injection only; the production CLI exposes none of them."""
-    output = journal = process = None
+    output = journal = process = capture = None
     ready = None
     ready_written = False
     def emit(line):
@@ -376,6 +387,11 @@ def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_p
         emit('Closing this window or pressing Ctrl+C stops only this reader.')
         _ready(ready, {'ready': True, 'pid': os.getpid(), 'clientPid': pid})
         ready_written = True
+        try:
+            capture = start_wait_capture(pid, client_root, process_created, directory / name)
+            emit('Wait-state capture: separate client-waits journal; read-only, up to 10 minutes.')
+        except Exception:
+            emit('Wait-state capture unavailable; ordinary client logging continues.')
         for line in first_lines:
             emit('[Unity] ' + line)
         while True:
@@ -405,6 +421,8 @@ def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_p
             pass
         return 1
     finally:
+        if capture is not None:
+            capture.stop()
         if process is not None:
             process.close()
         if journal is not None:

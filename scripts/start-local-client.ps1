@@ -4,6 +4,7 @@ param(
     [string]$PythonExecutable = '',
     [switch]$DryRun,
     [switch]$InstallShortcut,
+    [switch]$ElevationAttempted,
     [string]$ShortcutPath = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'StarRail.exe.lnk')
 )
 $ErrorActionPreference = 'Stop'
@@ -26,6 +27,7 @@ try {
     $PythonExecutable = (Resolve-Path -LiteralPath $PythonExecutable).Path
     $scriptPath = Join-Path $launcherDirectory 'start-local-client.py'
     $scriptArgs = @('-X', 'utf8', $scriptPath, '--manifest', $Manifest)
+    if ($ElevationAttempted) { $scriptArgs += '--elevated-start' }
     if ($DryRun -or $InstallShortcut) { $scriptArgs += '--dry-run' }
     $resultText = (& $PythonExecutable @scriptArgs 2>&1 | Out-String).Trim()
     $launcherExitCode = $LASTEXITCODE

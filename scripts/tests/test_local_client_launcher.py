@@ -372,6 +372,60 @@ class ExternalConsoleLaunchTest(unittest.TestCase):
         self.process.kill.assert_not_called()
 
 
+class LauncherElevationTest(unittest.TestCase):
+    def run_main(self, arguments, admin, *, failure=None):
+        import contextlib
+        import io
+        with patch.object(sys, 'argv', ['launcher', *arguments]), \
+                patch.object(launcher, 'is_administrator', return_value=admin), \
+                patch.object(launcher, 'relaunch_as_admin', return_value=4321) as elevate, \
+                patch.object(launcher, 'start', return_value={'pid': 123}, side_effect=failure) as start, \
+                contextlib.redirect_stdout(io.StringIO()) as output:
+            code = launcher.main()
+        return code, json.loads(output.getvalue()), start, elevate
+
+    def test_normal_user_validates_before_single_elevation_and_does_not_launch_game_twice(self):
+        import contextlib
+        import io
+        with patch.object(sys, 'argv', ['launcher', '--manifest', str(ROOT / 'example.json')]), \
+                patch.object(launcher, 'is_administrator', return_value=False, create=True), \
+                patch.object(launcher, 'relaunch_as_admin', return_value=4321, create=True) as elevate, \
+                patch.object(launcher, 'start', return_value={}) as start, \
+                contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(0, launcher.main())
+        start.assert_called_once_with(ROOT / 'example.json', dry_run=True)
+        elevate.assert_called_once_with(ROOT / 'example.json')
+        self.assertFalse(json.loads(output.getvalue())['clientStarted'])
+
+    def test_already_elevated_launch_does_not_prompt_or_start_twice(self):
+        code, result, start, elevate = self.run_main(['--elevated-start'], True)
+        self.assertEqual(0, code)
+        self.assertEqual(123, result['pid'])
+        start.assert_called_once_with(ROOT / '.local/client/patch-manifest.json', dry_run=False, repair_only=False)
+        elevate.assert_not_called()
+
+    def test_failed_elevation_marker_cannot_prompt_in_a_loop(self):
+        code, result, start, elevate = self.run_main(['--elevated-start'], False)
+        self.assertEqual(1, code)
+        self.assertIn('停止重试', result['error'])
+        start.assert_not_called()
+        elevate.assert_not_called()
+
+    def test_preflight_failure_never_requests_elevation(self):
+        code, result, start, elevate = self.run_main([], False, failure=ValueError('preflight failed'))
+        self.assertEqual(1, code)
+        self.assertEqual('preflight failed', result['error'])
+        elevate.assert_not_called()
+
+    def test_readonly_preview_and_repair_keep_existing_non_elevated_path(self):
+        for option in ('--dry-run', '--repair-only'):
+            with self.subTest(option=option):
+                code, _, start, elevate = self.run_main([option], False)
+                self.assertEqual(0, code)
+                start.assert_called_once()
+                elevate.assert_not_called()
+
+
 @unittest.skipUnless(os.name == 'nt', 'Windows ShellExecute contract')
 class ShellExecuteLaunchTest(unittest.TestCase):
     def setUp(self):
@@ -410,6 +464,19 @@ class ShellExecuteLaunchTest(unittest.TestCase):
         self.shell.ShellExecuteExW.assert_called_once()
         self.kernel.CloseHandle.assert_called_once_with(1357)
         self.create_process.assert_not_called()
+
+    def test_elevated_launcher_uses_fixed_wrapper_hidden_and_explicit_paths(self):
+        manifest = self.client / 'patch manifest.json'
+        self.assertEqual(2468, launcher.relaunch_as_admin(manifest))
+        self.assertEqual('runas', self.captured['verb'])
+        self.assertEqual(0, self.captured['show'])
+        self.assertTrue(self.captured['file'].lower().endswith('windowspowershell\\v1.0\\powershell.exe'))
+        self.assertEqual(str(ROOT), self.captured['directory'])
+        expected = ['-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden',
+                    '-File', str(ROOT / 'scripts/start-local-client.ps1'), '-Manifest', str(manifest.resolve()),
+                    '-PythonExecutable', sys.executable, '-ElevationAttempted']
+        self.assertEqual(subprocess.list2cmdline(expected), self.captured['parameters'])
+        self.kernel.CloseHandle.assert_called_once_with(1357)
 
     def test_uac_cancel_has_clear_message_and_never_retries(self):
         self.shell.ShellExecuteExW.side_effect = None
