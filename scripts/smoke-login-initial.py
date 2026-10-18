@@ -90,6 +90,8 @@ def run(jar, output):
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     javac = java.with_name('javac.exe')
     helper = ROOT / 'scripts/fixtures/java/org/hkrpg/server/protocol/NativeLoginInitialProbe.java'
+    input_paths = [Path(__file__).resolve(), helper]
+    source_hashes = {str(path.relative_to(ROOT)): sha(path) for path in input_paths}
     helpers = directory / 'helpers'
     helpers.mkdir()
     subprocess.run([str(javac), '-encoding', 'UTF-8', '-cp', str(jar), '-d', str(helpers), str(helper)],
@@ -116,8 +118,29 @@ def run(jar, output):
 
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     summaries, identities, normal_stops, boundaries = [], [], 0, []
+    policy_path = directory / 'data/ChessRogueGuideRoutes.json'
+    policy_snapshots = []
+
+    def check_policy(stage):
+        content = policy_path.read_bytes()
+        policy = json.loads(content)
+        snapshot = dict(stage=stage, enabled=policy.get('enabled'),
+                        sha256=hashlib.sha256(content).hexdigest())
+        policy_snapshots.append(snapshot)
+        if snapshot['enabled'] is not False:
+            raise RuntimeError('隔离 ChessRogueGuideRoutes 实际配置必须保持 enabled=false')
+        if snapshot['sha256'] != policy_snapshots[0]['sha256']:
+            raise RuntimeError('隔离 ChessRogueGuideRoutes 在验收期间被修改')
+
+    def check_inputs():
+        current = {str(path.relative_to(ROOT)): sha(path) for path in input_paths}
+        if current != source_hashes:
+            raise RuntimeError('隔离初始化探针源码在验收期间被修改')
+        return current
+
     try:
         for iteration in range(2):
+            check_inputs()
             with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
                 process = subprocess.Popen([str(java), '-Xmx1536m', '-Dfile.encoding=UTF-8',
                     '-Dio.netty.eventLoopThreads=2', '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback'),
@@ -136,6 +159,7 @@ def run(jar, output):
                         if time.monotonic() >= deadline:
                             raise RuntimeError('隔离服务启动超时: ' + str(directory))
                         time.sleep(.2)
+                    check_policy(f'ready-{iteration}')
                     login = request('/hkrpg_cn/mdk/shield/api/login', {
                         'account': 'synthetic-initial-query', 'password': 'first' if iteration == 0 else 'different'})
                     assert login['retcode'] == 0
@@ -161,6 +185,8 @@ def run(jar, output):
                     summaries.append(json.loads(next(line for line in probe.stdout.splitlines()
                                                      if line.startswith('{"'))))
                     assert summaries[-1]['passed']
+                    assert summaries[-1]['rogueInfoRetcodeZero'] is True
+                    assert summaries[-1]['chessRogueInitialProfile']['verified'] is True
                 finally:
                     if process.poll() is None:
                         try:
@@ -169,6 +195,7 @@ def run(jar, output):
                             process.wait(timeout=30)
                             assert process.returncode == (1000 if os.name == 'nt' else 1000 % 256)
                             normal_stops += 1
+                            check_policy(f'stopped-{iteration}')
                         finally:
                             if process.poll() is None:
                                 process.terminate()
@@ -177,15 +204,23 @@ def run(jar, output):
         assert normal_stops == 2 and identities[0] == identities[1]
         assert summaries[0].pop('playerUid') == summaries[1].pop('playerUid')
         assert sha(jar) == digest and sha(config) == config_sha
+        final_source_hashes = check_inputs()
         report = dict(passed=True, runtimeSHA256=digest, runtimeDirectory=str(directory),
                       configSHA256=config_sha, normalStops=normal_stops,
                       sameAccountWithDifferentPasswordAfterH2Restart=True, snapshots=summaries,
                       samePlayerUidAfterH2Restart=True,
                       transportBoundaries=boundaries,
+                      sourceInputsBefore=source_hashes, sourceInputsAfter=final_source_hashes,
+                      sourceInputsUnchanged=True,
+                      chessRoguePolicy=dict(path=str(policy_path), enabled=False,
+                          snapshots=policy_snapshots, unchanged=True),
+                      chessRogueFreshProfileVerifiedBeforeAndAfterH2Restart=True,
                       credentialsOmitted=True, clientLoginVerified=False)
     except Exception as error:
         report = dict(passed=False, runtimeSHA256=digest, runtimeDirectory=str(directory),
                       normalStops=normal_stops, transportBoundaries=boundaries,
+                      sourceInputsBefore=source_hashes,
+                      chessRoguePolicy=dict(path=str(policy_path), snapshots=policy_snapshots),
                       error=str(error), clientLoginVerified=False)
         raise
     finally:

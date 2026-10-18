@@ -51,6 +51,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
       Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2));
   // Additional supported snapshots observed in the second real initialization burst.
   private static final Map<Integer, String> FOLLOWUP_RESPONSES = Map.ofEntries(
+      Map.entry(1825, "GetRogueInfoScRsp"),
+      Map.entry(5435, "ChessRogueQueryScRsp"),
       Map.entry(825, "GetMailScRsp"),
       Map.entry(2116, "GetFirstTalkNpcScRsp"),
       Map.entry(1525, "GetShopListScRsp"),
@@ -86,6 +88,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private final Set<Integer> received = new HashSet<>();
   private final String account, token;
   private boolean queriesSent;
+  private boolean rogueInfoRetcodeVerified;
+  private boolean chessRogueInitialProfileVerified;
   private int rejectedResponseCommand;
   private int playerUid;
   private long initialStartedAt;
@@ -187,7 +191,14 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var retcode = data.getDescriptorForType().findFieldByName("retcode");
           if (retcode != null) require(data.getField(retcode).equals(0),
               "Follow-up response rejected: " + frame.cmdId() + " retcode=" + data.getField(retcode));
-          if (followup.equals("GetShopListScRsp")) {
+          if (followup.equals("GetRogueInfoScRsp")) {
+            require(retcode != null, "Rogue information result field is missing");
+            rogueInfoRetcodeVerified = true;
+          } else if (followup.equals("ChessRogueQueryScRsp")) {
+            require(retcode != null, "Chess Rogue query result field is missing");
+            requireInitialChessProfile(data);
+            chessRogueInitialProfileVerified = true;
+          } else if (followup.equals("GetShopListScRsp")) {
             require(data.getField(data.getDescriptorForType().findFieldByName("shop_type")).equals(1),
                 "Shop query type was changed");
             var rows = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByName("shop_list"));
@@ -323,6 +334,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
               && Long.remainderUnsigned(nameHash + openingVideoPrimaryKey, videoModulus)
                   == 26_743_203_654_499_374L,
               "Opening movie cannot derive its native decoder value from both replies");
+          require(rogueInfoRetcodeVerified && chessRogueInitialProfileVerified,
+              "Rogue initial query contracts were not verified");
           initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
           require(initialCompletedMillis <= 4000,
               "Initial query burst exceeded 4000 ms: " + initialCompletedMillis);
@@ -352,6 +365,42 @@ public final class NativeLoginInitialProbe implements KcpListener {
     var field = parent.getDescriptorForType().findFieldByName(name);
     require(field != null && parent.hasField(field), "Missing native initial container " + name);
     return (DynamicMessage) parent.getField(field);
+  }
+
+  private static DynamicMessage nativeChild(DynamicMessage parent, int number, String type) {
+    var field = parent.getDescriptorForType().findFieldByNumber(number);
+    require(field != null && parent.hasField(field), "Missing Chess Rogue container field " + number);
+    var nested = (DynamicMessage) parent.getField(field);
+    require(nested.getDescriptorForType().getName().equals(type), "Unexpected Chess Rogue container " + type);
+    return nested;
+  }
+
+  private static void requireInitialChessProfile(DynamicMessage response) {
+    // Native receiver proof: HIM field 10 -> MOOK field 9 and DDAF field 12.
+    // This isolated account has no eligibility quest or run; both logins must remain empty.
+    require(!response.hasField(response.getDescriptorForType().findFieldByNumber(8)),
+        "Fresh Chess Rogue profile invents an active DJE run");
+    var profile = nativeChild(response, 10, "HIMJKAMHLMJ");
+    for (int number : new int[] {11, 10})
+      require(profile.getRepeatedFieldCount(profile.getDescriptorForType().findFieldByNumber(number)) == 0,
+          "Fresh Chess Rogue profile invents unlocked areas or claimed first rewards");
+    var dice = nativeChild(profile, 9, "MOOKMKEKMKC");
+    var talent = nativeChild(profile, 12, "DDAFEPBGOHK");
+    for (int number : new int[] {3, 9, 10})
+      require(dice.getRepeatedFieldCount(dice.getDescriptorForType().findFieldByNumber(number)) == 0,
+          "Fresh Chess Rogue dice profile invents records");
+    require(talent.getField(talent.getDescriptorForType().findFieldByNumber(8)).equals(0),
+        "Fresh Chess Rogue talent profile invents points");
+    requireNoChessProgress(profile);
+  }
+
+  private static void requireNoChessProgress(DynamicMessage message) {
+    require(message.getUnknownFields().asMap().isEmpty(), "Unknown Chess Rogue profile fields");
+    for (var entry : message.getAllFields().entrySet()) {
+      require(!entry.getKey().isRepeated() && entry.getValue() instanceof DynamicMessage,
+          "Fresh Chess Rogue profile invents progress");
+      requireNoChessProgress((DynamicMessage) entry.getValue());
+    }
   }
 
   private static void requireEmptyProgress(DynamicMessage message) {
@@ -399,6 +448,13 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("clientGameplayVerified", false),
           Map.entry("followupSnapshotContracts", FOLLOWUP_RESPONSES.size()),
           Map.entry("textJoinAvatarDefaultsRetained", true),
+          Map.entry("rogueInfoRetcodeZero", probe.rogueInfoRetcodeVerified),
+          Map.entry("chessRogueInitialProfile", Map.of(
+              "verified", probe.chessRogueInitialProfileVerified,
+              "responseCommand", 5435, "retcode", 0,
+              "requiredContainers", "HIMJKAMHLMJ:10/MOOKMKEKMKC:9/DDAFEPBGOHK:12",
+              "activeRunPresent", false, "unlockedAreas", 0, "claimedFirstRewards", 0,
+              "diceRecords", 0, "talentPoints", 0, "inventedProgress", false)),
           Map.entry("initialBurstCompletionMillis", probe.initialCompletedMillis),
           Map.entry("initialBurstDeadlineMillis", 4000),
           Map.entry("unsupportedQueryResponsesNotInvented", QUERIES.length - EXPECTED_RESPONSES.size()))));

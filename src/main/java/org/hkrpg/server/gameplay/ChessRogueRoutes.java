@@ -36,7 +36,7 @@ public final class ChessRogueRoutes {
   public record Room(String block, int id, int entry, int dimension, int anchorGroup, int anchor,
       List<Integer> groups, int monsterPool, int monster, int merchantGroup, int npc, int instance) {}
   private record ExpectedRow(String table, int id, JsonElement shape) {}
-  private record Loaded(Path root, Path config, Rule rule, Map<Path,String> digests, List<Board> boards,
+  private record Loaded(Path root, Path config, boolean enabled, Rule rule, Map<Path,String> digests, List<Board> boards,
       Map<String, Room> rooms, FloorInfo normalizedFloor, List<ExpectedRow> rows) {}
   private static volatile Loaded current;
 
@@ -63,7 +63,8 @@ public final class ChessRogueRoutes {
           integer(policy,"initialActionPoints"),integer(policy,"miracleBasePrice"),integer(policy,"miracleStockLimit"),
           integer(policy,"monsterLevel"));
       if (!validRule(rule)) throw new IllegalArgumentException("Invalid bounded Chess policy amounts");
-      if (!policy.get("enabled").getAsBoolean()) return;
+      // The execution switch does not remove the original permanent profile from login queries.
+      boolean enabled = policy.get("enabled").getAsBoolean();
       var root = resources.toAbsolutePath().normalize();
       var digests = new LinkedHashMap<Path,String>();
       digests.put(config.toAbsolutePath().normalize(), digest(config));
@@ -124,7 +125,7 @@ public final class ChessRogueRoutes {
             optional(room,"npc"),optional(room,"instance"));
         rooms.put(entry.block(),entry);
       }
-      current = new Loaded(root,config.toAbsolutePath().normalize(),rule,Map.copyOf(digests),List.copyOf(boards),
+      current = new Loaded(root,config.toAbsolutePath().normalize(),enabled,rule,Map.copyOf(digests),List.copyOf(boards),
           Map.copyOf(rooms),floor,List.copyOf(expectedRows));
     } catch (Exception malformed) {
       throw new IllegalStateException("Invalid ChessRogueGuideRoutes.json or bounded original source", malformed);
@@ -195,20 +196,30 @@ public final class ChessRogueRoutes {
     };
   }
 
-  public static Rule rule() { var loaded = current; return loaded == null ? null : loaded.rule(); }
+  public static Rule rule() { var loaded = current; return loaded == null || !loaded.enabled() ? null : loaded.rule(); }
   public static Board board(int layer) {
     var loaded = current;
-    return loaded == null || layer < 0 || layer >= loaded.boards().size() ? null : loaded.boards().get(layer);
+    return loaded == null || !loaded.enabled() || layer < 0 || layer >= loaded.boards().size() ? null : loaded.boards().get(layer);
   }
   public static Room room(ChessRogueState run) {
     var board = board(run.getLayerIndex());
     var cell = board == null ? null : board.cells().get(run.getEnteredCell());
     return current == null || cell == null ? null : current.rooms().get(cell.block());
   }
-  public static Room room(Cell cell) { return current == null || cell == null ? null : current.rooms().get(cell.block()); }
+  public static Room room(Cell cell) {
+    var loaded = current;
+    return loaded == null || !loaded.enabled() || cell == null ? null : loaded.rooms().get(cell.block());
+  }
 
   public static boolean available() {
     var loaded = current;
+    return loaded != null && loaded.enabled() && sourceAvailable(loaded);
+  }
+
+  /** Complete source validation for the read-only no-run profile, even when Start is disabled. */
+  public static boolean sourceAvailable() { return sourceAvailable(current); }
+
+  private static boolean sourceAvailable(Loaded loaded) {
     if (loaded == null) return false;
     try {
       for (var source : loaded.digests().entrySet())

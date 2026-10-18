@@ -32,7 +32,7 @@ public record ChessRogueProfile(List<Integer> unlockedAreaIds, List<Integer> fir
     var scene = player.getScene();
     return absent(run) && scene != null && scene.getPlayer() == player
         && scene.getPlaneId() == player.getPlaneId() && scene.getFloorId() == player.getFloorId()
-        && scene.getEntryId() == player.getEntryId() && ChessRogueRoutes.available()
+        && scene.getEntryId() == player.getEntryId() && ChessRogueRoutes.sourceAvailable()
         && !ChessRogueRoutes.returnSignature(scene,player.getEntryId()).isEmpty();
   }
 

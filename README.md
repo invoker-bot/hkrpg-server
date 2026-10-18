@@ -1,3 +1,5 @@
+模拟宇宙开局关闭时的初始资料查询已与玩法开关分离，错误码回归及客户端边界见[登录资料修复说明](docs/chess-rogue-disabled-profile-4.6.md)。
+
 4.6 当前场景角色传送已补入实际位置、地图层与版本状态；验证及客户端待验收边界见[场景传送说明](docs/scene-entity-teleport-4.6.md)。
 
 本地服务已增加 Docker Compose 常驻部署、账号数据持久化和客户端补丁启动检查，使用说明与验证边界见[本地部署说明](docs/docker-compose-local.md)。
