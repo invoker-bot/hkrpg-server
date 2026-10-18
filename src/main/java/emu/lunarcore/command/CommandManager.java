@@ -3,6 +3,8 @@ package emu.lunarcore.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
@@ -109,11 +111,30 @@ public class CommandManager {
     }
 
     public void invoke(Player sender, String message) {
+        invoke(sender, message, null);
+    }
+
+    public record ConsoleResult(boolean accepted, List<String> output) {}
+
+    /** Per-invocation output; no global logger interception or cross-request output leakage. */
+    public ConsoleResult invokeConsole(String message) {
+        var output = new ArrayList<String>();
+        boolean accepted = invoke(null, message, line -> {
+            if (output.size() < 200) output.add(line.length() > 2000 ? line.substring(0, 2000) : line);
+        });
+        return new ConsoleResult(accepted, List.copyOf(output));
+    }
+
+    private boolean invoke(Player sender, String message, Consumer<String> output) {
+        if (message == null || message.isBlank()) {
+            if (output != null) output.accept("Invalid Command!");
+            return false;
+        }
         // Parse message into arguments
-        List<String> args = Arrays.stream(message.split(" ")).collect(Collectors.toCollection(ArrayList::new));
+        List<String> args = Arrays.stream(message.strip().split("\\s+")).collect(Collectors.toCollection(ArrayList::new));
 
         // Get command label
-        String label = args.remove(0).toLowerCase();
+        String label = args.remove(0).toLowerCase(Locale.ROOT);
 
         // Filter out command prefixes
         if (label.startsWith("/") || label.startsWith("!")) {
@@ -132,22 +153,22 @@ public class CommandManager {
             if (sender != null && !this.checkPermission(sender, command)) {
                 // We have a double null check here just in case
                 sender.sendMessage("You do not have permission to use this command.");
-                return;
+                return false;
             }
 
             // Build command arguments
-            CommandArgs cmdArgs = new CommandArgs(sender, args);
+            CommandArgs cmdArgs = new CommandArgs(sender, args, output);
 
             // Check targeted permission
             if (sender != cmdArgs.getTarget() && !this.checkTargetPermission(sender, command)) {
                 cmdArgs.sendMessage("You do not have permission to use this command on another player.");
-                return;
+                return false;
             }
 
             // Make sure our command has a target
             if (command.requireTarget() && cmdArgs.getTarget() == null) {
                 cmdArgs.sendMessage("Error: Targeted player not found or offline");
-                return;
+                return false;
             }
 
             // Log
@@ -157,12 +178,16 @@ public class CommandManager {
 
             // Run command
             handler.execute(cmdArgs);
+            return true;
         } else {
-            if (sender != null) {
+            if (output != null) {
+                output.accept("Invalid Command!");
+            } else if (sender != null) {
                 sender.sendMessage("Invalid Command!");
             } else {
                 LunarCore.getLogger().info("Invalid Command!");
             }
+            return false;
         }
     }
 }

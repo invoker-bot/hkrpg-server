@@ -1,6 +1,7 @@
 package emu.lunarcore.command;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import emu.lunarcore.LunarCore;
 import emu.lunarcore.data.GameData;
@@ -21,6 +22,7 @@ public class CommandArgs {
     private List<String> list;
     private Player sender;
     private Player target;
+    private final Consumer<String> output;
 
     private int targetUid;
     private int amount;
@@ -33,6 +35,11 @@ public class CommandArgs {
     private ObjectSet<String> flags;
 
     public CommandArgs(Player sender, List<String> args) {
+        this(sender, args, null);
+    }
+
+    public CommandArgs(Player sender, List<String> args, Consumer<String> output) {
+        this.output = output;
         this.sender = sender;
         this.raw = String.join(" ", args);
         this.list = args;
@@ -118,7 +125,9 @@ public class CommandArgs {
      * @param message
      */
     public void sendMessage(String message) {
-        if (sender != null) {
+        if (output != null) {
+            output.accept(message);
+        } else if (sender != null) {
             sender.sendMessage(message);
         } else {
             LunarCore.getLogger().info(message);

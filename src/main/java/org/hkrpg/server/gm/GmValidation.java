@@ -1,0 +1,68 @@
+package org.hkrpg.server.gm;
+
+import java.util.Set;
+import java.util.UUID;
+import org.hkrpg.server.gm.GmModels.*;
+
+final class GmValidation {
+  private GmValidation() {}
+
+  static void validate(Operation op) {
+    if (op == null || op.requestId() == null) fail("缺少请求编号。");
+    try {
+      if (!UUID.fromString(op.requestId()).toString().equals(op.requestId())) fail("请求编号格式不正确。");
+    } catch (IllegalArgumentException e) {
+      fail("请求编号格式不正确。");
+    }
+    if (op.action() == null
+        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command").contains(op.action()))
+      fail("未知操作。");
+    if (op.uid() < 0 || !op.action().equals("command") && op.uid() == 0) fail("请选择目标玩家。");
+    switch (op.action()) {
+      case "grant" -> {
+        range(op.itemId(), 1, Integer.MAX_VALUE, "物品 ID");
+        range(op.amount(), 1, 1_000_000, "数量");
+        range(op.level(), 0, 80, "等级");
+        range(op.rank(), 0, 6, "阶数");
+      }
+      case "mail" -> {
+        text(op.title(), 1, 80, "邮件标题");
+        text(op.sender(), 1, 40, "发件人");
+        text(op.content(), 1, 4000, "邮件正文");
+        if (op.attachments() != null) {
+          if (op.attachments().size() > 5) fail("邮件最多包含 5 种附件。");
+          var ids = new java.util.HashSet<Integer>();
+          for (var attachment : op.attachments()) {
+            if (attachment == null) fail("附件格式不正确。");
+            range(attachment.itemId(), 1, Integer.MAX_VALUE, "附件 ID");
+            range(attachment.amount(), 1, 1_000_000, "附件数量");
+            if (!ids.add(attachment.itemId())) fail("请合并相同物品的附件。");
+          }
+        }
+      }
+      case "command" -> {
+        text(op.command(), 1, 2048, "指令");
+        if (op.command().contains("\n") || op.command().contains("\r")) fail("一次只能执行一条指令。");
+        if (java.util.Arrays.stream(op.command().split("\\s+")).anyMatch(t -> t.startsWith("@")))
+          fail("请在目标 UID 栏指定玩家，指令中无需填写 @UID。");
+        if (op.confirm() != null && op.confirm().length() > 2048) fail("确认文本过长。");
+      }
+      default -> {}
+    }
+  }
+
+  static void text(String value, int min, int max, String label) {
+    if (value == null
+        || value.strip().length() < min
+        || value.length() > max
+        || value.indexOf('\0') >= 0) fail(label + "长度必须为 " + min + "–" + max + " 个字符。");
+  }
+
+  static void range(int value, int min, int max, String label) {
+    if (value < min || value > max) fail(label + "必须在 " + min + "–" + max + " 之间。");
+  }
+
+  static void fail(String message) {
+    throw new GmError(400, message);
+  }
+}

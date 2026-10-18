@@ -193,8 +193,14 @@ public class GameServer extends KcpServer {
         long delta = timestamp - lastTickTime;
         this.lastTickTime = timestamp;
 
+        List<Player> snapshot;
         synchronized (this.players) {
-            for (Player player : this.players.values()) {
+            snapshot = List.copyOf(this.players.values());
+        }
+        // Player callbacks may need the registry too. Do not hold its mutex while
+        // waiting for the player lock shared with gameplay and the GM console.
+        for (Player player : snapshot) {
+            synchronized (player) {
                 try {
                     player.onTick(timestamp, delta);
                 } catch (Exception e) {
