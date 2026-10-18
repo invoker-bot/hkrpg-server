@@ -1290,7 +1290,8 @@ public class Player implements Tickable, Syncable {
         datastore.getCollection(PlayerLineup.class).deleteMany(filter);
         datastore.getCollection(PlayerExtraLineup.class).deleteMany(filter);
         datastore.getCollection(Mail.class).deleteMany(filter);
-        datastore.getCollection(PlayerUnlockData.class).deleteOne(filter);
+        // Morphia stores PlayerUnlockData.ownerUid as @Id, hence Mongo's _id field.
+        datastore.getCollection(PlayerUnlockData.class).deleteOne(Filters.eq("_id", uid));
 
         // Delete friendships
         datastore.getCollection(Friendship.class).deleteMany(Filters.or(Filters.eq("ownerUid", uid), Filters.eq("friendUid", uid)));

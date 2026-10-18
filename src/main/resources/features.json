@@ -39,7 +39,7 @@
       "name": "游戏会话令牌校验",
       "status": "partial",
       "evidence": "src/main/java/emu/lunarcore/server/packet/recv/HandlerPlayerGetTokenCsReq.java",
-      "gap": "登录初始化另修正帕姆默认皮肤25200的旧拼写错误：新记录使用原表252000，旧25200/0仅在查询响应归一化且不改写选择。协议断线、外观及卡池查询边界见docs/login-initial-queries-4.6.md。原生ma-cn路径按本地RSA解密账号区分用户；旧版每游戏AppLogin兼容入口仍使用上游固定账号。密码沿用本服既有不校验约定；正式账号认证、完整SDK及真实客户端登录仍待验收。"
+      "gap": "账号删除补正：PlayerUnlockData 的 ownerUid 是实际 Mongo _id，清理改用该键，避免头像与外观解锁残留；三项真实存储回归覆盖全部已知归属集合、双向好友关系、重复删除与其他玩家保留，账号重置及客户端边界见docs/account-reset-4.6.md。 登录初始化另修正帕姆默认皮肤25200的旧拼写错误：新记录使用原表252000，旧25200/0仅在查询响应归一化且不改写选择。协议断线、外观及卡池查询边界见docs/login-initial-queries-4.6.md。原生ma-cn路径按本地RSA解密账号区分用户；旧版每游戏AppLogin兼容入口仍使用上游固定账号。密码沿用本服既有不校验约定；正式账号认证、完整SDK及真实客户端登录仍待验收。"
     },
     {
       "id": "player-return",
