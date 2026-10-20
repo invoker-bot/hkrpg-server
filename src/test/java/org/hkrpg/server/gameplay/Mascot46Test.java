@@ -28,6 +28,56 @@ class Mascot46Test {
   JsonObject mascot;
   Session session;
 
+  @ParameterizedTest
+  @ValueSource(ints = {251, 206})
+  void originalNumericEncodingKeepsExistingChestReceipts(int group) throws Exception {
+    int chest = group == 251 ? 20411614 : 20412620;
+    catchAndReturn(chest);
+    var prop = fixture.chest(chest);
+    assertEquals(
+        Retcode.SUCC, WorldChests.open(fixture.player, 112131, prop.getEntityId()).retcode());
+    int grants = fixture.player.grants;
+    var path =
+        MascotSources.FILES.keySet().stream()
+            .filter(p -> p.endsWith("_G" + group + ".json"))
+            .findFirst()
+            .orElseThrow();
+    String original;
+    try (var input =
+        getClass()
+            .getResourceAsStream("/fixtures/world-chest-source-encodings/" + group + ".json")) {
+      original = new String(input.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
+    }
+    assertEquals(
+        mascot
+            .getAsJsonObject("sourceFiles")
+            .getAsJsonObject(path)
+            .get("gitBlobSHA256")
+            .getAsString(),
+        HexFormat.of()
+            .formatHex(
+                java.security.MessageDigest.getInstance("SHA-256")
+                    .digest(original.getBytes(StandardCharsets.UTF_8))));
+    var decoded = JsonParser.parseString(original);
+    assertEquals(
+        mascot.getAsJsonObject("groups").get(path),
+        decoded,
+        "The original and legacy encodings must contain identical JSON values");
+    java.nio.file.Files.writeString(root.resolve(path), original);
+    var rules = WorldChestRules.load();
+    assertNotNull(rules, "Original resource encoding must not disable all chest claims");
+    assertTrue(fixture.player.getGameplay().getWorldChests().valid(rules, fixture.player));
+    fixture.scene();
+    prop = fixture.chest(chest);
+    assertEquals(emu.lunarcore.game.enums.PropState.ChestUsed, prop.getState());
+    assertNotEquals(
+        Retcode.SUCC, WorldChests.open(fixture.player, 112131, prop.getEntityId()).retcode());
+    assertEquals(grants, fixture.player.grants);
+    decoded.getAsJsonObject().addProperty("GroupName", "changed source");
+    fixture.write(path, decoded);
+    assertNull(WorldChestRules.load(), "Actual content changes must still be rejected");
+  }
+
   class Session extends GameSession {
     final ProtocolBridge bridge = ProtocolBridge.forVersion("4.6.0");
     DynamicMessage response;

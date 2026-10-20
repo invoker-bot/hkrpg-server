@@ -39,6 +39,12 @@ public final class WorldChestFixtureInspector {
         "Missing marker");
     var config = Files.readAllBytes(dir.resolve("config.json"));
     var control = JsonParser.parseString(Files.readString(input)).getAsJsonObject();
+    boolean baseZone = control.has("baseZone") && control.get("baseZone").getAsBoolean();
+    require(
+        !baseZone
+            || marker.has("baseZoneChestFixture")
+                && marker.get("baseZoneChestFixture").getAsBoolean(),
+        "Missing Base Zone fixture marker");
     int uid = control.get("uid").getAsInt();
     String mode = args[2];
     require(
@@ -68,7 +74,7 @@ public final class WorldChestFixtureInspector {
                 && saved.get("quests", Document.class).isEmpty(),
             "Prewritten world observation or activity acceptance");
         updates.append("level", 21);
-        for (int main : new int[] {1000510}) {
+        for (int main : new int[] {baseZone ? 1000401 : 1000510}) {
           var q = new QuestState(main);
           q.advance(1, 1, 1);
           q.reserveReward();
@@ -123,12 +129,13 @@ public final class WorldChestFixtureInspector {
       require(player != null, "Morphia restore failed");
       var field = LunarCore.getConfig().getClass().getDeclaredField("resourceDir");
       field.setAccessible(true);
-      field.set(LunarCore.getConfig(), dir.resolve("resources-fixture").toString());
+      var resources = baseZone ? root.resolve("resources/4.6") : dir.resolve("resources-fixture");
+      field.set(LunarCore.getConfig(), resources.toString());
       ResourceLoader.loadResources();
       var floorLoader = ResourceLoader.class.getDeclaredMethod("loadFloorInfos");
       floorLoader.setAccessible(true);
       floorLoader.invoke(null);
-      GameplayDefinitions.load(dir.resolve("resources-fixture"));
+      GameplayDefinitions.load(resources);
       GameplayDefinitions.windows.clear();
       if (!mode.equals("expired"))
         GameplayDefinitions.windows.add(
@@ -189,10 +196,32 @@ public final class WorldChestFixtureInspector {
       }
       require(
           credits
-              == Math.min(known.size(), 5)
-                  + Math.min(known.size(), 10)
-                  + Math.min(known.size(), 15),
+              == (baseZone
+                  ? 0
+                  : Math.min(known.size(), 5)
+                      + Math.min(known.size(), 10)
+                      + Math.min(known.size(), 15)),
           "Different source-bound credit count");
+      if (baseZone)
+        require(
+            domain.getQuests().isEmpty()
+                && payout.equals(
+                    known.isEmpty()
+                        ? Map.of()
+                        : Map.of(
+                            1,
+                            5 * known.size(),
+                            2,
+                            500 * known.size(),
+                            22,
+                            5 * known.size(),
+                            120000,
+                            15 * known.size(),
+                            212,
+                            3 * known.size(),
+                            232,
+                            known.size())),
+            "Base Zone payout or foreign activity progress differs");
       var balances =
           Document.parse(Files.readString(dir.resolve("world-chest-start-balances.json")));
       for (String currency : List.of("hcoin", "scoin", "mcoin", "exp"))

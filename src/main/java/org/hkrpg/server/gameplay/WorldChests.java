@@ -12,10 +12,13 @@ import java.util.*;
 public final class WorldChests {
   public record Result(Retcode retcode, EntityProp prop) {}
 
+  private static final Map<Integer, WorldChestSources.Location> LOCATIONS =
+      GoldenSpearSources.merge(MascotSources.LOCATIONS, BaseZoneChestSources.LOCATIONS);
+
   private static Integer identity(EntityProp actor) {
     if (actor == null || actor.getScene() == null) return null;
     var scene = actor.getScene();
-    return MascotSources.LOCATIONS.entrySet().stream()
+    return LOCATIONS.entrySet().stream()
         .filter(
             e ->
                 e.getValue().plane() == scene.getPlaneId()

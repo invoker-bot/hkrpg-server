@@ -7,6 +7,19 @@ final class MascotSources {
   static final int MONSTER = 104102, COIN = 104159;
   static final List<Integer> GOALS = List.of(6029853, 6029854, 6029855);
 
+  // The original checkout preserves numeric literals that the first fixture re-encoded.
+  // Accept only these verified alternate file digests; keep FILES as the saved receipt identity.
+  private static final Map<String, String> ORIGINAL_FILE_ENCODINGS =
+      Map.of(
+          "Config/LevelOutput/SharedRuntimeGroup/Groups_P20411_F20411001/LevelGroup_P20411_F20411001_G251.json",
+          "29aa774a0f9e4d84106a796432a05991c44608da93770d79b503b8980f7662bc",
+          "Config/LevelOutput/SharedRuntimeGroup/Groups_P20412_F20412001/LevelGroup_P20412_F20412001_G206.json",
+          "e75ee5db52f20f24959acd0acb0c091c1aaea1af32bf8cb61c185234122dca6c");
+
+  static boolean originalFileEncoding(String path, String expected, String observed) {
+    return expected.equals(FILES.get(path)) && observed.equals(ORIGINAL_FILE_ENCODINGS.get(path));
+  }
+
   record Control(
       int chest,
       int plane,

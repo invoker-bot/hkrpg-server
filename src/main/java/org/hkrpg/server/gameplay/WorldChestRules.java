@@ -33,19 +33,22 @@ final class WorldChestRules {
       Map<String, JsonElement> files,
       boolean flames,
       boolean spears,
-      boolean mascots) {
+      boolean mascots,
+      boolean baseZone) {
     this.root = root;
     this.hashes = Map.copyOf(hashes);
     this.tables = Map.copyOf(tables);
     this.files = Map.copyOf(files);
-    rowPins = rows(flames, spears, mascots);
-    filePins = files(flames, spears, mascots);
+    rowPins = rows(flames, spears, mascots, baseZone);
+    filePins = files(flames, spears, mascots, baseZone);
     locations =
         GoldenSpearSources.merge(
             GoldenSpearSources.merge(
                 flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS,
                 spears ? GoldenSpearSources.PUZZLES : Map.of()),
-            mascots ? MascotSources.PUZZLES : Map.of());
+            GoldenSpearSources.merge(
+                mascots ? MascotSources.PUZZLES : Map.of(),
+                baseZone ? BaseZoneChestSources.LOCATIONS : Map.of()));
     var gson = ResourceLoader.getGson();
     for (String key : rowPins.keySet()) {
       var p = key.split(":");
@@ -81,24 +84,36 @@ final class WorldChestRules {
       if (!path.contains("/SharedRuntimeGroup/")) continue;
       var g = gson.fromJson(files.get(path), GroupInfo.class);
       g.setId(Integer.parseInt(path.replaceAll(".*_G([0-9]+)\\.json", "$1")));
+      if (BaseZoneChestSources.GROUP.equals(path)) {
+        // Compare the pinned original after the same legacy prop preprocessing as the live floor.
+        var floor = new FloorInfo();
+        floor.getGroups().put(g.getId(), g);
+        floor.onLoad();
+      }
       groups.put(path, g);
     }
   }
 
-  private static Map<String, String> rows(boolean flames, boolean spears, boolean mascots) {
+  private static Map<String, String> rows(
+      boolean flames, boolean spears, boolean mascots, boolean baseZone) {
     return GoldenSpearSources.merge(
         GoldenSpearSources.merge(
             flames ? TimeRelayFlameSources.ROWS : WorldChestSources.ROWS,
             spears ? GoldenSpearSources.ROWS : Map.of()),
-        mascots ? MascotSources.ROWS : Map.of());
+        GoldenSpearSources.merge(
+            mascots ? MascotSources.ROWS : Map.of(),
+            baseZone ? BaseZoneChestSources.ROWS : Map.of()));
   }
 
-  private static Map<String, String> files(boolean flames, boolean spears, boolean mascots) {
+  private static Map<String, String> files(
+      boolean flames, boolean spears, boolean mascots, boolean baseZone) {
     return GoldenSpearSources.merge(
         GoldenSpearSources.merge(
             flames ? TimeRelayFlameSources.FILES : WorldChestSources.FILES,
             spears ? GoldenSpearSources.FILES : Map.of()),
-        mascots ? MascotSources.FILES : Map.of());
+        GoldenSpearSources.merge(
+            mascots ? MascotSources.FILES : Map.of(),
+            baseZone ? BaseZoneChestSources.FILES : Map.of()));
   }
 
   static synchronized WorldChestRules load() {
@@ -117,8 +132,11 @@ final class WorldChestRules {
           || MascotSources.GOALS.stream()
               .anyMatch(id -> mascots != (GameData.getQuestExcelMap().get(id) != null)))
         return null;
-      var filePins = files(flames, spears, mascots);
-      var rowPins = rows(flames, spears, mascots);
+      boolean baseZone =
+          GameData.getPropExcelMap().get(60001) != null
+              && GameData.getMazePlaneExcelMap().get(20001) != null;
+      var filePins = files(flames, spears, mascots, baseZone);
+      var rowPins = rows(flames, spears, mascots, baseZone);
       var root = Path.of(LunarCore.getConfig().getResourceDir()).toAbsolutePath().normalize();
       var hashes = new TreeMap<String, String>();
       var json = new TreeMap<String, JsonElement>();
@@ -137,7 +155,9 @@ final class WorldChestRules {
       if (current != null && current.root.equals(root) && current.hashes.equals(hashes))
         return current.loaded() ? current : null;
       for (var e : filePins.entrySet())
-        if (!e.getValue().equals(hashes.get(e.getKey()))) return null;
+        if (!e.getValue().equals(hashes.get(e.getKey()))
+            && !MascotSources.originalFileEncoding(
+                e.getKey(), e.getValue(), hashes.get(e.getKey()))) return null;
       var tables = new HashMap<String, Map<Integer, JsonObject>>();
       for (var e : WorldChestSources.KEYS.entrySet()) {
         var value = json.get("ExcelOutput/" + e.getKey() + ".json");
@@ -157,7 +177,7 @@ final class WorldChestRules {
         if (row == null || !e.getValue().equals(TimelineActivityRules.fingerprint(row)))
           return null;
       }
-      var next = new WorldChestRules(root, hashes, tables, json, flames, spears, mascots);
+      var next = new WorldChestRules(root, hashes, tables, json, flames, spears, mascots, baseZone);
       if (!next.loaded()) return null;
       current = next;
       return next;
@@ -242,7 +262,8 @@ final class WorldChestRules {
   }
 
   boolean countsGoal(int goal, int id) {
-    if (!goals().contains(goal)) return false;
+    if (!goals().contains(goal) || chest(id) == null || chest(id).get("WorldID").getAsInt() != 501)
+      return false;
     String type =
         goal == TimeRelayFlameSources.GOAL
             ? "CHEST_PUZZLE_TIME_RELAY_FLAME"
@@ -259,8 +280,8 @@ final class WorldChestRules {
 
   Map<Integer, Integer> loot(int id) {
     var row = chest(id);
-    if (row == null || row.get("WorldID").getAsInt() != 501) return null;
-    return WorldChestRewards.recipe(row.getAsJsonArray("ChestType"));
+    if (!locations.containsKey(id) || row == null) return null;
+    return WorldChestRewards.recipe(row.get("WorldID").getAsInt(), row.getAsJsonArray("ChestType"));
   }
 
   PropInfo original(int id, int dimension) {
@@ -349,7 +370,9 @@ final class WorldChestRules {
   EntityProp actor(Player p, int id, int instance, int propId) {
     var l = locations.get(id);
     var scene = p.getScene();
+    var chest = chest(id);
     if (l == null
+        || chest == null
         || scene == null
         || scene.getPlayer() != p
         || p.getBattle() != null
@@ -357,8 +380,8 @@ final class WorldChestRules {
         || p.getGameplay().getStoryLines().isTransitionPending()
         || scene.getPlaneId() != l.plane()
         || scene.getFloorId() != l.floor()
-        || scene.getWorldId() != 501
-        || p.getWorldId() != 501
+        || scene.getWorldId() != chest.get("WorldID").getAsInt()
+        || p.getWorldId() != scene.getWorldId()
         || p.getPlaneId() != scene.getPlaneId()
         || p.getFloorId() != scene.getFloorId()
         || p.getEntryId() != scene.getEntryId()
@@ -371,6 +394,9 @@ final class WorldChestRules {
             ? original(id, scene.getDimensionId())
             : groupProp(id, scene.getDimensionId(), instance, propId);
     if (original == null) return null;
+    if (BaseZoneChestSources.LOCATIONS.containsKey(id)
+        && !p.getMissionManager().shouldLoadGroup(scene.getResourceGroups().get(l.group()), scene))
+      return null;
     var matches =
         scene.getEntitiesByGroup(EntityProp.class, l.group()).stream()
             .filter(e -> e.getInstId() == instance)
