@@ -44,6 +44,14 @@ python scripts/smoke-world-chests.py --dynamic --output build/dynamic-mechanisms
 
 同一产物的卡芙卡开场、罐子及普通宝箱回归另通过 92 次原生请求和两次正常停服。合计 **398 次原生请求、41 次正常停服**，JAR SHA256 为 `b168f4d13feb494204a5b6b0235c53dec2ef34c40c0b9de59ec04e97deef962d`；完整构建期间 2,170 个生产、测试及构建输入文件摘要不变。汇总见 `build/dynamic-mechanisms-20261021/build-proof.json`，过程见同目录 `native-dynamic.json`、`native-opening.json` 和 `smoke-server.log`。这些结果验证服务端状态、实际持久化及奖励投递，未替代真实客户端操作验收。
 
+### 本轮部署记录
+
+代码已提交为 `30543b5`，本机常驻服务随后更新到上述已验证 JAR，镜像为 `sha256:f199729b22d0d818169324044688d424b0c9b89df7e6329d0a8995a03fc0b50f`。`scripts/verify-compose.py` 的只读检查通过健康状态、运行产物摘要、挂载、Dispatch 以及 4.6 UDP/KCP 心跳；线上 `/api/features` 也已返回本轮规则覆盖及剩余 80 项的说明，状态保持 `partial`。
+
+旧服务正常退出码为 143，停服后的 11 个数据文件逐一校验备份至 `.local/backups/dynamic-mechanisms-20261021-022520/`，同时保留旧 JAR、配置、清单及回滚镜像。运营配置摘要不变，86,345 个资源文件的清单摘要仍为 `0e3c0e3b9326a0960c76691c8fec415762480bb1cb2efc046fb3aaf4da870875`。
+
+部署前后的只读数据库投影确认 UID 10001 的六项已完成剧情目标、卡芙卡试用角色 `1001005`、机关完成记录、物件状态及宝箱领奖阶段保留，没有重置账号。证据位于 `build/dynamic-mechanisms-20261021/deployment.json`、`compose-verification.json`、`live-preservation-proof.json` 和 `live-feature.json`。
+
 ## 前一批资源接入与守卫流程记录
 
 公开资源检索确认：缺少的文件并非全部没有公开。本项目已经固定使用的 [DimbreathBot/TurnBasedGameData](https://github.com/DimbreathBot/TurnBasedGameData/tree/724b139d8c9c32d12552eb95745a4fee72bfe48b) 含有 `Config/Level/Maze`、`Props`、`GroupGraph`、`GroupTemplateGraph` 和 `Config/Props`。此前稀疏下载及安装清单没有包含这些目录。本次在同一提交 `724b139d8c9c32d12552eb95745a4fee72bfe48b` 上补装 15,422 个文件，没有更换资源版本、覆盖运营文件或改写原始清单。
