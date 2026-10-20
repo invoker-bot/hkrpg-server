@@ -1,13 +1,38 @@
 package org.hkrpg.server.gameplay;
 
+import emu.lunarcore.data.config.GroupInfo;
 import emu.lunarcore.data.config.LevelGroupMissionCondition;
 import emu.lunarcore.data.config.LoadConditionInfo;
+import emu.lunarcore.game.enums.PlaneType;
 import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.scene.Scene;
 import java.util.Objects;
 import java.util.Set;
 
 /** Preserve authored And/Or and the omitted Accept phase; unknown clauses never open a group. */
-final class MissionGroupConditions {
+public final class MissionGroupConditions {
+  /** Ordinary world groups can declare mission gates without being categorized as Mission. */
+  public static boolean tracks(GroupInfo group, Scene scene) {
+    return group != null
+        && scene != null
+        && Set.of(PlaneType.Town, PlaneType.Maze, PlaneType.Train).contains(scene.getPlaneType())
+        && (group.getCategory() == null || group.getCategory() == GroupInfo.GroupCategory.Normal)
+        && (declaresCondition(group.getLoadCondition())
+            || declaresCondition(group.getUnloadCondition()))
+        && scene.getFloorInfo() != null
+        && scene.getResourceGroups().get(group.getId()) == group;
+  }
+
+  private static boolean declaresCondition(LoadConditionInfo set) {
+    // Some normal groups serialize unused default sets as {"Conditions":[]}.
+    // Invalid/unknown sets still enter evaluation and fail closed.
+    return set != null
+        && (set.getConditions() == null
+            || set.getConditions().length != 0
+            || !"And".equals(set.getOperation())
+            || set.isDelayToLevelReload());
+  }
+
   enum Result {
     MATCH,
     NO_MATCH,

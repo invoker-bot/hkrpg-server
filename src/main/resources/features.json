@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "ordinary-scene-mission-gates",
+      "name": "普通地图组的剧情加载条件",
+      "status": "partial",
+      "evidence": "docs/opening-scene-groups-4.6.md",
+      "gap": "Town/Maze/Train 当前资源维度的 Normal 或省略分类地图组，加载与任务刷新遵循原始任务条件；开场隐藏未解锁的凝滞虚影与后续宝箱，已解锁后正常加载，延迟加载/卸载及实例边界有回归。源数据、先失败回归和原生 KCP 范围见说明；全部系统解锁、所有地图表现及完整客户端演出仍待验收。"
+    },
+    {
       "id": "opening-player-initialization",
       "name": "新号开场角色与教程进度",
       "status": "partial",

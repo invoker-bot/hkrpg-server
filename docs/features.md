@@ -8,6 +8,7 @@
 
 | 功能 | 当前状态 | 证据/参考 | 已知缺口 |
 |---|---|---|---|
+| 普通地图组的剧情加载条件 | 部分实现 | [docs/opening-scene-groups-4.6.md](../docs/opening-scene-groups-4.6.md) | Town/Maze/Train 当前资源维度的 Normal 或省略分类地图组，加载与任务刷新遵循原始任务条件；开场隐藏未解锁的凝滞虚影与后续宝箱，已解锁后正常加载，延迟加载/卸载及实例边界有回归。源数据、先失败回归和原生 KCP 范围见说明；全部系统解锁、所有地图表现及完整客户端演出仍待验收。 |
 | 新号开场角色与教程进度 | 部分实现 | [docs/opening-player-initialization-4.6.md](../docs/opening-player-initialization-4.6.md) | 开场提供原始卡芙卡试用队伍，支持银狼加入/移除、角色选择后卡芙卡退场、正式队伍保留与重登恢复；不清空已有任务进度。教程查询不再固定全完成，普通教程和默认指南的解锁/完成回执持久保存，默认指南奖励沿用防重账本。单元、实际 Player 文档及独立新号 KCP/H2 验证边界见说明；Subguide、全部引导前置、完整主线演出和真实客户端画面仍待完成。 |
 | 网页 GM 控制台 | 工程行为已测试 | [src/main/java/org/hkrpg/server/gm](../src/main/java/org/hkrpg/server/gm) | 玩家搜索、中文资源检索/参数预览与实际发放、邮件与附件、既有命令独立回显、持久操作记录已接入同源 /gm 网页；独立管理密钥、Cookie/CSRF、输入限制、有限持久请求去重和异常待核对状态有回归。可切换命途角色在绑定玩家已有命途后设置、保存星魂并同步最终属性，防止初始命途覆盖网页参数。游戏循环先释放在线表锁，再使用与 GM 相同的玩家锁处理快照，避免锁顺序冲突。具体构建、真实 KCP/H2 和浏览器验证边界见 docs/gm-console.md；不代表现有全部 GM 指令或游戏客户端玩法完整验收。 |
 | 启动、预检、后台运行 | 工程行为已测试 | [src/main/java/org/hkrpg/server](../src/main/java/org/hkrpg/server) | 控制台普通命令异常现在只结束单次调用，JLine中断/EOF保留原退出边界；五项回归及3eee新包两轮连续异常后继续读取、HTTP ready和正常stop/同账号恢复通过。未测试物理终端信号或GameServer，见docs/console-command-failure.md。 历史验证范围：传输启动追加：固定KCP依赖的实际UDP通道全部绑定到配置地址后才保存在线区域并发布ready；14项真实通道检查及占用UDP端口的打包启动失败复现/回归，证据见docs/transport-startup-4.6.md。未验证全部网络故障或真实游戏客户端； |

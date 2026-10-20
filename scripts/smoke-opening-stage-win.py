@@ -28,6 +28,8 @@ def main():
     guarded = ['ExcelOutput/MainMission.json', 'ExcelOutput/PlaneEvent.json', 'ExcelOutput/StageConfig.json']
     guarded += ['ExcelOutput/SpecialAvatar.json', 'ExcelOutput/AvatarConfigTrial.json',
                 'ExcelOutput/TutorialData.json', 'ExcelOutput/TutorialGuideGroup.json']
+    guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G{group}.json'
+                for group in (6, 93)]
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
@@ -92,6 +94,7 @@ def main():
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
                     assert snapshot['passed'] and snapshot['openingBattleFinished'] and snapshot['nextObjectiveAccepted']
                     assert snapshot['openingKafkaVerified'] and snapshot['tutorialProgressVerified']
+                    assert snapshot['openingSceneGatesVerified']
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:

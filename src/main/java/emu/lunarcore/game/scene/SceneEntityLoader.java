@@ -15,22 +15,25 @@ import emu.lunarcore.game.scene.entity.GameEntity;
 
 public class SceneEntityLoader {
 
+    // Existing map-loading exclusions must also hold when ordinary groups refresh after a quest.
+    static boolean isExcludedGroup(Scene scene, GroupInfo group) {
+        return group.getGroupName().contains("Bug") || group.getGroupName().contains("Book")
+            || group.getGroupName().contains("AngryBlock") || group.getGroupName().contains("ShelfDoor")
+            || (scene.getPlaneId() == 20501 && group.getId() >= 360);
+    }
+
     public void onSceneLoad(Scene scene) {
         for (GroupInfo group : scene.getResourceGroups().values()) {
             boolean isToLoad = true;
 
             if (group.getCategory() == GroupInfo.GroupCategory.Mission || group.getCategory() == GroupInfo.GroupCategory.Atmosphere
-                || org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, scene)) {
+                || org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, scene)
+                || org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, scene)) {
                 isToLoad = scene.getPlayer().getMissionManager().shouldLoadGroup(group, scene);
             }
 
             // These cause the map to get stuck loading
-            if (group.getGroupName().contains("Bug") || group.getGroupName().contains("Book") || group.getGroupName().contains("AngryBlock") || group.getGroupName().contains("ShelfDoor")) {
-                isToLoad = false;
-            }
-
-            // Bad groups
-            if (scene.getPlaneId() == 20501 && group.getId() >= 360) {
+            if (isExcludedGroup(scene, group)) {
                 isToLoad = false;
             }
 

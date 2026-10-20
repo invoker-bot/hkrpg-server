@@ -1424,8 +1424,10 @@ public final class MissionManager {
     if (group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Atmosphere)
       return AtmosphereGroups.allowed(player, group, scene);
     boolean deferred = DeferredMissionGroups.tracks(group, scene);
+    boolean ordinary = MissionGroupConditions.tracks(group, scene);
     if (group.getCategory() != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission
-        && !deferred) return true;
+        && !deferred
+        && !ordinary) return true;
     if (group.getOwnerMainMissionID() != 0) {
       int owner = group.getOwnerMainMissionID();
       var config = GameData.getMainMissionExcelMap().get(owner);
@@ -1437,6 +1439,11 @@ public final class MissionManager {
           || player.getGameplay().getCancelledMissions().contains(owner)) return false;
     }
     if (deferred && DeferredMissionGroups.retains(group, scene)) return true;
+    if (ordinary
+        && group.getLoadCondition() != null
+        && group.getLoadCondition().isDelayToLevelReload()
+        && scene.isLoaded()
+        && !scene.getLoadedGroups().contains(group.getId())) return false;
     boolean load =
         group.getLoadCondition() == null
             ? group.isLoadOnInitial()
@@ -1444,7 +1451,7 @@ public final class MissionManager {
                     || group.getCategory()
                         != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission)
             : conditions(group.getLoadCondition());
-    if (deferred)
+    if (deferred || (ordinary && group.getUnloadCondition() != null))
       return load
           && MissionGroupConditions.evaluate(player, group.getUnloadCondition())
               == MissionGroupConditions.Result.NO_MATCH;

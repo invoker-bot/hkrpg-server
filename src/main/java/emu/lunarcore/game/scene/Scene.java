@@ -202,6 +202,9 @@ public class Scene implements Tickable {
 
     public void loadGroup(GroupInfo group) {
         if (group == null || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)) return;
+        if (org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this)
+            && (SceneEntityLoader.isExcludedGroup(this, group)
+                || !getPlayer().getMissionManager().shouldLoadGroup(group, this))) return;
         // Resources from other story dimensions are retained, but do not belong to the main world.
         // Instance loaders for Rogue/Challenge/Trial already select their own authored groups.
         if (getPlaneType() != PlaneType.Rogue && getPlaneType() != PlaneType.Challenge
@@ -328,7 +331,8 @@ public class Scene implements Tickable {
         for (var group : getResourceGroups().values()) {
             boolean atmosphere = group.getCategory() == GroupInfo.GroupCategory.Atmosphere;
             boolean deferred = org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, this);
-            if ((!atmosphere && !deferred && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
+            boolean ordinary = org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this);
+            if ((!atmosphere && !deferred && !ordinary && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
             if (atmosphere && (getPlaneType() == PlaneType.Rogue || getPlaneType() == PlaneType.Challenge || getPlaneType() == PlaneType.TrialActivity)) continue;
             if (getPlayer().getMissionManager().shouldLoadGroup(group, this)) toLoad.add(group);
             else if (loadedGroups.remove(group.getId())) {

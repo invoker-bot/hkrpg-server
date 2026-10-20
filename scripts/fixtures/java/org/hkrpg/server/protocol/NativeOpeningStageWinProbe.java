@@ -122,6 +122,36 @@ public final class NativeOpeningStageWinProbe {
     }
   }
 
+  private void openingScene() throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    require(
+        (Integer) field(scene, "entry_id") == 2000101
+            && (Integer) field(scene, "floor_id") == 20001001,
+        "Actual initial scene");
+    boolean kafkaPresent = false;
+    boolean doorEffects = false;
+    boolean openingProps = false;
+    for (var raw : (List<?>) field(scene, "entity_group_list")) {
+      var group = (DynamicMessage) raw;
+      int id = (Integer) field(group, "group_id");
+      require(id != 93 && id != 6, "Opening scene contains locked world group " + id);
+      doorEffects |= id == 52;
+      openingProps |= id == 88;
+      for (var value : (List<?>) field(group, "entity_list")) {
+        var entity = (DynamicMessage) value;
+        var actorField = entity.getDescriptorForType().findFieldByName("actor");
+        if (!entity.hasField(actorField)) continue;
+        var actor = (DynamicMessage) entity.getField(actorField);
+        require(
+            (Integer) field(actor, "base_avatar_id") == 7005,
+            "Opening scene must use the Kafka actor");
+        kafkaPresent = true;
+      }
+    }
+    require(kafkaPresent, "Opening scene Kafka actor is absent");
+    require(doorEffects && openingProps, "Opening scene lost its current story props");
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     int uid =
         (Integer)
@@ -140,6 +170,7 @@ public final class NativeOpeningStageWinProbe {
     call("PlayerLoginCsReq");
     call("PlayerLoginFinishCsReq");
     openingParty();
+    openingScene();
     boolean first = control.get("phase").getAsString().equals("first");
     if (first) {
       tutorialProgress(false);
@@ -154,11 +185,6 @@ public final class NativeOpeningStageWinProbe {
           (Integer) field(intro, "progress") == 0
               && ((Descriptors.EnumValueDescriptor) field(intro, "status")).getNumber() == 1,
           "Opening intro must wait for the client performance");
-      var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
-      require(
-          (Integer) field(scene, "entry_id") == 2000101
-              && (Integer) field(scene, "floor_id") == 20001001,
-          "Actual initial scene");
       for (int id : new int[] {100010102, 100010100, 100010104})
         call(
             "FinishTalkMissionCsReq",
@@ -210,6 +236,8 @@ public final class NativeOpeningStageWinProbe {
         "openingKafkaVerified",
         true,
         "tutorialProgressVerified",
+        true,
+        "openingSceneGatesVerified",
         true,
         "clientGameplayVerified",
         false);
