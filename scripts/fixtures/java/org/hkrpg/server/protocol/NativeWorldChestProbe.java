@@ -161,13 +161,137 @@ public final class NativeWorldChestProbe {
   }
 
   private DynamicMessage interact(DynamicMessage scene, DynamicMessage actor) throws Exception {
+    return interact(scene, actor, 112131);
+  }
+
+  private DynamicMessage interact(DynamicMessage scene, DynamicMessage actor, int config)
+      throws Exception {
     var request = builder("InteractPropCsReq");
-    set(request, "interact_id2", 112131);
+    set(request, "interact_id2", config);
     set(request, "prop_entity_id", number(actor, "entity_id"));
     set(request, "interact_id", field(scene, "interact_id"));
     var reply = call("InteractPropCsReq", request);
     require(number(reply, "prop_entity_id") == number(actor, "entity_id"), "Wrong response actor");
     return reply;
+  }
+
+  private DynamicMessage entity(DynamicMessage scene, int group, int instance) {
+    var matches = new ArrayList<DynamicMessage>();
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var row : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var e = (DynamicMessage) row;
+        if (number(e, "group_id") == group && number(e, "inst_id") == instance) matches.add(e);
+      }
+    require(matches.size() <= 1, "Duplicate source actor");
+    return matches.isEmpty() ? null : matches.getFirst();
+  }
+
+  private DynamicMessage chestState(DynamicMessage scene, JsonObject spec, int state) {
+    var e = entity(scene, spec.get("group").getAsInt(), spec.get("instance").getAsInt());
+    require(e != null, "Original mechanism chest missing");
+    var prop = (DynamicMessage) field(e, "prop");
+    require(
+        number(prop, "prop_id") == spec.get("prop").getAsInt()
+            && number(prop, "prop_state") == state,
+        "Wrong mechanism chest state: " + prop);
+    return e;
+  }
+
+  private Map<String, Object> mechanism(JsonObject control, int uid) throws Exception {
+    var spec = control.getAsJsonObject("mechanism");
+    String op = spec.get("op").getAsString();
+    int id = spec.get("id").getAsInt(), group = spec.get("group").getAsInt();
+    var current = scene(control);
+    var chest = chestState(current, spec, spec.get("before").getAsInt());
+    int notifications = openedNotify.size();
+    if (!op.equals("claim")) {
+      require(number(interact(current, chest), "retcode") != 0, "Premature or repeated loot claim");
+      rejected++;
+    }
+    if (op.equals("guard")) {
+      int instance = spec.get("guard").getAsInt();
+      var monster = entity(current, group, instance);
+      require(monster != null, "Original guard missing");
+      var npc = (DynamicMessage) field(monster, "npc_monster");
+      require(
+          number(npc, "monster_id") == spec.get("npc").getAsInt()
+              && number(npc, "event_id") == spec.get("event").getAsInt(),
+          "Wrong original guard");
+      var cast = builder("SceneCastSkillCsReq");
+      int caster = number(current, "leader_entity_id");
+      require(caster > 0, "Missing live caster");
+      set(cast, "cast_entity_id", caster);
+      set(cast, "attacked_by_entity_id", caster);
+      set(cast, "skill_index", 0);
+      set(cast, "hit_target_entity_id_list", List.of(number(monster, "entity_id")));
+      var attack = call("SceneCastSkillCsReq", cast);
+      require(
+          number(attack, "retcode") == 0
+              && attack.hasField(attack.getDescriptorForType().findFieldByName("battle_info")),
+          "Original guard did not enter battle: " + attack);
+      var battle = (DynamicMessage) field(attack, "battle_info");
+      require(
+          number(battle, "stage_id") == spec.get("event").getAsInt() * 10,
+          "Guard stage identity changed");
+      require(!((List<?>) field(battle, "monster_wave_list")).isEmpty(), "Missing guard wave");
+      var win = builder("PVEBattleResultCsReq");
+      set(win, "battle_id", number(battle, "battle_id"));
+      set(win, "stage_id", number(battle, "stage_id"));
+      set(
+          win,
+          "end_status",
+          win.getDescriptorForType()
+              .findFieldByName("end_status")
+              .getEnumType()
+              .findValueByName("BATTLE_END_WIN"));
+      require(number(call("PVEBattleResultCsReq", win), "retcode") == 0, "Guard victory rejected");
+      require(
+          number(call("PVEBattleResultCsReq", win), "retcode") != 0, "Duplicate victory accepted");
+    } else if (op.equals("finish")) {
+      var target =
+          spec.get("controller").getAsInt() == 0
+              ? chest
+              : entity(current, group, spec.get("controller").getAsInt());
+      require(target != null, "Original puzzle controller missing");
+      var result = interact(current, target, spec.get("finish").getAsInt());
+      require(number(result, "retcode") == 0, "Source puzzle finish rejected: " + result);
+      require(
+          number(interact(current, target, spec.get("finish").getAsInt()), "retcode") != 0,
+          "Repeated completion accepted");
+    } else if (op.equals("claim")) {
+      var result = interact(current, chest);
+      require(
+          number(result, "retcode") == 0 && number(result, "prop_state") == 13,
+          "Unlocked original chest did not pay");
+      require(
+          openedNotify.size() == notifications + 1 && openedNotify.getLast() == id,
+          "Wrong source chest notification");
+      require(number(interact(current, chest), "retcode") != 0, "Duplicate reward delivered");
+      rejected++;
+    } else require(op.equals("verify"), "Unknown mechanism test action");
+    current = scene(control);
+    chestState(current, spec, spec.get("after").getAsInt());
+    for (var gone : spec.getAsJsonArray("defeated"))
+      require(entity(current, group, gone.getAsInt()) == null, "Defeated guard respawned");
+    for (var live : spec.getAsJsonArray("remaining"))
+      require(entity(current, group, live.getAsInt()) != null, "Undefeated guard disappeared");
+    if (!op.equals("claim"))
+      require(openedNotify.size() == notifications, "Unlock generated a loot notification");
+    var known = new TreeSet<Integer>();
+    control.getAsJsonArray("known").forEach(v -> known.add(v.getAsInt()));
+    if (op.equals("claim")) require(known.add(id), "Prewritten mechanism reward");
+    var result = new LinkedHashMap<String, Object>();
+    result.put("passed", true);
+    result.put("uid", uid);
+    result.put("nativeRequests", requests);
+    result.put("openedOriginalChests", op.equals("claim") ? List.of(id) : List.of());
+    result.put("known", known);
+    result.put("claimed", List.of());
+    result.put("chestIdentityNotifications", openedNotify);
+    result.put("rejectedRepeatedOpenings", rejected);
+    result.put("mechanism", spec);
+    result.put("clientGameplayVerified", false);
+    return result;
   }
 
   private void goals(JsonArray goals, Set<Integer> claimed, int count) throws Exception {
@@ -213,6 +337,7 @@ public final class NativeWorldChestProbe {
           "clientGameplayVerified",
           false);
     }
+    if (control.has("mechanism")) return mechanism(control, uid);
     var current = scene(control);
     var known = new TreeSet<Integer>();
     var claimed = new TreeSet<Integer>();

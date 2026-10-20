@@ -43,6 +43,12 @@ public class GameplayState {
     return worldChests;
   }
   void worldChests(WorldChestState value) { worldChests = Objects.requireNonNull(value); }
+  private WorldMechanismState worldMechanisms = new WorldMechanismState();
+  public WorldMechanismState getWorldMechanisms() {
+    if (worldMechanisms == null) worldMechanisms = new WorldMechanismState();
+    return worldMechanisms;
+  }
+  void worldMechanisms(WorldMechanismState value) { worldMechanisms = Objects.requireNonNull(value); }
   private WorldFirstTalkState worldFirstTalks = new WorldFirstTalkState();
   public WorldFirstTalkState getWorldFirstTalks() {
     if (worldFirstTalks == null) worldFirstTalks = new WorldFirstTalkState();

@@ -41,6 +41,12 @@ public final class WorldChestFixtureInspector {
     var control = JsonParser.parseString(Files.readString(input)).getAsJsonObject();
     boolean baseZone = control.has("baseZone") && control.get("baseZone").getAsBoolean();
     boolean mapChests = control.has("mapChests") && control.get("mapChests").getAsBoolean();
+    boolean mechanisms =
+        control.has("mechanismProgress") && !control.get("mechanismProgress").isJsonNull();
+    require(
+        !mechanisms
+            || marker.has("mechanismFixture") && marker.get("mechanismFixture").getAsBoolean(),
+        "Missing mechanism fixture marker");
     require(
         !mapChests || marker.has("mapChestFixture") && marker.get("mapChestFixture").getAsBoolean(),
         "Missing map chest fixture marker");
@@ -169,6 +175,65 @@ public final class WorldChestFixtureInspector {
       for (var id : control.getAsJsonArray("known")) known.add(id.getAsInt());
       for (var id : control.getAsJsonArray("claimed")) claimed.add(id.getAsInt());
       require(domain.getRecords().keySet().equals(known), "Different restored chest identities");
+      boolean battlePhase = mechanisms && control.get("battleBalancePhase").getAsBoolean();
+      boolean captureBattle = mechanisms && control.get("captureBattleBalances").getAsBoolean();
+      if (mechanisms) {
+        var progress = player.getGameplay().getWorldMechanisms();
+        require(progress.valid(), "Invalid restored mechanism journal");
+        var expectedProgress = control.getAsJsonObject("mechanismProgress");
+        var keys = new TreeSet<Integer>();
+        for (var e : expectedProgress.entrySet()) {
+          int id = Integer.parseInt(e.getKey());
+          keys.add(id);
+          var actualProgress = progress.getRecords().get(id);
+          var defeated = new TreeSet<Integer>();
+          e.getValue()
+              .getAsJsonObject()
+              .getAsJsonArray("defeated")
+              .forEach(v -> defeated.add(v.getAsInt()));
+          require(
+              actualProgress != null
+                  && actualProgress.isComplete()
+                      == e.getValue().getAsJsonObject().get("complete").getAsBoolean()
+                  && actualProgress.getDefeated().equals(defeated),
+              "Different restored mechanism progress " + id);
+        }
+        require(progress.getRecords().keySet().equals(keys), "Unexpected mechanism progress");
+        if (battlePhase)
+          require(
+              known.isEmpty() && keys.equals(Set.of(20001632)) && domain.getQuests().isEmpty(),
+              "Battle baseline only allowed before any chest rewards");
+        if (captureBattle) {
+          require(
+              battlePhase
+                  && mode.equals("inspect")
+                  && progress.completed(20001632)
+                  && progress
+                      .getRecords()
+                      .get(20001632)
+                      .getDefeated()
+                      .equals(WorldMechanismSources.RULES.get(20001632).guards())
+                  && !Files.exists(dir.resolve("world-chest-battle-balances.json")),
+              "Invalid battle balance snapshot");
+          // Actual combat loot is outside this chest test's reward oracle. Record its resulting
+          // balances once, without changing inventory, before checking every chest payout exactly.
+          Files.writeString(
+              dir.resolve("world-chest-battle-balances.json"),
+              new Document("hcoin", after.get("hcoin"))
+                  .append("scoin", after.get("scoin"))
+                  .append("mcoin", after.get("mcoin"))
+                  .append("exp", after.get("exp"))
+                  .toJson());
+          Files.writeString(
+              dir.resolve("world-chest-battle-items.json"),
+              new Document(
+                      "items",
+                      db.getCollection("items")
+                          .find(new Document("ownerUid", uid))
+                          .into(new ArrayList<Document>()))
+                  .toJson());
+        }
+      }
       var payout = new TreeMap<Integer, Integer>();
       int credits = 0;
       for (var raw : control.getAsJsonArray("goals")) {
@@ -243,17 +308,21 @@ public final class WorldChestFixtureInspector {
                             232,
                             known.size())),
             "Base Zone payout or foreign activity progress differs");
-      var balances =
-          Document.parse(Files.readString(dir.resolve("world-chest-start-balances.json")));
+      String balancePrefix =
+          mechanisms && Files.exists(dir.resolve("world-chest-battle-balances.json"))
+              ? "world-chest-battle-"
+              : "world-chest-start-";
+      var balances = Document.parse(Files.readString(dir.resolve(balancePrefix + "balances.json")));
       for (String currency : List.of("hcoin", "scoin", "mcoin", "exp"))
         require(
-            ((Number) after.get(currency)).longValue()
-                == ((Number) balances.get(currency)).longValue()
-                    + payout.getOrDefault(
-                        currency.equals("hcoin")
-                            ? 1
-                            : currency.equals("scoin") ? 2 : currency.equals("exp") ? 22 : 3,
-                        0),
+            battlePhase
+                || ((Number) after.get(currency)).longValue()
+                    == ((Number) balances.get(currency)).longValue()
+                        + payout.getOrDefault(
+                            currency.equals("hcoin")
+                                ? 1
+                                : currency.equals("scoin") ? 2 : currency.equals("exp") ? 22 : 3,
+                            0),
             "Currency payout mismatch "
                 + currency
                 + " actual="
@@ -263,7 +332,7 @@ public final class WorldChestFixtureInspector {
                 + " payouts="
                 + payout);
       var initial =
-          Document.parse(Files.readString(dir.resolve("world-chest-start-items.json")))
+          Document.parse(Files.readString(dir.resolve(balancePrefix + "items.json")))
               .getList("items", Document.class);
       var actual =
           db.getCollection("items")
@@ -280,7 +349,7 @@ public final class WorldChestFixtureInspector {
           (id, count) -> {
             if (id > 3 && id != 22) first.merge(id, count, Math::addExact);
           });
-      require(first.equals(second), "Material payout mismatch");
+      require(battlePhase || first.equals(second), "Material payout mismatch");
       require(
           after.equals(players.find(filter).first())
               && Arrays.equals(config, Files.readAllBytes(dir.resolve("config.json"))),
@@ -306,7 +375,9 @@ public final class WorldChestFixtureInspector {
                       "clientGameplayVerified",
                       false,
                       "catalogValidated",
-                      catalogValidated)));
+                      catalogValidated,
+                      "mechanismCatalogSize",
+                      WorldMechanismSources.RULES.size())));
     } finally {
       server.shutdownNow();
     }

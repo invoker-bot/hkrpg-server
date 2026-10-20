@@ -1,3 +1,5 @@
+`WorldMechanisms` 在守卫移除前保存击败集合，将控制器状态和解锁记录同存；`WorldMechanismSources` 核验固定原文与精确目标，`worldChests` 继续独立处理领奖防重。公开资源来源与客户端回执边界见[机关宝箱说明](world-mechanisms-4.6.md)。
+
 `WorldChests` 的来源目录增加基座舱段六个普通探索宝箱；复用原有投递回执和恢复流程，世界和活动计数按原始 `MazeChest.WorldID` 隔离，交互再次验证剧情门槛，详见[宝箱领取说明](base-zone-chests-4.6.md)。
 
 普通世界地图中，Normal/省略分类的组也须经 `MissionGroupConditions` 和 `MissionManager` 校验原始加载/卸载条件；构造、显式加载和任务刷新保持一致。开场凝滞虚影提前生成的原因与验证范围见[场景加载说明](opening-scene-groups-4.6.md)。

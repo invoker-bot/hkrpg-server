@@ -36,6 +36,7 @@ class MapChest46Test {
                     StandardCharsets.UTF_8))
             .getAsJsonObject();
     for (String section : List.of("records", "groups", "floors", "locations")) {
+      if (!extra.has(section)) continue;
       for (var entry : extra.getAsJsonObject(section).entrySet()) {
         var target = fixture.source.getAsJsonObject(section);
         if (!section.equals("records") || !target.has(entry.getKey())) {
@@ -43,7 +44,7 @@ class MapChest46Test {
           continue;
         }
         String table = Path.of(entry.getKey()).getFileName().toString().replace(".json", "");
-        String id = WorldChestSources.KEYS.get(table);
+        String id = WorldChestSources.KEYS.getOrDefault(table, "ID");
         var rows = new LinkedHashMap<Integer, JsonElement>();
         for (var row : target.getAsJsonArray(entry.getKey()))
           rows.put(row.getAsJsonObject().get(id).getAsInt(), row);

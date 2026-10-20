@@ -19,10 +19,11 @@ public final class ScenePropTransitions {
 
   public static boolean supported(EntityProp prop) {
     return prop != null
-        && switch (prop.getPropType()) {
-          case PROP_ORDINARY, PROP_PLATFORM, PROP_ELEVATOR, PROP_SPRING -> true;
-          default -> false;
-        };
+        && (WorldMechanisms.controller(prop)
+            || switch (prop.getPropType()) {
+              case PROP_ORDINARY, PROP_PLATFORM, PROP_ELEVATOR, PROP_SPRING -> true;
+              default -> false;
+            });
   }
 
   public static boolean applies(EntityProp prop) {
@@ -175,12 +176,16 @@ public final class ScenePropTransitions {
                 PropTimelines.source(e.getValue()),
                 acceptance));
       var next = scope.state().with(snapshots);
+      var previousMechanisms = player.getGameplay().getWorldMechanisms();
+      var nextMechanisms = WorldMechanisms.controlProgress(player, config, prop);
       replace(player, scope, next);
+      player.getGameplay().worldMechanisms(nextMechanisms);
       for (var candidate : changed.keySet()) candidate.setState(target, false);
       try {
         player.save();
       } catch (RuntimeException failed) {
         replace(player, scope, scope.state());
+        player.getGameplay().worldMechanisms(previousMechanisms);
         changed.forEach((candidate, state) -> candidate.setState(state, false));
         if (scope.main() != null) scope.main().restoreObservationKey(acceptance, previous);
         return new Result(Retcode.SYSTEM_BUSY, null);
@@ -192,6 +197,7 @@ public final class ScenePropTransitions {
       if (scene.isLoaded())
         for (var candidate : changed.keySet())
           player.sendPacket(new PacketSceneGroupRefreshScNotify(scene, candidate, null));
+      if (nextMechanisms != previousMechanisms) WorldMechanisms.publish(scene);
       player
           .getMissionManager()
           .onPropInteraction(

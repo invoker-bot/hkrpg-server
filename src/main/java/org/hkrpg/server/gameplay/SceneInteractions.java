@@ -33,6 +33,8 @@ public final class SceneInteractions {
     var result = validate(player, config, entity);
     if (result != Retcode.SUCC) return result;
     var prop = (EntityProp) player.getScene().getEntityById(entity);
+    if (WorldMechanisms.controller(prop))
+      return WorldMechanisms.validateControl(player, config, prop);
     return switch (prop.getPropType()) {
       case PROP_ORDINARY, PROP_PLATFORM, PROP_ELEVATOR, PROP_SPRING -> Retcode.SUCC;
       case PROP_TREASURE_CHEST -> WorldChests.validate(player, config, entity);

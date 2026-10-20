@@ -53,6 +53,7 @@ public class SceneEntityLoader {
             return null;
         }
         if (!org.hkrpg.server.gameplay.WolfBroAmmunition.spawns(scene, group, monsterInfo)) return null;
+        if (!org.hkrpg.server.gameplay.WorldMechanisms.spawns(scene, group, monsterInfo)) return null;
 
         // Get excels from game data
         NpcMonsterExcel npcMonsterExcel = GameData.getNpcMonsterExcelMap().get(monsterInfo.getNPCMonsterID());
@@ -126,6 +127,7 @@ public class SceneEntityLoader {
         org.hkrpg.server.gameplay.ScenePropTransitions.restore(prop);
         org.hkrpg.server.gameplay.WorldChests.restore(prop);
         org.hkrpg.server.gameplay.GoldenSpears.restore(prop);
+        org.hkrpg.server.gameplay.WorldMechanisms.restore(prop);
         return prop;
     }
 

@@ -617,6 +617,7 @@ public class Scene implements Tickable {
                         || monster.getEntityId() <= 0 || getEntities().get(monster.getEntityId()) != monster)
                     return false;
                 int group = monster.getGroupId(), instance = monster.getInstId();
+                if (!org.hkrpg.server.gameplay.WorldMechanisms.defeat(this, monster)) return false;
                 removeEntity(monster);
                 invokePropTrigger(PropTriggerType.MONSTER_DIE, group, instance);
                 getPlayer().getMissionManager().onKillMonster(getFloorId(), group, instance);

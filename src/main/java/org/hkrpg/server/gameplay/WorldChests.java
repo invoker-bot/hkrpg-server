@@ -17,7 +17,7 @@ public final class WorldChests {
           MapChestSources.LOCATIONS,
           GoldenSpearSources.merge(MascotSources.LOCATIONS, BaseZoneChestSources.LOCATIONS));
 
-  private static Integer identity(EntityProp actor) {
+  static Integer identity(EntityProp actor) {
     if (actor == null || actor.getScene() == null) return null;
     var scene = actor.getScene();
     return LOCATIONS.entrySet().stream()
@@ -50,10 +50,11 @@ public final class WorldChests {
   public static Retcode validate(Player p, int config, int entity) {
     var base = SceneInteractions.validate(p, config, entity);
     if (base != Retcode.SUCC) return base;
-    if (config != 112131 && config != TimeRelayFlameSources.UNLOCK)
-      return Retcode.INTERACT_TYPE_INVALID;
     var actor = (EntityProp) p.getScene().getEntityById(entity);
     var id = identity(actor);
+    if (config != 112131 && config != TimeRelayFlameSources.UNLOCK
+        && (id == null || !WorldMechanisms.clientReport(id, config)))
+      return Retcode.INTERACT_TYPE_INVALID;
     var rules = WorldChestRules.load();
     if (id == null || rules == null || rules.loot(id) == null)
       return Retcode.REWARD_CONFIG_NOT_EXIST;
@@ -64,7 +65,9 @@ public final class WorldChests {
     if (state.getUnlocks().values().stream().anyMatch(r -> !r.completed()))
       return Retcode.SYSTEM_BUSY;
     if (state.getRecords().containsKey(id)) return Retcode.SYSTEM_BUSY;
-    if (config == TimeRelayFlameSources.UNLOCK) {
+    var mechanism = WorldMechanisms.validateChest(p, id, config);
+    if (mechanism != Retcode.SUCC) return mechanism;
+    if (config == TimeRelayFlameSources.UNLOCK && !WorldMechanisms.clientReport(id, config)) {
       if (!rules.flame(id)) return Retcode.INTERACT_TYPE_INVALID;
       if (state.getUnlocks().containsKey(id)) return Retcode.SYSTEM_BUSY;
     } else if (rules.puzzle(id) && !state.getUnlocks().containsKey(id)) {
@@ -87,6 +90,7 @@ public final class WorldChests {
       if (rules == null) return new Result(Retcode.REWARD_CONFIG_NOT_EXIST, null);
       var old = p.getGameplay().getWorldChests();
       var now = Instant.now();
+      if (WorldMechanisms.clientReport(id, config)) return WorldMechanisms.unlock(p, id, actor);
       if (config == TimeRelayFlameSources.UNLOCK) {
         var unlocked =
             old.unlocked(new WorldChestState.Unlock(p, id, actor, rules, now.getEpochSecond()));

@@ -33,6 +33,8 @@ def install(source, destination):
                "Config/ConfigAdventureAbility", "Config/ConfigAdventureModifier",
                "Config/ConfigSummonUnit", "Config/ConfigMazeBuff", "Config/ConfigEntity/SummonUnit",
                "Config/Level/Mission",
+               "Config/Level/Maze", "Config/Level/Props", "Config/Level/GroupGraph",
+               "Config/Level/GroupTemplateGraph", "Config/Props",
                "Config/Level/Rogue", "Config/Level/RogueDialogue", "Config/Level/LittleGame",
                "Config/Activity", "Config/BattleLineupPage/SkillTreePointPreset", "TextMap"]
     files = sorted(path for folder in folders for path in (source / folder).rglob("*.json"))

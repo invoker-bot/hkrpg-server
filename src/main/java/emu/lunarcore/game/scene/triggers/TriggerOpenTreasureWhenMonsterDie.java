@@ -26,9 +26,12 @@ public class TriggerOpenTreasureWhenMonsterDie extends PropTrigger {
 
     @Override
     public void run(Scene scene) {
+        if (org.hkrpg.server.gameplay.WorldMechanisms.guardGroup(scene, getGroupId())) return;
+        if (!scene.getEntitiesByGroup(emu.lunarcore.game.scene.entity.EntityMonster.class, getGroupId()).isEmpty()) return;
         // Open trigger
         for (var prop : scene.getEntitiesByGroup(EntityProp.class, this.getGroupId())) {
-            if (prop.getExcel().getPropType() == PropType.PROP_TREASURE_CHEST) {
+            if (prop.getExcel().getPropType() == PropType.PROP_TREASURE_CHEST
+                    && prop.getState() == PropState.ChestLocked) {
                 prop.setState(PropState.ChestClosed);
             }
             // TODO: update mssion state here
