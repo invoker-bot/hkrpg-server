@@ -1,4 +1,4 @@
-"""隔离新号的卡芙卡开场、教程状态、首战 KCP 推进与正常 H2 重启检查；不操作官方客户端。"""
+"""隔离新号的卡芙卡开场、首战、紫色恢复物及 H2 重启检查；不操作官方客户端。"""
 import hashlib
 import json
 import os
@@ -27,9 +27,11 @@ def main():
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     guarded = ['ExcelOutput/MainMission.json', 'ExcelOutput/PlaneEvent.json', 'ExcelOutput/StageConfig.json']
     guarded += ['ExcelOutput/SpecialAvatar.json', 'ExcelOutput/AvatarConfigTrial.json',
-                'ExcelOutput/TutorialData.json', 'ExcelOutput/TutorialGuideGroup.json']
+                'ExcelOutput/TutorialData.json', 'ExcelOutput/TutorialGuideGroup.json',
+                'ExcelOutput/MazeProp.json',
+                'Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Kafka_00_Ability.json']
     guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G{group}.json'
-                for group in (6, 93)]
+                for group in (6, 36, 91, 93)]
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
@@ -95,6 +97,8 @@ def main():
                     assert snapshot['passed'] and snapshot['openingBattleFinished'] and snapshot['nextObjectiveAccepted']
                     assert snapshot['openingKafkaVerified'] and snapshot['tutorialProgressVerified']
                     assert snapshot['openingSceneGatesVerified']
+                    assert snapshot['recoveryPropsVerified']
+                    assert snapshot['capturedPropVerified']
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:

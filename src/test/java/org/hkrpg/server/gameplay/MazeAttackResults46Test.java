@@ -259,6 +259,37 @@ class MazeAttackResults46Test {
     assertEquals(2, branch.base.base.player.getBattle().getNpcMonsters().size());
   }
 
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void propAssistDoesNotDropTheMonsterEncounter(boolean assistOnly) throws Exception {
+    skill(false, true);
+    var target = monster("[]");
+    var player = branch.base.base.player;
+    emu.lunarcore.data.excel.PropExcel excel;
+    try (var input = getClass().getResourceAsStream("/fixtures/base-zone-recovery-prop-4.6.json")) {
+      var fixture = JsonParser.parseReader(
+          new InputStreamReader(Objects.requireNonNull(input), StandardCharsets.UTF_8)).getAsJsonObject();
+      excel = emu.lunarcore.data.ResourceLoader.getGson().fromJson(fixture
+          .getAsJsonObject("records").getAsJsonArray("ExcelOutput/MazeProp.json").get(0),
+          emu.lunarcore.data.excel.PropExcel.class);
+    }
+    excel.onLoad();
+    // Placement is isolated; the recovery definition is the complete original row.
+    var prop = new emu.lunarcore.game.scene.entity.EntityProp(player.getScene(), excel, null, null);
+    player.getScene().addEntity(prop);
+    int propId = prop.getEntityId(), monsterId = target.getEntityId();
+    player.getCurrentLineup().setMp(0);
+    var response = dispatch(assistOnly ? new int[] {} : new int[] {monsterId},
+        new int[] {propId, monsterId});
+    assertEquals(0, number(response, "retcode"));
+    assertFalse(player.getScene().getEntities().containsKey(propId));
+    assertEquals(2, player.getCurrentLineup().getMp());
+    assertNotNull(player.getBattle());
+    assertEquals(List.of(target), player.getBattle().getNpcMonsters());
+    assertEquals(1, rows(response).size());
+    outcome(rows(response).getFirst(), monsterId, 1);
+  }
+
   @Test
   void unknownTargetRejectsWithoutPublishingAnOutcomeOrStartingABattle() throws Exception {
     skill(true, true);

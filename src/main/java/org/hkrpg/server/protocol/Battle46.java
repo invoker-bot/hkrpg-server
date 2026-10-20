@@ -8,6 +8,7 @@ import emu.lunarcore.game.avatar.GameAvatar;
 import emu.lunarcore.game.battle.skills.MazeSkill;
 import emu.lunarcore.game.battle.MazeAttackResult;
 import emu.lunarcore.game.scene.entity.EntityMonster;
+import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus;
 import emu.lunarcore.proto.BattleStatisticsOuterClass.BattleStatistics;
 import emu.lunarcore.proto.MotionInfoOuterClass.MotionInfo;
@@ -109,11 +110,12 @@ final class Battle46 {
       var ids = (List<Integer>) value(info, "entity_id_list");
       assists.addAll(ids);
     }
-    // Honey fe00bdb SceneSkillManager.OnCast: direct attacked monster uses cast avatar/leader.
+    // Honey fe00bdb SceneSkillManager also accepts destructible props in the direct target
+    // and both assist fields. They must pass the same scene/skill checks as ordinary hits.
     int caster = attacked;
     if (scene != null
-        && scene.getEntities().get(attacked) instanceof EntityMonster
-        && assists.isEmpty()) {
+        && ((scene.getEntities().get(attacked) instanceof EntityMonster && assists.isEmpty())
+            || scene.getEntities().get(attacked) instanceof EntityProp)) {
       hits.add(attacked);
       caster = cast;
     }
@@ -122,9 +124,12 @@ final class Battle46 {
         && !(scene.getEntities().get(caster) instanceof EntityMonster))
       error = Retcode.REQ_PARA_INVALID;
     if (scene != null)
-      for (int id : assists)
-        if (!(scene.getEntities().get(id) instanceof EntityMonster))
+      for (int id : assists) {
+        var target = scene.getEntities().get(id);
+        if (!(target instanceof EntityMonster)
+            && !(target instanceof EntityProp prop && scene.canDestroyProp(prop)))
           error = Retcode.REQ_PARA_INVALID;
+      }
     if (hits.size() > 64 || assists.size() > 64) error = Retcode.REQ_PARA_INVALID;
     if (scene != null)
       for (int id : hits) {
@@ -291,6 +296,15 @@ final class Battle46 {
       return;
     }
     if (hits.isEmpty()) hits.addAll(assists);
+    // Preserve assist-only monster admission, then move props into the destruction path.
+    // Deduplication happens before effects, so one bottle can recover points only once.
+    for (var it = assists.iterator(); it.hasNext();) {
+      int id = it.nextInt();
+      if (scene.getEntities().get(id) instanceof EntityProp) {
+        hits.add(id);
+        it.remove();
+      }
+    }
     var acceptedRelease = directRelease;
     var acceptedCaster = freeDirect == null ? null : scene.getAvatarByEntityId(caster);
     java.util.function.Consumer<emu.lunarcore.game.battle.Battle> beforeActivation = freeDirect == null ? null : battle -> {

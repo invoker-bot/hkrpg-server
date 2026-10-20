@@ -81,7 +81,11 @@ public final class MissionTrialLineup extends PlayerLineup {
 
   @Override
   public void addMp(int value) {
-    setMp(Math.toIntExact(Math.clamp((long) getMp() + value, 0, getMaxMp())));
+    synchronized (getOwner()) {
+      if (!owned()) return;
+      setMp(Math.toIntExact(Math.clamp((long) getMp() + value, 0, getMaxMp())));
+      refreshLineup();
+    }
   }
 
   @Override
