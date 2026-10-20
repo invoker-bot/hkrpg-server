@@ -12,6 +12,7 @@ import time
 import urllib.error
 import urllib.request
 from smoke_resource_fixture import mirror_resources
+from final_world_mechanism_probe_cases import IDS as FINAL_IDS, PREREQUISITES as FINAL_PREREQUISITES, actions as final_actions
 from world_mechanism_probe_cases import (LEGACY_IDS, DYNAMIC_IDS, REMAINING_IDS,
                                         REMAINING_PREREQUISITES, dynamic_actions, remaining_actions)
 
@@ -37,9 +38,12 @@ def main():
     parser.add_argument('--mechanisms', action='store_true', help='Verify guard/puzzle unlock, loot and H2 restart')
     parser.add_argument('--dynamic', action='store_true', help='Verify staged boards, tramcar replacements and spear variants')
     parser.add_argument('--remaining', action='store_true', help='Verify cross-group, mission and time-lock completion receipts')
+    parser.add_argument('--final-bindings', action='store_true', help='Verify compass guards, cargo NPC and QTE reward with H2 restarts')
+    parser.add_argument('--final-case', type=int, choices=FINAL_IDS, help='Diagnose one --final-bindings chest in isolation')
     args = parser.parse_args()
-    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.remaining]) <= 1, 'Choose one chest fixture'
-    if args.dynamic or args.remaining:
+    assert args.final_case is None or args.final_bindings, '--final-case requires --final-bindings'
+    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
+    if args.dynamic or args.remaining or args.final_bindings:
         args.mechanisms = True
     original_resources = args.base_zone or args.map_chests or args.mechanisms
     jar, output = args.jar.resolve(), args.output.resolve()
@@ -52,6 +56,25 @@ def main():
     fixture_name = ('world-mechanisms-4.6.json' if args.mechanisms else 'map-chests-4.6.json' if args.map_chests
                     else 'base-zone-chests-4.6.json' if args.base_zone else 'world-chest-4.6.json')
     golden = json.loads((ROOT / 'src/test/resources/fixtures' / fixture_name).read_text('utf-8'))
+    final_mission_rewards = []
+    if args.final_bindings:
+        extra = json.loads((ROOT / 'src/main/resources/gameplay/mascot-extension-4.6.json').read_text('utf-8'))
+        golden['locations']['20433651'] = dict(extra['location'],entry=2043301,world=501)
+        mascot = json.loads((ROOT / 'src/test/resources/fixtures/mascot-4.6.json').read_text('utf-8'))
+        for path in ('ExcelOutput/MapEntrance.json', 'ExcelOutput/MazePlane.json'):
+            key = 'ID' if 'MapEntrance' in path else 'PlaneID'
+            merged = {row[key]: row for row in golden['records'][path]}
+            merged.update({row[key]: row for row in mascot['records'][path]})
+            golden['records'][path] = list(merged.values())
+        mission = next(row for row in mascot['records']['ExcelOutput/MainMission.json']
+                       if row['MainMissionID'] == extra['control']['mission'])
+        reward = next(row for row in mascot['records']['ExcelOutput/RewardData.json']
+                      if row['RewardID'] == mission['RewardID'])
+        recipe = {1: reward['Hcoin']} if reward.get('Hcoin') else {}
+        for key, item in reward.items():
+            if key.startswith('ItemID_') and item:
+                recipe[item] = recipe.get(item, 0) + reward['Count_' + key.split('_')[1]]
+        final_mission_rewards = [dict(mission=mission['MainMissionID'], rewards=recipe)]
     tables = {Path(path).stem: rows for path, rows in golden['records'].items()}
     goals = []
     for quest in sorted(tables.get('QuestData', []), key=lambda row: row['QuestID']):
@@ -69,9 +92,13 @@ def main():
         chests = [row for row in chests if row['id'] != 20001632]  # Locked guard challenge is a rejection fixture.
     chests.sort(key=lambda row: row['id'])
     if args.mechanisms:
-        selected = REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
+        selected = FINAL_IDS if args.final_bindings else REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
+        if args.final_case is not None:
+            selected = (args.final_case,)
         chests = sorted((row for row in chests if row['id'] in selected), key=lambda row: selected.index(row['id']))
-    expected_chests = len(REMAINING_IDS) if args.remaining else len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
+    expected_chests = len(FINAL_IDS) if args.final_bindings else len(REMAINING_IDS) if args.remaining else len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
+    if args.final_case is not None:
+        expected_chests = 1
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
     assert args.map_chests or args.mechanisms or all(row['plane'] == plane and row['floor'] == floor for row in chests)
@@ -155,6 +182,9 @@ def main():
     mission_progress = {}
     prerequisite = None
     mechanism_spec = None
+    mascot_progress = {}
+    mission_item = 0
+    combat_payout = {}
     stops = 0
 
     def request(route, body=None):
@@ -169,14 +199,17 @@ def main():
         control.write_text(json.dumps(dict(uid=credentials['uid'], known=known, claimed=claimed, baseZone=args.base_zone,
                                           mapChests=args.map_chests or args.mechanisms,
                                           mechanismProgress=mechanism_progress if args.mechanisms else None,
-                                          propProgress=prop_progress if args.dynamic or args.remaining else None,
-                                          valueProgress=value_progress if args.remaining else None,
-                                          missionProgress=mission_progress if args.remaining else None,
-                                          remainingFixture=args.remaining, prerequisite=prerequisite,
+                                          propProgress=prop_progress if args.dynamic or args.remaining or args.final_bindings else None,
+                                          valueProgress=value_progress if args.remaining or args.final_bindings else None,
+                                          missionProgress=mission_progress if args.remaining or args.final_bindings else None,
+                                          remainingFixture=args.remaining or args.final_bindings, prerequisite=prerequisite,
+                                          finalBindings=args.final_bindings, mascotProgress=mascot_progress, missionItem=mission_item,
+                                          combatPayout=combat_payout,
+                                          missionRewards=final_mission_rewards if mascot_progress.get('20433651', 0) >= 3 else [],
                                           dynamicFixture=args.dynamic,
-                                          battleBalancePhase=bool(mechanism_spec and mechanism_spec['op'] == 'guard')
-                                                             or any(not p['complete'] for p in mechanism_progress.values()),
-                                          captureBattleBalances=bool(mode == 'inspect' and mechanism_spec
+                                          battleBalancePhase=not args.final_bindings and (bool(mechanism_spec and mechanism_spec['op'] == 'guard')
+                                                             or any(not p['complete'] for p in mechanism_progress.values())),
+                                          captureBattleBalances=bool(not args.final_bindings and mode == 'inspect' and mechanism_spec
                                                                      and mechanism_spec['op'] == 'guard'
                                                                      and not mechanism_spec['remaining']),
                                           goals=goals, stage=stage)), 'utf-8')
@@ -197,7 +230,7 @@ def main():
         by_id = {row['id']: row for row in chests}
         chests = [by_id[id_] for id_ in selected]
         actions = [None]
-        for chest in chests:
+        for chest in ([] if args.final_bindings else chests):
             rule = mechanisms[str(chest['id'])]
             common = dict(chest, controller=rule['controller'], finish=rule['finish'] or
                           (rule['reports'][0] if rule['reports'] else 0), defeated=[], remaining=[])
@@ -215,6 +248,9 @@ def main():
                 actions.append(dict(common, op='finish', before=initial_state, after=12))
             actions.append(dict(common, op='claim', before=12, after=13))
             actions.append(dict(common, op='verify', before=13, after=13))
+        if args.final_bindings:
+            actions = final_actions(chests, catalog, golden['groups'])
+            prerequisite = FINAL_PREREQUISITES.get(chests[0]['id'])
         if args.dynamic:
             actions = dynamic_actions(chests, catalog)
         if args.remaining:
@@ -282,12 +318,20 @@ def main():
                         if child.poll() is None:
                             child.terminate()
                             child.wait(timeout=15)
+                if child.returncode != 0:
+                    # Preserve the live server's stacks before shutdown when a wire probe fails.
+                    trace = subprocess.run([str(java.with_name('jcmd.exe')), str(process.pid), 'Thread.print'],
+                        capture_output=True, timeout=15, creationflags=flags)
+                    (directory / f'server-{index}-threads.log').write_bytes(trace.stdout + trace.stderr)
                 assert child.returncode == 0, probe_log
                 value = json.loads(next(line for line in reversed(probe_log.read_text('utf-8').splitlines()) if line.startswith('{')))
                 assert value['passed']
                 credentials.setdefault('uid', value['uid'])
                 assert credentials['uid'] == value['uid']
                 snapshots.append(value)
+                if args.final_bindings:
+                    for item, count in value.get('combatPayout', {}).items():
+                        combat_payout[item] = combat_payout.get(item, 0) + count
                 if index:
                     assert value['openedOriginalChests'] == [row['id'] for row in batch]
                     known = sorted(known + value['openedOriginalChests'])
@@ -307,12 +351,12 @@ def main():
                             process.terminate()
                             process.wait(timeout=15)
                         process.stdin.close()
-        if mechanism_spec and mechanism_spec['op'] in ('guard', 'finish', 'destroy', 'talk', 'property') and (
+        if mechanism_spec and not mechanism_spec.get('mascot') and mechanism_spec['op'] in ('guard', 'finish', 'destroy', 'talk', 'property') and (
                 mechanism_spec['after'] == 12 or mechanism_spec['op'] == 'guard'):
             mechanism_progress[str(mechanism_spec['id'])] = dict(
                 complete=mechanism_spec['after'] == 12, defeated=mechanism_spec['defeated'],
                 late=bool(mechanism_spec.get('late')))
-        if (args.dynamic or args.remaining) and mechanism_spec:
+        if (args.dynamic or args.remaining or args.final_bindings) and mechanism_spec:
             prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec.get('actorGroup', mechanism_spec['group'])}:"
             for instance, state in mechanism_spec.get('persistedStates', mechanism_spec.get('states', {})).items():
                 prop_progress[prefix + instance] = state
@@ -320,16 +364,21 @@ def main():
                 value_progress[f"floor:{stage['floor']}:{mechanism_spec['floorValue']}"] = 1
                 value_progress[f"group:{stage['floor']}:{mechanism_spec['actorGroup']}:{mechanism_spec['property']}"] = 1
             mission_progress.update(mechanism_spec.get('missions', {}))
+            if mechanism_spec.get('mascotState'):
+                mascot_progress[str(mechanism_spec['id'])] = mechanism_spec['mascotState']
+            value_progress.update(mechanism_spec.get('floorValues', {}))
+            mission_item = mechanism_spec.get('missionItem', mission_item)
         inspect('seed' if index == 0 else 'inspect')
         if actions and index + 1 < len(actions):
             upcoming = actions[index + 1]
-            next_stage = dict(plane=upcoming['plane'], floor=upcoming['floor'], entry=upcoming['entry'],
-                              world=upcoming['world'], pos=dict(x=0, y=0, z=0))
+            destination = upcoming.get('travel', upcoming)
+            next_stage = dict(plane=destination['plane'], floor=destination['floor'], entry=destination['entry'],
+                              world=destination['world'], pos=dict(x=0, y=0, z=0))
             # Placement only; all defeat, unlock and reward progress must come through KCP.
-            next_case = args.remaining and (mechanism_spec is None or upcoming['id'] != mechanism_spec['id'])
+            next_case = (args.remaining or args.final_bindings) and (mechanism_spec is None or upcoming['id'] != mechanism_spec['id'])
             if next_stage != stage or next_case:
                 stage = next_stage
-                prerequisite = REMAINING_PREREQUISITES.get(upcoming['id']) if args.remaining else None
+                prerequisite = (FINAL_PREREQUISITES if args.final_bindings else REMAINING_PREREQUISITES).get(upcoming['id']) if next_case else None
                 mechanism_spec = None
                 inspect('move')
         if args.map_chests and index + 1 < len(batches) and batches[index + 1]:
@@ -353,8 +402,11 @@ def main():
         chestIdentityNotifications=expected_chests, baseZone=args.base_zone, mapChests=args.map_chests,
         mechanisms=args.mechanisms, mechanismProgress=mechanism_progress,
         dynamicMechanisms=args.dynamic, propProgress=prop_progress,
+        finalBindings=args.final_bindings, selectedFinalCase=args.final_case,
+        mascotProgress=mascot_progress, combatPayout=combat_payout,
+        sourceMissionRewards=final_mission_rewards,
         remainingMechanisms=args.remaining, valueProgress=value_progress, missionProgress=mission_progress,
-        guardBattleLootBalancesRebased=args.mechanisms and not args.dynamic and not args.remaining,
+        guardBattleLootBalancesRebased=args.mechanisms and not args.dynamic and not args.remaining and not args.final_bindings,
         rejectedRepeatedOpenings=sum(row.get('rejectedRepeatedOpenings', 0) for row in snapshots),
         normalStops=stops, sameUIDNormalH2ProcessRestarts=stops - 1, completedOriginalActivityQuests=claimed,
         actualQuestRewards={goal['id']: goal['rewards'] for goal in goals}, sourceResourceHashes=hashes,

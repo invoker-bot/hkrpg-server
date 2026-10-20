@@ -7,6 +7,7 @@ import sys
 
 from source_json import loads, fingerprint
 from world_mechanism_bindings import extend, mission_index
+from world_mechanism_compass import compass_rule
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "src/main/resources/gameplay/world-mechanisms-4.6.json"
@@ -276,7 +277,7 @@ def catalog(root):
     source = loads((ROOT / "src/main/resources/gameplay/map-chests-4.6.json").read_bytes())
     tables = {name: {r[key]: r for r in loads((root / f"ExcelOutput/{name}.json").read_bytes())}
               for name, key in [("MazeProp", "ID"), ("InteractConfig", "InteractID"),
-                                ("NPCMonsterData", "ID")]}
+                                ("NPCMonsterData", "ID"), ("ItemConfig", "ID")]}
     files, rows, rules, pending, aliases = {}, {}, {}, {}, {}
     cache = {}
 
@@ -416,6 +417,11 @@ def catalog(root):
             if extra:
                 rule.update(extra)
         if not rule["kind"]:
+            extra = compass_rule(group, loc, read, tables, pin, used, row_keys,
+                                 sys.modules[__name__], missions)
+            if extra:
+                rule.update(extra)
+        if not rule["kind"]:
             pending[key] = dict(state=chest["State"], graph=group.get("LevelGraph"),
                                 reason="No complete supported server predicate or exact client unlock binding")
             continue
@@ -425,8 +431,14 @@ def catalog(root):
             table, id_ = name.split(":")
             rows[name] = fingerprint(tables[table][int(id_)])
         rules[key] = rule
+    extra = loads((ROOT / 'src/main/resources/gameplay/mascot-extension-4.6.json').read_bytes())
+    key = str(extra['control']['chest'])
+    assert all(fingerprint(read(path)) == digest for path, digest in extra['files'].items())
+    assert key in pending and source['locations'][key] == extra['location']
+    del pending[key]
     return dict(sourceCommit=source["sourceCommit"], rules=rules, files=dict(sorted(files.items())),
-                rows=dict(sorted(rows.items())), pending=pending, controllerAliases=aliases)
+                rows=dict(sorted(rows.items())), pending=pending, controllerAliases=aliases,
+                independentOwners={key: 'mascot-extension-4.6.json'})
 
 
 def main():

@@ -208,6 +208,7 @@ public final class ScenePropTransitions {
         for (var candidate : changed.keySet())
           player.sendPacket(new PacketSceneGroupRefreshScNotify(scene, candidate, null));
       if (nextMechanisms != previousMechanisms) WorldMechanisms.publish(scene);
+      WorldMechanisms.afterControl(prop);
       player
           .getMissionManager()
           .onPropInteraction(

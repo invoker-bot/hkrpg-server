@@ -48,6 +48,7 @@ public final class NativeWorldChestProbe {
   }
 
   private DynamicMessage call(String name, byte[] body) throws Exception {
+    System.err.println("REQUEST " + (requests + 1) + " " + name);
     var bytes =
         Unpooled.wrappedBuffer(PacketCodec.encode(protocol.clientCommand(name), new byte[0], body));
     try {
@@ -62,6 +63,7 @@ public final class NativeWorldChestProbe {
         throw new IllegalStateException("Connection failed", failure.get());
       var frame = inbox.poll(1, TimeUnit.SECONDS);
       if (frame == null) continue;
+      System.err.println("RESPONSE " + frame.command() + " bytes=" + frame.body().length);
       if (frame.command() == protocol.clientCommand("OpenChestScNotify")) {
         var notify = protocol.clientSchema().parse("OpenChestScNotify", frame.body());
         require(notify.getUnknownFields().asMap().isEmpty(), "Unknown chest notification fields");
@@ -188,6 +190,10 @@ public final class NativeWorldChestProbe {
 
   private DynamicMessage chestState(DynamicMessage scene, JsonObject spec, int state) {
     var e = entity(scene, spec.get("group").getAsInt(), spec.get("instance").getAsInt());
+    if (state == -1) {
+      require(e == null, "Premature reward group or wrong travel scene");
+      return null;
+    }
     if (state == 13
         && spec.has("unloadsAfterClaim")
         && spec.get("unloadsAfterClaim").getAsBoolean()) {
@@ -211,7 +217,13 @@ public final class NativeWorldChestProbe {
     var current = scene(control);
     var chest = chestState(current, spec, spec.get("before").getAsInt());
     states(current, actorGroup, spec.getAsJsonObject("beforeStates"));
+    if (spec.has("absentBefore"))
+      for (var absent : spec.getAsJsonArray("absentBefore"))
+        require(
+            entity(current, group, absent.getAsInt()) == null,
+            "Ship guard spawned before compass completion");
     int notifications = openedNotify.size();
+    var combatPayout = new TreeMap<Integer, Integer>();
     if (chest != null && !op.equals("claim") && spec.get("before").getAsInt() != 12) {
       require(number(interact(current, chest), "retcode") != 0, "Premature or repeated loot claim");
       rejected++;
@@ -252,9 +264,26 @@ public final class NativeWorldChestProbe {
               .findFieldByName("end_status")
               .getEnumType()
               .findValueByName("BATTLE_END_WIN"));
-      require(number(call("PVEBattleResultCsReq", win), "retcode") == 0, "Guard victory rejected");
+      var won = call("PVEBattleResultCsReq", win);
+      require(number(won, "retcode") == 0, "Guard victory rejected");
+      for (var raw : (List<?>) field((DynamicMessage) field(won, "drop_data"), "item_list")) {
+        var item = (DynamicMessage) raw;
+        combatPayout.merge(number(item, "item_id"), number(item, "num"), Math::addExact);
+      }
       require(
           number(call("PVEBattleResultCsReq", win), "retcode") != 0, "Duplicate victory accepted");
+    } else if (op.equals("mascot")) {
+      var request = builder("GroupStateChangeCsReq");
+      var info = builder("GroupStateInfo");
+      set(info, "group_id", actorGroup);
+      set(info, "entry_id", spec.get("entry").getAsInt());
+      set(info, "group_state", spec.get("targetState").getAsInt());
+      set(request, "group_state_info", info.build());
+      require(
+          number(call("GroupStateChangeCsReq", request), "retcode") == 0, "Catch stage rejected");
+      require(
+          number(call("GroupStateChangeCsReq", request), "retcode") != 0,
+          "Repeated catch stage accepted");
     } else if (op.equals("step")) {
       int instance =
           spec.has("target") ? spec.get("target").getAsInt() : spec.get("controller").getAsInt();
@@ -359,6 +388,7 @@ public final class NativeWorldChestProbe {
     result.put("chestIdentityNotifications", openedNotify);
     result.put("rejectedRepeatedOpenings", rejected);
     result.put("mechanism", spec);
+    result.put("combatPayout", combatPayout);
     result.put("clientGameplayVerified", false);
     return result;
   }

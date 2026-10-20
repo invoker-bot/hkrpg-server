@@ -200,6 +200,10 @@ final class WorldMechanismSources {
             expected = gson.fromJson(found, NpcMonsterExcel.class);
             actual = GameData.getNpcMonsterExcelMap().get(id);
           }
+          case "ItemConfig" -> {
+            expected = gson.fromJson(found, ItemExcel.class);
+            actual = GameData.getItemExcelMap().get(id);
+          }
           default -> {
             return null;
           }

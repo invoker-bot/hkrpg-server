@@ -52,7 +52,8 @@ public final class WorldChests {
     if (base != Retcode.SUCC) return base;
     var actor = (EntityProp) p.getScene().getEntityById(entity);
     var id = identity(actor);
-    if (config != 112131 && config != TimeRelayFlameSources.UNLOCK
+    if (config != 112131
+        && config != TimeRelayFlameSources.UNLOCK
         && (id == null || !WorldMechanisms.clientReport(id, config)))
       return Retcode.INTERACT_TYPE_INVALID;
     var rules = WorldChestRules.load();
@@ -178,7 +179,11 @@ public final class WorldChests {
       // catalog once for every visible chest while constructing a new player's scene.
       if (state.getRecords() == null
           || state.getUnlocks() == null
-          || !state.getRecords().containsKey(id) && !state.getUnlocks().containsKey(id)) return;
+          || !state.getRecords().containsKey(id)
+              && !state.getUnlocks().containsKey(id)
+              && (id != MascotExtensionSources.CHEST
+                  || state.getMascots() == null
+                  || !state.getMascots().containsKey(id))) return;
       var rules = WorldChestRules.load();
       if (!state.valid(rules, p)) return;
       var record = state.getRecords().get(id);
@@ -188,6 +193,9 @@ public final class WorldChests {
           && Objects.equals(record.getPropSource(), PropTimelines.source(actor.getPropInfo())))
         actor.setState(PropState.ChestUsed, false);
       else {
+        var mascot = state.getMascots().get(id);
+        if (id == MascotExtensionSources.CHEST && mascot != null && mascot.state() == 4)
+          actor.setState(PropState.ChestClosed, false);
         var unlock = state.getUnlocks().get(id);
         if (unlock != null
             && unlock.completed()

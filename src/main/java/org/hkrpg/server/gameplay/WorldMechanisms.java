@@ -38,7 +38,8 @@ public final class WorldMechanisms {
                     && (r.kind() == WorldMechanismSources.Kind.CONTROLLER
                         || r.kind() == WorldMechanismSources.Kind.MISSION
                         || r.kind() == WorldMechanismSources.Kind.JIGSAW
-                        || r.kind() == WorldMechanismSources.Kind.SPEAR)
+                        || r.kind() == WorldMechanismSources.Kind.SPEAR
+                        || r.kind() == WorldMechanismSources.Kind.GUARDS && r.controller() > 0)
                     && (r.controllers().contains(prop.getInstId())
                             && r.controllerProp() == prop.getPropId()
                         || r.pieces().contains(prop.getInstId())))
@@ -72,9 +73,16 @@ public final class WorldMechanisms {
         return Retcode.MISSION_SCENE_NOT_MATCH;
       if (!context(p, prop.getScene(), WorldMechanismSources.controlGroup(rule, prop.getScene())))
         return Retcode.MISSION_SCENE_NOT_MATCH;
-      if (p.getGameplay().getWorldMechanisms().completed(rule.chest())) return Retcode.SYSTEM_BUSY;
+      boolean cleanup =
+          rule.kind() == WorldMechanismSources.Kind.MISSION && rule.reports().contains(config);
+      if (p.getGameplay().getWorldMechanisms().completed(rule.chest()) && !cleanup)
+        return Retcode.SYSTEM_BUSY;
       if (rule.kind() == WorldMechanismSources.Kind.MISSION
-          && !missionDoing(p, rule, rule.controllerMission())) return Retcode.MISSION_NOT_EXIST;
+          && !missionDoing(p, rule, cleanup ? rule.mission() : rule.controllerMission()))
+        return Retcode.MISSION_NOT_EXIST;
+      if (rule.kind() == WorldMechanismSources.Kind.GUARDS
+          && rule.mission() > 0
+          && !missionDoing(p, rule, rule.mission())) return Retcode.MISSION_NOT_EXIST;
       if (rule.kind() == WorldMechanismSources.Kind.SPEAR) {
         if (!durableState(prop)) return Retcode.PLAYER_DATA_ERROR;
         if (boundActor(prop.getScene(), rule, rule.shield(), rule.shieldProp()) == null)
@@ -104,10 +112,48 @@ public final class WorldMechanisms {
     var next = p.getGameplay().getWorldMechanisms();
     for (var rule : controls(prop))
       if (rule.kind() != WorldMechanismSources.Kind.MISSION
+          && rule.kind() != WorldMechanismSources.Kind.GUARDS
           && config == rule.finish()
           && rule.controllers().contains(prop.getInstId()))
         next = next.advance(rule, prop.getScene(), 0, Instant.now().getEpochSecond());
     return next;
+  }
+
+  /** The ship's guards appear only after its exact compass completion has been saved. */
+  static void afterControl(EntityProp prop) {
+    var scene = prop.getScene();
+    for (var rule : controls(prop)) {
+      if (rule.kind() != WorldMechanismSources.Kind.GUARDS) continue;
+      var group = WorldMechanismSources.group(rule, scene);
+      if (group == null || !context(scene.getPlayer(), scene, group)) continue;
+      for (var original : group.getMonsterList()) {
+        if (!rule.guards().contains(original.getID())
+            || scene.getEntitiesByGroup(EntityMonster.class, group.getId()).stream()
+                .anyMatch(m -> m.getInstId() == original.getID())) continue;
+        scene.addEntity(
+            scene.getEntityLoader().loadMonster(scene, group, original), scene.isLoaded());
+      }
+    }
+  }
+
+  private static boolean controllerRecorded(
+      Player player, Scene scene, WorldMechanismSources.Rule rule) {
+    var group = WorldMechanismSources.controlGroup(rule, scene);
+    if (group == null) return false;
+    var actor =
+        group.getPropList().stream()
+            .filter(a -> a.getID() == rule.controller())
+            .findFirst()
+            .orElse(null);
+    var journal = player.getGameplay().getScenePropStates();
+    if (!journal.valid() || actor == null) return false;
+    var record = journal.get(PropTimelines.key(scene, group.getId(), rule.controller()));
+    return record != null
+        && record.getProp() == rule.controllerProp()
+        && record.getSource().equals(PropTimelines.source(actor))
+        && record.getAcceptance().isEmpty()
+        && (record.getState() == PropState.Open.getVal()
+            || rule.reports().contains(1120) && record.getState() == PropState.Locked.getVal());
   }
 
   private static Map<Integer, EntityProp> boardActors(
@@ -291,20 +337,7 @@ public final class WorldMechanisms {
         next = next.advance(rule, scene, 0, Instant.now().getEpochSecond());
         continue;
       }
-      var actor =
-          group.getPropList().stream()
-              .filter(p -> p.getID() == rule.controller())
-              .findFirst()
-              .orElse(null);
-      var journal = player.getGameplay().getScenePropStates();
-      var record = journal.get(PropTimelines.key(scene, group.getId(), rule.controller()));
-      if (!journal.valid()
-          || actor == null
-          || record == null
-          || record.getProp() != rule.controllerProp()
-          || !record.getSource().equals(PropTimelines.source(actor))
-          || record.getState() != PropState.Open.getVal()
-          || !record.getAcceptance().isEmpty()) continue;
+      if (!controllerRecorded(player, scene, rule)) continue;
       next = next.advance(rule, scene, 0, Instant.now().getEpochSecond());
     }
     if (next == previous) return;
@@ -351,6 +384,9 @@ public final class WorldMechanisms {
     for (var rule : owned) {
       var group = WorldMechanismSources.group(rule, scene);
       if (!context(p, scene, group)) return false;
+      if (rule.controller() > 0
+          && (!controllerRecorded(p, scene, rule) || !missionDoing(p, rule, rule.mission())))
+        return false;
       var originals =
           group.getMonsterList().stream().filter(m -> m.getID() == monster.getInstId()).toList();
       if (originals.size() != 1
@@ -381,6 +417,10 @@ public final class WorldMechanisms {
 
   public static boolean spawns(Scene scene, GroupInfo group, MonsterInfo monster) {
     for (var rule : rules(scene, group.getId())) {
+      if (rule.kind() == WorldMechanismSources.Kind.GUARDS
+          && rule.controller() > 0
+          && rule.guards().contains(monster.getID())
+          && !controllerRecorded(scene.getPlayer(), scene, rule)) return false;
       if (rule.kind() == WorldMechanismSources.Kind.GUARDS
           && rule.guards().contains(monster.getID())
           && scene

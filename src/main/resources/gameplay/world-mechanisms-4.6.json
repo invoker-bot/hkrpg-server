@@ -2499,6 +2499,44 @@
         "MazeProp:60203"
       ]
     },
+    "20211674": {
+      "kind": "GUARDS",
+      "initial": "ChestLocked",
+      "guards": [
+        200002
+      ],
+      "controller": 300001,
+      "controllerProp": 102077,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20211_F20211001/LevelGroup_P20211_F20211001_G130.json#compass-controller+ship-chest",
+        "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json#/OnStartSequece/5/TaskList/0/FinishCallback/3",
+        "Config/Level/Mission/4015101/MissionInfo_4015101.partial.json#SubMission/401510104"
+      ],
+      "mission": 401510104,
+      "files": [
+        "Config/Level/Maze/Chapter02/X201/Maze_Chap02_X201_GroupEvent_PuzzleCompass_SR01.json",
+        "Config/Level/Mission/4015101/MissionInfo_4015101.partial.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeMonster.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20211_F20211001/LevelGroup_P20211_F20211001_G130.json",
+        "Config/Props/Chap02/Prop_Chap02_CargoShip_04_Config.json",
+        "Config/Props/Chap02/Prop_Chap02_Compass_01_Config.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:102077",
+        "MazeProp:60202",
+        "NPCMonsterData:2022010"
+      ]
+    },
     "20211675": {
       "kind": "CLIENT_REPORT",
       "initial": "ChestLocked",
@@ -2581,6 +2619,91 @@
       "rows": [
         "InteractConfig:120120",
         "MazeProp:60201"
+      ]
+    },
+    "20211681": {
+      "kind": "GUARDS",
+      "initial": "ChestLocked",
+      "guards": [
+        200002
+      ],
+      "controller": 300001,
+      "controllerProp": 102077,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20211_F20211001/LevelGroup_P20211_F20211001_G171.json#compass-controller+ship-chest",
+        "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json#/OnStartSequece/5/TaskList/0/FinishCallback/3",
+        "Config/Level/Mission/4015102/MissionInfo_4015102.partial.json#SubMission/401510203"
+      ],
+      "mission": 401510203,
+      "files": [
+        "Config/Level/Maze/Chapter02/X201/Maze_Chap02_X201_GroupEvent_PuzzleCompass_SR01.json",
+        "Config/Level/Mission/4015102/MissionInfo_4015102.partial.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeMonster.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20211_F20211001/LevelGroup_P20211_F20211001_G171.json",
+        "Config/Props/Chap02/Prop_Chap02_CargoShip_04_Config.json",
+        "Config/Props/Chap02/Prop_Chap02_Compass_01_Config.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:102077",
+        "MazeProp:60202",
+        "NPCMonsterData:8002010"
+      ]
+    },
+    "20211682": {
+      "kind": "MISSION",
+      "initial": "ChestLocked",
+      "guards": [],
+      "controller": 300008,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010,
+        1120
+      ],
+      "reports": [
+        1120
+      ],
+      "evidence": [
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20211_F20211001/LevelGroup_P20211_F20211001_G173.json#compass-controller+ship-chest",
+        "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json#/OnStartSequece/5/TaskList/0/FinishCallback/3",
+        "Config/Level/Mission/4015102/MissionInfo_4015102.partial.json#SubMission/401510209"
+      ],
+      "mission": 401510209,
+      "controllerMission": 401510207,
+      "files": [
+        "Config/Level/Mission/4015102/MissionInfo_4015102.partial.json",
+        "Config/Level/Mission/4015102/Mission_401510207.json",
+        "Config/Level/Mission/4015102/Mission_401510208.json",
+        "Config/Level/Mission/4015102/Mission_401510209.json",
+        "Config/Level/Mission/4015102/Mission_401510210.json",
+        "Config/Level/Mission/4015102/Mission_401510211.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeNPC_SP01.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeNPC_SP01_Controller.json",
+        "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20211_F20211001/LevelGroup_P20211_F20211001_G173.json",
+        "Config/Props/Chap02/Prop_Chap02_CargoShip_04_Config.json",
+        "Config/Props/Chap02/Prop_Chap02_Compass_01_Config.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_AirWall_05_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1120",
+        "ItemConfig:140189",
+        "MazeProp:100",
+        "MazeProp:102077",
+        "MazeProp:60203"
       ]
     },
     "20212631": {
@@ -12194,6 +12317,7 @@
     "Config/Level/GroupGraph/F20482001/Group_F20482001_G74.json": "4e40140ce37c679c3886e1436c58a7e3e50bf8eda907425ecba62a53d829ba2b",
     "Config/Level/GroupGraph/F20482001/Group_F20482001_G87.json": "2407ca15dd1ab47cd23716cfec2c9cd4ea39108efe8f15ba5a996bbcd6b08e8f",
     "Config/Level/LevelInstanceGraph/F20241001/LG_Prop_F20241001_G177_300007.json": "01fd2e3c8bf85b5d29a01bb8548e3e4c7b652cd38933a15856532c18692825e4",
+    "Config/Level/Maze/Chapter02/X201/Maze_Chap02_X201_GroupEvent_PuzzleCompass_SR01.json": "e54f680f11fa4d0aefc4089c5cd6a83d820b574c90b3aed412d563871b0d62b4",
     "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json": "85427c573ce4d771880da44294adfa8c08770920909aee4aa3a1a175d0a41f05",
     "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestControl.json": "3d6b7400825543dcd6ecfa8091ed723b091318e5d870ac1c8b1e6229a94b126f",
     "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json": "8d56dfc06a77185fd67c3fd3c35fda7711a996118f0fbd3925a059e01063da40",
@@ -12215,6 +12339,12 @@
     "Config/Level/Mission/2010503/Mission_201050302.json": "97fab71d407ea2080684bfdebce26eb16b530fd1ccad626842dcd814b3e4d782",
     "Config/Level/Mission/4015101/MissionInfo_4015101.partial.json": "ee95990383d6c36651c6097ebeb80019d42ddc1a32b6578b91912b1e8547b13f",
     "Config/Level/Mission/4015101/Mission_401510111.json": "1c349a7a09375085b368380e5730c8f648d5bc45537b58f088d3706ff95ab1b8",
+    "Config/Level/Mission/4015102/MissionInfo_4015102.partial.json": "e02f0200edde06a602113e41e032a6e8104287f79ca7e74ccca3160690be853e",
+    "Config/Level/Mission/4015102/Mission_401510207.json": "babcba7f4c6c44ecb21ff7aee1b72caf406f8e4fff3f3fd9b26ef4ddb2b0bfd5",
+    "Config/Level/Mission/4015102/Mission_401510208.json": "f1fe3962b32493aac4eb772acf383221835bf94eee36d3b61abe3b39f42138bf",
+    "Config/Level/Mission/4015102/Mission_401510209.json": "13067bfd1b4c2f4f28f1a48f47a9388f98d97b65e0a882e88ad00525ee281e79",
+    "Config/Level/Mission/4015102/Mission_401510210.json": "42d1061aeebba52a09e0abac3ed146dc96b436ffc6c7a6c82b42a3debe17ec9e",
+    "Config/Level/Mission/4015102/Mission_401510211.json": "85b422c933454a9b0e88617b0b70a73ee853193a305ce0cb0a3b64da30232c9a",
     "Config/Level/Mission/4015103/MissionInfo_4015103.partial.json": "2c4f61723395a8a7bc70c4eda9be4f309a275272cea41024fe0c3ab0f06fbd54",
     "Config/Level/Mission/4015103/Mission_401510301.json": "7469a4752d01f648391ceb5214b0f86a00c54ed0bf0462d7aaf8b637787d87f0",
     "Config/Level/Mission/4015103/Mission_401510308.json": "53941ea92d874d979c4ab7c7ca8669ae93488e058d3ca5b6ce2fffafab19ebe3",
@@ -12245,7 +12375,11 @@
     "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_BoxMan_01.json": "e2897e88739f838a02551493ca06810ee32f3334514c0dec5b3eedadc46d1b28",
     "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_CablePuzzle_05.json": "8c8b1dd87c0cd87c21074a145732774c61d28e02ea8bfa66daa2ebfd31293082",
     "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_BlockProjection_01.json": "e2f8b8ea91f363dcd60d77a68bdbb3ce605625de2645415675d38ae8f3441622",
+    "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeMonster.json": "0591459971a347419d6f65614ec0bef601fe61f8c6808286ba531d42e8ffbace",
+    "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeNPC_SP01.json": "9070dce4a5c5ca0af2403d68bc8e03e7813664df22abc599f19c50432af3c445",
+    "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_CargoShip_01_TakeNPC_SP01_Controller.json": "9e3c702e9ccc05753118934edc7a598ccc5dfee2140df521c930016f79ea99eb",
     "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_DestroyrootPuzzle_02.json": "59e55f5fadb1e1c67deb2664d3578a591dcb629bd08a65036317127cfda8f13e",
+    "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_PuzzleCompass_01.json": "30f5581c18ed7b05273af8339f6cbc6fab4d8920ae34863ec52e0a89bf013b25",
     "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_RubikCube_Advanced_Config.json": "57525374362cc2e6afa17b8a84292bb7ebecb68a27bc79b12b23a9328f483669",
     "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_RubikCube_Config.json": "33983930bc54efb852e2160c269ed5661e47a4286642a254bd8c248e424de019",
     "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_C2Finish_01.json": "cf6db5f89a84a93aa7304399f3cfffae32ccd00cec5471e1131c798775827fea",
@@ -12811,13 +12945,16 @@
     "InteractConfig:11000": "5c93fdec9b70261a1f4d90bd73d005c12f56586297e090ae58f08a7d40ff8f2c",
     "InteractConfig:11090": "5b356eef03b4b8d29d2fcf9c2ea17f67bf09b5a7fcf14b4475a9c41cea18299b",
     "InteractConfig:111120": "7370e9210d0a44e178335c2356bb6e159919ccda38e1d86640ed02263012c185",
+    "InteractConfig:1120": "23b9ee355061579c35745096fd62a9a968e4d8af4678e0753f461b9448c530d5",
     "InteractConfig:120120": "2545942927d0065815c6898c9717bda8634bf5ab253a9bca7b5524e29e87281e",
     "InteractConfig:1210": "6bb94a60c29863ad1d1b7f5785d0819d24218efdc9c521145c8817410cfb4906",
     "InteractConfig:19100": "552955f93aff2bb2fcfb3db260f47a9d951563e8fe029324f64252e8b38e07d8",
     "InteractConfig:1920": "f1f30822425e35df4c023f87928b2e0595b734a57945cc3ef4bc744e0af2de26",
+    "ItemConfig:140189": "c15daee6c577f226045a4913655f7f39a47908c71e4e3d6e7ad18dad46ad0929",
     "MazeProp:100": "e5ccfb571c9573aa85bf276fbf499dea189c923b7ab66a5bcac83eb0f9c09a0a",
     "MazeProp:102018": "d88b7d7c90c9792b76731971b2fb246bb492f0fca46c2bb417a379a93d7b6934",
     "MazeProp:102062": "b81dd20d209d931162fa5675d0470c8cb4a8551a67909137c8c3bd45804fe7cf",
+    "MazeProp:102077": "99c40ccb710ae43175f2a08b5ec8cae22e0249d4162f8d9e113d7e8623c06ca3",
     "MazeProp:102241": "43a700aa283b68fd2fd874b51efc7376688e185a3a9e669f59e2a895e3b6738a",
     "MazeProp:103012": "8e81453b3174360b508db3916b7b86a29a38db75a0f812099303671e5a0255d7",
     "MazeProp:103018": "2214e2dca23f6b53222c4a218c3bea420d4690c9ccd00fde30b06c4649e9978e",
@@ -12895,21 +13032,6 @@
     "10401680": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F10401001/Group_F10401001_G510.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20211674": {
-      "state": "ChestLocked",
-      "graph": "Config/Level/Maze/Chapter02/X201/Maze_Chap02_X201_GroupEvent_PuzzleCompass_SR01.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20211681": {
-      "state": "ChestLocked",
-      "graph": "Config/Level/Maze/Chapter02/X201/Maze_Chap02_X201_GroupEvent_PuzzleCompass_SR01.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20211682": {
-      "state": "ChestLocked",
-      "graph": null,
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
     "20311684": {
@@ -13042,11 +13164,6 @@
       "graph": "Config/Level/GroupGraph/F20423001/Group_F20423001_G169.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20433651": {
-      "state": "ChestLocked",
-      "graph": "Config/Level/GroupGraph/F20433001/Group_F20433001_G152.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20451691": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20451001/Group_F20451001_G208.json",
@@ -13114,5 +13231,8 @@
     "20121677": [
       300005
     ]
+  },
+  "independentOwners": {
+    "20433651": "mascot-extension-4.6.json"
   }
 }

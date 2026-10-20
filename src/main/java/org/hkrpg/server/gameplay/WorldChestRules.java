@@ -88,7 +88,8 @@ final class WorldChestRules {
       if (!path.contains("/SharedRuntimeGroup/")) continue;
       var g = gson.fromJson(files.get(path), GroupInfo.class);
       g.setId(Integer.parseInt(path.replaceAll(".*_G([0-9]+)\\.json", "$1")));
-      if (BaseZoneChestSources.GROUP.equals(path)) {
+      if (BaseZoneChestSources.GROUP.equals(path)
+          || MascotExtensionSources.LOCATION.path().equals(path)) {
         // Compare the pinned original after the same legacy prop preprocessing as the live floor.
         var floor = new FloorInfo();
         floor.getGroups().put(g.getId(), g);
@@ -306,7 +307,7 @@ final class WorldChestRules {
     return prop != null
             && (MapChestSources.LOCATIONS.containsKey(id)
                 || prop.getState()
-                    == (flame(id)
+                    == (flame(id) || id == MascotExtensionSources.CHEST
                         ? emu.lunarcore.game.enums.PropState.ChestLocked
                         : golden(id)
                             ? emu.lunarcore.game.enums.PropState.Hidden

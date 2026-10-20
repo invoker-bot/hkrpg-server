@@ -730,7 +730,17 @@ public class Scene implements Tickable {
 
     // Proto serialization
 
-    public synchronized SceneInfo toProto() {
+    public SceneInfo toProto() {
+        // Mission-backed floor values need the player mutex. Match the game timer's
+        // player -> scene order instead of holding the scene while waiting for player state.
+        synchronized (getPlayer()) {
+            synchronized (this) {
+                return toProtoLocked();
+            }
+        }
+    }
+
+    private SceneInfo toProtoLocked() {
         // Set loaded flag
         this.loaded = true;
 

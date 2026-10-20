@@ -260,6 +260,28 @@ public final class WorldChestFixtureInspector {
                 "Lost late-stage receipt " + id);
         }
         require(progress.getRecords().keySet().equals(keys), "Unexpected mechanism progress");
+        if (control.has("finalBindings") && control.get("finalBindings").getAsBoolean()) {
+          var expectedMascots = control.getAsJsonObject("mascotProgress");
+          require(
+              domain.getMascots().size() == expectedMascots.size(), "Unexpected catch receipts");
+          for (var e : expectedMascots.entrySet()) {
+            var record = domain.getMascots().get(Integer.parseInt(e.getKey()));
+            require(
+                record != null && record.state() == e.getValue().getAsInt(),
+                "Catch stage lost after H2 restart");
+          }
+          int count =
+              db
+                  .getCollection("items")
+                  .find(new Document("ownerUid", uid).append("itemId", 140189))
+                  .into(new ArrayList<Document>())
+                  .stream()
+                  .mapToInt(d -> d.getInteger("count"))
+                  .sum();
+          require(
+              count == control.get("missionItem").getAsInt(),
+              "Cargo quest item delivery/debit differs");
+        }
         if (control.has("propProgress") && !control.get("propProgress").isJsonNull()) {
           var savedProps = player.getGameplay().getScenePropStates();
           require(savedProps.valid(), "Invalid staged prop journal");
@@ -281,7 +303,8 @@ public final class WorldChestFixtureInspector {
         if (control.has("missionProgress") && !control.get("missionProgress").isJsonNull())
           for (var e : control.getAsJsonObject("missionProgress").entrySet()) {
             var state = player.getGameplay().getSubMissions().get(Integer.parseInt(e.getKey()));
-            require(state != null && state.getPhase().name().equals(e.getValue().getAsString()),
+            require(
+                state != null && state.getPhase().name().equals(e.getValue().getAsString()),
                 "Wrong restored mission objective " + e.getKey());
           }
         if (battlePhase)
@@ -320,6 +343,27 @@ public final class WorldChestFixtureInspector {
         }
       }
       var payout = new TreeMap<Integer, Integer>();
+      if (control.has("finalBindings") && control.get("finalBindings").getAsBoolean()) {
+        control
+            .getAsJsonObject("combatPayout")
+            .entrySet()
+            .forEach(e -> payout.put(Integer.parseInt(e.getKey()), e.getValue().getAsInt()));
+        for (var raw : control.getAsJsonArray("missionRewards")) {
+          var reward = raw.getAsJsonObject();
+          var mission =
+              player.getGameplay().getMainMissions().get(reward.get("mission").getAsInt());
+          require(
+              mission != null && mission.getPhase() == QuestState.Phase.CLOSED,
+              "Authored mission reward not durably settled");
+          reward
+              .getAsJsonObject("rewards")
+              .entrySet()
+              .forEach(
+                  e ->
+                      payout.merge(
+                          Integer.parseInt(e.getKey()), e.getValue().getAsInt(), Math::addExact));
+        }
+      }
       int credits = 0;
       for (var raw : control.getAsJsonArray("goals")) {
         var goal = raw.getAsJsonObject();
@@ -363,6 +407,10 @@ public final class WorldChestFixtureInspector {
               record.getBegin() == 1 && record.getEnd() == 4102444800L,
               "Captured original window differs");
       }
+      if (control.has("finalBindings")
+          && control.get("finalBindings").getAsBoolean()
+          && control.get("missionItem").getAsInt() > 0)
+        payout.put(140189, control.get("missionItem").getAsInt());
       require(
           credits
               == (baseZone || mapChests

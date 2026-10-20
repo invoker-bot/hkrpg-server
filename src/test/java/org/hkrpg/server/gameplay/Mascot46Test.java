@@ -124,7 +124,19 @@ class Mascot46Test {
         var rows = fixture.source.getAsJsonObject("records").getAsJsonArray(e.getKey());
         if (rows == null)
           fixture.source.getAsJsonObject("records").add(e.getKey(), e.getValue().deepCopy());
-        else for (var r : e.getValue().getAsJsonArray()) rows.add(r.deepCopy());
+        else {
+          String table = Path.of(e.getKey()).getFileName().toString().replace(".json", "");
+          String key = WorldChestSources.KEYS.getOrDefault(table, "ID");
+          for (var r : e.getValue().getAsJsonArray()) {
+            var existing =
+                rows.asList().stream()
+                    .filter(v -> v.getAsJsonObject().get(key).equals(r.getAsJsonObject().get(key)))
+                    .findFirst();
+            if (existing.isPresent())
+              assertEquals(existing.get(), r, "Conflicting fixture row " + table);
+            else rows.add(r.deepCopy());
+          }
+        }
       }
       for (String section : List.of("groups", "locations", "headers"))
         for (var e : extra.getAsJsonObject(section).entrySet())
@@ -159,7 +171,7 @@ class Mascot46Test {
     }
     fixture.root = root;
     fixture.load();
-    for (int id : List.of(4015704, 4015705, 4015706)) {
+    for (int id : List.of(4015704, 4015705, 4015706, 4015727)) {
       var header =
           mascot
               .getAsJsonObject("headers")
