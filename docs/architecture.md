@@ -1,4 +1,4 @@
-`WorldMechanisms` 在守卫移除前保存击败集合，将控制器状态和解锁记录同存；`WorldMechanismSources` 核验固定原文与精确目标，`worldChests` 继续独立处理领奖防重。公开资源来源与客户端回执边界见[机关宝箱说明](world-mechanisms-4.6.md)。
+`WorldMechanisms` 在守卫移除或盾牌击破前保存进度，将拼图的关联碎片、控制器状态和解锁记录同存；`WorldMechanismSources` 核验固定原文与精确目标，`worldChests` 继续独立处理领奖防重。公开资源来源与客户端回执边界见[机关宝箱说明](world-mechanisms-4.6.md)。
 
 `WorldChests` 的来源目录增加基座舱段六个普通探索宝箱；复用原有投递回执和恢复流程，世界和活动计数按原始 `MazeChest.WorldID` 隔离，交互再次验证剧情门槛，详见[宝箱领取说明](base-zone-chests-4.6.md)。
 

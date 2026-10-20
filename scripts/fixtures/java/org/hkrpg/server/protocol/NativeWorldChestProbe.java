@@ -203,6 +203,7 @@ public final class NativeWorldChestProbe {
     int id = spec.get("id").getAsInt(), group = spec.get("group").getAsInt();
     var current = scene(control);
     var chest = chestState(current, spec, spec.get("before").getAsInt());
+    states(current, group, spec.getAsJsonObject("beforeStates"));
     int notifications = openedNotify.size();
     if (!op.equals("claim")) {
       require(number(interact(current, chest), "retcode") != 0, "Premature or repeated loot claim");
@@ -247,6 +248,30 @@ public final class NativeWorldChestProbe {
       require(number(call("PVEBattleResultCsReq", win), "retcode") == 0, "Guard victory rejected");
       require(
           number(call("PVEBattleResultCsReq", win), "retcode") != 0, "Duplicate victory accepted");
+    } else if (op.equals("step")) {
+      int instance =
+          spec.has("target") ? spec.get("target").getAsInt() : spec.get("controller").getAsInt();
+      var target = entity(current, group, instance);
+      require(target != null, "Staged actor missing");
+      for (var config : spec.getAsJsonArray("configs")) {
+        var response = interact(current, target, config.getAsInt());
+        require(number(response, "retcode") == 0, "Authored stage rejected: " + response);
+        require(
+            number(interact(current, target, config.getAsInt()), "retcode") != 0,
+            "Repeated stage accepted");
+      }
+    } else if (op.equals("destroy")) {
+      var target = entity(current, group, spec.get("shield").getAsInt());
+      require(target != null, "Bound shield missing");
+      var cast = builder("SceneCastSkillCsReq");
+      int caster = number(current, "leader_entity_id");
+      require(caster > 0, "Missing live caster");
+      set(cast, "cast_entity_id", caster);
+      set(cast, "attacked_by_entity_id", caster);
+      set(cast, "skill_index", 0);
+      set(cast, "hit_target_entity_id_list", List.of(number(target, "entity_id")));
+      var response = call("SceneCastSkillCsReq", cast);
+      require(number(response, "retcode") == 0, "Bound shield attack rejected: " + response);
     } else if (op.equals("finish")) {
       var target =
           spec.get("controller").getAsInt() == 0
@@ -271,6 +296,11 @@ public final class NativeWorldChestProbe {
     } else require(op.equals("verify"), "Unknown mechanism test action");
     current = scene(control);
     chestState(current, spec, spec.get("after").getAsInt());
+    states(current, group, spec.getAsJsonObject("states"));
+    if (spec.has("shield") && Set.of(12, 13).contains(spec.get("after").getAsInt()))
+      require(
+          entity(current, group, spec.get("shield").getAsInt()) == null,
+          "Shield survived destruction");
     for (var gone : spec.getAsJsonArray("defeated"))
       require(entity(current, group, gone.getAsInt()) == null, "Defeated guard respawned");
     for (var live : spec.getAsJsonArray("remaining"))
@@ -292,6 +322,18 @@ public final class NativeWorldChestProbe {
     result.put("mechanism", spec);
     result.put("clientGameplayVerified", false);
     return result;
+  }
+
+  private void states(DynamicMessage scene, int group, JsonObject expected) {
+    if (expected == null) return;
+    for (var item : expected.entrySet()) {
+      var actor = entity(scene, group, Integer.parseInt(item.getKey()));
+      require(
+          actor != null
+              && number((DynamicMessage) field(actor, "prop"), "prop_state")
+                  == item.getValue().getAsInt(),
+          "Wrong restored actor state " + group + "/" + item.getKey());
+    }
   }
 
   private void goals(JsonArray goals, Set<Integer> claimed, int count) throws Exception {

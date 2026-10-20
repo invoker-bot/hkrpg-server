@@ -12,9 +12,7 @@ import java.util.*;
 /** Source spear requests persist in order; an actual shield removal reveals its own treasure. */
 public final class GoldenSpears {
   public static boolean keepsSourceValues(GroupInfo group) {
-    return group != null
-        && (group.getId() == 273 || group.getId() == 274)
-        && "DestructableGoldenSpear".equals(group.getGroupName());
+    return group != null && "DestructableGoldenSpear".equals(group.getGroupName());
   }
 
   private static Integer identity(Scene scene, int group, int instance, int prop) {

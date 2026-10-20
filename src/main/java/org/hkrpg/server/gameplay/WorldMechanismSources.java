@@ -19,6 +19,8 @@ final class WorldMechanismSources {
   enum Kind {
     GUARDS,
     CONTROLLER,
+    JIGSAW,
+    SPEAR,
     CLIENT_REPORT
   }
 
@@ -32,6 +34,10 @@ final class WorldMechanismSources {
       int finish,
       Set<Integer> interactions,
       Set<Integer> reports,
+      Set<Integer> pieces,
+      Set<Integer> controllers,
+      int shield,
+      int shieldProp,
       Set<String> files,
       Set<String> rows,
       String source) {}
@@ -57,7 +63,7 @@ final class WorldMechanismSources {
 
   private static Set<Integer> ints(JsonObject raw, String key) {
     var result = new HashSet<Integer>();
-    raw.getAsJsonArray(key).forEach(v -> result.add(v.getAsInt()));
+    if (raw.has(key)) raw.getAsJsonArray(key).forEach(v -> result.add(v.getAsInt()));
     return Set.copyOf(result);
   }
 
@@ -73,6 +79,10 @@ final class WorldMechanismSources {
       int id = Integer.parseInt(e.getKey());
       if (!MapChestSources.LOCATIONS.containsKey(id)) continue; // Preserve existing puzzle owners.
       var r = e.getValue().getAsJsonObject();
+      var controllers = new HashSet<Integer>();
+      controllers.add(r.get("controller").getAsInt());
+      if (CATALOG.has("controllerAliases"))
+        controllers.addAll(ints(CATALOG.getAsJsonObject("controllerAliases"), e.getKey()));
       result.put(
           id,
           new Rule(
@@ -85,6 +95,10 @@ final class WorldMechanismSources {
               r.get("finish").getAsInt(),
               ints(r, "interactions"),
               ints(r, "reports"),
+              ints(r, "pieces"),
+              Set.copyOf(controllers),
+              r.has("shield") ? r.get("shield").getAsInt() : 0,
+              r.has("shieldProp") ? r.get("shieldProp").getAsInt() : 0,
               strings(r, "files"),
               strings(r, "rows"),
               TimelineActivityRules.fingerprint(r)));

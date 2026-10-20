@@ -131,14 +131,20 @@ public final class ScenePropTransitions {
       if (scope == null) return new Result(Retcode.MISSION_SCENE_NOT_MATCH, null);
       if (!scope.state().valid()) return new Result(Retcode.PLAYER_DATA_ERROR, null);
       var target = GameData.getInteractExcelMap().get(config).getTargetState();
+      var targets = WorldMechanisms.transitions(player, config, prop);
       var changed = new LinkedHashMap<EntityProp, PropState>();
-      changed.put(prop, prop.getState());
-      if (prop.getPropType() == PropType.PROP_ORDINARY && prop.getPropInfo() != null) {
+      targets.keySet().forEach(candidate -> changed.put(candidate, candidate.getState()));
+      if (!WorldMechanisms.controller(prop)
+          && prop.getPropType() == PropType.PROP_ORDINARY
+          && prop.getPropInfo() != null) {
         for (var candidate : scene.getEntitiesByGroup(EntityProp.class, prop.getGroupId())) {
           if (prop.getPropInfo().isCommonConsole()
                   && candidate.getPropType() == PropType.PROP_PLATFORM
               || prop.getPropId() == 104039 && candidate.getPropId() == 104038) {
-            if (candidate.getState() != target) changed.put(candidate, candidate.getState());
+            if (candidate.getState() != target) {
+              changed.put(candidate, candidate.getState());
+              targets.put(candidate, target);
+            }
           }
         }
       }
@@ -150,7 +156,7 @@ public final class ScenePropTransitions {
             || candidate.getPropId() != info.getPropID()
             || candidate.getPropInfo() == null
             || !PropTimelines.source(info).equals(PropTimelines.source(candidate.getPropInfo()))
-            || !candidate.getExcel().getPropStateList().contains(target))
+            || !candidate.getExcel().getPropStateList().contains(targets.get(candidate)))
           return new Result(Retcode.REQ_PARA_INVALID, null);
         definitions.put(candidate, info);
       }
@@ -172,7 +178,7 @@ public final class ScenePropTransitions {
                 e.getKey().getGroupId(),
                 e.getKey().getInstId(),
                 e.getKey().getPropId(),
-                target.getVal(),
+                targets.get(e.getKey()).getVal(),
                 PropTimelines.source(e.getValue()),
                 acceptance));
       var next = scope.state().with(snapshots);
@@ -180,7 +186,7 @@ public final class ScenePropTransitions {
       var nextMechanisms = WorldMechanisms.controlProgress(player, config, prop);
       replace(player, scope, next);
       player.getGameplay().worldMechanisms(nextMechanisms);
-      for (var candidate : changed.keySet()) candidate.setState(target, false);
+      targets.forEach((candidate, state) -> candidate.setState(state, false));
       try {
         player.save();
       } catch (RuntimeException failed) {
@@ -191,7 +197,9 @@ public final class ScenePropTransitions {
         return new Result(Retcode.SYSTEM_BUSY, null);
       }
       var session = player.getSession();
-      if (session != null && !session.getProtocol().experimental())
+      if (session != null
+          && !session.getProtocol().experimental()
+          && !WorldMechanisms.controller(prop))
         player.sendPacket(
             new PacketGroupStateChangeScNotify(player.getEntryId(), prop.getGroupId(), target));
       if (scene.isLoaded())

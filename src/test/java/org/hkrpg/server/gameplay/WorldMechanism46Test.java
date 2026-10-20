@@ -24,6 +24,7 @@ class WorldMechanism46Test {
   void load() throws Exception {
     map.root = root;
     map.merge("time-relay-flame-4.6.json");
+    map.merge("golden-spear-4.6.json");
     map.merge("world-mechanisms-4.6.json");
     var extra =
         JsonParser.parseReader(

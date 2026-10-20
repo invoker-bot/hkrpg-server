@@ -1,6 +1,52 @@
 {
   "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
   "rules": {
+    "10301634": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F10301001/Group_F10301001_G223.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F10301001/Group_F10301001_G223.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10301_F10301001/LevelGroup_P10301_F10301001_G223.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60303"
+      ]
+    },
     "10301656": {
       "kind": "CLIENT_REPORT",
       "initial": "ChestLocked",
@@ -409,6 +455,180 @@
       "rows": [
         "InteractConfig:111120",
         "MazeProp:104046"
+      ]
+    },
+    "10401661": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G245.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G245.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G245.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G245.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "10401662": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030104,
+        1040105,
+        1050002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G287.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G287.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G287.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G287.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030104",
+        "InteractConfig:1040105",
+        "InteractConfig:1050002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "10401663": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G289.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G289.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G289.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G289.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "10401664": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G309.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G309.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G309.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G309.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
       ]
     },
     "10403654": {
@@ -3814,6 +4034,456 @@
         "MazeProp:60202"
       ]
     },
+    "20242671": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G183.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G183.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G183.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242672": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G184.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G184.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G184.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242673": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G185.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G185.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G185.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242674": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G186.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G186.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G186.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242675": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G187.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G187.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G187.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60202"
+      ]
+    },
+    "20242676": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G188.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G188.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G188.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242677": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G189.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G189.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G189.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242678": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G190.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G190.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G190.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242679": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G191.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G191.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G191.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242680": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G192.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G192.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G192.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60202"
+      ]
+    },
+    "20242681": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G193.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G193.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G193.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242682": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G194.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G194.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G194.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242683": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G195.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G195.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G195.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242684": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G196.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G196.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G196.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60201"
+      ]
+    },
+    "20242685": {
+      "kind": "CONTROLLER",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 100,
+      "finish": 1010,
+      "interactions": [
+        1010
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G197.json#controller-Open+chest-Hidden",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json#Chest",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json#FinishCallback"
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20242001/Group_F20242001_G197.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json",
+        "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20242_F20242001/LevelGroup_P20242_F20242001_G197.json",
+        "Config/Props/Chap02/Prop_Chap02_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "MazeProp:100",
+        "MazeProp:60203"
+      ]
+    },
     "20311652": {
       "kind": "GUARDS",
       "initial": "ChestLocked",
@@ -4041,6 +4711,195 @@
         "MazeProp:103018"
       ]
     },
+    "20311666": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G422.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G422.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G422.json",
+        "Config/Props/Chap03/Prop_Chap03_Door_02_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20311667": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G434.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G434.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G434.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20311668": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G454.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G454.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G454.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20311669": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G433.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G433.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G433.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
     "20311671": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -4203,6 +5062,194 @@
         "MazeProp:103018"
       ]
     },
+    "20312658": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G256.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G256.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20312_F20312001/LevelGroup_P20312_F20312001_G256.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20312659": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G257.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G257.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20312_F20312001/LevelGroup_P20312_F20312001_G257.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20312660": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G258.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G258.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20312_F20312001/LevelGroup_P20312_F20312001_G258.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20312661": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G246.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20312001/Group_F20312001_G246.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20312_F20312001/LevelGroup_P20312_F20312001_G246.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
     "20313652": {
       "kind": "GUARDS",
       "initial": "ChestLocked",
@@ -4338,6 +5385,194 @@
       "rows": [
         "InteractConfig:111120",
         "MazeProp:103018"
+      ]
+    },
+    "20313660": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20313001/Group_F20313001_G227.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20313001/Group_F20313001_G227.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20313_F20313001/LevelGroup_P20313_F20313001_G227.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20313661": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20313001/Group_F20313001_G228.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20313001/Group_F20313001_G228.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20313_F20313001/LevelGroup_P20313_F20313001_G228.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20313662": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20313001/Group_F20313001_G180.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20313001/Group_F20313001_G180.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20313_F20313001/LevelGroup_P20313_F20313001_G180.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20321624": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G199.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G199.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20321_F20321001/LevelGroup_P20321_F20321001_G199.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60303"
       ]
     },
     "20321651": {
@@ -4500,6 +5735,147 @@
         "MazeProp:103018"
       ]
     },
+    "20321662": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G184.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G184.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20321_F20321001/LevelGroup_P20321_F20321001_G184.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20321663": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G200.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G200.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20321_F20321001/LevelGroup_P20321_F20321001_G200.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20321664": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G188.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20321001/Group_F20321001_G188.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20321_F20321001/LevelGroup_P20321_F20321001_G188.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60303"
+      ]
+    },
     "20322652": {
       "kind": "GUARDS",
       "initial": "ChestLocked",
@@ -4636,6 +6012,147 @@
         "MazeProp:103018"
       ]
     },
+    "20322661": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G238.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G238.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G238.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20322663": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G241.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G241.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G241.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20322664": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G242.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G242.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G242.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
     "20331651": {
       "kind": "GUARDS",
       "initial": "ChestLocked",
@@ -4729,6 +6246,197 @@
       "rows": [
         "InteractConfig:111120",
         "MazeProp:103018"
+      ]
+    },
+    "20331663": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G201.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60303"
+      ]
+    },
+    "20331664": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G110.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G110.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G110.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20331666": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G201.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60301"
+      ]
+    },
+    "20331667": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G201.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60301"
       ]
     },
     "20331671": {
@@ -4962,6 +6670,195 @@
       "rows": [
         "InteractConfig:111120",
         "MazeProp:103018"
+      ]
+    },
+    "20332660": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G210.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G210.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20332_F20332001/LevelGroup_P20332_F20332001_G210.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_AirWall_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20332661": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G212.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G212.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20332_F20332001/LevelGroup_P20332_F20332001_G212.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20332663": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G296.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G296.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20332_F20332001/LevelGroup_P20332_F20332001_G296.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
+      ]
+    },
+    "20332664": {
+      "kind": "JIGSAW",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300001,
+      "controllerProp": 103012,
+      "finish": 11000,
+      "interactions": [
+        1210,
+        1920,
+        19100,
+        11000
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json#TargetProp+GameplayProp",
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G326.json#ByAnd",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json#FinishCallback"
+      ],
+      "pieces": [
+        300002,
+        300003,
+        300004
+      ],
+      "files": [
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G326.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20332_F20332001/LevelGroup_P20332_F20332001_G326.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:11000",
+        "InteractConfig:1210",
+        "InteractConfig:19100",
+        "InteractConfig:1920",
+        "MazeProp:100",
+        "MazeProp:103012",
+        "MazeProp:103109",
+        "MazeProp:60302"
       ]
     },
     "20341651": {
@@ -5279,6 +7176,88 @@
         "MazeProp:60402"
       ]
     },
+    "20411666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20411001/Group_F20411001_G273.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20411_F20411001/LevelGroup_P20411_F20411001_G273.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20411001/Group_F20411001_G273.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20411_F20411001/LevelGroup_P20411_F20411001_G273.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20411667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20411001/Group_F20411001_G274.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20411_F20411001/LevelGroup_P20411_F20411001_G274.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20411001/Group_F20411001_G274.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20411_F20411001/LevelGroup_P20411_F20411001_G274.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
     "20411670": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -5552,6 +7531,92 @@
         "MazeProp:60402"
       ]
     },
+    "20412666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20412001/Group_F20412001_G142.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20412_F20412001/LevelGroup_P20412_F20412001_G142.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20412001/Group_F20412001_G142.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20412_F20412001/LevelGroup_P20412_F20412001_G142.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20412667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20412001/Group_F20412001_G245.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20412_F20412001/LevelGroup_P20412_F20412001_G245.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20412001/Group_F20412001_G245.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20412_F20412001/LevelGroup_P20412_F20412001_G245.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
     "20412670": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -5726,6 +7791,135 @@
       "rows": [
         "InteractConfig:120120",
         "MazeProp:60402"
+      ]
+    },
+    "20413666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030104,
+        1040105,
+        1050002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20413001/Group_F20413001_G277.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20413_F20413001/LevelGroup_P20413_F20413001_G277.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20413001/Group_F20413001_G277.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20413_F20413001/LevelGroup_P20413_F20413001_G277.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030104",
+        "InteractConfig:1040105",
+        "InteractConfig:1050002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20413667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20413001/Group_F20413001_G278.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20413_F20413001/LevelGroup_P20413_F20413001_G278.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20413001/Group_F20413001_G278.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20413_F20413001/LevelGroup_P20413_F20413001_G278.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20413668": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20413001/Group_F20413001_G279.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20413_F20413001/LevelGroup_P20413_F20413001_G279.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20413001/Group_F20413001_G279.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20413_F20413001/LevelGroup_P20413_F20413001_G279.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
       ]
     },
     "20413670": {
@@ -5952,6 +8146,90 @@
         "MazeProp:60402"
       ]
     },
+    "20421666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20421001/Group_F20421001_G259.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20421_F20421001/LevelGroup_P20421_F20421001_G259.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20421001/Group_F20421001_G259.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20421_F20421001/LevelGroup_P20421_F20421001_G259.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20421667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20421001/Group_F20421001_G260.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20421_F20421001/LevelGroup_P20421_F20421001_G260.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20421001/Group_F20421001_G260.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20421_F20421001/LevelGroup_P20421_F20421001_G260.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
     "20421670": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -6161,6 +8439,90 @@
       "rows": [
         "InteractConfig:120120",
         "MazeProp:60402"
+      ]
+    },
+    "20422666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G260.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G260.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G260.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G260.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20422667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G259.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G259.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G259.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G259.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
       ]
     },
     "20422670": {
@@ -6438,6 +8800,94 @@
         "MazeProp:60402"
       ]
     },
+    "20423666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030104,
+        1040002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G99.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G99.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_02.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G99.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_02.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G99.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030104",
+        "InteractConfig:1040002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20423667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G231.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G231.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G231.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G231.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
     "20423670": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -6586,6 +9036,92 @@
       "rows": [
         "InteractConfig:120120",
         "MazeProp:60402"
+      ]
+    },
+    "20431666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20431001/Group_F20431001_G223.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20431_F20431001/LevelGroup_P20431_F20431001_G223.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20431001/Group_F20431001_G223.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20431_F20431001/LevelGroup_P20431_F20431001_G223.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20431667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20431001/Group_F20431001_G226.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20431_F20431001/LevelGroup_P20431_F20431001_G226.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20431001/Group_F20431001_G226.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20431_F20431001/LevelGroup_P20431_F20431001_G226.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
       ]
     },
     "20431670": {
@@ -6881,6 +9417,92 @@
       "rows": [
         "InteractConfig:120120",
         "MazeProp:60402"
+      ]
+    },
+    "20432666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20432001/Group_F20432001_G209.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20432_F20432001/LevelGroup_P20432_F20432001_G209.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20432001/Group_F20432001_G209.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20432_F20432001/LevelGroup_P20432_F20432001_G209.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20432667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20432001/Group_F20432001_G210.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20432_F20432001/LevelGroup_P20432_F20432001_G210.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20432001/Group_F20432001_G210.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20432_F20432001/LevelGroup_P20432_F20432001_G210.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
       ]
     },
     "20432680": {
@@ -7182,6 +9804,90 @@
         "MazeProp:60402"
       ]
     },
+    "20451666": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20451001/Group_F20451001_G192.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G192.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20451001/Group_F20451001_G192.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G192.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20451667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20451001/Group_F20451001_G224.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G224.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20451001/Group_F20451001_G224.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G224.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
     "20451680": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -7335,6 +10041,49 @@
       "rows": [
         "InteractConfig:120120",
         "MazeProp:60402"
+      ]
+    },
+    "20461667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20461001/Group_F20461001_G150.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20461_F20461001/LevelGroup_P20461_F20461001_G150.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104010,
+      "files": [
+        "Config/Level/GroupGraph/F20461001/Group_F20461001_G150.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20461_F20461001/LevelGroup_P20461_F20461001_G150.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030002",
+        "MazeProp:104010",
+        "MazeProp:104023",
+        "MazeProp:60401"
       ]
     },
     "20461671": {
@@ -7745,6 +10494,99 @@
         "MazeProp:60402"
       ]
     },
+    "20481667": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030104,
+        1040105,
+        1050002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20481001/Group_F20481001_G221.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20481_F20481001/LevelGroup_P20481_F20481001_G221.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20481001/Group_F20481001_G221.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20481_F20481001/LevelGroup_P20481_F20481001_G221.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030104",
+        "InteractConfig:1040105",
+        "InteractConfig:1050002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
+    "20481668": {
+      "kind": "SPEAR",
+      "initial": "Hidden",
+      "guards": [],
+      "controller": 300002,
+      "controllerProp": 104023,
+      "finish": 0,
+      "interactions": [
+        1010,
+        101101,
+        1010102,
+        1020103,
+        1030104,
+        1040002
+      ],
+      "reports": [],
+      "evidence": [
+        "Config/Level/GroupGraph/F20481001/Group_F20481001_G222.json#Clt_TriggerTryAttach+single-ChestID",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20481_F20481001/LevelGroup_P20481_F20481001_G222.json#AttachTargetRef",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_02.json#PropReqInteract"
+      ],
+      "shield": 300001,
+      "shieldProp": 104011,
+      "files": [
+        "Config/Level/GroupGraph/F20481001/Group_F20481001_G222.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_02.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20481_F20481001/LevelGroup_P20481_F20481001_G222.json",
+        "Config/Props/Chap04/Prop_Chap04_GoldenSpear_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": [
+        "InteractConfig:1010",
+        "InteractConfig:1010102",
+        "InteractConfig:101101",
+        "InteractConfig:1020103",
+        "InteractConfig:1030104",
+        "InteractConfig:1040002",
+        "MazeProp:104011",
+        "MazeProp:104023",
+        "MazeProp:60401"
+      ]
+    },
     "20481680": {
       "kind": "CLIENT_REPORT",
       "initial": "Hidden",
@@ -7946,34 +10788,98 @@
     }
   },
   "files": {
+    "Config/Level/GroupGraph/F10301001/Group_F10301001_G223.json": "088a4f568fe68c6cdb22cf301296041fdd58c4b525a96e77b241a61d6200eabc",
     "Config/Level/GroupGraph/F10341001/Group_F10341001_G223.json": "5e17a0b09b46bd894fae58d36eeb147ff83d1181bb71d1e75319488e6cb5750f",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G245.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G287.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G289.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G309.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F10403001/Group_F10403001_G145.json": "2df582a9909751e4c52428347feed62c86b4ff181d94981aafd16ea92cb9d7a1",
     "Config/Level/GroupGraph/F10403001/Group_F10403001_G47.json": "ab368258366051c09e8a4fbd269fb8db3ecc1b611f6deba6a260031697f48cd6",
     "Config/Level/GroupGraph/F10404001/Group_F10404001_G92.json": "e2a8cc31bd94a6f8b29e3e1ea1de5d943b3c931b02b442de00fc9aeff7e244e2",
     "Config/Level/GroupGraph/F10441001/Group_F10441001_G176.json": "3debe9ce52b5acdc9b9aeddec666cab068d6a0f8011e9fdb5f920e62cf52a729",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G183.json": "adac5174c84c099bd849519a13af8f86d75ab7a0e836de8fc7532ae6afa5db87",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G184.json": "6826e66b2c52f606ef0d5171d0cb3b8520f237e0508faf1050a8e9a854255d83",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G185.json": "d7f30c2e7d2236f979f7156cad90a2dee72f557e47ca2d6d8f2eba4b298c3454",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G186.json": "cfc7af82e367b2c9c399fdce48e37dbb1b76d7329807bd8330277ca7c070c199",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G187.json": "b0587ef62cedbe0b811976783070ce0bfe89d4c0f3eef47594799db0f0e8f459",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G188.json": "2d64eae0b2ff7909ae1e9e8fc55aad143d7a5154162808fc9849f6cc7368ec0e",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G189.json": "290de04067451daf8567bb8d3c7e2e6a271eb48ddf73d401d67975f5e956e81d",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G190.json": "2f74aeb22409b3d5b4e26808dfd013f1def176c6b02652f136c4a6d3a36b7da6",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G191.json": "e6d93dd461c97cda926d7e095a9c7b6dab50c037ac03a07ca045278c41c98d7b",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G192.json": "df86cda80999ad7bb246b00a8731665ad678d00d9a213d1442964bc1c3fd378a",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G193.json": "da8308e4c2859cdfdcfab4c42986162d5b2094b601ace18666049d0bd9cfa241",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G194.json": "acaab9840a7c4c3aa1e4e92085a272510aecd596e3afa82f7a16abea0a53493d",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G195.json": "f32b9c7fea6cd2cbab061bd938d8aceaac909443c95ffd943201d1613a5563ff",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G196.json": "90fa90dd58f9c90224d45fed5ab5ea1fd5ae543ea3051cff794628c15268799d",
+    "Config/Level/GroupGraph/F20242001/Group_F20242001_G197.json": "5c64754b32d1d5f8188e4c1768358af7f8e81901e27ce6f50c5c635cfaf2e838",
+    "Config/Level/GroupGraph/F20311001/Group_F20311001_G422.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20311001/Group_F20311001_G433.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20311001/Group_F20311001_G434.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20311001/Group_F20311001_G454.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
     "Config/Level/GroupGraph/F20311001/Group_F20311001_G499.json": "ab601434f8abe570e23e9c1077aa07526764165825f01c4669f2d9aa4c367d2f",
+    "Config/Level/GroupGraph/F20312001/Group_F20312001_G246.json": "626c74844d75f273a61ec629a77b7f2fb95b7144f01c3ee1ebf17abad76030a4",
+    "Config/Level/GroupGraph/F20312001/Group_F20312001_G256.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20312001/Group_F20312001_G257.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20312001/Group_F20312001_G258.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20313001/Group_F20313001_G180.json": "2deb4b3e28553fea6b6ad1d6863bc78add8b4789426f995c79c508e71d7b9a0e",
+    "Config/Level/GroupGraph/F20313001/Group_F20313001_G227.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20313001/Group_F20313001_G228.json": "17b488cea0ac35cb19efb553a7184d6b0124d91518a7bdb32abd33999a18ea5b",
+    "Config/Level/GroupGraph/F20321001/Group_F20321001_G184.json": "17b488cea0ac35cb19efb553a7184d6b0124d91518a7bdb32abd33999a18ea5b",
+    "Config/Level/GroupGraph/F20321001/Group_F20321001_G188.json": "b4ff510434ce13c7ca3dd78db9c805a3e0a74a95f7d4f35880e4faf0fecd6934",
+    "Config/Level/GroupGraph/F20321001/Group_F20321001_G199.json": "363cf0a0792cbe560c8eb33dbc9f00bfe3dfe3b1d67dc53676c13860f3224d80",
+    "Config/Level/GroupGraph/F20321001/Group_F20321001_G200.json": "772c3fb94380a8379eadc7124bb9679a1fcbc25723ba5ed3294d16b746c2cd89",
+    "Config/Level/GroupGraph/F20322001/Group_F20322001_G238.json": "17b488cea0ac35cb19efb553a7184d6b0124d91518a7bdb32abd33999a18ea5b",
+    "Config/Level/GroupGraph/F20322001/Group_F20322001_G241.json": "17b488cea0ac35cb19efb553a7184d6b0124d91518a7bdb32abd33999a18ea5b",
+    "Config/Level/GroupGraph/F20322001/Group_F20322001_G242.json": "17b488cea0ac35cb19efb553a7184d6b0124d91518a7bdb32abd33999a18ea5b",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G110.json": "5649d7fa59e9b98b8302fef61456cb2f95c62dba60880c5dd2b0643bf4592f7a",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json": "03edc30c0709c5f5ea3f6cae79f074d2f607dd03b0a3fb0cd41fc12f19042cac",
+    "Config/Level/GroupGraph/F20332001/Group_F20332001_G210.json": "a6179efcfc2e78dcc80ce12e268dbca5d2a9623919b75aa630925367fb0e73f3",
+    "Config/Level/GroupGraph/F20332001/Group_F20332001_G212.json": "a03fc40dba58532a7e807e32e1c84588d540509ac819e50d1bb7564193f66c48",
+    "Config/Level/GroupGraph/F20332001/Group_F20332001_G296.json": "5649d7fa59e9b98b8302fef61456cb2f95c62dba60880c5dd2b0643bf4592f7a",
+    "Config/Level/GroupGraph/F20332001/Group_F20332001_G326.json": "5649d7fa59e9b98b8302fef61456cb2f95c62dba60880c5dd2b0643bf4592f7a",
     "Config/Level/GroupGraph/F20411001/Group_F20411001_G134.json": "8a9844313dc697e8ca27a7c4f369ba847299ca63b138c7228f8dfe7a36d20fb6",
     "Config/Level/GroupGraph/F20411001/Group_F20411001_G137.json": "99bce0460b7ea915c82d039f7cac7b3fefca54a15faaf0edb3e594ac8dc9edaf",
     "Config/Level/GroupGraph/F20411001/Group_F20411001_G247.json": "5c2f055a36d4376c90ac31c75ad9d0d630bba83c322b77cc6152f56216682092",
+    "Config/Level/GroupGraph/F20411001/Group_F20411001_G273.json": "14138af75685baa1b54e00f88a03d5674f794e31bf020acb182352a5a635d2f6",
+    "Config/Level/GroupGraph/F20411001/Group_F20411001_G274.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F20412001/Group_F20412001_G142.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20412001/Group_F20412001_G210.json": "29dfda6b7cf1e2f5392f13cc5eba79f119c739a1cf05bc151d794176f2001d28",
+    "Config/Level/GroupGraph/F20412001/Group_F20412001_G245.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20412001/Group_F20412001_G50.json": "ee1c47fd7713c3bb27ada0b5d802c12bc71e7622556e61d8d63af2b2138104cd",
     "Config/Level/GroupGraph/F20413001/Group_F20413001_G150.json": "efd785f04900f88e88b1c6ffbd7d347f78195487da4312cdd996a4c85f9298e9",
     "Config/Level/GroupGraph/F20413001/Group_F20413001_G240.json": "c264525b7b2d3f1855023ace988b2f85bb2731f7aa13cbd6dd78086d14c6466d",
+    "Config/Level/GroupGraph/F20413001/Group_F20413001_G277.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F20413001/Group_F20413001_G278.json": "14138af75685baa1b54e00f88a03d5674f794e31bf020acb182352a5a635d2f6",
+    "Config/Level/GroupGraph/F20413001/Group_F20413001_G279.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20413001/Group_F20413001_G85.json": "4307eba20a2cad42d6efb99a29a2b9fc5e240c3ff4a8f9fc174e231b4b8eaa9a",
     "Config/Level/GroupGraph/F20421001/Group_F20421001_G243.json": "c416845b7bb5f4be78f24d86b25d53de30a517d616cd8e2ee0635c21740cfd27",
+    "Config/Level/GroupGraph/F20421001/Group_F20421001_G259.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F20421001/Group_F20421001_G260.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20421001/Group_F20421001_G30.json": "aed48d3cb4c3677566a5a456d56051c1c10989534df2cc618afa81fda4ba01c8",
     "Config/Level/GroupGraph/F20422001/Group_F20422001_G213.json": "91e9eaf24acc8b4e2d8a4a5f4d3c5fc9cd5534dbe12e46956459b615ec4ff43e",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G259.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G260.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20422001/Group_F20422001_G51.json": "59d7985610189eae5b5323e09aaca3974628985ec58451004729ca121d78b228",
     "Config/Level/GroupGraph/F20422001/Group_F20422001_G54.json": "49b2c2e8020a327a69720a9be458ad81e96f4e1f85e2e67d45d96020c7394409",
     "Config/Level/GroupGraph/F20422001/Group_F20422001_G60.json": "2779cf0e55c200721c5b9ef18f02f49c228b50c4ff1e173bb08b75adc5e67e3f",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G231.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20423001/Group_F20423001_G35.json": "b9b82ff3bf70e9fa6d3dbc5c7d1261dbba99b6f1300af2738a96e8528b1055e2",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G99.json": "7c960918371ef17a14ca3f5ab5ce7c4149306dca3e254694369dc035927263c2",
     "Config/Level/GroupGraph/F20431001/Group_F20431001_G121.json": "4e5666965da1bb2df9ef30bd8ba1c74791959a2179cc87a2d7cab99e2aafb1bc",
     "Config/Level/GroupGraph/F20431001/Group_F20431001_G190.json": "5524d16f6c263c0243f0ae9ff98ecab31ffd7437ce1cf4577023642cf26fc0fe",
+    "Config/Level/GroupGraph/F20431001/Group_F20431001_G223.json": "cd8ef41324400e78ad00385cdce976dc5e7dd5ffee343a60939e2ab8ca596ba8",
+    "Config/Level/GroupGraph/F20431001/Group_F20431001_G226.json": "e0f957b6e87e8f66bc2575b1bca8aab784185920dff19bf7b1142d90b1b4069b",
     "Config/Level/GroupGraph/F20432001/Group_F20432001_G105.json": "8de8e9ec349f40654cdbfe260d7bd2b28b2d70a327370c2a4021cc2caa6db5fd",
+    "Config/Level/GroupGraph/F20432001/Group_F20432001_G209.json": "cd8ef41324400e78ad00385cdce976dc5e7dd5ffee343a60939e2ab8ca596ba8",
+    "Config/Level/GroupGraph/F20432001/Group_F20432001_G210.json": "cddd268971501ea6246ee5014ddaa9637ce27d5fb5c03c903d6bdeb3d6b5625d",
     "Config/Level/GroupGraph/F20433001/Group_F20433001_G103.json": "989d338f5233d4cc7f683e0a0381b97d5e7e9095580ed054f75ecc59fdbf93d3",
     "Config/Level/GroupGraph/F20433001/Group_F20433001_G39.json": "0015f33046086ab4bd062c5a72169f17ebfa59c91e7e7d977f727e88994c9956",
     "Config/Level/GroupGraph/F20451001/Group_F20451001_G160.json": "441c2ec3fddee1f0f80ab7c2bbcca1890c0399dea1b58cb6c3590af8de025208",
+    "Config/Level/GroupGraph/F20451001/Group_F20451001_G192.json": "d78bd2fb865b284e83227ff406490a2ab49f48fefc82ad9355d4e72d88ce629e",
+    "Config/Level/GroupGraph/F20451001/Group_F20451001_G224.json": "4da020eb89fb1cb0c08bc2db5acf67e26c7cbb37352e76edfcc3866fa51dd4fe",
     "Config/Level/GroupGraph/F20451001/Group_F20451001_G252.json": "8156000ea1a13a262eb689b0a54ce795088f6cf72f524c4772d167d7747410b2",
+    "Config/Level/GroupGraph/F20461001/Group_F20461001_G150.json": "02187c1d7e2b15bf62fcedefb9517f8a1549ad734c4cfab29b79552a78bd4d50",
     "Config/Level/GroupGraph/F20461001/Group_F20461001_G154.json": "0a39aa2652b70d3a49eecdd67c0fa1b201c521af0029a4071ba71a37d5dc60cc",
     "Config/Level/GroupGraph/F20461001/Group_F20461001_G183.json": "e656b6ae3329421a6a4f03f14c9a149d624e8fde9561e189c89ea6f37ba370a3",
     "Config/Level/GroupGraph/F20461001/Group_F20461001_G2.json": "4d51917de3614e8015e761376c6ffe2176e5f8259f32d592eddc8e7e0d154c7a",
@@ -7981,10 +10887,14 @@
     "Config/Level/GroupGraph/F20461001/Group_F20461001_G63.json": "0850b256631117f1218f49c343f88e43209220f595f482420532cabf9fc03a1d",
     "Config/Level/GroupGraph/F20462001/Group_F20462001_G145.json": "d867c5cfd6e82b28738013659ccf251395653a3b3e503f3817a93b6709f6e67f",
     "Config/Level/GroupGraph/F20462001/Group_F20462001_G43.json": "82380b7817f592890977a3d3375da0596a9d299b5e6c12c356f5c7243923d5e5",
+    "Config/Level/GroupGraph/F20481001/Group_F20481001_G221.json": "61e35632c1c4bfda96f961b1f2b6b9729d6710a5cfc24cdeade37449212d888b",
+    "Config/Level/GroupGraph/F20481001/Group_F20481001_G222.json": "e6c898601babd2bb38c3a27d01fa76a19b3f34c09b30a4a66ec3b7ce6e6bd498",
     "Config/Level/GroupGraph/F20481001/Group_F20481001_G227.json": "52555e1f0f6944678e59a0794c852dc289d51fac189a264cff562cdf367631d8",
     "Config/Level/GroupGraph/F20482001/Group_F20482001_G74.json": "4e40140ce37c679c3886e1436c58a7e3e50bf8eda907425ecba62a53d829ba2b",
     "Config/Level/GroupGraph/F20482001/Group_F20482001_G87.json": "2407ca15dd1ab47cd23716cfec2c9cd4ea39108efe8f15ba5a996bbcd6b08e8f",
+    "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzleUpgrade_Controller.json": "85427c573ce4d771880da44294adfa8c08770920909aee4aa3a1a175d0a41f05",
     "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestControl.json": "3d6b7400825543dcd6ecfa8091ed723b091318e5d870ac1c8b1e6229a94b126f",
+    "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/CommandRobotPuzzle_HideChestWaypointControl.json": "8d56dfc06a77185fd67c3fd3c35fda7711a996118f0fbd3925a059e01063da40",
     "Config/Level/Maze/MazeExtra/LogisticsRobot/Attack/LogisticsRobot_Demo_Attack_Controller.json": "2cbe8331aaa23d7e1dcd79061582314b91d4d047e0926fd99bb6d7964d66e7e1",
     "Config/Level/Maze/MazeExtra/LogisticsRobot/Broken/LogisticsRobot_Demo_Broken_Controller.json": "425f38303c5a313411aa1785aeef51d5a44401f03b140663fafa37510d31db52",
     "Config/Level/Maze/MazeExtra/LogisticsRobot/Follow/LogisticsRobot_Demo_Controller.json": "5c1ff2cbe8f05e7fbadd5c16599b85d6962557135190e13c5f6442ec452839c2",
@@ -8004,6 +10914,14 @@
     "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ClockToyBox_Y_01.json": "29b469f0a6db52968a9cd85d83e4fee5b2075506b0998ea9bfe520d8f2e08b92",
     "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ClockToyBox_Z_01.json": "259c3e3e78323b6468486790c0cceee6323f2571b313dff5a2447dda5f892935",
     "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_HitCount_01.json": "f637eee3c446b32b65c4b3b5a3aa3140370251daa203d04ada95e18d151e467d",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json": "e1ee7911f5fbfd5456e2c40dcfe580f83836a4ad8eb398294d84d95043b0f0a4",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json": "c18d98113ea067acd23ee691050ed8a6a6dda04f41e7356bd22d1b463d14c910",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json": "77e03450dfaf8ba56097fabd19c6e36e7a01e97572fb18b53e000dfb065efa72",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_01.json": "29c46d064efb2f67f962d457baa1490fef90aad756b603d2c0af8a49adffff3d",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_02.json": "39489cd328ffdd0df187203ff3bb081091da767c94b7d489a57e81b4a3e60324",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_03.json": "2422085cc10d02df04de4f9d9e1645b5bed4d0490f3173693dee5d325fbb76ef",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_04.json": "ebf6583c532b0c471d5002b933040279a6230faac3e38a741f816a71f02567e2",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json": "17d97e2fdfa2d62eb9878b746389e7b2cc6fcd925f456626596156894587aaca",
     "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TrfGoldenGoatMaskProp_01.json": "6aa809ae717d29f2337e39910e934769fe9441e3943ac5b19847ddd684ac3d27",
     "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TrfGoldenGoatMaskProp_Upgrade.json": "6d76a1248051e0a6449d625bd933a0bca555706531d1791d2038dd3771399997",
     "Config/LevelOutput/SharedRuntimeGroup/Groups_P10201_F10201001/LevelGroup_P10201_F10201001_G114.json": "67184de09be04d00cc80cc4fefd7043d24a5c86df183abb7bc27c3fa484feed9",
@@ -8450,6 +11368,7 @@
     "Config/Props/Chap01/Prop_Chap01_TreasureBox_01_Config.json": "63e9cbd03d994fd18482749ffba311c135058ed41006102198e8a70eed0f7c00",
     "Config/Props/Chap01/Prop_Chap01_TreasureBox_02_Config.json": "35acd896669926f2d26a8c39cd3a0c7e79f79d41b48650c7cb1013e2c365f0ed",
     "Config/Props/Chap02/Prop_Chap02_BrokenRobCrane_01_Config.json": "83476604ddf435b0a43a0aafd2e80c3082a5c00c2475d2b812bf436ae84d5abc",
+    "Config/Props/Chap02/Prop_Chap02_CargoShip_04_Config.json": "edacd844d05abcaf1bbab6caf2215250c75693111a5dc0e00065f516cc05b5b9",
     "Config/Props/Chap02/Prop_Chap02_Compass_01_Config.json": "7063920b5517c57e02b431d8b534488f0b446efe8cbc21665818b15764ac4e97",
     "Config/Props/Chap02/Prop_Chap02_RubikCube_02_Config.json": "2771bebf3a0b140141161c82cb4c71075d2e559dba381cce124891c131fa5742",
     "Config/Props/Chap02/Prop_Chap02_TreasureBox_01_Config.json": "5265cab905de5ec53a9f997357891c68d943346fd8ec756035b5cfd5b9bfa4d9",
@@ -8498,6 +11417,7 @@
     "Config/Props/Chap04/Prop_Chap04_Vase_01_Config.json": "1c253590e74dfd88a7c6b5a5afa4bc0a28d0049e3384d2a23bfedf3eaefb4433",
     "Config/Props/Chap04/Prop_Chap04_WishingWell_01_Config.json": "f4dd98e565e79f444d8cec4dd71b22ecc2a7ebbb008a28a2a37ab03408d6bb5f",
     "Config/Props/Common/Prop_Common_AirWall_02_Config.json": "6683bcdd58979db19906b5f4d48be08bba4864a5ddd07da92279f41df6358b9e",
+    "Config/Props/Common/Prop_Common_AirWall_05_Config.json": "83476604ddf435b0a43a0aafd2e80c3082a5c00c2475d2b812bf436ae84d5abc",
     "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json": "bb8dae2e803c97d76d7f9d528768e2c424836a8df6381e72be8ba59ad2a4c78e",
     "Config/Props/Common/Prop_Common_FakePlayerCollider_01_Config.json": "952b813c0588b53b6df370a081352f9267bf8e7778fdd4723236496d190f5d4d",
     "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json": "058f2a6ea68f4b6237fbe958552cdea467c1b5beafb27adab259228c39cbece5",
@@ -8506,13 +11426,31 @@
   },
   "rows": {
     "InteractConfig:1010": "4a2ed9a349ffe1f07aa3046a1fe33805fe7346685ecbacfebbcc8812d964b8ea",
+    "InteractConfig:1010102": "334f9ae6061e64199d319eb81ee1f422c4c36e2f79d688d56f525db5fe41d54b",
+    "InteractConfig:101101": "f9611eb8cba1ae2639d51b2885a5c50b2755072366ccbd2f32d96fc724eaea5f",
+    "InteractConfig:1020002": "7229de40bd949e23ed945db85412e351ed878c914929f307635f2b94beee2407",
+    "InteractConfig:1020103": "90c6368a8a7f7652203e72979196acaddd19b4df90b344c6913dd4b7105918f9",
+    "InteractConfig:1030002": "e7c2c6ced99b3ebcfda81aad9f2f2d5c9fac4da07b605f1278855a31e3d8475f",
+    "InteractConfig:1030104": "0cb707c7c3f66d5f7c51db0b84e4c22c0e09959e6af5173d0d1f3b3706eab059",
+    "InteractConfig:1040002": "95c2ffa1d82c45f27aaf699f9774562e3660146a2e6f915e887be6672a2f9cee",
+    "InteractConfig:1040105": "9611c10c9c8e57430198d6b3c30b4902adb4a11b5f748a57763d4a30fea1e627",
+    "InteractConfig:1050002": "5dc3c942c7ee0ce01e2413976a627253350098dae9af43e4b238322954aea374",
     "InteractConfig:1100": "56797951c75216f4466316fbfbd291c78e6805df32b69e3572fa600b2e1647d9",
+    "InteractConfig:11000": "5c93fdec9b70261a1f4d90bd73d005c12f56586297e090ae58f08a7d40ff8f2c",
     "InteractConfig:111120": "7370e9210d0a44e178335c2356bb6e159919ccda38e1d86640ed02263012c185",
     "InteractConfig:120120": "2545942927d0065815c6898c9717bda8634bf5ab253a9bca7b5524e29e87281e",
+    "InteractConfig:1210": "6bb94a60c29863ad1d1b7f5785d0819d24218efdc9c521145c8817410cfb4906",
+    "InteractConfig:19100": "552955f93aff2bb2fcfb3db260f47a9d951563e8fe029324f64252e8b38e07d8",
+    "InteractConfig:1920": "f1f30822425e35df4c023f87928b2e0595b734a57945cc3ef4bc744e0af2de26",
     "MazeProp:100": "e5ccfb571c9573aa85bf276fbf499dea189c923b7ab66a5bcac83eb0f9c09a0a",
     "MazeProp:102018": "d88b7d7c90c9792b76731971b2fb246bb492f0fca46c2bb417a379a93d7b6934",
     "MazeProp:102241": "43a700aa283b68fd2fd874b51efc7376688e185a3a9e669f59e2a895e3b6738a",
+    "MazeProp:103012": "8e81453b3174360b508db3916b7b86a29a38db75a0f812099303671e5a0255d7",
     "MazeProp:103018": "2214e2dca23f6b53222c4a218c3bea420d4690c9ccd00fde30b06c4649e9978e",
+    "MazeProp:103109": "4f33e8eadcf4370dd560985495931ce4918864599731f4f35cd8eb7d2f6caa64",
+    "MazeProp:104010": "bd497b7477b04854103b84d01d3d88e1b11a291f8ac9e3e1253c8ebe20622e99",
+    "MazeProp:104011": "a252f45bfc4c58668051ea259a5ff261fd0c8af1dbbb77c7030108d9fa603e3d",
+    "MazeProp:104023": "f72208fe48dcaa5f6b5f19e55c40b7eb3bcdb1e1e73d516919828c74ebf8f115",
     "MazeProp:104046": "70af4013697f52c4456303d8d63e622766b12488fc27aab46e1fe8b2a573cee4",
     "MazeProp:217": "2f350abcf2e718d1e737dff05c93a45f51df9cf329acbf3bfbc325fc1eb1a2ce",
     "MazeProp:60002": "537c55d8672693ca3e0f188be0a9b7c347150dc0c2d1d4a63553e18664286ff8",
@@ -8523,8 +11461,10 @@
     "MazeProp:60201": "470789c8532ba1ab55eb971ccfcb01cead4e5db9fdf5669e5d68dba2bacd5aea",
     "MazeProp:60202": "8635f0cfb7af0d1f5e8c5bac6623dacbbd4d6cd461aa132f578ab0ff64f47910",
     "MazeProp:60203": "520fa170fce2ca838e83d54d6c9d85e310f8681be171521066f5e74bbb73d66a",
+    "MazeProp:60301": "dac7507c90b7309a61f6026423ed7a97b6f8f2aea60715b6b4a0c26af0deb448",
     "MazeProp:60302": "921a7ab0f20d4e2dc17937e0db574d6fa3cf946db32ed36d664561ec5feda39d",
     "MazeProp:60303": "2418101823cb3a1afa2bd1a732b69279c90ad2442419098b8483a156b83e7495",
+    "MazeProp:60401": "e93119c851822d25348e57e2d48733e40faa1830ea7d532d8c430a7732a0d732",
     "MazeProp:60402": "99ca4364b367d8d6801f7554b905b811777ac56835b084a3e84b0d783ece56cf",
     "MazeProp:60403": "847dac960e7f588c05e23a0a104b47282d7184985da761ca10dc66d085a95f6d",
     "NPCMonsterData:1002020": "21a245173dc60514f26e65fceb1fddbec40ca7ced00042910855ed53af1afc35",
@@ -8578,31 +11518,6 @@
     "NPCMonsterData:8022010": "1f9d18f6870aa6246a0c5e4fc3a3a994729ff404fd7340cb208422a01e4d5888"
   },
   "pending": {
-    "10301634": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F10301001/Group_F10301001_G223.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "10401661": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F10401001/Group_F10401001_G245.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "10401662": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F10401001/Group_F10401001_G287.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "10401663": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F10401001/Group_F10401001_G289.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "10401664": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F10401001/Group_F10401001_G309.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "10401680": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F10401001/Group_F10401001_G510.json",
@@ -8768,179 +11683,14 @@
       "graph": "Config/Level/GroupGraph/F20241001/Group_F20241001_G177.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20242671": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G183.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242672": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G184.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242673": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G185.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242674": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G186.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242675": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G187.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242676": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G188.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242677": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G189.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242678": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G190.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242679": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G191.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242680": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G192.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242681": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G193.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242682": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G194.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242683": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G195.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242684": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G196.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20242685": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20242001/Group_F20242001_G197.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20311666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20311001/Group_F20311001_G422.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20311667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20311001/Group_F20311001_G434.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20311668": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20311001/Group_F20311001_G454.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20311669": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20311001/Group_F20311001_G433.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20311684": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20311001/Group_F20311001_G455.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20312658": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20312001/Group_F20312001_G256.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20312659": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20312001/Group_F20312001_G257.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20312660": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20312001/Group_F20312001_G258.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20312661": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20312001/Group_F20312001_G246.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20313660": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20313001/Group_F20313001_G227.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20313661": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20313001/Group_F20313001_G228.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20313662": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20313001/Group_F20313001_G180.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20321624": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20321001/Group_F20321001_G199.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20321662": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20321001/Group_F20321001_G184.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20321663": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20321001/Group_F20321001_G200.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20321664": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20321001/Group_F20321001_G188.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20322661": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20322001/Group_F20322001_G238.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20322662": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20322001/Group_F20322001_G340.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20322663": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20322001/Group_F20322001_G241.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20322664": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20322001/Group_F20322001_G242.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
     "20331626": {
@@ -8953,109 +11703,14 @@
       "graph": "Config/Level/GroupGraph/F20331001/Group_F20331001_G321.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20331663": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20331664": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20331001/Group_F20331001_G110.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20331665": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20331001/Group_F20331001_G328.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20331666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20331667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20331001/Group_F20331001_G201.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20332660": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20332001/Group_F20332001_G210.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20332661": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20332001/Group_F20332001_G212.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20332662": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20332001/Group_F20332001_G211.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20332663": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20332001/Group_F20332001_G296.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20332664": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20332001/Group_F20332001_G326.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20411666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20411001/Group_F20411001_G273.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20411667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20411001/Group_F20411001_G274.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20412666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20412001/Group_F20412001_G142.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20412667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20412001/Group_F20412001_G245.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20413666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20413001/Group_F20413001_G277.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20413667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20413001/Group_F20413001_G278.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20413668": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20413001/Group_F20413001_G279.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20421666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20421001/Group_F20421001_G259.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20421667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20421001/Group_F20421001_G260.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20422666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20422001/Group_F20422001_G260.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20422667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20422001/Group_F20422001_G259.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
     "20422686": {
@@ -9118,16 +11773,6 @@
       "graph": "Config/Level/GroupGraph/F20422001/Group_F20422001_G262.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20423666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20423001/Group_F20423001_G99.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20423667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20423001/Group_F20423001_G231.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20423683": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20423001/Group_F20423001_G55.json",
@@ -9171,26 +11816,6 @@
     "20423691": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20423001/Group_F20423001_G169.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20431666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20431001/Group_F20431001_G223.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20431667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20431001/Group_F20431001_G226.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20432666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20432001/Group_F20432001_G209.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20432667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20432001/Group_F20432001_G210.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
     "20433651": {
@@ -9243,16 +11868,6 @@
       "graph": "Config/Level/Maze/MazeExtra/TimeLock/TimeLock_Treasure_GroupGraph.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20451666": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20451001/Group_F20451001_G192.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20451667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20451001/Group_F20451001_G224.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20451691": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20451001/Group_F20451001_G208.json",
@@ -9298,25 +11913,27 @@
       "graph": "Config/Level/GroupGraph/F20451001/Group_F20451001_G208.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
     },
-    "20461667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20461001/Group_F20461001_G150.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
     "20481657": {
       "state": "Hidden",
       "graph": "Config/Level/GroupGraph/F20481001/Group_F20481001_G278.json",
       "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20481667": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20481001/Group_F20481001_G221.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
-    },
-    "20481668": {
-      "state": "Hidden",
-      "graph": "Config/Level/GroupGraph/F20481001/Group_F20481001_G222.json",
-      "reason": "No complete supported server predicate or exact client unlock binding"
     }
+  },
+  "controllerAliases": {
+    "20121671": [
+      300004
+    ],
+    "20121673": [
+      300004
+    ],
+    "20121674": [
+      300005
+    ],
+    "20121676": [
+      300005
+    ],
+    "20121677": [
+      300005
+    ]
   }
 }

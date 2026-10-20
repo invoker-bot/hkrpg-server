@@ -12,6 +12,7 @@ import time
 import urllib.error
 import urllib.request
 from smoke_resource_fixture import mirror_resources
+from world_mechanism_probe_cases import LEGACY_IDS, DYNAMIC_IDS, dynamic_actions
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -33,8 +34,11 @@ def main():
     parser.add_argument('--base-zone', action='store_true', help='Verify the six Base Zone exploration chests')
     parser.add_argument('--map-chests', action='store_true', help='Verify original chests across seven worlds')
     parser.add_argument('--mechanisms', action='store_true', help='Verify guard/puzzle unlock, loot and H2 restart')
+    parser.add_argument('--dynamic', action='store_true', help='Verify staged boards, tramcar replacements and spear variants')
     args = parser.parse_args()
-    assert sum([args.base_zone, args.map_chests, args.mechanisms]) <= 1, 'Choose one chest fixture'
+    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic]) <= 1, 'Choose one chest fixture'
+    if args.dynamic:
+        args.mechanisms = True
     original_resources = args.base_zone or args.map_chests or args.mechanisms
     jar, output = args.jar.resolve(), args.output.resolve()
     assert jar.is_file() and jar.is_relative_to(ROOT / 'build')
@@ -62,7 +66,10 @@ def main():
     if args.map_chests:
         chests = [row for row in chests if row['id'] != 20001632]  # Locked guard challenge is a rejection fixture.
     chests.sort(key=lambda row: row['id'])
-    expected_chests = 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
+    if args.mechanisms:
+        selected = DYNAMIC_IDS if args.dynamic else LEGACY_IDS
+        chests = sorted((row for row in chests if row['id'] in selected), key=lambda row: selected.index(row['id']))
+    expected_chests = len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
     assert args.map_chests or args.mechanisms or all(row['plane'] == plane and row['floor'] == floor for row in chests)
@@ -141,6 +148,7 @@ def main():
     classpath = str(classes) + os.pathsep + str(jar)
     credentials, snapshots, inspections, known, claimed = {}, [], [], [], []
     mechanism_progress = {}
+    prop_progress = {}
     mechanism_spec = None
     stops = 0
 
@@ -156,6 +164,8 @@ def main():
         control.write_text(json.dumps(dict(uid=credentials['uid'], known=known, claimed=claimed, baseZone=args.base_zone,
                                           mapChests=args.map_chests or args.mechanisms,
                                           mechanismProgress=mechanism_progress if args.mechanisms else None,
+                                          propProgress=prop_progress if args.dynamic else None,
+                                          dynamicFixture=args.dynamic,
                                           battleBalancePhase=bool(mechanism_spec and mechanism_spec['op'] == 'guard')
                                                              or any(not p['complete'] for p in mechanism_progress.values()),
                                           captureBattleBalances=bool(mode == 'inspect' and mechanism_spec
@@ -174,9 +184,10 @@ def main():
 
     actions = None
     if args.mechanisms:
-        mechanisms = json.loads((ROOT / 'src/main/resources/gameplay/world-mechanisms-4.6.json').read_text('utf-8'))['rules']
+        catalog = json.loads((ROOT / 'src/main/resources/gameplay/world-mechanisms-4.6.json').read_text('utf-8'))
+        mechanisms = catalog['rules']
         by_id = {row['id']: row for row in chests}
-        chests = [by_id[id_] for id_ in (20001632, 20111656, 20211656, 20241651, 10301656, 10401651, 10403660)]
+        chests = [by_id[id_] for id_ in (DYNAMIC_IDS if args.dynamic else LEGACY_IDS)]
         actions = [None]
         for chest in chests:
             rule = mechanisms[str(chest['id'])]
@@ -196,6 +207,8 @@ def main():
                 actions.append(dict(common, op='finish', before=initial_state, after=12))
             actions.append(dict(common, op='claim', before=12, after=13))
             actions.append(dict(common, op='verify', before=13, after=13))
+        if args.dynamic:
+            actions = dynamic_actions(chests, catalog)
         batches = [[spec] if spec and spec['op'] == 'claim' else [] for spec in actions]
         first = chests[0]
         stage = dict(plane=first['plane'], floor=first['floor'], entry=first['entry'],
@@ -283,17 +296,23 @@ def main():
                             process.terminate()
                             process.wait(timeout=15)
                         process.stdin.close()
-        if mechanism_spec and mechanism_spec['op'] in ('guard', 'finish'):
+        if mechanism_spec and mechanism_spec['op'] in ('guard', 'finish', 'destroy'):
             mechanism_progress[str(mechanism_spec['id'])] = dict(
                 complete=mechanism_spec['after'] == 12, defeated=mechanism_spec['defeated'])
+        if args.dynamic and mechanism_spec:
+            prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec['group']}:"
+            for instance, state in mechanism_spec.get('states', {}).items():
+                prop_progress[prefix + instance] = state
         inspect('seed' if index == 0 else 'inspect')
         if actions and index + 1 < len(actions):
             upcoming = actions[index + 1]
-            stage = dict(plane=upcoming['plane'], floor=upcoming['floor'], entry=upcoming['entry'],
-                         world=upcoming['world'], pos=dict(x=0, y=0, z=0))
+            next_stage = dict(plane=upcoming['plane'], floor=upcoming['floor'], entry=upcoming['entry'],
+                              world=upcoming['world'], pos=dict(x=0, y=0, z=0))
             # Placement only; all defeat, unlock and reward progress must come through KCP.
-            mechanism_spec = None
-            inspect('move')
+            if next_stage != stage:
+                stage = next_stage
+                mechanism_spec = None
+                inspect('move')
         if args.map_chests and index + 1 < len(batches) and batches[index + 1]:
             next_chest = batches[index + 1][0]
             stage = dict(plane=next_chest['plane'], floor=next_chest['floor'],
@@ -314,7 +333,8 @@ def main():
         openedOriginalChests=known, sourceBoundActivityCredits=0 if original_resources else 30,
         chestIdentityNotifications=expected_chests, baseZone=args.base_zone, mapChests=args.map_chests,
         mechanisms=args.mechanisms, mechanismProgress=mechanism_progress,
-        guardBattleLootBalancesRebased=args.mechanisms,
+        dynamicMechanisms=args.dynamic, propProgress=prop_progress,
+        guardBattleLootBalancesRebased=args.mechanisms and not args.dynamic,
         rejectedRepeatedOpenings=sum(row.get('rejectedRepeatedOpenings', 0) for row in snapshots),
         normalStops=stops, sameUIDNormalH2ProcessRestarts=stops - 1, completedOriginalActivityQuests=claimed,
         actualQuestRewards={goal['id']: goal['rewards'] for goal in goals}, sourceResourceHashes=hashes,

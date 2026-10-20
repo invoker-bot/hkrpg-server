@@ -30,9 +30,12 @@ public final class WorldMechanisms {
     return rules(prop.getScene(), prop.getGroupId()).stream()
         .filter(
             r ->
-                r.kind() == WorldMechanismSources.Kind.CONTROLLER
-                    && r.controller() == prop.getInstId()
-                    && r.controllerProp() == prop.getPropId())
+                (r.kind() == WorldMechanismSources.Kind.CONTROLLER
+                        || r.kind() == WorldMechanismSources.Kind.JIGSAW
+                        || r.kind() == WorldMechanismSources.Kind.SPEAR)
+                    && (r.controllers().contains(prop.getInstId())
+                            && r.controllerProp() == prop.getPropId()
+                        || r.pieces().contains(prop.getInstId())))
         .toList();
   }
 
@@ -62,6 +65,27 @@ public final class WorldMechanisms {
       if (!context(p, prop.getScene(), WorldMechanismSources.group(rule, prop.getScene())))
         return Retcode.MISSION_SCENE_NOT_MATCH;
       if (p.getGameplay().getWorldMechanisms().completed(rule.chest())) return Retcode.SYSTEM_BUSY;
+      if (rule.kind() == WorldMechanismSources.Kind.SPEAR) {
+        if (!durableState(prop)) return Retcode.PLAYER_DATA_ERROR;
+        if (boundActor(prop.getScene(), rule, rule.shield(), rule.shieldProp()) == null)
+          return Retcode.MISSION_SCENE_NOT_MATCH;
+      }
+      if (rule.kind() == WorldMechanismSources.Kind.JIGSAW) {
+        var board = boardActors(prop.getScene(), rule);
+        if (board == null) return Retcode.MISSION_SCENE_NOT_MATCH;
+        if (board.values().stream().anyMatch(a -> !durableState(a)))
+          return Retcode.PLAYER_DATA_ERROR;
+        if (rule.pieces().contains(prop.getInstId())) {
+          if (config != 11000 || board.get(rule.controller()).getState() != PropState.Open)
+            return Retcode.INTERACT_TYPE_INVALID;
+        } else {
+          boolean collected =
+              rule.pieces().stream().allMatch(i -> board.get(i).getState() == PropState.Closed);
+          if (config == 11000 || config == 19100) {
+            if (!collected) return Retcode.UNSUPPORTED_PROP_STATE;
+          } else if (config == 1920 && collected) return Retcode.UNSUPPORTED_PROP_STATE;
+        }
+      }
     }
     return Retcode.SUCC;
   }
@@ -69,9 +93,138 @@ public final class WorldMechanisms {
   static WorldMechanismState controlProgress(Player p, int config, EntityProp prop) {
     var next = p.getGameplay().getWorldMechanisms();
     for (var rule : controls(prop))
-      if (config == rule.finish())
+      if (config == rule.finish() && rule.controllers().contains(prop.getInstId()))
         next = next.advance(rule, prop.getScene(), 0, Instant.now().getEpochSecond());
     return next;
+  }
+
+  private static Map<Integer, EntityProp> boardActors(
+      Scene scene, WorldMechanismSources.Rule rule) {
+    var result = new HashMap<Integer, EntityProp>();
+    var group = WorldMechanismSources.group(rule, scene);
+    if (group == null) return null;
+    for (var actor : scene.getEntitiesByGroup(EntityProp.class, group.getId())) {
+      if (actor.getInstId() != rule.controller() && !rule.pieces().contains(actor.getInstId()))
+        continue;
+      var definitions =
+          group.getPropList().stream().filter(p -> p.getID() == actor.getInstId()).toList();
+      if (definitions.size() != 1
+          || definitions.getFirst().isIsDelete()
+          || definitions.getFirst().isIsClientOnly()
+          || !definitions.getFirst().isLoadOnInitial()
+          || actor.getPropId() != definitions.getFirst().getPropID()
+          || !PropTimelines.source(definitions.getFirst())
+              .equals(PropTimelines.source(actor.getPropInfo()))
+          || result.put(actor.getInstId(), actor) != null) return null;
+    }
+    return result.size() == rule.pieces().size() + 1 ? result : null;
+  }
+
+  /** An in-memory state change or the old unbound story-value cache cannot collect a piece. */
+  private static boolean durableState(EntityProp actor) {
+    var scene = actor.getScene();
+    var saved = scene.getPlayer().getGameplay().getScenePropStates();
+    if (!saved.valid()) return false;
+    var record = saved.get(PropTimelines.key(scene, actor.getGroupId(), actor.getInstId()));
+    if (record == null) return actor.getState() == actor.getPropInfo().getState();
+    return record.getProp() == actor.getPropId()
+        && record.getAcceptance().isEmpty()
+        && record.getSource().equals(PropTimelines.source(actor.getPropInfo()))
+        && record.getState() == actor.getState().getVal();
+  }
+
+  /** Exact companions whose state changes in the same save as the triggering interaction. */
+  static Map<EntityProp, PropState> transitions(Player p, int config, EntityProp prop) {
+    var changes = new LinkedHashMap<EntityProp, PropState>();
+    var target = emu.lunarcore.data.GameData.getInteractExcelMap().get(config).getTargetState();
+    changes.put(prop, target);
+    for (var rule : controls(prop)) {
+      if (rule.kind() != WorldMechanismSources.Kind.JIGSAW) continue;
+      var board = boardActors(p.getScene(), rule);
+      if (board == null) throw new IllegalStateException("Puzzle actors changed");
+      if (prop.getInstId() == rule.controller() && config == 1210) {
+        for (int piece : rule.pieces())
+          if (board.get(piece).getState() == PropState.TriggerDisable)
+            changes.put(board.get(piece), PropState.TriggerEnable);
+      }
+      if ((prop.getInstId() == rule.controller() && config == 1210)
+          || rule.pieces().contains(prop.getInstId())) {
+        if (rule.pieces().stream()
+            .allMatch(
+                i ->
+                    changes.getOrDefault(board.get(i), board.get(i).getState())
+                        == PropState.Closed))
+          changes.put(board.get(rule.controller()), PropState.TriggerEnable);
+      }
+    }
+    return changes;
+  }
+
+  private static EntityProp boundActor(
+      Scene scene, WorldMechanismSources.Rule rule, int instance, int type) {
+    var group = WorldMechanismSources.group(rule, scene);
+    if (group == null) return null;
+    var originals = group.getPropList().stream().filter(i -> i.getID() == instance).toList();
+    var actors =
+        scene.getEntitiesByGroup(EntityProp.class, group.getId()).stream()
+            .filter(p -> p.getInstId() == instance)
+            .toList();
+    if (originals.size() != 1 || actors.size() != 1) return null;
+    var original = originals.getFirst();
+    var actor = actors.getFirst();
+    return !original.isIsDelete()
+            && !original.isIsClientOnly()
+            && original.isLoadOnInitial()
+            && original.getPropID() == type
+            && actor.getPropId() == type
+            && PropTimelines.source(original).equals(PropTimelines.source(actor.getPropInfo()))
+        ? actor
+        : null;
+  }
+
+  private static List<WorldMechanismSources.Rule> shields(Scene scene, int group, int instance) {
+    return rules(scene, group).stream()
+        .filter(r -> r.kind() == WorldMechanismSources.Kind.SPEAR && r.shield() == instance)
+        .toList();
+  }
+
+  /** Validate and persist the actual attack before removing its bound shield. */
+  public static boolean beforeDestroy(Scene scene, EntityProp shield) {
+    var owned = shields(scene, shield.getGroupId(), shield.getInstId());
+    if (owned.isEmpty()) return true;
+    var p = scene.getPlayer();
+    var previous = p.getGameplay().getWorldMechanisms();
+    if (!previous.valid() || p.getBattle() != null) return false;
+    var next = previous;
+    for (var rule : owned) {
+      if (!context(p, scene, WorldMechanismSources.group(rule, scene))
+          || previous.completed(rule.chest())
+          || boundActor(scene, rule, rule.shield(), rule.shieldProp()) != shield) return false;
+      var spear = boundActor(scene, rule, rule.controller(), rule.controllerProp());
+      if (spear == null || spear.getState() != PropState.Locked || !durableState(spear))
+        return false;
+      next = next.advance(rule, scene, 0, Instant.now().getEpochSecond());
+    }
+    p.getGameplay().worldMechanisms(next);
+    try {
+      p.save();
+    } catch (RuntimeException failed) {
+      p.getGameplay().worldMechanisms(previous);
+      return false;
+    }
+    return true;
+  }
+
+  public static boolean spawns(Scene scene, GroupInfo group, PropInfo prop) {
+    for (var rule : shields(scene, group.getId(), prop.getID()))
+      if (prop.getPropID() == rule.shieldProp()
+          && scene.getPlayer().getGameplay().getWorldMechanisms().completed(rule.chest())
+          && WorldMechanismSources.group(rule, scene) != null) return false;
+    return true;
+  }
+
+  public static void afterDestroy(Scene scene, EntityProp shield) {
+    if (!shields(scene, shield.getGroupId(), shield.getInstId()).isEmpty()) publish(scene);
   }
 
   static boolean clientReport(int id, int config) {

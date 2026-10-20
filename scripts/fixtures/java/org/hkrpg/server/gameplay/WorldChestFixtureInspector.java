@@ -84,6 +84,20 @@ public final class WorldChestFixtureInspector {
                 && saved.get("quests", Document.class).isEmpty(),
             "Prewritten world observation or activity acceptance");
         updates.append("level", mapChests ? 1 : 21);
+        if (control.has("dynamicFixture") && control.get("dynamicFixture").getAsBoolean()) {
+          require(
+              mechanisms && mapChests, "Dynamic prerequisites outside isolated mechanism fixture");
+          // Only the three tramcar mission acceptances and the authored group-63 prerequisite.
+          // No target puzzle, controller, shield, treasure or loot receipt is written here.
+          for (int main : new int[] {2010401, 2010402, 2010405})
+            updates.append(
+                "gameplay.mainMissions." + main,
+                Document.parse(new Gson().toJson(new QuestState(main))));
+          var prerequisite = new QuestState(201040101);
+          prerequisite.advance(1, 1, 1);
+          updates.append(
+              "gameplay.subMissions.201040101", Document.parse(new Gson().toJson(prerequisite)));
+        }
         for (int main : mapChests ? new int[0] : new int[] {baseZone ? 1000401 : 1000510}) {
           var q = new QuestState(main);
           q.advance(1, 1, 1);
@@ -199,6 +213,18 @@ public final class WorldChestFixtureInspector {
               "Different restored mechanism progress " + id);
         }
         require(progress.getRecords().keySet().equals(keys), "Unexpected mechanism progress");
+        if (control.has("propProgress") && !control.get("propProgress").isJsonNull()) {
+          var savedProps = player.getGameplay().getScenePropStates();
+          require(savedProps.valid(), "Invalid staged prop journal");
+          var expectedProps = control.getAsJsonObject("propProgress");
+          require(
+              savedProps.getRecords().keySet().equals(expectedProps.keySet()),
+              "Unexpected prop states");
+          for (var e : expectedProps.entrySet())
+            require(
+                savedProps.getRecords().get(e.getKey()).getState() == e.getValue().getAsInt(),
+                "Lost staged prop state " + e.getKey());
+        }
         if (battlePhase)
           require(
               known.isEmpty() && keys.equals(Set.of(20001632)) && domain.getQuests().isEmpty(),

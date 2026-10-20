@@ -73,6 +73,7 @@ public final class SceneInteractions {
 
   public static void restore(EntityProp prop) {
     if (!persistent(prop)) return;
+    if (WorldMechanisms.controller(prop)) return;
     if (GoldenSpears.applies(prop) || WorldChests.golden(prop) || WorldChests.mascot(prop)) return;
     var scene = prop.getScene();
     if (ScenePropTransitions.applies(prop)) {

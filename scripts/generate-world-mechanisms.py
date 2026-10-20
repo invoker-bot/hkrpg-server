@@ -17,6 +17,205 @@ LINKED_GRAPHS = {
     "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_BlockProjection_01.json": "TargetChest",
     "Config/Level/Maze/MazeExtra/TramcarPuzzle/Maze_Puzzle_Tramcar_Controller.json": "UnlockChest",
 }
+JIGSAW = "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_"
+ROBOT = "Config/Level/Maze/MazeExtra/CommandRobotPuzzle/"
+
+
+def staged_rule(group, loc, read, tables, pin, used, rows):
+    """Only compile explicit local actor bindings; stripped server targets are not guessed."""
+    actors = {p["ID"]: p for p in group.get("PropList", [])}
+
+    def graph(p):
+        path = p.get("InitLevelGraph")
+        if not path:
+            config = tables["MazeProp"].get(p["PropID"], {}).get("JsonPath")
+            raw = read(config) if config else None
+            if raw:
+                pin(config, used)
+                path = raw.get("DefaultLevelGraphPath")
+        return path
+
+    def active(p):
+        return p.get("LoadOnInitial", True) and not p.get("IsDelete") and not p.get("IsClientOnly")
+
+    def bind(p, path):
+        pin(path, used)
+        rows.add(f"MazeProp:{p['PropID']}")
+
+    def request(p, path, code, finish=False):
+        raw = read(path)
+        shared = values((raw or {}).get("ValueSource")) | values(p.get("ValueSource"))
+        return [where for where, n in walk(raw)
+                if n.get("$type") == "RPG.GameCore.PropReqInteract"
+                and n.get("InteractID", {}).get("FixedValue", {}).get("Value") == code
+                and not n.get("InteractID", {}).get("IsDynamic")
+                and (not finish or "/FinishCallback/" in where)
+                and target(n, p["ID"], loc["group"], shared) == (loc["group"], p["ID"])]
+
+    group_path = group.get("LevelGraph")
+    group_graph = read(group_path) if group_path else None
+    for helper in actors.values():
+        path = graph(helper)
+        shared = values(helper.get("ValueSource"))
+        if path == JIGSAW + "TreasureAppearSFXTrigger.json":
+            if address(shared.get("TargetProp")) != (loc["group"], loc["instance"]):
+                continue
+            pair = address(shared.get("GameplayProp"))
+            controller = actors.get(pair[1]) if pair and pair[0] == loc["group"] else None
+            if not controller or not active(controller) or controller.get("State") == "Hidden":
+                continue
+            control_graph = graph(controller)
+            if control_graph != JIGSAW + "JigsawSir.json":
+                continue
+            # The original conjunction identifies the pieces of THIS board. Initial Closed
+            # pieces are authored as already present; TriggerDisable pieces must be collected.
+            sets = set()
+            for _, n in walk(group_graph):
+                if n.get("$type") != "RPG.GameCore.ByAnd":
+                    continue
+                predicates = n.get("PredicateList", [])
+                if not predicates or any(p.get("$type") != "RPG.GameCore.ByComparePropState"
+                                         or p.get("Inverse") for p in predicates):
+                    continue
+                checks = {(target(p, None, loc["group"], {}), p.get("State", "Closed"))
+                          for p in predicates}
+                if ((loc["group"], controller["ID"]), "Open") not in checks:
+                    continue
+                pieces = {pair[1] for pair, state in checks if pair and pair[0] == loc["group"]
+                          and pair[1] != controller["ID"] and state == "Closed"}
+                if len(pieces) + 1 == len(checks):
+                    sets.add(tuple(sorted(pieces)))
+            if not sets and controller.get("State") == "TriggerEnable":
+                # These boards start ready and contain only authored, already collected pieces.
+                ready = [p for p in actors.values() if graph(p) == JIGSAW + "CollectablePiece.json"]
+                if ready and all(active(p) and p.get("State", "Closed") == "Closed" for p in ready):
+                    sets.add(tuple(sorted(p["ID"] for p in ready)))
+            if len(sets) != 1:
+                continue
+            pieces = sets.pop()
+            if not pieces or any(i not in actors or not active(actors[i])
+                                 or graph(actors[i]) != JIGSAW + "CollectablePiece.json"
+                                 or actors[i].get("State", "Closed") not in ("Closed", "TriggerDisable")
+                                 or values(actors[i].get("ValueSource")).get("ControlByMission")
+                                 or not request(actors[i], graph(actors[i]), 11000) for i in pieces):
+                continue
+            if not request(controller, control_graph, 11000, True):
+                continue
+            interactions = [1210, 1920, 19100, 11000]
+            if any(not request(controller, control_graph, i) for i in interactions):
+                continue
+            bind(helper, path)
+            bind(controller, control_graph)
+            for i in pieces:
+                bind(actors[i], graph(actors[i]))
+            pin(group_path, used)
+            rows.update(f"InteractConfig:{i}" for i in interactions)
+            return dict(kind="JIGSAW", controller=controller["ID"],
+                        controllerProp=controller["PropID"], finish=11000,
+                        interactions=interactions, pieces=list(pieces),
+                        evidence=[path + "#TargetProp+GameplayProp",
+                                  group_path + "#ByAnd", control_graph + "#FinishCallback"])
+        if path != ROBOT + "CommandRobotPuzzle_HideChestWaypointControl.json":
+            continue
+        if address(shared.get("Chest")) != (loc["group"], loc["instance"]):
+            continue
+        controllers = [p for p in actors.values() if active(p)
+                       and graph(p) == ROBOT + "CommandRobotPuzzleUpgrade_Controller.json"]
+        if len(controllers) != 1:
+            continue
+        controller = controllers[0]
+        control_graph = graph(controller)
+        if not request(controller, control_graph, 1010, True):
+            continue
+        # Require the exact nested server predicates (controller Open, this chest Hidden).
+        bound = False
+        for _, n in walk(group_graph):
+            if n.get("$type") != "RPG.GameCore.PredicateTaskList":
+                continue
+            predicate = n.get("Predicate", {})
+            if (predicate.get("$type") != "RPG.GameCore.ByComparePropState"
+                    or predicate.get("Inverse") or predicate.get("State") != "Open"
+                    or target(predicate, None, loc["group"], {}) != (loc["group"], controller["ID"])):
+                continue
+            success = n.get("SuccessTaskList", [])
+            if len(success) != 1:
+                continue
+            child = success[0]
+            predicate = child.get("Predicate", {})
+            if (child.get("$type") == "RPG.GameCore.PredicateTaskList"
+                    and predicate.get("$type") == "RPG.GameCore.ByComparePropState"
+                    and not predicate.get("Inverse") and predicate.get("State") == "Hidden"
+                    and target(predicate, None, loc["group"], {}) == (loc["group"], loc["instance"])
+                    and child.get("SuccessTaskList") == [{"$type": "RPG.GameCore.ChangePropState"}]):
+                bound = True
+        if bound:
+            bind(helper, path)
+            bind(controller, control_graph)
+            pin(group_path, used)
+            rows.add("InteractConfig:1010")
+            return dict(kind="CONTROLLER", controller=controller["ID"],
+                        controllerProp=controller["PropID"], finish=1010,
+                        interactions=[1010],
+                        evidence=[group_path + "#controller-Open+chest-Hidden",
+                                  path + "#Chest", control_graph + "#FinishCallback"])
+    return None
+
+
+def spear_rule(group, loc, read, tables, pin, used, rows):
+    if group.get("GroupName") != "DestructableGoldenSpear":
+        return None
+    shields = [p for p in group.get("PropList", []) if p["PropID"] in (104010, 104011)]
+    spears = [p for p in group.get("PropList", []) if p["PropID"] == 104023]
+    chests = [p for p in group.get("PropList", []) if p.get("ChestID")]
+    if len(shields) != 1 or len(spears) != 1 or len(chests) != 1 or chests[0]["ID"] != loc["instance"]:
+        return None
+    shield, spear = shields[0], spears[0]
+    if any(p.get("IsDelete") or p.get("IsClientOnly") or not p.get("LoadOnInitial", True)
+           or p.get("State", "Closed") != "Closed" for p in [shield, spear]):
+        return None
+    graph = spear.get("InitLevelGraph")
+    if graph not in {f"Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GoldenSpear_{i:02}.json"
+                     for i in range(1, 5)}:
+        return None
+    if address(values(spear.get("ValueSource")).get("AttachTargetRef")) != (loc["group"], shield["ID"]):
+        return None
+    group_graph = group.get("LevelGraph")
+    raw_group = read(group_graph) if group_graph else None
+    if not any(n.get("$type") == "RPG.GameCore.TriggerEntityEvent"
+               and n.get("EventName", {}).get("Value") == "Clt_TriggerTryAttach"
+               and n.get("InstanceID", {}).get("FixedValue", {}).get("Value") == spear["ID"]
+               for _, n in walk(raw_group)):
+        return None
+    raw = read(graph)
+    requests = [n for _, n in walk(raw) if n.get("$type") == "RPG.GameCore.PropReqInteract"]
+    sequence, state = [], "Closed"
+    for n in requests:
+        config = n.get("InteractID", {}).get("FixedValue", {}).get("Value")
+        row = tables["InteractConfig"].get(config, {})
+        if (n.get("InteractID", {}).get("IsDynamic")
+                or target(n, spear["ID"], loc["group"], {}) != (loc["group"], spear["ID"])
+                or row.get("SrcState", "Closed") != state):
+            return None
+        state = row.get("TargetState", "Closed")
+        sequence.append(config)
+    if state != "Locked" or len(sequence) not in (4, 5, 6, 7):
+        return None
+    shield_graph = shield.get("InitLevelGraph")
+    if not shield_graph:
+        config = tables["MazeProp"][shield["PropID"]].get("JsonPath")
+        shield_graph = (read(config) or {}).get("DefaultLevelGraphPath") if config else None
+        if config:
+            pin(config, used)
+    for path in (graph, group_graph, shield_graph):
+        if not path or read(path) is None:
+            return None
+        pin(path, used)
+    rows.update([f"MazeProp:{shield['PropID']}", "MazeProp:104023"])
+    rows.update(f"InteractConfig:{i}" for i in sequence)
+    return dict(kind="SPEAR", controller=spear["ID"], controllerProp=spear["PropID"],
+                shield=shield["ID"], shieldProp=shield["PropID"], finish=0, interactions=sequence,
+                evidence=[group_graph + "#Clt_TriggerTryAttach+single-ChestID",
+                          loc["path"] + "#AttachTargetRef", graph + "#PropReqInteract"])
 
 
 def walk(value, path=""):
@@ -68,7 +267,7 @@ def catalog(root):
     tables = {name: {r[key]: r for r in loads((root / f"ExcelOutput/{name}.json").read_bytes())}
               for name, key in [("MazeProp", "ID"), ("InteractConfig", "InteractID"),
                                 ("NPCMonsterData", "ID")]}
-    files, rows, rules, pending = {}, {}, {}, {}
+    files, rows, rules, pending, aliases = {}, {}, {}, {}, {}
     cache = {}
 
     def read(path):
@@ -138,6 +337,18 @@ def catalog(root):
                     pin(config_path, used)
                 row_keys.add(f"MazeProp:{prop['PropID']}")
                 row_keys.update(f"InteractConfig:{i}" for i in interactions)
+                # Some tramcar groups retain a disabled old controller followed by an
+                # initially loaded replacement with the same exact chest/script binding.
+                # Keep the old rule identity so existing completion receipts remain valid.
+                replacements = [p["ID"] for p in group.get("PropList", [])
+                                if p["ID"] != prop["ID"] and p.get("LoadOnInitial", True)
+                                and not p.get("IsDelete") and not p.get("IsClientOnly")
+                                and p["PropID"] == prop["PropID"]
+                                and p.get("InitLevelGraph") == graph
+                                and address(values(p.get("ValueSource")).get(link)) == (
+                                    loc["group"], loc["instance"])]
+                if replacements and not prop.get("LoadOnInitial", True):
+                    aliases[key] = sorted(replacements)
                 break
         # Explicit client unlock requests in the chest/prop/group scripts. This is a
         # completion report, not server-side replay of a local puzzle's move sequence.
@@ -181,6 +392,14 @@ def catalog(root):
                 rule.update(kind="CLIENT_REPORT", reports=sorted(set(rule["reports"])))
                 row_keys.update(f"InteractConfig:{i}" for i in rule["reports"])
         if not rule["kind"]:
+            staged = staged_rule(group, loc, read, tables, pin, used, row_keys)
+            if staged:
+                rule.update(staged)
+        if not rule["kind"]:
+            spear = spear_rule(group, loc, read, tables, pin, used, row_keys)
+            if spear:
+                rule.update(spear)
+        if not rule["kind"]:
             pending[key] = dict(state=chest["State"], graph=group.get("LevelGraph"),
                                 reason="No complete supported server predicate or exact client unlock binding")
             continue
@@ -191,7 +410,7 @@ def catalog(root):
             rows[name] = fingerprint(tables[table][int(id_)])
         rules[key] = rule
     return dict(sourceCommit=source["sourceCommit"], rules=rules, files=dict(sorted(files.items())),
-                rows=dict(sorted(rows.items())), pending=pending)
+                rows=dict(sorted(rows.items())), pending=pending, controllerAliases=aliases)
 
 
 def main():
@@ -205,10 +424,19 @@ def main():
         assert OUTPUT.read_text("utf-8") == content, "Mechanism catalog differs from fixed source"
     else:
         OUTPUT.write_text(content, encoding="utf-8")
-    fixture = dict(records={}, groups={}, floors={}, locations={}, headers={})
+    fixture = dict(records={}, groups={}, floors={}, locations={}, headers={}, missions={})
+    for mission in (2010401, 2010402, 2010405):
+        path = f"Config/Level/Mission/{mission}/MissionInfo_{mission}.partial.json"
+        fixture["missions"][str(mission)] = loads((args.resources / path).read_bytes())
     locations = loads((ROOT / "src/main/resources/gameplay/map-chests-4.6.json").read_bytes())["locations"]
     selected_rows = set()
-    for id_ in (20001632, 20111656, 20211656, 10301656, 10401651, 10403660, 20241651):
+    sample_ids = {20001632, 20111656, 20211656, 10301656, 10401651, 10403660, 20241651}
+    sample_ids.update(int(k) for k, r in result["rules"].items()
+                      if r["kind"] in ("JIGSAW", "SPEAR")
+                      or r["kind"] == "CONTROLLER"
+                      and any("CommandRobotPuzzle" in p for p in r["files"]))
+    sample_ids.update(map(int, result["controllerAliases"]))
+    for id_ in sorted(sample_ids):
         key = str(id_)
         loc = locations[key]
         rule = result["rules"][key]
