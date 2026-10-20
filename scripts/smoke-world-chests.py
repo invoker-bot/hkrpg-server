@@ -12,7 +12,8 @@ import time
 import urllib.error
 import urllib.request
 from smoke_resource_fixture import mirror_resources
-from world_mechanism_probe_cases import LEGACY_IDS, DYNAMIC_IDS, dynamic_actions
+from world_mechanism_probe_cases import (LEGACY_IDS, DYNAMIC_IDS, REMAINING_IDS,
+                                        REMAINING_PREREQUISITES, dynamic_actions, remaining_actions)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,9 +36,10 @@ def main():
     parser.add_argument('--map-chests', action='store_true', help='Verify original chests across seven worlds')
     parser.add_argument('--mechanisms', action='store_true', help='Verify guard/puzzle unlock, loot and H2 restart')
     parser.add_argument('--dynamic', action='store_true', help='Verify staged boards, tramcar replacements and spear variants')
+    parser.add_argument('--remaining', action='store_true', help='Verify cross-group, mission and time-lock completion receipts')
     args = parser.parse_args()
-    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic]) <= 1, 'Choose one chest fixture'
-    if args.dynamic:
+    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.remaining]) <= 1, 'Choose one chest fixture'
+    if args.dynamic or args.remaining:
         args.mechanisms = True
     original_resources = args.base_zone or args.map_chests or args.mechanisms
     jar, output = args.jar.resolve(), args.output.resolve()
@@ -67,9 +69,9 @@ def main():
         chests = [row for row in chests if row['id'] != 20001632]  # Locked guard challenge is a rejection fixture.
     chests.sort(key=lambda row: row['id'])
     if args.mechanisms:
-        selected = DYNAMIC_IDS if args.dynamic else LEGACY_IDS
+        selected = REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
         chests = sorted((row for row in chests if row['id'] in selected), key=lambda row: selected.index(row['id']))
-    expected_chests = len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
+    expected_chests = len(REMAINING_IDS) if args.remaining else len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
     assert args.map_chests or args.mechanisms or all(row['plane'] == plane and row['floor'] == floor for row in chests)
@@ -149,6 +151,9 @@ def main():
     credentials, snapshots, inspections, known, claimed = {}, [], [], [], []
     mechanism_progress = {}
     prop_progress = {}
+    value_progress = {}
+    mission_progress = {}
+    prerequisite = None
     mechanism_spec = None
     stops = 0
 
@@ -164,7 +169,10 @@ def main():
         control.write_text(json.dumps(dict(uid=credentials['uid'], known=known, claimed=claimed, baseZone=args.base_zone,
                                           mapChests=args.map_chests or args.mechanisms,
                                           mechanismProgress=mechanism_progress if args.mechanisms else None,
-                                          propProgress=prop_progress if args.dynamic else None,
+                                          propProgress=prop_progress if args.dynamic or args.remaining else None,
+                                          valueProgress=value_progress if args.remaining else None,
+                                          missionProgress=mission_progress if args.remaining else None,
+                                          remainingFixture=args.remaining, prerequisite=prerequisite,
                                           dynamicFixture=args.dynamic,
                                           battleBalancePhase=bool(mechanism_spec and mechanism_spec['op'] == 'guard')
                                                              or any(not p['complete'] for p in mechanism_progress.values()),
@@ -187,7 +195,7 @@ def main():
         catalog = json.loads((ROOT / 'src/main/resources/gameplay/world-mechanisms-4.6.json').read_text('utf-8'))
         mechanisms = catalog['rules']
         by_id = {row['id']: row for row in chests}
-        chests = [by_id[id_] for id_ in (DYNAMIC_IDS if args.dynamic else LEGACY_IDS)]
+        chests = [by_id[id_] for id_ in selected]
         actions = [None]
         for chest in chests:
             rule = mechanisms[str(chest['id'])]
@@ -209,6 +217,9 @@ def main():
             actions.append(dict(common, op='verify', before=13, after=13))
         if args.dynamic:
             actions = dynamic_actions(chests, catalog)
+        if args.remaining:
+            actions = remaining_actions(chests, catalog)
+            prerequisite = REMAINING_PREREQUISITES.get(chests[0]['id'])
         batches = [[spec] if spec and spec['op'] == 'claim' else [] for spec in actions]
         first = chests[0]
         stage = dict(plane=first['plane'], floor=first['floor'], entry=first['entry'],
@@ -296,21 +307,29 @@ def main():
                             process.terminate()
                             process.wait(timeout=15)
                         process.stdin.close()
-        if mechanism_spec and mechanism_spec['op'] in ('guard', 'finish', 'destroy'):
+        if mechanism_spec and mechanism_spec['op'] in ('guard', 'finish', 'destroy', 'talk', 'property') and (
+                mechanism_spec['after'] == 12 or mechanism_spec['op'] == 'guard'):
             mechanism_progress[str(mechanism_spec['id'])] = dict(
-                complete=mechanism_spec['after'] == 12, defeated=mechanism_spec['defeated'])
-        if args.dynamic and mechanism_spec:
-            prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec['group']}:"
-            for instance, state in mechanism_spec.get('states', {}).items():
+                complete=mechanism_spec['after'] == 12, defeated=mechanism_spec['defeated'],
+                late=bool(mechanism_spec.get('late')))
+        if (args.dynamic or args.remaining) and mechanism_spec:
+            prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec.get('actorGroup', mechanism_spec['group'])}:"
+            for instance, state in mechanism_spec.get('persistedStates', mechanism_spec.get('states', {})).items():
                 prop_progress[prefix + instance] = state
+            if mechanism_spec['op'] == 'property':
+                value_progress[f"floor:{stage['floor']}:{mechanism_spec['floorValue']}"] = 1
+                value_progress[f"group:{stage['floor']}:{mechanism_spec['actorGroup']}:{mechanism_spec['property']}"] = 1
+            mission_progress.update(mechanism_spec.get('missions', {}))
         inspect('seed' if index == 0 else 'inspect')
         if actions and index + 1 < len(actions):
             upcoming = actions[index + 1]
             next_stage = dict(plane=upcoming['plane'], floor=upcoming['floor'], entry=upcoming['entry'],
                               world=upcoming['world'], pos=dict(x=0, y=0, z=0))
             # Placement only; all defeat, unlock and reward progress must come through KCP.
-            if next_stage != stage:
+            next_case = args.remaining and (mechanism_spec is None or upcoming['id'] != mechanism_spec['id'])
+            if next_stage != stage or next_case:
                 stage = next_stage
+                prerequisite = REMAINING_PREREQUISITES.get(upcoming['id']) if args.remaining else None
                 mechanism_spec = None
                 inspect('move')
         if args.map_chests and index + 1 < len(batches) and batches[index + 1]:
@@ -334,7 +353,8 @@ def main():
         chestIdentityNotifications=expected_chests, baseZone=args.base_zone, mapChests=args.map_chests,
         mechanisms=args.mechanisms, mechanismProgress=mechanism_progress,
         dynamicMechanisms=args.dynamic, propProgress=prop_progress,
-        guardBattleLootBalancesRebased=args.mechanisms and not args.dynamic,
+        remainingMechanisms=args.remaining, valueProgress=value_progress, missionProgress=mission_progress,
+        guardBattleLootBalancesRebased=args.mechanisms and not args.dynamic and not args.remaining,
         rejectedRepeatedOpenings=sum(row.get('rejectedRepeatedOpenings', 0) for row in snapshots),
         normalStops=stops, sameUIDNormalH2ProcessRestarts=stops - 1, completedOriginalActivityQuests=claimed,
         actualQuestRewards={goal['id']: goal['rewards'] for goal in goals}, sourceResourceHashes=hashes,

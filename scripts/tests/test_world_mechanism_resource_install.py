@@ -15,6 +15,7 @@ PATHS = [
     "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_BoxMan_01.json",
     "Config/Level/GroupGraph/F20001001/Group_Fixture.json",
     "Config/Level/GroupTemplateGraph/Fixture.json",
+    "Config/Level/LevelInstanceGraph/F20241001/LG_Prop_F20241001_G177_300007.json",
     "Config/Props/Common/Prop_Common_MazePuzzle_01_Config.json",
 ]
 

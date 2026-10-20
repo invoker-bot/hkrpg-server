@@ -73,6 +73,7 @@ public final class VersionedPacketHandler {
     if (Parkour46.handle(session, command, bytes)) return true;
     if (WolfBro46.handle(session, command, bytes)) return true;
     if (Mascot46.handle(session, command, bytes)) return true;
+    if (WorldGroupProperty46.handle(session, command, bytes)) return true;
     if (WolfBroGroup46.handle(session, command, bytes)) return true;
     if (Raid46.handle(session, command, bytes)) return true;
     if (ItemUse46.handle(session, command, bytes)) return true;

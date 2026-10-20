@@ -27,10 +27,16 @@ public final class WorldMechanisms {
 
   static List<WorldMechanismSources.Rule> controls(EntityProp prop) {
     if (prop == null) return List.of();
-    return rules(prop.getScene(), prop.getGroupId()).stream()
+    return WorldMechanismSources.RULES.values().stream()
         .filter(
             r ->
-                (r.kind() == WorldMechanismSources.Kind.CONTROLLER
+                r.controllerGroup() == prop.getGroupId()
+                    && MapChestSources.LOCATIONS.get(r.chest()).plane()
+                        == prop.getScene().getPlaneId()
+                    && MapChestSources.LOCATIONS.get(r.chest()).floor()
+                        == prop.getScene().getFloorId()
+                    && (r.kind() == WorldMechanismSources.Kind.CONTROLLER
+                        || r.kind() == WorldMechanismSources.Kind.MISSION
                         || r.kind() == WorldMechanismSources.Kind.JIGSAW
                         || r.kind() == WorldMechanismSources.Kind.SPEAR)
                     && (r.controllers().contains(prop.getInstId())
@@ -43,7 +49,7 @@ public final class WorldMechanisms {
     return !controls(prop).isEmpty();
   }
 
-  private static boolean context(Player p, Scene scene, GroupInfo group) {
+  static boolean context(Player p, Scene scene, GroupInfo group) {
     return scene != null
         && scene == p.getScene()
         && scene.getPlayer() == p
@@ -64,7 +70,11 @@ public final class WorldMechanisms {
       if (!rule.interactions().contains(config)) return Retcode.INTERACT_TYPE_INVALID;
       if (!context(p, prop.getScene(), WorldMechanismSources.group(rule, prop.getScene())))
         return Retcode.MISSION_SCENE_NOT_MATCH;
+      if (!context(p, prop.getScene(), WorldMechanismSources.controlGroup(rule, prop.getScene())))
+        return Retcode.MISSION_SCENE_NOT_MATCH;
       if (p.getGameplay().getWorldMechanisms().completed(rule.chest())) return Retcode.SYSTEM_BUSY;
+      if (rule.kind() == WorldMechanismSources.Kind.MISSION
+          && !missionDoing(p, rule, rule.controllerMission())) return Retcode.MISSION_NOT_EXIST;
       if (rule.kind() == WorldMechanismSources.Kind.SPEAR) {
         if (!durableState(prop)) return Retcode.PLAYER_DATA_ERROR;
         if (boundActor(prop.getScene(), rule, rule.shield(), rule.shieldProp()) == null)
@@ -81,7 +91,7 @@ public final class WorldMechanisms {
         } else {
           boolean collected =
               rule.pieces().stream().allMatch(i -> board.get(i).getState() == PropState.Closed);
-          if (config == 11000 || config == 19100) {
+          if (config == rule.finish() || config == 19100) {
             if (!collected) return Retcode.UNSUPPORTED_PROP_STATE;
           } else if (config == 1920 && collected) return Retcode.UNSUPPORTED_PROP_STATE;
         }
@@ -93,7 +103,9 @@ public final class WorldMechanisms {
   static WorldMechanismState controlProgress(Player p, int config, EntityProp prop) {
     var next = p.getGameplay().getWorldMechanisms();
     for (var rule : controls(prop))
-      if (config == rule.finish() && rule.controllers().contains(prop.getInstId()))
+      if (rule.kind() != WorldMechanismSources.Kind.MISSION
+          && config == rule.finish()
+          && rule.controllers().contains(prop.getInstId()))
         next = next.advance(rule, prop.getScene(), 0, Instant.now().getEpochSecond());
     return next;
   }
@@ -243,9 +255,67 @@ public final class WorldMechanisms {
       return Retcode.MISSION_SCENE_NOT_MATCH;
     if (config == 112131)
       return state.completed(id) ? Retcode.SUCC : Retcode.UNSUPPORTED_PROP_STATE;
+    if (rule.mission() > 0 && !missionDoing(p, rule, rule.mission()))
+      return Retcode.MISSION_NOT_EXIST;
     return clientReport(id, config) && !state.completed(id)
         ? Retcode.SUCC
         : Retcode.INTERACT_TYPE_INVALID;
+  }
+
+  private static boolean missionDoing(Player player, WorldMechanismSources.Rule rule, int id) {
+    if (!player.getGameplay().getSubMissions().containsKey(id)) return false;
+    var definition = WorldMechanismSources.mission(rule, id);
+    return definition != null
+        && MissionStateRecords.mainDoing(player, definition.getMainMissionID())
+        && !player.getGameplay().getCancelledSubs().contains(id)
+        && MissionStateRecords.doing(
+            player.getGameplay().getSubMissions().get(id), id, definition.getProgress());
+  }
+
+  /** The exact reward objective is activated only after the board and the following dialogue. */
+  static void missionRewards(Player player) {
+    var scene = player.getScene();
+    if (scene == null || player.getInstance() != null) return;
+    var previous = player.getGameplay().getWorldMechanisms();
+    if (!previous.valid()) return;
+    var next = previous;
+    for (var rule : WorldMechanismSources.RULES.values()) {
+      if (rule.kind() != WorldMechanismSources.Kind.MISSION
+          || previous.completed(rule.chest())
+          || !missionDoing(player, rule, rule.mission())
+          || !MissionStateRecords.subCompleted(player, rule.controllerMission())
+          || !context(player, scene, WorldMechanismSources.group(rule, scene))) continue;
+      var group = WorldMechanismSources.controlGroup(rule, scene);
+      if (group == null) continue;
+      if (rule.controller() == 0) {
+        next = next.advance(rule, scene, 0, Instant.now().getEpochSecond());
+        continue;
+      }
+      var actor =
+          group.getPropList().stream()
+              .filter(p -> p.getID() == rule.controller())
+              .findFirst()
+              .orElse(null);
+      var journal = player.getGameplay().getScenePropStates();
+      var record = journal.get(PropTimelines.key(scene, group.getId(), rule.controller()));
+      if (!journal.valid()
+          || actor == null
+          || record == null
+          || record.getProp() != rule.controllerProp()
+          || !record.getSource().equals(PropTimelines.source(actor))
+          || record.getState() != PropState.Open.getVal()
+          || !record.getAcceptance().isEmpty()) continue;
+      next = next.advance(rule, scene, 0, Instant.now().getEpochSecond());
+    }
+    if (next == previous) return;
+    player.getGameplay().worldMechanisms(next);
+    try {
+      player.save();
+    } catch (RuntimeException failed) {
+      player.getGameplay().worldMechanisms(previous);
+      return;
+    }
+    publish(scene);
   }
 
   static WorldChests.Result unlock(Player p, int id, EntityProp prop) {

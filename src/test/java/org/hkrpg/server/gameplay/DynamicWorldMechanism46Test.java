@@ -334,6 +334,6 @@ class DynamicWorldMechanism46Test {
           "Invalid source binding for " + rule.chest());
       checked++;
     }
-    assertEquals(66, checked);
+    assertEquals(67, checked);
   }
 }

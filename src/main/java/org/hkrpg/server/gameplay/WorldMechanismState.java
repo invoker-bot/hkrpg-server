@@ -20,6 +20,7 @@ public final class WorldMechanismState {
     private String event, source;
     private Set<Integer> defeated = new TreeSet<>();
     private boolean complete;
+    private boolean late;
 
     private Progress() {}
 
@@ -52,7 +53,8 @@ public final class WorldMechanismState {
             && (rule.kind() == WorldMechanismSources.Kind.GUARDS
                 ? complete == defeated.containsAll(rule.guards()) && !defeated.isEmpty()
                 : complete && defeated.isEmpty())
-            && (complete ? completedAt >= at : completedAt == 0);
+            && (complete ? completedAt >= at : completedAt == 0)
+            && (!late || complete && !rule.lateFloorValue().isEmpty());
       } catch (RuntimeException invalid) {
         return false;
       }
@@ -78,6 +80,21 @@ public final class WorldMechanismState {
 
   boolean completed(int id) {
     return valid() && records.containsKey(id) && records.get(id).complete;
+  }
+
+  boolean late(int id) {
+    return completed(id) && records.get(id).late;
+  }
+
+  WorldMechanismState finishLate(WorldMechanismSources.Rule rule) {
+    if (!completed(rule.chest()) || rule.lateFloorValue().isEmpty())
+      throw new IllegalStateException("Missing first-stage time lock completion");
+    if (late(rule.chest())) return this;
+    var next =
+        ResourceLoader.getGson()
+            .fromJson(ResourceLoader.getGson().toJson(this), WorldMechanismState.class);
+    next.records.get(rule.chest()).late = true;
+    return next;
   }
 
   boolean defeated(int id, int instance) {

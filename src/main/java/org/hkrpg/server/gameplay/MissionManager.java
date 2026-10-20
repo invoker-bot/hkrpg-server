@@ -242,6 +242,7 @@ public final class MissionManager {
       if (changed) sync();
       else if (player.getScene() != null) player.getScene().refreshMissionGroups();
       Mascots.reconcile(player);
+      WorldMechanisms.missionRewards(player);
       var newSfx = new MusicComposition(player).unlockedSfxSongs();
       newSfx.removeAll(oldSfx);
       org.hkrpg.server.protocol.Music46.syncSfx(player, newSfx);

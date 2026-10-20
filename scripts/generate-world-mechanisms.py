@@ -3,8 +3,10 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import sys
 
 from source_json import loads, fingerprint
+from world_mechanism_bindings import extend, mission_index
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "src/main/resources/gameplay/world-mechanisms-4.6.json"
@@ -12,6 +14,7 @@ FIXTURE = ROOT / "src/test/resources/fixtures/world-mechanisms-4.6.json"
 GUARD_GRAPH = "Config/Level/Maze/MazeGroup/Maze_Group_OpenTreasure_WhenMonsterDie.json"
 LINKED_GRAPHS = {
     "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_BoxMan_01.json": "ChestID",
+    "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_CablePuzzle_05.json": "Chest",
     "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_RubikCube_Config.json": "TargetChest",
     "Config/Level/Props/Chap02/InitLevelGraph_Puzzle_Chap02_RubikCube_Advanced_Config.json": "TargetChest",
     "Config/Level/Props/Chap02/InitLevelGraph_Prop_Chap02_BlockProjection_01.json": "TargetChest",
@@ -65,7 +68,7 @@ def staged_rule(group, loc, read, tables, pin, used, rows):
             if not controller or not active(controller) or controller.get("State") == "Hidden":
                 continue
             control_graph = graph(controller)
-            if control_graph != JIGSAW + "JigsawSir.json":
+            if control_graph not in (JIGSAW + "JigsawSir.json", JIGSAW + "JigsawSir_02.json"):
                 continue
             # The original conjunction identifies the pieces of THIS board. Initial Closed
             # pieces are authored as already present; TriggerDisable pieces must be collected.
@@ -99,9 +102,12 @@ def staged_rule(group, loc, read, tables, pin, used, rows):
                                  or values(actors[i].get("ValueSource")).get("ControlByMission")
                                  or not request(actors[i], graph(actors[i]), 11000) for i in pieces):
                 continue
-            if not request(controller, control_graph, 11000, True):
+            finish = 11090 if control_graph.endswith("JigsawSir_02.json") else 11000
+            if finish == 11090 and any(actors[i].get("State", "Closed") != "Closed" for i in pieces):
                 continue
-            interactions = [1210, 1920, 19100, 11000]
+            if not request(controller, control_graph, finish, True):
+                continue
+            interactions = [finish] if finish == 11090 else [1210, 1920, 19100, 11000]
             if any(not request(controller, control_graph, i) for i in interactions):
                 continue
             bind(helper, path)
@@ -111,7 +117,7 @@ def staged_rule(group, loc, read, tables, pin, used, rows):
             pin(group_path, used)
             rows.update(f"InteractConfig:{i}" for i in interactions)
             return dict(kind="JIGSAW", controller=controller["ID"],
-                        controllerProp=controller["PropID"], finish=11000,
+                        controllerProp=controller["PropID"], finish=finish,
                         interactions=interactions, pieces=list(pieces),
                         evidence=[path + "#TargetProp+GameplayProp",
                                   group_path + "#ByAnd", control_graph + "#FinishCallback"])
@@ -254,6 +260,10 @@ def target(node, owner, group, shared):
     if fetch == "SinglePropByPropKey":
         key = obj.get("SinglePropKey", {})
         return address(shared.get(key.get("Key")) if key.get("Custom") else key.get("Value"))
+    if fetch == "SinglePropByOwnerGroupAndID":
+        ref = obj.get("PropIDInOwnerGroup", {})
+        value = ref.get("FixedValue", {}).get("Value")
+        return (group, value) if not ref.get("IsDynamic") and isinstance(value, int) and value > 0 else None
     if fetch == "SinglePropByPropID":
         pair = obj.get("SinglePropID", {})
         if any(pair.get(k, {}).get("IsDynamic") for k in ("GroupID", "ID")):
@@ -281,6 +291,7 @@ def catalog(root):
             files[path] = fingerprint(read(path))
             used.add(path)
 
+    missions = mission_index(root, read)
     for key, loc in source["locations"].items():
         group = read(loc["path"])
         chest = next(p for p in group["PropList"] if p["ID"] == loc["instance"])
@@ -400,6 +411,11 @@ def catalog(root):
             if spear:
                 rule.update(spear)
         if not rule["kind"]:
+            extra = extend(group, loc, root, read, tables, pin, used, row_keys,
+                           sys.modules[__name__], missions)
+            if extra:
+                rule.update(extra)
+        if not rule["kind"]:
             pending[key] = dict(state=chest["State"], graph=group.get("LevelGraph"),
                                 reason="No complete supported server predicate or exact client unlock binding")
             continue
@@ -425,7 +441,9 @@ def main():
     else:
         OUTPUT.write_text(content, encoding="utf-8")
     fixture = dict(records={}, groups={}, floors={}, locations={}, headers={}, missions={})
-    for mission in (2010401, 2010402, 2010405):
+    for mission in (2010401, 2010402, 2010405, 2000302, 2000303, 2000304, 2011409, 4016201,
+                    8015163, 4015101, 4015102, 4015103, 4040223, 4015202, 4015203, 4015204,
+                    2010503, 4015301, 4015302, 4015303):
         path = f"Config/Level/Mission/{mission}/MissionInfo_{mission}.partial.json"
         fixture["missions"][str(mission)] = loads((args.resources / path).read_bytes())
     locations = loads((ROOT / "src/main/resources/gameplay/map-chests-4.6.json").read_bytes())["locations"]
@@ -436,6 +454,9 @@ def main():
                       or r["kind"] == "CONTROLLER"
                       and any("CommandRobotPuzzle" in p for p in r["files"]))
     sample_ids.update(map(int, result["controllerAliases"]))
+    sample_ids.update([20123655, 20223651, 20223652, 20223653, 20241665])
+    sample_ids.update(int(k) for k, r in result["rules"].items() if "controllerPath" in r)
+    sample_ids.update(int(k) for k, r in result["rules"].items() if "mission" in r)
     for id_ in sorted(sample_ids):
         key = str(id_)
         loc = locations[key]
@@ -455,6 +476,11 @@ def main():
         for path in rule["files"]:
             if path != loc["path"]:
                 fixture["headers"][path] = loads((args.resources / path).read_bytes())
+        if rule.get("controllerPath"):
+            path = rule["controllerPath"]
+            other = loads((args.resources / path).read_bytes())
+            fixture["groups"][path] = other
+            selected_rows.update(f"MazeProp:{p['PropID']}" for p in other.get("PropList", []))
     for table in sorted({r.split(":")[0] for r in selected_rows}):
         id_key = {"MazePlane": "PlaneID", "InteractConfig": "InteractID"}.get(table, "ID")
         original = loads((args.resources / f"ExcelOutput/{table}.json").read_bytes())

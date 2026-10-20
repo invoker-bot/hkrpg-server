@@ -262,6 +262,7 @@ public class Scene implements Tickable {
                     "group:" + getFloorId() + ":" + group.getId() + ":" + property.getName(), property.getDefaultValue()));
             }
         }
+        org.hkrpg.server.gameplay.WorldGroupProperties.restore(this, group.getId());
     }
 
     public void setEntryId(int entryId) {

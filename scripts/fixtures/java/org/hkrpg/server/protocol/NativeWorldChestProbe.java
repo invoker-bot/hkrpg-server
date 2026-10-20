@@ -188,6 +188,12 @@ public final class NativeWorldChestProbe {
 
   private DynamicMessage chestState(DynamicMessage scene, JsonObject spec, int state) {
     var e = entity(scene, spec.get("group").getAsInt(), spec.get("instance").getAsInt());
+    if (state == 13
+        && spec.has("unloadsAfterClaim")
+        && spec.get("unloadsAfterClaim").getAsBoolean()) {
+      require(e == null, "Completed mission retained its Accept-only treasure group");
+      return null;
+    }
     require(e != null, "Original mechanism chest missing");
     var prop = (DynamicMessage) field(e, "prop");
     require(
@@ -201,11 +207,12 @@ public final class NativeWorldChestProbe {
     var spec = control.getAsJsonObject("mechanism");
     String op = spec.get("op").getAsString();
     int id = spec.get("id").getAsInt(), group = spec.get("group").getAsInt();
+    int actorGroup = spec.has("actorGroup") ? spec.get("actorGroup").getAsInt() : group;
     var current = scene(control);
     var chest = chestState(current, spec, spec.get("before").getAsInt());
-    states(current, group, spec.getAsJsonObject("beforeStates"));
+    states(current, actorGroup, spec.getAsJsonObject("beforeStates"));
     int notifications = openedNotify.size();
-    if (!op.equals("claim")) {
+    if (chest != null && !op.equals("claim") && spec.get("before").getAsInt() != 12) {
       require(number(interact(current, chest), "retcode") != 0, "Premature or repeated loot claim");
       rejected++;
     }
@@ -251,7 +258,7 @@ public final class NativeWorldChestProbe {
     } else if (op.equals("step")) {
       int instance =
           spec.has("target") ? spec.get("target").getAsInt() : spec.get("controller").getAsInt();
-      var target = entity(current, group, instance);
+      var target = entity(current, actorGroup, instance);
       require(target != null, "Staged actor missing");
       for (var config : spec.getAsJsonArray("configs")) {
         var response = interact(current, target, config.getAsInt());
@@ -276,13 +283,40 @@ public final class NativeWorldChestProbe {
       var target =
           spec.get("controller").getAsInt() == 0
               ? chest
-              : entity(current, group, spec.get("controller").getAsInt());
+              : entity(current, actorGroup, spec.get("controller").getAsInt());
       require(target != null, "Original puzzle controller missing");
       var result = interact(current, target, spec.get("finish").getAsInt());
       require(number(result, "retcode") == 0, "Source puzzle finish rejected: " + result);
       require(
           number(interact(current, target, spec.get("finish").getAsInt()), "retcode") != 0,
           "Repeated completion accepted");
+    } else if (op.equals("talk")) {
+      var request = builder("FinishTalkMissionCsReq");
+      int talk = spec.get("talk").getAsInt();
+      set(request, "sub_mission_id", talk);
+      set(request, "talk_str", "Mission_" + talk);
+      require(number(call("FinishTalkMissionCsReq", request), "retcode") == 0, "Dialogue rejected");
+      require(
+          number(call("FinishTalkMissionCsReq", request), "retcode") != 0,
+          "Repeated dialogue accepted");
+    } else if (op.equals("property")) {
+      var request = builder("UpdateGroupPropertyCsReq");
+      set(request, "floor_id", spec.get("floor").getAsInt());
+      set(request, "group_id", actorGroup);
+      set(request, "property_name", spec.get("property").getAsString());
+      set(request, "OLBEPIBLDBD", 1);
+      var response = call("UpdateGroupPropertyCsReq", request);
+      require(
+          number(response, "retcode") == 0
+              && number(response, "old_value") == 0
+              && number(response, "new_value") == 1,
+          "Property completion rejected: " + response);
+      response = call("UpdateGroupPropertyCsReq", request);
+      require(
+          number(response, "retcode") == 0
+              && number(response, "old_value") == 1
+              && number(response, "new_value") == 1,
+          "Property replay lost receipt: " + response);
     } else if (op.equals("claim")) {
       var result = interact(current, chest);
       require(
@@ -296,7 +330,12 @@ public final class NativeWorldChestProbe {
     } else require(op.equals("verify"), "Unknown mechanism test action");
     current = scene(control);
     chestState(current, spec, spec.get("after").getAsInt());
-    states(current, group, spec.getAsJsonObject("states"));
+    states(current, actorGroup, spec.getAsJsonObject("states"));
+    if (spec.has("absentAfter"))
+      for (var instance : spec.getAsJsonArray("absentAfter"))
+        require(
+            entity(current, actorGroup, instance.getAsInt()) == null,
+            "Completed objective did not unload its authored controller group");
     if (spec.has("shield") && Set.of(12, 13).contains(spec.get("after").getAsInt()))
       require(
           entity(current, group, spec.get("shield").getAsInt()) == null,

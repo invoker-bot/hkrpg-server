@@ -122,6 +122,48 @@ public final class WorldChestFixtureInspector {
                 .toJson());
       }
       if (mode.equals("seed") || mode.equals("move")) {
+        if (control.has("remainingFixture")
+            && control.get("remainingFixture").getAsBoolean()
+            && control.has("prerequisite")
+            && !control.get("prerequisite").isJsonNull()) {
+          require(mechanisms && mapChests, "Remaining prerequisites outside mechanism fixture");
+          var prerequisite = control.getAsJsonObject("prerequisite");
+          for (String kind : List.of("main", "completedMain")) {
+            if (!prerequisite.has(kind)) continue;
+            int id = prerequisite.get(kind).getAsInt();
+            var state = new QuestState(id);
+            if (kind.equals("completedMain")) {
+              state.advance(1, 1, 1);
+              state.reserveReward();
+              state.closeReward();
+            }
+            var existing =
+                before.get("gameplay", Document.class).get("mainMissions", Document.class);
+            if (!existing.containsKey(String.valueOf(id)))
+              updates.append(
+                  "gameplay.mainMissions." + id, Document.parse(new Gson().toJson(state)));
+          }
+          for (String kind : List.of("doing", "completed")) {
+            if (!prerequisite.has(kind)) continue;
+            for (var raw : prerequisite.getAsJsonArray(kind)) {
+              int id = raw.getAsInt();
+              var state = new QuestState(id);
+              if (kind.equals("completed")) {
+                require(id == 200030301, "Not an authored prerequisite");
+                state.advance(1, 1, 1);
+              }
+              updates.append(
+                  "gameplay.subMissions." + id, Document.parse(new Gson().toJson(state)));
+            }
+          }
+          if (prerequisite.has("floorZero")) {
+            String name = prerequisite.get("floorZero").getAsString();
+            require(
+                Set.of("FSV_TimeLock_1", "FSV_TimeLock_7").contains(name),
+                "Unexpected time-lock acceptance");
+            updates.append("gameplay.storyValues.floor:20433001:" + name, 0);
+          }
+        }
         var stage = control.getAsJsonObject("stage");
         updates
             .append("planeId", stage.get("plane").getAsInt())
@@ -211,6 +253,11 @@ public final class WorldChestFixtureInspector {
                       == e.getValue().getAsJsonObject().get("complete").getAsBoolean()
                   && actualProgress.getDefeated().equals(defeated),
               "Different restored mechanism progress " + id);
+          if (e.getValue().getAsJsonObject().has("late"))
+            require(
+                actualProgress.isLate()
+                    == e.getValue().getAsJsonObject().get("late").getAsBoolean(),
+                "Lost late-stage receipt " + id);
         }
         require(progress.getRecords().keySet().equals(keys), "Unexpected mechanism progress");
         if (control.has("propProgress") && !control.get("propProgress").isJsonNull()) {
@@ -225,6 +272,18 @@ public final class WorldChestFixtureInspector {
                 savedProps.getRecords().get(e.getKey()).getState() == e.getValue().getAsInt(),
                 "Lost staged prop state " + e.getKey());
         }
+        if (control.has("valueProgress") && !control.get("valueProgress").isJsonNull())
+          for (var e : control.getAsJsonObject("valueProgress").entrySet())
+            require(
+                Objects.equals(
+                    player.getGameplay().getStoryValues().get(e.getKey()), e.getValue().getAsInt()),
+                "Lost group/floor completion value " + e.getKey());
+        if (control.has("missionProgress") && !control.get("missionProgress").isJsonNull())
+          for (var e : control.getAsJsonObject("missionProgress").entrySet()) {
+            var state = player.getGameplay().getSubMissions().get(Integer.parseInt(e.getKey()));
+            require(state != null && state.getPhase().name().equals(e.getValue().getAsString()),
+                "Wrong restored mission objective " + e.getKey());
+          }
         if (battlePhase)
           require(
               known.isEmpty() && keys.equals(Set.of(20001632)) && domain.getQuests().isEmpty(),

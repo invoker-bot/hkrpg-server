@@ -15,6 +15,6 @@ if ($LASTEXITCODE -ne 0) { throw 'Pinned resource fetch failed' }
 if ($LASTEXITCODE -ne 0) { throw 'Resource checkout selection failed' }
 & git -C $destination checkout --detach $lock.commit
 if ($LASTEXITCODE -ne 0) { throw 'Pinned resource checkout failed' }
-'/Config/Level/Mission/*', '/Config/Level/Maze/*', '/Config/Level/Props/*', '/Config/Level/GroupGraph/*', '/Config/Level/GroupTemplateGraph/*', '/Config/Props/*', '/Config/Level/Rogue/*', '/Config/Level/RogueDialogue/*', '/Config/Level/LittleGame/*', '/Config/Activity/*', '/Config/BattleLineupPage/SkillTreePointPreset/*', '/Config/ConfigAdventureAbility/*', '/Config/ConfigAdventureModifier/*', '/Config/ConfigSummonUnit/*', '/Config/ConfigMazeBuff/*', '/Config/ConfigEntity/SummonUnit/*' | & git -C $destination sparse-checkout add --stdin
+'/Config/Level/Mission/*', '/Config/Level/Maze/*', '/Config/Level/Props/*', '/Config/Level/GroupGraph/*', '/Config/Level/GroupTemplateGraph/*', '/Config/Level/LevelInstanceGraph/*', '/Config/Props/*', '/Config/Level/Rogue/*', '/Config/Level/RogueDialogue/*', '/Config/Level/LittleGame/*', '/Config/Activity/*', '/Config/BattleLineupPage/SkillTreePointPreset/*', '/Config/ConfigAdventureAbility/*', '/Config/ConfigAdventureModifier/*', '/Config/ConfigSummonUnit/*', '/Config/ConfigMazeBuff/*', '/Config/ConfigEntity/SummonUnit/*' | & git -C $destination sparse-checkout add --stdin
 if ($LASTEXITCODE -ne 0) { throw 'Gameplay resource checkout failed' }
 Write-Host '固定的 4.6.0 资源下载完成；运行 install-resources.py 安装到独立目录。'
