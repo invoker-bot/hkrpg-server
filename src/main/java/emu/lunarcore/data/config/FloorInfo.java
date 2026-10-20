@@ -217,12 +217,6 @@ public class FloorInfo {
 
                 // Check if prop can be teleported to
 
-                //TODO: better fix mission 100010105
-                // AlreadyInPerformance Trigger D-100010104 Running D-100010104
-                if(prop.getPropID() == 100000){
-                    prop.setState(PropState.BridgeState3);
-                }
-
                 if (prop.getAnchorID() > 0 && getGroups(0).get(group.getId()) == group && isGroupInDimension(group.getId(), 0)) {
                     // Put inside cached teleport list to send to client when they request map info
                     this.cachedTeleports.put(prop.getMappingInfoID(), prop);
@@ -238,7 +232,8 @@ public class FloorInfo {
                     }
 
                     // Keep the authored graph identity for instance loaders and script dispatch.
-                    if(!org.hkrpg.server.gameplay.GoldenSpears.keepsSourceValues(group)) prop.setValueSource(null);
+                    if(!org.hkrpg.server.gameplay.GoldenSpears.keepsSourceValues(group)
+                        && !org.hkrpg.server.gameplay.StoryDoors.controller(prop)) prop.setValueSource(null);
                 }
             }
         }

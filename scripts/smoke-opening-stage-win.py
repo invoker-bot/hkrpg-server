@@ -1,5 +1,6 @@
 """隔离新号的卡芙卡开场、首战、紫色恢复物及 H2 重启检查；不操作官方客户端。"""
 import hashlib
+import argparse
 import json
 import os
 from pathlib import Path
@@ -21,6 +22,10 @@ def free_port(kind=socket.SOCK_STREAM):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--doors', action='store_true', help='校验控制台、两扇剧情门及两次同 UID H2 重启')
+    parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
+    args = parser.parse_args()
     source = ROOT / 'resources/4.6'
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
@@ -31,7 +36,7 @@ def main():
                 'ExcelOutput/MazeProp.json',
                 'Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Kafka_00_Ability.json']
     guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G{group}.json'
-                for group in (6, 36, 91, 93)]
+                for group in (5, 6, 36, 91, 93)]
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
@@ -62,7 +67,8 @@ def main():
 
     account_name = 'opening_stage_' + uuid.uuid4().hex + '@example.invalid'
     snapshots, stops = [], 0
-    for iteration in range(2):
+    iterations = 3 if args.doors else 2
+    for iteration in range(iterations):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
                                        cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT,
@@ -85,8 +91,8 @@ def main():
                 combo = request('/hkrpg_cn/combo/granter/login/v2/login',
                                 {'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
                 assert combo['retcode'] == 0
-                for phase in (['first', 'reconnect'] if iteration == 0 else ['restart']):
-                    credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase}
+                for phase in (['first', 'reconnect'] if iteration == 0 else ['restart' if iteration == 1 else 'doors-restart']):
+                    credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase, 'doors': args.doors}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -100,6 +106,7 @@ def main():
                     assert snapshot['recoveryPropsVerified']
                     assert snapshot['capturedPropVerified']
                     assert snapshot['openingChestVerified']
+                    assert snapshot['storyDoorsVerified'] == args.doors
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:
@@ -115,12 +122,12 @@ def main():
                             process.terminate()
                             process.wait(timeout=15)
                         process.stdin.close()
-    assert len({snapshot['uid'] for snapshot in snapshots}) == 1 and stops == 2
+    assert len({snapshot['uid'] for snapshot in snapshots}) == 1 and stops == iterations
     assert before == {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
     report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'snapshots': snapshots,
               'normalStops': stops, 'sourceResourcesModified': False, 'clientGameplayVerified': False}
-    output = ROOT / 'build/opening-battle-native.json'
+    output = args.output
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps({'passed': True, 'requests': sum(row['requests'] for row in snapshots),
                       'normalStops': stops, 'report': str(output), 'clientGameplayVerified': False}))

@@ -243,6 +243,7 @@ public final class MissionManager {
       else if (player.getScene() != null) player.getScene().refreshMissionGroups();
       Mascots.reconcile(player);
       WorldMechanisms.missionRewards(player);
+      StoryDoors.reconcile(player.getScene());
       var newSfx = new MusicComposition(player).unlockedSfxSongs();
       newSfx.removeAll(oldSfx);
       org.hkrpg.server.protocol.Music46.syncSfx(player, newSfx);
@@ -1291,7 +1292,7 @@ public final class MissionManager {
                 == c.getParamInt2();
       }
       case "GroupPropertyValueIgnoreVerse" -> StoryGroupConditions.shared(player, c);
-      case "PropState" -> ScenePropTransitions.satisfied(player, c);
+      case "PropState" -> ScenePropTransitions.satisfied(player, c) || StoryDoors.satisfied(player, c);
       default -> false;
     };
   }

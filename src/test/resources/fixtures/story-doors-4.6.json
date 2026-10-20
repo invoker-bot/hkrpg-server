@@ -1,0 +1,5573 @@
+{
+  "repository": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sources": [
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G5.json",
+      "sha256": "5f8c5778805b5d2ab11d19e573ffb48bb6eaf7694e80bce257aa8962c4ebf4f3"
+    },
+    {
+      "path": "Config/LevelOutput/RuntimeFloor/P20001_F20001001.json",
+      "sha256": "9b9627a4109a58ef32ccff66e1648a37234aa972e5ca301c2cddfed18b5487da"
+    },
+    {
+      "path": "ExcelOutput/MazeProp.json",
+      "sha256": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418"
+    },
+    {
+      "path": "ExcelOutput/MazePlane.json",
+      "sha256": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de"
+    },
+    {
+      "path": "ExcelOutput/InteractConfig.json",
+      "sha256": "3a1e0f178b95a482fa2c03975f3a8f2a4ffa1e609c4819aeee5108dc9ef29de9"
+    },
+    {
+      "path": "ExcelOutput/MainMission.json",
+      "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a"
+    },
+    {
+      "path": "Config/Level/Mission/1000101/MissionInfo_1000101.partial.json",
+      "sha256": "e0fd3bf047a44484c11d78b6ded23b380f6381caedd64c5904603490d6af9489"
+    },
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010105.json",
+      "sha256": "60f973dca38bcb7d2adc7f6c089a8972a64b95079e9386f9388caa5be8e196d4"
+    },
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010107.json",
+      "sha256": "60f973dca38bcb7d2adc7f6c089a8972a64b95079e9386f9388caa5be8e196d4"
+    },
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010111.json",
+      "sha256": "60f973dca38bcb7d2adc7f6c089a8972a64b95079e9386f9388caa5be8e196d4"
+    },
+    {
+      "path": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json",
+      "sha256": "453b8b367a7563f2d03fe6182d54b66bb90baee82298de4334a2a4592b1b7668"
+    }
+  ],
+  "records": {
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G5.json": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "prop",
+      "AreaAnchorName": "LevelArea_P20001_F20001001_G5",
+      "LoadSide": "Server",
+      "LoadOnInitial": true,
+      "ValueSource": {},
+      "ConflictIDList": [],
+      "TagContainer": {
+        "List": [
+          {
+            "Tag": "Group.Level.Connection",
+            "TagHash": -295833477
+          }
+        ]
+      },
+      "AnchorList": [
+        {
+          "Name": "Elevator_1F",
+          "ID": 1,
+          "PosY": 2.001,
+          "PosZ": -14.481
+        },
+        {
+          "Name": "Elevator_2F",
+          "ID": 2,
+          "PosY": 2.001,
+          "PosZ": -14.481
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100002,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300001",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "Door1",
+          "ID": 300001,
+          "PosY": 0.281,
+          "PosZ": 13.69
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300001",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300021",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 1,
+            "DimX": 3,
+            "DimY": 1,
+            "DimZ": 1,
+            "Offset": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0.6
+            },
+            "PointList": []
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "Key1",
+          "RotY": 180,
+          "ID": 300002,
+          "PosX": 3.210001,
+          "PosY": 0.148097,
+          "PosZ": 11.28
+        },
+        {
+          "PropID": 100002,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300003",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "BigDoor01",
+          "ID": 300003,
+          "PosX": 0.029,
+          "PosY": 0.257,
+          "PosZ": 89.207
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300003",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300021",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 1,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "Offset": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0.6
+            },
+            "PointList": []
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "BigKey1",
+          "RotY": 180,
+          "ID": 300004,
+          "PosX": 1.85,
+          "PosY": 0.122996,
+          "PosZ": 84.8
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300019",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorLeft1",
+          "ID": 300005,
+          "PosX": -11.728,
+          "PosY": 0.187,
+          "PosZ": 141.888
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room02",
+            "PrefabAlias": "DoorFrame03"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorFrameLeft1",
+          "RotY": 180,
+          "ID": 300019,
+          "PosX": -11.728,
+          "PosY": 0.147,
+          "PosZ": 138.2399
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300005",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300019",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 1,
+            "DimX": 8,
+            "DimY": 2,
+            "DimZ": 6,
+            "Offset": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0.6
+            },
+            "PointList": []
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "KeyLeft1",
+          "RotY": 180,
+          "ID": 300006,
+          "PosX": -10.2,
+          "PosY": 0.16664,
+          "PosZ": 137.42
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300020",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorLeft2",
+          "ID": 300009,
+          "PosX": -11.727,
+          "PosY": 0.185,
+          "PosZ": 149.717
+        },
+        {
+          "RotX": 3e-06,
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room04",
+            "PrefabAlias": "DoorFrame_04_1"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorFrameLeft2",
+          "ID": 300020,
+          "PosX": -11.728,
+          "PosY": 0.147,
+          "PosZ": 151.8299
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300023",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorRight1",
+          "ID": 300010,
+          "PosX": 11.727,
+          "PosY": 0.185,
+          "PosZ": 141.9
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room02",
+            "PrefabAlias": "DoorFrame02"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorFrameRight1",
+          "RotY": 180,
+          "ID": 300023,
+          "PosX": 11.728,
+          "PosY": 0.147,
+          "PosZ": 138.2399
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300010",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_37",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300023",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 1,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "Offset": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0.6
+            },
+            "PointList": []
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "KeyRight1",
+          "RotY": 180,
+          "ID": 300011,
+          "PosX": 13.4,
+          "PosY": 0.16664,
+          "PosZ": 137.7
+        },
+        {
+          "RotX": 3e-06,
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room03",
+            "PrefabAlias": "DoorFrame_04_2"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorFrameRight2",
+          "ID": 300024,
+          "PosX": 11.728,
+          "PosY": 0.147,
+          "PosZ": 151.8299
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300024",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorRight2",
+          "ID": 300008,
+          "PosX": 11.73,
+          "PosY": 0.166,
+          "PosZ": 149.715
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300025",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorLeft3",
+          "ID": 300007,
+          "PosX": -23.851,
+          "PosY": 0.181,
+          "PosZ": 219.738
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300007",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300025",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 1,
+            "DimX": 8,
+            "DimY": 2,
+            "DimZ": 6,
+            "Offset": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0.6
+            },
+            "PointList": []
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "KeyLeft3",
+          "RotY": 180,
+          "ID": 300029,
+          "PosX": -21.66,
+          "PosY": 0.147004,
+          "PosZ": 217.62
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room04",
+            "PrefabAlias": "DoorFrame0"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "DoorFrameLeft3",
+          "RotY": 270,
+          "ID": 300025,
+          "PosX": -23.855,
+          "PosY": 0.147,
+          "PosZ": 217.63
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300026",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "LeftUpDoor1",
+          "RotY": 90,
+          "ID": 300012,
+          "PosX": -21.123,
+          "PosY": 6.451,
+          "PosZ": 113.558
+        },
+        {
+          "RotX": 3e-06,
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room02",
+            "PrefabAlias": "DoorFrame01"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "LeftUpDoorFrame",
+          "RotY": 180,
+          "ID": 300026,
+          "PosX": -19.033,
+          "PosY": 6.397,
+          "PosZ": 113.5599
+        },
+        {
+          "PropID": 100000,
+          "LoadOnInitial": false,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_02.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300012",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300026",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedInt",
+                "Value": 3016,
+                "Key": "Maze_Prop_Chap00_CostItem_InteractID"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "InteractDesc_3016",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              }
+            ]
+          },
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "LeftUpKey1",
+          "RotY": 90.00024,
+          "ID": 300013,
+          "PosX": -18.763,
+          "PosY": 6.397,
+          "PosZ": 115.071
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300027",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "SecretDoor",
+          "RotY": 90,
+          "ID": 300015,
+          "PosX": 30.665,
+          "PosY": 0.17446,
+          "PosZ": 190.132
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room03",
+            "PrefabAlias": "DoorFrame01"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "SecretDoorFrame",
+          "RotY": 270,
+          "ID": 300027,
+          "PosX": 27.581,
+          "PosY": 0.147,
+          "PosZ": 190.135
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Mission/2000106/Prop_2000106.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300015",
+                "Key": "Maze_Prop_Chap01_Door"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300027",
+                "Key": "Maze_Prop_Chap01_DoorFrame_01"
+              }
+            ]
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "SecretKey",
+          "RotY": 270,
+          "ID": 300016,
+          "PosX": 26.81,
+          "PosY": 0.147089,
+          "PosZ": 187.98
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300028",
+                "Key": "Maze_Prop_Chap01_DoorFrame"
+              }
+            ]
+          },
+          "State": "Open",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "DoorRight3",
+          "ID": 300017,
+          "PosX": 23.855,
+          "PosY": 0.193,
+          "PosZ": 219.7
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room03",
+            "PrefabAlias": "DoorFrame0"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "DoorFrameRight3",
+          "RotY": 270,
+          "ID": 300028,
+          "PosX": 23.855,
+          "PosY": 0.147,
+          "PosZ": 217.63
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "5,300001",
+                "Key": "Maze_Prop_Chap01_BaseControllSimpleDoor"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 1,
+            "DimX": 3,
+            "DimY": 1,
+            "DimZ": 1,
+            "Offset": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0.6
+            },
+            "PointList": []
+          },
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "KeyFinal",
+          "RotY": 180,
+          "ID": 300018,
+          "PosX": 7.009,
+          "PosY": -0.924161,
+          "PosZ": 358.713
+        },
+        {
+          "PropID": 300003,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_DoorFrame_01.json",
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "DoorFrame00",
+          "ID": 300021,
+          "PosX": -0.668555,
+          "PosY": 0.018792,
+          "PosZ": -38
+        },
+        {
+          "PropID": 100007,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Elevator_Move_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "LevelArea_P20001_F20001001_G5,Elevator_1F",
+                "Key": "Maze_Chap00_Elevator_1F"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "LevelArea_P20001_F20001001_G5,Elevator_2F",
+                "Key": "Maze_Chap00_Elevator_2F"
+              },
+              {
+                "$type": "RPG.GameCore.SharedFloat",
+                "Key": "Maze_Chap00_Elevator_MoveSpeed"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "HideInCutScene": true,
+          "PerformanceHideFlags": 1,
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "SpawnConfig": {},
+          "Name": "Elevator",
+          "ID": 300022,
+          "PosY": 2.001,
+          "PosZ": -14.481
+        },
+        {
+          "PropID": 300006,
+          "IsOverrideInitLevelGraph": true,
+          "ValueSource": {},
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "CustomTriggerMapV2": {},
+          "StateConfigs": [],
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "StageObjectCapture": {
+            "BlockAlias": "Chap00_N101_Room11",
+            "PrefabAlias": "SpecialStorageBox0"
+          },
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+          "CameraCenterEntityList": [],
+          "CameraConfig": {},
+          "TagOverrideComponents": {},
+          "SpawnConfig": {
+            "EntitySpawnConfig": {}
+          },
+          "Name": "SpecialStorageBox",
+          "ID": 300030,
+          "PosX": 5.1,
+          "PosY": -1,
+          "PosZ": 362
+        }
+      ],
+      "DistrictList": [
+        {
+          "Name": "District1",
+          "ID": 1
+        }
+      ],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": [],
+      "PedestrianV2List": [],
+      "AudienceList": [],
+      "SmartObjectList": [],
+      "CurveList": [],
+      "LittleGameList": []
+    },
+    "Config/LevelOutput/RuntimeFloor/P20001_F20001001.json": {
+      "FloorID": 20001001,
+      "StartAnchorID": 1,
+      "StageData": "Stages/Outputs/Chapter00/Stages/Chap00_MAZ_N101_MainLine_01_StageData/Chap00_MAZ_N101_MainLine_01_StageData.stage",
+      "CameraType": "Maze",
+      "LayerToAreaMask": [
+        8
+      ],
+      "NavmapConfigPath": "Config/LevelOutput/Map/MapInfo_P20001_F20001001.json",
+      "CustomValues": [
+        {
+          "$type": "RPG.GameCore.FloorCustomFloatConfig",
+          "ID": 10001,
+          "Name": "FCV_AnywhereDoor99"
+        },
+        {
+          "$type": "RPG.GameCore.FloorCustomFloatConfig",
+          "ID": 10002,
+          "Name": "FCV_AnywhereDoor98"
+        }
+      ],
+      "GroupInstanceList": [
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G2.json",
+          "Name": "Born",
+          "ID": 2
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G100.json",
+          "Name": "Exit",
+          "ID": 100
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G100_D1002.json",
+          "Name": "Exit",
+          "ID": 100
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G100_D1001.json",
+          "Name": "Exit",
+          "ID": 100
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G18.json",
+          "Name": "Teleport",
+          "ID": 18
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G18_D1002.json",
+          "Name": "Teleport",
+          "ID": 18
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G18_D1001.json",
+          "Name": "Teleport",
+          "ID": 18
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G5.json",
+          "Name": "prop",
+          "ID": 5
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G5_D1002.json",
+          "Name": "prop",
+          "ID": 5
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G5_D1001.json",
+          "Name": "prop",
+          "ID": 5
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G44.json",
+          "Name": "Books",
+          "ID": 44
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G21.json",
+          "Name": "MainMission1000101_",
+          "ID": 21
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G9.json",
+          "Name": "MainMissionMonster",
+          "ID": 9
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G7.json",
+          "Name": "destructableItem",
+          "ID": 7
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G93.json",
+          "Name": "FarmElement",
+          "ID": 93
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G91.json",
+          "Name": "MP Group",
+          "ID": 91
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G1.json",
+          "Name": "MainMission1000101_",
+          "ID": 1
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G6.json",
+          "Name": "DefaultTreasure",
+          "ID": 6
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G27.json",
+          "Name": "MainNPC",
+          "ID": 27
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G29.json",
+          "Name": "MissionPropClient1",
+          "ID": 29
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G30.json",
+          "Name": "MissionPropClient2",
+          "ID": 30
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G50.json",
+          "Name": "MainMissionPropClient",
+          "ID": 50
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G14.json",
+          "Name": "MainMission1000101_",
+          "ID": 14
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G36.json",
+          "Name": "MainMissionTestProp",
+          "ID": 36
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G8.json",
+          "Name": "MissionGroupClient1",
+          "ID": 8
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G17.json",
+          "Name": "MainMission1000101_",
+          "ID": 17
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G33.json",
+          "Name": "MissionGroupClient3",
+          "ID": 33
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G24.json",
+          "Name": "Default_ChallengeChest",
+          "ID": 24
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G11.json",
+          "Name": "Default_ChallengeChest",
+          "ID": 11
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G12.json",
+          "Name": "Toturial_N1",
+          "ID": 12
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G15.json",
+          "Name": "SubMission_ 1",
+          "ID": 15
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G19.json",
+          "Name": "SubMission2",
+          "ID": 19
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G20.json",
+          "Name": "MainMission2000102_",
+          "ID": 20
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G23.json",
+          "Name": "SubMission2",
+          "ID": 23
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G3.json",
+          "Name": "Monster",
+          "ID": 3
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G28.json",
+          "Name": "MonsterEscape",
+          "ID": 28
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G10.json",
+          "Name": "Safe_NPC",
+          "ID": 10
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G49.json",
+          "Name": "NPC_Yblh",
+          "ID": 49
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G25.json",
+          "Name": "SubMission2010707",
+          "ID": 25
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G13.json",
+          "Name": "SubMissionStar",
+          "ID": 13
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G34.json",
+          "Name": "Prop_Monitor",
+          "ID": 34
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G22.json",
+          "Name": "EnvNPCs",
+          "ID": 22
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G22_D1001.json",
+          "Name": "EnvNPCs",
+          "ID": 22
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G22_D1002.json",
+          "Name": "EnvNPCs",
+          "ID": 22
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G38.json",
+          "Name": "EnvNPCs",
+          "ID": 38
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G38_D1001.json",
+          "Name": "EnvNPCs",
+          "ID": 38
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G38_D1002.json",
+          "Name": "EnvNPCs",
+          "ID": 38
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G40.json",
+          "Name": "Sound",
+          "ID": 40
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G41.json",
+          "Name": "DailyMission",
+          "ID": 41,
+          "IsDelete": true
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G45.json",
+          "Name": "Sub2000106",
+          "ID": 45
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G46.json",
+          "Name": "sub2000112",
+          "ID": 46
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G48.json",
+          "Name": "sub3000101",
+          "ID": 48
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G51.json",
+          "Name": "NPC_QA",
+          "ID": 51
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G51_D1001.json",
+          "Name": "NPC_QA",
+          "ID": 51
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G51_D1002.json",
+          "Name": "NPC_QA",
+          "ID": 51
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G52.json",
+          "Name": "MainMission_PropEff",
+          "ID": 52
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G53.json",
+          "Name": "MapNpc",
+          "ID": 53
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G53_D1001.json",
+          "Name": "MapNpc",
+          "ID": 53
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G53_D1002.json",
+          "Name": "MapNpc",
+          "ID": 53
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G54.json",
+          "Name": "SubMissionASD",
+          "ID": 54
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G58.json",
+          "Name": "MainMission8000101_",
+          "ID": 58
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G62.json",
+          "Name": "Act_Online_End",
+          "ID": 62
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G63.json",
+          "Name": "SimpleMission02",
+          "ID": 63
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G66.json",
+          "Name": "MainMission4040005_",
+          "ID": 66
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G67.json",
+          "Name": "Act_Online_02",
+          "ID": 67
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G70.json",
+          "Name": "MainMission2000211_",
+          "ID": 70
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G73.json",
+          "Name": "SimpleMission12",
+          "ID": 73
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G74.json",
+          "Name": "SubAH",
+          "ID": 74
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G78.json",
+          "Name": "SimpleMission12",
+          "ID": 78
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G80.json",
+          "Name": "Crowd",
+          "ID": 80
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G80_D1001.json",
+          "Name": "Crowd",
+          "ID": 80
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G80_D1002.json",
+          "Name": "Crowd",
+          "ID": 80
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G82.json",
+          "Name": "NPC",
+          "ID": 82
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G39.json",
+          "Name": "Investigative",
+          "ID": 39
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G88.json",
+          "Name": "Investigative",
+          "ID": 88
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G83.json",
+          "Name": "Photo",
+          "ID": 83
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G83_D1002.json",
+          "Name": "Photo",
+          "ID": 83
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G83_D1001.json",
+          "Name": "Photo",
+          "ID": 83
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G85.json",
+          "Name": "Act_Online_Prop_Daily",
+          "ID": 85
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G86.json",
+          "Name": "Act_Online_Prop_Daily_02",
+          "ID": 86
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G87.json",
+          "Name": "DailyMission",
+          "ID": 87
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G92.json",
+          "Name": "SimpleMission12",
+          "ID": 92
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G94.json",
+          "Name": "CheckProp",
+          "ID": 94
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G101.json",
+          "Name": "Shelter Group",
+          "ID": 101
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G101_D1001.json",
+          "Name": "Shelter Group",
+          "ID": 101
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G101_D1002.json",
+          "Name": "Shelter Group",
+          "ID": 101
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G90.json",
+          "Name": "DailyMission",
+          "ID": 90
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G95.json",
+          "Name": "DailyMission",
+          "ID": 95
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G96.json",
+          "Name": "DailyMission",
+          "ID": 96
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G97.json",
+          "Name": "DailyMission",
+          "ID": 97
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G103.json",
+          "Name": "Memorybubble",
+          "ID": 103
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G104.json",
+          "Name": "PamMission",
+          "ID": 104
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G102.json",
+          "Name": "Avtivity_SilverWolf_FindPicture01",
+          "ID": 102
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G105.json",
+          "Name": "MainMission2000701_2",
+          "ID": 105
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G106.json",
+          "Name": "SimpleMission_4040017",
+          "ID": 106
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G107.json",
+          "Name": "SimpleMission_4040018",
+          "ID": 107
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G79.json",
+          "Name": "MainMission2000701_1",
+          "ID": 79
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G108.json",
+          "Name": "MainMission2000701_3",
+          "ID": 108
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G111.json",
+          "Name": "MainMission2000202_",
+          "ID": 111
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G114.json",
+          "Name": "MainMission8016305_1",
+          "ID": 114
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G115.json",
+          "Name": "MainMission8016305_1",
+          "ID": 115
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G119.json",
+          "Name": "MainMission8022301_1",
+          "ID": 119
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G121.json",
+          "Name": "MainMission8026301_01",
+          "ID": 121
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G122.json",
+          "Name": "MainMission8035301_01",
+          "ID": 122,
+          "IsDelete": true
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G129.json",
+          "Name": "MainMission4340512_16",
+          "ID": 129
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G130.json",
+          "Name": "MainMission4340512_17",
+          "ID": 130
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G131.json",
+          "Name": "MainMission4340512_18",
+          "ID": 131
+        }
+      ],
+      "DimensionList": [
+        {
+          "DefaultEnviroProfile": "Stages/Outputs/Chapter00/EnviroProfile/Chap00_CloseView_MAZ_N101_01_Day.enviroProfile.asset",
+          "CameraType": "Maze",
+          "BattleAreaList": [],
+          "SavedValues": [
+            {
+              "ID": 1,
+              "Name": "SceneStateByMainMission",
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            }
+          ],
+          "IsExclusiveSaveMapSection": true,
+          "GroupIndexList": [
+            0,
+            1,
+            4,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            44,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            55,
+            56,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            72,
+            73,
+            74,
+            75,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106
+          ],
+          "ExclusiveSavedGroupIDList": [],
+          "StartAnchorID": 1
+        },
+        {
+          "ID": 1002,
+          "Category": "ActivityEarlyAccess",
+          "DefaultEnviroProfile": "Stages/Outputs/Chapter00/EnviroProfile/Chap00_CloseView_MAZ_N101_01_Day.enviroProfile.asset",
+          "BattleAreaList": [],
+          "SavedValues": [
+            {
+              "ID": 1,
+              "Name": "SceneStateByMainMission",
+              "DefaultValue": 1,
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            }
+          ],
+          "SavedValueConfigDict": {
+            "SceneStateByMainMission": {
+              "IsExclusiveSaved": true
+            }
+          },
+          "TagContainer": {
+            "List": [
+              {
+                "Tag": "Group.Activity.260DelegateDispatch",
+                "TagHash": -1431791387
+              }
+            ]
+          },
+          "IsExclusiveSaveMapSection": true,
+          "UnlockAllMapSectionOnInitial": true,
+          "GroupIndexList": [
+            0,
+            2,
+            5,
+            8,
+            13,
+            15,
+            21,
+            34,
+            40,
+            43,
+            46,
+            47,
+            54,
+            58,
+            71,
+            72,
+            76,
+            85,
+            102,
+            103,
+            104,
+            105,
+            106
+          ],
+          "ExclusiveSavedGroupIDList": [
+            100,
+            18,
+            5,
+            22,
+            38,
+            51,
+            53,
+            80,
+            39,
+            83,
+            101
+          ],
+          "StartAnchorID": 1
+        }
+      ],
+      "GroupInstanceCommonMap": {
+        "2": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "100": {
+          "SaveType": "Reset"
+        },
+        "18": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "5": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "44": {
+          "Category": "Atmosphere",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "21": {
+          "Category": "Mission",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ]
+          }
+        },
+        "9": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "7": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true,
+          "GroupRefreshID": 1002
+        },
+        "93": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "91": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1002
+        },
+        "1": {
+          "Category": "Mission",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ]
+          }
+        },
+        "6": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "27": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010126
+              }
+            ]
+          }
+        },
+        "29": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010119
+              }
+            ]
+          }
+        },
+        "30": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010128
+              }
+            ]
+          }
+        },
+        "50": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true
+        },
+        "14": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ]
+          }
+        },
+        "36": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "8": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010128
+              }
+            ]
+          }
+        },
+        "17": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010130
+              }
+            ]
+          }
+        },
+        "33": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010122
+              }
+            ]
+          }
+        },
+        "24": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "11": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "12": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ]
+          }
+        },
+        "15": {
+          "SaveType": "Reset"
+        },
+        "19": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 200010210
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200010211
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200010212
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "20": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200010210
+              }
+            ]
+          }
+        },
+        "23": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200010211
+              }
+            ]
+          }
+        },
+        "3": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1001
+        },
+        "28": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "10": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 2000101
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "49": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "ID": 2000102
+              },
+              {
+                "ID": 2000103
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200011602
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "25": {
+          "SaveType": "Reset"
+        },
+        "13": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200011007
+              }
+            ]
+          }
+        },
+        "34": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "22": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset"
+        },
+        "38": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 200011217
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200011218
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200011219
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200011220
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200011241
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "40": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true
+        },
+        "41": {
+          "IsDelete": true,
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 3000101
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 3000101
+              }
+            ]
+          }
+        },
+        "45": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 2000107
+              }
+            ]
+          }
+        },
+        "46": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 2000113
+              }
+            ]
+          }
+        },
+        "48": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 2000301
+              },
+              {
+                "ID": 2000113
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "51": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "ID": 2000113
+              }
+            ]
+          }
+        },
+        "52": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 100010105
+              }
+            ]
+          }
+        },
+        "53": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset"
+        },
+        "54": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 2000202
+              }
+            ]
+          }
+        },
+        "58": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 800010205
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 8000102
+              }
+            ]
+          }
+        },
+        "62": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 8000105
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 8000105
+              }
+            ]
+          }
+        },
+        "63": {
+          "SaveType": "Reset"
+        },
+        "66": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 4040005
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "67": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "ID": 8000105
+              },
+              {
+                "Phase": "Finish",
+                "ID": 8000105
+              }
+            ],
+            "Operation": "Or"
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 8000101
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000102
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000104
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000105
+              }
+            ]
+          }
+        },
+        "70": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200021117
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "73": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 4040012
+              }
+            ]
+          }
+        },
+        "74": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200011602
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "78": {
+          "SaveType": "Reset"
+        },
+        "80": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset"
+        },
+        "82": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset"
+        },
+        "39": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset"
+        },
+        "88": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true,
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ]
+          }
+        },
+        "83": {
+          "Category": "Atmosphere",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true,
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "85": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 800010405
+              },
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 800010405
+              },
+              {
+                "ID": 8000105
+              },
+              {
+                "Phase": "Finish",
+                "ID": 8000105
+              }
+            ],
+            "Operation": "Or"
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 8000101
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000102
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000104
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000105
+              }
+            ]
+          }
+        },
+        "86": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "ID": 8000105
+              },
+              {
+                "Phase": "Finish",
+                "ID": 8000105
+              }
+            ],
+            "Operation": "Or"
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 8000101
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000102
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000104
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 8000105
+              }
+            ]
+          }
+        },
+        "87": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 300070307
+              }
+            ],
+            "DelayToLevelReload": true
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 3000701
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 3000702
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 3000703
+              }
+            ]
+          }
+        },
+        "92": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 4040053
+              }
+            ]
+          }
+        },
+        "94": {
+          "Category": "Atmosphere",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true,
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1000101
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "101": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset"
+        },
+        "90": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 300070101
+              },
+              {
+                "Type": "SubMission",
+                "ID": 300070201
+              },
+              {
+                "Type": "SubMission",
+                "ID": 300070301
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "95": {
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 300080006
+              },
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 300080106
+              }
+            ],
+            "Operation": "Or"
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 3000800
+              },
+              {
+                "Phase": "Cancel",
+                "ID": 3000801
+              }
+            ]
+          }
+        },
+        "96": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 300080206
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 3000802
+              }
+            ]
+          }
+        },
+        "97": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 300080305
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 3000803
+              }
+            ]
+          }
+        },
+        "103": {
+          "SaveType": "Reset"
+        },
+        "104": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 405002002
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "102": {
+          "SaveType": "Reset"
+        },
+        "105": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200070103
+              }
+            ]
+          }
+        },
+        "106": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 4040017
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "107": {
+          "SaveType": "Reset"
+        },
+        "79": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 2000701
+              }
+            ]
+          }
+        },
+        "108": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200070109
+              }
+            ]
+          }
+        },
+        "111": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 200020111
+              }
+            ]
+          }
+        },
+        "114": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "115": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "119": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "121": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "122": {
+          "IsDelete": true,
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "129": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "130": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "131": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        }
+      },
+      "ValidSubmapList": [],
+      "EnableGroupStreaming": false,
+      "EnableGroupSpaceConflict": false,
+      "EnableGroupRegionStreaming": false
+    },
+    "ExcelOutput/MazeProp.json": [
+      {
+        "ID": 100000,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 136805872880748283
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/TriggerProp.png",
+        "BoardShowList": [
+          4
+        ],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_BaseConsole_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapIconType": 9,
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_BaseConsole_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      },
+      {
+        "ID": 100001,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 5891534954774484641
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Door_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100002,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13795252690646073757
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_02_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Door_02_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100007,
+        "PropType": "PROP_ELEVATOR",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Elevator_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Elevator_01_Config.json",
+        "PropStateList": [
+          "Elevator1",
+          "Elevator2",
+          "Elevator3"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 300003,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_00_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_DoorFrame_00_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "D",
+        "HasRendererComponent": true
+      },
+      {
+        "ID": 300006,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_SpcStorageBox_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "D"
+      },
+      {
+        "ID": 100003,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 2999021784730346725
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_03_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Door_03_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100005,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 16190789409282106466
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_04_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Door_04_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100021,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 6866359785628319043
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_05_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Door_05_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100088,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 1938294270045599602
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_Door_06_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_Door_06_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 102001,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 1032974795311114985
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap02/Prop_Chap02_Door_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap02/Prop_Chap02_Door_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 102002,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 7396288784082544733
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap02/Prop_Chap02_Door_02_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap02/Prop_Chap02_Door_02_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 102109,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap02/Prop_Chap02_X301_Door_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "TriggerEnable",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap02/Prop_Chap02_Door_03_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 103011,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 103029,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_06_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_06_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      },
+      {
+        "ID": 103030,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_05_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_05_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 103031,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_02_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_02_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 103032,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_03_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_03_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 103034,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_04_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_04_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 103041,
+        "PropType": "PROP_ELEVATOR",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_08_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_08_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 103218,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap03/Prop_Chap03_Door_07_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "IconID": 30,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 30,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap03/Prop_Chap03_Door_07_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      },
+      {
+        "ID": 104005,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104006,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_02_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_02_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104007,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_03_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_03_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104017,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_04_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 176,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_04_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104018,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_05_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_05_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104051,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_06_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_06_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104236,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_07_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_07_Config.json",
+        "PropStateList": [
+          "Closed"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104259,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_08_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_08_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 104359,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap04/Prop_Chap04_Door_07_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 176,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap04/Prop_Chap04_Door_09_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 105001,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105002,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_02_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_02_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105003,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_03_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_03_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105020,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_06_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_06_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105021,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropIconPath": "",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_05_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4B4B4B"
+          },
+          {
+            "IconID": 176,
+            "Color": "#B74A4A"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4B4B4B"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_05_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105048,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_07_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_07_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105068,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_08_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_08_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105140,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropIconPath": "",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_09_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_09_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105192,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropIconPath": "",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_10_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_10_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      },
+      {
+        "ID": 105208,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap05/Prop_Chap05_Door_11_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Locked",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          },
+          {
+            "IconID": 176,
+            "Color": "#b74a4a"
+          },
+          {
+            "State": "Open",
+            "IconID": 175,
+            "Color": "#4b4b4b"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap05/Prop_Chap05_Door_11_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open"
+        ],
+        "PerformanceType": "B",
+        "HasRendererComponent": true,
+        "LodPriority": 1
+      }
+    ],
+    "ExcelOutput/MazePlane.json": [
+      {
+        "PlaneID": 20001,
+        "PlaneType": "Maze",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 101,
+        "PlaneName": {
+          "Hash": 9764321538343869922
+        },
+        "StartFloorID": 20001001,
+        "FloorIDList": [
+          20001001
+        ]
+      }
+    ],
+    "ExcelOutput/InteractConfig.json": [
+      {
+        "InteractID": 1010,
+        "TargetState": "Open",
+        "ItemCostList": []
+      },
+      {
+        "InteractID": 1020,
+        "TargetState": "Locked",
+        "ItemCostList": []
+      }
+    ],
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1000101,
+        "Type": "Main",
+        "WorldID": 101,
+        "DisplayPriority": 1000101,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 7313040413849220147
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1000201,
+        "TrackWeight": 100,
+        "RewardID": 11000101,
+        "DisplayRewardID": 11000101,
+        "ChapterID": 100001,
+        "SubRewardList": []
+      }
+    ],
+    "Config/Level/Mission/1000101/MissionInfo_1000101.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 100010100,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010100.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010102
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010100",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "FinishActionList": [],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "GroupIDList": [],
+          "RequiredNPCSeriesIDList": [],
+          "GotoParam": [],
+          "WayPointFloorID": 20001001,
+          "StoryLineIDList": [],
+          "IgnoreVerseParamList": []
+        },
+        {
+          "ID": 100010102,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010102.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "Auto",
+          "TakeParamIntList": [
+            1000101
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010102",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "FinishActionList": [],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "GroupIDList": [],
+          "RequiredNPCSeriesIDList": [],
+          "GotoParam": [],
+          "WayPointFloorID": 20001001,
+          "StoryLineIDList": [],
+          "IgnoreVerseParamList": []
+        },
+        {
+          "ID": 100010103,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010103.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010104
+          ],
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20001001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010104,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010104.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010100
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010104",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010105,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010105.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010103
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300002,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300002
+        },
+        {
+          "ID": 100010106,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010106.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010105
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010106",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010107,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010107.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010105
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300004,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300004
+        },
+        {
+          "ID": 100010108,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010108.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010107
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010108",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010109,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010109.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E3",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010122
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010109",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010110,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010110.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E3",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010109
+          ],
+          "FinishType": "GetTrialAvatar",
+          "ParamType": "Equal",
+          "ParamInt1": 1001006,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010111,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010111.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010110
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300006,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300006
+        },
+        {
+          "ID": 100010112,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010112.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010111
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010112",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 5
+        },
+        {
+          "ID": 100010113,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010113.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010130
+          ],
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20001006,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 11
+        },
+        {
+          "ID": 100010114,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010114.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010127
+          ],
+          "FinishType": "SubMissionFinishCnt",
+          "ParamType": "ListContain",
+          "ParamIntList": [
+            100010128
+          ],
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010115,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010115.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010119
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010115",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010116,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010116.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010124
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010116",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010117,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010117.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010123
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010117",
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "ProgressGroup": 100010117,
+          "IsShowProgress": true,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 300013
+        },
+        {
+          "ID": 100010118,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010118.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010123
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010118",
+          "ParamItemList": [],
+          "Progress": 1,
+          "ProgressGroup": 100010117,
+          "IsShowProgress": true,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 300014
+        },
+        {
+          "ID": 100010119,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010119.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010127
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010119",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 29,
+          "WayPointEntityID": 300001
+        },
+        {
+          "ID": 100010120,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010120.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E7",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010136
+          ],
+          "FinishType": "DelTrialAvatar",
+          "ParamType": "Equal",
+          "ParamInt1": 1001005,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010121,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010121.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E7",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010120
+          ],
+          "FinishType": "EnterFloor",
+          "ParamType": "Equal",
+          "ParamInt1": 20002,
+          "ParamInt2": 20002001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010122,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010122.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010107
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 21,
+          "ParamInt2": 200003,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 21,
+          "WayPointEntityID": 200003
+        },
+        {
+          "ID": 100010123,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010123.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010116
+          ],
+          "FinishType": "DelTrialAvatar",
+          "ParamType": "Equal",
+          "ParamInt1": 1001006,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010124,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010124.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010113
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300029,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010125,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010125.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010119
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010125",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010126,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010126.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010128
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300018,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300018
+        },
+        {
+          "ID": 100010127,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010127.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "MultiSequence",
+          "TakeParamIntList": [
+            100010117,
+            100010118
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010127",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 27,
+          "WayPointEntityID": 400003
+        },
+        {
+          "ID": 100010128,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010128.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010129
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010128",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 10
+        },
+        {
+          "ID": 100010129,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010129.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010125
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010129",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 27,
+          "WayPointEntityID": 400004
+        },
+        {
+          "ID": 100010130,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010130.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010112
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 21,
+          "ParamInt2": 200001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 21,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 100010131,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010131.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010130
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010131",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010132,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010132.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010123
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010132",
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010133,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010133.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010126
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010133",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010134,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010134.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010133
+          ],
+          "FinishType": "CreateCharacter",
+          "ParamType": "Equal",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010136,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010136.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E7",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010134
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010136",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010137,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010137.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010105
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010137",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010150,
+          "MainMissionID": 1000101,
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "MultiSequence",
+          "TakeParamIntList": [
+            100010122
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010150",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010151,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010151.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "MultiSequence",
+          "TakeParamIntList": [
+            100010103
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010151",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100020101,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020101.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010121
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020101",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20002001
+        },
+        {
+          "ID": 100020102,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020102.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020101
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020102",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20002001
+        },
+        {
+          "ID": 100020103,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020103.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020102
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020103",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShowFinishEffect": 2,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 3,
+          "WayPointEntityID": 300002
+        }
+      ]
+    },
+    "Config/Level/Mission/1000101/Mission_100010105.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.ChangePropState"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1000101/Mission_100010107.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.ChangePropState"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1000101/Mission_100010111.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.ChangePropState"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json": {
+      "OnInitSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SelectorConfig",
+              "TaskList": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "State": "Open",
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.EnableBillboard",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "State": "Locked",
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.EnableBillboard",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            }
+          ]
+        }
+      ],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncAllSubPropState"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.SelectorConfig",
+                  "TaskList": [
+                    {
+                      "$type": "RPG.GameCore.PropStateExecute",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "Execute": [
+                        {
+                          "$type": "RPG.GameCore.StartPropInteractMode",
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          },
+                          "Mode": "UsePose01"
+                        },
+                        {
+                          "$type": "RPG.GameCore.WaitSecond",
+                          "WaitTime": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 0.5
+                            }
+                          }
+                        },
+                        {
+                          "$type": "RPG.GameCore.PropReqInteract",
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          },
+                          "InteractID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 1010
+                            }
+                          },
+                          "OnUICancel": [
+                            {
+                              "$type": "RPG.GameCore.TriggerCustomString",
+                              "CustomString": {
+                                "Value": "ConsoleUsed"
+                              }
+                            }
+                          ],
+                          "OnCheckItemFail": [
+                            {
+                              "$type": "RPG.GameCore.TriggerCustomString",
+                              "CustomString": {
+                                "Value": "ConsoleUsed"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "$type": "RPG.GameCore.TriggerCustomString",
+                          "CustomString": {
+                            "Value": "ConsoleUsed"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropStateExecute",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "State": "Locked",
+                      "Execute": [
+                        {
+                          "$type": "RPG.GameCore.ToastPile",
+                          "DescTextKey": {
+                            "Custom": true,
+                            "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "InteractAngleRange": 220,
+              "OverrideTargetTypes": [],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        },
+        {
+          "IsLoop": true,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitCustomString",
+              "CustomString": {
+                "Value": "ConsoleUsed"
+              },
+              "WaitOwnerOnly": true
+            },
+            {
+              "$type": "RPG.GameCore.EndPropInteract"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropStateChangeListenerConfig",
+              "FromState": "Locked",
+              "OnChange": [
+                {
+                  "$type": "RPG.GameCore.EnableBillboard",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Enable": true
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropStateChangeListenerConfig",
+              "ToState": "Open",
+              "FromAnyState": true,
+              "OnChange": [
+                {
+                  "$type": "RPG.GameCore.WaitSecond",
+                  "WaitTime": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 0.2
+                    }
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.PropTriggerAnimState",
+                  "AnimStateName": "Open",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                    "FetchType": "SinglePropByPropKey",
+                    "SinglePropKey": {
+                      "Custom": true,
+                      "Key": "Maze_Prop_Chap01_DoorFrame_01"
+                    }
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.EndPropInteract"
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        }
+      ],
+      "ValueSource": {
+        "Values": [
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Maze_Prop_Chap01_Door"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Value": "PropInteractTitle_10001",
+            "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Maze_Prop_Chap01_DoorFrame_01"
+          }
+        ]
+      },
+      "Type": "Entity"
+    }
+  }
+}

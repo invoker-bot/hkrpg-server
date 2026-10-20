@@ -107,9 +107,6 @@ public class SceneEntityLoader {
             prop.setState(PropState.Open, false);
         } else if (prop.getPropId() == 104022) { // Mirage orb
             prop.setState(PropState.Closed, false);
-        } else if (prop.getExcel().isDoor() && group.getCategory()!=GroupInfo.GroupCategory.Mission) {
-            // Hacky fix to always open doors
-            prop.setState(PropState.Open, false);
         } else if (prop.getExcel().getPropType() == PropType.PROP_SPRING) {
             // Cache teleport anchors
             scene.getHealingSprings().add(prop);
@@ -129,6 +126,7 @@ public class SceneEntityLoader {
         org.hkrpg.server.gameplay.WorldChests.restore(prop);
         org.hkrpg.server.gameplay.GoldenSpears.restore(prop);
         org.hkrpg.server.gameplay.WorldMechanisms.restore(prop);
+        org.hkrpg.server.gameplay.StoryDoors.restore(prop);
         return prop;
     }
 

@@ -82,7 +82,7 @@ public final class ScenePropTransitions {
   private static boolean matches(ScenePropState.Snapshot record, PropInfo info, Scope scope) {
     return record != null
         && record.getProp() == info.getPropID()
-        && record.getSource().equals(PropTimelines.source(info))
+        && (record.getSource().equals(PropTimelines.source(info)) || StoryDoors.legacySource(record, info))
         && (scope.main() == null
             ? record.getAcceptance().isEmpty()
             : Objects.equals(record.getAcceptance(), scope.main().getObservationKey()));
@@ -132,6 +132,7 @@ public final class ScenePropTransitions {
       if (!scope.state().valid()) return new Result(Retcode.PLAYER_DATA_ERROR, null);
       var target = GameData.getInteractExcelMap().get(config).getTargetState();
       var targets = WorldMechanisms.transitions(player, config, prop);
+      StoryDoors.transitions(prop, targets);
       var changed = new LinkedHashMap<EntityProp, PropState>();
       targets.keySet().forEach(candidate -> changed.put(candidate, candidate.getState()));
       if (!WorldMechanisms.controller(prop)
@@ -199,6 +200,7 @@ public final class ScenePropTransitions {
       var session = player.getSession();
       if (session != null
           && !session.getProtocol().experimental()
+          && !StoryDoors.controller(prop.getPropInfo())
           && !WorldMechanisms.controller(prop))
         player.sendPacket(
             new PacketGroupStateChangeScNotify(player.getEntryId(), prop.getGroupId(), target));
@@ -242,6 +244,8 @@ public final class ScenePropTransitions {
     var info = original(scene, c.getParamInt1(), c.getParamInt2());
     var scope = scope(scene, false);
     if (info == null || scope == null || !scope.state().valid()) return false;
+    // Old single-console records must not bypass a story lock through backtracking either.
+    if (StoryDoors.world(scene) && StoryDoors.controller(info)) return StoryDoors.satisfied(player, c);
     var record = scope.state().get(PropTimelines.key(scene, c.getParamInt1(), c.getParamInt2()));
     if (!matches(record, info, scope) || record.getState() != c.getParamInt3()) return false;
     var excel = GameData.getPropExcelMap().get(info.getPropID());

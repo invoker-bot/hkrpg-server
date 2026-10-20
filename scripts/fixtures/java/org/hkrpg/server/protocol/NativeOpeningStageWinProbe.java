@@ -126,7 +126,7 @@ public final class NativeOpeningStageWinProbe {
     }
   }
 
-  private void openingScene() throws Exception {
+  private void openingScene(boolean expectDoorEffects) throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     require(
         (Integer) field(scene, "entry_id") == 2000101
@@ -153,7 +153,95 @@ public final class NativeOpeningStageWinProbe {
       }
     }
     require(kafkaPresent, "Opening scene Kafka actor is absent");
-    require(doorEffects && openingProps, "Opening scene lost its current story props");
+    require(
+        doorEffects == expectDoorEffects && openingProps,
+        "Opening scene lost its current story props");
+  }
+
+  private Map<Integer, DynamicMessage> doors() throws Exception {
+    var result = new HashMap<Integer, DynamicMessage>();
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var value : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) value;
+        if ((Integer) field(entity, "group_id") == 5)
+          result.put((Integer) field(entity, "inst_id"), entity);
+      }
+    return result;
+  }
+
+  private void doorState(Map<Integer, DynamicMessage> props, int instance, int state) {
+    var entity =
+        Objects.requireNonNull(props.get(instance), "Missing opening door/console " + instance);
+    require(
+        (Integer) field((DynamicMessage) field(entity, "prop"), "prop_state") == state,
+        "Door/console " + instance + " expected state " + state);
+  }
+
+  private void useDoor(int instance, boolean success) throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    var entity = doors().get(instance);
+    call(
+        "InteractPropCsReq",
+        Map.of(
+            "prop_entity_id",
+            field(entity, "entity_id"),
+            "interact_id2",
+            1010,
+            "interact_id",
+            field(scene, "interact_id")),
+        success);
+  }
+
+  private void storyDoors(String phase) throws Exception {
+    var props = doors();
+    if (phase.equals("first") || phase.equals("reconnect")) {
+      doorState(props, 300001, 0);
+      doorState(props, 300002, 0);
+      doorState(props, 300003, 0);
+      doorState(props, 300004, 2);
+      useDoor(300003, false);
+      useDoor(300004, false);
+      if (phase.equals("reconnect")) {
+        useDoor(300002, true);
+        props = doors();
+        doorState(props, 300001, 1);
+        doorState(props, 300002, 1);
+        doorState(props, 300003, 0);
+        doorState(props, 300004, 0);
+      }
+    } else if (phase.equals("restart")) {
+      doorState(props, 300001, 1);
+      doorState(props, 300002, 1);
+      doorState(props, 300003, 0);
+      doorState(props, 300004, 0);
+      useDoor(300004, true);
+      props = doors();
+      doorState(props, 300003, 1);
+      doorState(props, 300004, 1);
+    } else {
+      doorState(props, 300001, 1);
+      doorState(props, 300002, 1);
+      doorState(props, 300003, 1);
+      doorState(props, 300004, 1);
+      useDoor(300004, false);
+    }
+    var missionData = call("GetMissionDataCsReq");
+    var expected =
+        phase.equals("first")
+            ? Map.of(100010105, 1)
+            : phase.equals("reconnect")
+                ? Map.of(100010105, 2, 100010107, 1)
+                : Map.of(100010105, 2, 100010107, 2);
+    var statuses = new HashMap<Integer, Integer>();
+    for (var raw : (List<?>) field(missionData, "mission_list")) {
+      var m = (DynamicMessage) raw;
+      statuses.put(
+          (Integer) field(m, "id"),
+          ((Descriptors.EnumValueDescriptor) field(m, "status")).getNumber());
+    }
+    expected.forEach(
+        (id, status) -> require(status.equals(statuses.get(id)), "Door objective " + id));
   }
 
   private void capturedDestructible() throws Exception {
@@ -321,8 +409,10 @@ public final class NativeOpeningStageWinProbe {
     call("PlayerLoginCsReq");
     call("PlayerLoginFinishCsReq");
     openingParty();
-    openingScene();
-    boolean first = control.get("phase").getAsString().equals("first");
+    String phase = control.get("phase").getAsString();
+    boolean verifyDoors = control.has("doors") && control.get("doors").getAsBoolean();
+    openingScene(!verifyDoors || phase.equals("first") || phase.equals("reconnect"));
+    boolean first = phase.equals("first");
     if (first) {
       tutorialProgress(false);
       var missions = (List<?>) field(call("GetMissionDataCsReq"), "mission_list");
@@ -374,6 +464,7 @@ public final class NativeOpeningStageWinProbe {
     capturedDestructible();
     recoveryProps();
     openingChest(!first);
+    if (verifyDoors) storyDoors(phase);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -400,6 +491,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("recoveryPropsVerified", true);
     result.put("capturedPropVerified", true);
     result.put("openingChestVerified", true);
+    result.put("storyDoorsVerified", verifyDoors);
     return result;
   }
 

@@ -151,6 +151,35 @@ class RaidPropInteraction46Test {
   }
 
   @Test
+  void worldDoorBacktrackingGuardDoesNotReplaceTheExistingRaidReceiptScope() {
+    ready();
+    var gson = ResourceLoader.getGson();
+    // Isolated console variant of the same valid raid placement and PropState objective.
+    var old = prop();
+    var info = gson.toJsonTree(old.getPropInfo()).getAsJsonObject();
+    info.addProperty("PropID", 100000);
+    info.addProperty(
+        "InitLevelGraph",
+        "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json");
+    var replacement = gson.fromJson(info, PropInfo.class);
+    var group = player.getScene().getResourceGroups().get(46);
+    group.getPropList().replaceAll(p -> p.getID() == old.getInstId() ? replacement : p);
+    var excel = gson.toJsonTree(old.getExcel()).getAsJsonObject();
+    excel.addProperty("ID", 100000);
+    oldProps.put(100000, GameData.getPropExcelMap().get(100000));
+    var console = gson.fromJson(excel, PropExcel.class);
+    console.onLoad();
+    GameData.getPropExcelMap().add(console);
+    reload();
+    var raw = gson.toJsonTree(GameplayDefinitions.subs.get(104040807)).getAsJsonObject();
+    raw.addProperty("IsBackTrack", true);
+    var objective = gson.fromJson(raw, MissionInfo.SubMissionInfo.class);
+    assertTrue(objective.isBackTrack());
+    assertSame(prop(), player.interactWithProp(1010, prop().getEntityId()));
+    assertTrue(ScenePropTransitions.satisfied(player, objective));
+  }
+
+  @Test
   void failedStorageRollsBackTheOrbAndEmitsNoStateOrObjectiveSuccess() {
     ready();
     var prop = prop();

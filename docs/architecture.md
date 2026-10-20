@@ -1,3 +1,5 @@
+`StoryDoors` 保留原始门状态与控制台目标绑定，原开门控制图只在已接取的匹配 PropState 目标就绪后放行；复用 `ScenePropTransitions` 同存控制台和门，任务回调中断可由成对记录恢复。旧单控制台记录不能跳过未完成剧情门，边界见[剧情门说明](story-doors-4.6.md)。
+
 `WorldMechanisms` 在守卫移除或盾牌击破前保存进度，将拼图的关联碎片、控制器状态和解锁记录同存；`WorldMechanismSources` 核验固定原文与精确目标，`worldChests` 继续独立处理领奖防重。跨组机关同时验证两组来源，任务奖励核验所属目标和控制器收据；`WorldGroupProperties` 将时锁组属性、楼层值和完成记录原子写入同一玩家文档，第 7/8 关另保存黑屏回执阶段。公开来源、39 项新增绑定及剩余 41 项缺口见[第二轮机关宝箱说明](remaining-world-mechanisms-4.6.md)。
 
 `WorldChests` 的来源目录增加基座舱段六个普通探索宝箱；复用原有投递回执和恢复流程，世界和活动计数按原始 `MazeChest.WorldID` 隔离，交互再次验证剧情门槛，详见[宝箱领取说明](base-zone-chests-4.6.md)。
