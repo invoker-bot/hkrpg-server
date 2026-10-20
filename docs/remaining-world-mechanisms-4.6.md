@@ -90,3 +90,11 @@ python scripts/smoke-server.py
 | 合计 | 669 | 80 | 77 |
 
 两组地图探针均核对 1,715 个原始宝箱目录项、真实货币与材料、各阶段保存记录和重复领奖拒绝，没有预写目标完成或重置奖励基线；原有 396 条规则及收据保持兼容。Dispatch 独立账号在进程重启后恢复。开场检查曾发生一次 30 秒场景查询超时，失败日志保留；全量测试结束后，同产物重试完整通过，没有修改超时时限。`build-proof.json` 汇总上述结果，真实游戏客户端操作及尚未接通的 41 项仍不在通过范围内。
+
+## 常驻服务更新
+
+功能提交为 `f49ee1e`。2026-10-21 04:40（Asia/Singapore）正常停止 `hkrpg-local-server-1` 后备份 11 个数据文件，并逐项比较 SHA256；备份位于 `.local/backups/remaining-mechanisms-20261021-044036/`，旧镜像保留为 `hkrpg-local/server:rollback-remaining-mechanisms-20261021-044036`。
+
+服务现运行镜像 `sha256:d8aff56353aee4b4b2b5837606ee2c0caf945bbe54e1d29f003ea6ba7b39908c`，容器内 JAR 与上述已验证产物一致，健康检查、CN/OS Dispatch 和实际 UDP/KCP 心跳全部通过。操作者配置 SHA256 仍为 `6ab12e00346b47718fa765e2b2a88531e8c855efaa25f8eac925155a7f7d194e`。
+
+更新前后只读比较确认 UID `10001` 保留：7 个已完成开场目标、卡芙卡临时队伍 `[1001005]`、已完成开场门 `100010105`，以及已有宝箱阶段、机关记录和物件状态。没有重置账号或恢复旧数据库。证据为 `deployment.json`、`compose-verification.json` 和 `live-preservation-proof.json`；部署完成不代表 41 项未实现流程或真实客户端解谜演出已经验收。
