@@ -68,3 +68,11 @@ python scripts/smoke-server.py
 最终全量构建通过：572 个套件、14,802 项测试，失败、错误和跳过均为 0，包含本轮新增的 14 项回归。源码及测试输入从构建到验收保持一致，原生探针与候选镜像均校验到相同的 JAR SHA-256：`d570fa2adeee868efee3fbc4abfaaea2d255fd7586a4066fe176bbd0588599a8`。
 
 完整证据位于忽略目录 `build/final-mechanisms-20261021/`，包括 `build-proof.json`、`native-final.json`、`native-qte-diagnostic.json`、`native-opening.json`、修复前的失败回归 XML 及 `scene-lock-deadlock.txt`。通过这些服务端检查不代表剩余 37 项或真实客户端演出已完成。
+
+## 服务更新
+
+代码提交 `2a5ad2f` 已部署到常驻服务 `hkrpg-local-server-1`。2026-10-21 07:26 正常停服后，将 11 个数据文件复制到 `.local/backups/final-mechanisms-20261021-072638/` 并逐文件核对摘要；同目录保留旧 JAR、配置和资源清单，旧镜像另保留回滚标签。随后启动新镜像 `sha256:70e5b4151c2721d8da42147b9e6115315c0066ddfb35dcec2958325fa0ca05b8`。
+
+容器恢复健康，实际运行的 JAR 与通过验证的候选包一致。只读 Compose 验收通过，包括 CN/OS 派发和 UDP/KCP 心跳。87,472 个资源文件的清单摘要仍为 `53d2a1dc1e2942e79afbde6f0262efd7a86f8fabc0129b0bd804f814384c16f7`，操作员配置 SHA-256 仍为 `6ab12e00346b47718fa765e2b2a88531e8c855efaa25f8eac925155a7f7d194e`。
+
+更新前后只读核对：账号数为 1，UID 10001 保留，7 项已完成的开场目标、既有宝箱和机关记录、场景物件状态一致；试用队伍仍为 `[1001005]`，开场门目标 `100010105` 为 FINISHED，大厅门目标 `100010107` 为 DOING。部署与存档证据分别为 `deployment.json`、`compose-verification.json` 和 `live-preservation-proof.json`。
