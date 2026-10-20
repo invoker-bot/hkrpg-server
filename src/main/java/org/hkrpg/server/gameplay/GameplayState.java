@@ -9,6 +9,13 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private TutorialProgress tutorials = new TutorialProgress();
+
+  public TutorialProgress getTutorials() {
+    if (tutorials == null) tutorials = new TutorialProgress();
+    return tutorials;
+  }
+
   // Client UseID belongs to a live session; it must never become an H2/Mongo receipt.
   @dev.morphia.annotations.Transient
   private transient MazeCastState mazeCasts = new MazeCastState();

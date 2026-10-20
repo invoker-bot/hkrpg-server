@@ -193,6 +193,7 @@ public final class MissionManager {
           player.getMissionTrialManager().remove(config);
           if (currentCondition(config)) pass |= advance(config, state, goal(config));
         }
+        pass |= player.getMissionTrialManager().initializeOpening();
         pass |= new MessageManager(player).activateEligible();
         for (var entry : player.getGameplay().getMainMissions().entrySet()) {
           var state = entry.getValue();

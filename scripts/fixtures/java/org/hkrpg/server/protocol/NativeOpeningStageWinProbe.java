@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import kcp.highway.*;
 
-/** Original opening mission over KCP; no seeded mission state or operator account. */
+/** Fresh opening party, tutorial progress and first victory over KCP; no seeded player state. */
 public final class NativeOpeningStageWinProbe {
   private record Frame(int command, byte[] body) {}
 
@@ -86,6 +86,42 @@ public final class NativeOpeningStageWinProbe {
     require(missions.containsKey(100010105) == finished, "Next opening objective");
   }
 
+  private void openingParty() throws Exception {
+    var team = (DynamicMessage) field(call("GetCurLineupDataCsReq"), "lineup");
+    var avatars = (List<?>) field(team, "avatar_list");
+    require(avatars.size() == 1, "Opening must contain only Kafka");
+    var kafka = (DynamicMessage) avatars.getFirst();
+    require((Integer) field(kafka, "id") == 1001005, "Opening Kafka special-avatar ID");
+    require(
+        ((Descriptors.EnumValueDescriptor) field(kafka, "avatar_type")).getNumber() == 1,
+        "Opening actor must remain a trial");
+    var owned =
+        (List<?>)
+            field(call("GetAvatarDataCsReq", Map.of("is_get_all", true), true), "avatar_list");
+    require(
+        owned.size() == 1
+            && (Integer) field((DynamicMessage) owned.getFirst(), "base_avatar_id") == 8001,
+        "Opening trials must not be granted as formal avatars");
+  }
+
+  private void tutorialProgress(boolean finished) throws Exception {
+    var tutorials = (List<?>) field(call("GetTutorialCsReq"), "tutorial_list");
+    var guides = (List<?>) field(call("GetTutorialGuideCsReq"), "tutorial_guide_list");
+    if (!finished) {
+      require(
+          tutorials.isEmpty() && guides.isEmpty(), "Fresh tutorials were fabricated as completed");
+    } else {
+      require(
+          tutorials.size() == 1 && guides.isEmpty(),
+          "Tutorial progress must survive reconnect/restart");
+      var item = (DynamicMessage) tutorials.getFirst();
+      require(
+          (Integer) field(item, "id") == 1001
+              && ((Descriptors.EnumValueDescriptor) field(item, "status")).getNumber() == 2,
+          "Only the acknowledged opening tutorial should be finished");
+    }
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     int uid =
         (Integer)
@@ -103,8 +139,21 @@ public final class NativeOpeningStageWinProbe {
                 "uid");
     call("PlayerLoginCsReq");
     call("PlayerLoginFinishCsReq");
+    openingParty();
     boolean first = control.get("phase").getAsString().equals("first");
     if (first) {
+      tutorialProgress(false);
+      var missions = (List<?>) field(call("GetMissionDataCsReq"), "mission_list");
+      var intro =
+          missions.stream()
+              .map(row -> (DynamicMessage) row)
+              .filter(row -> (Integer) field(row, "id") == 100010102)
+              .findFirst()
+              .orElseThrow();
+      require(
+          (Integer) field(intro, "progress") == 0
+              && ((Descriptors.EnumValueDescriptor) field(intro, "status")).getNumber() == 1,
+          "Opening intro must wait for the client performance");
       var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
       require(
           (Integer) field(scene, "entry_id") == 2000101
@@ -119,7 +168,12 @@ public final class NativeOpeningStageWinProbe {
       var entered = call("SceneEnterStageCsReq", Map.of("event_id", 20001001), true);
       var battle = (DynamicMessage) field(entered, "battle_info");
       require((Integer) field(battle, "stage_id") == 200010010, "Original world-zero stage");
-      require(!((List<?>) field(battle, "battle_avatar_list")).isEmpty(), "Actual party is empty");
+      var combatants = (List<?>) field(battle, "battle_avatar_list");
+      require(combatants.size() == 1, "Opening battle must use Kafka only");
+      var kafka = (DynamicMessage) combatants.getFirst();
+      require(
+          (Integer) field(kafka, "id") == 1001005 && (Integer) field(kafka, "level") == 10,
+          "Opening battle must use the original level-10 Kafka trial");
       require(
           !((List<?>) field(battle, "monster_wave_list")).isEmpty(), "Original monsters are empty");
       var end =
@@ -135,8 +189,11 @@ public final class NativeOpeningStageWinProbe {
       call("PVEBattleResultCsReq", report, true);
       progress(true);
       call("PVEBattleResultCsReq", report, false);
+      call("UnlockTutorialCsReq", Map.of("HPIMDINCCNN", 1001), true);
+      call("FinishTutorialCsReq", Map.of("tutorial_id", 1001), true);
     }
     progress(true);
+    tutorialProgress(true);
     return Map.of(
         "passed",
         true,
@@ -149,6 +206,10 @@ public final class NativeOpeningStageWinProbe {
         "openingBattleFinished",
         true,
         "nextObjectiveAccepted",
+        true,
+        "openingKafkaVerified",
+        true,
+        "tutorialProgressVerified",
         true,
         "clientGameplayVerified",
         false);

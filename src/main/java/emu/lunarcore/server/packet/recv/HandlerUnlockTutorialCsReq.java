@@ -13,7 +13,9 @@ public class HandlerUnlockTutorialCsReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] data) throws Exception {
         var req = UnlockTutorialCsReq.parseFrom(data);
-        session.send(new PacketUnlockTutorialScRsp(req.getTutorialId()));
+        var result = session.getPlayer().getGameplay().getTutorials()
+                .change(session.getPlayer(), false, req.getTutorialId(), false);
+        session.send(new PacketUnlockTutorialScRsp(req.getTutorialId(), result));
     }
 
 }

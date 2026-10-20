@@ -21,13 +21,19 @@ public final class MissionTrialRemovals {
   @Getter
   public static final class Receipt {
     private String source;
+    private String openingSource;
     private Map<Integer, String> creations = new HashMap<>();
 
     protected Receipt() {}
 
     Receipt(Source source, MissionTrialState.Party party) {
       this.source = source.signature();
-      creations.putAll(party.getSources());
+      if (source.avatar() == OpeningPlayer.KAFKA) openingSource = party.getOpeningSource();
+      party.getSources().forEach((id, signature) -> {
+        var creation = TrialAvatarMissionConditions.source(GameplayDefinitions.subs.get(id));
+        if (creation != null && creation.targets().contains(source.avatar()))
+          creations.put(id, signature);
+      });
     }
   }
 
@@ -106,6 +112,13 @@ public final class MissionTrialRemovals {
           || !"Mission".equals(root.get("Type").getAsString())
           || !root.getAsJsonArray("OnInitSequece").isEmpty()) return null;
       var start = root.getAsJsonArray("OnStartSequece");
+      if (OpeningPlayer.removal(c)) {
+        var signature = new JsonObject();
+        signature.add("sub", GSON.toJsonTree(c));
+        signature.add("wholeTask", root);
+        return new Source(c.getId(), c.getMainMissionID(), c.getLevelPlaneID(), c.getLevelFloorID(),
+            c.getParamInt1(), 0, 0, signature.toString());
+      }
       if (start.size() != 2) return null;
       var remove = tasks(start.get(0));
       var spawn = tasks(start.get(1));
@@ -209,8 +222,17 @@ public final class MissionTrialRemovals {
         || receipt == null
         || !source.signature().equals(receipt.getSource())
         || receipt.getCreations() == null
-        || receipt.getCreations().isEmpty()
+        || receipt.getCreations().isEmpty() && receipt.getOpeningSource() == null
         || receipt.getCreations().size() > 64) return false;
+    if (receipt.getOpeningSource() != null) {
+      if (source.sub() != OpeningPlayer.REMOVE || source.avatar() != OpeningPlayer.KAFKA
+          || !receipt.getCreations().isEmpty()
+          || !receipt.getOpeningSource().equals(OpeningPlayer.source())
+          || !receipt.getOpeningSource().equals(state.getOpeningSource())
+          || !MissionStateRecords.subAccepted(player, OpeningPlayer.INTRO)
+          || !MissionStateRecords.subCompleted(player, 100010112)
+          || !player.hasCreatedCharacter()) return false;
+    }
     for (var entry : receipt.getCreations().entrySet()) {
       var creation =
           TrialAvatarMissionConditions.source(GameplayDefinitions.subs.get(entry.getKey()));

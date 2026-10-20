@@ -11,7 +11,7 @@ public class HandlerGetTutorialCsReq extends PacketHandler {
 
     @Override
     public void handle(GameSession session, byte[] data) throws Exception {
-        session.send(new PacketGetTutorialScRsp());
+        session.send(new PacketGetTutorialScRsp(session.getPlayer()));
     }
 
 }

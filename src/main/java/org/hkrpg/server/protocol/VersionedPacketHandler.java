@@ -15,6 +15,7 @@ public final class VersionedPacketHandler {
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
     var protocol = session.getProtocol();
     if (!protocol.experimental()) return false;
+    if (Tutorial46.handle(session, command, bytes)) return true;
     if (PlayerReturn46.handle(session, command, bytes)) return true;
     if (LoginBootstrap46.handle(session, command, bytes)) return true;
     if (TextJoin46.handle(session, command, bytes)) return true;

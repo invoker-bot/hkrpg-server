@@ -141,6 +141,51 @@ public final class MissionTrialManager {
         && actual.getRank() == trial.getSpecialAvatarExcel().getEquipmentRank();
   }
 
+  /** Bootstrap after the first task is accepted, including login before the scene is constructed. */
+  boolean initializeOpening() {
+    synchronized (player) {
+      if (!OpeningPlayer.eligible(player) || player.isInBattle() || !context(OpeningPlayer.MAIN))
+        return false;
+      var scene = player.getScene();
+      if (scene != null && (scene.getPlayer() != player || !ordinary(scene.getPlaneType())
+          || scene.getPlaneId() != OpeningPlayer.PLANE || scene.getFloorId() != OpeningPlayer.FLOOR
+          || scene.getDimensionId() != 0 || scene.getStoryLineId() != 0)) return false;
+      String source = OpeningPlayer.source();
+      if (source == null || !player.getAvatars().getTempAvatars().isEmpty()) return false;
+      var team = player.getCurrentLineup();
+      if (team == null || team.isExtraLineup() || team.getOwner() != player
+          || team.getOwnerUid() != player.getUid() || team.getAvatars().isEmpty()
+          || team.size() > 4 || new HashSet<>(team.getAvatars()).size() != team.size()
+          || team.getAvatars().stream().anyMatch(id -> !player.getAvatars().getAvatars().containsKey(id)))
+        return false;
+      var trial = player.getTrialManager().buildTrialAvatar(OpeningPlayer.KAFKA);
+      if (trial == null || trial.getSkillTree().isEmpty() || !completeEquipment(trial)) return false;
+      var prepared = new MissionTrialState.Party(OpeningPlayer.MAIN, OpeningPlayer.PLANE,
+          OpeningPlayer.FLOOR, player.getLineupManager().getCurrentIndex(), team.getAvatars(), 0, team.getMp());
+      prepared.bindOpening(source);
+      prepared.select(List.of(OpeningPlayer.KAFKA), 0, false, 0);
+      prepared.getActors().put(OpeningPlayer.KAFKA, new MissionTrialState.Actor(trial));
+      prepared.getVitals().put(OpeningPlayer.KAFKA, new StoryLineState.Vital(10000, 7000));
+      final Map<Integer, TrialAvatar> built;
+      try {
+        built = rebuild(prepared, false);
+      } catch (IllegalArgumentException | IllegalStateException invalidResource) {
+        return false;
+      }
+      state().publish(prepared);
+      try {
+        player.save();
+      } catch (RuntimeException failed) {
+        state().retire();
+        state().openingSource(null);
+        throw failed;
+      }
+      install(prepared, built);
+      sync();
+      return true;
+    }
+  }
+
   /** Reserve the frozen action before publishing a scene role or completing its condition. */
   boolean execute(MissionInfo.SubMissionInfo c) {
     synchronized (player) {
@@ -401,13 +446,19 @@ public final class MissionTrialManager {
         || party.getMp() > maximum(party)
         || party.getActors().isEmpty() && party.getBaseActors().isEmpty()
         || party.getActors().size() > 64
-        || party.getSources().isEmpty()
+        || party.getSources().isEmpty() && party.getOpeningSource() == null
         || party.getSources().size() > 64
         || !party.getVitals().keySet().containsAll(party.getActors().keySet())
         || !party.getVitals().keySet().containsAll(party.getRoster()))
       throw new IllegalStateException("Invalid frozen mission party");
     validateBaseActors(party);
     var selectedActors = new HashSet<Integer>();
+    boolean opening = party.getOpeningSource() != null;
+    if (opening) {
+      if (!OpeningPlayer.matches(player, party, restoring))
+        throw new IllegalStateException("Invalid opening trial source");
+      selectedActors.add(OpeningPlayer.KAFKA);
+    }
     for (var entry : party.getSources().entrySet()) {
       var source =
           TrialAvatarMissionConditions.source(GameplayDefinitions.subs.get(entry.getKey()));
@@ -428,16 +479,17 @@ public final class MissionTrialManager {
         TrialAvatarMissionConditions.source(GameplayDefinitions.subs.get(party.getLastSub()));
     selectedActors.removeAll(party.getBaseActors().keySet());
     if (!selectedActors.equals(party.getActors().keySet())
-        || last == null
-        || !party.getSources().containsKey(last.sub())
-        || !party.getRoster().contains(selected(last))
-        || party.isVirtual() != last.task().equals("RPG.GameCore.ReplaceVirtualTeam")
-        || Set.of("RPG.GameCore.ReplaceTrialPlayer", "RPG.GameCore.ReplaceVirtualTeam")
+        || (last == null
+            ? !opening || party.getLastSub() != 0 || !party.getSources().isEmpty()
+            : !party.getSources().containsKey(last.sub())
+              || !party.getRoster().contains(selected(last))
+              || party.isVirtual() != last.task().equals("RPG.GameCore.ReplaceVirtualTeam")
+              || Set.of("RPG.GameCore.ReplaceTrialPlayer", "RPG.GameCore.ReplaceVirtualTeam")
                 .contains(last.task())
-            && !party.getRoster().equals(List.of(selected(last))))
+                && !party.getRoster().equals(List.of(selected(last)))))
       throw new IllegalStateException("Invalid mission trial roster binding");
     var entryPlan = raid == null ? null : RaidTeams.plan(raid);
-    if (entryPlan != null && "TrialOrPlayer".equals(entryPlan.type())
+    if (entryPlan != null && last != null && "TrialOrPlayer".equals(entryPlan.type())
         && "RPG.GameCore.ReplaceTrialPlayer".equals(last.task())
         && !entryAllowed(party, entryPlan))
       throw new IllegalStateException("Invalid original mission trial entry team");
@@ -588,7 +640,10 @@ public final class MissionTrialManager {
           MissionStateRecords.mainCompleted(player, party.getMain())
               || player.getGameplay().getCancelledMissions().contains(party.getMain())
               || party.getSources().keySet().stream()
-                  .anyMatch(player.getGameplay().getCancelledSubs()::contains);
+                  .anyMatch(player.getGameplay().getCancelledSubs()::contains)
+              || party.getOpeningSource() != null
+                  && (player.getGameplay().getCancelledSubs().contains(OpeningPlayer.INTRO)
+                      || player.getGameplay().getCancelledSubs().contains(OpeningPlayer.REMOVE));
       boolean left =
           party.getRaid() == 0
               && (party.getPlane() != player.getPlaneId()
@@ -690,7 +745,7 @@ public final class MissionTrialManager {
     return RaidTeams.membersAllowed(plan, members);
   }
 
-  /** Retire the sole actor only when every instruction of its authored removal graph is supported. */
+  /** Remove a proven actor; the opening Silver Wolf task leaves Kafka in the temporary party. */
   boolean remove(MissionInfo.SubMissionInfo c) {
     synchronized (player) {
       var source = MissionTrialRemovals.source(player, c);
@@ -701,23 +756,38 @@ public final class MissionTrialManager {
       var party = state().getParty();
       if (party == null || party.getRaid() != 0 || party.getMain() != source.main()
           || party.getPlane() != source.plane() || party.getFloor() != source.floor()
-          || !party.getActors().keySet().equals(Set.of(source.avatar()))
+          || !(party.getActors().keySet().equals(Set.of(source.avatar()))
+              || party.getOpeningSource() != null && source.sub() == 100010123
+                  && party.getActors().keySet().equals(Set.of(OpeningPlayer.KAFKA, 1001006)))
           || !party.getBaseActors().isEmpty() || !party.getRoster().contains(source.avatar())) return false;
+      if (source.sub() == OpeningPlayer.REMOVE
+          && (party.getOpeningSource() == null || !player.hasCreatedCharacter()
+              || !MissionStateRecords.subCompleted(player, 100010112))) return false;
       try {
         ensure();
         var normal = player.getLineupManager().getLineups()[party.getIndex()];
         if (normal == null || normal.isExtraLineup() || party.getEntryRoster() == null
             || party.getEntryRoster().isEmpty() || !normal.getAvatars().equals(party.getEntryRoster())
-            || player.getAvatars().getTempAvatars().size() != 1) return false;
+            || !player.getAvatars().getTempAvatars().keySet().equals(party.getActors().keySet())) return false;
         for (int id : normal.getAvatars()) {
           var formal = player.getAvatars().getAvatars().get(id);
           if (formal == null || formal.getAvatarId() != id || formal.getOwner() != player
               || formal.getOwnerUid() != player.getUid()) return false;
         }
         var receipt = new MissionTrialRemovals.Receipt(source, party);
-        // Publish and retire together in the same player document before releasing cached actors.
+        MissionTrialState.Party remaining = null;
+        Map<Integer, TrialAvatar> rebuilt = Map.of();
+        if (party.getActors().size() > 1) {
+          remaining = GSON.fromJson(GSON.toJson(party), MissionTrialState.Party.class);
+          remaining.getActors().remove(source.avatar());
+          remaining.getVitals().remove(source.avatar());
+          remaining.getSources().keySet().removeAll(receipt.getCreations().keySet());
+          remaining.select(List.of(OpeningPlayer.KAFKA), 0, false, 0);
+          rebuilt = rebuild(remaining, false);
+        }
+        // Removal proof and the remaining party share the same durable player document.
         state().getRemovals().put(c.getId(), receipt);
-        state().retire();
+        if (remaining == null) state().retire(); else state().publish(remaining);
         try {
           player.save();
         } catch (RuntimeException failed) {
@@ -725,7 +795,7 @@ public final class MissionTrialManager {
           state().publish(party);
           throw failed;
         }
-        unpublish();
+        if (remaining == null) unpublish(); else install(remaining, rebuilt);
         sync();
         return true;
       } catch (IllegalArgumentException | IllegalStateException | NullPointerException invalid) {

@@ -1,4 +1,4 @@
-"""隔离账号、原始资源及实际队伍的首战 KCP 推进与正常 H2 重启检查；不操作官方客户端。"""
+"""隔离新号的卡芙卡开场、教程状态、首战 KCP 推进与正常 H2 重启检查；不操作官方客户端。"""
 import hashlib
 import json
 import os
@@ -26,6 +26,8 @@ def main():
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     guarded = ['ExcelOutput/MainMission.json', 'ExcelOutput/PlaneEvent.json', 'ExcelOutput/StageConfig.json']
+    guarded += ['ExcelOutput/SpecialAvatar.json', 'ExcelOutput/AvatarConfigTrial.json',
+                'ExcelOutput/TutorialData.json', 'ExcelOutput/TutorialGuideGroup.json']
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
@@ -89,6 +91,7 @@ def main():
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
                     assert snapshot['passed'] and snapshot['openingBattleFinished'] and snapshot['nextObjectiveAccepted']
+                    assert snapshot['openingKafkaVerified'] and snapshot['tutorialProgressVerified']
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:

@@ -1,6 +1,5 @@
 package emu.lunarcore.server.packet.recv;
 
-import emu.lunarcore.data.GameData;
 import emu.lunarcore.proto.FinishTutorialGuideCsReqOuterClass.FinishTutorialGuideCsReq;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.CmdId;
@@ -15,9 +14,9 @@ public class HandlerFinishTutorialGuideCsReq extends PacketHandler {
     public void handle(GameSession session, byte[] data) throws Exception {
         var req = FinishTutorialGuideCsReq.parseFrom(data);
 
-        var excel = GameData.getTutorialGuideExcelMap().get(req.getGroupId());
-
-        session.send(new PacketFinishTutorialGuideScRsp(excel));
+        var result = session.getPlayer().getGameplay().getTutorials()
+                .change(session.getPlayer(), true, req.getGroupId(), true);
+        session.send(new PacketFinishTutorialGuideScRsp(req.getGroupId(), result));
     }
 
 }

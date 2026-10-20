@@ -176,6 +176,8 @@
 
 # HKRPG Server
 
+新账号开场卡芙卡队伍与教程状态修复见[新号初始化说明](docs/opening-player-initialization-4.6.md)；已有任务进度继续保留，完整客户端新手演出仍待验收。
+
 3011014回收物日常的原三选一、真实发物/交物及隔日身份已补入正式实现，完整来源、失败回归和实际运行边界见[回收物日常验证](docs/daily-recover-delivery-4.6.md)。演出开始回执、原开场临时NPC、14份缺失入口及三名NPC初遇/后续对话已补入，见[演出入口验证](docs/daily-recover-performance-4.6.md)。完整游戏客户端演出仍待验收。
 
 2026-10-14正式收尾3011605/3011608自选材料日常，并修复折纸小鸟摆放保存失败后的内存残留；来源、回归及实际运行边界分别见[日常验证](docs/daily-selected-item-4.6.md)和[小鸟验证](docs/match-three-bird-position-4.6.md)。完整玩法与游戏客户端验收继续待完成。

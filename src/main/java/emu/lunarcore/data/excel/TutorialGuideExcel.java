@@ -8,6 +8,7 @@ import lombok.Getter;
 @ResourceType(name = {"TutorialGuideGroup.json"})
 public class TutorialGuideExcel extends GameResource {
     private int GroupID;
+    private int RewardID;
 
     @Override
     public int getId() {

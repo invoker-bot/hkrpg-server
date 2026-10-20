@@ -228,8 +228,8 @@ public class Player implements Tickable, Syncable {
         // Setup hero paths
         this.getAvatars().validateMultiPaths();
 
-        // Give us the main character
-        // TODO script tutorial
+        // Prepare the owned protagonist for the later character choice. The opening mission
+        // provides Kafka through MissionTrialManager without changing this formal team.
         GameAvatar avatar = new GameAvatar(GameConstants.TRAILBLAZER_AVATAR_ID);
         this.addAvatar(avatar);
         this.getCurrentLineup().getAvatars().add(avatar.getAvatarId());

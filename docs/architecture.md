@@ -1,3 +1,5 @@
+新号开场在首个场景构造前，经原主任务接取初始化卡芙卡试用队伍；来源和数值保存在 `MissionTrialState`，正式角色/编队保留。教程状态由 `TutorialProgress` 按玩家回执保存，查询不再把资源目录当完成记录。银狼与卡芙卡退场、旧存档保留及客户端验收边界见[新号初始化说明](opening-player-initialization-4.6.md)。
+
 网页 GM 入口复用 Javalin HTTP 服务；鉴权、操作日志和游戏适配位于 `org.hkrpg.server.gm`，网页原生模块随 JAR 打包，不需要独立前端进程。复用命令管理器的每调用回显与持久请求去重边界见 [GM 控制台说明](gm-console.md)。
 
 4.6 加载阶段继续修复 NPC 初遇查询断连、影片初始化除零与虚构商店目录；影片播放、稳定进图和完整演出仍待客户端验收，见[本轮加载修复](login-loading-first-talk-4.6.md)。

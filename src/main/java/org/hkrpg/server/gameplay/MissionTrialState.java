@@ -14,13 +14,17 @@ import lombok.Getter;
 @Getter
 public final class MissionTrialState {
   private Party party;
+  private String openingSource;
   private Map<Integer, String> executed = new HashMap<>();
   private Map<Integer, MissionTrialRemovals.Receipt> removals = new HashMap<>();
 
   void publish(Party prepared) {
     party = Objects.requireNonNull(prepared);
     executed.putAll(prepared.getSources());
+    if (prepared.getOpeningSource() != null) openingSource = prepared.getOpeningSource();
   }
+
+  void openingSource(String source) { openingSource = source; }
 
   void retire() {
     party = null;
@@ -62,6 +66,7 @@ public final class MissionTrialState {
   public static final class Party {
     private int main, plane, floor, index, leader, mp, lastSub, raid;
     private String raidSource, raidBase;
+    private String openingSource;
     private boolean virtual;
     private List<Integer> roster = new ArrayList<>();
     private List<Integer> entryRoster = new ArrayList<>();
@@ -93,6 +98,8 @@ public final class MissionTrialState {
     void leader(int value) {
       leader = value;
     }
+
+    void bindOpening(String source) { openingSource = source; }
 
     void bindRaid(int id, String source) {
       raid = id;
