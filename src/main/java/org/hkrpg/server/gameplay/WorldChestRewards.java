@@ -19,15 +19,23 @@ final class WorldChestRewards {
                     Set.of("CHEST_LOW_LEVEL", "CHEST_MIDDLE_LEVEL", "CHEST_HIGH_LEVEL").contains(t))
             .toList();
     if (levels.size() != 1) return null;
-    if (world == 101)
-      return tags.equals(Set.of("CHEST_WORLD_ZERO", "CHEST_TREASURE_NORMAl", "CHEST_LOW_LEVEL"))
-          ? Map.of(1, 5, 2, 500, 22, 5, 120000, 15, 212, 3, 232, 1)
-          : null;
-    if (world != 501 || !tags.contains("CHEST_WORLD_FOUR")) return null;
+    String worldTag =
+        switch (world) {
+          case 101 -> "CHEST_WORLD_ZERO";
+          case 201 -> "CHEST_WORLD_ONE";
+          case 301 -> "CHEST_WORLD_TWO";
+          case 401 -> "CHEST_WORLD_THREE";
+          case 501 -> "CHEST_WORLD_FOUR";
+          case 601 -> "CHEST_WORLD_PLANARCADIA";
+          case 602 -> "CHEST_WORLD_ASTROPOLIS";
+          default -> null;
+        };
+    if (worldTag == null || !tags.contains(worldTag)) return null;
+    int material = world == 602 ? 120006 : 120000 + (world / 100 - 1);
     return switch (levels.getFirst()) {
-      case "CHEST_LOW_LEVEL" -> Map.of(1, 5, 2, 500, 22, 5, 120004, 15, 212, 3, 232, 1);
-      case "CHEST_MIDDLE_LEVEL" -> Map.of(1, 20, 2, 2500, 22, 20, 120004, 15, 212, 3, 232, 1);
-      case "CHEST_HIGH_LEVEL" -> Map.of(1, 30, 22, 30, 120004, 15, 212, 3, 232, 1);
+      case "CHEST_LOW_LEVEL" -> Map.of(1, 5, 2, 500, 22, 5, material, 15, 212, 3, 232, 1);
+      case "CHEST_MIDDLE_LEVEL" -> Map.of(1, 20, 2, 2500, 22, 20, material, 15, 212, 3, 232, 1);
+      case "CHEST_HIGH_LEVEL" -> Map.of(1, 30, 22, 30, material, 15, 212, 3, 232, 1);
       default -> null;
     };
   }

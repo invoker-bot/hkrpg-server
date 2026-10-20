@@ -31,7 +31,10 @@ def main():
     parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/world-chest-native.json')
     parser.add_argument('--base-zone', action='store_true', help='Verify the six Base Zone exploration chests')
+    parser.add_argument('--map-chests', action='store_true', help='Verify original chests across seven worlds')
     args = parser.parse_args()
+    assert not (args.base_zone and args.map_chests), 'Choose one chest fixture'
+    original_resources = args.base_zone or args.map_chests
     jar, output = args.jar.resolve(), args.output.resolve()
     assert jar.is_file() and jar.is_relative_to(ROOT / 'build')
     assert output.is_relative_to(ROOT / 'build')
@@ -39,7 +42,8 @@ def main():
     assert java
     artifact = sha(jar)
     source = ROOT / 'resources/4.6'
-    fixture_name = 'base-zone-chests-4.6.json' if args.base_zone else 'world-chest-4.6.json'
+    fixture_name = ('map-chests-4.6.json' if args.map_chests
+                    else 'base-zone-chests-4.6.json' if args.base_zone else 'world-chest-4.6.json')
     golden = json.loads((ROOT / 'src/test/resources/fixtures' / fixture_name).read_text('utf-8'))
     tables = {Path(path).stem: rows for path, rows in golden['records'].items()}
     goals = []
@@ -52,13 +56,15 @@ def main():
                 recipes[item] = recipes.get(item, 0) + reward['Count_' + key.split('_')[1]]
         goals.append(dict(id=quest['QuestID'], goal=finish['Progress'], rewards=recipes))
     assert [(goal['id'], goal['goal']) for goal in goals] == (
-        [] if args.base_zone else [(6029850, 5), (6029851, 10), (6029852, 15)])
+        [] if original_resources else [(6029850, 5), (6029851, 10), (6029852, 15)])
     chests = [dict(location, id=int(key)) for key, location in golden['locations'].items()]
+    if args.map_chests:
+        chests = [row for row in chests if row['id'] != 20001632]  # Locked guard challenge is a rejection fixture.
     chests.sort(key=lambda row: row['id'])
-    expected_chests = 6 if args.base_zone else 24
+    expected_chests = 7 if args.map_chests else 6 if args.base_zone else 24
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
-    assert all(row['plane'] == plane and row['floor'] == floor for row in chests)
+    assert args.map_chests or all(row['plane'] == plane and row['floor'] == floor for row in chests)
     entry = next(row for row in tables['MapEntrance'] if row['PlaneID'] == plane and row['FloorID'] == floor)
     world = next(row['WorldID'] for row in tables['MazePlane'] if row['PlaneID'] == plane)
     stage = dict(plane=plane, floor=floor, entry=entry['ID'], world=world, pos=dict(x=0, y=0, z=0))
@@ -69,7 +75,7 @@ def main():
     original = json.loads((source / floor_path).read_text('utf-8'))
     dim = next(row for row in original['DimensionList'] if row.get('ID', 0) == 0)
     initial = original['GroupInstanceList'][dim.get('StartGroupIndex', original.get('StartGroupIndex', 0))]
-    groups = {row['group'] for row in chests}
+    groups = {row['group'] for row in chests if row['plane'] == plane and row['floor'] == floor}
     refs = [initial] + [original['GroupInstanceList'][i] for i in dim['GroupIndexList']
                        if original['GroupInstanceList'][i]['ID'] in groups
                        and original['GroupInstanceList'][i]['ID'] != initial['ID']]
@@ -83,9 +89,10 @@ def main():
     hashes = {str(path.relative_to(source)).replace('\\', '/'): sha(path) for path in sorted(guarded)}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
-    directory = Path(tempfile.mkdtemp(prefix='base-zone-chests-' if args.base_zone else 'world-chests-', dir=runs))
+    directory = Path(tempfile.mkdtemp(prefix='map-chests-' if args.map_chests
+                                     else 'base-zone-chests-' if args.base_zone else 'world-chests-', dir=runs))
     fixture = directory / 'resources-fixture'
-    if args.base_zone:
+    if original_resources:
         # Exercise the operator's original resources read-only, including unmodified floor indexes.
         fixture.mkdir()
         bindings = []
@@ -104,10 +111,11 @@ def main():
         subprocess.run(['powershell', '-NoProfile', '-NonInteractive', '-File', str(helper), '-Plan', str(plan)],
                        check=True, capture_output=True, creationflags=flags)
     (fixture / 'resource-manifest.json').write_text(json.dumps(dict(
-        clientVersion='4.6.0', testFixture=True, worldChestFixture=True, baseZoneChestFixture=args.base_zone)), 'utf-8')
+        clientVersion='4.6.0', testFixture=True, worldChestFixture=True,
+        baseZoneChestFixture=args.base_zone, mapChestFixture=args.map_chests)), 'utf-8')
     http, mongo, game = port(), port(), port(socket.SOCK_DGRAM)
     config = directory / 'config.json'
-    config.write_text(json.dumps(dict(protocol=dict(wireVersion='4.6.0'), resourceDir=str(source if args.base_zone else fixture),
+    config.write_text(json.dumps(dict(protocol=dict(wireVersion='4.6.0'), resourceDir=str(source if original_resources else fixture),
         httpServer=dict(bindAddress='127.0.0.1', bindPort=http),
         gameServer=dict(bindAddress='127.0.0.1', bindPort=game),
         internalMongoServer=dict(address='127.0.0.1', port=mongo, filePath='./data/database.mv'))), 'utf-8')
@@ -140,6 +148,7 @@ def main():
     def inspect(mode):
         control = directory / f'inspector-{len(inspections)}.json'
         control.write_text(json.dumps(dict(uid=credentials['uid'], known=known, claimed=claimed, baseZone=args.base_zone,
+                                          mapChests=args.map_chests,
                                           goals=goals, stage=stage)), 'utf-8')
         child = subprocess.run([str(java), *options, '-cp', classpath,
             'org.hkrpg.server.gameplay.WorldChestFixtureInspector', str(directory), str(control), mode],
@@ -151,10 +160,12 @@ def main():
         assert value['passed'] and value['openedChests'] == len(known)
         inspections.append(value)
 
-    batches = [[], chests, []] if args.base_zone else [[], chests[:5], chests[5:10], chests[10:15], chests[15:], []]
+    batches = ([[], *[[row] for row in chests], []] if args.map_chests else [[], chests, []]
+               if args.base_zone else [[], chests[:5], chests[5:10], chests[10:15], chests[15:], []])
     for index, batch in enumerate(batches):
         target_claim = goals[index - 1]['id'] if goals and index in range(1, 4) else 0
-        control = dict(credentials, **stage, allChests=chests, chests=batch, goals=goals,
+        current_chests = [row for row in chests if row['plane'] == stage['plane'] and row['floor'] == stage['floor']]
+        control = dict(credentials, **stage, allChests=current_chests, chests=batch, goals=goals,
                        known=known, claimed=claimed, seed=index == 0, claim=target_claim)
         with (directory / f'server-{index}.log').open('wb') as log:
             process = subprocess.Popen([str(java), *options, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
@@ -229,8 +240,14 @@ def main():
                             process.wait(timeout=15)
                         process.stdin.close()
         inspect('seed' if index == 0 else 'inspect')
+        if args.map_chests and index + 1 < len(batches) and batches[index + 1]:
+            next_chest = batches[index + 1][0]
+            stage = dict(plane=next_chest['plane'], floor=next_chest['floor'],
+                         entry=next_chest['entry'], world=next_chest['world'], pos=dict(x=0, y=0, z=0))
+            # Only move the owned smoke character; never prewrite claims or inventory.
+            inspect('move')
         print(json.dumps(dict(phase=index, openedChests=len(known), normalStops=stops)), flush=True)
-    if not args.base_zone:
+    if not original_resources:
         inspect('expired')
     assert len(known) == expected_chests and len(set(known)) == expected_chests
     assert claimed == [goal['id'] for goal in goals] and stops == len(batches)
@@ -240,13 +257,13 @@ def main():
         assert sha(source / path) == expected, path
     report = dict(passed=True, artifactSha256=artifact, runtimeDirectory=str(directory),
         snapshots=snapshots, inspections=inspections, nativeRequests=sum(row['nativeRequests'] for row in snapshots),
-        openedOriginalChests=known, sourceBoundActivityCredits=0 if args.base_zone else 30,
-        chestIdentityNotifications=expected_chests, baseZone=args.base_zone,
+        openedOriginalChests=known, sourceBoundActivityCredits=0 if original_resources else 30,
+        chestIdentityNotifications=expected_chests, baseZone=args.base_zone, mapChests=args.map_chests,
         rejectedRepeatedOpenings=sum(row.get('rejectedRepeatedOpenings', 0) for row in snapshots),
         normalStops=stops, sameUIDNormalH2ProcessRestarts=stops - 1, completedOriginalActivityQuests=claimed,
         actualQuestRewards={goal['id']: goal['rewards'] for goal in goals}, sourceResourceHashes=hashes,
         chestLootIsCustomServerPolicy=True, storyPrerequisitesAndSceneAreFixtures=True,
-        operatorWindowIsFixture=True, sceneGroupReferencesReduced=not args.base_zone,
+        operatorWindowIsFixture=True, sceneGroupReferencesReduced=not original_resources,
         originalWholeGroupDefinitionsUnmodified=True, targetCompletionPrewritten=False,
         countReceiptsPrewritten=False, sourceResourcesModified=False, operatorDataModified=False,
         clientGameplayVerified=False, wholeActivityComplete=False, wholeGameComplete=False)

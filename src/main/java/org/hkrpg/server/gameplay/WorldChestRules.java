@@ -39,18 +39,22 @@ final class WorldChestRules {
     this.hashes = Map.copyOf(hashes);
     this.tables = Map.copyOf(tables);
     this.files = Map.copyOf(files);
-    rowPins = rows(flames, spears, mascots, baseZone);
-    filePins = files(flames, spears, mascots, baseZone);
+    var legacyRows = rows(flames, spears, mascots, baseZone);
+    var legacyFiles = files(flames, spears, mascots, baseZone);
+    rowPins = GoldenSpearSources.merge(MapChestSources.ROWS, legacyRows);
+    filePins = GoldenSpearSources.merge(MapChestSources.FILES, legacyFiles);
     locations =
         GoldenSpearSources.merge(
+            MapChestSources.LOCATIONS,
             GoldenSpearSources.merge(
-                flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS,
-                spears ? GoldenSpearSources.PUZZLES : Map.of()),
-            GoldenSpearSources.merge(
-                mascots ? MascotSources.PUZZLES : Map.of(),
-                baseZone ? BaseZoneChestSources.LOCATIONS : Map.of()));
+                GoldenSpearSources.merge(
+                    flames ? TimeRelayFlameSources.LOCATIONS : WorldChestSources.LOCATIONS,
+                    spears ? GoldenSpearSources.PUZZLES : Map.of()),
+                GoldenSpearSources.merge(
+                    mascots ? MascotSources.PUZZLES : Map.of(),
+                    baseZone ? BaseZoneChestSources.LOCATIONS : Map.of())));
     var gson = ResourceLoader.getGson();
-    for (String key : rowPins.keySet()) {
+    for (String key : legacyRows.keySet()) {
       var p = key.split(":");
       var row = tables.get(p[0]).get(Integer.parseInt(p[1])).deepCopy();
       Object value =
@@ -80,7 +84,7 @@ final class WorldChestRules {
           };
       if (value != null) expected.put(key, value);
     }
-    for (var path : filePins.keySet()) {
+    for (var path : legacyFiles.keySet()) {
       if (!path.contains("/SharedRuntimeGroup/")) continue;
       var g = gson.fromJson(files.get(path), GroupInfo.class);
       g.setId(Integer.parseInt(path.replaceAll(".*_G([0-9]+)\\.json", "$1")));
@@ -234,7 +238,12 @@ final class WorldChestRules {
   }
 
   JsonObject chest(int id) {
-    return tables.get("MazeChest").get(id);
+    var row = tables.get("MazeChest").get(id);
+    return row != null
+            && Objects.equals(
+                rowPins.get("MazeChest:" + id), TimelineActivityRules.fingerprint(row))
+        ? row
+        : null;
   }
 
   List<Integer> goals() {
@@ -281,7 +290,13 @@ final class WorldChestRules {
   Map<Integer, Integer> loot(int id) {
     var row = chest(id);
     if (!locations.containsKey(id) || row == null) return null;
-    return WorldChestRewards.recipe(row.get("WorldID").getAsInt(), row.getAsJsonArray("ChestType"));
+    var recipe =
+        WorldChestRewards.recipe(row.get("WorldID").getAsInt(), row.getAsJsonArray("ChestType"));
+    if (recipe != null && MapChestSources.LOCATIONS.containsKey(id))
+      for (int item : recipe.keySet())
+        if (!mapRow("ItemConfig", item, GameData.getItemExcelMap().get(item), ItemExcel.class))
+          return null;
+    return recipe;
   }
 
   PropInfo original(int id, int dimension) {
@@ -289,12 +304,13 @@ final class WorldChestRules {
     if (l == null) return null;
     var prop = groupProp(id, dimension, l.instance(), l.prop());
     return prop != null
-            && prop.getState()
-                == (flame(id)
-                    ? emu.lunarcore.game.enums.PropState.ChestLocked
-                    : golden(id)
-                        ? emu.lunarcore.game.enums.PropState.Hidden
-                        : emu.lunarcore.game.enums.PropState.ChestClosed)
+            && (MapChestSources.LOCATIONS.containsKey(id)
+                || prop.getState()
+                    == (flame(id)
+                        ? emu.lunarcore.game.enums.PropState.ChestLocked
+                        : golden(id)
+                            ? emu.lunarcore.game.enums.PropState.Hidden
+                            : emu.lunarcore.game.enums.PropState.ChestClosed))
         ? prop
         : null;
   }
@@ -311,13 +327,18 @@ final class WorldChestRules {
     return prop.getPropID() == propId
             && !prop.isIsDelete()
             && !prop.isIsClientOnly()
-            && prop.isLoadOnInitial()
+            && (prop.isLoadOnInitial() || MapChestSources.LOCATIONS.containsKey(id))
         ? prop
         : null;
   }
 
   GroupInfo group(int plane, int floor, int dimension, String path) {
     var expected = groups.get(path);
+    if (expected == null) {
+      var location =
+          locations.values().stream().filter(l -> l.path().equals(path)).findFirst().orElse(null);
+      if (location != null) expected = MapChestSources.group(root, path, location.group());
+    }
     var source = GameData.getFloorInfo(plane, floor);
     if (expected == null
         || source == null
@@ -362,6 +383,22 @@ final class WorldChestRules {
         && source.get("FloorID").getAsInt() == floor;
   }
 
+  private boolean mapRow(String table, int id, Object actual, Class<?> type) {
+    var row = tables.get(table).get(id);
+    if (actual == null
+        || row == null
+        || !Objects.equals(
+            MapChestSources.ROWS.get(table + ":" + id), TimelineActivityRules.fingerprint(row)))
+      return false;
+    var raw = row.deepCopy();
+    if (type == PropExcel.class && raw.has("PropName") && raw.get("PropName").isJsonObject())
+      raw.addProperty("PropName", raw.getAsJsonObject("PropName").get("Hash").getAsLong());
+    var gson = ResourceLoader.getGson();
+    var expected = gson.fromJson(raw, type);
+    if (expected instanceof emu.lunarcore.data.resource.ResourceBase resource) resource.onLoad();
+    return gson.toJsonTree(expected).equals(gson.toJsonTree(actual));
+  }
+
   EntityProp actor(Player p, int id) {
     var l = locations.get(id);
     return l == null ? null : actor(p, id, l.instance(), l.prop());
@@ -394,8 +431,23 @@ final class WorldChestRules {
             ? original(id, scene.getDimensionId())
             : groupProp(id, scene.getDimensionId(), instance, propId);
     if (original == null) return null;
-    if (BaseZoneChestSources.LOCATIONS.containsKey(id)
+    if ((BaseZoneChestSources.LOCATIONS.containsKey(id)
+            || MapChestSources.LOCATIONS.containsKey(id))
         && !p.getMissionManager().shouldLoadGroup(scene.getResourceGroups().get(l.group()), scene))
+      return null;
+    if (MapChestSources.LOCATIONS.containsKey(id)
+        && (!mapRow(
+                "MazePlane",
+                l.plane(),
+                GameData.getMazePlaneExcelMap().get(l.plane()),
+                MazePlaneExcel.class)
+            || !mapRow(
+                "MapEntrance",
+                scene.getEntryId(),
+                GameData.getMapEntranceExcelMap().get(scene.getEntryId()),
+                MapEntranceExcel.class)
+            || !mapRow(
+                "MazeProp", propId, GameData.getPropExcelMap().get(propId), PropExcel.class)))
       return null;
     var matches =
         scene.getEntitiesByGroup(EntityProp.class, l.group()).stream()

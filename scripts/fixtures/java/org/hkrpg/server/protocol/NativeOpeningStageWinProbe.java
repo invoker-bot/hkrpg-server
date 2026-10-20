@@ -273,6 +273,36 @@ public final class NativeOpeningStageWinProbe {
             "Destroyed bottle remains in current scene");
   }
 
+  private void openingChest(boolean alreadyOpened) throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    DynamicMessage chest = null;
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var value : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) value;
+        if ((Integer) field(entity, "group_id") == 36
+            && (Integer) field(entity, "inst_id") == 300002) chest = entity;
+      }
+    require(chest != null, "Original opening chest is absent");
+    var prop = (DynamicMessage) field(chest, "prop");
+    require(
+        (Integer) field(prop, "prop_id") == 60001
+            && (Integer) field(prop, "prop_state") == (alreadyOpened ? 13 : 12),
+        "Opening chest lost its persistent state");
+    var request =
+        Map.<String, Object>of(
+            "prop_entity_id",
+            field(chest, "entity_id"),
+            "interact_id2",
+            112131,
+            "interact_id",
+            field(scene, "interact_id"));
+    if (!alreadyOpened) {
+      var reply = call("InteractPropCsReq", request, true);
+      require((Integer) field(reply, "prop_state") == 13, "Opening chest did not open");
+    }
+    call("InteractPropCsReq", request, false);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     int uid =
         (Integer)
@@ -343,6 +373,7 @@ public final class NativeOpeningStageWinProbe {
     tutorialProgress(true);
     capturedDestructible();
     recoveryProps();
+    openingChest(!first);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -368,6 +399,7 @@ public final class NativeOpeningStageWinProbe {
                 false));
     result.put("recoveryPropsVerified", true);
     result.put("capturedPropVerified", true);
+    result.put("openingChestVerified", true);
     return result;
   }
 

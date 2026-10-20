@@ -13,7 +13,9 @@ public final class WorldChests {
   public record Result(Retcode retcode, EntityProp prop) {}
 
   private static final Map<Integer, WorldChestSources.Location> LOCATIONS =
-      GoldenSpearSources.merge(MascotSources.LOCATIONS, BaseZoneChestSources.LOCATIONS);
+      GoldenSpearSources.merge(
+          MapChestSources.LOCATIONS,
+          GoldenSpearSources.merge(MascotSources.LOCATIONS, BaseZoneChestSources.LOCATIONS));
 
   private static Integer identity(EntityProp actor) {
     if (actor == null || actor.getScene() == null) return null;
@@ -167,8 +169,13 @@ public final class WorldChests {
     if (id == null) return;
     var p = actor.getScene().getPlayer();
     synchronized (p) {
-      var rules = WorldChestRules.load();
       var state = p.getGameplay().getWorldChests();
+      // Unopened source props already have their authored state. Avoid reading the reward
+      // catalog once for every visible chest while constructing a new player's scene.
+      if (state.getRecords() == null
+          || state.getUnlocks() == null
+          || !state.getRecords().containsKey(id) && !state.getUnlocks().containsKey(id)) return;
+      var rules = WorldChestRules.load();
       if (!state.valid(rules, p)) return;
       var record = state.getRecords().get(id);
       if (rules.original(id, actor.getScene().getDimensionId()) == null) return;

@@ -40,6 +40,10 @@ public final class WorldChestFixtureInspector {
     var config = Files.readAllBytes(dir.resolve("config.json"));
     var control = JsonParser.parseString(Files.readString(input)).getAsJsonObject();
     boolean baseZone = control.has("baseZone") && control.get("baseZone").getAsBoolean();
+    boolean mapChests = control.has("mapChests") && control.get("mapChests").getAsBoolean();
+    require(
+        !mapChests || marker.has("mapChestFixture") && marker.get("mapChestFixture").getAsBoolean(),
+        "Missing map chest fixture marker");
     require(
         !baseZone
             || marker.has("baseZoneChestFixture")
@@ -73,8 +77,8 @@ public final class WorldChestFixtureInspector {
             saved.get("records", Document.class).isEmpty()
                 && saved.get("quests", Document.class).isEmpty(),
             "Prewritten world observation or activity acceptance");
-        updates.append("level", 21);
-        for (int main : new int[] {baseZone ? 1000401 : 1000510}) {
+        updates.append("level", mapChests ? 1 : 21);
+        for (int main : mapChests ? new int[0] : new int[] {baseZone ? 1000401 : 1000510}) {
           var q = new QuestState(main);
           q.advance(1, 1, 1);
           q.reserveReward();
@@ -107,7 +111,7 @@ public final class WorldChestFixtureInspector {
             .append("pos", Document.parse(stage.get("pos").toString()))
             .append("rot", new Document("x", 0).append("y", 0).append("z", 0));
         require(
-            players.updateOne(filter, new Document("$set", updates)).getModifiedCount() == 1,
+            players.updateOne(filter, new Document("$set", updates)).getMatchedCount() == 1,
             "No unique fixture update");
         backend.commit();
         backend.getMvStore().sync();
@@ -129,7 +133,8 @@ public final class WorldChestFixtureInspector {
       require(player != null, "Morphia restore failed");
       var field = LunarCore.getConfig().getClass().getDeclaredField("resourceDir");
       field.setAccessible(true);
-      var resources = baseZone ? root.resolve("resources/4.6") : dir.resolve("resources-fixture");
+      var resources =
+          baseZone || mapChests ? root.resolve("resources/4.6") : dir.resolve("resources-fixture");
       field.set(LunarCore.getConfig(), resources.toString());
       ResourceLoader.loadResources();
       var floorLoader = ResourceLoader.class.getDeclaredMethod("loadFloorInfos");
@@ -145,6 +150,20 @@ public final class WorldChestFixtureInspector {
       require(
           rules != null && domain.valid(rules, player),
           "Invalid original sources or chest journal");
+      int catalogValidated = 0;
+      if (mapChests && mode.equals("seed")) {
+        for (var e : MapChestSources.LOCATIONS.entrySet()) {
+          int id = e.getKey();
+          require(
+              rules.chest(id) != null && rules.loot(id) != null,
+              "Missing original chest definition or reward " + id);
+          for (int dimension : e.getValue().dimensions())
+            require(
+                rules.original(id, dimension) != null,
+                "Invalid original chest placement " + id + "/" + dimension);
+          catalogValidated++;
+        }
+      }
       var known = new TreeSet<Integer>();
       var claimed = new TreeSet<Integer>();
       for (var id : control.getAsJsonArray("known")) known.add(id.getAsInt());
@@ -196,12 +215,14 @@ public final class WorldChestFixtureInspector {
       }
       require(
           credits
-              == (baseZone
+              == (baseZone || mapChests
                   ? 0
                   : Math.min(known.size(), 5)
                       + Math.min(known.size(), 10)
                       + Math.min(known.size(), 15)),
           "Different source-bound credit count");
+      if (mapChests)
+        require(domain.getQuests().isEmpty(), "Foreign activity accepted for level-one fixture");
       if (baseZone)
         require(
             domain.getQuests().isEmpty()
@@ -283,7 +304,9 @@ public final class WorldChestFixtureInspector {
                       "changedPlayers",
                       mode.equals("seed") || mode.equals("move") ? 1 : 0,
                       "clientGameplayVerified",
-                      false)));
+                      false,
+                      "catalogValidated",
+                      catalogValidated)));
     } finally {
       server.shutdownNow();
     }

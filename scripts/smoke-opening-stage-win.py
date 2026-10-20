@@ -99,6 +99,7 @@ def main():
                     assert snapshot['openingSceneGatesVerified']
                     assert snapshot['recoveryPropsVerified']
                     assert snapshot['capturedPropVerified']
+                    assert snapshot['openingChestVerified']
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:

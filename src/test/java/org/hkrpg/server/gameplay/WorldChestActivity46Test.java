@@ -141,7 +141,9 @@ class WorldChestActivity46Test {
       values(t.map()).clear();
       for (var r : e.getValue().getAsJsonArray()) {
         var decoded = r.deepCopy();
-        if (t.type() == PropExcel.class && decoded.getAsJsonObject().get("PropName").isJsonObject())
+        if (t.type() == PropExcel.class
+            && decoded.getAsJsonObject().has("PropName")
+            && decoded.getAsJsonObject().get("PropName").isJsonObject())
           decoded
               .getAsJsonObject()
               .addProperty(
