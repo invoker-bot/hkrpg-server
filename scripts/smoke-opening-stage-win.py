@@ -24,6 +24,7 @@ def free_port(kind=socket.SOCK_STREAM):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--doors', action='store_true', help='校验控制台、两扇剧情门及两次同 UID H2 重启')
+    parser.add_argument('--readings', action='store_true', help='校验接待中心两份阅读物拾取、背包、防重和重启恢复；移动为合成请求')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
     source = ROOT / 'resources/4.6'
@@ -36,7 +37,10 @@ def main():
                 'ExcelOutput/MazeProp.json',
                 'Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Kafka_00_Ability.json']
     guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G{group}.json'
-                for group in (5, 6, 36, 91, 93)]
+                for group in (5, 6, 36, 44, 91, 93)]
+    if args.readings:
+        guarded += ['ExcelOutput/RewardData.json', 'ExcelOutput/ItemConfig.json', 'ExcelOutput/InteractConfig.json',
+                    'Config/Level/Props/Common/InitLevelGraph_Prop_Common_PickupReadings.json']
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
@@ -92,7 +96,8 @@ def main():
                                 {'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
                 assert combo['retcode'] == 0
                 for phase in (['first', 'reconnect'] if iteration == 0 else ['restart' if iteration == 1 else 'doors-restart']):
-                    credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase, 'doors': args.doors}
+                    credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
+                                   'doors': args.doors, 'readings': args.readings}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -107,6 +112,7 @@ def main():
                     assert snapshot['capturedPropVerified']
                     assert snapshot['openingChestVerified']
                     assert snapshot['storyDoorsVerified'] == args.doors
+                    assert snapshot['deskReadingsVerified'] == args.readings
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:

@@ -10,6 +10,8 @@ public class PlaneEventExcel extends MultiKeyGameResource {
     private int EventID;
     private int WorldLevel;
     private int StageID;
+    private int Reward;
+    private com.google.gson.JsonArray DropList;
 
     @Override
     public int getPrimaryKey() {

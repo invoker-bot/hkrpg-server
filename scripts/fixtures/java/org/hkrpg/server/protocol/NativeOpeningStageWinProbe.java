@@ -391,6 +391,63 @@ public final class NativeOpeningStageWinProbe {
     call("InteractPropCsReq", request, false);
   }
 
+  private void deskReadings(boolean alreadyCollected) throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    var readings = new HashMap<Integer, DynamicMessage>();
+    int avatar = 0;
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var value : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) value;
+        if (entity.hasField(entity.getDescriptorForType().findFieldByName("actor")))
+          avatar = (Integer) field(entity, "entity_id");
+        if ((Integer) field(entity, "group_id") == 44)
+          readings.put((Integer) field(entity, "inst_id"), entity);
+      }
+    require(avatar > 0 && readings.size() == 5, "Original reading group is absent or over-spawned");
+    require(
+        !readings.containsKey(300003) && !readings.containsKey(300007),
+        "Reading spawn gates were bypassed");
+    for (int instance : new int[] {300002, 300001}) {
+      var entity = readings.get(instance);
+      require(entity != null, "Missing original reception-desk reading");
+      require(
+          (Integer) field((DynamicMessage) field(entity, "prop"), "prop_state")
+              == (alreadyCollected ? 19 : 18),
+          "Reading state lost across reconnect/restart");
+      var motionType =
+          protocol
+              .clientSchema()
+              .message("SceneEntityMoveCsReq")
+              .findFieldByName("entity_motion_list")
+              .getMessageType();
+      var movement = DynamicMessage.newBuilder(motionType);
+      movement.setField(motionType.findFieldByName("entity_id"), avatar);
+      movement.setField(motionType.findFieldByName("motion"), field(entity, "motion"));
+      call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(movement.build())), true);
+      var request =
+          Map.<String, Object>of(
+              "prop_entity_id",
+              field(entity, "entity_id"),
+              "interact_id2",
+              118191,
+              "interact_id",
+              field(scene, "interact_id"));
+      if (!alreadyCollected) {
+        var response = call("InteractPropCsReq", request, true);
+        require((Integer) field(response, "prop_state") == 19, "Reading did not become collected");
+      }
+      call("InteractPropCsReq", request, false);
+    }
+    var bag = new HashMap<Integer, Integer>();
+    for (var raw : (List<?>) field(call("GetBagCsReq"), "material_list")) {
+      var item = (DynamicMessage) raw;
+      bag.merge((Integer) field(item, "tid"), (Integer) field(item, "num"), Math::addExact);
+    }
+    require(
+        Objects.equals(bag.get(190170), 1) && Objects.equals(bag.get(190282), 1),
+        "Desk books missing, duplicated, or not restored in the real inventory");
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     int uid =
         (Integer)
@@ -465,6 +522,8 @@ public final class NativeOpeningStageWinProbe {
     recoveryProps();
     openingChest(!first);
     if (verifyDoors) storyDoors(phase);
+    boolean verifyReadings = control.has("readings") && control.get("readings").getAsBoolean();
+    if (verifyReadings) deskReadings(!first);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -492,6 +551,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("capturedPropVerified", true);
     result.put("openingChestVerified", true);
     result.put("storyDoorsVerified", verifyDoors);
+    result.put("deskReadingsVerified", verifyReadings);
     return result;
   }
 

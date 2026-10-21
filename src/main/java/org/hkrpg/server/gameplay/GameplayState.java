@@ -9,6 +9,12 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private BookPickupState bookPickups = new BookPickupState();
+  public BookPickupState getBookPickups() {
+    if (bookPickups == null) bookPickups = new BookPickupState();
+    return bookPickups;
+  }
+  void bookPickups(BookPickupState value) { bookPickups = Objects.requireNonNull(value); }
   private TutorialProgress tutorials = new TutorialProgress();
 
   public TutorialProgress getTutorials() {

@@ -17,7 +17,7 @@ public class SceneEntityLoader {
 
     // Existing map-loading exclusions must also hold when ordinary groups refresh after a quest.
     static boolean isExcludedGroup(Scene scene, GroupInfo group) {
-        return group.getGroupName().contains("Bug") && !org.hkrpg.server.gameplay.CompatibleMechanisms.allowExcludedGroup(scene, group.getId()) || group.getGroupName().contains("Book")
+        return group.getGroupName().contains("Bug") && !org.hkrpg.server.gameplay.CompatibleMechanisms.allowExcludedGroup(scene, group.getId()) || group.getGroupName().contains("Book") && !org.hkrpg.server.gameplay.BookPickups.supportedGroup(scene, group)
             || group.getGroupName().contains("AngryBlock") || group.getGroupName().contains("ShelfDoor")
             || (scene.getPlaneId() == 20501 && group.getId() >= 360);
     }
@@ -72,6 +72,7 @@ public class SceneEntityLoader {
     }
 
     public EntityProp loadProp(Scene scene, GroupInfo group, PropInfo propInfo) {
+        if (group.getGroupName().contains("Book") && !org.hkrpg.server.gameplay.BookPickups.supported(scene, propInfo)) return null;
         // Don't spawn entity if they have certain flags in their info
         if (propInfo.isIsDelete() /* || propInfo.isIsClientOnly() */ || !propInfo.isLoadOnInitial()) {
             return null;
@@ -130,6 +131,7 @@ public class SceneEntityLoader {
         org.hkrpg.server.gameplay.WorldMechanisms.restore(prop);
         org.hkrpg.server.gameplay.CompatibleMechanisms.restore(prop);
         org.hkrpg.server.gameplay.StoryDoors.restore(prop);
+        org.hkrpg.server.gameplay.BookPickups.restore(prop);
         return prop;
     }
 

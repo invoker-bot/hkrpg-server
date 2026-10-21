@@ -33,6 +33,7 @@ public final class SceneInteractions {
     var result = validate(player, config, entity);
     if (result != Retcode.SUCC) return result;
     var prop = (EntityProp) player.getScene().getEntityById(entity);
+    if (BookPickups.applies(prop)) return BookPickups.validate(player, config, prop);
     if (CompatibleMechanisms.controller(prop)) return CompatibleMechanisms.validateControl(player, config, prop);
     if (WorldMechanisms.controller(prop))
       return WorldMechanisms.validateControl(player, config, prop);
@@ -76,6 +77,7 @@ public final class SceneInteractions {
 
   public static void restore(EntityProp prop) {
     if (!persistent(prop)) return;
+    if (BookPickups.applies(prop)) return;
     if (CompatibleMechanisms.controller(prop)) return;
     if (WorldMechanisms.controller(prop)) return;
     if (GoldenSpears.applies(prop) || WorldChests.golden(prop) || WorldChests.mascot(prop)) return;
