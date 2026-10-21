@@ -44,6 +44,10 @@
 
 验证证据位于本机 `build/complete-mechanisms-20261021/`，汇总为 `build-proof.json`。测试包与待发布镜像内 JAR 的 SHA-256 均为 `edf52f5a8b2483d2b4412f788b6a7c4e27c7a1119ff3718df8fc64de8635fbb8`。本次验证包含正常停服与重登、保存异常时的回退/防重；未证明玩家与背包分文档写入在断电时的原子性。官方客户端逐点演出与全部前置任务取得仍未验收，原版对应关系仍按上表标注为兼容规则。
 
+部署已完成：实现提交 `3bc722b`，常驻服务 `hkrpg-local-server-1` 正常停服后切换到镜像 `sha256:ec674f22f49cbdd242d5758ed5124cda5f8d0f24b7e323769e3d692a204a79ab`。容器内 JAR 与上述验证包一致；更新后的 Compose 健康、Dispatch 和原生 KCP 心跳验证通过。运营配置摘要和 87,472 个资源文件的清单摘要保持不变。
+
+停止后的 11 个数据文件逐个核对备份摘要，备份目录为 `.local/backups/complete-mechanisms-20261021-091455/`。更新后只读核对：仍为 1 个账号，UID 10001 保留 7 个已完成开场目标、卡芙卡试用队伍 1001005、门任务 100010105 已完成及 100010107 进行中，已有物件状态未变，没有重置账号。部署与保存证明分别为 `deployment.json`、`compose-postdeploy.json`、`live-preservation-proof.json`。
+
 复跑入口：
 
 ```powershell
