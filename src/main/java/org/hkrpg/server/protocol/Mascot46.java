@@ -18,8 +18,9 @@ public final class Mascot46 {
     var f = req.getDescriptorForType().findFieldByName("group_state_info");
     var group = req.hasField(f) ? (DynamicMessage) req.getField(f) : null;
     if (group == null
-        || !Mascots.applies(session.getPlayer().getScene(), number(group, "group_id")))
-      return false;
+        || !(Mascots.applies(session.getPlayer().getScene(), number(group, "group_id"))
+            || org.hkrpg.server.gameplay.CompatibleMechanisms.ownsGroupState(
+                session.getPlayer().getScene(), number(group, "group_id")))) return false;
     synchronized (session.getPlayer()) {
       Retcode code = Retcode.REQ_PARA_INVALID;
       if (Parkour46.wireValid(req.getDescriptorForType(), bytes, 0)
@@ -27,12 +28,20 @@ public final class Mascot46 {
           && group.getUnknownFields().asMap().isEmpty()
           && (Long) value(req, "interact_id") == 0)
         code =
-            Mascots.change(
-                session.getPlayer(),
-                number(group, "group_id"),
-                number(group, "group_state"),
-                number(group, "entry_id"),
-                number(group, "GMEHAMCHJBK"));
+            org.hkrpg.server.gameplay.CompatibleMechanisms.ownsGroupState(
+                    session.getPlayer().getScene(), number(group, "group_id"))
+                ? org.hkrpg.server.gameplay.CompatibleMechanisms.groupState(
+                    session.getPlayer(),
+                    number(group, "group_id"),
+                    number(group, "group_state"),
+                    number(group, "entry_id"),
+                    number(group, "GMEHAMCHJBK"))
+                : Mascots.change(
+                    session.getPlayer(),
+                    number(group, "group_id"),
+                    number(group, "group_state"),
+                    number(group, "entry_id"),
+                    number(group, "GMEHAMCHJBK"));
       var b = builder(session, "GroupStateChangeScRsp");
       set(b, "retcode", code.getVal());
       if (code == Retcode.SUCC) set(b, "group_state_info", group);

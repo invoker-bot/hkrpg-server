@@ -201,7 +201,8 @@ public class Scene implements Tickable {
     }
 
     public void loadGroup(GroupInfo group) {
-        if (group == null || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)) return;
+        if (group == null || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)
+            || !org.hkrpg.server.gameplay.CompatibleMechanisms.shouldLoad(this, group)) return;
         if (org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this)
             && (SceneEntityLoader.isExcludedGroup(this, group)
                 || !getPlayer().getMissionManager().shouldLoadGroup(group, this))) return;
@@ -333,7 +334,8 @@ public class Scene implements Tickable {
             boolean atmosphere = group.getCategory() == GroupInfo.GroupCategory.Atmosphere;
             boolean deferred = org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, this);
             boolean ordinary = org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this);
-            if ((!atmosphere && !deferred && !ordinary && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
+            boolean compatible = org.hkrpg.server.gameplay.CompatibleMechanisms.tracksGroup(group, this);
+            if ((!atmosphere && !deferred && !ordinary && !compatible && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
             if (atmosphere && (getPlaneType() == PlaneType.Rogue || getPlaneType() == PlaneType.Challenge || getPlaneType() == PlaneType.TrialActivity)) continue;
             if (getPlayer().getMissionManager().shouldLoadGroup(group, this)) toLoad.add(group);
             else if (loadedGroups.remove(group.getId())) {
@@ -621,9 +623,11 @@ public class Scene implements Tickable {
                     return false;
                 int group = monster.getGroupId(), instance = monster.getInstId();
                 if (!org.hkrpg.server.gameplay.WorldMechanisms.defeat(this, monster)) return false;
+                if (!org.hkrpg.server.gameplay.CompatibleMechanisms.defeat(this, monster)) return false;
                 removeEntity(monster);
                 invokePropTrigger(PropTriggerType.MONSTER_DIE, group, instance);
                 getPlayer().getMissionManager().onKillMonster(getFloorId(), group, instance);
+                org.hkrpg.server.gameplay.CompatibleMechanisms.afterDefeat(this, group);
                 return true;
             }
         }

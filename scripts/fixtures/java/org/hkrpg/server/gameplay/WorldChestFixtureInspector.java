@@ -122,6 +122,67 @@ public final class WorldChestFixtureInspector {
                 .toJson());
       }
       if (mode.equals("seed") || mode.equals("move")) {
+        if (control.has("compatibleFixture") && control.get("compatibleFixture").getAsBoolean()) {
+          require(
+              mapChests
+                  && marker.has("compatibleFixture")
+                  && marker.get("compatibleFixture").getAsBoolean(),
+              "Missing compatibility fixture marker");
+          if (control.has("prerequisite") && !control.get("prerequisite").isJsonNull()) {
+            var pre = control.getAsJsonObject("prerequisite");
+            if (pre.has("main")) {
+              int main = pre.get("main").getAsInt();
+              require(
+                  Set.of(4016001, 4016101, 1032902, 4015904).contains(main),
+                  "Unrelated acceptance");
+              if (!before
+                  .get("gameplay", Document.class)
+                  .get("mainMissions", Document.class)
+                  .containsKey("" + main))
+                updates.append(
+                    "gameplay.mainMissions." + main,
+                    Document.parse(new Gson().toJson(new QuestState(main))));
+            }
+            if (pre.has("sub")) {
+              int sub = pre.get("sub").getAsInt();
+              require(
+                  Set.of(401600101, 401610106, 103290250, 401590401).contains(sub),
+                  "Not a starting acceptance");
+              if (!before
+                  .get("gameplay", Document.class)
+                  .get("subMissions", Document.class)
+                  .containsKey("" + sub))
+                updates.append(
+                    "gameplay.subMissions." + sub,
+                    Document.parse(new Gson().toJson(new QuestState(sub))));
+            }
+            if (pre.has("values"))
+              for (var v : pre.getAsJsonObject("values").entrySet()) {
+                require(
+                    Map.of(
+                            "floor:20422001:SceneStateByMainMission",
+                            1,
+                            "floor:20311001:ChallengeGravityRoom",
+                            2,
+                            "floor:20423001:FSV_Region08State",
+                            0)
+                        .containsKey(v.getKey()),
+                    "Cannot seed challenge results");
+                require(
+                    Map.of(
+                                "floor:20422001:SceneStateByMainMission",
+                                1,
+                                "floor:20311001:ChallengeGravityRoom",
+                                2,
+                                "floor:20423001:FSV_Region08State",
+                                0)
+                            .get(v.getKey())
+                        == v.getValue().getAsInt(),
+                    "Wrong prerequisite value");
+                updates.append("gameplay.storyValues." + v.getKey(), v.getValue().getAsInt());
+              }
+          }
+        }
         if (control.has("remainingFixture")
             && control.get("remainingFixture").getAsBoolean()
             && control.has("prerequisite")
@@ -208,6 +269,23 @@ public final class WorldChestFixtureInspector {
         GameplayDefinitions.windows.add(
             new GameplayDefinitions.Window(30013, 3001301, 1, 4102444800L));
       var rules = WorldChestRules.load();
+      if (control.has("compatibleFixture") && control.get("compatibleFixture").getAsBoolean()) {
+        var progress = player.getGameplay().getCompatibleMechanisms();
+        require(progress.valid(), "Invalid restored compatibility journal");
+        for (var f : CompatibleMechanismSources.FLOWS.keySet()) {
+          var expectedEvents = new TreeSet<String>();
+          var wanted = control.getAsJsonObject("compatibleEvents").getAsJsonArray(f);
+          if (wanted != null) wanted.forEach(v -> expectedEvents.add(v.getAsString()));
+          require(
+              progress.events(f).equals(expectedEvents),
+              "Different saved compatibility steps "
+                  + f
+                  + ": "
+                  + progress.events(f)
+                  + " expected "
+                  + expectedEvents);
+        }
+      }
       var domain = player.getGameplay().getWorldChests();
       require(
           rules != null && domain.valid(rules, player),
@@ -343,7 +421,8 @@ public final class WorldChestFixtureInspector {
         }
       }
       var payout = new TreeMap<Integer, Integer>();
-      if (control.has("finalBindings") && control.get("finalBindings").getAsBoolean()) {
+      if (control.has("finalBindings") && control.get("finalBindings").getAsBoolean()
+          || control.has("compatibleFixture") && control.get("compatibleFixture").getAsBoolean()) {
         control
             .getAsJsonObject("combatPayout")
             .entrySet()

@@ -229,8 +229,9 @@ public final class NativeWorldChestProbe {
       rejected++;
     }
     if (op.equals("guard")) {
+      int guardGroup = spec.has("guardGroup") ? spec.get("guardGroup").getAsInt() : group;
       int instance = spec.get("guard").getAsInt();
-      var monster = entity(current, group, instance);
+      var monster = entity(current, guardGroup, instance);
       require(monster != null, "Original guard missing");
       var npc = (DynamicMessage) field(monster, "npc_monster");
       require(
@@ -272,7 +273,7 @@ public final class NativeWorldChestProbe {
       }
       require(
           number(call("PVEBattleResultCsReq", win), "retcode") != 0, "Duplicate victory accepted");
-    } else if (op.equals("mascot")) {
+    } else if (op.equals("mascot") || op.equals("group")) {
       var request = builder("GroupStateChangeCsReq");
       var info = builder("GroupStateInfo");
       set(info, "group_id", actorGroup);
@@ -282,7 +283,7 @@ public final class NativeWorldChestProbe {
       require(
           number(call("GroupStateChangeCsReq", request), "retcode") == 0, "Catch stage rejected");
       require(
-          number(call("GroupStateChangeCsReq", request), "retcode") != 0,
+          (number(call("GroupStateChangeCsReq", request), "retcode") == 0) == op.equals("group"),
           "Repeated catch stage accepted");
     } else if (op.equals("step")) {
       int instance =
@@ -333,18 +334,20 @@ public final class NativeWorldChestProbe {
       set(request, "floor_id", spec.get("floor").getAsInt());
       set(request, "group_id", actorGroup);
       set(request, "property_name", spec.get("property").getAsString());
-      set(request, "OLBEPIBLDBD", 1);
+      int targetValue = spec.has("value") ? spec.get("value").getAsInt() : 1;
+      int oldValue = spec.has("oldValue") ? spec.get("oldValue").getAsInt() : 0;
+      set(request, "OLBEPIBLDBD", targetValue);
       var response = call("UpdateGroupPropertyCsReq", request);
       require(
           number(response, "retcode") == 0
-              && number(response, "old_value") == 0
-              && number(response, "new_value") == 1,
+              && number(response, "old_value") == oldValue
+              && number(response, "new_value") == targetValue,
           "Property completion rejected: " + response);
       response = call("UpdateGroupPropertyCsReq", request);
       require(
           number(response, "retcode") == 0
-              && number(response, "old_value") == 1
-              && number(response, "new_value") == 1,
+              && number(response, "old_value") == targetValue
+              && number(response, "new_value") == targetValue,
           "Property replay lost receipt: " + response);
     } else if (op.equals("claim")) {
       var result = interact(current, chest);
@@ -447,6 +450,33 @@ public final class NativeWorldChestProbe {
           requests,
           "clientGameplayVerified",
           false);
+    }
+    if (control.has("compatibleActions")) {
+      var batch = new ArrayList<Object>();
+      var opened = new ArrayList<Integer>();
+      var combat = new TreeMap<Integer, Integer>();
+      for (var action : control.getAsJsonArray("compatibleActions")) {
+        control.add("mechanism", action);
+        var result = mechanism(control, uid);
+        batch.add(result);
+        for (var id : (Collection<Integer>) result.get("openedOriginalChests")) opened.add(id);
+        for (var e : ((Map<Integer, Integer>) result.get("combatPayout")).entrySet())
+          combat.merge(e.getKey(), e.getValue(), Integer::sum);
+        control.add("known", new Gson().toJsonTree(result.get("known")));
+      }
+      var result = new LinkedHashMap<String, Object>();
+      result.put("passed", true);
+      result.put("uid", uid);
+      result.put("nativeRequests", requests);
+      result.put("openedOriginalChests", opened);
+      result.put("known", control.get("known"));
+      result.put("claimed", List.of());
+      result.put("chestIdentityNotifications", openedNotify);
+      result.put("combatPayout", combat);
+      result.put("rejectedRepeatedOpenings", rejected);
+      result.put("steps", batch);
+      result.put("clientGameplayVerified", false);
+      return result;
     }
     if (control.has("mechanism")) return mechanism(control, uid);
     var current = scene(control);

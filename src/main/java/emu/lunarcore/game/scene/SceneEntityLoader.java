@@ -17,7 +17,7 @@ public class SceneEntityLoader {
 
     // Existing map-loading exclusions must also hold when ordinary groups refresh after a quest.
     static boolean isExcludedGroup(Scene scene, GroupInfo group) {
-        return group.getGroupName().contains("Bug") || group.getGroupName().contains("Book")
+        return group.getGroupName().contains("Bug") && !org.hkrpg.server.gameplay.CompatibleMechanisms.allowExcludedGroup(scene, group.getId()) || group.getGroupName().contains("Book")
             || group.getGroupName().contains("AngryBlock") || group.getGroupName().contains("ShelfDoor")
             || (scene.getPlaneId() == 20501 && group.getId() >= 360);
     }
@@ -28,6 +28,7 @@ public class SceneEntityLoader {
 
             if (group.getCategory() == GroupInfo.GroupCategory.Mission || group.getCategory() == GroupInfo.GroupCategory.Atmosphere
                 || org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, scene)
+                || org.hkrpg.server.gameplay.CompatibleMechanisms.tracksGroup(group, scene)
                 || org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, scene)) {
                 isToLoad = scene.getPlayer().getMissionManager().shouldLoadGroup(group, scene);
             }
@@ -54,6 +55,7 @@ public class SceneEntityLoader {
         }
         if (!org.hkrpg.server.gameplay.WolfBroAmmunition.spawns(scene, group, monsterInfo)) return null;
         if (!org.hkrpg.server.gameplay.WorldMechanisms.spawns(scene, group, monsterInfo)) return null;
+        if (!org.hkrpg.server.gameplay.CompatibleMechanisms.spawns(scene, group, monsterInfo)) return null;
 
         // Get excels from game data
         NpcMonsterExcel npcMonsterExcel = GameData.getNpcMonsterExcelMap().get(monsterInfo.getNPCMonsterID());
@@ -126,6 +128,7 @@ public class SceneEntityLoader {
         org.hkrpg.server.gameplay.WorldChests.restore(prop);
         org.hkrpg.server.gameplay.GoldenSpears.restore(prop);
         org.hkrpg.server.gameplay.WorldMechanisms.restore(prop);
+        org.hkrpg.server.gameplay.CompatibleMechanisms.restore(prop);
         org.hkrpg.server.gameplay.StoryDoors.restore(prop);
         return prop;
     }

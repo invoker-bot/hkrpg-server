@@ -44,6 +44,12 @@ public class GameplayState {
   }
   void worldChests(WorldChestState value) { worldChests = Objects.requireNonNull(value); }
   private WorldMechanismState worldMechanisms = new WorldMechanismState();
+  private CompatibleMechanismState compatibleMechanisms = new CompatibleMechanismState();
+  public CompatibleMechanismState getCompatibleMechanisms() {
+    if (compatibleMechanisms == null) compatibleMechanisms = new CompatibleMechanismState();
+    return compatibleMechanisms;
+  }
+  void compatibleMechanisms(CompatibleMechanismState value) { compatibleMechanisms = Objects.requireNonNull(value); }
   public WorldMechanismState getWorldMechanisms() {
     if (worldMechanisms == null) worldMechanisms = new WorldMechanismState();
     return worldMechanisms;

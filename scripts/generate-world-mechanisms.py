@@ -436,9 +436,18 @@ def catalog(root):
     assert all(fingerprint(read(path)) == digest for path, digest in extra['files'].items())
     assert key in pending and source['locations'][key] == extra['location']
     del pending[key]
+    owners={key: 'mascot-extension-4.6.json'}
+    compatible=loads((ROOT/'src/main/resources/gameplay/compatible-mechanisms-4.6.json').read_bytes())
+    assert compatible['sourceCommit']==source['sourceCommit'] and compatible['policyVersion']==1
+    assert all(fingerprint(read(path))==digest for path,digest in compatible['files'].items())
+    compatibility_ids={chest for flow in compatible['flows'].values() for chest in flow['rewards']}
+    assert len(compatibility_ids)==37 and compatibility_ids==set(pending), 'Compatibility scope must cover exactly the last 37 gaps'
+    for chest in sorted(compatibility_ids):
+        owners[chest]='compatible-mechanisms-4.6.json'
+        del pending[chest]
     return dict(sourceCommit=source["sourceCommit"], rules=rules, files=dict(sorted(files.items())),
                 rows=dict(sorted(rows.items())), pending=pending, controllerAliases=aliases,
-                independentOwners={key: 'mascot-extension-4.6.json'})
+                independentOwners=owners)
 
 
 def main():

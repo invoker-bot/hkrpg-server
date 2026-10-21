@@ -1,0 +1,1969 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "policyVersion": 1,
+  "flows": {
+    "gravity-river": {
+      "floor": 20422001,
+      "plane": 20422,
+      "groups": [
+        229,
+        262,
+        263,
+        264,
+        265
+      ],
+      "actors": {},
+      "reports": [
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 1,
+          "key": "case:1",
+          "requires": [],
+          "mission": 401600102,
+          "effects": {
+            "FSV_GravityBallCaseState": 1
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 12
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 2,
+          "key": "case:2",
+          "requires": [
+            "case:1"
+          ],
+          "mission": 401600104,
+          "effects": {
+            "FSV_GravityBallCaseState": 2
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 20
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 3,
+          "key": "case:3",
+          "requires": [
+            "case:2"
+          ],
+          "mission": 401600106,
+          "effects": {
+            "FSV_GravityBallCaseState": 3
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 25
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 4,
+          "key": "case:4",
+          "requires": [
+            "case:3"
+          ],
+          "mission": 401600108,
+          "effects": {
+            "FSV_GravityBallCaseState": 4
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 21
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 5,
+          "key": "case:5",
+          "requires": [
+            "case:4"
+          ],
+          "mission": 401600112,
+          "effects": {
+            "FSV_GravityBallCaseState": 5
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 27
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 6,
+          "key": "case:6",
+          "requires": [
+            "case:5"
+          ],
+          "mission": 401600114,
+          "effects": {
+            "FSV_GravityBallCaseState": 6
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 26
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 7,
+          "key": "case:7",
+          "requires": [
+            "case:6"
+          ],
+          "mission": 401600118,
+          "effects": {
+            "FSV_GravityBallCaseState": 7
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 19
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 8,
+          "key": "case:8",
+          "requires": [
+            "case:7"
+          ],
+          "mission": 401600120,
+          "effects": {
+            "FSV_GravityBallCaseState": 8
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 22
+          }
+        },
+        {
+          "group": 229,
+          "name": "MissionState",
+          "value": 9,
+          "key": "case:9",
+          "requires": [
+            "case:8"
+          ],
+          "mission": 401600122,
+          "effects": {
+            "FSV_GravityBallCaseState": 9
+          },
+          "groupEffects": {
+            "CurrentPuzzleID": 22
+          }
+        },
+        {
+          "group": 229,
+          "name": "HardCaseState",
+          "value": 1,
+          "key": "hard:1",
+          "requires": [
+            "case:4"
+          ],
+          "mission": 0,
+          "effects": {
+            "FSV_GravityBallHardCase_1": 1
+          },
+          "groupEffects": {}
+        },
+        {
+          "group": 229,
+          "name": "HardCaseState",
+          "value": 2,
+          "key": "hard:2",
+          "requires": [
+            "case:6"
+          ],
+          "mission": 0,
+          "effects": {
+            "FSV_GravityBallHardCase_2": 1
+          },
+          "groupEffects": {}
+        },
+        {
+          "group": 229,
+          "name": "HardCaseState",
+          "value": 3,
+          "key": "hard:3",
+          "requires": [
+            "case:9"
+          ],
+          "mission": 0,
+          "effects": {
+            "FSV_GravityBallHardCase_3": 1
+          },
+          "groupEffects": {}
+        }
+      ],
+      "rewards": {
+        "20422686": [
+          "mission:401600110"
+        ],
+        "20422687": [
+          "mission:401600116"
+        ],
+        "20422688": [
+          "mission:401600124"
+        ],
+        "20422691": [
+          "case:1"
+        ],
+        "20422692": [
+          "case:2"
+        ],
+        "20422693": [
+          "case:3"
+        ],
+        "20422694": [
+          "case:4"
+        ],
+        "20422695": [
+          "case:5"
+        ],
+        "20422696": [
+          "case:6"
+        ],
+        "20422697": [
+          "case:7"
+        ],
+        "20422698": [
+          "case:8"
+        ],
+        "20422699": [
+          "case:9"
+        ]
+      },
+      "missions": {
+        "401600110": {
+          "key": "mission:401600110",
+          "requires": [
+            "case:4"
+          ]
+        },
+        "401600116": {
+          "key": "mission:401600116",
+          "requires": [
+            "case:6"
+          ]
+        },
+        "401600124": {
+          "key": "mission:401600124",
+          "requires": [
+            "case:9"
+          ]
+        }
+      },
+      "files": [
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G229.json",
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G262.json",
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G263.json",
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G264.json",
+        "Config/Level/GroupGraph/F20422001/Group_F20422001_G265.json",
+        "Config/Level/Mission/4016001/MissionInfo_4016001.partial.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_BallPad_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_DoorSignal_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GBLauncher_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GravityBall_BallPad_01.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_TreasureBox_01.json",
+        "Config/LevelOutput/RuntimeFloor/P20422_F20422001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G229.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G262.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G263.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G264.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G265.json",
+        "Config/Props/Chap04/Prop_Chap04_BallPad_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_DoorSignal_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_GravityBallBaseProp_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_GravityBallLauncher_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_GravityBallWall_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_03_Config.json"
+      ],
+      "rows": {},
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable"
+    },
+    "gravity-dawn": {
+      "floor": 20451001,
+      "plane": 20451,
+      "groups": [
+        53,
+        208
+      ],
+      "actors": {},
+      "reports": [
+        {
+          "group": 53,
+          "name": "CaseState_1",
+          "value": 1,
+          "key": "case:1",
+          "requires": [],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 47
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_2",
+          "value": 1,
+          "key": "case:2",
+          "requires": [
+            "case:1"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 40
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_3",
+          "value": 1,
+          "key": "case:3",
+          "requires": [
+            "case:2"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 46
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_4",
+          "value": 1,
+          "key": "case:4",
+          "requires": [
+            "case:3"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 48
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_5",
+          "value": 1,
+          "key": "case:5",
+          "requires": [
+            "case:4"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 42
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_6",
+          "value": 1,
+          "key": "case:6",
+          "requires": [
+            "case:5"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 45
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_7",
+          "value": 1,
+          "key": "case:7",
+          "requires": [
+            "case:6"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 41
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_8",
+          "value": 1,
+          "key": "case:8",
+          "requires": [
+            "case:7"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 43
+          }
+        },
+        {
+          "group": 53,
+          "name": "CaseState_9",
+          "value": 1,
+          "key": "case:9",
+          "requires": [
+            "case:8"
+          ],
+          "mission": 0,
+          "effects": {},
+          "groupEffects": {
+            "CurrentPuzzleID": 43
+          }
+        }
+      ],
+      "rewards": {
+        "20451691": [
+          "case:1"
+        ],
+        "20451692": [
+          "case:2"
+        ],
+        "20451693": [
+          "case:3"
+        ],
+        "20451694": [
+          "case:4"
+        ],
+        "20451695": [
+          "case:5"
+        ],
+        "20451696": [
+          "case:6"
+        ],
+        "20451697": [
+          "case:7"
+        ],
+        "20451698": [
+          "case:8"
+        ],
+        "20451699": [
+          "case:9"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20451001/Group_F20451001_G208.json",
+        "Config/Level/GroupGraph/F20451001/Group_F20451001_G53.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_BallPad_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GBLauncher_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GravityBall_BallPad_01.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_TreasureBox_01.json",
+        "Config/LevelOutput/RuntimeFloor/P20451_F20451001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G208.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G53.json",
+        "Config/Props/Chap04/Prop_Chap04_BallPad_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_GravityBallBaseProp_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_GravityBallLauncher_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_GravityBallWall_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_03_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_Water_02_Config.json"
+      ],
+      "rows": {},
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable"
+    },
+    "region": {
+      "floor": 20423001,
+      "plane": 20423,
+      "groups": [
+        30,
+        55,
+        164,
+        166,
+        167,
+        169,
+        265
+      ],
+      "actors": {},
+      "reports": [
+        {
+          "group": 164,
+          "name": "State",
+          "value": 1,
+          "key": "room:1",
+          "requires": [],
+          "mission": 401610106,
+          "effects": {
+            "FSV_SubGameplayClear": 1
+          },
+          "groupEffects": {}
+        },
+        {
+          "group": 30,
+          "name": "State",
+          "value": 1,
+          "key": "room:2",
+          "requires": [
+            "claimed:1"
+          ],
+          "mission": 401610109,
+          "effects": {
+            "FSV_SubGameplayClear": 2
+          },
+          "groupEffects": {}
+        },
+        {
+          "group": 167,
+          "name": "State",
+          "value": 1,
+          "key": "room:3",
+          "requires": [
+            "claimed:2"
+          ],
+          "mission": 401610115,
+          "effects": {
+            "FSV_SubGameplayClear": 3
+          },
+          "groupEffects": {}
+        }
+      ],
+      "rewards": {
+        "20423683": [
+          "room:1"
+        ],
+        "20423684": [
+          "room:1"
+        ],
+        "20423685": [
+          "room:1"
+        ],
+        "20423686": [
+          "room:2"
+        ],
+        "20423687": [
+          "room:2"
+        ],
+        "20423688": [
+          "room:2"
+        ],
+        "20423689": [
+          "room:3"
+        ],
+        "20423690": [
+          "room:3"
+        ],
+        "20423691": [
+          "room:3"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G164.json",
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G166.json",
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G167.json",
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G169.json",
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G265.json",
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G30.json",
+        "Config/Level/GroupGraph/F20423001/Group_F20423001_G55.json",
+        "Config/Level/LevelInstanceGraph/F20423001/LG_Prop_F20423001_G265_300001.json",
+        "Config/Level/Mission/4016101/MissionInfo_4016101.partial.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_BallPad_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_Container_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_FlyingPiggy_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_MascotMonster_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRWSandClock.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewindConsole_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewinderBallFoundation.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewinderBridge_02.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewinderBridge_HalfCollapse.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_TreasureBox_01.json",
+        "Config/LevelOutput/RuntimeFloor/P20423_F20423001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G164.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G166.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G167.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G169.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G265.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G30.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G55.json",
+        "Config/Props/Chap04/Prop_Chap04_BallPad_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_Container_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_EraFlipperStageCapture_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_FlyingPiggy_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_MascotMonster_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TRBallFoundation_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TRBall_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TimeRewindBridge_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TimeRewindBridge_04_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TimeRewindConsole_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TimeSandClock_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_02_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": {},
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable",
+      "presentationGroup": 265
+    },
+    "jigsaw-20311684": {
+      "floor": 20311001,
+      "plane": 20311,
+      "groups": [
+        379,
+        455
+      ],
+      "actors": {
+        "455:300001": {
+          "group": 455,
+          "instance": 300001,
+          "prop": 103012,
+          "initial": "Locked",
+          "role": "board",
+          "interactions": [
+            1210,
+            1920,
+            19100,
+            11000
+          ]
+        },
+        "455:300002": {
+          "group": 455,
+          "instance": 300002,
+          "prop": 103109,
+          "initial": "TriggerDisable",
+          "role": "piece",
+          "interactions": [
+            11000
+          ]
+        },
+        "379:300002": {
+          "group": 379,
+          "instance": 300002,
+          "prop": 103109,
+          "initial": "TriggerDisable",
+          "role": "piece",
+          "interactions": [
+            11000
+          ]
+        }
+      },
+      "reports": [],
+      "rewards": {
+        "20311684": [
+          "done:455:300001"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20311001/Group_F20311001_G455.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece_FSV_OnWall.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_02.json",
+        "Config/LevelOutput/RuntimeFloor/P20311_F20311001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G379.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G455.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": {
+        "MazeProp:103012": "8e81453b3174360b508db3916b7b86a29a38db75a0f812099303671e5a0255d7",
+        "MazeProp:103109": "4f33e8eadcf4370dd560985495931ce4918864599731f4f35cd8eb7d2f6caa64",
+        "InteractConfig:1210": "6bb94a60c29863ad1d1b7f5785d0819d24218efdc9c521145c8817410cfb4906",
+        "InteractConfig:1920": "f1f30822425e35df4c023f87928b2e0595b734a57945cc3ef4bc744e0af2de26",
+        "InteractConfig:11000": "5c93fdec9b70261a1f4d90bd73d005c12f56586297e090ae58f08a7d40ff8f2c",
+        "InteractConfig:19100": "552955f93aff2bb2fcfb3db260f47a9d951563e8fe029324f64252e8b38e07d8"
+      },
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable",
+      "board": "455:300001",
+      "basePieces": 1,
+      "mission": 0,
+      "pieceValue": "JG_NM_05_PieceCount",
+      "boardValue": "JG_NM_05_BoardState"
+    },
+    "jigsaw-20322662": {
+      "floor": 20322001,
+      "plane": 20322,
+      "groups": [
+        183,
+        340
+      ],
+      "actors": {
+        "340:300001": {
+          "group": 340,
+          "instance": 300001,
+          "prop": 103012,
+          "initial": "Locked",
+          "role": "board",
+          "interactions": [
+            1210,
+            1920,
+            19100,
+            11000
+          ]
+        },
+        "183:300001": {
+          "group": 183,
+          "instance": 300001,
+          "prop": 103109,
+          "initial": "TriggerDisable",
+          "role": "piece",
+          "interactions": [
+            11000
+          ]
+        }
+      },
+      "reports": [],
+      "rewards": {
+        "20322662": [
+          "done:340:300001"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20322001/Group_F20322001_G340.json",
+        "Config/Level/Maze/Chapter03/JigsawPuzzle/Maze_Prop_JigsawPuzzleTreasureGameplayIcon.json",
+        "Config/Level/Maze/MazeExtra/Maze_Prop_GameplayIcon.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece_FSV_OnWall.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_SimpleResultController.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_MazeBridge_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_02.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_Console_01.json",
+        "Config/LevelOutput/RuntimeFloor/P20322_F20322001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G183.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G340.json",
+        "Config/Props/Chap03/Prop_Chap03_Controller_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_MazeBridge_03_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": {
+        "MazeProp:103012": "8e81453b3174360b508db3916b7b86a29a38db75a0f812099303671e5a0255d7",
+        "MazeProp:103109": "4f33e8eadcf4370dd560985495931ce4918864599731f4f35cd8eb7d2f6caa64",
+        "InteractConfig:1210": "6bb94a60c29863ad1d1b7f5785d0819d24218efdc9c521145c8817410cfb4906",
+        "InteractConfig:1920": "f1f30822425e35df4c023f87928b2e0595b734a57945cc3ef4bc744e0af2de26",
+        "InteractConfig:11000": "5c93fdec9b70261a1f4d90bd73d005c12f56586297e090ae58f08a7d40ff8f2c",
+        "InteractConfig:19100": "552955f93aff2bb2fcfb3db260f47a9d951563e8fe029324f64252e8b38e07d8"
+      },
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable",
+      "board": "340:300001",
+      "basePieces": 2,
+      "mission": 0,
+      "pieceValue": "JG_NM_01_PieceCount",
+      "boardValue": "JG_NM_01_BoardState"
+    },
+    "jigsaw-20332662": {
+      "floor": 20332001,
+      "plane": 20332,
+      "groups": [
+        211
+      ],
+      "actors": {
+        "211:300001": {
+          "group": 211,
+          "instance": 300001,
+          "prop": 103012,
+          "initial": "Hidden",
+          "role": "board",
+          "interactions": [
+            1210,
+            1920,
+            19100,
+            11000
+          ]
+        }
+      },
+      "reports": [],
+      "rewards": {
+        "20332662": [
+          "done:211:300001"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20332001/Group_F20332001_G211.json",
+        "Config/Level/Maze/Chapter03/JigsawPuzzle/Maze_Prop_JigsawPuzzleTreasureGameplayIcon.json",
+        "Config/Level/Maze/MazeExtra/Maze_Prop_GameplayIcon.json",
+        "Config/Level/Mission/1032902/MissionInfo_1032902.partial.json",
+        "Config/Level/Mission/1032902/Mission_103290201.json",
+        "Config/Level/Mission/1032902/Mission_103290202.json",
+        "Config/Level/Mission/1032902/Mission_103290203.json",
+        "Config/Level/Mission/1032902/Mission_103290204.json",
+        "Config/Level/Mission/1032902/Mission_103290205.json",
+        "Config/Level/Mission/1032902/Mission_103290206.json",
+        "Config/Level/Mission/1032902/Mission_103290207.json",
+        "Config/Level/Mission/1032902/Mission_103290208.json",
+        "Config/Level/Mission/1032902/Mission_103290209.json",
+        "Config/Level/Mission/1032902/Mission_103290210.json",
+        "Config/Level/Mission/1032902/Mission_103290211.json",
+        "Config/Level/Mission/1032902/Mission_103290212.json",
+        "Config/Level/Mission/1032902/Mission_103290213.json",
+        "Config/Level/Mission/1032902/Mission_103290214.json",
+        "Config/Level/Mission/1032902/Mission_103290215.json",
+        "Config/Level/Mission/1032902/Mission_103290216.json",
+        "Config/Level/Mission/1032902/Mission_103290217.json",
+        "Config/Level/Mission/1032902/Mission_103290218.json",
+        "Config/Level/Mission/1032902/Mission_103290219.json",
+        "Config/Level/Mission/1032902/Mission_103290220.json",
+        "Config/Level/Mission/1032902/Mission_103290221.json",
+        "Config/Level/Mission/1032902/Mission_103290223.json",
+        "Config/Level/Mission/1032902/Mission_103290224.json",
+        "Config/Level/Mission/1032902/Mission_103290225.json",
+        "Config/Level/Mission/1032902/Mission_103290233.json",
+        "Config/Level/Mission/1032902/Mission_103290235.json",
+        "Config/Level/Mission/1032902/Mission_103290236.json",
+        "Config/Level/Mission/1032902/Mission_103290238.json",
+        "Config/Level/Mission/1032902/Mission_103290242.json",
+        "Config/Level/Mission/1032902/Mission_103290243.json",
+        "Config/Level/Mission/1032902/Mission_103290246.json",
+        "Config/Level/Mission/1032902/Mission_103290248.json",
+        "Config/Level/Mission/1032902/Mission_103290249.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_SimpleResultController.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_02.json",
+        "Config/LevelOutput/RuntimeFloor/P20332_F20332001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20332_F20332001/LevelGroup_P20332_F20332001_G211.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": {
+        "MazeProp:103012": "8e81453b3174360b508db3916b7b86a29a38db75a0f812099303671e5a0255d7",
+        "InteractConfig:1210": "6bb94a60c29863ad1d1b7f5785d0819d24218efdc9c521145c8817410cfb4906",
+        "InteractConfig:1920": "f1f30822425e35df4c023f87928b2e0595b734a57945cc3ef4bc744e0af2de26",
+        "InteractConfig:11000": "5c93fdec9b70261a1f4d90bd73d005c12f56586297e090ae58f08a7d40ff8f2c",
+        "InteractConfig:19100": "552955f93aff2bb2fcfb3db260f47a9d951563e8fe029324f64252e8b38e07d8"
+      },
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable",
+      "board": "211:300001",
+      "basePieces": 3,
+      "mission": 103290250
+    },
+    "clocks": {
+      "floor": 20331001,
+      "plane": 20331,
+      "groups": [
+        199,
+        200,
+        328
+      ],
+      "actors": {
+        "199:300001": {
+          "group": 199,
+          "instance": 300001,
+          "prop": 103012,
+          "initial": "TriggerEnable",
+          "role": "clock",
+          "interactions": [
+            11000
+          ]
+        },
+        "200:300001": {
+          "group": 200,
+          "instance": 300001,
+          "prop": 103012,
+          "initial": "TriggerEnable",
+          "role": "clock",
+          "interactions": [
+            11000
+          ],
+          "requires": [
+            "done:199:300001"
+          ]
+        }
+      },
+      "reports": [],
+      "rewards": {
+        "20331665": [
+          "done:199:300001",
+          "done:200:300001"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G199.json",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G200.json",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G328.json",
+        "Config/Level/Maze/Chapter03/JigsawPuzzle/Maze_Prop_JigsawPuzzleTreasureGameplayIcon.json",
+        "Config/Level/Maze/MazeExtra/Maze_Prop_GameplayIcon.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_SimpleResultController.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_03.json",
+        "Config/LevelOutput/RuntimeFloor/P20331_F20331001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G199.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G200.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G328.json",
+        "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json"
+      ],
+      "rows": {
+        "MazeProp:103012": "8e81453b3174360b508db3916b7b86a29a38db75a0f812099303671e5a0255d7",
+        "InteractConfig:11000": "5c93fdec9b70261a1f4d90bd73d005c12f56586297e090ae58f08a7d40ff8f2c"
+      },
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable"
+    },
+    "waves": {
+      "floor": 20331001,
+      "plane": 20331,
+      "groups": [
+        39,
+        98,
+        147,
+        150,
+        330
+      ],
+      "actors": {},
+      "reports": [],
+      "rewards": {
+        "20331626": [
+          "kill:98:200003",
+          "kill:98:200004",
+          "kill:98:200005",
+          "kill:147:200003",
+          "kill:147:200004",
+          "kill:147:200005",
+          "kill:150:200003",
+          "kill:150:200004",
+          "kill:150:200005",
+          "kill:150:200001",
+          "kill:150:200002",
+          "kill:150:200006"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G147.json",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G150.json",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G330.json",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G39.json",
+        "Config/Level/GroupGraph/F20331001/Group_F20331001_G98.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_CartoonGate_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_CartoonTV_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_CartoonTV_02.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Door_02.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Door_03.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Door_05.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_SimpleResultController.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ReshaMonsterWave_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ReshaMonsterWave_02.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ShowGroupMonsterVision_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_03.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_WolfBroSaveManagar_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_WolfBroSavePoint_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_WolfResetGun_01.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_Console_01.json",
+        "Config/LevelOutput/RuntimeFloor/P20331_F20331001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G147.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G150.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G330.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G39.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G98.json",
+        "Config/Props/Chap03/Prop_Chap03_CartoonGate_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_CartoonTV_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Controller_01_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Door_02_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Door_03_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_Door_05_Config.json",
+        "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json"
+      ],
+      "rows": {
+        "NPCMonsterData:3002011": "7886e530785616b640fa12b3658a1b5053a0852708679bfe40e2ba4ebf29b542",
+        "NPCMonsterData:3002041": "80fc7f157497b25942fa96a15692ba224fb6a8187ccec5f3dbd46e477371c378"
+      },
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable",
+      "waves": [
+        [
+          "kill:98:200003",
+          "kill:98:200004",
+          "kill:98:200005"
+        ],
+        [
+          "kill:147:200003",
+          "kill:147:200004",
+          "kill:147:200005"
+        ],
+        [
+          "kill:150:200003",
+          "kill:150:200004",
+          "kill:150:200005",
+          "kill:150:200001",
+          "kill:150:200002",
+          "kill:150:200006"
+        ]
+      ]
+    },
+    "bugs": {
+      "floor": 10401001,
+      "plane": 10401,
+      "groups": [
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        510
+      ],
+      "actors": {
+        "208:300001": {
+          "group": 208,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "209:300001": {
+          "group": 209,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "210:300001": {
+          "group": 210,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "211:300001": {
+          "group": 211,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "212:300001": {
+          "group": 212,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "213:300001": {
+          "group": 213,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "214:300003": {
+          "group": 214,
+          "instance": 300003,
+          "prop": 104055,
+          "initial": "Open",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "215:300003": {
+          "group": 215,
+          "instance": 300003,
+          "prop": 104055,
+          "initial": "Open",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "216:300001": {
+          "group": 216,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "217:300001": {
+          "group": 217,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "218:300001": {
+          "group": 218,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "219:300001": {
+          "group": 219,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "220:300001": {
+          "group": 220,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "221:300001": {
+          "group": 221,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "222:300001": {
+          "group": 222,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "223:300001": {
+          "group": 223,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "224:300001": {
+          "group": 224,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "225:300001": {
+          "group": 225,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "226:300005": {
+          "group": 226,
+          "instance": 300005,
+          "prop": 104055,
+          "initial": "Closed",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        },
+        "227:300001": {
+          "group": 227,
+          "instance": 300001,
+          "prop": 104055,
+          "initial": "EventClose",
+          "role": "bug",
+          "interactions": [
+            12180,
+            11800,
+            118191,
+            10191,
+            11191
+          ]
+        }
+      },
+      "reports": [],
+      "rewards": {
+        "10401680": [
+          "done:208:300001",
+          "done:209:300001",
+          "done:210:300001",
+          "done:211:300001",
+          "done:212:300001",
+          "done:213:300001",
+          "done:214:300003",
+          "done:215:300003",
+          "done:216:300001",
+          "done:217:300001",
+          "done:218:300001",
+          "done:219:300001",
+          "done:220:300001",
+          "done:221:300001",
+          "done:222:300001",
+          "done:223:300001",
+          "done:224:300001",
+          "done:225:300001",
+          "done:226:300005",
+          "done:227:300001"
+        ]
+      },
+      "missions": {},
+      "files": [
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G211.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G213.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G214.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G219.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G221.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G224.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G226.json",
+        "Config/Level/GroupGraph/F10401001/Group_F10401001_G510.json",
+        "Config/Level/GroupTemplateGraph/Puzzle/Bug/Bug_FlyAway.json",
+        "Config/Level/GroupTemplateGraph/Puzzle/Bug/Bug_HaveCamera.json",
+        "Config/Level/GroupTemplateGraph/Puzzle/Bug/Bug_Normal.json",
+        "Config/Level/LevelInstanceGraph/F10401001/LG_Prop_F10401001_G227_300005.json",
+        "Config/Level/Maze/MazeExtra/Maze_Prop_GameplayIcon.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Text3D_01.json",
+        "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Text3D_03.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_BugButterfly_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSampleAnchor_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSampleExhibition_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSample_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSample_temp_01.json",
+        "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_WishingWell_01.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_TreasureBox_01.json",
+        "Config/LevelOutput/RuntimeFloor/P10401_F10401001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G208.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G209.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G210.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G211.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G212.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G213.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G214.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G215.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G216.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G217.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G218.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G219.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G220.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G221.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G222.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G223.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G224.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G225.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G226.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G227.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G510.json",
+        "Config/Props/Chap03/Prop_Chap03_Text3D_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_BugButterfly_01_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_03_Config.json",
+        "Config/Props/Chap04/Prop_Chap04_WishingWell_01_Config.json",
+        "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json",
+        "ExcelOutput/MazePuzzleOrigami.json",
+        "ExcelOutput/MazePuzzleOrigamiColony.json"
+      ],
+      "rows": {
+        "MazeProp:104055": "5a5fbcd83552acf276e17c0b078a5673fe066469d7c1ed2f1f278307cfff427c",
+        "InteractConfig:118191": "b0795a355994f24da816bf089ee6cf22bd0aa3b4db3962ae51f71b044a4e1e2d",
+        "InteractConfig:10191": "d474ff3231cea3b2b1c5d31ff5baf918f2987eed32971449048e0c14aac3ebcc",
+        "InteractConfig:11191": "a28d8f78ddcc1e611a53ff57a111c7cfd336e767d9f93a666f3a87c7d6e57298",
+        "InteractConfig:12180": "a3484ac72098727506a4988f923a5c3821e30361cfd5ec8f58943cc61bd43223",
+        "InteractConfig:11800": "b318e6fb9a4e0c28fff30859641681aa55f90a234433204b38504ada6f91a0ed"
+      },
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable",
+      "collectionRows": [
+        {
+          "FloorID": 10401001,
+          "GroupID": 208,
+          "MirrorGroupID": 71,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 209,
+          "MirrorGroupID": 72,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 210,
+          "MirrorGroupID": 73,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 211,
+          "MirrorGroupID": 74,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 212,
+          "MirrorGroupID": 75,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 213,
+          "MirrorGroupID": 76,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 214,
+          "MirrorGroupID": 77,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300003,
+          "MainPropStateList": [
+            "Open"
+          ],
+          "SubPropID": 300006,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 215,
+          "MirrorGroupID": 78,
+          "MirrorMainPropID": 300003,
+          "ColonyID": 12,
+          "MainPropID": 300003,
+          "MainPropStateList": [
+            "Open"
+          ],
+          "SubPropID": 300006,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 216,
+          "MirrorGroupID": 79,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 217,
+          "MirrorGroupID": 80,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 218,
+          "MirrorGroupID": 81,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 219,
+          "MirrorGroupID": 82,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 220,
+          "MirrorGroupID": 83,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 221,
+          "MirrorGroupID": 84,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 222,
+          "MirrorGroupID": 85,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 223,
+          "MirrorGroupID": 86,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 224,
+          "MirrorGroupID": 87,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed",
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 225,
+          "MirrorGroupID": 88,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 226,
+          "MirrorGroupID": 89,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300005,
+          "MainPropStateList": [
+            "Closed"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        },
+        {
+          "FloorID": 10401001,
+          "GroupID": 227,
+          "MirrorGroupID": 90,
+          "MirrorMainPropID": 300001,
+          "ColonyID": 12,
+          "MainPropID": 300001,
+          "MainPropStateList": [
+            "EventClose"
+          ],
+          "SubPropID": 300002,
+          "NpcGroupID": 554,
+          "NpcInstanceID": 300002,
+          "CreateNpcPropState": "EventOpen"
+        }
+      ]
+    },
+    "transfer": {
+      "floor": 20481001,
+      "plane": 20481,
+      "groups": [
+        278
+      ],
+      "actors": {},
+      "reports": [],
+      "rewards": {
+        "20481657": [
+          "mission:401590401"
+        ]
+      },
+      "missions": {
+        "401590401": {
+          "key": "mission:401590401",
+          "requires": []
+        }
+      },
+      "files": [
+        "Config/Level/GroupGraph/F20481001/Group_F20481001_G278.json",
+        "Config/Level/Mission/4015904/MissionInfo_4015904.partial.json",
+        "Config/Level/Props/Common/InitLevelGraph_Prop_Common_TreasureBox_01.json",
+        "Config/LevelOutput/RuntimeFloor/P20481_F20481001.json",
+        "Config/LevelOutput/SharedRuntimeGroup/Groups_P20481_F20481001/LevelGroup_P20481_F20481001_G278.json",
+        "Config/Props/Chap04/Prop_Chap04_TreasureBox_03_Config.json"
+      ],
+      "rows": {},
+      "policy": "HKRPG compatibility v1; original server reward bindings unavailable"
+    }
+  },
+  "files": {
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G211.json": "996da9bb05971af871e70173b961350f6d9a1f53a8b0a6f9649be67f29fbc168",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G213.json": "840dd60e7f24d4139623374ff950f8dccc0d9c73ad7a679d49586010e6e1e16d",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G214.json": "63663fe1d4eca54df795ee47565cc92dcb75787997b23009766fee726b1f7045",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G219.json": "92eaa887c96032ee6b19ab8c0356ef67043599b79cba15ea1e14d94ca73c9e66",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G221.json": "869ec8987819387a9e410e1a3b2fcfd9bdaef8aece9984e23d07ff70fa21be5a",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G224.json": "8b67191771163f381ce452a552f075e765cbc55d5b5d7c2283cd3260c0dba10c",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G226.json": "d4518e467b473f0517b62141be52f72834a66b0a612af464fe0e619e31fd6032",
+    "Config/Level/GroupGraph/F10401001/Group_F10401001_G510.json": "9b4124cae6df746e25f14ab345ab6efd4da20451ac988815f55dcc6eb47c67b2",
+    "Config/Level/GroupGraph/F20311001/Group_F20311001_G455.json": "ca6e05f07edce30029771c2eff61df9b213b504dc49ce7370d12b73a91db7516",
+    "Config/Level/GroupGraph/F20322001/Group_F20322001_G340.json": "8ba19c7371a03eff685b6621d65e207f9011b42ceeaf34419f65ba1bb38f330f",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G147.json": "b66fa3a908efda48c7a3a9d82948ca137ba58e03cf724061c8cbae9f47d189b3",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G150.json": "b66fa3a908efda48c7a3a9d82948ca137ba58e03cf724061c8cbae9f47d189b3",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G199.json": "53faf4961fdca5cc917f6934a6100728bf285170d808a0ff38abdfcd38410596",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G200.json": "e7cc2aa2b7df67ee2e265558c3b840b7b2bfdfadc72f8af03d4e23740f901803",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G328.json": "68a7962fcd515de8a3e9a950eee919df3b4923305d055ccebef8d2d4285d6434",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G330.json": "6bc0a61f3200c96aa9f437bfe948c1f98721eabb60b7f7510893d6b07221547d",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G39.json": "024f85fd4b104c06b555ae04b8a074277570f8143c5b310718109358fc151909",
+    "Config/Level/GroupGraph/F20331001/Group_F20331001_G98.json": "95b0accaea3be4105dbc8586d5dce85045dfec18fa5fe1654b4f6f0ec3a26cb3",
+    "Config/Level/GroupGraph/F20332001/Group_F20332001_G211.json": "9381fe312865f8ec92ccc9b6b7ddffe5d71a3bde7dd68ce1c23e6eccc87c0d86",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G229.json": "def6cf4f909ba7f6d173bfea31926f58ad8445697590cb8d8bee0e87f4b947a3",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G262.json": "7fc205931f1887e30a14680259ab4d01e28496b4181c42abf9b6b431b1f8a9a9",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G263.json": "a0c251e68e0005e64605206c67ed39e736ed6e36567df7032baacc1b16c4f222",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G264.json": "a0c251e68e0005e64605206c67ed39e736ed6e36567df7032baacc1b16c4f222",
+    "Config/Level/GroupGraph/F20422001/Group_F20422001_G265.json": "a0c251e68e0005e64605206c67ed39e736ed6e36567df7032baacc1b16c4f222",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G164.json": "a2b69e2457c4960fc760bde83b27c62191225af96a8c36a6145da11daff38fa1",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G166.json": "e74e53e8c26bb063ca0d3331ccedc9f0b4d5d16372287c6ce59744a05a986d7d",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G167.json": "111e97ae50b4b49c045d8c8b54122b79c9cc1e145428fab5142abce18d7ac5f3",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G169.json": "a651db09c1ab3cbcab6d60191f429a58c64ffcccc89cd4c2ec8cd7176b079d72",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G265.json": "a1720257862e768fe8e8ec0d864b6c7fe5c303b4e65db43cc37fb06eecbf53d7",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G30.json": "8f14b182d888a3e32d7117eb3e1b2908dd6aac5ac49f84defdaaef5eea88b3db",
+    "Config/Level/GroupGraph/F20423001/Group_F20423001_G55.json": "36903fedc01d1f0db9534fcc8438b01932301ac3e17eab5a897e4b91fb9efea9",
+    "Config/Level/GroupGraph/F20451001/Group_F20451001_G208.json": "7fc205931f1887e30a14680259ab4d01e28496b4181c42abf9b6b431b1f8a9a9",
+    "Config/Level/GroupGraph/F20451001/Group_F20451001_G53.json": "dda0b3643e1f19cf80a6319584566d797134708239a19f38cc3689e9c842bbb4",
+    "Config/Level/GroupGraph/F20481001/Group_F20481001_G278.json": "a0c251e68e0005e64605206c67ed39e736ed6e36567df7032baacc1b16c4f222",
+    "Config/Level/GroupTemplateGraph/Puzzle/Bug/Bug_FlyAway.json": "c5c94fcfd9e1fc656b61bca1ee897eef645ccfbabf1374f5653a513095b87104",
+    "Config/Level/GroupTemplateGraph/Puzzle/Bug/Bug_HaveCamera.json": "5ee5deaa71d5a684822392852091163f16255e7d6c047f9f8f2fade451bad361",
+    "Config/Level/GroupTemplateGraph/Puzzle/Bug/Bug_Normal.json": "45dff5d2b7b2c845e16ce5e9dd6fc257afd3d6ee15d4babdb3535c4aeaae9dc7",
+    "Config/Level/LevelInstanceGraph/F10401001/LG_Prop_F10401001_G227_300005.json": "865d0f4bceb1c714412cdbf64696743283214a2898955ea302fca97965f20551",
+    "Config/Level/LevelInstanceGraph/F20423001/LG_Prop_F20423001_G265_300001.json": "f9b91dcf9a3711bde437f1d01c176c35438c4df654bfdc21aca86da00ba0a961",
+    "Config/Level/Maze/Chapter03/JigsawPuzzle/Maze_Prop_JigsawPuzzleTreasureGameplayIcon.json": "56ffad19d0572c682e08f2f3152c1244aa7a2364d264f5ac465f90c11901112c",
+    "Config/Level/Maze/MazeExtra/Maze_Prop_GameplayIcon.json": "56ffad19d0572c682e08f2f3152c1244aa7a2364d264f5ac465f90c11901112c",
+    "Config/Level/Mission/1032902/MissionInfo_1032902.partial.json": "bfb423330b4ade9f05850204288a0219ad1a3aaa8fa65a7b4ee6e23b3c0f83c6",
+    "Config/Level/Mission/1032902/Mission_103290201.json": "09c07d96e584cfcf59ef267aa23a8928db936a918e2447534f97d61f1f7df63e",
+    "Config/Level/Mission/1032902/Mission_103290202.json": "fa9c8e6dea8db9f98727a447e3c68984216ebc8a04a48d2606d07fe2d88b3ab4",
+    "Config/Level/Mission/1032902/Mission_103290203.json": "457e3e0064690762df8e10c663eb0eb6bd0e71617bccae0a0b3fc042646b83ab",
+    "Config/Level/Mission/1032902/Mission_103290204.json": "3ebe2112169142223e577efdd84d43d01d4951f7d03be1562285a63fe276192a",
+    "Config/Level/Mission/1032902/Mission_103290205.json": "1d15c0c8e88fe2f359b426693597de8f158eb077bbba458a792e49f9717af6f1",
+    "Config/Level/Mission/1032902/Mission_103290206.json": "5f1788a5f4bdff71e6d8b758b5504b3d0876edae5d4b6ec8588b8dcd042496e1",
+    "Config/Level/Mission/1032902/Mission_103290207.json": "13d570c23815b145064506437ccf20284f51262ac422fc11647c9b453a15ae33",
+    "Config/Level/Mission/1032902/Mission_103290208.json": "606fd128261b98e1ba9cec0f4007626bc4533adf6a824bb54006cc04ad9284f8",
+    "Config/Level/Mission/1032902/Mission_103290209.json": "90322a742bc7745ae22d13ec1c1ba64b4b511b2f53446eec5d99b8c871a52fb7",
+    "Config/Level/Mission/1032902/Mission_103290210.json": "7a36cd314b95e23b5aa40f1f9fa8c4f48c38deb7adbdb171a2aa07fd9a9a05a4",
+    "Config/Level/Mission/1032902/Mission_103290211.json": "25a2818cae4bb34f048bf7b2ca546e737cf9985645df0bf6b5784c649a14a044",
+    "Config/Level/Mission/1032902/Mission_103290212.json": "0795edc6b2fc049bcc69bb19f7d287294f06d861c9f1c16ef46632f8138e90cf",
+    "Config/Level/Mission/1032902/Mission_103290213.json": "706edca7be0ed1c4e4f47633debac45c5ca7c485f13c427d0aa4267ffc1f6ca7",
+    "Config/Level/Mission/1032902/Mission_103290214.json": "06ddac228950e7ef365cb1fa94e9daf4c0cdc7b9297298de71b222f0111a9782",
+    "Config/Level/Mission/1032902/Mission_103290215.json": "f5c39a79bd306340667a6398fbe2302461d921f4ca7301dda3d21cc467ae8d23",
+    "Config/Level/Mission/1032902/Mission_103290216.json": "9d2e3d8355790c245c38b8aaa371f88ffec21b7a40572a479049f5e293abce5d",
+    "Config/Level/Mission/1032902/Mission_103290217.json": "748783f6adee2222adf9aac2529685a84ef89c343c606dba4d369f18c3907ff3",
+    "Config/Level/Mission/1032902/Mission_103290218.json": "13181ec0ae2b52bd377ed33ef127638d53cdf50efd583d548a507b3ea1400d97",
+    "Config/Level/Mission/1032902/Mission_103290219.json": "e0e5bf564be9320f498780a824b0adb9c1a7b38f5fa58f2945d9a7abd19c8f47",
+    "Config/Level/Mission/1032902/Mission_103290220.json": "ac098ede5962445edcc5ff52e6f431977ca2c913e1a0fd08dfd756cbb244a1e0",
+    "Config/Level/Mission/1032902/Mission_103290221.json": "c761de0d7fe3eb6b01cbc3fc9b95a1860e73b75233f22fb113e3913c2ec18464",
+    "Config/Level/Mission/1032902/Mission_103290223.json": "9ac2764f5725c2536ba7ad04a8972702731766d7ca37c4b546fd95e52f601bf2",
+    "Config/Level/Mission/1032902/Mission_103290224.json": "74faf4befd997bc1390ea4f21e57887ee0362c43902addac7ac4119f0e54f611",
+    "Config/Level/Mission/1032902/Mission_103290225.json": "fbc1d85c03d543f09125c62347a1039bd3165f601dba4d17c4d213eb7799a5ea",
+    "Config/Level/Mission/1032902/Mission_103290233.json": "752c7593e13a26a6b74256585e891ad426927295bfb82378e1a60c1043b9baf7",
+    "Config/Level/Mission/1032902/Mission_103290235.json": "1030299c17945ccca7ccb1f58074a1271fd97c646ac5719e532e3b8b1bdf91e8",
+    "Config/Level/Mission/1032902/Mission_103290236.json": "bc94be13387aebf30d3b799cca3a94becaaef13f67180e0ca4267249465c79ef",
+    "Config/Level/Mission/1032902/Mission_103290238.json": "d468fdc8245b9962abc01580536f38db98a0c6634da39826188faff305e07c27",
+    "Config/Level/Mission/1032902/Mission_103290242.json": "4dde77c8cdb5d0d1df0a4aae24659f10be8422127207c716db18d7e4b354c1e6",
+    "Config/Level/Mission/1032902/Mission_103290243.json": "69435492b44f0827959f311b01d42872fe2733fa0efd47d4d77b1c3d0a8d5be3",
+    "Config/Level/Mission/1032902/Mission_103290246.json": "bb85da40352f5b97bc6d15d9693013939f89ffd6b8c2d83c77c806c818df39c3",
+    "Config/Level/Mission/1032902/Mission_103290248.json": "104701bc038851552b7e0c254cdab5a9350945897f66d1889f08d8dd4c8d6a28",
+    "Config/Level/Mission/1032902/Mission_103290249.json": "e697ef1cf6a90da227e0ead4c6e05eb101e464f52d31f352c9da82cf5c1f2563",
+    "Config/Level/Mission/4015904/MissionInfo_4015904.partial.json": "4a96da212f880aa3d9d144b308d3b212d6a7ce458f15a3e1d488fac90103560d",
+    "Config/Level/Mission/4016001/MissionInfo_4016001.partial.json": "04399b5e062b3768716942149fc4e05026d3215bc193d614653a282f46111664",
+    "Config/Level/Mission/4016101/MissionInfo_4016101.partial.json": "b3172c3d45dd98dd1d9f220f4d8a125bee7cd9a6ddaae979d5ffca47badb4fe5",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_CartoonGate_01.json": "7b78ef6f8f1358a9323de1fe41f37f15059375e19e7fa93b113ee70706a21f4f",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_CartoonTV_01.json": "59b4c393750f3a6a5afe6672c901cc91d2f02adfbbfc0f4b2c7c0da32afa3483",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_CartoonTV_02.json": "c2cffce4ac73b69e335f4efd177b0170804894ef12122990356d17b3a57ebfae",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Door_02.json": "d6c126035af489ddce06f7dfa103a34fe1c0c5625d39fd6f73f668a744fd5d42",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Door_03.json": "534b933df4086efcf0dd4710859ef45f8e7692f980cac57d1a8ac439696edd30",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Door_05.json": "daf1cc866114858aa03865702fe19e6e82f8fe36c59247ca03015022ee6bef18",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece.json": "e1ee7911f5fbfd5456e2c40dcfe580f83836a4ad8eb398294d84d95043b0f0a4",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_CollectablePiece_FSV_OnWall.json": "5b19f34ca76aa6697cb398da23146eb486c51bcfeb3e29675e90ef4cd7515a85",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_JigsawSir.json": "c18d98113ea067acd23ee691050ed8a6a6dda04f41e7356bd22d1b463d14c910",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_SimpleResultController.json": "4ca52552930b5a4b04b5db445e0f930c4bb8ff7ebf5ca9763f07cf975ca862fd",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_JigsawPuzzle_TreasureAppearSFXTrigger.json": "77e03450dfaf8ba56097fabd19c6e36e7a01e97572fb18b53e000dfb065efa72",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_MazeBridge_01.json": "cfa8a13ddb330dfc32aec3f111c386de28f45075c160009410e3608c80024f13",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ReshaMonsterWave_01.json": "4f257836ede4569a22e238a545fca4bfbabfb4eebbd69484ee5ecd3731687ebe",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ReshaMonsterWave_02.json": "a686803c759d3e82f31fc3f2b0c02b51032a30132009bc8b98d5ee88cb5a82d6",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_ShowGroupMonsterVision_01.json": "b7c8111134f23f5b46fff4db8d73c605b35280376d172888e1b654e36c4cb4f1",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Text3D_01.json": "3a5685e7cbd23eefad1085996d6002e3839c3585eed7a1ef93d9da8d073cc5b2",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_Text3D_03.json": "2078b27170b22236f19da183730ba5a692fc7761613751e280c960a634acddb2",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_02.json": "d89ac95105a38797973c30ac5add530b1b149f24cf2c2bd17104727c3405ca3c",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_TreasureBox_03.json": "b6fc270075b73729cb4ce1c3206ea0672c8ed7c1b8fd5a74952d25689e961942",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_WolfBroSaveManagar_01.json": "2fff8822588aef2ce8952b87da8835ac8ae046e2c430687b9a6b2f80e76f26ce",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_WolfBroSavePoint_01.json": "fd9fd5f5f0695d3776075aecba44cdf6d201a1f48ef74167f511f8a3408e07de",
+    "Config/Level/Props/Chap03/InitLevelGraph_Prop_Chap03_WolfResetGun_01.json": "fda548f5887807d231ae8234f87fd09fd28f4734301a6e0770e09d5a23bfa3d5",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_BallPad_01.json": "2404a9a2e1b55694a896a8e7266a4d06a9b1aec3c1738b19519cc3cc08d3e070",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_BugButterfly_01.json": "d4df8db11e99a83ac6681bd1c62a5d2686c9b75240a43c9d22a5e268d8af6963",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSampleAnchor_01.json": "0878b8aca483dbaf3e250d49e396e37d702efee9be48dfc80c1746609e06a1df",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSampleExhibition_01.json": "0436dce67044c99c6a3da5e4c83ae90aa9031a763a14df528b9b5f1057e02c42",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSample_01.json": "3192d2f68af47b6040fd346d7f730110e98470309c1ce50a75a804beefb53992",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_CollectSample_temp_01.json": "cbc5587b89a60f335b8151d3244d9554891b073d5b07d5a9dfd79a81a7ff91e5",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_Container_01.json": "5ec791866c5f430dadca57fce2659e75eeca79460556f15fe5f887554234d937",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_DoorSignal_01.json": "85b321ab8e22433eba561efdbeb595038752534c52362804a02be61c3b4de0b8",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_FlyingPiggy_01.json": "71977de3ee9679cadd9e93c4893680aae69eaa724acb32e07662ac0db465cfd6",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GBLauncher_01.json": "23b5a808ee95ed0eeceb56bcc765e9374ad1a7e1e0117a276f4663f3ecb37199",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_GravityBall_BallPad_01.json": "4f40916051bc6260c420c4a4752a3d8eb91cae99225647989444dd35876af1a2",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_MascotMonster_01.json": "f301f4f3e212c7063ae4e38768d6241ee18fd3ead8f2e5432189d1603b0c8145",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_ShieldCoin_01.json": "17d97e2fdfa2d62eb9878b746389e7b2cc6fcd925f456626596156894587aaca",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRWSandClock.json": "612c96a39f0136851c0ddc79b1b95a09dfe60f17628550d85909849d3f2985d4",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewindConsole_01.json": "5444d8ec89036cb5f9af3370d16eb5e05d3c5df6d4794a811ffa624e80543f4c",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewinderBallFoundation.json": "97d082e8af84d1299917c9b638f38818d1a52f5951fbfa3091174789b276f5bc",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewinderBridge_02.json": "ee37f8aa13e99397badaeb04d1df44a7a37777c338feb53d8882c53e8641f32b",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_TimeRewinderBridge_HalfCollapse.json": "36a6f1ec0dd8caeeb99488fe3f911fe57d9b0116c6f534fd96a00cc99142a936",
+    "Config/Level/Props/Chap04/InitLevelGraph_Prop_Chap04_WishingWell_01.json": "b593f9971d9a012b95f16fed7105d7573ca9f16c87b70322c9301fe8726cc221",
+    "Config/Level/Props/Common/InitLevelGraph_Prop_Common_Console_01.json": "050bc3f946967412e010651aee8dfbc5080c10350cebc4a912f1f2bbcd4ac981",
+    "Config/Level/Props/Common/InitLevelGraph_Prop_Common_TreasureBox_01.json": "d4aa87f8e16343c08ff0bab8e46296e7cf4379cdf35bf6620fdf2424d5599e92",
+    "Config/LevelOutput/RuntimeFloor/P10401_F10401001.json": "b9e32206998d2516cfcfacf6b0d10be12c0b832a0eeef1cdad17f3e80ea982e1",
+    "Config/LevelOutput/RuntimeFloor/P20311_F20311001.json": "ad7e0e92c61b2229dd0800d3687c4c67494319ac27d68b43b331e0ec08142df3",
+    "Config/LevelOutput/RuntimeFloor/P20322_F20322001.json": "ddbdc021d11ab87db947b787339a2f5ce2d80df0df9cbec03ab2359eed6ca384",
+    "Config/LevelOutput/RuntimeFloor/P20331_F20331001.json": "606b515636dc67a2822d5c8b7002ecd410e4d9cc00a6b65dde35a8cb406f8add",
+    "Config/LevelOutput/RuntimeFloor/P20332_F20332001.json": "8c53368bdd377b933e74df5837363140f53648188d755603c77840cbedd708f8",
+    "Config/LevelOutput/RuntimeFloor/P20422_F20422001.json": "7c46536b217b96b6f33bb036dd40d2f5be4a5b463d70696dfc28e27581256620",
+    "Config/LevelOutput/RuntimeFloor/P20423_F20423001.json": "0e5499f2ac82bd6d666d63577cd8fabddd45add824df7a65114b5b46a2259399",
+    "Config/LevelOutput/RuntimeFloor/P20451_F20451001.json": "d62a5f7186f6517f3e1a32ca7430a86fabefe09e6d99d1809a24b37b95252e73",
+    "Config/LevelOutput/RuntimeFloor/P20481_F20481001.json": "0e7cc4969ffff81978288fce4c2f026c9efb3776641354121660d557942a4ddd",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G208.json": "8f883138b0200cf066d3bad94989761358c360728f3d7549cb639aec25df1954",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G209.json": "6b50292d03e783eeec6a2d3daa1f71c7dc2e8d5c94505a47ec798d89da00119c",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G210.json": "55369b34ae206e2097feba086792d5ce0b17dd5746954a55f4d64d47ad72a4a7",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G211.json": "6c845e5110e0d0f21981e0d0e40dea6dd3cb689fbcdedbb0532db5d339fb0434",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G212.json": "55350a4a74d0bdde2d5d8ac1a9d016b4ca7573ef37e1facb058c4c61f1b61d11",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G213.json": "ff4417496ab085975362bfe63df9918f446830750b2318f154001d0b988c2584",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G214.json": "1ae527f8ee052bfd688dcb87b7c942c19bed480dd00bd8d9c8c8986d22721823",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G215.json": "125e45f26b9f98f42df3a259a6c92b121c2deeb9b4e96e5fe17e3c892641cf2c",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G216.json": "bc6c37f379f5c576de399f952c1a62d8cc17bc19b8fa2665d1bc4cf602d85817",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G217.json": "2d2782374c892af24eb450841a2c5aa1d311b35f6bcbc8735600934af44f39ea",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G218.json": "d8a389b240473204013ce1115aeacffb3f9a519a555c3a5039316bc3854582dc",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G219.json": "c3d5a67143653763a8260552d47f4ad4f708b1ffffea414045bbcd729dd2abc5",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G220.json": "f54df120573c87a4ed1f7d39bdc99874b845da7162bf9cdd3217f8d472dc334c",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G221.json": "1c0537abbc8dd53eb6f87a45400bc84c5b1a0459ec68bf6c31c287e3993e2644",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G222.json": "1eccaf20863bd1fb1c14d3e4ad041cf8f4ef35aebac60798c221bef9b7eef641",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G223.json": "f04276ff7159c7c68cd61cc689ca51eae89b9e4cb5e7a102119b59866871b124",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G224.json": "24e7b3fb0ec1a5251a5db4d30b5f0db40c7d960436daf9e2a39928304e2e934e",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G225.json": "ff3ae51de43bec7b2a390e1804b6aa86925bb0d4ec2daea3947bb354b365fe30",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G226.json": "e05170a6f95e4a5e3cb2fd339fb7bea971a5133d095cf0d03ce1a0ec08ae4f86",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G227.json": "b8c1fec42942677149493f08e3fe26c3dd10b986098f628d341135c9e13fcddf",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10401_F10401001/LevelGroup_P10401_F10401001_G510.json": "f0c7ddeb9573ccac9d5d94e66980e3e86bb566c88ddcaa34c924030058d78047",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G379.json": "4b0783ac6731abbbf4641add8697e5f9aeed65b685e322ddc1250b584f63d7fb",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20311_F20311001/LevelGroup_P20311_F20311001_G455.json": "63d84eee353105a3ca05089d7fa105b89ae2266e5d9c8869857747b2234496e0",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G183.json": "314c2124f4a14679cfc6cd1de79558f65fd2bd6238e302576d94a7592775e90d",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20322_F20322001/LevelGroup_P20322_F20322001_G340.json": "c11dd945cec66b9aec2f088d18484dc9e0f3c47f8242e814095015551d469459",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G147.json": "f11d8388c03c9435890591b9a6319dbe7619eb51b7df4610604d3ed1123ceecd",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G150.json": "927b48b155490b6d511115f58a5a7052b8b2ac9c443eb15d50690b95f387311d",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G199.json": "eccf98b40e0b586227c69779c63b3d2b9efab1c20cae9c41fc6e8d8e51290f72",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G200.json": "fb6f444ae7dca2dc1fe3957f3abcb1c67579c7927d78aa5fe25dd88af6939204",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G328.json": "dc64dde41f407011990fd1f3ced034eca26eeb5acbd26a13ae011f4d06b14991",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G330.json": "e15cf1b295a0ad2640f67060664fed9726071ddd0efc2527f291442d7a00cf60",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G39.json": "760978d46cf038fa54d9cf41061a44645002c10a5aa62de917724040e53084d2",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20331_F20331001/LevelGroup_P20331_F20331001_G98.json": "79480f97434755ae72d72298eb67712779de301db6b94a01b89daccf5c9fee68",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20332_F20332001/LevelGroup_P20332_F20332001_G211.json": "97c480b35968d81c5208d402562323218d5003e53739fe0c37b62aedc30f2648",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G229.json": "7e7fbd99a435052de61824e7a00921fec3de3dc81912c88d8860058097564865",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G262.json": "937517abd6abc81ce0dc7e052c3d4c3e4a85dd3c23ba2ce04f2950771a7812ab",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G263.json": "a9429a2031923dd76254777f327767ec894420eacddcaacb8920b716ced94d79",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G264.json": "b5690aef165603ffd3112fe9ac88c6e86b32dff759e21e83b475357a892984ba",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20422_F20422001/LevelGroup_P20422_F20422001_G265.json": "d9b85ba20e89a6b793cba385ca699547ae1610d0b6586fc80ffe852fcd816096",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G164.json": "f6243e56ed763e0abb5806d9290e254afdeb0fe1e4a778539789456525610aec",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G166.json": "a2dc4646b2f8bb93adbc028b933ba3174752c287c67c2ac55460014d70998f02",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G167.json": "71a074f809bc3b9d1f6a2ce5d76eacd1c219e23b78f3d50169561db79e939f38",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G169.json": "16e895da143e9a258d608e9ea3d7c1174f44ef4c1f665a0d346b4017e9ef60df",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G265.json": "564057228371dab61e4148ae314e31cfc8d61ad7cfba6183caa4e5d5896e4cc5",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G30.json": "babe287f374a1761b6e5337637ee26b89084cd5e12a0570a29b3a0560fe37bb0",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20423_F20423001/LevelGroup_P20423_F20423001_G55.json": "f964998bb96230784e00f3988d92c0e34feb73bc8c17e63bc4177bead8fd167e",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G208.json": "3ab17d314e68caf39528347682802d5f84d5dd1203cdb054173367cf065b28a0",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20451_F20451001/LevelGroup_P20451_F20451001_G53.json": "c0cc0c79225aa19717203ac26b91d2b833d62d896c97b8d695c6ca21de466712",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20481_F20481001/LevelGroup_P20481_F20481001_G278.json": "0419465934b6443a33ec93e1a792da1bb2d63b801af2ff6d4134f6b398a80fa2",
+    "Config/Props/Chap03/Prop_Chap03_CartoonGate_01_Config.json": "d3df196d94d449dafe776c97180e8e0e5866104ae65170e5f3bec3796fd68bea",
+    "Config/Props/Chap03/Prop_Chap03_CartoonTV_01_Config.json": "c146cbf81ba246ca3b7ffd06ab0e8ef4efeb1f525986a2d3baec98f4faf25f6d",
+    "Config/Props/Chap03/Prop_Chap03_Controller_01_Config.json": "9ec78ac5abc3d054b294f4fbd0fe3565448a45e91750d47f357a1df5648d1f56",
+    "Config/Props/Chap03/Prop_Chap03_Door_02_Config.json": "83a9093909bc2bd6e62fd40549452d080da3bf36f5b02f82b0ca4705a9b4d8ec",
+    "Config/Props/Chap03/Prop_Chap03_Door_03_Config.json": "58f158c566d3885581776119113bf3a2ad3092f0d110b1389be42ee10401fd7e",
+    "Config/Props/Chap03/Prop_Chap03_Door_05_Config.json": "7df0b63d17f4d1174bdebe4ebcdf5903ec113b232f3e9429a7897d22cb6edada",
+    "Config/Props/Chap03/Prop_Chap03_JigsawItem_01_Config.json": "1a725ebc3948893d136079090c365ceeab69e4ca2887c05d8bba2fad22f84a6d",
+    "Config/Props/Chap03/Prop_Chap03_Jigsaw_01_Config.json": "4ec3787665377552d4b4d6ecb19998fe467473c1bc8397fbacf97a8f0e9d37c4",
+    "Config/Props/Chap03/Prop_Chap03_MazeBridge_03_Config.json": "9c645556f69a311b9406505057bcaebafb63b4e9f06d7305378f3d6563ec0cce",
+    "Config/Props/Chap03/Prop_Chap03_Text3D_01_Config.json": "ded26060ecacf3dddf96709c1bf8ec2217eaf689238f0f5bb01aed198e6b6386",
+    "Config/Props/Chap03/Prop_Chap03_TreasureBox_02_Config.json": "013d8b8236ef23ae9c5d90ed2471d937b5f88bc9f4dcf00a7b7a1436936a1d71",
+    "Config/Props/Chap03/Prop_Chap03_TreasureBox_03_Config.json": "844ca7a50a93cb73b6cbdb68f6ffc1162443f28496c700cbfe3608c046d7e2a2",
+    "Config/Props/Chap04/Prop_Chap04_BallPad_01_Config.json": "43e58a2dee0eac6580a7643e7f591f3cff5084208143615dc8182dd2d5baa46f",
+    "Config/Props/Chap04/Prop_Chap04_BugButterfly_01_Config.json": "5e1ab7977e9fd2443d76ef4826dce76ddef2388151bb4f773cc6cfbdc88f75e0",
+    "Config/Props/Chap04/Prop_Chap04_Container_01_Config.json": "e790675797be15dc4c5c84b9a70c23ae0a90d2dd7268620e1c82e594937c727a",
+    "Config/Props/Chap04/Prop_Chap04_DoorSignal_01_Config.json": "c4e992de769752114e9f926abdb61e4548ef57dcbfbb97549773ea2409d16692",
+    "Config/Props/Chap04/Prop_Chap04_EraFlipperStageCapture_01_Config.json": "ddc371c7add1066767ebf1382d41b0434639b201128c70489102dcbe5f90fec3",
+    "Config/Props/Chap04/Prop_Chap04_FlyingPiggy_01_Config.json": "552c01d59495345e050590bf02a17e2fe12117ea7823f4ef3c4cad56a4826316",
+    "Config/Props/Chap04/Prop_Chap04_GravityBallBaseProp_01_Config.json": "83476604ddf435b0a43a0aafd2e80c3082a5c00c2475d2b812bf436ae84d5abc",
+    "Config/Props/Chap04/Prop_Chap04_GravityBallLauncher_01_Config.json": "e92fae71321a6261b5a113db1743f30a59842ca1857f030a3532839f99fb1781",
+    "Config/Props/Chap04/Prop_Chap04_GravityBallWall_01_Config.json": "1c253590e74dfd88a7c6b5a5afa4bc0a28d0049e3384d2a23bfedf3eaefb4433",
+    "Config/Props/Chap04/Prop_Chap04_MascotMonster_01_Config.json": "399e8d55f5a3c433724a37486a8e84e07dbf3949765ce3c300d61665529c35d7",
+    "Config/Props/Chap04/Prop_Chap04_ShieldCoin_01_Config.json": "3b320d128eb32458c44b8ed9f1e84cb02978bfb6ef92215f53904dff0a264df1",
+    "Config/Props/Chap04/Prop_Chap04_ShieldCoin_02_Config.json": "3b320d128eb32458c44b8ed9f1e84cb02978bfb6ef92215f53904dff0a264df1",
+    "Config/Props/Chap04/Prop_Chap04_TRBallFoundation_01_Config.json": "de62719a6465ed3747a9215924a63526473432d6da5adc682b92a6900372a4b1",
+    "Config/Props/Chap04/Prop_Chap04_TRBall_01_Config.json": "f120c4d38a3b10e1b42cb45d5d7ef279d01dca752449f677e12d5066554c1b7e",
+    "Config/Props/Chap04/Prop_Chap04_TimeRewindBridge_02_Config.json": "492c208181c1d4833ecb1743effd8235e2065d7e992a224da23f45677c07101b",
+    "Config/Props/Chap04/Prop_Chap04_TimeRewindBridge_04_Config.json": "5938b3d34d3467c9b63eff6f4ce9dc5cfac13bb92c6354851a627f4c0fbacb7b",
+    "Config/Props/Chap04/Prop_Chap04_TimeRewindConsole_01_Config.json": "ad586f29e36b990c9407e4f09680be7fa82958d31762faea1146821f684b5ef5",
+    "Config/Props/Chap04/Prop_Chap04_TimeSandClock_01_Config.json": "9a33028a3d460d33d0b3575232dfd4e586f46020b108826fffa606eb00dedb24",
+    "Config/Props/Chap04/Prop_Chap04_TreasureBox_01_Config.json": "20eb28f2033e28bf967b1a9e27d163758bf11d63b9a8332180fb7395ef28d79f",
+    "Config/Props/Chap04/Prop_Chap04_TreasureBox_02_Config.json": "7511a711f5ead869d29900edfa60a105443d524d7eb54ffbe641077cfc595cda",
+    "Config/Props/Chap04/Prop_Chap04_TreasureBox_03_Config.json": "c88e1c2951dde551335b0ae1ba168d6473cca10e0005432fad7af9ddd649c426",
+    "Config/Props/Chap04/Prop_Chap04_Water_02_Config.json": "1c253590e74dfd88a7c6b5a5afa4bc0a28d0049e3384d2a23bfedf3eaefb4433",
+    "Config/Props/Chap04/Prop_Chap04_WishingWell_01_Config.json": "f4dd98e565e79f444d8cec4dd71b22ecc2a7ebbb008a28a2a37ab03408d6bb5f",
+    "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json": "bb8dae2e803c97d76d7f9d528768e2c424836a8df6381e72be8ba59ad2a4c78e",
+    "Config/Props/Common/Prop_Common_MapIconPlaceHolder_01_Config.json": "058f2a6ea68f4b6237fbe958552cdea467c1b5beafb27adab259228c39cbece5",
+    "ExcelOutput/MazePuzzleOrigami.json": "b9cfc3f8c2ab64213c6c1c7369f86d8e24b3cae515fcc19a0b5f676a85ab89fe",
+    "ExcelOutput/MazePuzzleOrigamiColony.json": "8b414385fd89660293f01540b3e1c592a5bd94ee18f9854bc59c2c9f62a23bb1"
+  }
+}

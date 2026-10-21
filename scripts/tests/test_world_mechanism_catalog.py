@@ -21,8 +21,13 @@ class WorldMechanismCatalogTest(unittest.TestCase):
         previous = {k:v for k,v in source['rules'].items() if k not in ('20211674','20211681','20211682')}
         self.assertEqual(435,len(previous))
         self.assertEqual('58beb31dc44484370bc5b9551a2934fcf16227d191ede100cda3f440c0b896ab',fingerprint(previous))
-        self.assertEqual(37,len(source['pending']))
-        self.assertEqual({'20433651':'mascot-extension-4.6.json'},source['independentOwners'])
+        self.assertEqual(0,len(source['pending']))
+        self.assertEqual('mascot-extension-4.6.json',source['independentOwners']['20433651'])
+        compatibility=loads((SCRIPTS.parent/'src/main/resources/gameplay/compatible-mechanisms-4.6.json').read_bytes())
+        ids={k for f in compatibility['flows'].values() for k in f['rewards']}
+        self.assertEqual(37,len(ids))
+        self.assertEqual(ids,set(source['independentOwners'])-{'20433651'})
+        self.assertTrue(all(source['independentOwners'][k]=='compatible-mechanisms-4.6.json' for k in ids))
 
     def compass(self, chest, mutate=lambda files: None):
         fixture = loads((SCRIPTS.parent / 'src/test/resources/fixtures/world-mechanisms-4.6.json').read_bytes())

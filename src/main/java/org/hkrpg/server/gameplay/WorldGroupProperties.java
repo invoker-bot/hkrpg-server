@@ -13,6 +13,8 @@ public final class WorldGroupProperties {
   public static Result change(
       Player player, int floor, int dimension, int group, String name, int value) {
     synchronized (player) {
+      if (CompatibleMechanisms.ownsProperty(player.getScene(), group))
+        return CompatibleMechanisms.property(player, floor, dimension, group, name, value);
       var scene = player.getScene();
       if (scene == null || scene.getFloorId() != floor || scene.getDimensionId() != dimension)
         return new Result(Retcode.MISSION_SCENE_NOT_MATCH, 0, 0);
@@ -82,6 +84,7 @@ public final class WorldGroupProperties {
   }
 
   public static void restore(emu.lunarcore.game.scene.Scene scene, int group) {
+    CompatibleMechanisms.restoreGroup(scene, group);
     var state = scene.getPlayer().getGameplay().getWorldMechanisms();
     var actual = scene.getGroups().get(group);
     if (actual == null) return;

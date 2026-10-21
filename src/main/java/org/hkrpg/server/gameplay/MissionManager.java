@@ -243,6 +243,7 @@ public final class MissionManager {
       else if (player.getScene() != null) player.getScene().refreshMissionGroups();
       Mascots.reconcile(player);
       WorldMechanisms.missionRewards(player);
+      CompatibleMechanisms.reconcile(player);
       StoryDoors.reconcile(player.getScene());
       var newSfx = new MusicComposition(player).unlockedSfxSongs();
       newSfx.removeAll(oldSfx);
@@ -1423,6 +1424,7 @@ public final class MissionManager {
 
   public boolean shouldLoadGroup(
       emu.lunarcore.data.config.GroupInfo group, emu.lunarcore.game.scene.Scene scene) {
+    if (!CompatibleMechanisms.shouldLoad(scene, group)) return false;
     if (group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Atmosphere)
       return AtmosphereGroups.allowed(player, group, scene);
     boolean deferred = DeferredMissionGroups.tracks(group, scene);

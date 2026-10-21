@@ -19,7 +19,7 @@ public final class ScenePropTransitions {
 
   public static boolean supported(EntityProp prop) {
     return prop != null
-        && (WorldMechanisms.controller(prop)
+        && (CompatibleMechanisms.controller(prop) || WorldMechanisms.controller(prop)
             || switch (prop.getPropType()) {
               case PROP_ORDINARY, PROP_PLATFORM, PROP_ELEVATOR, PROP_SPRING -> true;
               default -> false;
@@ -89,6 +89,7 @@ public final class ScenePropTransitions {
   }
 
   public static void restore(EntityProp prop) {
+    if (CompatibleMechanisms.controller(prop)) return;
     if (!supported(prop)) return;
     var scene = prop.getScene();
     var player = scene.getPlayer();
@@ -116,6 +117,8 @@ public final class ScenePropTransitions {
 
   public static Result interact(Player player, int config, int entity) {
     synchronized (player) {
+      if (player.getScene() != null && player.getScene().getEntityById(entity) instanceof EntityProp compatible
+          && CompatibleMechanisms.controller(compatible)) return CompatibleMechanisms.interact(player, config, entity);
       var result = SceneInteractions.validateNative(player, config, entity);
       if (result != Retcode.SUCC) return new Result(result, null);
       var scene = player.getScene();

@@ -68,6 +68,8 @@ public final class WorldChests {
     if (state.getRecords().containsKey(id)) return Retcode.SYSTEM_BUSY;
     var mechanism = WorldMechanisms.validateChest(p, id, config);
     if (mechanism != Retcode.SUCC) return mechanism;
+    var compatible = CompatibleMechanisms.validateChest(p, id);
+    if (compatible != Retcode.SUCC) return compatible;
     if (config == TimeRelayFlameSources.UNLOCK && !WorldMechanisms.clientReport(id, config)) {
       if (!rules.flame(id)) return Retcode.INTERACT_TYPE_INVALID;
       if (state.getUnlocks().containsKey(id)) return Retcode.SYSTEM_BUSY;
@@ -165,6 +167,7 @@ public final class WorldChests {
       p.getMissionManager()
           .onPropInteraction(
               p.getFloorId(), actor.getGroupId(), actor.getInstId(), PropState.ChestUsed.getVal());
+      CompatibleMechanisms.claimed(p, id);
       return new Result(Retcode.SUCC, actor);
     }
   }
