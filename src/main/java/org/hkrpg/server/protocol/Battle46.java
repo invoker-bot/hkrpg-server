@@ -114,11 +114,21 @@ final class Battle46 {
     // and both assist fields. They must pass the same scene/skill checks as ordinary hits.
     int caster = attacked;
     if (scene != null
-        && ((scene.getEntities().get(attacked) instanceof EntityMonster && assists.isEmpty())
+        && ((scene.getEntities().get(attacked) instanceof EntityMonster
+                && assists.isEmpty()
+                && phase == MazeSkill.CallbackPhase.DIRECT
+                && scene.getAvatarEntityIds().contains(cast)
+                && !((String) value(req, "maze_ability_str")).isEmpty()
+                && hits.intStream().noneMatch(scene.getAvatarEntityIds()::contains))
             || scene.getEntities().get(attacked) instanceof EntityProp)) {
       hits.add(attacked);
       caster = cast;
     }
+    // Native cast_entity_id is the Ability UseID, not the attacking scene entity.
+    // Keep a monster's attacked_by_entity_id as its identity, including empty projectile
+    // callbacks. Only the explicit legacy avatar/direct-target form above is reversed.
+    boolean monsterCast = scene != null && scene.getEntities().get(caster) instanceof EntityMonster;
+    if (monsterCast && index != 0) error = Retcode.REQ_PARA_INVALID;
     if (scene != null
         && !scene.getAvatarEntityIds().contains(caster)
         && !(scene.getEntities().get(caster) instanceof EntityMonster))
@@ -163,7 +173,7 @@ final class Battle46 {
     if (error == Retcode.SUCC
         && !abilityName.isEmpty()
         && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
-    if (error == Retcode.SUCC && projectileEvent(phase)
+    if (error == Retcode.SUCC && projectileEvent(phase) && !monsterCast
         && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
     if (error == Retcode.SUCC && player.getGameplay().getStoryLines().isTransitionPending())
       error = Retcode.SYSTEM_BUSY;

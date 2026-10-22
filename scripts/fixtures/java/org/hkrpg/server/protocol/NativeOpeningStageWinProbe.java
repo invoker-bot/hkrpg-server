@@ -26,6 +26,8 @@ public final class NativeOpeningStageWinProbe {
   private int requests;
   private int credits;
   private int rewardHints;
+  private boolean ambush;
+  private int ambushUseId = 395;
 
   private static Object field(DynamicMessage message, String name) {
     return message.getField(
@@ -345,7 +347,8 @@ public final class NativeOpeningStageWinProbe {
   private void recoveryProps() throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     var bottles = new ArrayList<Integer>();
-    // This probe sends Kafka's ability name; the active leader remains Kafka after Silver Wolf joins.
+    // This probe sends Kafka's ability name; the active leader remains Kafka after Silver Wolf
+    // joins.
     int caster = (Integer) field(scene, "leader_entity_id");
     for (var raw : (List<?>) field(scene, "entity_group_list")) {
       var group = (DynamicMessage) raw;
@@ -543,17 +546,54 @@ public final class NativeOpeningStageWinProbe {
     movement.setField(motionType.findFieldByName("entity_id"), caster);
     movement.setField(motionType.findFieldByName("motion"), field(target, "motion"));
     call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(movement.build())), true);
-    var entered =
-        call(
-            "SceneCastSkillCsReq",
-            Map.of(
-                "cast_entity_id",
-                caster,
-                "attacked_by_entity_id",
-                field(target, "entity_id"),
-                "maze_ability_str",
-                "LocalPlayer_Kafka_NormalAtk01"),
-            true);
+    DynamicMessage entered;
+    if (ambush && instance == 200001) {
+      var tag =
+          protocol
+              .clientSchema()
+              .message("SceneCastSkillCsReq")
+              .findFieldByName("skill_extra_tags")
+              .getEnumType()
+              .findValueByNumber(1);
+      var attack = new HashMap<String, Object>();
+      attack.put("cast_entity_id", ambushUseId++);
+      attack.put("attacked_by_entity_id", field(target, "entity_id"));
+      attack.put("target_motion", field(target, "motion"));
+      attack.put("skill_extra_tags", List.of(tag));
+      var empty = call("SceneCastSkillCsReq", attack, true);
+      require(
+          Objects.equals(field(empty, "cast_entity_id"), attack.get("cast_entity_id")),
+          "Monster callback lost its Ability UseID");
+      require(
+          (Integer) field((DynamicMessage) field(empty, "battle_info"), "battle_id") == 0,
+          "An empty monster hit must not invent a battle");
+      attack.put("cast_entity_id", ambushUseId++);
+      attack.put("hit_target_entity_id_list", List.of(caster));
+      entered = call("SceneCastSkillCsReq", attack, true);
+      require(
+          Objects.equals(field(entered, "cast_entity_id"), attack.get("cast_entity_id")),
+          "Ambush response lost its Ability UseID");
+      var buffs = (List<?>) field((DynamicMessage) field(entered, "battle_info"), "buff_list");
+      require(
+          buffs.stream()
+              .map(DynamicMessage.class::cast)
+              .anyMatch(
+                  x ->
+                      (Integer) field(x, "id")
+                          == emu.lunarcore.GameConstants.BATTLE_AMBUSH_BUFF_ID),
+          "Monster entry lost the ambush effect");
+    } else
+      entered =
+          call(
+              "SceneCastSkillCsReq",
+              Map.of(
+                  "cast_entity_id",
+                  caster,
+                  "attacked_by_entity_id",
+                  field(target, "entity_id"),
+                  "maze_ability_str",
+                  "LocalPlayer_Kafka_NormalAtk01"),
+              true);
     var battle = (DynamicMessage) field(entered, "battle_info");
     require(
         (Integer) field(battle, "battle_id") > 0, "Original tutorial monster must enter battle");
@@ -583,6 +623,8 @@ public final class NativeOpeningStageWinProbe {
       require(
           groupEntities(33).isEmpty() && Collections.frequency(unloadedGroups, 33) == 1,
           "Hall victory must send UNLOAD, not only delete individual props");
+      objective(100010109, 1);
+      openingParty(false);
       call(
           "FinishTalkMissionCsReq",
           Map.of("sub_mission_id", 100010109, "talk_str", "Mission_100010109"),
@@ -636,6 +678,7 @@ public final class NativeOpeningStageWinProbe {
     call("PlayerLoginFinishCsReq");
     String phase = control.get("phase").getAsString();
     boolean restoredBarriers = phase.startsWith("barriers-");
+    ambush = control.has("ambush") && control.get("ambush").getAsBoolean();
     openingParty(restoredBarriers);
     boolean verifyDoors = control.has("doors") && control.get("doors").getAsBoolean();
     openingScene(
@@ -730,6 +773,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("storyDoorsVerified", verifyDoors);
     result.put("deskReadingsVerified", verifyReadings);
     result.put("storyBarriersVerified", verifyBarriers);
+    result.put("monsterAmbushVerified", ambush && verifyBarriers && !restoredBarriers);
     return result;
   }
 

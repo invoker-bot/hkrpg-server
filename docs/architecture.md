@@ -1,3 +1,5 @@
+`Battle46` 按当前场景施放者区分玩家与怪物，原生技能流水号只用于关联回包；空怪物命中不创建战斗，实际角色命中继续交给 `BattleService` 的伏击路径。来源和验证见[怪物伏击说明](monster-ambush-4.6.md)。
+
 `Scene.refreshMissionGroups` 在原条件要求卸载后，除清理实体和登记外还发送整组卸载通知，以终止客户端的组图与局部屏障；原始基座舱段两组的验证边界见[剧情屏障卸载说明](story-group-unload-4.6.md)。
 
 `StoryDoors` 保留原始门状态与控制台目标绑定，原开门控制图只在已接取的匹配 PropState 目标就绪后放行；复用 `ScenePropTransitions` 同存控制台和门，任务回调中断可由成对记录恢复。旧单控制台记录不能跳过未完成剧情门，边界见[剧情门说明](story-doors-4.6.md)。

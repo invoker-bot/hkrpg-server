@@ -26,8 +26,11 @@ def main():
     parser.add_argument('--doors', action='store_true', help='校验控制台、两扇剧情门及两次同 UID H2 重启')
     parser.add_argument('--readings', action='store_true', help='校验接待中心两份阅读物拾取、背包、防重和重启恢复；移动为合成请求')
     parser.add_argument('--barriers', action='store_true', help='校验大厅及走廊击杀屏障卸载、失败保留和重连/H2重启；包含剧情门检查')
+    parser.add_argument('--ambush', action='store_true', help='回放怪物空命中回调、实际伏击入战和胜败结算；包含屏障检查')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.ambush:
+        args.barriers = True
     if args.barriers:
         args.doors = True
     source = ROOT / 'resources/4.6'
@@ -104,7 +107,8 @@ def main():
                           else ['doors-restart'] if iteration == 2 else ['barriers-restart'])
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
-                                   'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers}
+                                   'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
+                                   'ambush': args.ambush}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -122,6 +126,7 @@ def main():
                     assert snapshot['storyDoorsVerified'] == args.doors
                     assert snapshot['deskReadingsVerified'] == args.readings
                     assert snapshot['storyBarriersVerified'] == (args.barriers and (phase == 'doors-restart' or phase.startswith('barriers-')))
+                    assert snapshot['monsterAmbushVerified'] == (args.ambush and phase == 'doors-restart')
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:
