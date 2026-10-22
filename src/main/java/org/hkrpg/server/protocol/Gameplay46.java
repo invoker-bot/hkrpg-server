@@ -59,6 +59,8 @@ public final class Gameplay46 {
       send(session,"QuitBattleScRsp",Map.of("retcode",1));
       return true;
     }
+    if ((name.equals("SceneCastSkillCsReq") || name.equals("SceneCastSkillCostMpCsReq"))
+        && SceneActionWire46.rejectMalformed(session, name, bytes)) return true;
     var req = session.getProtocol().clientSchema().parse(name, bytes);
     if (!req.getUnknownFields().asMap().isEmpty() && !name.equals("FinishCosumeItemMissionCsReq"))
       throw new ProtocolException("Unknown gameplay request fields: " + name);

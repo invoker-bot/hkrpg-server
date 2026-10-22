@@ -12,6 +12,7 @@ public final class SceneInteraction46 {
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
     if (command != session.getProtocol().clientCommand("InteractPropCsReq")) return false;
     if (session.getState() != SessionState.ACTIVE) return true;
+    if (SceneActionWire46.rejectMalformed(session, "InteractPropCsReq", bytes)) return true;
     var req = session.getProtocol().clientSchema().parse("InteractPropCsReq", bytes);
     var player = session.getPlayer();
     synchronized (player) {
@@ -50,6 +51,8 @@ public final class SceneInteraction46 {
       fields.put("retcode", result.getVal());
       fields.put("prop_entity_id", entity);
       if (prop != null) fields.put("prop_state", prop.getState().getVal());
+      SceneActionDiagnostics46.rejected(session, "InteractPropCsReq", "interaction-config:" + config,
+          result, 0, entity, 0, 0);
       Gameplay46.send(session, "InteractPropScRsp", fields);
     }
     return true;

@@ -3,12 +3,10 @@ package org.hkrpg.server.protocol;
 import static org.hkrpg.server.protocol.Gameplay46.*;
 
 import com.google.protobuf.DynamicMessage;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import emu.lunarcore.game.avatar.GameAvatar;
 import emu.lunarcore.game.battle.skills.MazeSkill;
 import emu.lunarcore.game.battle.MazeAttackResult;
 import emu.lunarcore.game.scene.entity.EntityMonster;
-import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus;
 import emu.lunarcore.proto.BattleStatisticsOuterClass.BattleStatistics;
 import emu.lunarcore.proto.MotionInfoOuterClass.MotionInfo;
@@ -74,95 +72,15 @@ final class Battle46 {
       send(s, "QuitBattleScRsp", Map.of("retcode", result == null ? 1 : 0));
       return;
     }
-    int cast = number(req, "cast_entity_id"),
-        attacked = number(req, "attacked_by_entity_id"),
-        index = number(req, "skill_index");
-    Retcode error = Retcode.SUCC;
-    var phase = callbackPhase(req);
-    if (phase == null) error = Retcode.REQ_PARA_INVALID;
     var scene = player.getScene();
-    var hits = new IntLinkedOpenHashSet();
-    var assists = new IntLinkedOpenHashSet();
-    if (scene == null
-        || active != null
-        || !only(
-            req,
-            "cast_entity_id",
-            "attacked_by_entity_id",
-            "skill_index",
-            "maze_ability_str",
-            "target_motion",
-            "skill_extra_tags",
-            "hit_target_entity_id_list",
-            "assist_monster_entity_id_list",
-            "assist_monster_entity_info")) error = Retcode.REQ_PARA_INVALID;
-    if (index < 0 || index > 1) error = Retcode.REQ_PARA_INVALID;
-    @SuppressWarnings("unchecked")
-    var hitIds = (List<Integer>) value(req, "hit_target_entity_id_list");
-    hits.addAll(hitIds);
-    @SuppressWarnings("unchecked")
-    var assistIds = (List<Integer>) value(req, "assist_monster_entity_id_list");
-    assists.addAll(assistIds);
-    @SuppressWarnings("unchecked")
-    var infos = (List<DynamicMessage>) value(req, "assist_monster_entity_info");
-    for (var info : infos) {
-      @SuppressWarnings("unchecked")
-      var ids = (List<Integer>) value(info, "entity_id_list");
-      assists.addAll(ids);
-    }
-    // Honey fe00bdb SceneSkillManager also accepts destructible props in the direct target
-    // and both assist fields. They must pass the same scene/skill checks as ordinary hits.
-    int caster = attacked;
-    if (scene != null
-        && ((scene.getEntities().get(attacked) instanceof EntityMonster
-                && assists.isEmpty()
-                && phase == MazeSkill.CallbackPhase.DIRECT
-                && scene.getAvatarEntityIds().contains(cast)
-                && !((String) value(req, "maze_ability_str")).isEmpty()
-                && hits.intStream().noneMatch(scene.getAvatarEntityIds()::contains))
-            || scene.getEntities().get(attacked) instanceof EntityProp)) {
-      hits.add(attacked);
-      caster = cast;
-    }
-    // Native cast_entity_id is the Ability UseID, not the attacking scene entity.
-    // Keep a monster's attacked_by_entity_id as its identity, including empty projectile
-    // callbacks. Only the explicit legacy avatar/direct-target form above is reversed.
-    boolean monsterCast = scene != null && scene.getEntities().get(caster) instanceof EntityMonster;
-    if (monsterCast && index != 0) error = Retcode.REQ_PARA_INVALID;
-    if (scene != null
-        && !scene.getAvatarEntityIds().contains(caster)
-        && !(scene.getEntities().get(caster) instanceof EntityMonster))
-      error = Retcode.REQ_PARA_INVALID;
-    if (hits.size() > 64 || assists.size() > 64) error = Retcode.REQ_PARA_INVALID;
-    if (scene != null)
-      for (var it = assists.iterator(); it.hasNext();) {
-        int id = it.nextInt();
-        // A native monster hit can carry its avatar target in field 6. The inherited
-        // assist-monster name does not restrict its wire meaning to monsters.
-        // Normalize avatar targets before admission, even when the hit list is nonempty.
-        if (monsterCast && scene.getAvatarEntityIds().contains(id)) {
-          hits.add(id);
-          it.remove();
-          continue;
-        }
-        var target = scene.getEntities().get(id);
-        if (!(target instanceof EntityMonster)
-            && !(target instanceof EntityProp prop && scene.canDestroyProp(prop)))
-          error = Retcode.REQ_PARA_INVALID;
-      }
-    if (hits.size() > 64) error = Retcode.REQ_PARA_INVALID;
-    if (scene != null)
-      for (int id : hits) {
-        var target = scene.getEntities().get(id);
-        if ((target == null && !scene.getAvatarEntityIds().contains(id))
-            || (target != null
-                && !(target instanceof EntityMonster)
-                && !(target instanceof emu.lunarcore.game.scene.entity.EntityProp))
-            || (scene.getAvatarEntityIds().contains(id)
-                && scene.getAvatarEntityIds().contains(caster))
-            || (target instanceof emu.lunarcore.game.scene.entity.EntityProp prop
-                && !scene.canDestroyProp(prop))) error = Retcode.REQ_PARA_INVALID;
-      }
+    var input = SceneCastRequest46.decode(req, scene);
+    int cast = input.useId(), caster = input.casterEntityId(), index = input.skillIndex();
+    var phase = input.phase();
+    var hits = input.hits();
+    var assists = input.assists();
+    boolean monsterCast = input.monsterCast();
+    Retcode error = input.rejection() == null ? Retcode.SUCC : Retcode.REQ_PARA_INVALID;
+    if (active != null) error = Retcode.SYSTEM_BUSY;
     if (error == Retcode.SUCC && scene != null) {
       var combatants = new IntLinkedOpenHashSet(hits);
       combatants.addAll(assists);
@@ -179,7 +97,7 @@ final class Battle46 {
     MotionInfo directMotion = null;
     int manualCost = 0;
     boolean manualFirstRelease = false;
-    var abilityName = (String) value(req, "maze_ability_str");
+    var abilityName = input.ability();
     if (error == Retcode.SUCC
         && !abilityName.isEmpty()
         && !scene.getAvatarEntityIds().contains(caster)) error = Retcode.REQ_PARA_INVALID;
@@ -312,18 +230,11 @@ final class Battle46 {
       }
     }
     if (error != Retcode.SUCC) {
+      SceneActionDiagnostics46.rejected(s, name,
+          input.rejection() != null ? input.rejection() : active != null ? "active-battle" : "skill-admission",
+          error, cast, caster, hits.size(), assists.size());
       send(s, "SceneCastSkillScRsp", Map.of("retcode", error.getVal(), "cast_entity_id", cast));
       return;
-    }
-    if (hits.isEmpty()) hits.addAll(assists);
-    // Preserve assist-only monster admission, then move props into the destruction path.
-    // Deduplication happens before effects, so one bottle can recover points only once.
-    for (var it = assists.iterator(); it.hasNext();) {
-      int id = it.nextInt();
-      if (scene.getEntities().get(id) instanceof EntityProp) {
-        hits.add(id);
-        it.remove();
-      }
     }
     var acceptedRelease = directRelease;
     var acceptedCaster = freeDirect == null ? null : scene.getAvatarByEntityId(caster);
@@ -354,6 +265,8 @@ final class Battle46 {
       }
       if (manualFirstRelease) player.getDailyManager().onMazeSkill();
     }
+    SceneActionDiagnostics46.rejected(s, name, "battle-admission", result.retcode(),
+        cast, caster, hits.size(), assists.size());
     var response = builder(s, "SceneCastSkillScRsp");
     set(response, "retcode", result.retcode().getVal());
     set(response, "cast_entity_id", cast);
@@ -427,25 +340,6 @@ final class Battle46 {
     }
   }
 
-  private static MazeSkill.CallbackPhase callbackPhase(DynamicMessage request) {
-    @SuppressWarnings("unchecked")
-    var tags = (List<EnumValueDescriptor>) value(request, "skill_extra_tags");
-    if (tags.isEmpty()) return MazeSkill.CallbackPhase.DIRECT;
-    // DGOAKJNHIFJ's actual no-LastFinishProjectile constructor supplies [HIT, FINISH].
-    // Its singleton arrays represent actual projectile events. Only the emitted order is known.
-    if (tags.size() == 2)
-      return tags.get(0).getName().equals("SCENE_CAST_SKILL_PROJECTILE_HIT")
-              && tags.get(1).getName().equals("SCENE_CAST_SKILL_PROJECTILE_LIFETIME_FINISH")
-          ? MazeSkill.CallbackPhase.COMBINED : null;
-    if (tags.size() != 1) return null;
-    return switch (tags.getFirst().getName()) {
-      case "SCENE_CAST_SKILL_NONE" -> MazeSkill.CallbackPhase.DIRECT;
-      case "SCENE_CAST_SKILL_PROJECTILE_HIT" -> MazeSkill.CallbackPhase.PROJECTILE_HIT;
-      case "SCENE_CAST_SKILL_PROJECTILE_LIFETIME_FINISH" -> MazeSkill.CallbackPhase.PROJECTILE_LIFETIME_FINISH;
-      default -> null;
-    };
-  }
-
   private static boolean projectileEvent(MazeSkill.CallbackPhase phase) {
     return phase == MazeSkill.CallbackPhase.PROJECTILE_HIT
         || phase == MazeSkill.CallbackPhase.PROJECTILE_LIFETIME_FINISH;
@@ -501,6 +395,8 @@ final class Battle46 {
         notifyMp(session, use);
       }
     }
+    SceneActionDiagnostics46.rejected(session, "SceneCastSkillCostMpCsReq", "skill-payment",
+        error, use, caster, 0, 0);
     send(session, "SceneCastSkillCostMpScRsp", Map.of("retcode", error.getVal(), "cast_entity_id", use));
   }
 

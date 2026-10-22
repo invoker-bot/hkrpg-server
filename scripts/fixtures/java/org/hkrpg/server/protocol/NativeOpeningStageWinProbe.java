@@ -44,10 +44,14 @@ public final class NativeOpeningStageWinProbe {
     fields.forEach(
         (key, value) ->
             request.setField(request.getDescriptorForType().findFieldByName(key), value));
+    return callRaw(name, request.build().toByteArray(), success);
+  }
+
+  private DynamicMessage callRaw(String name, byte[] bytes, boolean success) throws Exception {
     var packet =
         Unpooled.wrappedBuffer(
             PacketCodec.encode(
-                protocol.clientCommand(name), new byte[0], request.build().toByteArray()));
+                protocol.clientCommand(name), new byte[0], bytes));
     try {
       channel.write(packet);
     } finally {
@@ -571,6 +575,20 @@ public final class NativeOpeningStageWinProbe {
       // The real monster-hit callback uses field 6 for its avatar target, despite the
       // inherited assist-monster field name. Keep the ordinary hit list absent.
       attack.put("assist_monster_entity_id_list", List.of(caster));
+      // Literal wire regression: old protobuf handling ignored this nested field and
+      // admitted an ambush. Rejection must leave the same connection and scene usable.
+      var malformed = new java.io.ByteArrayOutputStream();
+      var wire = CodedOutputStream.newInstance(malformed);
+      wire.writeUInt32(2, (Integer) field(target, "entity_id"));
+      wire.writeUInt32(13, (Integer) attack.get("cast_entity_id"));
+      wire.writeUInt32(6, caster);
+      wire.writeUInt32(11, 1);
+      wire.writeByteArray(7, new byte[] {64, 1}); // Unknown group field 8.
+      wire.flush();
+      var denied = callRaw("SceneCastSkillCsReq", malformed.toByteArray(), false);
+      require((Integer) field(denied, "retcode") == 5, "Malformed group must be rejected");
+      require((Integer) field((DynamicMessage) field(call("GetCurBattleInfoCsReq"), "battle_info"), "battle_id") == 0,
+          "Rejected nested fields must not create a battle");
       entered = call("SceneCastSkillCsReq", attack, true);
       require(
           Objects.equals(field(entered, "cast_entity_id"), attack.get("cast_entity_id")),
@@ -776,6 +794,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("deskReadingsVerified", verifyReadings);
     result.put("storyBarriersVerified", verifyBarriers);
     result.put("monsterAmbushVerified", ambush && verifyBarriers && !restoredBarriers);
+    result.put("sceneActionAdmissionVerified", ambush && verifyBarriers && !restoredBarriers);
     return result;
   }
 

@@ -129,7 +129,9 @@ class MazeCastPreflightTest {
     rejected(
         capture,
         nativePath,
-        scenario.equals("no-points") ? Retcode.MAZE_MP_NOT_ENOUGH : Retcode.REQ_PARA_INVALID);
+        scenario.equals("no-points") ? Retcode.MAZE_MP_NOT_ENOUGH
+            : nativePath && scenario.equals("active-battle") ? Retcode.SYSTEM_BUSY
+            : Retcode.REQ_PARA_INVALID);
     assertEquals(scenario.equals("no-points") ? 0 : 5, player.getCurrentLineup().getMp());
   }
 

@@ -330,6 +330,8 @@ protocols / resources/protocol      独立来源定义与打包描述符
 
 ## 协议边界
 
+场景动作的原生入口由 `SceneActionWire46` 先检查线格式，阻止重复单值字段、溢出编号和未知嵌套字段在 protobuf 解析时被合并、截断或忽略。`SceneCastRequest46` 集中解释 Ability UseID 与实际施放实体，按当前场景实体类型归并命中/辅助列表，完成最终边界检查后才交给技能和战斗服务。错误通过 `SceneActionDiagnostics46` 记录限量元数据。验证及兼容边界见 [场景动作入口](scene-action-admission-4.6.md)。
+
 探索资源安装包含ConfigAdventureAbility全部子目录、ConfigAdventureModifier、ConfigSummonUnit、ConfigMazeBuff和ConfigEntity/SummonUnit；追加安装只增加文件和独立补充清单，遇到运营文件冲突在复制前拒绝。74条召唤定义中的28条服务端配置由实际加载器读取，46条客户端定义不创建服务端配置实例。当前场景仍是单召唤物模型，登记、替换、超时、直接移除和按DestroyOnEnterBattle销毁已有回归；持续时间使用有符号int32毫秒和-1永久标记，超出表示范围不能先删除原实体。CreateSummonUnit明确固定时长叶任务和DestroySummonUnit的Caster/编号选择器已接入；缺省/动态时长、位置偏移/导航、条件分支、创建/销毁脚本、完整触发器、唯一组及多实例规则仍待接入。
 
 角色探索Buff在有效战斗入口形成固定快照，正式和试用角色均按当前实际槽位绑定。战斗查询使用该快照；未开始的预览仅构造临时数据，不改变战斗缓存或角色效果。明确声明AddBattleBuff、角色技能绑定和非空绑定键的一级效果结转后消耗并通知真实场景角色；其他消费语义仍待逐项核对。角色绑定使用独立列表保留不同施法者及同编号显式战斗效果，既有按ID查询接口保留首个可用实例；NPC多施法者、完整动态参数、修饰器与跨场景生命周期仍待完成。
