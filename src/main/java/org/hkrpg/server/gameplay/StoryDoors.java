@@ -22,6 +22,18 @@ public final class StoryDoors {
   private static final JsonElement ENABLE_TASK =
       JsonParser.parseString(
           "{\"OnInitSequece\":[],\"OnStartSequece\":[{\"TaskList\":[{\"$type\":\"RPG.GameCore.ChangePropState\"}]}],\"Type\":\"Mission\"}");
+  // A separate authored flow fades out, asks Locked -> Closed, then accepts the next
+  // performance. Match its complete literal script and objective, not a mission ID.
+  private static final String UNLOCK_TASK = """
+      {"OnInitSequece":[],"OnStartSequece":[{"TaskList":[
+        {"$type":"RPG.GameCore.PlayScreenTransfer","Mode":"SwitchOut"},
+        {"$type":"RPG.GameCore.PropReqInteract","TargetType":{
+          "$type":"RPG.GameCore.TargetFetchAdvPropEx","FetchType":"SinglePropByPropID",
+          "SinglePropID":{"GroupID":{"IsDynamic":false,"FixedValue":{"Value":%d}},
+                          "ID":{"IsDynamic":false,"FixedValue":{"Value":%d}}}},
+         "InteractID":{"IsDynamic":false,"FixedValue":{"Value":1200}}}
+      ]}],"Type":"Mission"}
+      """;
 
   private record Link(int group, int instance) {}
 
@@ -111,6 +123,39 @@ public final class StoryDoors {
         .toList();
   }
 
+  private static boolean unlockObjective(Scene scene, int group, PropInfo info,
+      MissionInfo.SubMissionInfo c) {
+    if (c == null || !controller(info) || info.getState() != PropState.Locked
+        || !"PropState".equals(c.getFinishType()) || !"Equal".equals(c.getParamType())
+        || c.getLevelPlaneID() != scene.getPlaneId() || c.getLevelFloorID() != scene.getFloorId()
+        || c.getMazePlaneID() != scene.getPlaneId() || c.getMazeFloorID() != scene.getFloorId()
+        || c.getParamInt1() != group || c.getParamInt2() != info.getID()
+        || c.getParamInt3() != PropState.Closed.getVal() || c.getProgress() != 1
+        || c.getTask() == null) return false;
+    try {
+      return JsonParser.parseString(UNLOCK_TASK.formatted(group, info.getID()))
+          .equals(JsonParser.parseString(c.getTask().getSourceDefinition()));
+    } catch (RuntimeException invalid) { return false; }
+  }
+
+  private static boolean unlockReady(Scene scene, int group, PropInfo info) {
+    return GameplayDefinitions.subs.values().stream().anyMatch(c ->
+        unlockObjective(scene, group, info, c)
+            && doing(scene, c));
+  }
+
+  private static boolean doing(Scene scene, MissionInfo.SubMissionInfo c) {
+    return MissionStateRecords.doing(scene.getPlayer().getMissionManager().sub(c.getId()), c.getId(), 1)
+        && scene.getPlayer().getMissionManager().canFinishFromAction(c.getId());
+  }
+
+  private static boolean unlocked(Scene scene, int group, PropInfo info) {
+    return GameplayDefinitions.subs.values().stream().anyMatch(c ->
+        unlockObjective(scene, group, info, c)
+            && (MissionStateRecords.subCompleted(scene.getPlayer(), c.getId())
+                || doing(scene, c) && receipt(scene, group, info, PropState.Closed)));
+  }
+
   private static boolean completed(Scene scene, int group, PropInfo info) {
     return objectives(scene, group, info).stream()
         .anyMatch(c -> MissionStateRecords.subCompleted(scene.getPlayer(), c.getId()));
@@ -126,6 +171,10 @@ public final class StoryDoors {
   }
 
   private static boolean receipt(Scene scene, int group, PropInfo info) {
+    return receipt(scene, group, info, PropState.Open);
+  }
+
+  private static boolean receipt(Scene scene, int group, PropInfo info, PropState state) {
     var record =
         scene
             .getPlayer()
@@ -134,7 +183,7 @@ public final class StoryDoors {
             .get(PropTimelines.key(scene, group, info.getID()));
     return record != null
         && record.getProp() == info.getPropID()
-        && record.getState() == 1
+        && record.getState() == state.getVal()
         && record.getAcceptance().isEmpty()
         && record.getSource().equals(PropTimelines.source(info));
   }
@@ -148,7 +197,8 @@ public final class StoryDoors {
 
   private static PropState state(Scene scene, int group, PropInfo info) {
     if (completed(scene, group, info)) return PropState.Open;
-    if (info.getState() == PropState.Locked && !ready(scene, group, info)) return PropState.Locked;
+    if (info.getState() == PropState.Locked && !ready(scene, group, info)
+        && !unlocked(scene, group, info)) return PropState.Locked;
     if (pairReceipt(scene, group, info)) return PropState.Open;
     if (info.getState() == PropState.Closed) {
       var old =
@@ -219,7 +269,11 @@ public final class StoryDoors {
           ? Retcode.INTERACT_TYPE_INVALID
           : Retcode.SUCC;
     var link = link(info);
-    if (config != 1010 || link == null || state(scene, prop.getGroupId(), info) != PropState.Closed)
+    boolean unlock = config == 1200 && prop.getState() == PropState.Locked
+        && unlockReady(scene, prop.getGroupId(), info)
+        && GameData.getInteractExcelMap().get(config).getTargetState() == PropState.Closed;
+    boolean open = config == 1010 && state(scene, prop.getGroupId(), info) == PropState.Closed;
+    if ((!unlock && !open) || link == null)
       return Retcode.INTERACT_TYPE_INVALID;
     var doorInfo = original(scene, link.group(), link.instance());
     var door = actor(scene, link);
@@ -241,7 +295,8 @@ public final class StoryDoors {
   }
 
   static void transitions(EntityProp prop, Map<EntityProp, PropState> targets) {
-    if (!world(prop.getScene()) || !controller(prop.getPropInfo())) return;
+    if (!world(prop.getScene()) || !controller(prop.getPropInfo())
+        || targets.get(prop) != PropState.Open) return;
     var door = actor(prop.getScene(), link(prop.getPropInfo()));
     if (door != null) targets.put(door, PropState.Open);
   }
@@ -250,6 +305,9 @@ public final class StoryDoors {
     var scene = player.getScene();
     if (!world(scene)) return false;
     var info = original(scene, c.getParamInt1(), c.getParamInt2());
+    if (unlockObjective(scene, c.getParamInt1(), info, c))
+      return unlockReady(scene, c.getParamInt1(), info)
+          && receipt(scene, c.getParamInt1(), info, PropState.Closed);
     return controller(info)
         && objective(scene, c.getParamInt1(), info, c)
         && pairReceipt(scene, c.getParamInt1(), info);

@@ -1,0 +1,111 @@
+{
+  "repository": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sources": [
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010124.json",
+      "sha256": "c7eba12dbc99fa68b284f069d7022ea6d5b992f87f05d60a8304b5dbad36bf31"
+    },
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010116.json",
+      "sha256": "806b62ca01745884901b54008e74b8f37803fbef99be06a0af5a6dccac87d2a8"
+    },
+    {
+      "path": "ExcelOutput/InteractConfig.json",
+      "sha256": "3a1e0f178b95a482fa2c03975f3a8f2a4ffa1e609c4819aeee5108dc9ef29de9"
+    }
+  ],
+  "records": {
+    "Config/Level/Mission/1000101/Mission_100010124.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PlayScreenTransfer",
+              "Mode": "SwitchOut"
+            },
+            {
+              "$type": "RPG.GameCore.PropReqInteract",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 5
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300029
+                    }
+                  }
+                }
+              },
+              "InteractID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 1200
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1000101/Mission_100010116.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PlayScreenTransfer",
+              "Type": "None",
+              "Mode": "SwitchOut"
+            },
+            {
+              "$type": "RPG.GameCore.SwitchCharacterAnchor",
+              "IsLocalPlayer": true,
+              "CharacterUniqueName": "LocalPlayer",
+              "AreaName": {
+                "Value": "LevelArea_P20001_F20001001_G14"
+              },
+              "AnchorName": {
+                "Value": "Anchor2"
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.TriggerPerformance",
+              "PerformanceType": "C",
+              "PerformanceID": 100010108,
+              "ValueSource": {}
+            },
+            {
+              "$type": "RPG.GameCore.LockPlayerControl"
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100010116"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "ExcelOutput/InteractConfig.json": [
+      {
+        "InteractID": 1200,
+        "SrcState": "Locked",
+        "ItemCostList": []
+      }
+    ]
+  }
+}

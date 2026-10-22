@@ -630,7 +630,7 @@ public final class NativeOpeningStageWinProbe {
         true);
   }
 
-  private void corridorBarriers(boolean restored) throws Exception {
+  private void corridorBarriers(boolean restored, boolean scriptedUnlock) throws Exception {
     if (!restored) {
       require(!groupEntities(33).isEmpty(), "Hall barrier must precede its actual defeat");
       call(
@@ -671,11 +671,38 @@ public final class NativeOpeningStageWinProbe {
     }
     objective(100010122, 2);
     objective(100010130, 2);
-    objective(100010113, 1);
+    objective(100010113, restored && scriptedUnlock ? 2 : 1);
     require(
         groupEntities(17).isEmpty() && groupEntities(33).isEmpty(),
         "Completed story blockers respawned");
     openingParty(true);
+  }
+
+  private void scriptedDoorUnlock(boolean restored) throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    if (!restored) {
+      var entered = call("SceneEnterStageCsReq", Map.of("event_id", 20001006), true);
+      var battle = (DynamicMessage) field(entered, "battle_info");
+      var end = protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status");
+      call("PVEBattleResultCsReq", Map.of("battle_id", field(battle, "battle_id"),
+          "stage_id", field(battle, "stage_id"),
+          "end_status", end.getEnumType().findValueByName("BATTLE_END_WIN")), true);
+      objective(100010113, 2);
+      objective(100010124, 1);
+      var console = doors().get(300029);
+      require((Integer) field((DynamicMessage) field(console, "prop"), "prop_state") == 2,
+          "The scripted control must still be locked before config 1200");
+      var unlocked = call("InteractPropCsReq", Map.of("prop_entity_id", field(console, "entity_id"),
+          "interact_id2", 1200, "interact_id", field(scene, "interact_id")), true);
+      require((Integer) field(unlocked, "prop_state") == 0, "Scripted unlock must return Closed");
+    }
+    objective(100010124, 2);
+    objective(100010116, 1);
+    var props = doors();
+    require((Integer) field((DynamicMessage) field(props.get(300029), "prop"), "prop_state") == 0,
+        "Scripted unlock was lost on reconnect/restart");
+    require((Integer) field((DynamicMessage) field(props.get(300007), "prop"), "prop_state") == 0,
+        "Unlock must not prematurely open the associated door");
   }
 
   private Map<String, Object> execute(JsonObject control) throws Exception {
@@ -762,7 +789,10 @@ public final class NativeOpeningStageWinProbe {
         control.has("barriers")
             && control.get("barriers").getAsBoolean()
             && (phase.equals("doors-restart") || restoredBarriers);
-    if (verifyBarriers) corridorBarriers(restoredBarriers);
+    boolean verifyScriptedUnlock = verifyBarriers && control.has("scriptedUnlock")
+        && control.get("scriptedUnlock").getAsBoolean();
+    if (verifyBarriers) corridorBarriers(restoredBarriers, verifyScriptedUnlock);
+    if (verifyScriptedUnlock) scriptedDoorUnlock(restoredBarriers);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -795,6 +825,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("storyBarriersVerified", verifyBarriers);
     result.put("monsterAmbushVerified", ambush && verifyBarriers && !restoredBarriers);
     result.put("sceneActionAdmissionVerified", ambush && verifyBarriers && !restoredBarriers);
+    result.put("scriptedDoorUnlockVerified", verifyScriptedUnlock);
     return result;
   }
 
