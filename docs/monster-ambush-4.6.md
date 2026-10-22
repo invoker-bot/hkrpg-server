@@ -36,7 +36,11 @@
 
 补修版本的完整构建通过 577 类、14,908 项测试，失败、错误、跳过均为 0，专项回归共 28 项；2,723 个冻结输入校验未变更。同一 JAR `e6f71632b936c272727da73ab7db425ad04140770a8ad2ae0c7a80562e348e5d` 通过改用实机受击字段的 310 次 UDP/KCP 请求、6 次同 UID 会话、4 次正常停服、3 次 H2 进程恢复，以及两轮调度/账号恢复冒烟检查。候选镜像内 JAR 哈希一致，运营资源清单未变更。
 
-诊断、完整构建、网络和部署证据保存在忽略目录 `build/silver-wolf-performance-20261023/`，第一次发布证明另存 `first-deployed/`。补修版本的部署结果在执行后记录。真实客户端复测尚未确认，银狼过场也未计为通过。
+2026-10-23 06:17（Asia/Singapore），补修提交 `3f4e322ec6d436e3e9dd49c20d50a531e681f9b5` 已更新至本地 Compose 服务。停服备份位于 `.local/backups/monster-ambush-20261023-061658/`，11 个数据文件逐项校验一致；运行镜像和容器内 JAR 与验证产物相同。只读部署检查通过，运营配置及资源未变更。更新前后比较确认 UID 10001 的 17 项已完成目标及原时间戳、剧情队伍、5 条物品记录、1 条正式角色记录、开门及领奖状态完整保留。
+
+实机在本地 06:17:48 再次发送怪物实体 39、流水号 441、字段 6 `[1]` 的受击请求；服务器返回 0，并创建战斗 `799661610`、原始关卡 `200010030`。06:18:43 收到该战斗的 `BATTLE_END_WIN` 回执并成功结算，回复为 0。用户随后明确确认“能正常进入战斗”。这次实机入战及胜利回执验收通过；并不扩展为全部地图、角色或剧情的实机验收。诊断读取结束后已移除本次被动观察器，无需再次重启服务。
+
+诊断、完整构建、网络和部署证据保存在忽略目录 `build/silver-wolf-performance-20261023/`，第一次发布证明另存 `first-deployed/`；第二次部署只读验证使用独立的 `compose-verification-final.json`，实机证据为 `client-acceptance.json` 及 `observer-after-deploy.jsonl`。用户明确选择先验收怪物攻击、银狼过场稍后复测，因此银狼过场仍不计为通过。
 
 ```powershell
 .\gradlew.bat test --tests '*MonsterAmbush46Test' --tests '*MazeAttackResults46Test' --tests '*MazeCallbackPhases46Test' --tests '*BaseZoneRecoveryProp46Test'
