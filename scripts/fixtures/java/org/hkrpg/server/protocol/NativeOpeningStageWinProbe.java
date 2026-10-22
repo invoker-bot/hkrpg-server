@@ -21,6 +21,7 @@ public final class NativeOpeningStageWinProbe {
   private final AtomicReference<Throwable> failure = new AtomicReference<>();
   private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
   private final List<DynamicMessage> lineupUpdates = new ArrayList<>();
+  private final List<Integer> unloadedGroups = new ArrayList<>();
   private Ukcp channel;
   private int requests;
   private int credits;
@@ -59,6 +60,15 @@ public final class NativeOpeningStageWinProbe {
       if (frame == null) continue;
       if (frame.command() == protocol.clientCommand("SyncLineupNotify"))
         lineupUpdates.add(protocol.clientSchema().parse("SyncLineupNotify", frame.body()));
+      if (frame.command() == protocol.clientCommand("SceneGroupRefreshScNotify")) {
+        var update = protocol.clientSchema().parse("SceneGroupRefreshScNotify", frame.body());
+        require((Integer) field(update, "floor_id") == 20001001, "Group update floor");
+        for (var raw : (List<?>) field(update, "group_refresh_list")) {
+          var group = (DynamicMessage) raw;
+          if (((Descriptors.EnumValueDescriptor) field(group, "refresh_type")).getNumber() == 2)
+            unloadedGroups.add((Integer) field(group, "group_id"));
+        }
+      }
       if (frame.command() == protocol.clientCommand("ScenePlaneEventScNotify")) {
         protocol.clientSchema().parse("ScenePlaneEventScNotify", frame.body());
         rewardHints++;
@@ -101,15 +111,19 @@ public final class NativeOpeningStageWinProbe {
     require(missions.containsKey(100010105) == finished, "Next opening objective");
   }
 
-  private void openingParty() throws Exception {
+  private void openingParty(boolean silverWolf) throws Exception {
     var team = (DynamicMessage) field(call("GetCurLineupDataCsReq"), "lineup");
     var avatars = (List<?>) field(team, "avatar_list");
-    require(avatars.size() == 1, "Opening must contain only Kafka");
+    require(avatars.size() == (silverWolf ? 2 : 1), "Opening story party size");
     var kafka = (DynamicMessage) avatars.getFirst();
     require((Integer) field(kafka, "id") == 1001005, "Opening Kafka special-avatar ID");
     require(
         ((Descriptors.EnumValueDescriptor) field(kafka, "avatar_type")).getNumber() == 1,
         "Opening actor must remain a trial");
+    if (silverWolf)
+      require(
+          (Integer) field((DynamicMessage) avatars.get(1), "id") == 1001006,
+          "Silver Wolf story trial must survive reconnect/restart");
     var owned =
         (List<?>)
             field(call("GetAvatarDataCsReq", Map.of("is_get_all", true), true), "avatar_list");
@@ -137,7 +151,7 @@ public final class NativeOpeningStageWinProbe {
     }
   }
 
-  private void openingScene(boolean expectDoorEffects) throws Exception {
+  private void openingScene(boolean expectDoorEffects, boolean silverWolf) throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     require(
         (Integer) field(scene, "entry_id") == 2000101
@@ -158,9 +172,10 @@ public final class NativeOpeningStageWinProbe {
         if (!entity.hasField(actorField)) continue;
         var actor = (DynamicMessage) entity.getField(actorField);
         require(
-            (Integer) field(actor, "base_avatar_id") == 7005,
+            (Integer) field(actor, "base_avatar_id") == 7005
+                || silverWolf && (Integer) field(actor, "base_avatar_id") == 7006,
             "Opening scene must use the Kafka actor");
-        kafkaPresent = true;
+        kafkaPresent |= (Integer) field(actor, "base_avatar_id") == 7005;
       }
     }
     require(kafkaPresent, "Opening scene Kafka actor is absent");
@@ -330,13 +345,12 @@ public final class NativeOpeningStageWinProbe {
   private void recoveryProps() throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     var bottles = new ArrayList<Integer>();
-    int caster = 0;
+    // This probe sends Kafka's ability name; the active leader remains Kafka after Silver Wolf joins.
+    int caster = (Integer) field(scene, "leader_entity_id");
     for (var raw : (List<?>) field(scene, "entity_group_list")) {
       var group = (DynamicMessage) raw;
       for (var value : (List<?>) field(group, "entity_list")) {
         var entity = (DynamicMessage) value;
-        if (entity.hasField(entity.getDescriptorForType().findFieldByName("actor")))
-          caster = (Integer) field(entity, "entity_id");
         if ((Integer) field(group, "group_id") == 91
             && entity.hasField(entity.getDescriptorForType().findFieldByName("prop"))
             && (Integer) field((DynamicMessage) field(entity, "prop"), "prop_id") == 100025)
@@ -486,6 +500,122 @@ public final class NativeOpeningStageWinProbe {
         "Desk books missing, duplicated, or not restored in the real inventory");
   }
 
+  private List<DynamicMessage> groupEntities(int id) throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    var result = new ArrayList<DynamicMessage>();
+    for (var raw : (List<?>) field(scene, "entity_group_list")) {
+      var group = (DynamicMessage) raw;
+      if ((Integer) field(group, "group_id") == id)
+        for (var entity : (List<?>) field(group, "entity_list"))
+          result.add((DynamicMessage) entity);
+    }
+    return result;
+  }
+
+  private void objective(int id, int expectedStatus) throws Exception {
+    var missions = (List<?>) field(call("GetMissionDataCsReq"), "mission_list");
+    var target =
+        missions.stream()
+            .map(x -> (DynamicMessage) x)
+            .filter(x -> (Integer) field(x, "id") == id)
+            .findFirst()
+            .orElseThrow();
+    require(
+        ((Descriptors.EnumValueDescriptor) field(target, "status")).getNumber() == expectedStatus,
+        "Unexpected objective status: " + id);
+  }
+
+  private void corridorBattle(int instance, boolean win) throws Exception {
+    var target =
+        groupEntities(21).stream()
+            .filter(x -> (Integer) field(x, "inst_id") == instance)
+            .findFirst()
+            .orElseThrow();
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    int caster = (Integer) field(scene, "leader_entity_id");
+    var motionType =
+        protocol
+            .clientSchema()
+            .message("SceneEntityMoveCsReq")
+            .findFieldByName("entity_motion_list")
+            .getMessageType();
+    var movement = DynamicMessage.newBuilder(motionType);
+    movement.setField(motionType.findFieldByName("entity_id"), caster);
+    movement.setField(motionType.findFieldByName("motion"), field(target, "motion"));
+    call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(movement.build())), true);
+    var entered =
+        call(
+            "SceneCastSkillCsReq",
+            Map.of(
+                "cast_entity_id",
+                caster,
+                "attacked_by_entity_id",
+                field(target, "entity_id"),
+                "maze_ability_str",
+                "LocalPlayer_Kafka_NormalAtk01"),
+            true);
+    var battle = (DynamicMessage) field(entered, "battle_info");
+    require(
+        (Integer) field(battle, "battle_id") > 0, "Original tutorial monster must enter battle");
+    var end = protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status");
+    call(
+        "PVEBattleResultCsReq",
+        Map.of(
+            "battle_id",
+            field(battle, "battle_id"),
+            "stage_id",
+            field(battle, "stage_id"),
+            "end_status",
+            end.getEnumType().findValueByName(win ? "BATTLE_END_WIN" : "BATTLE_END_LOSE")),
+        true);
+  }
+
+  private void corridorBarriers(boolean restored) throws Exception {
+    if (!restored) {
+      require(!groupEntities(33).isEmpty(), "Hall barrier must precede its actual defeat");
+      call(
+          "FinishTalkMissionCsReq",
+          Map.of("sub_mission_id", 100010108, "talk_str", "Mission_100010108"),
+          true);
+      unloadedGroups.clear();
+      corridorBattle(200003, true);
+      objective(100010122, 2);
+      require(
+          groupEntities(33).isEmpty() && Collections.frequency(unloadedGroups, 33) == 1,
+          "Hall victory must send UNLOAD, not only delete individual props");
+      call(
+          "FinishTalkMissionCsReq",
+          Map.of("sub_mission_id", 100010109, "talk_str", "Mission_100010109"),
+          true);
+      openingParty(true);
+      useDoor(300006, true);
+      call(
+          "FinishTalkMissionCsReq",
+          Map.of("sub_mission_id", 100010112, "talk_str", "Mission_100010112"),
+          true);
+      objective(100010130, 1);
+      require(!groupEntities(17).isEmpty(), "Corridor barrier opened before its objective");
+      unloadedGroups.clear();
+      corridorBattle(200001, false);
+      objective(100010130, 1);
+      require(
+          !groupEntities(17).isEmpty() && !unloadedGroups.contains(17),
+          "Loss must retain the corridor barrier");
+      corridorBattle(200001, true);
+      objective(100010130, 2);
+      require(
+          Collections.frequency(unloadedGroups, 17) == 1,
+          "Corridor victory must send one actual group UNLOAD");
+    }
+    objective(100010122, 2);
+    objective(100010130, 2);
+    objective(100010113, 1);
+    require(
+        groupEntities(17).isEmpty() && groupEntities(33).isEmpty(),
+        "Completed story blockers respawned");
+    openingParty(true);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     int uid =
         (Integer)
@@ -504,10 +634,12 @@ public final class NativeOpeningStageWinProbe {
     credits =
         (Integer) field((DynamicMessage) field(call("PlayerLoginCsReq"), "basic_info"), "scoin");
     call("PlayerLoginFinishCsReq");
-    openingParty();
     String phase = control.get("phase").getAsString();
+    boolean restoredBarriers = phase.startsWith("barriers-");
+    openingParty(restoredBarriers);
     boolean verifyDoors = control.has("doors") && control.get("doors").getAsBoolean();
-    openingScene(!verifyDoors || phase.equals("first") || phase.equals("reconnect"));
+    openingScene(
+        !verifyDoors || phase.equals("first") || phase.equals("reconnect"), restoredBarriers);
     boolean first = phase.equals("first");
     if (first) {
       tutorialProgress(false);
@@ -563,6 +695,11 @@ public final class NativeOpeningStageWinProbe {
     if (verifyDoors) storyDoors(phase);
     boolean verifyReadings = control.has("readings") && control.get("readings").getAsBoolean();
     if (verifyReadings) deskReadings(!first);
+    boolean verifyBarriers =
+        control.has("barriers")
+            && control.get("barriers").getAsBoolean()
+            && (phase.equals("doors-restart") || restoredBarriers);
+    if (verifyBarriers) corridorBarriers(restoredBarriers);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -592,6 +729,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("openingChestVerified", true);
     result.put("storyDoorsVerified", verifyDoors);
     result.put("deskReadingsVerified", verifyReadings);
+    result.put("storyBarriersVerified", verifyBarriers);
     return result;
   }
 

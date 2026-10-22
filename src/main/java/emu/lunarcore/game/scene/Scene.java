@@ -344,6 +344,8 @@ public class Scene implements Tickable {
                     removeEntity(entity);
                 }
                 groups.remove(group.getId());
+                // Entity deltas do not retire the client's group graph or its local blockers.
+                player.sendPacket(new PacketSceneGroupRefreshScNotify(this, group.getId()));
             }
         }
         // Remove obsolete actors before spawning replacements with the same NPC id.

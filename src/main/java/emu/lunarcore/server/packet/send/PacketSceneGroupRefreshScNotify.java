@@ -14,6 +14,18 @@ import emu.lunarcore.server.packet.CmdId;
 
 public class PacketSceneGroupRefreshScNotify extends BasePacket {
 
+    /** Unload the group itself, including its client-created blockers, triggers and effects. */
+    public PacketSceneGroupRefreshScNotify(Scene scene, int unloadedGroupId) {
+        super(CmdId.SceneGroupRefreshScNotify);
+
+        var group = SceneGroupRefreshInfo.newInstance()
+                .setGroupId(unloadedGroupId)
+                .setGroupRefreshType(SceneGroupRefreshType.SCENE_GROUP_REFRESH_TYPE_UNLOAD);
+        this.setData(SceneGroupRefreshScNotify.newInstance()
+                .setFloorId(scene.getFloorId())
+                .addGroupRefreshInfo(group));
+    }
+
     public PacketSceneGroupRefreshScNotify(Scene scene, GameEntity toAdd, GameEntity toRemove) {
         super(CmdId.SceneGroupRefreshScNotify);
 

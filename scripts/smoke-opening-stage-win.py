@@ -25,8 +25,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--doors', action='store_true', help='校验控制台、两扇剧情门及两次同 UID H2 重启')
     parser.add_argument('--readings', action='store_true', help='校验接待中心两份阅读物拾取、背包、防重和重启恢复；移动为合成请求')
+    parser.add_argument('--barriers', action='store_true', help='校验大厅及走廊击杀屏障卸载、失败保留和重连/H2重启；包含剧情门检查')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.barriers:
+        args.doors = True
     source = ROOT / 'resources/4.6'
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
@@ -37,7 +40,7 @@ def main():
                 'ExcelOutput/MazeProp.json',
                 'Config/ConfigAdventureAbility/LocalPlayer/LocalPlayer_Kafka_00_Ability.json']
     guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G{group}.json'
-                for group in (5, 6, 36, 44, 91, 93)]
+                for group in (5, 6, 17, 21, 33, 36, 44, 91, 93)]
     if args.readings:
         guarded += ['ExcelOutput/RewardData.json', 'ExcelOutput/ItemConfig.json', 'ExcelOutput/InteractConfig.json',
                     'Config/Level/Props/Common/InitLevelGraph_Prop_Common_PickupReadings.json']
@@ -72,7 +75,7 @@ def main():
 
     account_name = 'opening_stage_' + uuid.uuid4().hex + '@example.invalid'
     snapshots, stops = [], 0
-    iterations = 3 if args.doors else 2
+    iterations = 4 if args.barriers else 3 if args.doors else 2
     for iteration in range(iterations):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
@@ -96,9 +99,12 @@ def main():
                 combo = request('/hkrpg_cn/combo/granter/login/v2/login',
                                 {'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
                 assert combo['retcode'] == 0
-                for phase in (['first', 'reconnect'] if iteration == 0 else ['restart' if iteration == 1 else 'doors-restart']):
+                phases = (['first', 'reconnect'] if iteration == 0 else ['restart'] if iteration == 1
+                          else ['doors-restart', 'barriers-reconnect'] if iteration == 2 and args.barriers
+                          else ['doors-restart'] if iteration == 2 else ['barriers-restart'])
+                for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
-                                   'doors': args.doors, 'readings': args.readings}
+                                   'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -115,6 +121,7 @@ def main():
                     assert snapshot['openingChestVerified']
                     assert snapshot['storyDoorsVerified'] == args.doors
                     assert snapshot['deskReadingsVerified'] == args.readings
+                    assert snapshot['storyBarriersVerified'] == (args.barriers and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:
