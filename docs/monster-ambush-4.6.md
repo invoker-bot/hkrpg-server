@@ -28,7 +28,9 @@
 
 最终完整构建通过 577 类、14,897 项测试，失败、错误和跳过均为 0；其中新专项回归 17 项。构建前冻结的 2,719 个输入文件逐项校验未变更。最终 JAR SHA-256 为 `2137e5c043495d168bb465a1e1ccdeca389589fdb8b58ef7e167e958c9d0b857`，与 310 次网络请求验证、两轮调度与账号持久化冒烟检查及候选镜像使用的产物一致。
 
-诊断、完整构建、网络和部署证据保存在忽略目录 `build/silver-wolf-performance-20261023/`。服务更新结果在实际执行后记录；真实客户端复测仍单独验收。
+2026-10-23 05:52（Asia/Singapore），代码提交 `2eac790a18887594c1995cf262bc8174812382f3` 已更新至本地 Compose 服务。停服后备份目录为 `.local/backups/monster-ambush-20261023-055226/`，11 个数据文件逐项校验一致。运行容器健康检查、只读部署验证及容器内 JAR 哈希检查通过；运营配置未变更。更新前后只读存档对比确认仍为 1 个账号、UID 10001，17 项已完成目标及原时间戳、剧情队伍、背包、开门、阅读物、可破坏物和领奖记录均保留。
+
+诊断、完整构建、网络和部署证据保存在忽略目录 `build/silver-wolf-performance-20261023/`。更新后重新开启 15 分钟、最多 512 条的白名单攻击诊断，仅记录协议字段和回复码，等待用户重新登录并验证怪物实际命中后的入战。真实客户端复测尚未确认，银狼过场也未计为通过。
 
 ```powershell
 .\gradlew.bat test --tests '*MonsterAmbush46Test' --tests '*MazeAttackResults46Test' --tests '*MazeCallbackPhases46Test' --tests '*BaseZoneRecoveryProp46Test'
