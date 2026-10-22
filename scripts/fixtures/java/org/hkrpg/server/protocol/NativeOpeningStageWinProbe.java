@@ -568,7 +568,9 @@ public final class NativeOpeningStageWinProbe {
           (Integer) field((DynamicMessage) field(empty, "battle_info"), "battle_id") == 0,
           "An empty monster hit must not invent a battle");
       attack.put("cast_entity_id", ambushUseId++);
-      attack.put("hit_target_entity_id_list", List.of(caster));
+      // The real monster-hit callback uses field 6 for its avatar target, despite the
+      // inherited assist-monster field name. Keep the ordinary hit list absent.
+      attack.put("assist_monster_entity_id_list", List.of(caster));
       entered = call("SceneCastSkillCsReq", attack, true);
       require(
           Objects.equals(field(entered, "cast_entity_id"), attack.get("cast_entity_id")),

@@ -133,14 +133,24 @@ final class Battle46 {
         && !scene.getAvatarEntityIds().contains(caster)
         && !(scene.getEntities().get(caster) instanceof EntityMonster))
       error = Retcode.REQ_PARA_INVALID;
+    if (hits.size() > 64 || assists.size() > 64) error = Retcode.REQ_PARA_INVALID;
     if (scene != null)
-      for (int id : assists) {
+      for (var it = assists.iterator(); it.hasNext();) {
+        int id = it.nextInt();
+        // A native monster hit can carry its avatar target in field 6. The inherited
+        // assist-monster name does not restrict its wire meaning to monsters.
+        // Normalize avatar targets before admission, even when the hit list is nonempty.
+        if (monsterCast && scene.getAvatarEntityIds().contains(id)) {
+          hits.add(id);
+          it.remove();
+          continue;
+        }
         var target = scene.getEntities().get(id);
         if (!(target instanceof EntityMonster)
             && !(target instanceof EntityProp prop && scene.canDestroyProp(prop)))
           error = Retcode.REQ_PARA_INVALID;
       }
-    if (hits.size() > 64 || assists.size() > 64) error = Retcode.REQ_PARA_INVALID;
+    if (hits.size() > 64) error = Retcode.REQ_PARA_INVALID;
     if (scene != null)
       for (int id : hits) {
         var target = scene.getEntities().get(id);

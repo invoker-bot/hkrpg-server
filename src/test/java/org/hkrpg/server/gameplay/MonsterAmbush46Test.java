@@ -32,7 +32,14 @@ class MonsterAmbush46Test {
   }
 
   DynamicMessage request(
-      int use, int caster, int index, String ability, int[] tags, int[] hits, int[] assists)
+      int use,
+      int caster,
+      int index,
+      String ability,
+      int[] tags,
+      int[] hits,
+      int[] assists,
+      int... groupedAssists)
       throws Exception {
     var session = base.new Session();
     var type = base.protocol.clientSchema().message("SceneCastSkillCsReq");
@@ -46,6 +53,13 @@ class MonsterAmbush46Test {
       request.addRepeatedField(type.findFieldByName("hit_target_entity_id_list"), id);
     for (int id : assists)
       request.addRepeatedField(type.findFieldByName("assist_monster_entity_id_list"), id);
+    if (groupedAssists.length > 0) {
+      var field = type.findFieldByName("assist_monster_entity_info");
+      var info = DynamicMessage.newBuilder(field.getMessageType());
+      for (int id : groupedAssists)
+        info.addRepeatedField(field.getMessageType().findFieldByName("entity_id_list"), id);
+      request.addRepeatedField(field, info.build());
+    }
     var tagField = type.findFieldByName("skill_extra_tags");
     for (int tag : tags)
       request.addRepeatedField(
@@ -69,6 +83,116 @@ class MonsterAmbush46Test {
     assertNull(base.branch.base.base.player.getBattle());
     assertTrue(monster.isAlive());
     assertEquals(0, base.branch.base.base.drops);
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1, 2, 3})
+  void capturedAvatarInAssistListEntersAmbushAndSettlesOnlyItsAttacker(int tag) throws Exception {
+    var monster = base.monster("[]");
+    var bystander = base.monster("[]");
+    var player = base.branch.base.base.player;
+    int mp = player.getCurrentLineup().getMp();
+    int[] tags = tag == 0 ? new int[] {} : tag == 3 ? new int[] {1, 2} : new int[] {tag};
+    // Live 2026-10-22 21:53:18 UTC: UseID 411, monster 39, tag [1], field 6 [avatar 1].
+    // Both scene IDs are remapped to fixtures. The ordinary hit list is absent.
+    for (int attempt = 0; attempt < 2; attempt++) {
+      var response =
+          request(
+              411 + attempt,
+              monster.getEntityId(),
+              0,
+              "",
+              tags,
+              new int[] {},
+              new int[] {base.actor.getEntityId()});
+      assertEquals(0, MazeAttackResults46Test.number(response, "retcode"));
+      var battle = player.getBattle();
+      assertNotNull(battle);
+      assertEquals(List.of(monster), battle.getNpcMonsters());
+      assertTrue(battle.getBuffs().containsKey(GameConstants.BATTLE_AMBUSH_BUFF_ID));
+      assertEquals(mp, player.getCurrentLineup().getMp());
+      assertEquals(1, MazeAttackResults46Test.rows(response).size());
+      MazeAttackResults46Test.outcome(
+          MazeAttackResults46Test.rows(response).getFirst(), monster.getEntityId(), 1);
+      assertSame(
+          battle,
+          base.service.finishBattle(
+              player,
+              battle.getId(),
+              battle.getStage().getId(),
+              attempt == 0 ? BattleEndStatus.BATTLE_END_LOSE : BattleEndStatus.BATTLE_END_WIN,
+              BattleStatistics.newInstance()));
+      assertEquals(attempt == 0, monster.isAlive());
+      assertTrue(bystander.isAlive());
+    }
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void avatarInEitherAssistFormRemainsAHitWhenOtherHitsAndAssistsExist(boolean grouped)
+      throws Exception {
+    var monster = base.monster("[]");
+    var assist = base.monster("[]");
+    var actor = base.actor.getEntityId();
+    int[] targets = {actor, actor, assist.getEntityId()};
+    var response =
+        request(
+            actor,
+            monster.getEntityId(),
+            0,
+            "",
+            new int[] {1},
+            new int[] {monster.getEntityId()},
+            grouped ? new int[] {} : targets,
+            grouped ? targets : new int[] {});
+    assertEquals(0, MazeAttackResults46Test.number(response, "retcode"));
+    var battle = base.branch.base.base.player.getBattle();
+    assertNotNull(battle);
+    assertEquals(List.of(monster, assist), battle.getNpcMonsters());
+    assertTrue(battle.getBuffs().containsKey(GameConstants.BATTLE_AMBUSH_BUFF_ID));
+    assertEquals(2, MazeAttackResults46Test.rows(response).size());
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void playerCannotUseAvatarInEitherAssistFormAsAnAttackTarget(boolean grouped) throws Exception {
+    base.skill(false, true);
+    var monster = base.monster("[]");
+    var actor = base.actor.getEntityId();
+    var response =
+        request(
+            413,
+            actor,
+            0,
+            "",
+            new int[] {},
+            new int[] {monster.getEntityId()},
+            grouped ? new int[] {} : new int[] {actor},
+            grouped ? new int[] {actor} : new int[] {});
+    assertNotEquals(0, MazeAttackResults46Test.number(response, "retcode"));
+    assertNull(base.branch.base.base.player.getBattle());
+    assertTrue(monster.isAlive());
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void unknownEntityAlongsideAvatarInAssistFormRejectsTheWholeAttack(boolean grouped)
+      throws Exception {
+    var monster = base.monster("[]");
+    int[] targets = {base.actor.getEntityId(), 199996001};
+    var response =
+        request(
+            414,
+            monster.getEntityId(),
+            0,
+            "",
+            new int[] {1},
+            new int[] {},
+            grouped ? new int[] {} : targets,
+            grouped ? targets : new int[] {});
+    assertNotEquals(0, MazeAttackResults46Test.number(response, "retcode"));
+    assertNull(base.branch.base.base.player.getBattle());
+    assertTrue(monster.isAlive());
   }
 
   @ParameterizedTest
@@ -196,8 +320,9 @@ class MonsterAmbush46Test {
     assertTrue(MazeAttackResults46Test.rows(response).isEmpty());
   }
 
-  @Test
-  void missingMonsterStageDoesNotTurnAHitIntoSuccess() throws Exception {
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void missingMonsterStageDoesNotTurnAHitIntoSuccess(boolean assistField) throws Exception {
     EntityMonster monster = base.monster("[]");
     monster.setCustomStage((emu.lunarcore.game.battle.BattleStage) null);
     monster.setEventId(199996001);
@@ -208,9 +333,9 @@ class MonsterAmbush46Test {
             0,
             "",
             new int[] {1},
-            new int[] {base.actor.getEntityId()},
-            new int[] {});
-    assertNotEquals(0, MazeAttackResults46Test.number(response, "retcode"));
+            assistField ? new int[] {} : new int[] {base.actor.getEntityId()},
+            assistField ? new int[] {base.actor.getEntityId()} : new int[] {});
+    assertEquals(1, MazeAttackResults46Test.number(response, "retcode"));
     assertNull(base.branch.base.base.player.getBattle());
     assertTrue(monster.isAlive());
   }
