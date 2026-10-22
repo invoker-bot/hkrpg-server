@@ -1,0 +1,321 @@
+package org.hkrpg.server.gameplay;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.google.gson.*;
+import emu.lunarcore.data.GameData;
+import emu.lunarcore.game.inventory.*;
+import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.scene.entity.EntityProp;
+import emu.lunarcore.server.packet.*;
+import emu.lunarcore.util.Position;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+/** Authored space-station boxes; explicit compatibility rewards and isolated actual storage. */
+class OrdinaryDestructible46Test {
+  @TempDir Path root;
+  final WorldChestActivity46Test fixture = new WorldChestActivity46Test();
+  Actor actor;
+
+  static class Actor extends WorldChestActivity46Test.Actor {
+    final List<BasePacket> packets = new ArrayList<>();
+    final Inventory actual =
+        new Inventory(this) {
+          @Override
+          public GrantResult grantItems(ItemParamMap items, boolean hint) {
+            grants++;
+            return failGrant ? new GrantResult(List.of(), false) : super.grantItems(items, hint);
+          }
+        };
+
+    @Override
+    public Inventory getInventory() {
+      return actual;
+    }
+
+    @Override
+    public void sendPacket(BasePacket packet) {
+      packets.add(packet);
+    }
+
+    @Override
+    public void save() {
+      super.save();
+      var stored = new Player();
+      try {
+        DailyMissionAcceptance46Test.set(stored, "uid", getUid());
+        DailyMissionAcceptance46Test.set(stored, "gameplay", getGameplay());
+        DailyMissionAcceptance46Test.set(stored, "scoin", getScoin());
+      } catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
+      BookPickup46Test.database.save(stored);
+    }
+  }
+
+  @BeforeAll
+  static void storage() throws Exception {
+    BookPickup46Test.isolatedStorage();
+  }
+
+  @AfterAll
+  static void closeStorage() throws Exception {
+    BookPickup46Test.closeStorage();
+  }
+
+  @BeforeEach
+  void setup() throws Exception {
+    OrdinaryDestructibles.clock =
+        Clock.fixed(Instant.parse("2026-10-22T03:00:00Z"), ZoneOffset.UTC);
+    try (var input = getClass().getResourceAsStream("/fixtures/ordinary-destructibles-4.6.json")) {
+      var source =
+          JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8))
+              .getAsJsonObject();
+      for (String section : List.of("records", "groups", "floors", "locations", "headers"))
+        for (var row : source.getAsJsonObject(section).entrySet()) {
+          var target = fixture.source.getAsJsonObject(section);
+          if (section.equals("records") && target.has(row.getKey()))
+            target.getAsJsonArray(row.getKey()).addAll(row.getValue().getAsJsonArray());
+          else target.add(row.getKey(), row.getValue());
+        }
+    }
+    fixture.root = root;
+    fixture.load();
+    fresh();
+  }
+
+  void fresh() throws Exception {
+    actor = new Actor();
+    DailyMissionAcceptance46Test.set(actor, "uid", 123456806);
+    DailyMissionAcceptance46Test.set(actor, "name", "box-fixture");
+    DailyMissionAcceptance46Test.set(actor, "pos", new Position());
+    actor.plane = 20001;
+    actor.floor = 20001001;
+    actor.entry = 2000101;
+    fixture.player = actor;
+    fixture.scene();
+  }
+
+  @AfterEach
+  void cleanup() throws Exception {
+    try {
+      fixture.restore();
+    } finally {
+      OrdinaryDestructibles.clock = Clock.systemUTC();
+      BookPickup46Test.database.getDatabase().drop();
+    }
+  }
+
+  void reload() throws Exception {
+    var stored = BookPickup46Test.database.getObjectByField(Player.class, "_id", actor.getUid());
+    assertNotNull(stored);
+    fresh();
+    DailyMissionAcceptance46Test.set(actor, "gameplay", stored.getGameplay());
+    DailyMissionAcceptance46Test.set(actor, "scoin", stored.getScoin());
+    for (var item : BookPickup46Test.database.getObjects(GameItem.class).toList())
+      if (item.getOwnerUid() == actor.getUid()) assertTrue(actor.getInventory().loadItem(item));
+    fixture.scene();
+  }
+
+  EntityProp box(int instance) {
+    return actor.scene.getEntitiesByGroup(EntityProp.class, 36).stream()
+        .filter(p -> p.getInstId() == instance)
+        .findFirst()
+        .orElse(null);
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {300003, 300008})
+  void destroyedWhiteBoxActuallyDeliversCreditsMaterialAndRewardHint(int instance) {
+    var box = box(instance);
+    assertNotNull(box);
+    assertEquals(100026, box.getPropId());
+    actor.getPos().set(box.getPos());
+    int before = actor.getScoin();
+    assertTrue(
+        actor.scene.destroyProp(box),
+        () ->
+            "world="
+                + actor.scene.getWorldId()
+                + " saves="
+                + actor.saves
+                + " grants="
+                + actor.grants
+                + " prop="
+                + fixture.gson.toJson(box.getPropInfo()));
+    assertEquals(before + 100, actor.getScoin(), "The box disappeared without delivering credits");
+    assertEquals(1, actor.getInventory().getMaterialByItemId(180005).getCount());
+    assertTrue(actor.packets.stream().anyMatch(p -> p.getCmdId() == CmdId.ScenePlaneEventScNotify));
+    assertFalse(actor.scene.destroyProp(box));
+    assertEquals(before + 100, actor.getScoin());
+  }
+
+  @Test
+  void independentBoxesPersistAfterTwoPlayerAndInventoryReloads() throws Exception {
+    assertTrue(actor.scene.destroyProp(box(300003)));
+    assertTrue(actor.scene.destroyProp(box(300008)));
+    for (int i = 0; i < 2; i++) {
+      reload();
+      assertNull(box(300003));
+      assertNull(box(300008));
+      assertNotNull(box(300006));
+      assertEquals(200, actor.getScoin());
+      assertEquals(2, actor.getInventory().getMaterialByItemId(180005).getCount());
+      assertEquals(2, actor.getGameplay().getDestructibleRewards().getReceipts().size());
+      assertEquals(0, actor.grants);
+    }
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1, 2, 3, 4, 5, 6})
+  void sourceWorldLevelsUseCompatibilityPolicyWithoutMistakingPoolForReward(int world)
+      throws Exception {
+    DailyMissionAcceptance46Test.set(actor, "worldLevel", world);
+    assertEquals(10000, GameData.getRewardExcelMap().get(101001).getRewards().get(2));
+    assertTrue(actor.scene.destroyProp(box(300003)));
+    assertEquals(100, actor.getScoin());
+    assertEquals(
+        Set.of(180005),
+        actor.getInventory().getItems().values().stream()
+            .map(GameItem::getItemId)
+            .collect(java.util.stream.Collectors.toSet()));
+  }
+
+  @Test
+  void refreshedSceneOnlyRespawnsPaidBoxesAfterTheNextFourAmBoundary() throws Exception {
+    OrdinaryDestructibles.clock =
+        Clock.fixed(Instant.parse("2026-10-22T19:59:59Z"), ZoneOffset.UTC);
+    assertTrue(actor.scene.destroyProp(box(300003)));
+    reload();
+    assertNull(box(300003));
+    OrdinaryDestructibles.clock =
+        Clock.fixed(Instant.parse("2026-10-22T20:00:00Z"), ZoneOffset.UTC);
+    fixture.scene();
+    assertNotNull(box(300003));
+    assertTrue(actor.scene.destroyProp(box(300003)));
+    reload();
+    assertNull(box(300003));
+    assertEquals(200, actor.getScoin());
+    OrdinaryDestructibles.clock =
+        Clock.fixed(Instant.parse("2026-10-21T20:00:00Z"), ZoneOffset.UTC);
+    fixture.scene();
+    assertNull(box(300003));
+  }
+
+  @Test
+  void fullMaterialStackLeavesBoxAndCurrencyUntouchedThenCanRetry() {
+    assertTrue(actor.getInventory().addItem(180005, 99999));
+    var box = box(300003);
+    assertFalse(actor.scene.destroyProp(box));
+    assertNotNull(box(300003));
+    assertEquals(0, actor.saves);
+    assertEquals(0, actor.getScoin());
+    actor.getInventory().getMaterialByItemId(180005).setCount(99998);
+    assertTrue(actor.scene.destroyProp(box));
+    assertEquals(100, actor.getScoin());
+    assertEquals(99999, actor.getInventory().getMaterialByItemId(180005).getCount());
+  }
+
+  @Test
+  void reservationSaveFailureCanRetryWithoutLoss() {
+    actor.failSave = true;
+    assertFalse(actor.scene.destroyProp(box(300003)));
+    assertEquals(0, actor.grants);
+    assertTrue(actor.getGameplay().getDestructibleRewards().getReceipts().isEmpty());
+    actor.failSave = false;
+    assertTrue(actor.scene.destroyProp(box(300003)));
+    assertEquals(100, actor.getScoin());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"grant", "complete"})
+  void unfinishedDeliveryBlocksReplayEvenAfterReloadAndNextDay(String fault) throws Exception {
+    actor.failGrant = fault.equals("grant");
+    actor.failOnSave = fault.equals("complete") ? 2 : -1;
+    assertFalse(actor.scene.destroyProp(box(300003)));
+    assertNotNull(box(300003));
+    assertFalse(
+        actor
+            .getGameplay()
+            .getDestructibleRewards()
+            .getReceipts()
+            .values()
+            .iterator()
+            .next()
+            .isGranted());
+    reload();
+    OrdinaryDestructibles.clock =
+        Clock.fixed(Instant.parse("2026-10-25T03:00:00Z"), ZoneOffset.UTC);
+    fixture.scene();
+    assertFalse(actor.scene.destroyProp(box(300003)));
+    assertFalse(actor.scene.destroyProp(box(300008)));
+    assertEquals(0, actor.grants);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"source", "pool", "stage", "unloaded", "item", "credits", "state"})
+  void invalidSourceOrCapacityCannotDestroyOrAward(String fault) throws Exception {
+    var box = box(300003);
+    switch (fault) {
+      case "source" -> {
+        var changed =
+            fixture.gson.fromJson(
+                fixture.gson.toJson(box.getPropInfo()), emu.lunarcore.data.config.PropInfo.class);
+        DailyMissionAcceptance46Test.set(changed, "EventID", 20001402);
+        box.setPropInfo(changed);
+      }
+      case "pool" ->
+          DailyMissionAcceptance46Test.set(
+              GameData.getPlaneEventExcelMap().get(20001401, 0),
+              "DropList",
+              JsonParser.parseString("[101001]").getAsJsonArray());
+      case "stage" ->
+          DailyMissionAcceptance46Test.set(
+              GameData.getPlaneEventExcelMap().get(20001401, 0), "StageID", 1);
+      case "unloaded" -> actor.scene.getLoadedGroups().remove(36);
+      case "item" -> GameData.getItemExcelMap().keySet().remove(180005);
+      case "credits" -> DailyMissionAcceptance46Test.set(actor, "scoin", 999999999);
+      case "state" ->
+          DailyMissionAcceptance46Test.set(actor.getGameplay(), "destructibleRewards", null);
+    }
+    assertFalse(actor.scene.destroyProp(box));
+    assertEquals(0, actor.grants);
+    assertEquals(0, actor.saves);
+    assertNotNull(box(300003));
+  }
+
+  @Test
+  void concurrentHitsAwardOnceAndAdministrativeRemovalAwardsNothing() throws Exception {
+    var box = box(300003);
+    try (var pool = Executors.newFixedThreadPool(2)) {
+      var futures =
+          pool.invokeAll(
+              List.<Callable<Boolean>>of(
+                  () -> actor.scene.destroyProp(box), () -> actor.scene.destroyProp(box)));
+      assertEquals(
+          1,
+          futures.stream()
+              .filter(
+                  f -> {
+                    try {
+                      return f.get();
+                    } catch (Exception e) {
+                      throw new AssertionError(e);
+                    }
+                  })
+              .count());
+    }
+    actor.scene.removeEntity(box(300008));
+    assertEquals(100, actor.getScoin());
+    assertEquals(1, actor.getInventory().getMaterialByItemId(180005).getCount());
+    assertEquals(1, actor.grants);
+  }
+}

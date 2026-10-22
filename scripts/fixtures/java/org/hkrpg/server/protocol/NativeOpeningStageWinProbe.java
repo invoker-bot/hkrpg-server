@@ -23,6 +23,8 @@ public final class NativeOpeningStageWinProbe {
   private final List<DynamicMessage> lineupUpdates = new ArrayList<>();
   private Ukcp channel;
   private int requests;
+  private int credits;
+  private int rewardHints;
 
   private static Object field(DynamicMessage message, String name) {
     return message.getField(
@@ -57,6 +59,15 @@ public final class NativeOpeningStageWinProbe {
       if (frame == null) continue;
       if (frame.command() == protocol.clientCommand("SyncLineupNotify"))
         lineupUpdates.add(protocol.clientSchema().parse("SyncLineupNotify", frame.body()));
+      if (frame.command() == protocol.clientCommand("ScenePlaneEventScNotify")) {
+        protocol.clientSchema().parse("ScenePlaneEventScNotify", frame.body());
+        rewardHints++;
+      }
+      if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
+        var sync = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
+        if (sync.hasField(sync.getDescriptorForType().findFieldByName("basic_info")))
+          credits = (Integer) field((DynamicMessage) field(sync, "basic_info"), "scoin");
+      }
       if (frame.command() != protocol.clientCommand(response)) continue;
       var result = protocol.clientSchema().parse(response, frame.body());
       require(result.getUnknownFields().asMap().isEmpty(), "Unknown response fields: " + response);
@@ -244,9 +255,10 @@ public final class NativeOpeningStageWinProbe {
         (id, status) -> require(status.equals(statuses.get(id)), "Door objective " + id));
   }
 
-  private void capturedDestructible() throws Exception {
+  private void capturedDestructible(boolean alreadyCollected) throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
-    int caster = 0, target = 0;
+    int caster = 0;
+    var boxes = new HashMap<Integer, DynamicMessage>();
     for (var raw : (List<?>) field(scene, "entity_group_list")) {
       var group = (DynamicMessage) raw;
       for (var rawEntity : (List<?>) field(group, "entity_list")) {
@@ -254,39 +266,65 @@ public final class NativeOpeningStageWinProbe {
         if (entity.hasField(entity.getDescriptorForType().findFieldByName("actor")))
           caster = (Integer) field(entity, "entity_id");
         if ((Integer) field(group, "group_id") == 36
-            && (Integer) field(entity, "inst_id") == 300006
-            && entity.hasField(entity.getDescriptorForType().findFieldByName("prop"))
-            && (Integer) field((DynamicMessage) field(entity, "prop"), "prop_id") == 100027)
-          target = (Integer) field(entity, "entity_id");
+            && Set.of(300003, 300006).contains((Integer) field(entity, "inst_id")))
+          boxes.put((Integer) field(entity, "inst_id"), entity);
       }
     }
-    require(caster > 0 && target > 0, "Captured prop source placement");
-    var tags =
-        protocol
-            .clientSchema()
-            .message("SceneCastSkillCsReq")
-            .findFieldByName("skill_extra_tags")
-            .getEnumType();
-    var request =
-        Map.<String, Object>of(
-            "cast_entity_id",
-            138,
-            "attacked_by_entity_id",
-            caster,
-            "assist_monster_entity_id_list",
-            List.of(target),
-            "skill_extra_tags",
-            List.of(tags.findValueByNumber(1), tags.findValueByNumber(2)));
-    var response = call("SceneCastSkillCsReq", request, true);
     require(
-        !response.hasField(response.getDescriptorForType().findFieldByName("battle_info")),
-        "Captured prop entered battle");
-    var after = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
-    for (var raw : (List<?>) field(after, "entity_group_list"))
-      for (var rawEntity : (List<?>) field((DynamicMessage) raw, "entity_list"))
+        caster > 0 && boxes.size() == (alreadyCollected ? 0 : 2),
+        "Paid boxes respawned or original source is absent");
+    if (!alreadyCollected) {
+      var tags =
+          protocol
+              .clientSchema()
+              .message("SceneCastSkillCsReq")
+              .findFieldByName("skill_extra_tags")
+              .getEnumType();
+      int useId = 138;
+      for (int instance : List.of(300003, 300006)) {
+        var entity = boxes.get(instance);
         require(
-            (Integer) field((DynamicMessage) rawEntity, "entity_id") != target,
-            "Captured prop not destroyed");
+            (Integer) field((DynamicMessage) field(entity, "prop"), "prop_id")
+                == (instance == 300003 ? 100026 : 100027),
+            "Ordinary box source");
+        int target = (Integer) field(entity, "entity_id");
+        var request =
+            Map.<String, Object>of(
+                "cast_entity_id",
+                useId++,
+                "attacked_by_entity_id",
+                caster,
+                "assist_monster_entity_id_list",
+                List.of(target),
+                "skill_extra_tags",
+                List.of(tags.findValueByNumber(1), tags.findValueByNumber(2)));
+        int before = credits, hints = rewardHints;
+        var response = call("SceneCastSkillCsReq", request, true);
+        require(
+            !response.hasField(response.getDescriptorForType().findFieldByName("battle_info")),
+            "Box entered battle");
+        require(
+            credits == before + 100 && rewardHints == hints + 1,
+            "Box credit delivery or reward hint missing");
+        call("SceneCastSkillCsReq", request, false);
+        require(credits == before + 100, "Repeated hit awarded credits twice");
+      }
+    }
+    var bag = new HashMap<Integer, Integer>();
+    for (var raw : (List<?>) field(call("GetBagCsReq"), "material_list")) {
+      var item = (DynamicMessage) raw;
+      bag.merge((Integer) field(item, "tid"), (Integer) field(item, "num"), Math::addExact);
+    }
+    require(Objects.equals(bag.get(180005), 2), "Box metal missing, duplicated, or not restored");
+    var after = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    for (var raw : (List<?>) field(after, "entity_group_list")) {
+      var group = (DynamicMessage) raw;
+      if ((Integer) field(group, "group_id") != 36) continue;
+      for (var value : (List<?>) field(group, "entity_list"))
+        require(
+            !Set.of(300003, 300006).contains((Integer) field((DynamicMessage) value, "inst_id")),
+            "Paid box still exists");
+    }
   }
 
   private void recoveryProps() throws Exception {
@@ -463,7 +501,8 @@ public final class NativeOpeningStageWinProbe {
                         1),
                     true),
                 "uid");
-    call("PlayerLoginCsReq");
+    credits =
+        (Integer) field((DynamicMessage) field(call("PlayerLoginCsReq"), "basic_info"), "scoin");
     call("PlayerLoginFinishCsReq");
     openingParty();
     String phase = control.get("phase").getAsString();
@@ -518,7 +557,7 @@ public final class NativeOpeningStageWinProbe {
     }
     progress(true);
     tutorialProgress(true);
-    capturedDestructible();
+    capturedDestructible(!first);
     recoveryProps();
     openingChest(!first);
     if (verifyDoors) storyDoors(phase);
@@ -549,6 +588,7 @@ public final class NativeOpeningStageWinProbe {
                 false));
     result.put("recoveryPropsVerified", true);
     result.put("capturedPropVerified", true);
+    result.put("ordinaryBoxRewardsVerified", true);
     result.put("openingChestVerified", true);
     result.put("storyDoorsVerified", verifyDoors);
     result.put("deskReadingsVerified", verifyReadings);

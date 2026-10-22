@@ -78,6 +78,7 @@ public class SceneEntityLoader {
             return null;
         }
         if(org.hkrpg.server.gameplay.GoldenSpears.removed(scene,group,propInfo)) return null;
+        if(org.hkrpg.server.gameplay.OrdinaryDestructibles.removed(scene,group,propInfo)) return null;
         if (!org.hkrpg.server.gameplay.WorldMechanisms.spawns(scene, group, propInfo)) return null;
 
         // Get prop excel to make sure prop exists

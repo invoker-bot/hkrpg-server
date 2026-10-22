@@ -41,6 +41,7 @@ def main():
     if args.readings:
         guarded += ['ExcelOutput/RewardData.json', 'ExcelOutput/ItemConfig.json', 'ExcelOutput/InteractConfig.json',
                     'Config/Level/Props/Common/InitLevelGraph_Prop_Common_PickupReadings.json']
+    guarded += ['ExcelOutput/ItemConfig.json']
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
@@ -110,6 +111,7 @@ def main():
                     assert snapshot['openingSceneGatesVerified']
                     assert snapshot['recoveryPropsVerified']
                     assert snapshot['capturedPropVerified']
+                    assert snapshot['ordinaryBoxRewardsVerified']
                     assert snapshot['openingChestVerified']
                     assert snapshot['storyDoorsVerified'] == args.doors
                     assert snapshot['deskReadingsVerified'] == args.readings

@@ -522,6 +522,8 @@ public class Scene implements Tickable {
             var golden = org.hkrpg.server.gameplay.GoldenSpears.prepare(getPlayer(),prop);
             if(org.hkrpg.server.gameplay.GoldenSpears.applies(prop) && golden == null) return false;
             if (!org.hkrpg.server.gameplay.WorldMechanisms.beforeDestroy(this, prop)) return false;
+            if (org.hkrpg.server.gameplay.OrdinaryDestructibles.applies(prop)
+                    && !org.hkrpg.server.gameplay.OrdinaryDestructibles.collect(prop)) return false;
             var removal = permanent == null ? null : new PacketSceneGroupRefreshScNotify(this, null, prop);
             if (permanent != null) {
                 if (!detachDestructibleProp(prop)) return false;

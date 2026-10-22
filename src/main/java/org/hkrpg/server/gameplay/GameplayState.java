@@ -9,6 +9,9 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private DestructibleRewardState destructibleRewards = new DestructibleRewardState();
+  public DestructibleRewardState getDestructibleRewards() { return destructibleRewards; }
+  void destructibleRewards(DestructibleRewardState value) { destructibleRewards = Objects.requireNonNull(value); }
   private BookPickupState bookPickups = new BookPickupState();
   public BookPickupState getBookPickups() {
     if (bookPickups == null) bookPickups = new BookPickupState();

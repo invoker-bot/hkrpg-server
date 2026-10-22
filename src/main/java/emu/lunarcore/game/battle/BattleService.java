@@ -153,7 +153,10 @@ public class BattleService extends BaseGameService {
                     monsters.add(monster);
                 } else if (entity instanceof EntityProp prop) {
                     it.remove();
-                    player.getScene().destroyProp(prop);
+                    if (!player.getScene().destroyProp(prop)
+                            && org.hkrpg.server.gameplay.OrdinaryDestructibles.applies(prop)) {
+                        return MazeAttackResult.failure(Retcode.SYSTEM_BUSY);
+                    }
                 } else {
                     it.remove();
                 }
