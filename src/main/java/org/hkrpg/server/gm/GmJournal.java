@@ -161,6 +161,8 @@ final class GmJournal {
       case "grant" ->
           "发放 #" + op.itemId() + " × " + op.amount() + " · Lv." + op.level() + " · 阶 " + op.rank();
       case "mail" -> "邮件：" + op.title();
+      case "banner-rerun" -> "复刻 " + op.bannerKey() + " · "
+          + (op.durationDays() == null ? 30 : op.durationDays()) + " 天 · 全服";
       case "command" -> op.command();
       case "heal" -> "恢复生命";
       case "refill" -> "补满秘技点";

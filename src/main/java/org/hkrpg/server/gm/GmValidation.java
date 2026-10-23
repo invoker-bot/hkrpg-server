@@ -15,10 +15,17 @@ final class GmValidation {
       fail("请求编号格式不正确。");
     }
     if (op.action() == null
-        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command").contains(op.action()))
+        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command", "banner-rerun").contains(op.action()))
       fail("未知操作。");
-    if (op.uid() < 0 || !op.action().equals("command") && op.uid() == 0) fail("请选择目标玩家。");
+    if (op.uid() < 0 || !Set.of("command", "banner-rerun").contains(op.action()) && op.uid() == 0)
+      fail("请选择目标玩家。");
     switch (op.action()) {
+      case "banner-rerun" -> {
+        if (op.uid() != 0) fail("卡池复刻是全服操作，无需指定玩家。");
+        if (op.bannerKey() == null || !op.bannerKey().matches("[0-9]{1,2}\\.[0-9]{1,2}-[0-9]{4}"))
+          fail("请选择历史卡池。");
+        range(op.durationDays() == null ? 30 : op.durationDays(), 1, 365, "复刻天数");
+      }
       case "grant" -> {
         range(op.itemId(), 1, Integer.MAX_VALUE, "物品 ID");
         range(op.amount(), 1, 1_000_000, "数量");

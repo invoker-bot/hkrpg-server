@@ -14,6 +14,11 @@ public class GachaBanner {
     private int[] rateUpItems4;
     private int eventChance = 50;
 
+    public boolean isActive(long now) {
+        return gachaType == GachaType.Normal || gachaType == GachaType.Newbie
+                || beginTime <= now && now < endTime;
+    }
+
     public GachaBanner createBanner(int id, GachaType gachaType, int beginTime, int endTime, int[] rateUpItems5, int[] rateUpItems4) {
         return createBanner(id, gachaType, beginTime, endTime, rateUpItems5, rateUpItems4, 50);
     }

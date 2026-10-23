@@ -27,11 +27,16 @@ final class GachaInitial46 {
   }
 
   static DynamicMessage snapshot(ProtocolBridge protocol, Player player, GachaService service) {
+    return snapshot(protocol, player, service, System.currentTimeMillis() / 1000L);
+  }
+
+  static DynamicMessage snapshot(ProtocolBridge protocol, Player player, GachaService service, long now) {
     var schema = protocol.clientSchema();
     var response = DynamicMessage.newBuilder(schema.message("GetGachaInfoScRsp"));
     synchronized (service) {
       synchronized (player) {
         for (var banner : new TreeMap<>(service.getGachaBanners()).values()) {
+          if (!banner.isActive(now)) continue;
           var info = DynamicMessage.newBuilder(schema.message("GachaInfo"));
           set(info, "gacha_id", banner.getId());
           if (banner.getGachaType() != GachaType.Normal) {

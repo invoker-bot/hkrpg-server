@@ -171,6 +171,7 @@ final class LiveGmBackend implements GmBackend {
 
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
+    if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
     if (operation.action().equals("command")) return command(operation);
     return withPlayer(
         operation.uid(),
@@ -183,6 +184,15 @@ final class LiveGmBackend implements GmBackend {
               default -> throw new GmError(400, "未知操作。");
             });
   }
+
+  private GmBanners banners() {
+    var server = LunarCore.getGameServer();
+    if (server == null) throw new GmError(503, "游戏服务不可用。");
+    return new GmBanners(Path.of(LunarCore.getConfig().getDataDir()), server.getGachaService(),
+        java.time.Clock.systemUTC());
+  }
+
+  public List<BannerRow> bannerHistory() { return banners().history(); }
 
   private Result withPlayer(int uid, java.util.function.Function<Player, Result> action) {
     var server = LunarCore.getGameServer();

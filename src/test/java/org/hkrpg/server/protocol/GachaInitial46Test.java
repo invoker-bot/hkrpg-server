@@ -25,7 +25,7 @@ class GachaInitial46Test {
     service.getGachaBanners().put(2001, new GachaBanner().createBanner(2001, GachaType.AvatarUp,
         100, 200, new int[] {1501}, new int[] {1001, 1002}));
     var before = new Gson().toJson(history);
-    var info = InitialData46Test.first(GachaInitial46.snapshot(protocol, player, service), "gacha_info_list");
+    var info = InitialData46Test.first(GachaInitial46.snapshot(protocol, player, service, 150), "gacha_info_list");
     assertEquals(2001, InitialData46Test.field(info, "gacha_id"));
     assertEquals(100L, InitialData46Test.field(info, "begin_time"));
     assertEquals(200L, InitialData46Test.field(info, "end_time"));
@@ -51,6 +51,14 @@ class GachaInitial46Test {
   @Test void absentBannersReturnAnEmptyCatalog() {
     var response = GachaInitial46.snapshot(protocol, player, service);
     assertEquals(List.of(), InitialData46Test.field(response, "gacha_info_list"));
+  }
+
+  @Test void version46QueryHonorsTheExactStartAndEndOfARerun() {
+    service.getGachaBanners().put(2001, new GachaBanner().createBanner(2001,GachaType.AvatarUp,
+        100,200,new int[]{1102},new int[]{1105,1106,1109}));
+    assertEquals(List.of(),InitialData46Test.field(GachaInitial46.snapshot(protocol,player,service,99),"gacha_info_list"));
+    assertEquals(1,((List<?>)InitialData46Test.field(GachaInitial46.snapshot(protocol,player,service,100),"gacha_info_list")).size());
+    assertEquals(List.of(),InitialData46Test.field(GachaInitial46.snapshot(protocol,player,service,200),"gacha_info_list"));
   }
 
   @Test void invalidRequestsAndUnauthenticatedQueriesCannotReadTheBannerService() throws Exception {

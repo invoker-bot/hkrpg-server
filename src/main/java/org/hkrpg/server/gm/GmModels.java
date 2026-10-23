@@ -44,7 +44,22 @@ public final class GmModels {
       String content,
       List<Attachment> attachments,
       String command,
-      String confirm) {}
+      String confirm,
+      String bannerKey,
+      Integer durationDays) {
+    public Operation(String requestId, String action, int uid, int itemId, int amount,
+        int level, int rank, String title, String sender, String content,
+        List<Attachment> attachments, String command, String confirm) {
+      this(requestId, action, uid, itemId, amount, level, rank, title, sender, content,
+          attachments, command, confirm, null, null);
+    }
+  }
+
+  public record BannerItem(int id, String name) {}
+
+  public record BannerRow(String key, String version, String phase, String name, int id,
+      String type, List<BannerItem> up5, List<BannerItem> up4, boolean replayable,
+      String status, long beginTime, long endTime) {}
 
   /** Returned means the legacy handler returned; it does not imply gameplay success. */
   public record Result(String state, List<String> output) {

@@ -12,5 +12,7 @@ public interface GmBackend {
 
   List<CommandRow> commands();
 
+  default List<BannerRow> bannerHistory() { return List.of(); }
+
   Result execute(Operation operation);
 }

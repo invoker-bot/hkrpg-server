@@ -107,6 +107,7 @@ public final class NativeGmPlayerProbe {
       snapshot.put("bag", project(call("GetBagCsReq")));
       snapshot.put("avatars", project(call("GetAvatarDataCsReq", Map.of("is_get_all", true))));
       snapshot.put("mail", project(call("GetMailCsReq")));
+      snapshot.put("gacha", project(call("GetGachaInfoCsReq")));
       snapshot.put("basic", Map.copyOf(basic));
       snapshot.put("requests", requests);
       Path temporary = directory.resolve("snapshot.tmp");

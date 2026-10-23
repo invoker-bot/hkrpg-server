@@ -53,6 +53,16 @@ class GmRoutesTest {
             return List.of(new CommandRow("heal", "/heal", true, false));
           }
 
+          public List<BannerRow> bannerHistory() {
+            return List.of(
+                new BannerRow("1.1-2005", "1.1", "上半", "零号协议", 2005, "AvatarUp",
+                    List.of(new BannerItem(1006, "银狼")), List.of(), true, "未配置", 0, 0),
+                new BannerRow("1.0-2001", "1.0", "上半", "蝶立锋锷", 2001, "AvatarUp",
+                    List.of(new BannerItem(1102, "希儿")), List.of(), true, "未配置", 0, 0),
+                new BannerRow("1.0-3001", "1.0", "上半", "流光定影", 3001, "WeaponUp",
+                    List.of(new BannerItem(23001, "于夜色中")), List.of(), true, "未配置", 0, 0));
+          }
+
           public Result execute(Operation op) {
             executions.incrementAndGet();
             return Result.completed("已执行 " + op.action());
@@ -84,6 +94,55 @@ class GmRoutesTest {
   }
 
   @Test
+  void bannerHistoryRequiresLoginAndSupportsVersionFiltering() throws Exception {
+    assertEquals(401, request("GET", "/gm/api/banners/history", null, false).statusCode());
+    login();
+    var response = request("GET", "/gm/api/banners/history?version=1.0", null, true);
+    assertEquals(200, response.statusCode());
+    assertTrue(json(response).getAsJsonObject("data").has("versions"));
+    assertEquals(2, json(response).getAsJsonObject("data").get("total").getAsInt());
+    var filtered = request("GET", "/gm/api/banners/history?version=1.0&type=weaponup&limit=1", null, true);
+    assertEquals(1, json(filtered).getAsJsonObject("data").getAsJsonArray("items").size());
+    assertEquals(3001, json(filtered).getAsJsonObject("data").getAsJsonArray("items").get(0)
+        .getAsJsonObject().get("id").getAsInt());
+    assertEquals(0, json(request("GET", "/gm/api/banners/history?q=1006&offset=1", null, true))
+        .getAsJsonObject("data").getAsJsonArray("items").size());
+    assertEquals(400, request("GET", "/gm/api/banners/history?version=../bad", null, true).statusCode());
+  }
+
+  @Test
+  void globalBannerRerunIsJournaledAndReplayDoesNotExtendTheWindow() throws Exception {
+    login();
+    String id = UUID.randomUUID().toString();
+    String body = "{\"requestId\":\"" + id
+        + "\",\"action\":\"banner-rerun\",\"bannerKey\":\"1.0-2001\",\"durationDays\":7}";
+    var first = request("POST", "/gm/api/operate", body, true);
+    assertEquals(200, first.statusCode());
+    assertEquals("completed", json(first).getAsJsonObject("data").get("state").getAsString());
+    assertEquals(first.body(), request("POST", "/gm/api/operate", body, true).body());
+    assertEquals(1, executions.get());
+    assertEquals(409, request("POST", "/gm/api/operate", body.replace(":7}", ":8}"), true).statusCode());
+    assertTrue(request("GET", "/gm/api/audit", null, true).body().contains("1.0-2001"));
+  }
+
+  @Test
+  void bannerRerunRejectsMissingKeysInvalidDurationsAndPlayerTargets() throws Exception {
+    login();
+    for (String fields : List.of(
+        "\"bannerKey\":\"1.0-2001\",\"durationDays\":0",
+        "\"bannerKey\":\"1.0-2001\",\"durationDays\":366",
+        "\"bannerKey\":\"1.0-2001\",\"durationDays\":1.5",
+        "\"bannerKey\":\"../Banners.json\",\"durationDays\":7",
+        "\"durationDays\":7",
+        "\"bannerKey\":\"1.0-2001\",\"durationDays\":7,\"uid\":10001")) {
+      String body = "{\"requestId\":\"" + UUID.randomUUID()
+          + "\",\"action\":\"banner-rerun\"," + fields + "}";
+      assertEquals(400, request("POST", "/gm/api/operate", body, true).statusCode(), fields);
+    }
+    assertEquals(0, executions.get());
+  }
+
+  @Test
   void publicPageHasNoKeyAndEveryDataRouteRequiresLogin() throws Exception {
     var page = request("GET", "/gm", null, false);
     assertEquals(200, page.statusCode());
@@ -94,7 +153,7 @@ class GmRoutesTest {
             .firstValue("Content-Security-Policy")
             .orElse("")
             .contains("frame-ancestors 'none'"));
-    for (var route : List.of("session", "status", "players", "catalog", "commands", "audit"))
+    for (var route : List.of("session", "status", "players", "catalog", "commands", "audit", "banners/history"))
       assertEquals(401, request("GET", "/gm/api/" + route, null, false).statusCode(), route);
     assertEquals(401, request("POST", "/gm/api/operate", "{}", false).statusCode());
     assertEquals(0, executions.get());

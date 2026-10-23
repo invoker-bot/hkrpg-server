@@ -88,6 +88,7 @@ def main():
     normal_stops = 0
     account_name = 'gm_smoke_' + uuid.uuid4().hex + '@example.invalid'
     uid = None
+    banner_window = None
     credentials_file = directory / 'credentials.json'
     try:
         for iteration in range(2):
@@ -97,6 +98,16 @@ def main():
                                       cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
             wait_for(lambda: server.poll() is None and request('/health/ready')['ready'])
             login()
+            if iteration == 0:
+                assert request('/gm/api/players')['data'] == []
+                history = request('/gm/api/banners/history?version=1.0&type=avatarup')['data']
+                assert history['total'] == 2 and len(history['items']) == 2
+                assert all(row['version'] == '1.0' and row['type'] == 'AvatarUp' for row in history['items'])
+                operation('banner-rerun', uid=0, bannerKey='1.0-2001', durationDays=7)
+                saved = json.loads((directory / 'data/Banners.json').read_text(encoding='utf-8'))
+                row = next(row for row in saved if row['id'] == 2001)
+                banner_window = (row['beginTime'], row['endTime'])
+                assert banner_window[1] - banner_window[0] == 7 * 86400
             account = request('/hkrpg_cn/mdk/shield/api/login', {'account': account_name, 'password': 'isolated-gm-test'})['data']['account']
             combo = request('/hkrpg_cn/combo/granter/login/v2/login', {'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
             credentials_file.write_text(json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}), encoding='utf-8')
@@ -109,6 +120,10 @@ def main():
                                      stdout=probe_log, stderr=subprocess.STDOUT, creationflags=flags)
             snapshot = wait_for(lambda: json.loads((directory / 'snapshot.json').read_text(encoding='utf-8')))
             uid = snapshot['uid']
+            native_banner = next(row for row in snapshot['gacha']['gacha_info_list'] if row['gacha_id'] == 2001)
+            assert (native_banner['begin_time'], native_banner['end_time']) == banner_window
+            assert native_banner['prize_item_list'] == [1102]
+            assert native_banner['ONIHOMCELJK'] == [1105, 1106, 1109]
             assert len(request('/gm/api/players')['data']) == 1
             if iteration == 0:
                 operation('grant', itemId=1, amount=37, level=0, rank=0)
@@ -151,6 +166,9 @@ def main():
         report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'normalStops': normal_stops,
                   'operations': len(operations), 'replayChecks': len(operations)*2, 'snapshots': snapshots,
                   'operatorDataModified': False, 'clientGameplayVerified': False}
+        report['bannerWindow'] = banner_window
+        report['bannerRerunWithoutOnlinePlayer'] = True
+        report['bannerNativeQueryVerified'] = True
         (ROOT / 'build/gm-native.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps({'passed': True, 'normalStops': normal_stops, 'report': str(ROOT / 'build/gm-native.json')}))
     finally:

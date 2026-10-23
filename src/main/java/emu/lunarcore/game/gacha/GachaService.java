@@ -114,21 +114,46 @@ public class GachaService extends BaseGameService {
     }
 
     public synchronized void loadBanners() {
-        this.getGachaBanners().clear();
-
         try (FileReader fileReader = new FileReader(getBannerFileName())) {
             List<GachaBanner> banners = JsonUtils.loadToList(fileReader, GachaBanner.class);
-            for (GachaBanner banner : banners) {
-                getGachaBanners().put(banner.getId(), banner);
-            }
+            replaceBanners(banners);
         } catch (Exception e) {
             LunarCore.getLogger().warn("Error loading gacha banners: ", e);
+        }
+    }
+
+    /** Validate the whole candidate before publishing; a bad reload keeps the last good table. */
+    public synchronized void replaceBanners(List<GachaBanner> banners) {
+        validateBanners(banners);
+        var candidate = new Int2ObjectOpenHashMap<GachaBanner>();
+        for (var banner : banners) candidate.put(banner.getId(), banner);
+        getGachaBanners().clear();
+        getGachaBanners().putAll(candidate);
+    }
+
+    public static void validateBanners(List<GachaBanner> banners) {
+        if (banners == null) throw new IllegalArgumentException("卡池配置必须为数组。");
+        var ids = new java.util.HashSet<Integer>();
+        for (var banner : banners) {
+            if (banner == null || banner.getId() <= 0 || !ids.add(banner.getId())
+                    || banner.getGachaType() == null || banner.getGachaType() == GachaType.Unknown
+                    || banner.getRateUpItems5() == null || banner.getRateUpItems4() == null
+                    || banner.getEventChance() < 0 || banner.getEventChance() > 100
+                    || java.util.Arrays.stream(banner.getRateUpItems5()).anyMatch(id -> id <= 0)
+                    || java.util.Arrays.stream(banner.getRateUpItems4()).anyMatch(id -> id <= 0))
+                throw new IllegalArgumentException("卡池配置含无效项目或重复 ID。");
         }
     }
 
     public synchronized void doPulls(Player player, int gachaId, int times) {
         // Sanity checks
         if (times != 10 && times != 1) return;
+
+        GachaBanner banner = this.getGachaBanners().get(gachaId);
+        if (banner == null || !banner.isActive(System.currentTimeMillis() / 1000L)) {
+            player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_ID_NOT_EXIST));
+            return;
+        }
 
         // Prevent player from using gacha if they are at max light cones
         if (player.getInventory().getTabByItemType(ItemMainType.Equipment).getSize() >= player.getInventory().getTabByItemType(ItemMainType.Equipment).getMaxCapacity()) {
@@ -137,11 +162,6 @@ public class GachaService extends BaseGameService {
         }
 
         // Get banner
-        GachaBanner banner = this.getGachaBanners().get(gachaId);
-        if (banner == null) {
-            player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_ID_NOT_EXIST));
-            return;
-        }
 
         // Spend currency
         if (banner.getGachaType().getCostItem() > 0) {
@@ -355,6 +375,7 @@ public class GachaService extends BaseGameService {
         var proto = GetGachaInfoScRsp.newInstance();
 
         for (GachaBanner banner : getGachaBanners().values()) {
+            if (!banner.isActive(System.currentTimeMillis() / 1000L)) continue;
             proto.addGachaInfoList(banner.toProto(this, player));
         }
 

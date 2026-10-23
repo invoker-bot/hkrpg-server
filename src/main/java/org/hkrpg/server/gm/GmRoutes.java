@@ -39,6 +39,7 @@ public final class GmRoutes {
             "api.js",
             "players.js",
             "resources.js",
+            "banners.js",
             "mail.js",
             "terminal.js",
             "audit.js",
@@ -128,6 +129,22 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/banners/history", safe(ctx -> {
+      auth.require(ctx, false);
+      String version = query(ctx, "version"), q = query(ctx, "q"), type = query(ctx, "type");
+      if (!version.isEmpty() && !version.matches("[0-9]{1,2}\\.[0-9]{1,2}"))
+        throw new GmError(400, "版本筛选格式不正确。");
+      if (!type.isEmpty() && !Set.of("avatarup", "weaponup").contains(type))
+        throw new GmError(400, "卡池类型不正确。");
+      int offset = integer(ctx, "offset", 0, 0, 1_000_000), limit = integer(ctx, "limit", 30, 1, 100);
+      var history = backend.bannerHistory();
+      var filtered = history.stream().filter(b -> version.isEmpty() || version.equals(b.version()))
+          .filter(b -> type.isEmpty() || type.equals(b.type().toLowerCase(Locale.ROOT)))
+          .filter(b -> q.isEmpty() || (b.id() + " " + b.name() + " " + b.up5() + " " + b.up4())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx, Map.of("versions", history.stream().map(BannerRow::version).distinct().toList(),
+          "total", filtered.size(), "items", filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get(
         "/gm/api/commands",
         safe(
