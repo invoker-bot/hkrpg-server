@@ -302,3 +302,15 @@ Browser 插件不可用，使用已有 Playwright 与已安装 Chrome；隔离�
 构建时冻结 2,757 个 Java、资源及构建输入；四份无关活动测试在编译后出现新增，原已测源文件与摘要另存为证据，本次提交保留这些工作区改动并不纳入。期间修正独立网络验收脚本的两个夹具处理问题，随后实际完整重跑通过，运行 Java/JAR 未改变。首次并行测试共用输出目录导致的占用失败日志保留，最终全量按顺序执行，未降低断言或跳过测试。
 
 证据在任务可视化目录 `gm-rarity-20261024/`：`red.log`、`protocol-red-actual-jar.log`、`protocol-green-actual-jar.log`、`full-build.log`、`java-acceptance.json`、`java-results/`、`gm-native.json`、`gacha-rarity-native.json`、`smoke-summary.json` 及 `browser-isolated/browser-qa.json`。网页夹具额外的新手池、无效自定义池及 H2 保底夹具只存在隔离目录，正式账号和数据库不用于抽取验收。
+
+### 正式发布与保留核验
+
+2026-10-24 04:28（UTC+8）正常发布提交 `d35c40f13b2446f79d822738b2d6bfc67b586d50`。已逐项核对 Git 提交与 3,522 个构建/验收输入的内容；既有六份源码的混合换行仅作规范化对比，没有引入内容变更。并行工作区中随后新增的活动查询修改保持原样，未纳入本次提交或部署。镜像 `sha256:feda8b2c56b49892afd6a2c442d40a933c34d2eb2336249f33b8918e436297f2` 内 JAR 与上述已测产物完全一致，现有 `hkrpg-local` 服务正常重启后健康。
+
+停服退出码 143、无 OOM；完整运行目录逐文件核对备份至 `.local/backups/gm-rarity-20261024-042655-d35c40f/runtime/`，其中 12 个数据文件。启动前确认数据、SDK 凭据和配置与停服备份一致，仅替换 JAR 与部署元数据；旧包与回退镜像保留，不恢复或覆盖数据库。启动后 13 个静态配置与凭据文件仍与发布前一致，原 `Banners.json` 及 53 个配置卡池保留；`config.json` SHA-256 仍为 `6ab12e00346b47718fa765e2b2a88531e8c855efaa25f8eac925155a7f7d194e`。默认及正式数据目录均没有重新生成管理密钥。
+
+停服备份与新实例只读逐记录对比：14 个集合的全部 26 条原始记录及归属保留，含现有 1 个账号、1 个玩家及 6 件物品，只有 `regions.up` 在线状态字段变化；临时副本和检查程序已清理。正式服没有测试抽取、没有创建测试账号，GM 验收的写操作请求为 0。
+
+正式 `http://127.0.0.1:18080/gm` 使用同一 Chrome / Playwright 再验 1505×1045 与 390×844：实际 53 个池的 ID 集合正确，常驻显示 14 个五星候选，三月七/丹恒只在四星区；全部实际候选星级、活动 UP/非 UP 详情、历史筛选和取消停止通过。页面身份、非空内容、无错误覆盖、相关控制台、截图和交互均通过，手机无整页横向溢出；favicon 404 作为既有无关项单列。正式启停与无效池注入未重复执行，已由同包的隔离网页及原生检查覆盖。
+
+发布前后只读 Compose 检查通过，包含挂载、配置、产物、本机端口、CN/OS Dispatch 与 UDP 心跳。最终汇总为 `gm-rarity-20261024/state.json`、`preservation.json`、`browser-live/browser-qa.json`；截图为 `browser-live/desktop-rarity.png`、`browser-live/mobile-rarity.png`；Compose 记录为 `build/gm-rarity-compose-before.json` 和 `build/gm-rarity-compose-after.json`。实际游戏客户端抽取画面及官服概率一致性仍需单独验收。
