@@ -17,6 +17,8 @@ import java.util.concurrent.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /** Authored space-station boxes; explicit compatibility rewards and isolated actual storage. */
@@ -115,9 +117,13 @@ class OrdinaryDestructible46Test {
   }
 
   void reload() throws Exception {
+    int plane = actor.plane, floor = actor.floor, entry = actor.entry;
     var stored = BookPickup46Test.database.getObjectByField(Player.class, "_id", actor.getUid());
     assertNotNull(stored);
     fresh();
+    actor.plane = plane;
+    actor.floor = floor;
+    actor.entry = entry;
     DailyMissionAcceptance46Test.set(actor, "gameplay", stored.getGameplay());
     DailyMissionAcceptance46Test.set(actor, "scoin", stored.getScoin());
     for (var item : BookPickup46Test.database.getObjects(GameItem.class).toList())
@@ -126,10 +132,59 @@ class OrdinaryDestructible46Test {
   }
 
   EntityProp box(int instance) {
-    return actor.scene.getEntitiesByGroup(EntityProp.class, 36).stream()
+    return box(36, instance);
+  }
+
+  EntityProp box(int group, int instance) {
+    return actor.scene.getEntitiesByGroup(EntityProp.class, group).stream()
         .filter(p -> p.getInstId() == instance)
         .findFirst()
         .orElse(null);
+  }
+
+  static java.util.stream.Stream<Arguments> stationPlacements() throws Exception {
+    try (var input = OrdinaryDestructible46Test.class.getResourceAsStream(
+        "/fixtures/ordinary-destructibles-4.6.json")) {
+      var rows = JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8))
+          .getAsJsonObject().getAsJsonArray("placements");
+      assertEquals(53, rows.size(), "Frozen ordinary-space-station placement coverage changed");
+      return rows.asList().stream().map(raw -> {
+        var row = raw.getAsJsonObject();
+        return Arguments.of(row.get("plane").getAsInt(), row.get("floor").getAsInt(),
+            row.get("entry").getAsInt(), row.get("group").getAsInt(),
+            row.get("instance").getAsInt(), row.get("prop").getAsInt(),
+            row.get("event").getAsInt());
+      });
+    }
+  }
+
+  @ParameterizedTest(name = "station {0} group {3} instance {4}")
+  @MethodSource("stationPlacements")
+  void everyOriginalStationBoxAndCylinderAwardsAndSurvivesReload(
+      int plane, int floor, int entry, int group, int instance, int propId, int eventId)
+      throws Exception {
+    actor.plane = plane;
+    actor.floor = floor;
+    actor.entry = entry;
+    fixture.scene();
+    var prop = box(group, instance);
+    assertNotNull(prop, "Original ordinary prop was not loaded");
+    assertEquals(propId, prop.getPropId());
+    assertEquals(eventId, prop.getPropInfo().getEventID());
+    actor.getPos().set(prop.getPos());
+    assertTrue(actor.scene.destroyProp(prop));
+    assertEquals(100, actor.getScoin(), "Destroyed a station prop without its credit drop");
+    assertEquals(1, actor.getInventory().getMaterialByItemId(180005).getCount());
+    assertEquals(1, actor.packets.stream()
+        .filter(p -> p.getCmdId() == CmdId.ScenePlaneEventScNotify).count());
+    assertFalse(actor.scene.destroyProp(prop));
+    reload();
+    assertNull(box(group, instance), "Paid prop respawned on the same day");
+    assertEquals(100, actor.getScoin());
+    assertEquals(1, actor.getInventory().getMaterialByItemId(180005).getCount());
+    assertTrue(actor.getGameplay().getDestructibleRewards().getReceipts()
+        .get(plane + ":" + floor + ":" + group + ":" + instance).isGranted());
+    assertEquals(0, actor.grants);
   }
 
   @ParameterizedTest
@@ -187,6 +242,52 @@ class OrdinaryDestructible46Test {
         actor.getInventory().getItems().values().stream()
             .map(GameItem::getItemId)
             .collect(java.util.stream.Collectors.toSet()));
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1, 2, 3, 4, 5, 6})
+  void allStationEventRowsAtEveryWorldLevelShareTheVerifiedPoolPolicy(int world)
+      throws Exception {
+    DailyMissionAcceptance46Test.set(actor, "worldLevel", world);
+    for (int plane : new int[] {20002, 20003, 20004}) {
+      actor.plane = plane;
+      actor.floor = plane * 1000 + 1;
+      actor.entry = plane * 100 + 1;
+      fixture.scene();
+      var prop = actor.scene.getEntities().values().stream()
+          .filter(e -> e instanceof EntityProp p && p.getPropId() == 100026)
+          .map(e -> (EntityProp) e).findFirst().orElseThrow();
+      assertTrue(actor.scene.destroyProp(prop));
+    }
+    assertEquals(300, actor.getScoin());
+    assertEquals(3, actor.getInventory().getMaterialByItemId(180005).getCount());
+    assertEquals(3, actor.getGameplay().getDestructibleRewards().getReceipts().size());
+    reload();
+    assertEquals(300, actor.getScoin());
+    assertEquals(3, actor.getInventory().getMaterialByItemId(180005).getCount());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"pool", "stage", "reward", "unknown-event"})
+  void incompatibleStationEventsCannotSilentlyDestroyTheProp(String fault) throws Exception {
+    actor.plane = 20002;
+    actor.floor = 20002001;
+    actor.entry = 2000201;
+    fixture.scene();
+    var prop = box(12, 300004);
+    var event = GameData.getPlaneEventExcelMap().get(20002401, 0);
+    switch (fault) {
+      case "pool" -> DailyMissionAcceptance46Test.set(event, "DropList",
+          JsonParser.parseString("[3213004]").getAsJsonArray());
+      case "stage" -> DailyMissionAcceptance46Test.set(event, "StageID", 1);
+      case "reward" -> DailyMissionAcceptance46Test.set(event, "Reward", 101001);
+      case "unknown-event" -> DailyMissionAcceptance46Test.set(prop.getPropInfo(), "EventID", 99999999);
+    }
+    assertFalse(actor.scene.destroyProp(prop));
+    assertSame(prop, box(12, 300004));
+    assertEquals(0, actor.grants);
+    assertEquals(0, actor.saves);
+    assertTrue(actor.getGameplay().getDestructibleRewards().getReceipts().isEmpty());
   }
 
   @Test

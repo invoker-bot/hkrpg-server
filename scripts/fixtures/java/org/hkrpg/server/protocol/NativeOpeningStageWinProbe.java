@@ -282,6 +282,11 @@ public final class NativeOpeningStageWinProbe {
   }
 
   private void capturedDestructible(boolean alreadyCollected) throws Exception {
+    capturedDestructible(36, Map.of(300003, 100026, 300006, 100027), 2, alreadyCollected);
+  }
+
+  private void capturedDestructible(int groupId, Map<Integer, Integer> expected,
+      int expectedMetal, boolean alreadyCollected) throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     int caster = 0;
     var boxes = new HashMap<Integer, DynamicMessage>();
@@ -291,13 +296,13 @@ public final class NativeOpeningStageWinProbe {
         var entity = (DynamicMessage) rawEntity;
         if (entity.hasField(entity.getDescriptorForType().findFieldByName("actor")))
           caster = (Integer) field(entity, "entity_id");
-        if ((Integer) field(group, "group_id") == 36
-            && Set.of(300003, 300006).contains((Integer) field(entity, "inst_id")))
+        if ((Integer) field(group, "group_id") == groupId
+            && expected.containsKey((Integer) field(entity, "inst_id")))
           boxes.put((Integer) field(entity, "inst_id"), entity);
       }
     }
     require(
-        caster > 0 && boxes.size() == (alreadyCollected ? 0 : 2),
+        caster > 0 && boxes.size() == (alreadyCollected ? 0 : expected.size()),
         "Paid boxes respawned or original source is absent");
     if (!alreadyCollected) {
       var tags =
@@ -307,11 +312,10 @@ public final class NativeOpeningStageWinProbe {
               .findFieldByName("skill_extra_tags")
               .getEnumType();
       int useId = 138;
-      for (int instance : List.of(300003, 300006)) {
+      for (int instance : new TreeSet<>(expected.keySet())) {
         var entity = boxes.get(instance);
         require(
-            (Integer) field((DynamicMessage) field(entity, "prop"), "prop_id")
-                == (instance == 300003 ? 100026 : 100027),
+            expected.get(instance).equals(field((DynamicMessage) field(entity, "prop"), "prop_id")),
             "Ordinary box source");
         int target = (Integer) field(entity, "entity_id");
         var request =
@@ -341,14 +345,14 @@ public final class NativeOpeningStageWinProbe {
       var item = (DynamicMessage) raw;
       bag.merge((Integer) field(item, "tid"), (Integer) field(item, "num"), Math::addExact);
     }
-    require(Objects.equals(bag.get(180005), 2), "Box metal missing, duplicated, or not restored");
+    require(Objects.equals(bag.get(180005), expectedMetal), "Box metal missing, duplicated, or not restored");
     var after = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     for (var raw : (List<?>) field(after, "entity_group_list")) {
       var group = (DynamicMessage) raw;
-      if ((Integer) field(group, "group_id") != 36) continue;
+      if ((Integer) field(group, "group_id") != groupId) continue;
       for (var value : (List<?>) field(group, "entity_list"))
         require(
-            !Set.of(300003, 300006).contains((Integer) field((DynamicMessage) value, "inst_id")),
+            !expected.containsKey((Integer) field((DynamicMessage) value, "inst_id")),
             "Paid box still exists");
     }
   }
@@ -993,11 +997,17 @@ public final class NativeOpeningStageWinProbe {
     if (phase.startsWith("awakening-")) {
       require(verifyAwakening, "Unexpected awakening phase");
       if (!verifyAwakeningBattle || phase.equals("awakening-reconnect")) awakeningDoor(true);
-      if (verifyAwakeningBattle) awakeningBattleFlow(phase.equals("awakening-restart"));
-      return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
-          "awakeningDoorVerified", true, "nextBattlePending", !verifyAwakeningBattle,
-          "awakeningBattleVerified", verifyAwakeningBattle, "credits",credits,"clientGameplayVerified", false,
-          "inclinationAcknowledgements", inclinationAcknowledgements);
+      if (verifyAwakeningBattle) {
+        awakeningBattleFlow(phase.equals("awakening-restart"));
+        capturedDestructible(12, Map.of(300004, 100026, 300012, 100027), 4,
+            phase.equals("awakening-restart"));
+      }
+      return Map.ofEntries(Map.entry("passed", true), Map.entry("uid", uid),
+          Map.entry("phase", phase), Map.entry("requests", requests),
+          Map.entry("awakeningDoorVerified", true), Map.entry("nextBattlePending", !verifyAwakeningBattle),
+          Map.entry("awakeningBattleVerified", verifyAwakeningBattle), Map.entry("credits", credits),
+          Map.entry("clientGameplayVerified", false), Map.entry("inclinationAcknowledgements", inclinationAcknowledgements),
+          Map.entry("stationDestructiblesVerified", verifyAwakeningBattle));
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");

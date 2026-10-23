@@ -48,14 +48,16 @@ public final class OrdinaryDestructibles {
   public static boolean applies(EntityProp p) {
     if (p == null || !world(p.getScene())) return false;
     var original = original(p.getScene(), p.getGroupId(), p.getInstId());
-    return family(p.getPropInfo()) && p.getPropInfo().getEventID() == 20001401
-        || family(original) && original.getEventID() == 20001401;
+    // The four station areas have different event IDs for the same ordinary drop pools.
+    // Route authored reward events through validation; malformed pools must not silently destroy.
+    return family(p.getPropInfo()) && p.getPropInfo().getEventID() > 0
+        || family(original) && original.getEventID() > 0;
   }
 
   private static boolean configured(Scene s, PropInfo p) {
     if (!world(s)
         || !family(p)
-        || p.getEventID() != 20001401
+        || p.getEventID() <= 0
         || p.getID() <= 0
         || p.isIsDelete()
         || p.isIsClientOnly()
@@ -83,7 +85,7 @@ public final class OrdinaryDestructibles {
   }
 
   public static boolean removed(Scene s, GroupInfo group, PropInfo info) {
-    if (!world(s) || !family(info) || info.getEventID() != 20001401) return false;
+    if (!world(s) || !family(info) || info.getEventID() <= 0) return false;
     var state = s.getPlayer().getGameplay().getDestructibleRewards();
     if (state == null || !state.valid()) return false;
     var r = state.getReceipts().get(key(s, group.getId(), info.getID()));
