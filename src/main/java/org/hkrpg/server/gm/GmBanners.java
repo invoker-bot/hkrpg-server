@@ -38,7 +38,7 @@ final class GmBanners {
           boolean matches = live.getGachaType() == t.type()
               && sameItems(live.getRateUpItems5(), t.up5())
               && sameItems(live.getRateUpItems4(), t.up4());
-          status = !matches ? "当前为其他配置" : live.isActive(now) ? "正在开放"
+          status = !matches ? "当前为其他配置" : live.isDisabled() ? "已停止" : live.isActive(now) ? "正在开放"
               : now < live.getBeginTime() ? "尚未开放" : "已到期";
         }
         return new BannerRow(t.key(), t.version(), t.phase(), t.name(), t.id(), t.type().name(),
@@ -47,6 +47,72 @@ final class GmBanners {
             t.historicalStart(), t.historicalEnd(), t.sourceUrl());
       }).toList();
     }
+  }
+
+  List<CurrentBannerRow> current(java.util.function.IntFunction<String> names) {
+    synchronized (service) {
+      long now = clock.instant().getEpochSecond();
+      return service.getGachaBanners().values().stream().map(live -> {
+        var template = ARCHIVE.stream().filter(t -> t.id() == live.getId()
+            && t.type() == live.getGachaType()).findFirst().orElse(null);
+        boolean matches = template != null && sameItems(live.getRateUpItems5(), template.up5())
+            && sameItems(live.getRateUpItems4(), template.up4());
+        boolean permanent = permanent(live);
+        String state = state(live, now);
+        String name = switch (live.getGachaType()) {
+          case Normal -> "常驻跃迁";
+          case Newbie -> "新手跃迁";
+          default -> template == null ? "自定义卡池 #" + live.getId()
+              : template.name() + (matches ? "" : "（本服配置）");
+        };
+        return new CurrentBannerRow(live.getId(), live.getGachaType().name(), name,
+            template == null ? "" : template.key(), matches ? template.version() : "",
+            matches ? template.phase() : "", currentItems(live.getRateUpItems5(), names),
+            currentItems(live.getRateUpItems4(), names), state, switch (state) {
+              case "stopped" -> "已停止"; case "active" -> "正在开放";
+              case "scheduled" -> "尚未开放"; default -> "已到期";
+            }, live.getBeginTime(), live.getEndTime(), permanent, live.isDisabled(),
+            !live.isDisabled() && !state.equals("expired"),
+            live.isDisabled() && (permanent || live.getEndTime() > now));
+      }).sorted(Comparator.comparing((CurrentBannerRow b) -> !b.permanent())
+          .thenComparingInt(CurrentBannerRow::id)).toList();
+    }
+  }
+
+  private static boolean permanent(GachaBanner banner) {
+    return banner.getGachaType() == GachaType.Normal || banner.getGachaType() == GachaType.Newbie;
+  }
+
+  private static String state(GachaBanner banner, long now) {
+    return banner.isDisabled() ? "stopped" : banner.isActive(now) ? "active"
+        : now < banner.getBeginTime() ? "scheduled" : "expired";
+  }
+
+  private static List<BannerItem> currentItems(int[] ids, java.util.function.IntFunction<String> names) {
+    return Arrays.stream(ids).mapToObj(id -> new BannerItem(id, names.apply(id))).toList();
+  }
+
+  Result setEnabled(Operation operation) {
+    GmValidation.validate(operation);
+    boolean enable = operation.action().equals("banner-enable");
+    return update(operation, rows -> {
+      var row = rows.asList().stream().map(JsonElement::getAsJsonObject)
+          .filter(r -> r.get("id").getAsInt() == operation.bannerId()).findFirst()
+          .orElseThrow(() -> new GmError(409, "该卡池已不在当前配置中，请刷新列表。"));
+      var banner = JSON.fromJson(row, GachaBanner.class);
+      long now = clock.instant().getEpochSecond();
+      if (banner.isDisabled() == !enable)
+        return Result.completed("卡池 #" + banner.getId() + (enable ? " 已启用。" : " 已停止。"));
+      if (enable && !permanent(banner) && banner.getEndTime() <= now)
+        throw new GmError(409, "原开放时间已到期，请重新复刻或调整排期。");
+      if (!enable && state(banner, now).equals("expired"))
+        throw new GmError(409, "卡池已到期，无需停止，请刷新列表。");
+      row.addProperty("disabled", !enable);
+      return new Result("completed", List.of(
+          (enable ? "已启用卡池 #" : "已停止卡池 #") + banner.getId(),
+          enable ? "沿用原配置与开放时间，不延长排期。" : "立即停止开放，原配置与开放时间保留。",
+          "全服配置已加载，玩家保底记录保留；请重新打开游戏内跃迁页面。"));
+    });
   }
 
   Result rerun(Operation operation) {
@@ -58,6 +124,34 @@ final class GmBanners {
     long begin = clock.instant().getEpochSecond(), end = begin + days * 86400L;
     if (begin < 0 || end > Integer.MAX_VALUE)
       throw new GmError(400, "复刻时间超出当前协议支持范围。");
+    return update(operation, rows -> {
+      var replacement = new JsonObject();
+      replacement.addProperty("id", template.id());
+      replacement.addProperty("gachaType", template.type().name());
+      replacement.addProperty("beginTime", begin);
+      replacement.addProperty("endTime", end);
+      replacement.add("rateUpItems5", JSON.toJsonTree(ids(template.up5())));
+      replacement.add("rateUpItems4", JSON.toJsonTree(ids(template.up4())));
+      replacement.addProperty("eventChance", 50);
+      replacement.addProperty("disabled", false);
+      boolean found = false;
+      for (var element : rows) {
+        var row = element.getAsJsonObject();
+        if (row.get("id").getAsInt() == template.id()) {
+          replacement.entrySet().forEach(e -> row.add(e.getKey(), e.getValue()));
+          found = true;
+          break;
+        }
+      }
+      if (!found) rows.add(replacement);
+      return new Result("completed", List.of(
+          "已复刻 " + template.name() + " · " + template.version() + " · #" + template.id(),
+          "开放 " + days + " 天，截止 " + java.time.Instant.ofEpochSecond(end),
+          "全服配置已加载，重新打开游戏内跃迁页面可查询。"));
+    });
+  }
+
+  private Result update(Operation operation, java.util.function.Function<JsonArray, Result> change) {
     synchronized (service) {
       Path file = directory.resolve("Banners.json"), temp = null;
       try {
@@ -69,27 +163,11 @@ final class GmBanners {
           rows = JsonParser.parseString(previous).getAsJsonArray();
           parse(rows);
         } catch (RuntimeException e) {
-          throw new GmError(503, "当前卡池配置无效，未执行复刻，请先修正配置。");
+          throw new GmError(503, "当前卡池配置无效，未执行变更，请先修正配置。");
         }
-        var replacement = new JsonObject();
-        replacement.addProperty("id", template.id());
-        replacement.addProperty("gachaType", template.type().name());
-        replacement.addProperty("beginTime", begin);
-        replacement.addProperty("endTime", end);
-        replacement.add("rateUpItems5", JSON.toJsonTree(ids(template.up5())));
-        replacement.add("rateUpItems4", JSON.toJsonTree(ids(template.up4())));
-        replacement.addProperty("eventChance", 50);
-        boolean found = false;
-        for (int i = 0; i < rows.size(); i++) {
-          if (rows.get(i).getAsJsonObject().get("id").getAsInt() == template.id()) {
-            // Preserve operator extension fields while restoring the archive's UP pool.
-            var merged = rows.get(i).getAsJsonObject();
-            replacement.entrySet().forEach(e -> merged.add(e.getKey(), e.getValue()));
-            found = true;
-            break;
-          }
-        }
-        if (!found) rows.add(replacement);
+        var before = rows.deepCopy();
+        var result = change.apply(rows);
+        if (rows.equals(before)) return result;
         var candidate = parse(rows);
         Path backups = directory.resolve("gm-banner-backups");
         Files.createDirectories(backups);
@@ -97,16 +175,13 @@ final class GmBanners {
             StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
         temp = Files.createTempFile(directory, ".gm-banners-", ".tmp");
         Files.writeString(temp, JSON.toJson(rows) + "\n", StandardCharsets.UTF_8);
-        // The watcher and all pulls share the same monitor; no half-installed live table is visible.
+        // Watcher, queries and pulls share this monitor; publish only a complete candidate.
         Files.move(temp, file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
         temp = null;
         service.replaceBanners(candidate);
-        return new Result("completed", List.of(
-            "已复刻 " + template.name() + " · " + template.version() + " · #" + template.id(),
-            "开放 " + days + " 天，截止 " + java.time.Instant.ofEpochSecond(end),
-            "全服配置已加载，重新打开游戏内跃迁页面可查询。"));
+        return result;
       } catch (IOException e) {
-        throw new GmError(503, "卡池配置保存失败，未执行复刻，请检查数据目录。 ");
+        throw new GmError(503, "卡池配置保存失败，未加载本次变更，请检查数据目录。");
       } finally {
         if (temp != null) try { Files.deleteIfExists(temp); } catch (IOException ignored) {}
       }

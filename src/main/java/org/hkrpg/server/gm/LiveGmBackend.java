@@ -172,6 +172,7 @@ final class LiveGmBackend implements GmBackend {
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
     if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
+    if (Set.of("banner-stop", "banner-enable").contains(operation.action())) return banners().setEnabled(operation);
     if (operation.action().equals("command")) return command(operation);
     return withPlayer(
         operation.uid(),
@@ -193,6 +194,12 @@ final class LiveGmBackend implements GmBackend {
   }
 
   public List<BannerRow> bannerHistory() { return banners().history(); }
+
+  public List<CurrentBannerRow> currentBanners() {
+    var names = new HashMap<Integer, String>();
+    for (var item : catalog()) names.put(item.id(), item.name());
+    return banners().current(id -> names.getOrDefault(id, "物品 #" + id));
+  }
 
   private Result withPlayer(int uid, java.util.function.Function<Player, Result> action) {
     var server = LunarCore.getGameServer();

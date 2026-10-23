@@ -46,14 +46,20 @@ public final class GmModels {
       String command,
       String confirm,
       String bannerKey,
-      Integer durationDays) {
+      Integer durationDays,
+      Integer bannerId) {
     public Operation(String requestId, String action, int uid, int itemId, int amount,
         int level, int rank, String title, String sender, String content,
         List<Attachment> attachments, String command, String confirm) {
       this(requestId, action, uid, itemId, amount, level, rank, title, sender, content,
-          attachments, command, confirm, null, null);
+          attachments, command, confirm, null, null, null);
     }
   }
+
+  public record CurrentBannerRow(int id, String type, String name, String historyKey,
+      String version, String phase, List<BannerItem> up5, List<BannerItem> up4,
+      String state, String status, long beginTime, long endTime, boolean permanent,
+      boolean disabled, boolean canStop, boolean canEnable) {}
 
   public record BannerItem(int id, String name) {}
 

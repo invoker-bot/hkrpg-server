@@ -14,5 +14,7 @@ public interface GmBackend {
 
   default List<BannerRow> bannerHistory() { return List.of(); }
 
+  default List<CurrentBannerRow> currentBanners() { return List.of(); }
+
   Result execute(Operation operation);
 }

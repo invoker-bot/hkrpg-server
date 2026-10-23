@@ -86,6 +86,7 @@ def main():
     logs = []
     operations, snapshots = [], []
     normal_stops = 0
+    replay_checks = 0
     account_name = 'gm_smoke_' + uuid.uuid4().hex + '@example.invalid'
     uid = None
     banner_window = None
@@ -100,6 +101,9 @@ def main():
             open_session()
             if iteration == 0:
                 assert request('/gm/api/players')['data'] == []
+                current = request('/gm/api/banners/current?type=normal')['data']
+                assert current['total'] == 1 and current['items'][0]['id'] == 1001
+                assert current['items'][0]['permanent'] and current['items'][0]['state'] == 'active'
                 history = request('/gm/api/banners/history?version=1.0&type=avatarup')['data']
                 assert history['total'] == 2 and len(history['items']) == 2
                 assert all(row['version'] == '1.0' and row['type'] == 'AvatarUp' for row in history['items'])
@@ -120,10 +124,20 @@ def main():
                                      stdout=probe_log, stderr=subprocess.STDOUT, creationflags=flags)
             snapshot = wait_for(lambda: json.loads((directory / 'snapshot.json').read_text(encoding='utf-8')))
             uid = snapshot['uid']
-            native_banner = next(row for row in snapshot['gacha']['gacha_info_list'] if row['gacha_id'] == 2001)
-            assert (native_banner['begin_time'], native_banner['end_time']) == banner_window
-            assert native_banner['prize_item_list'] == [1102]
-            assert native_banner['ONIHOMCELJK'] == [1105, 1106, 1109]
+            if iteration == 0:
+                native_banner = next(row for row in snapshot['gacha']['gacha_info_list'] if row['gacha_id'] == 2001)
+                assert (native_banner['begin_time'], native_banner['end_time']) == banner_window
+                assert native_banner['prize_item_list'] == [1102]
+                assert native_banner['ONIHOMCELJK'] == [1105, 1106, 1109]
+            else:
+                assert all(row['gacha_id'] not in (1001, 2001) for row in snapshot['gacha']['gacha_info_list'])
+                stopped = request('/gm/api/banners/current?state=stopped')['data']['items']
+                assert {row['id'] for row in stopped} == {1001, 2001}
+                operation('banner-enable', uid=0, bannerId=1001)
+                operation('banner-enable', uid=0, bannerId=2001)
+                snapshot = wait_for(lambda: (lambda data: data if {row['gacha_id'] for row in data['gacha']['gacha_info_list']} >= {1001, 2001} else None)(json.loads((directory / 'snapshot.json').read_text(encoding='utf-8'))), 30)
+                native_banner = next(row for row in snapshot['gacha']['gacha_info_list'] if row['gacha_id'] == 2001)
+                assert (native_banner['begin_time'], native_banner['end_time']) == banner_window
             assert len(request('/gm/api/players')['data']) == 1
             if iteration == 0:
                 operation('grant', itemId=1, amount=37, level=0, rank=0)
@@ -134,6 +148,10 @@ def main():
                 operation('command', command='status -nogc')
                 for op in operations:
                     assert request('/gm/api/operate', op)['data']['requestId'] == op['requestId']
+                    replay_checks += 1
+                operation('banner-stop', uid=0, bannerId=1001)
+                operation('banner-stop', uid=0, bannerId=2001)
+                snapshot = wait_for(lambda: (lambda data: data if all(row['gacha_id'] not in (1001, 2001) for row in data['gacha']['gacha_info_list']) else None)(json.loads((directory / 'snapshot.json').read_text(encoding='utf-8'))), 30)
                 ready = {'base': base, 'runtimeDirectory': str(directory), 'uid': uid, 'jarSHA256': digest}
                 (ROOT / 'build/gm-browser-ready.json').write_text(json.dumps(ready, indent=2), encoding='utf-8')
                 print(json.dumps({'browserReady': True, **ready}), flush=True)
@@ -142,6 +160,9 @@ def main():
             else:
                 for op in operations:
                     assert request('/gm/api/operate', op)['data']['requestId'] == op['requestId']
+                    replay_checks += 1
+            if iteration == 1:
+                assert not any(row['disabled'] for row in request('/gm/api/banners/current')['data']['items'] if row['id'] in (1001, 2001))
             snapshot = wait_for(lambda: (lambda data: data if data.get('basic', {}).get('hcoin') == 37 and any(m.get('title') == 'GM 回归邮件' for m in data.get('mail', {}).get('mail_list', [])) else None)(json.loads((directory / 'snapshot.json').read_text(encoding='utf-8'))), 30)
             assert any(row.get('base_avatar_id') == 1001 or row.get('avatar_id') == 1001 for row in snapshot['avatars'].get('avatar_list', [])), snapshot['avatars']
             assert next(row['num'] for row in snapshot['bag']['material_list'] if row['tid'] == 101) == 37
@@ -164,9 +185,11 @@ def main():
         assert snapshots[0]['uid'] == snapshots[1]['uid']
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
         report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'normalStops': normal_stops,
-                  'operations': len(operations), 'replayChecks': len(operations)*2, 'snapshots': snapshots,
+                  'operations': len(operations), 'replayChecks': replay_checks, 'snapshots': snapshots,
                   'operatorDataModified': False, 'clientGameplayVerified': False}
         report['bannerWindow'] = banner_window
+        report['permanentAndEventStopPersistedAcrossRestart'] = True
+        report['enableKeptOriginalWindowAndOldStopReplayDidNotDisable'] = True
         report['bannerRerunWithoutOnlinePlayer'] = True
         report['bannerNativeQueryVerified'] = True
         (ROOT / 'build/gm-native.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')

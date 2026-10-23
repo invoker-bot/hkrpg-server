@@ -62,6 +62,16 @@ class GmRoutesTest {
                     List.of(new BannerItem(23001, "于夜色中")), List.of(), true, "未配置", 0, 0));
           }
 
+          public List<CurrentBannerRow> currentBanners() {
+            return List.of(
+                new CurrentBannerRow(1001,"Normal","常驻跃迁","","","",List.of(),List.of(),
+                    "active","正在开放",0,0,true,false,true,false),
+                new CurrentBannerRow(4001,"Newbie","新手跃迁","","","",List.of(),List.of(),
+                    "active","正在开放",0,0,true,false,true,false),
+                new CurrentBannerRow(99999,"AvatarUp","自定义卡池 #99999","","","",
+                    List.of(new BannerItem(1006,"银狼")),List.of(),"stopped","已停止",1,2000000000,false,true,false,true));
+          }
+
           public Result execute(Operation op) {
             executions.incrementAndGet();
             return Result.completed("已执行 " + op.action());
@@ -90,6 +100,41 @@ class GmRoutesTest {
   void stop() {
     client.close();
     app.stop();
+  }
+
+  @Test
+  void currentBannersAreSessionProtectedAndSupportPermanentTypes() throws Exception {
+    assertEquals(401, request("GET", "/gm/api/banners/current", null, false).statusCode());
+    openSession();
+    assertEquals(200, request("GET", "/gm/api/banners/current?type=normal&state=active", null, true).statusCode());
+    assertEquals(200, request("GET", "/gm/api/banners/current?type=newbie", null, true).statusCode());
+    var normal=json(request("GET", "/gm/api/banners/current?type=normal", null, true)).getAsJsonObject("data");
+    assertEquals(1,normal.get("total").getAsInt());
+    assertEquals(1001,normal.getAsJsonArray("items").get(0).getAsJsonObject().get("id").getAsInt());
+    assertEquals(2,json(request("GET", "/gm/api/banners/current?state=active", null, true))
+        .getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(1,json(request("GET", "/gm/api/banners/current?q=银狼&state=stopped", null, true))
+        .getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(0,json(request("GET", "/gm/api/banners/current?state=stopped&offset=1", null, true))
+        .getAsJsonObject("data").getAsJsonArray("items").size());
+    assertEquals(400, request("GET", "/gm/api/banners/current?type=unknown", null, true).statusCode());
+    assertEquals(400, request("GET", "/gm/api/banners/current?state=unknown", null, true).statusCode());
+  }
+
+  @Test
+  void stoppingAndEnablingAreGlobalJournaledOperationsWithoutAHistoryTemplate() throws Exception {
+    openSession();
+    for (String action : List.of("banner-stop", "banner-enable")) {
+      String body = "{\"requestId\":\"" + UUID.randomUUID() + "\",\"action\":\"" + action
+          + "\",\"bannerId\":99999}";
+      var first = request("POST", "/gm/api/operate", body, true);
+      assertEquals(200, first.statusCode(), first.body());
+      assertEquals(first.body(), request("POST", "/gm/api/operate", body, true).body());
+      assertEquals(400, request("POST", "/gm/api/operate", body.replace(":99999}", ":0}"), true).statusCode());
+      assertEquals(400, request("POST", "/gm/api/operate", body.replace(":99999}", ":99999,\"uid\":10001}"), true).statusCode());
+    }
+    assertEquals(2, executions.get());
+    assertTrue(request("GET", "/gm/api/audit", null, true).body().contains("99999"));
   }
 
   @Test

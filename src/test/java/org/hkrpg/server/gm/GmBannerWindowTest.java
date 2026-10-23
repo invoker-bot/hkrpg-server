@@ -8,6 +8,25 @@ import emu.lunarcore.game.inventory.Inventory;
 import org.junit.jupiter.api.Test;
 
 class GmBannerWindowTest {
+  @Test
+  void disabledBannersIncludingPermanentPoolsAreHiddenAndCannotReadInventory() {
+    for (var type : java.util.List.of("Normal", "Newbie", "AvatarUp", "WeaponUp")) {
+      var banner = new com.google.gson.Gson().fromJson(
+          "{\"id\":9999,\"gachaType\":\"" + type + "\",\"beginTime\":1,\"endTime\":2000000000,"
+              + "\"rateUpItems5\":[],\"rateUpItems4\":[],\"disabled\":true}", GachaBanner.class);
+      assertFalse(banner.isActive(100), type + " must honor the persisted stop switch");
+      var service = service();
+      service.replaceBanners(java.util.List.of(banner));
+      assertEquals(0, service.toProto(null).getGachaInfoList().length(), type);
+      var sent = new java.util.ArrayList<emu.lunarcore.server.packet.BasePacket>();
+      service.doPulls(new Player() {
+        @Override public Inventory getInventory() { fail("Stopped banners must not charge inventory"); return null; }
+        @Override public void sendPacket(emu.lunarcore.server.packet.BasePacket packet) { sent.add(packet); }
+      }, 9999, 1);
+      assertEquals(1, sent.size(), type);
+    }
+  }
+
   private GachaService service() {
     return new GachaService(null) { @Override public void watch() {} };
   }

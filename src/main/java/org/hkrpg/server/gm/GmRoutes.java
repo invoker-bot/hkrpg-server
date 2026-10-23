@@ -115,6 +115,22 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/banners/current", safe(ctx -> {
+      auth.require(ctx, false);
+      String q = query(ctx, "q"), type = query(ctx, "type"), state = query(ctx, "state");
+      if (!type.isEmpty() && !Set.of("normal", "newbie", "avatarup", "weaponup").contains(type))
+        throw new GmError(400, "卡池类型不正确。");
+      if (!state.isEmpty() && !Set.of("active", "stopped", "scheduled", "expired").contains(state))
+        throw new GmError(400, "卡池状态不正确。");
+      int offset = integer(ctx, "offset", 0, 0, 1_000_000), limit = integer(ctx, "limit", 30, 1, 100);
+      var filtered = backend.currentBanners().stream()
+          .filter(b -> type.isEmpty() || type.equals(b.type().toLowerCase(Locale.ROOT)))
+          .filter(b -> state.isEmpty() || state.equals(b.state()))
+          .filter(b -> q.isEmpty() || (b.id() + " " + b.name() + " " + b.up5() + " " + b.up4())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx, Map.of("total", filtered.size(),
+          "items", filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get("/gm/api/banners/history", safe(ctx -> {
       auth.require(ctx, false);
       String version = query(ctx, "version"), q = query(ctx, "q"), type = query(ctx, "type");

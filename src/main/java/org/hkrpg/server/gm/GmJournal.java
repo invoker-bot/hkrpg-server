@@ -163,6 +163,8 @@ final class GmJournal {
       case "mail" -> "邮件：" + op.title();
       case "banner-rerun" -> "复刻 " + op.bannerKey() + " · "
           + (op.durationDays() == null ? 30 : op.durationDays()) + " 天 · 全服";
+      case "banner-stop" -> "停止卡池 #" + op.bannerId() + " · 全服";
+      case "banner-enable" -> "启用卡池 #" + op.bannerId() + " · 原排期 · 全服";
       case "command" -> op.command();
       case "heal" -> "恢复生命";
       case "refill" -> "补满秘技点";

@@ -13,10 +13,11 @@ public class GachaBanner {
     private int[] rateUpItems5;
     private int[] rateUpItems4;
     private int eventChance = 50;
+    private boolean disabled;
 
     public boolean isActive(long now) {
-        return gachaType == GachaType.Normal || gachaType == GachaType.Newbie
-                || beginTime <= now && now < endTime;
+        return !disabled && (gachaType == GachaType.Normal || gachaType == GachaType.Newbie
+                || beginTime <= now && now < endTime);
     }
 
     public GachaBanner createBanner(int id, GachaType gachaType, int beginTime, int endTime, int[] rateUpItems5, int[] rateUpItems4) {
