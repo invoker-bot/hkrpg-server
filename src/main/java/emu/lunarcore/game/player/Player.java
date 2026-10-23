@@ -901,9 +901,10 @@ public class Player implements Tickable, Syncable {
         // Sanity
         if (this.getScene() == null) return;
 
+        org.hkrpg.server.gameplay.SceneAnchors.onMove(this);
         // Check anchors. We can optimize this later.
         EntityProp nearestAnchor = this.getScene().getNearestSpring(25_000_000); // 5000^2
-        boolean isInRange = nearestAnchor != null;
+        boolean isInRange = nearestAnchor != null && nearestAnchor.getState() == PropState.CheckPointEnable;
 
         // Only heal if player isnt already in anchor range
         if (isInRange && isInRange != this.inAnchorRange) {

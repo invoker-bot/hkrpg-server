@@ -301,8 +301,10 @@ public class ResourceLoader {
 
                     try (FileReader reader = new FileReader(file)) {
                         // Parse group info
-                        GroupInfo group = gson.fromJson(reader, GroupInfo.class);
+                        var original = JsonParser.parseReader(reader).getAsJsonObject();
+                        GroupInfo group = gson.fromJson(original, GroupInfo.class);
                         group.setId(simpleGroup.getID());
+                        org.hkrpg.server.gameplay.SceneAnchors.loadTriggers(group, original);
 
                         // Load groups into the floor info
                         floor.registerGroup(index, group);

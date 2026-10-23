@@ -33,6 +33,7 @@ public final class NativeOpeningStageWinProbe {
   private int ambushUseId = 395;
   private int inclinationAcknowledgements;
   private boolean verifyAvatarProgression;
+  private boolean verifySpaceAnchors;
   private int avatarProgressNotifications;
 
   private static Object field(DynamicMessage message, String name) {
@@ -1028,15 +1029,59 @@ public final class NativeOpeningStageWinProbe {
     var team = (DynamicMessage)field(call("GetCurLineupDataCsReq"),"lineup");
     var hero = ((List<?>)field(team,"avatar_list")).stream().map(DynamicMessage.class::cast)
         .filter(a -> (Integer)field(a,"id") == 8001).findFirst().orElseThrow();
-    require((Integer)field(hero,"hp") == 7500,"Hero HP lost during settlement/reconnect");
+    require((Integer)field(hero,"hp") == (restored && verifySpaceAnchors ? 10000 : 7500),
+        "Hero HP lost during settlement/reconnect or anchor healing");
     require((Integer)field((DynamicMessage)field(hero,"sp_bar"),"cur_sp") == 2500,"Hero energy lost during settlement/reconnect");
     require((Integer)field((DynamicMessage)field(call("GetCurBattleInfoCsReq"),"battle_info"),"battle_id") == 0,
         "Saved victory resurrected a busy battle");
   }
 
+  private Map<String, Object> spaceAnchor(boolean restored) throws Exception {
+    var unlocked = (List<?>) field(call("GetUnlockTeleportCsReq", Map.of("entry_id_list", List.of(2000201)), true),
+        "unlocked_teleport_list");
+    require(unlocked.contains(2000204) == restored, "Reported anchor must be discovered, then survive restart");
+    if (!restored) {
+      call("EnterSceneCsReq", Map.of("entry_id", 2000201, "teleport_id", 2000204), false);
+      var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+      var entity = groupEntities(1).stream().filter(e -> (Integer) field(e, "inst_id") == 300007).findFirst().orElseThrow();
+      var type = protocol.clientSchema().message("SceneEntityMoveCsReq").findFieldByName("entity_motion_list").getMessageType();
+      var motion = DynamicMessage.newBuilder(type).setField(type.findFieldByName("entity_id"), field(scene, "leader_entity_id"))
+          .setField(type.findFieldByName("motion"), field(entity, "motion")).build();
+      call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(motion)), true);
+      call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(motion)), true);
+    }
+    unlocked = (List<?>) field(call("GetUnlockTeleportCsReq", Map.of("entry_id_list", List.of(2000201)), true),
+        "unlocked_teleport_list");
+    require(unlocked.contains(2000204) && !unlocked.contains(2000202), "Discovery unlocked the wrong waypoint");
+    var identifier = DynamicMessage.newBuilder(protocol.clientSchema().message("SceneIdentifier"));
+    identifier.setField(identifier.getDescriptorForType().findFieldByName("floor_id"), 20002001);
+    var maps = (List<?>) field(call("GetSceneMapInfoCsReq", Map.of("scene_identifiers", List.of(identifier.build())), true), "scene_map_info");
+    var map = maps.stream().map(DynamicMessage.class::cast).filter(m -> (Integer) field(m, "entry_id") == 2000201).findFirst().orElseThrow();
+    require(((List<?>) field(map, "unlock_teleport_list")).contains(2000204), "Map query lost activated waypoint");
+    var row = ((List<?>) field(map, "maze_prop_list")).stream().map(DynamicMessage.class::cast)
+        .filter(p -> (Integer) field(p, "group_id") == 1 && (Integer) field(p, "config_id") == 300007).findFirst().orElseThrow();
+    require((Integer) field(row, "state") == 8, "Map prop and teleport list disagree");
+    call("EnterSceneCsReq", Map.of("entry_id", 2000201, "teleport_id", 2000204), true);
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    DynamicMessage leader = null;
+    for (var value : (List<?>) field(scene, "entity_group_list"))
+      for (var e : (List<?>) field((DynamicMessage) value, "entity_list"))
+        if (field((DynamicMessage) e, "entity_id").equals(field(scene, "leader_entity_id"))) leader = (DynamicMessage) e;
+    require(leader != null, "Teleport must retain the selected protagonist");
+    var position = (DynamicMessage) field((DynamicMessage) field(leader, "motion"), "pos");
+    require(Math.abs((Integer) field(position, "x") + 69860) <= 1
+        && Math.abs((Integer) field(position, "y") + 3195) <= 1
+        && Math.abs((Integer) field(position, "z") + 62700) <= 1, "Teleport used a different authored arrival anchor");
+    var entity = groupEntities(1).stream().filter(e -> (Integer) field(e, "inst_id") == 300007).findFirst().orElseThrow();
+    require((Integer) field((DynamicMessage) field(entity, "prop"), "prop_state") == 8, "Scene reload lost activated waypoint");
+    return Map.of("mapping", 2000204, "activationPersisted", true, "mapConsistent", true,
+        "teleportVerified", true, "restored", restored);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
     verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
+    verifySpaceAnchors = control.has("spaceAnchors") && control.get("spaceAnchors").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-")) expectedFloor = 20002001;
     int uid =
         (Integer)
@@ -1069,13 +1114,14 @@ public final class NativeOpeningStageWinProbe {
             phase.equals("awakening-restart"));
       }
       var avatarProgress = verifyAvatarProgression ? avatarProgression(phase.equals("awakening-restart")) : Map.of();
+      var anchor = verifySpaceAnchors ? spaceAnchor(phase.equals("awakening-restart")) : Map.of();
       return Map.ofEntries(Map.entry("passed", true), Map.entry("uid", uid),
           Map.entry("phase", phase), Map.entry("requests", requests),
           Map.entry("awakeningDoorVerified", true), Map.entry("nextBattlePending", !verifyAwakeningBattle),
           Map.entry("awakeningBattleVerified", verifyAwakeningBattle), Map.entry("credits", credits),
           Map.entry("clientGameplayVerified", false), Map.entry("inclinationAcknowledgements", inclinationAcknowledgements),
           Map.entry("stationDestructiblesVerified", verifyAwakeningBattle),
-          Map.entry("avatarProgression", avatarProgress));
+          Map.entry("avatarProgression", avatarProgress), Map.entry("spaceAnchor", anchor));
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");

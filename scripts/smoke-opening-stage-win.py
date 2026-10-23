@@ -34,11 +34,12 @@ def main():
     parser.add_argument('--awakening-door', action='store_true', help='继续校验醒来后首个控制台、成对开门、后续战斗目标及重连/H2保存；对白为合成回执')
     parser.add_argument('--awakening-battle', action='store_true', help='继续校验女主真实出战编号结算、失败重试、防重复奖励、后续两场战斗与对白接取、生命能量及H2恢复；战报为合成数据')
     parser.add_argument('--avatar-progression', action='store_true', help='继续校验两场战斗经验、三本实际材料升级、扣费与角色同步及H2重启保存')
+    parser.add_argument('--space-anchors', action='store_true', help='继续校验收容舱段锚点靠近激活、地图查询、实际传送和H2重启；移动为合成请求')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
-    if args.avatar_progression:
+    if args.avatar_progression or args.space_anchors:
         args.awakening_battle = True
     if args.awakening_battle:
         args.awakening_door = True
@@ -85,6 +86,9 @@ def main():
     if args.avatar_progression:
         for name in ('AvatarConfig', 'AvatarPromotionConfig', 'ExpType', 'AvatarExpItemConfig', 'NPCMonsterData', 'MonsterDrop'):
             guarded.append(f'ExcelOutput/{name}.json')
+    if args.space_anchors:
+        guarded += ['Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json',
+                    'Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json']
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -154,6 +158,7 @@ def main():
                                    'awakeningDoor': args.awakening_door,
                                    'awakeningBattle': args.awakening_battle,
                                    'avatarProgression': args.avatar_progression,
+                                   'spaceAnchors': args.space_anchors,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -177,6 +182,10 @@ def main():
                         if args.avatar_progression:
                             assert snapshot['avatarProgression']['level'] == 10
                             assert snapshot['avatarProgression']['exp'] == 1512
+                        if args.space_anchors:
+                            anchor = snapshot['spaceAnchor']
+                            assert anchor['activationPersisted'] and anchor['mapConsistent'] and anchor['teleportVerified']
+                            assert anchor['mapping'] == 2000204 and anchor['restored'] == (phase == 'awakening-restart')
                         snapshots.append(snapshot)
                         time.sleep(1)
                         continue

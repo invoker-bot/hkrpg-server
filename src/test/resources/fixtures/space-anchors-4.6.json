@@ -1,0 +1,813 @@
+{
+  "sources": [
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G1.json",
+      "sha256": "49aa0e61f17e2240505872b20f644eadd734ba17a888ad83717d25111a4c2dd8",
+      "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+      "gitEqual": true,
+      "original": {
+        "$type": "RPG.GameCore.RtLevelGroupInfo",
+        "GroupName": "DefaultGroup",
+        "ConfigPrefabPath": "Level/Maze/Chapter00/Chap00_MAZ_N202_LevelArea.prefab",
+        "AreaAnchorName": "LevelArea_P20002_F20002001_G1",
+        "LoadSide": "Server",
+        "LoadOnInitial": true,
+        "ConflictIDList": [],
+        "AnchorList": [
+          {
+            "Name": "CheckPoint01",
+            "RotY": 289.0103,
+            "ID": 1,
+            "PosX": 38.13,
+            "PosY": 3.44376,
+            "PosZ": -113.94
+          },
+          {
+            "Name": "CheckPoint02",
+            "RotY": 180,
+            "ID": 2,
+            "PosX": -134.98,
+            "PosY": -0.115228,
+            "PosZ": -73.036
+          },
+          {
+            "Name": "CheckPoint03",
+            "RotY": 296.9999,
+            "ID": 3,
+            "PosX": -32.67,
+            "PosY": 18.60999,
+            "PosZ": -95.34
+          },
+          {
+            "Name": "CheckPoint04",
+            "RotY": 260,
+            "ID": 4,
+            "PosX": -69.86,
+            "PosY": -3.195002,
+            "PosZ": -62.7
+          },
+          {
+            "Name": "Anchor5",
+            "RotY": 90,
+            "ID": 5,
+            "PosX": -67.26,
+            "PosY": 18.66,
+            "PosZ": -73.23
+          },
+          {
+            "Name": "Anchor6",
+            "RotY": 88.94909,
+            "ID": 6,
+            "PosX": -64.69,
+            "PosY": 18.66,
+            "PosZ": -73.16
+          },
+          {
+            "Name": "Anchor7",
+            "RotY": 90,
+            "ID": 7,
+            "PosX": -66,
+            "PosY": -3.195,
+            "PosZ": -73.138
+          }
+        ],
+        "MonsterList": [],
+        "PropList": [
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "CampID": 4,
+            "State": "CheckPointEnable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 12,
+                "DimX": 6.8,
+                "DimY": 2,
+                "DimZ": 6.8,
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 1,
+            "AnchorID": 1,
+            "MappingInfoID": 2000201,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "CheckPoint01",
+            "ID": 300006,
+            "PosX": 47.06001,
+            "PosY": 3.4383,
+            "PosZ": -112.99
+          },
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "CampID": 4,
+            "State": "CheckPointDisable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 9,
+                "Offset": {
+                  "X": 4.5,
+                  "Y": 0,
+                  "Z": -2
+                },
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 1,
+            "AnchorID": 2,
+            "MappingInfoID": 2000202,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "CheckPoint02",
+            "ID": 300021,
+            "PosX": -138.65,
+            "PosY": -0.101097,
+            "PosZ": -75.29
+          },
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "CampID": 4,
+            "State": "CheckPointDisable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 10,
+                "Offset": {
+                  "X": 0,
+                  "Y": 1,
+                  "Z": 0
+                },
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 1,
+            "AnchorID": 3,
+            "MappingInfoID": 2000203,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "CheckPoint03",
+            "ID": 300022,
+            "PosX": -29.21,
+            "PosY": 18.61,
+            "PosZ": -93.19
+          },
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "CampID": 4,
+            "State": "CheckPointDisable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 6,
+                "Offset": {
+                  "X": 0,
+                  "Y": 1,
+                  "Z": 0
+                },
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 1,
+            "AnchorID": 4,
+            "MappingInfoID": 2000204,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "CheckPoint04",
+            "ID": 300007,
+            "PosX": -67.85,
+            "PosY": -3.195002,
+            "PosZ": -67.3
+          },
+          {
+            "PropID": 131,
+            "IsOverrideInitLevelGraph": true,
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "CustomTriggerMapV2": {},
+            "MappingInfoID": 2242,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "OverrideMapIconType": 11,
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "MazeExit",
+            "ID": 300001,
+            "PosX": -72.418,
+            "PosY": 18.818,
+            "PosZ": -72.278
+          },
+          {
+            "PropID": 131,
+            "IsOverrideInitLevelGraph": true,
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "CustomTriggerMapV2": {},
+            "MappingInfoID": 2242,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "OverrideMapIconType": 11,
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "MazeExit",
+            "ID": 300002,
+            "PosX": -72.518,
+            "PosY": -3.124,
+            "PosZ": -72.17
+          }
+        ],
+        "DistrictList": [],
+        "WaypointList": [],
+        "PathwayList": [],
+        "BattleAreaList": [
+          {
+            "EnviroProfile": "Stages/Outputs/Chapter00/EnviroProfile/Chap00_CloseView_BAT_Area_N01_Day.enviroProfile.asset",
+            "Tags": [
+              "BattleArea01"
+            ],
+            "PrefetchMainMissionList": [],
+            "PrefetchSubMissionList": [],
+            "Name": "BattleArea1",
+            "RotY": 1e-05,
+            "ID": 1,
+            "PosX": -63.75,
+            "PosZ": 51.6
+          }
+        ],
+        "NPCList": [],
+        "CrowdList": [],
+        "PedestrianList": [
+          {
+            "Members": [],
+            "Flows": [],
+            "Path": [],
+            "LineUps": [],
+            "WalkStyleOverrideList": [],
+            "Name": "Pedestrian1",
+            "ID": 1
+          }
+        ],
+        "SmartObjectList": []
+      }
+    },
+    {
+      "path": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+      "sha256": "e86c35a85bab2dd0bb3cbc0676a05c5e2839757d25f5ae99a3f78f7a5d50857e",
+      "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+      "gitEqual": true,
+      "original": {
+        "OnInitSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.AnimSetParameter",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "ParameterName": "AnchorType",
+                "ParameterType": "Int",
+                "Value": {
+                  "IsDynamic": true,
+                  "PostfixExpr": {
+                    "OpCodes": "AQAR",
+                    "FixedValues": [],
+                    "DynamicHashes": [
+                      -1104357971
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropStateChangeListenerConfig",
+                "FromState": "CheckPointDisable",
+                "ToState": "CheckPointEnable",
+                "OnChange": [
+                  {
+                    "$type": "RPG.GameCore.GenericSwitchCase",
+                    "SwitchRef": {
+                      "$type": "RPG.GameCore.SwitchRefGraphDynamicFloat",
+                      "Name": "AnchorType"
+                    },
+                    "Cases": [
+                      {
+                        "$type": "RPG.GameCore.NumberCaseContainer",
+                        "Case": {
+                          "IsDynamic": false,
+                          "FixedValue": {
+                            "Value": 0
+                          }
+                        },
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.ToastPile",
+                            "DescTextID": {
+                              "Hash": 17452269684094254257
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "$type": "RPG.GameCore.NumberCaseContainer",
+                        "Case": {
+                          "IsDynamic": false,
+                          "FixedValue": {
+                            "Value": 1
+                          }
+                        },
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.ToastPile",
+                            "DescTextID": {
+                              "Hash": 3505319184770055508
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.AdvSetupButtonListTrigger",
+                "TriggerName": "InteractTrigger",
+                "ButtonsByName": [
+                  "Interact"
+                ],
+                "ButtonConfigs": []
+              },
+              {
+                "$type": "RPG.GameCore.GenericSwitchCase",
+                "SwitchRef": {
+                  "$type": "RPG.GameCore.SwitchRefPropState"
+                },
+                "Cases": [
+                  {
+                    "$type": "RPG.GameCore.PropStateCaseContainer",
+                    "Case": "CheckPointDisable",
+                    "OnSuccess": [
+                      {
+                        "$type": "RPG.GameCore.AdvEnableButtons",
+                        "TriggerName": "InteractTrigger",
+                        "ButtonsByName": [
+                          "Interact"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "$type": "RPG.GameCore.PropStateCaseContainer",
+                    "Case": "CheckPointEnable",
+                    "OnSuccess": [
+                      {
+                        "$type": "RPG.GameCore.AdvEnableButtons",
+                        "TriggerName": "InteractTrigger",
+                        "ButtonsByName": [
+                          "Interact"
+                        ],
+                        "IsEnable": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitPropStateChange",
+                "FromAnyState": true,
+                "ToAnyState": true,
+                "OnChange": [
+                  {
+                    "$type": "RPG.GameCore.GenericSwitchCase",
+                    "SwitchRef": {
+                      "$type": "RPG.GameCore.SwitchRefPropState"
+                    },
+                    "Cases": [
+                      {
+                        "$type": "RPG.GameCore.PropStateCaseContainer",
+                        "Case": "CheckPointDisable",
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.AdvEnableButtons",
+                            "TriggerName": "InteractTrigger",
+                            "ButtonsByName": [
+                              "Interact"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "$type": "RPG.GameCore.PropStateCaseContainer",
+                        "Case": "CheckPointEnable",
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.AdvEnableButtons",
+                            "TriggerName": "InteractTrigger",
+                            "ButtonsByName": [
+                              "Interact"
+                            ],
+                            "IsEnable": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.AdvOnButtonPressed",
+                "ButtonName": "Interact",
+                "OnPressedCallback": [
+                  {
+                    "$type": "RPG.GameCore.ShowCurrentMapPage"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "ValueSource": {
+          "Values": [
+            {
+              "$type": "RPG.GameCore.SharedInt",
+              "Key": "AnchorType"
+            }
+          ]
+        },
+        "Type": "Entity",
+        "EntityEventList": []
+      }
+    },
+    {
+      "path": "Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json",
+      "sha256": "799c1bb32285e076fe2e5758561275f0a6d42e6c447fd064a836b045f72b0ca7",
+      "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+      "gitEqual": true,
+      "original": {
+        "States": [],
+        "AnimEventConfigList": [
+          "Config/ConfigAnimEvents/Prop/Audio/Prop_Chap01_RecoveryDoor_01_Audio_AnimEvent.json",
+          "Config/ConfigAnimEvents/Prop/Effect/Prop_Chap01_RecoveryDoor_01_Effect_AnimEvent.json",
+          "Config/ConfigAnimEvents/Prop/Designer/Prop_Chap01_RecoveryDoor_01_Designer_AnimEvent.json"
+        ],
+        "DisableAnimEventLayers": [
+          "Dissolve Layer"
+        ],
+        "AnimatorStateGroupEvents": [
+          {
+            "States": [
+              {
+                "Name": "Deactivated01"
+              }
+            ],
+            "OnEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerEffectList",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectList": [
+                  {
+                    "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_Idle_Disable.prefab",
+                    "ForceSimulateImmediately": false
+                  }
+                ]
+              }
+            ],
+            "OnExit": [
+              {
+                "$type": "RPG.GameCore.RemoveEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_Idle_Disable.prefab",
+                "ForceImmediateFadeOut": false
+              }
+            ]
+          },
+          {
+            "States": [
+              {
+                "Name": "Activing01"
+              }
+            ],
+            "OnEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerEffectList",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectList": [
+                  {
+                    "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_TriggerEnable.prefab",
+                    "ForceSimulateImmediately": false
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_common_recoverydoor_trigger"
+                }
+              }
+            ],
+            "OnExit": [
+              {
+                "$type": "RPG.GameCore.RemoveEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_TriggerEnable.prefab",
+                "ForceImmediateFadeOut": false
+              }
+            ]
+          },
+          {
+            "States": [
+              {
+                "Name": "Activated01"
+              }
+            ],
+            "OnEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerEffectList",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectList": [
+                  {
+                    "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_Idle_Enable.prefab",
+                    "ForceSimulateImmediately": false
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_common_recoverydoor_idle"
+                }
+              }
+            ],
+            "OnExit": [
+              {
+                "$type": "RPG.GameCore.RemoveEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_Idle_Enable.prefab",
+                "ForceImmediateFadeOut": false
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_common_recoverydoor_idle_stop"
+                }
+              }
+            ]
+          },
+          {
+            "States": [
+              {
+                "Name": "Hidden01"
+              }
+            ],
+            "OnEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerEffectList",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectList": [
+                  {
+                    "EffectPath": "Effects/Eff_Prefab/Eff_Scene/InteractiveProp/Eff_Chap04_Prop_RecoveryDoor_01_Loop01_Lod0.prefab",
+                    "ForceSimulateImmediately": false
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_amphoreus_prop_recoverydoor_small_idle"
+                }
+              }
+            ],
+            "OnExit": [
+              {
+                "$type": "RPG.GameCore.RemoveEffect",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectPath": "Effects/Eff_Prefab/Eff_Scene/InteractiveProp/Eff_Chap04_Prop_RecoveryDoor_01_Loop01_Lod0.prefab",
+                "ForceImmediateFadeOut": false
+              },
+              {
+                "$type": "RPG.GameCore.TriggerEffectList",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectList": [
+                  {
+                    "EffectPath": "Effects/Eff_Prefab/Eff_Scene/InteractiveProp/Eff_Chap04_Prop_RecoveryDoor_01_Open01_Lod0.prefab",
+                    "ForceSimulateImmediately": false
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_amphoreus_prop_recoverydoor_small_idle_stop"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_common_recoverydoor_trigger"
+                }
+              }
+            ]
+          },
+          {
+            "States": [
+              {
+                "Name": "Deactivated01"
+              },
+              {
+                "Name": "Activating01"
+              },
+              {
+                "Name": "Activated01"
+              }
+            ],
+            "OnEnter": [
+              {
+                "$type": "RPG.GameCore.TriggerEffectList",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "EffectList": [
+                  {
+                    "EffectPath": "Effects/Eff_Prefab/Eff_Scene/Interactive Object/Eff_Common_MAZ_CheckPoint_Idle_Disable02.prefab",
+                    "AttachPoint": "Root",
+                    "PositionOffset": {
+                      "X": 0,
+                      "Y": -0.3,
+                      "Z": 0
+                    },
+                    "ForceSimulateImmediately": false
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "DefaultLevelGraphPath": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+        "PropButtonConfigs": [
+          {
+            "ID": "Interact",
+            "ButtonIcon": {
+              "Value": "SpriteOutput/TalkIcon/ChatIcon.png"
+            },
+            "ButtonText": {
+              "Value": "PropName_101"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "prop": {
+    "ID": 101,
+    "PropType": "PROP_SPRING",
+    "IsMapContent": true,
+    "PropName": {
+      "Hash": 7667535464665530603
+    },
+    "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+    "BoardShowList": [],
+    "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_RecoveryDoor_01_Entity.json",
+    "DamageTypeList": [],
+    "MiniMapIconType": 2,
+    "MiniMapStateIcons": [
+      {
+        "State": "CheckPointDisable",
+        "IconID": 10,
+        "Color": ""
+      },
+      {
+        "State": "CheckPointEnable",
+        "IconID": 8,
+        "Color": ""
+      }
+    ],
+    "JsonPath": "Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json",
+    "PropStateList": [
+      "CheckPointDisable",
+      "CheckPointEnable"
+    ],
+    "PerformanceType": "A",
+    "HasRendererComponent": true,
+    "LodPriority": 3
+  },
+  "repository": "https://github.com/DimbreathBot/TurnBasedGameData.git",
+  "propSource": {
+    "path": "ExcelOutput/MazeProp.json",
+    "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+    "sha256": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418",
+    "gitBlobSHA256": "dc806a0172350f18e39d755040906652af05f645f107690072808de9987c021d",
+    "key": "ID",
+    "id": 101
+  }
+}
