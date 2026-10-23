@@ -76,6 +76,8 @@ def main():
     if args.awakening_door:
         guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000201').glob('*.json')]
         guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G{group}.json' for group in (3, 4, 5, 16)]
+    if args.awakening_battle:
+        guarded += ['Config/Level/Mission/1000201/Act/Act100020107.json']
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -156,6 +158,7 @@ def main():
                         assert snapshot['passed'] and snapshot['awakeningDoorVerified']
                         assert snapshot['nextBattlePending'] == (not args.awakening_battle)
                         assert snapshot['awakeningBattleVerified'] == args.awakening_battle
+                        assert snapshot['inclinationAcknowledgements'] == (4 if args.awakening_battle else 0)
                         if args.awakening_battle and phase == 'awakening-restart':
                             previous = next(row for row in snapshots if row['phase'] == 'awakening-reconnect')
                             assert snapshot['credits'] == previous['credits'], 'Restart duplicated/lost battle rewards'

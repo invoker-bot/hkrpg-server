@@ -31,6 +31,7 @@ public final class NativeOpeningStageWinProbe {
   private int rewardHints;
   private boolean ambush;
   private int ambushUseId = 395;
+  private int inclinationAcknowledgements;
 
   private static Object field(DynamicMessage message, String name) {
     return message.getField(
@@ -922,17 +923,37 @@ public final class NativeOpeningStageWinProbe {
         "Settlement did not release the battle busy flag");
   }
 
+  private void awakeningDialogueChoices(boolean completed) throws Exception {
+    int state = completed ? 2 : 1;
+    objective(100020107, state);
+    int before = credits;
+    // Original Act100020107 options; repeated receipt must only echo the actual sentence.
+    for (int sentence : new int[] {100020242, 100020242, 100020244, 100020246}) {
+      var reply = call("SelectInclinationTextCsReq", Map.of("talk_sentence_id", sentence), true);
+      require((Integer) field(reply, "talk_sentence_id") == sentence, "Dialogue sentence echo lost");
+      inclinationAcknowledgements++;
+      objective(100020107, state);
+      require(credits == before, "Dialogue selection unexpectedly granted rewards");
+    }
+    var heartbeat = call("PlayerHeartBeatCsReq", Map.of("client_time_ms", 123456789L), true);
+    require((Long) field(heartbeat, "client_time_ms") == 123456789L,
+        "Dialogue acknowledgement did not preserve the connection");
+  }
+
   private void awakeningBattleFlow(boolean restored) throws Exception {
     if (!restored) {
       awakeningBattle(16,200001,false);
       objective(100020105,1);
       awakeningBattle(16,200001,true);
       objective(100020105,2);objective(100020106,1);
-      for (int id : new int[]{100020106,100020107})
+      for (int id : new int[]{100020106,100020107}) {
+        if (id == 100020107) awakeningDialogueChoices(false);
         call("FinishTalkMissionCsReq",Map.of("sub_mission_id",id,"talk_str","Mission_"+id),true);
+      }
       objective(100020131,1);
       awakeningBattle(5,200002,true);
     }
+    if (restored) awakeningDialogueChoices(true);
     for (int id : new int[]{100020104,100020105,100020106,100020107,100020131}) objective(id,2);
     objective(100020109,1);
     var team = (DynamicMessage)field(call("GetCurLineupDataCsReq"),"lineup");
@@ -975,7 +996,8 @@ public final class NativeOpeningStageWinProbe {
       if (verifyAwakeningBattle) awakeningBattleFlow(phase.equals("awakening-restart"));
       return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
           "awakeningDoorVerified", true, "nextBattlePending", !verifyAwakeningBattle,
-          "awakeningBattleVerified", verifyAwakeningBattle, "credits",credits,"clientGameplayVerified", false);
+          "awakeningBattleVerified", verifyAwakeningBattle, "credits",credits,"clientGameplayVerified", false,
+          "inclinationAcknowledgements", inclinationAcknowledgements);
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");

@@ -106,6 +106,9 @@ public final class ProtocolBridge {
           // CN4.6 TalkModule consumes list field 2 and FirstNpcTalkInfo id 1 / is_meet 3.
           // The core has no completed-meeting flag; preserve its default false, never invent one.
           Map.entry("GetFirstTalkNpcScRsp.npc_talk_info_list", "npc_meet_status_list"),
+          // Honey fe00bdb CmdTalkEventType and handler: sentence request 4, echoed reply 11.
+          Map.entry("SelectInclinationTextCsReq.inclination_text_id", "talk_sentence_id"),
+          Map.entry("SelectInclinationTextScRsp.inclination_text_id", "talk_sentence_id"),
           // Named CN4.6 field 14; Honey fe00bdb ChallengePeak snapshot uses CurrentPeakGroupId.
           Map.entry("GetChallengePeakDataScRsp.cur_challenge_peak_group_id", "current_peak_group_id"),
           // Honey fe00bdb JukeBox packet and pinned native MusicAlbumModule callback.
