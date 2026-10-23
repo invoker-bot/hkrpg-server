@@ -25,3 +25,11 @@
 修正后执行 `scripts/build.ps1 -TestForks 8`，完整构建通过 589 类 / 15,054 项测试，失败、错误、跳过均为 0，用时 21 分 2 秒。以提交 `1fb16b9` 为基线固定源码，保留已提交的无密钥 GM 功能，核验 2,740 份源码和资源输入；未手改生成协议类。
 
 同一最终产物通过 507 次原生 UDP/KCP 请求、10 个会话、6 次正常停服及 5 次同 UID H2 重启。Dispatch 两轮启动和账号恢复冒烟也通过。最终 JAR SHA256 为 `1411787e0b37925bd54654189f04ca002372ffe0a9f282154e6dfcddce073c5e`，与候选镜像内产物一致；87,472 份原资源与运营清单一致。证据为 `build-proof.json`、`native-direct.json`、`smoke-server.log` 和 `image-proof.json`。这些通过项仍是服务端和合成协议验证，真实客户端登录、战斗结算及对白接续待用户复测。
+
+## 服务发布
+
+修复提交 `ec85b51` 于 2026-10-24 02:59（UTC+8）部署。仅正常停止并重建 `hkrpg-local-server-1`，退出码 143；12 份当前数据文件在停服后完整备份并逐项校验，备份位于 `.local/backups/after-battle-20261024-025917/`。无密钥 GM 版本已删除的密钥文件没有重新生成。
+
+运行镜像 `sha256:65fd305d0cf6b1bb6e8a5a9d484a94a906b77d5e397f5df2bbee19befd966f43` 内 JAR 与上述最终测试产物一致；Compose、CN/OS Dispatch、UDP/KCP 心跳和健康检查通过。运营配置与资源清单保持。更新后的只读检查确认 UID 10001 的 42 项完成记录及原完成时间、女主选择、7 份背包/角色文档，以及已有机关、宝箱、拾取和奖励记录均保留。目标 100020105 仍待玩家完成，没有代替玩家提交战斗结果。
+
+发布证据为 `deployment.json`、`compose-before.json`、`compose-after.json`、`live-before-deploy.json`、`live-after-deploy.json` 和 `live-preservation-proof.json`。当前客户端七个关键文件与原入口清单一致；旧登录等待记录未留下失败响应编号，不能据此解释 `1001_3`。已启用限时、限量、排除认证正文的只读诊断，等待新客户端会话确认登录及真实结算。
