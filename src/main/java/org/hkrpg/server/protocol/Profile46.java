@@ -9,7 +9,7 @@ import emu.lunarcore.server.packet.*;
 import emu.lunarcore.server.packet.send.PacketGetBasicInfoScRsp;
 import java.io.IOException;
 
-/** The supported subset is one explicit initial character choice, not later profile changes. */
+/** Initial nickname confirmation and explicit character selection are separate client steps. */
 public final class Profile46 {
   private record Choice(String nickname, int gender, boolean modify) {}
 
@@ -42,10 +42,13 @@ public final class Profile46 {
         return true;
       }
       var choice = read(bytes);
-      var result =
-          choice == null || !choice.modify() || choice.gender() < 1 || choice.gender() > 2
-              ? Retcode.REQ_PARA_INVALID
-              : player.setInitialProfile(choice.nickname(), choice.gender() == 1 ? 8001 : 8002);
+      Retcode result = Retcode.REQ_PARA_INVALID;
+      if (choice != null) {
+        if (!choice.modify() && choice.gender() == 0)
+          result = player.setInitialNickname(choice.nickname());
+        else if (choice.modify() && choice.gender() >= 1 && choice.gender() <= 2)
+          result = player.setInitialProfile(choice.nickname(), choice.gender() == 1 ? 8001 : 8002);
+      }
       var response = builder(session, "SetPlayerInfoScRsp");
       set(response, "retcode", result.getVal());
       set(response, "is_modify", choice != null && choice.modify());
@@ -81,7 +84,9 @@ public final class Profile46 {
           nickname = input.readStringRequireUtf8();
         } else return null;
       }
-      return modifySeen && genderSeen && nameSeen && input.isAtEnd()
+      // Proto3 omits false/zero fields in the nickname-only confirmation request.
+      // Presence still guards duplicate wire fields; neither default confirms a character.
+      return nameSeen && input.isAtEnd()
           ? new Choice(nickname, gender, modify)
           : null;
     } catch (IOException invalid) {

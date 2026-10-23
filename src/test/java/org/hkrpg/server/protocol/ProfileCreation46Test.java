@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import org.hkrpg.server.gameplay.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ProfileCreation46Test {
   static final int MAIN = 19996925, SUB = 199969251;
@@ -26,8 +28,10 @@ class ProfileCreation46Test {
   static class Actor extends Player {
     final List<String> saves = new ArrayList<>();
     final List<Integer> notifications = new ArrayList<>();
+    boolean failSave;
 
     public void save() {
+      if (failSave) throw new IllegalStateException("profile save failed");
       saves.add(getName() + ":" + getGender() + ":" + getCurAvatarPathId(8001));
     }
 
@@ -140,6 +144,122 @@ class ProfileCreation46Test {
   void submit(int command, byte[] bytes) throws Exception {
     assertTrue(VersionedPacketHandler.handle(session, command, bytes));
     assertTrue(session.response.getUnknownFields().asMap().isEmpty());
+  }
+
+  byte[] nicknameOnly(String nickname) {
+    var request = Gameplay46.builder(session, "SetPlayerInfoCsReq");
+    Gameplay46.set(request, "nickname", nickname);
+    return request.build().toByteArray();
+  }
+
+  @Test
+  void capturedNicknameConfirmationDoesNotRequireGenderOrCompleteCharacterChoice() throws Exception {
+    assertEquals(Retcode.SUCC, session.actor.getMissionManager().accept(MAIN));
+    session.actor.saves.clear();
+    session.actor.notifications.clear();
+    // Actual CN 4.6 request on 2026-10-23: nickname field 12 only, defaults omitted.
+    submit(41, HexFormat.of().parseHex("6209e5858be58ab3e5beb7"));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertEquals(false, Gameplay46.value(session.response, "is_modify"));
+    assertEquals("克劳德", session.actor.getName());
+    assertEquals(PlayerGender.GENDER_MAN, session.actor.getGender());
+    assertEquals(8001, session.actor.getCurAvatarPathId(8001));
+    assertFalse(session.actor.hasCreatedCharacter());
+    assertEquals(0, session.actor.getMissionManager().sub(SUB).getProgress());
+    assertEquals(List.of("克劳德:GENDER_MAN:8001"), session.actor.saves);
+    assertEquals(List.of(CmdId.PlayerSyncScNotify), session.actor.notifications);
+    submit(80, new byte[0]);
+    assertEquals(false, Gameplay46.value(session.response, "is_gender_set"));
+  }
+
+  @Test
+  void explicitZeroDefaultsHaveTheSameNicknameOnlyMeaning() throws Exception {
+    submit(41, new byte[] {24, 0, 80, 0, 98, 1, 65});
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertEquals("A", session.actor.getName());
+    assertFalse(session.actor.hasCreatedCharacter());
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {1, 2})
+  void nicknameThenExplicitGenderCompletesOnlyAtTheSecondStep(int gender) throws Exception {
+    assertEquals(Retcode.SUCC, session.actor.getMissionManager().accept(MAIN));
+    submit(41, nicknameOnly("开拓者"));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    session.actor.getMissionManager().refresh();
+    assertEquals(0, session.actor.getMissionManager().sub(SUB).getProgress());
+    submit(41, choose("开拓者", gender, true));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertEquals(true, Gameplay46.value(session.response, "is_modify"));
+    assertEquals(gender == 1 ? 8001 : 8002, session.actor.getCurAvatarPathId(8001));
+    assertTrue(session.actor.hasCreatedCharacter());
+    assertEquals(1, session.actor.getMissionManager().sub(SUB).getProgress());
+  }
+
+  @Test
+  void nicknameRetriesAreIdempotentButCannotRenameAnAlreadyConfirmedIdentity() throws Exception {
+    submit(41, nicknameOnly("开拓者"));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    int saved = session.actor.saves.size();
+    submit(41, nicknameOnly("开拓者"));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertEquals(saved, session.actor.saves.size());
+    submit(41, choose("开拓者", 2, true));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    saved = session.actor.saves.size();
+    submit(41, nicknameOnly("开拓者"));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    submit(41, nicknameOnly("different"));
+    assertNotEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertEquals("开拓者", session.actor.getName());
+    assertEquals(8002, session.actor.getCurAvatarPathId(8001));
+    assertEquals(saved, session.actor.saves.size());
+  }
+
+  @Test
+  void invalidNicknameOnlyRequestsCannotChangeIdentity() throws Exception {
+    for (byte[] body : new byte[][] {
+        nicknameOnly(""), nicknameOnly("  "), nicknameOnly("a\nb"), nicknameOnly("x".repeat(33)),
+        {24, 1, 98, 1, 65}, {80, 2, 98, 1, 65}, {98, 1, 65, 98, 1, 66},
+        {24, 0, 24, 0, 98, 1, 65}, {80, 0, 80, 0, 98, 1, 65},
+        {98, 1, (byte) 255}, {98, 1, 65, 112, 0}, new byte[257]
+    }) {
+      submit(41, body);
+      assertNotEquals(0, Gameplay46.number(session.response, "retcode"));
+      assertEquals("Before", session.actor.getName());
+      assertFalse(session.actor.hasCreatedCharacter());
+    }
+    assertTrue(session.actor.saves.isEmpty());
+    assertTrue(session.actor.notifications.isEmpty());
+  }
+
+  @Test
+  void failedNicknameSaveRollsBackBeforeAnySuccessNotification() throws Exception {
+    session.actor.failSave = true;
+    assertThrows(IllegalStateException.class, () -> submit(41, nicknameOnly("开拓者")));
+    assertEquals("Before", session.actor.getName());
+    assertFalse(session.actor.hasCreatedCharacter());
+    assertTrue(session.actor.notifications.isEmpty());
+    session.actor.failSave = false;
+    submit(41, nicknameOnly("开拓者"));
+    assertEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertEquals(1, session.actor.saves.size());
+  }
+
+  @Test
+  void failedCharacterSaveRollsBackPathIdentityAndCompletionMarker() throws Exception {
+    assertEquals(Retcode.SUCC, session.actor.getMissionManager().accept(MAIN));
+    session.actor.notifications.clear();
+    session.actor.failSave = true;
+    assertThrows(IllegalStateException.class, () -> submit(41, choose("开拓者", 2, true)));
+    assertEquals("Before", session.actor.getName());
+    assertEquals(PlayerGender.GENDER_MAN, session.actor.getGender());
+    assertEquals(8001, session.actor.getCurAvatarPathId(8001));
+    assertEquals(8001, session.actor.getAvatarById(8001).getBattleAvatarId());
+    assertNull(session.actor.getAvatars().getMultiPathById(8002).getAvatar());
+    assertFalse(session.actor.hasCreatedCharacter());
+    assertEquals(0, session.actor.getMissionManager().sub(SUB).getProgress());
+    assertTrue(session.actor.notifications.isEmpty());
   }
 
   @Test

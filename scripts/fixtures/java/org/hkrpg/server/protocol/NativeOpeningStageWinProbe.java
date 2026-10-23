@@ -25,6 +25,7 @@ public final class NativeOpeningStageWinProbe {
   private Ukcp channel;
   private int requests;
   private int credits;
+  private String loginNickname;
   private int rewardHints;
   private boolean ambush;
   private int ambushUseId = 395;
@@ -705,7 +706,7 @@ public final class NativeOpeningStageWinProbe {
         "Unlock must not prematurely open the associated door");
   }
 
-  private void stellaronConsole(boolean restored) throws Exception {
+  private void stellaronConsole(boolean restored, boolean characterChoice) throws Exception {
     if (!restored) {
       var locked = doors().get(300018);
       require((Integer) field((DynamicMessage) field(locked, "prop"), "prop_state") == 2,
@@ -724,7 +725,7 @@ public final class NativeOpeningStageWinProbe {
       require((Integer) field(response, "prop_state") == 1, "Stellaron interaction must return Open");
     }
     objective(100010126, 2);
-    objective(100010133, 1);
+    objective(100010133, restored && characterChoice ? 2 : 1);
     openingParty(false);
     var props = doors();
     require((Integer) field((DynamicMessage) field(props.get(300018), "prop"), "prop_state") == 1,
@@ -734,6 +735,42 @@ public final class NativeOpeningStageWinProbe {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     call("InteractPropCsReq", Map.of("prop_entity_id", field(props.get(300018), "entity_id"),
         "interact_id2", 1010, "interact_id", field(scene, "interact_id")), false);
+  }
+
+  private void characterChoice(String phase) throws Exception {
+    boolean naming = phase.equals("doors-restart");
+    boolean confirming = phase.equals("barriers-reconnect");
+    byte[] capturedNickname = HexFormat.of().parseHex("6209e5858be58ab3e5beb7");
+    if (naming) {
+      call("FinishTalkMissionCsReq", Map.of("talk_str", "Mission_100010133"), true);
+      objective(100010134, 1);
+      var named = callRaw("SetPlayerInfoCsReq", capturedNickname, true);
+      require(Boolean.FALSE.equals(field(named, "is_modify")), "Naming must not confirm a character");
+    } else require("克劳德".equals(loginNickname), "Nickname was not saved across sessions/restart");
+    if (naming || confirming) {
+      objective(100010134, 1);
+      require(Boolean.FALSE.equals(field(call("GetBasicInfoCsReq"), "is_gender_set")),
+          "Nickname confirmation must not set gender or finish character selection");
+    }
+    callRaw("SetPlayerInfoCsReq", capturedNickname, true);
+    if (naming) return;
+    var gender = protocol.clientSchema().message("SetPlayerInfoCsReq")
+        .findFieldByName("gender").getEnumType();
+    var selected = call("SetPlayerInfoCsReq", Map.of("nickname", "克劳德", "is_modify", true,
+        "gender", gender.findValueByNumber(2)), true);
+    require(Boolean.TRUE.equals(field(selected, "is_modify")), "Explicit character confirmation lost");
+    require(((Descriptors.EnumValueDescriptor) field(selected, "cur_avatar_path")).getNumber() == 8002,
+        "Female path was not selected/restored");
+    var basic = call("GetBasicInfoCsReq");
+    require(Boolean.TRUE.equals(field(basic, "is_gender_set")), "Confirmed character was not saved");
+    require((Integer) field(basic, "gender") == 2,
+        "Gender was not selected/restored");
+    objective(100010134, 2);
+    objective(100010136, 1);
+    call("SetPlayerInfoCsReq", Map.of("nickname", "conflicting", "is_modify", true,
+        "gender", gender.findValueByNumber(1)), false);
+    call("SetPlayerInfoCsReq", Map.of("nickname", "conflicting"), false);
+    openingParty(false);
   }
 
   private Map<String, Object> execute(JsonObject control) throws Exception {
@@ -751,12 +788,14 @@ public final class NativeOpeningStageWinProbe {
                         1),
                     true),
                 "uid");
-    credits =
-        (Integer) field((DynamicMessage) field(call("PlayerLoginCsReq"), "basic_info"), "scoin");
+    var loginBasic = (DynamicMessage) field(call("PlayerLoginCsReq"), "basic_info");
+    credits = (Integer) field(loginBasic, "scoin");
+    loginNickname = (String) field(loginBasic, "nickname");
     call("PlayerLoginFinishCsReq");
     String phase = control.get("phase").getAsString();
     boolean restoredBarriers = phase.startsWith("barriers-");
     boolean verifyStellaron = control.has("stellaronConsole") && control.get("stellaronConsole").getAsBoolean();
+    boolean verifyCharacter = control.has("characterChoice") && control.get("characterChoice").getAsBoolean();
     ambush = control.has("ambush") && control.get("ambush").getAsBoolean();
     openingParty(restoredBarriers && !verifyStellaron);
     boolean verifyDoors = control.has("doors") && control.get("doors").getAsBoolean();
@@ -825,7 +864,10 @@ public final class NativeOpeningStageWinProbe {
         && control.get("scriptedUnlock").getAsBoolean();
     if (verifyBarriers) corridorBarriers(restoredBarriers, verifyScriptedUnlock, restoredBarriers && verifyStellaron);
     if (verifyScriptedUnlock) scriptedDoorUnlock(restoredBarriers, restoredBarriers && verifyStellaron);
-    if (verifyScriptedUnlock && verifyStellaron) stellaronConsole(restoredBarriers);
+    if (verifyScriptedUnlock && verifyStellaron) {
+      stellaronConsole(restoredBarriers, verifyCharacter);
+      if (verifyCharacter) characterChoice(phase);
+    }
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -860,6 +902,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("sceneActionAdmissionVerified", ambush && verifyBarriers && !restoredBarriers);
     result.put("scriptedDoorUnlockVerified", verifyScriptedUnlock);
     result.put("stellaronConsoleVerified", verifyScriptedUnlock && verifyStellaron);
+    result.put("characterChoiceVerified", verifyScriptedUnlock && verifyStellaron && verifyCharacter);
     return result;
   }
 

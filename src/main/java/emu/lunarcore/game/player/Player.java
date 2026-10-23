@@ -540,10 +540,42 @@ public class Player implements Tickable, Syncable {
         return Integer.valueOf(8001).equals(chosen) || Integer.valueOf(8002).equals(chosen);
     }
 
+    private static boolean isValidInitialNickname(String nickname) {
+        return nickname != null && !nickname.isBlank() && nickname.length() <= 32
+                && nickname.codePoints().noneMatch(Character::isISOControl);
+    }
+
+    private boolean isInitialProfileBusy() {
+        return isInBattle() || getInstance() != null || getGameplay().getTrialRun() != null
+                || getGameplay().getStoryLines().isTransitionPending()
+                || getGameplay().getRogue().isInside() || getGameplay().getParkourVenue().inside()
+                || getGameplay().getCurrentMissionRaid() != 0;
+    }
+
+    /** Naming the receptacle does not confirm its gender or finish CreateCharacter. */
+    public Retcode setInitialNickname(String nickname) {
+        synchronized (this) {
+            if (!isValidInitialNickname(nickname)) return Retcode.REQ_PARA_INVALID;
+            if (nickname.equals(name)) return Retcode.SUCC;
+            if (getGameplay().getStoryValues().containsKey("profile:character-path"))
+                return Retcode.GENDER_ERROR;
+            if (isInitialProfileBusy()) return Retcode.SYSTEM_BUSY;
+            var previousName = name;
+            this.name = nickname;
+            try {
+                save();
+            } catch (RuntimeException failure) {
+                this.name = previousName;
+                throw failure;
+            }
+            sendPacket(new PacketPlayerSyncScNotify(this));
+            return Retcode.SUCC;
+        }
+    }
+
     public Retcode setInitialProfile(String nickname, int pathId) {
         synchronized (this) {
-            if (nickname == null || nickname.isBlank() || nickname.length() > 32
-                    || nickname.codePoints().anyMatch(Character::isISOControl)
+            if (!isValidInitialNickname(nickname)
                     || pathId != 8001 && pathId != 8002) return Retcode.REQ_PARA_INVALID;
             if (getGameplay().getStoryValues().containsKey("profile:character-path")) {
                 if (!Objects.equals(getGameplay().getStoryValues().get("profile:character-path"), pathId)
@@ -552,11 +584,7 @@ public class Player implements Tickable, Syncable {
                 getMissionManager().refresh();
                 return Retcode.SUCC;
             }
-            if (isInBattle() || getInstance() != null || getGameplay().getTrialRun() != null
-                    || getGameplay().getStoryLines().isTransitionPending()
-                    || getGameplay().getRogue().isInside() || getGameplay().getParkourVenue().inside()
-                    || getGameplay().getCurrentMissionRaid() != 0)
-                return Retcode.SYSTEM_BUSY;
+            if (isInitialProfileBusy()) return Retcode.SYSTEM_BUSY;
             var config = GameData.getMultiplePathAvatarExcelMap().get(pathId);
             var path = getAvatars().getMultiPathById(pathId);
             var avatar = getAvatars().getAvatars().get(8001);
@@ -566,15 +594,31 @@ public class Player implements Tickable, Syncable {
                     || path.getOwner() != this || path.getExcel() == null || path.getData() == null
                     || path.getData().getBaseAvatar() != path || path.getExcel().getId() != pathId
                     || avatar == null || avatar.getOwner() != this || avatar.getAvatarId() != 8001
+                    || avatar.getMultiPath() == null
                     || path.getAvatar() != null && path.getAvatar() != avatar)
                 return Retcode.GENDER_ERROR;
+            var previousPath = avatar.getMultiPath();
+            var previousName = name;
+            var previousGender = gender;
+            var hadPath = getCurAvatarPaths().containsKey(8001);
+            var previousPathId = getCurAvatarPaths().get(8001);
             avatar.setMultiPath(path);
             this.gender = expected;
             this.name = nickname;
             getCurAvatarPaths().put(8001, pathId);
             getGameplay().getStoryValues().put("profile:character-path", pathId);
             // Name, gender, selected path and confirmation live in the same player document.
-            save();
+            try {
+                save();
+            } catch (RuntimeException failure) {
+                avatar.setMultiPath(previousPath);
+                this.name = previousName;
+                this.gender = previousGender;
+                if (hadPath) getCurAvatarPaths().put(8001, previousPathId);
+                else getCurAvatarPaths().remove(8001);
+                getGameplay().getStoryValues().remove("profile:character-path");
+                throw failure;
+            }
             getMissionManager().refresh();
             sendPacket(new PacketAvatarPathChangedNotify(avatar, path));
             sendPacket(new PacketPlayerSyncScNotify(avatar, this));

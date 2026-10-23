@@ -1,3 +1,5 @@
+`Profile46` 将初始昵称请求的省略默认字段与明确选角分开：昵称只同步基本资料，性别确认才提交已有命途与 CreateCharacter 标记；保存失败回退内存状态。证据见[代号确认说明](character-choice-nickname-4.6.md)。
+
 `StoryDoors` 还识别只改变自身状态的 `Console01_OpenDoor_03`，按已接取目标及无条件启用/静态对白图恢复就绪；自身收据与成对门收据分别处理，原始未使用的共享值不产生门联动。证据见[星核控制台说明](stellaron-console-4.6.md)。
 
 `StoryDoors` 区分剧情脚本声明的 Locked→Closed 解锁与 1010 开门；解锁只提交控制台状态，任务回调中断可凭同源保存记录恢复。证据与边界见[剧情解锁黑屏说明](story-door-unlock-black-screen-4.6.md)。

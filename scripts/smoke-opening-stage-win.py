@@ -29,8 +29,11 @@ def main():
     parser.add_argument('--ambush', action='store_true', help='回放怪物空命中回调、实际伏击入战和胜败结算；包含屏障检查')
     parser.add_argument('--scripted-unlock', action='store_true', help='校验走廊后续战斗、黑屏阶段控制台解锁、剧情接续及重连/H2恢复')
     parser.add_argument('--stellaron-console', action='store_true', help='继续到星核控制台，校验任务解锁、交互、后续演出接取及重连/H2恢复；对话为合成回执')
+    parser.add_argument('--character-choice', action='store_true', help='继续校验真实昵称请求、重连后明确选角及选角后H2重启；不播放客户端演出')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.character_choice:
+        args.stellaron_console = True
     if args.stellaron_console:
         args.scripted_unlock = True
     if args.ambush or args.scripted_unlock:
@@ -115,7 +118,7 @@ def main():
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
                                    'ambush': args.ambush, 'scriptedUnlock': args.scripted_unlock,
-                                   'stellaronConsole': args.stellaron_console}
+                                   'stellaronConsole': args.stellaron_console, 'characterChoice': args.character_choice}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -136,6 +139,7 @@ def main():
                     assert snapshot['monsterAmbushVerified'] == (args.ambush and phase == 'doors-restart')
                     assert snapshot['scriptedDoorUnlockVerified'] == (args.scripted_unlock and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     assert snapshot['stellaronConsoleVerified'] == (args.stellaron_console and (phase == 'doors-restart' or phase.startswith('barriers-')))
+                    assert snapshot['characterChoiceVerified'] == (args.character_choice and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:
