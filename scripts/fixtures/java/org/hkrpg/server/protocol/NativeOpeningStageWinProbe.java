@@ -773,6 +773,48 @@ public final class NativeOpeningStageWinProbe {
     openingParty(false);
   }
 
+  private void openingTransfer(boolean restored) throws Exception {
+    if (!restored) {
+      call("FinishTalkMissionCsReq", Map.of("talk_str", "Mission_100010136"), true);
+      objective(100010136, 2);
+      objective(100010120, 2);
+      objective(100010121, 1);
+      call("EnterSceneCsReq", Map.of("entry_id", 200020102), false);
+      call("EnterSceneCsReq", Map.of("entry_id", 2000201), true);
+    }
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    require((Integer) field(scene, "plane_id") == 20002
+        && (Integer) field(scene, "floor_id") == 20002001
+        && (Integer) field(scene, "entry_id") == 2000201, "Opening transfer location lost");
+    objective(100010136, 2);
+    objective(100010120, 2);
+    objective(100010121, 2);
+    objective(100020101, 1);
+    var team = (DynamicMessage) field(call("GetCurLineupDataCsReq"), "lineup");
+    var avatars = (List<?>) field(team, "avatar_list");
+    require(avatars.size() == 1 && (Integer) field((DynamicMessage) avatars.getFirst(), "id") == 8001,
+        "Transfer must keep the owned Trailblazer base ID");
+    boolean selectedActor = false;
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var entityRaw : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) entityRaw;
+        if (!entity.hasField(entity.getDescriptorForType().findFieldByName("actor"))) continue;
+        var actor = (DynamicMessage) field(entity, "actor");
+        require((Integer) field(actor, "base_avatar_id") == 8001,
+            "Transfer scene must retain the formal actor's base ID");
+        selectedActor = true;
+      }
+    require(selectedActor, "Transferred scene must contain its selected actor");
+    var owned = (List<?>) field(call("GetAvatarDataCsReq", Map.of("is_get_all", true), true), "avatar_list");
+    require(owned.size() == 1
+        && (Integer) field((DynamicMessage) owned.getFirst(), "base_avatar_id") == 8001
+        && (Integer) field((DynamicMessage) owned.getFirst(), "cur_multi_path_avatar_type") == 8002,
+        "Transfer must preserve the female path separately from the base avatar ID");
+    require(Boolean.TRUE.equals(field(call("GetBasicInfoCsReq"), "is_gender_set")),
+        "Transfer lost character creation");
+    require("克劳德".equals(loginNickname), "Transfer lost selected nickname");
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     int uid =
         (Integer)
@@ -793,6 +835,13 @@ public final class NativeOpeningStageWinProbe {
     loginNickname = (String) field(loginBasic, "nickname");
     call("PlayerLoginFinishCsReq");
     String phase = control.get("phase").getAsString();
+    boolean verifyTransfer = control.has("openingTransfer") && control.get("openingTransfer").getAsBoolean();
+    if (phase.startsWith("transfer-")) {
+      require(verifyTransfer, "Unexpected transfer phase");
+      openingTransfer(true);
+      return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
+          "openingTransferVerified", true, "clientGameplayVerified", false);
+    }
     boolean restoredBarriers = phase.startsWith("barriers-");
     boolean verifyStellaron = control.has("stellaronConsole") && control.get("stellaronConsole").getAsBoolean();
     boolean verifyCharacter = control.has("characterChoice") && control.get("characterChoice").getAsBoolean();
@@ -868,6 +917,7 @@ public final class NativeOpeningStageWinProbe {
       stellaronConsole(restoredBarriers, verifyCharacter);
       if (verifyCharacter) characterChoice(phase);
     }
+    if (verifyTransfer && phase.equals("barriers-restart")) openingTransfer(false);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -903,6 +953,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("scriptedDoorUnlockVerified", verifyScriptedUnlock);
     result.put("stellaronConsoleVerified", verifyScriptedUnlock && verifyStellaron);
     result.put("characterChoiceVerified", verifyScriptedUnlock && verifyStellaron && verifyCharacter);
+    result.put("openingTransferVerified", verifyTransfer && phase.equals("barriers-restart"));
     return result;
   }
 

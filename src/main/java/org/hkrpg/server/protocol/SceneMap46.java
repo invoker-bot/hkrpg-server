@@ -7,6 +7,7 @@ import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import java.util.*;
+import org.hkrpg.server.gameplay.MissionSceneEntrances;
 import org.hkrpg.server.gameplay.SceneAnchors;
 import org.hkrpg.server.gameplay.StoryLineConditions;
 
@@ -63,7 +64,8 @@ public final class SceneMap46 {
                             player.getMissionManager().finished(id)
                                 && !player.getGameplay().getCancelledMissions().contains(id))
                 || !Arrays.stream(entry.getFinishSubMissionList())
-                    .allMatch(id -> StoryLineConditions.finished(player, id))))
+                    .allMatch(id -> StoryLineConditions.finished(player, id)))
+            && !MissionSceneEntrances.allows(player, entry, teleport))
           result = Retcode.MISSION_NOT_FINISH;
         if (result == Retcode.SUCC && !player.enterScene(entryId, teleport, player.isOnline()))
           result = Retcode.SCENE_ENTRY_ID_NOT_MATCH;

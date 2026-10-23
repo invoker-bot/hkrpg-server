@@ -30,8 +30,11 @@ def main():
     parser.add_argument('--scripted-unlock', action='store_true', help='校验走廊后续战斗、黑屏阶段控制台解锁、剧情接续及重连/H2恢复')
     parser.add_argument('--stellaron-console', action='store_true', help='继续到星核控制台，校验任务解锁、交互、后续演出接取及重连/H2恢复；对话为合成回执')
     parser.add_argument('--character-choice', action='store_true', help='继续校验真实昵称请求、重连后明确选角及选角后H2重启；不播放客户端演出')
+    parser.add_argument('--opening-transfer', action='store_true', help='继续校验选角后按原始脚本切图、后续对白接取及重连/H2保存；不播放客户端演出')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.opening_transfer:
+        args.character_choice = True
     if args.character_choice:
         args.stellaron_console = True
     if args.stellaron_console:
@@ -58,6 +61,10 @@ def main():
     if args.stellaron_console:
         guarded += ['Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json']
     guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000101').glob('*.json')]
+    if args.opening_transfer:
+        guarded += ['ExcelOutput/MapEntrance.json', 'ExcelOutput/MazePlane.json',
+                    'Config/LevelOutput/RuntimeFloor/P20002_F20002001.json',
+                    'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G1.json']
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -87,7 +94,7 @@ def main():
 
     account_name = 'opening_stage_' + uuid.uuid4().hex + '@example.invalid'
     snapshots, stops = [], 0
-    iterations = 4 if args.barriers else 3 if args.doors else 2
+    iterations = 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
     for iteration in range(iterations):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
@@ -113,12 +120,15 @@ def main():
                 assert combo['retcode'] == 0
                 phases = (['first', 'reconnect'] if iteration == 0 else ['restart'] if iteration == 1
                           else ['doors-restart', 'barriers-reconnect'] if iteration == 2 and args.barriers
-                          else ['doors-restart'] if iteration == 2 else ['barriers-restart'])
+                          else ['doors-restart'] if iteration == 2
+                          else ['barriers-restart', 'transfer-reconnect'] if iteration == 3 and args.opening_transfer
+                          else ['barriers-restart'] if iteration == 3 else ['transfer-restart'])
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
                                    'ambush': args.ambush, 'scriptedUnlock': args.scripted_unlock,
-                                   'stellaronConsole': args.stellaron_console, 'characterChoice': args.character_choice}
+                                   'stellaronConsole': args.stellaron_console, 'characterChoice': args.character_choice,
+                                   'openingTransfer': args.opening_transfer}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -126,6 +136,11 @@ def main():
                     (directory / f'probe-{phase}.log').write_text(probe.stderr, encoding='utf-8')
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
+                    if phase.startswith('transfer-'):
+                        assert snapshot['passed'] and snapshot['openingTransferVerified']
+                        snapshots.append(snapshot)
+                        time.sleep(1)
+                        continue
                     assert snapshot['passed'] and snapshot['openingBattleFinished'] and snapshot['nextObjectiveAccepted']
                     assert snapshot['openingKafkaVerified'] and snapshot['tutorialProgressVerified']
                     assert snapshot['openingSceneGatesVerified']
@@ -140,6 +155,7 @@ def main():
                     assert snapshot['scriptedDoorUnlockVerified'] == (args.scripted_unlock and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     assert snapshot['stellaronConsoleVerified'] == (args.stellaron_console and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     assert snapshot['characterChoiceVerified'] == (args.character_choice and (phase == 'doors-restart' or phase.startswith('barriers-')))
+                    assert snapshot['openingTransferVerified'] == (args.opening_transfer and phase == 'barriers-restart')
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:
