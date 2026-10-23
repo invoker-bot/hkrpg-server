@@ -22,14 +22,14 @@ public final class GmRoutes {
           app, new LiveGmBackend(), Path.of(LunarCore.getConfig().getDataDir()), Clock.systemUTC());
     } catch (Exception e) {
       LunarCore.getLogger()
-          .error("GM console disabled: could not open operator credential or audit journal", e);
+          .error("GM console disabled: could not open audit journal", e);
       app.get("/gm", ctx -> ctx.status(503).result("GM 控制台不可用，请检查服务端日志与 data 目录权限。"));
     }
   }
 
   static void register(Javalin app, GmBackend backend, Path directory, Clock clock)
       throws IOException {
-    var auth = new GmAuth(directory, clock);
+    var auth = new GmAuth(clock);
     var journal = new GmJournal(directory, clock);
     app.get("/gm", safe(ctx -> asset(ctx, "index.html", "text/html; charset=utf-8")));
     app.get("/gm/", safe(ctx -> asset(ctx, "index.html", "text/html; charset=utf-8")));
@@ -57,30 +57,16 @@ public final class GmRoutes {
                           : "text/javascript; charset=utf-8")));
     }
     app.post(
-        "/gm/api/login",
+        "/gm/api/session",
         safe(
             ctx -> {
               GmAuth.sameOrigin(ctx);
-              var body = body(ctx, com.google.gson.JsonObject.class);
-              String key =
-                  body.has("key")
-                          && body.get("key").isJsonPrimitive()
-                          && body.get("key").getAsJsonPrimitive().isString()
-                      ? body.get("key").getAsString()
-                      : null;
-              var session = auth.login(ctx, key);
+              body(ctx, com.google.gson.JsonObject.class);
+              var session = auth.open(ctx);
               ok(ctx, Map.of("csrf", session.csrf()));
             }));
     app.get(
         "/gm/api/session", safe(ctx -> ok(ctx, Map.of("csrf", auth.require(ctx, false).csrf()))));
-    app.post(
-        "/gm/api/logout",
-        safe(
-            ctx -> {
-              auth.require(ctx, true);
-              auth.logout(ctx);
-              ok(ctx, Map.of());
-            }));
     app.get(
         "/gm/api/status",
         safe(
@@ -176,6 +162,7 @@ public final class GmRoutes {
     return ctx -> {
       headers(ctx);
       try {
+        GmAuth.localOrigin(ctx);
         handler.handle(ctx);
       } catch (GmError e) {
         ctx.status(e.status)

@@ -70,10 +70,10 @@ def main():
         with opener.open(req, timeout=30) as response:
             return json.load(response)
 
-    def login():
+    def open_session():
         nonlocal csrf
-        key = (directory / 'data/gm-console.key').read_text(encoding='utf-8').strip()
-        csrf = request('/gm/api/login', {'key': key})['data']['csrf']
+        csrf = request('/gm/api/session', {})['data']['csrf']
+        assert not (directory / 'data/gm-console.key').exists()
 
     def operation(action, **values):
         body = {'requestId': str(uuid.uuid4()), 'action': action, 'uid': uid, **values}
@@ -97,7 +97,7 @@ def main():
             server = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
                                       cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
             wait_for(lambda: server.poll() is None and request('/health/ready')['ready'])
-            login()
+            open_session()
             if iteration == 0:
                 assert request('/gm/api/players')['data'] == []
                 history = request('/gm/api/banners/history?version=1.0&type=avatarup')['data']

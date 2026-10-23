@@ -11,14 +11,12 @@ export async function api(route,body) {
   finally {clearTimeout(timer);}
   const envelope=await response.json().catch(()=>{throw new ApiError('服务返回了无法读取的响应。',response.status);});
   if(!response.ok || !envelope.ok) {
-    if(response.status===401 && route!=='login') window.dispatchEvent(new Event('gm-session-expired'));
+    if(response.status===401 && route!=='session') window.dispatchEvent(new Event('gm-session-expired'));
     throw new ApiError(envelope.error || '请求失败。',response.status);
   }
   return envelope.data;
 }
-export async function session() { const data=await api('session');csrf=data.csrf; }
-export async function login(key) { const data=await api('login',{key});csrf=data.csrf; }
-export async function logout() {await api('logout',{});csrf='';}
+export async function session() { const data=await api('session',{});csrf=data.csrf; }
 const pendingKey='hkrpg.gm.pending';
 export function pendingOperation() { try {return JSON.parse(sessionStorage.getItem(pendingKey)||'null');} catch {return null;} }
 export function acknowledgePending() { sessionStorage.removeItem(pendingKey); }

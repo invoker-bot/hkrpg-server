@@ -1,4 +1,4 @@
-import {api,session,login,logout,operate,pendingOperation,recoverOperation,acknowledgePending} from './api.js';
+import {api,session,operate,pendingOperation,recoverOperation,acknowledgePending} from './api.js';
 import {el,icon,button,notice,showResult,confirmOperation} from './ui.js';
 import {mountPlayers} from './players.js';
 import {mountResources} from './resources.js';
@@ -31,27 +31,21 @@ const state={players:[],target:null,busy:false,
   },
 };
 function brand(){return el('div',{class:'brand'},el('strong',{text:'HKRPG'}),el('span',{text:'GM 控制台'}));}
-function loginScreen(message='') {
+function connectionScreen(message) {
   clearInterval(refreshTimer);
-  const key=el('input',{type:'password',required:true,autocomplete:'off',maxlength:256,placeholder:'输入管理密钥','aria-label':'管理密钥'});
-  const error=el('p',{class:'login-error',role:'alert',text:message});
-  const submit=button('进入控制台',()=>form.requestSubmit(),null,true);
-  const form=el('form',{class:'login-panel'},brand(),el('h1',{text:'登录 GM 控制台'}),
-    el('p',{class:'muted',text:'使用独立管理密钥连接当前服务。'}),el('label',{class:'field'},el('span',{text:'管理密钥'}),key),error,submit,
-    el('p',{class:'login-help',text:'本机可双击项目中的“GM控制台.cmd”，自动读取本地密钥并打开。'}));
-  form.addEventListener('submit',async event=>{
-    event.preventDefault();submit.disabled=true;error.textContent='';
-    try {await login(key.value.trim());key.value='';await shell();}
-    catch(failure){error.textContent=failure.message;submit.disabled=false;key.focus();}
-  });
-  root.replaceChildren(el('main',{class:'login-screen'},form));key.focus();
+  const panel=el('section',{class:'connection-panel'},brand(),el('h1',{text:'连接 GM 控制台'}),
+    el('p',{class:'connection-error',role:'alert',text:message}),button('重新连接',connect,'refresh',true));
+  root.replaceChildren(el('main',{class:'connection-screen'},panel));
+}
+async function connect(){
+  try {await session();await shell();}
+  catch(error){connectionScreen(error.message);}
 }
 async function shell(){
   clearInterval(refreshTimer);
   connection=el('span',{class:'connection',text:'正在连接'});
   const header=el('header',{class:'header'},brand(),el('div',{class:'header-actions'},connection,
-    button('刷新',()=>refresh().catch(error=>notice('刷新失败',[error.message])),'refresh'),
-    button('退出登录',async()=>{try{await logout();loginScreen();}catch(error){notice('退出失败',[error.message]);}})));
+    button('刷新',()=>refresh().catch(error=>notice('刷新失败',[error.message])),'refresh')));
   const nav=el('nav',{'aria-label':'管理导航'});
   for(const [name,page] of Object.entries(pages)) nav.append(el('button',{type:'button','data-page':name,onclick:()=>navigate(name)},icon(page.icon),el('span',{text:page.label})));
   const sidebar=el('aside',{class:'sidebar'},nav,el('p',{class:'sidebar-footer',text:'LunarCore · 本地管理'}));
@@ -110,10 +104,7 @@ function renderPending(){
   }));
   main.prepend(recovery);
 }
-window.addEventListener('gm-session-expired',()=>loginScreen('会话已过期，请重新登录。'));
-// Consume the launcher fragment before any request or rendering; never put the key in a query string.
-const fragment=new URLSearchParams(location.hash.slice(1));
-const launcherKey=fragment.get('key');
+window.addEventListener('gm-session-expired',()=>connectionScreen('连接已过期，请重新连接。'));
+// Drop fragments from old launcher links before requesting or rendering anything.
 if(location.hash)history.replaceState(null,'',location.pathname+location.search);
-try {if(launcherKey)await login(launcherKey);else await session();await shell();}
-catch(error){loginScreen(error.status===401?'':error.message);}
+await connect();
