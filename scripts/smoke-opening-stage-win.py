@@ -32,10 +32,13 @@ def main():
     parser.add_argument('--character-choice', action='store_true', help='继续校验真实昵称请求、重连后明确选角及选角后H2重启；不播放客户端演出')
     parser.add_argument('--opening-transfer', action='store_true', help='继续校验选角后按原始脚本切图、后续对白接取及重连/H2保存；不播放客户端演出')
     parser.add_argument('--awakening-door', action='store_true', help='继续校验醒来后首个控制台、成对开门、后续战斗目标及重连/H2保存；对白为合成回执')
+    parser.add_argument('--awakening-battle', action='store_true', help='继续校验女主真实出战编号结算、失败重试、防重复奖励、后续两场战斗与对白接取、生命能量及H2恢复；战报为合成数据')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.awakening_battle:
+        args.awakening_door = True
     if args.interrupt_opening_transfer or args.awakening_door:
         args.opening_transfer = True
     if args.opening_transfer:
@@ -72,7 +75,7 @@ def main():
                     'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G1.json']
     if args.awakening_door:
         guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000201').glob('*.json')]
-        guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G{group}.json' for group in (3, 4)]
+        guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G{group}.json' for group in (3, 4, 5, 16)]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -140,6 +143,7 @@ def main():
                                    'stellaronConsole': args.stellaron_console, 'characterChoice': args.character_choice,
                                    'openingTransfer': args.opening_transfer,
                                    'awakeningDoor': args.awakening_door,
+                                   'awakeningBattle': args.awakening_battle,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -149,7 +153,12 @@ def main():
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
                     if phase.startswith('awakening-'):
-                        assert snapshot['passed'] and snapshot['awakeningDoorVerified'] and snapshot['nextBattlePending']
+                        assert snapshot['passed'] and snapshot['awakeningDoorVerified']
+                        assert snapshot['nextBattlePending'] == (not args.awakening_battle)
+                        assert snapshot['awakeningBattleVerified'] == args.awakening_battle
+                        if args.awakening_battle and phase == 'awakening-restart':
+                            previous = next(row for row in snapshots if row['phase'] == 'awakening-reconnect')
+                            assert snapshot['credits'] == previous['credits'], 'Restart duplicated/lost battle rewards'
                         snapshots.append(snapshot)
                         time.sleep(1)
                         continue

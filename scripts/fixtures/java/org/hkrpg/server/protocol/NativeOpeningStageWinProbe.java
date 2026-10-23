@@ -860,6 +860,90 @@ public final class NativeOpeningStageWinProbe {
         "Opening the door must not teleport or skip the next battle");
   }
 
+  private DynamicMessage battleStatistics(DynamicMessage battle) {
+    var stats = DynamicMessage.newBuilder(protocol.clientSchema().message("BattleStatistics"));
+    stats.setField(stats.getDescriptorForType().findFieldByName("round_cnt"), 2);
+    var rows = stats.getDescriptorForType().findFieldByName("battle_avatar_list");
+    for (var value : (List<?>) field(battle, "battle_avatar_list")) {
+      var avatar = (DynamicMessage) value;
+      var row = DynamicMessage.newBuilder(rows.getMessageType());
+      row.setField(row.getDescriptorForType().findFieldByName("id"), field(avatar, "id"));
+      row.setField(row.getDescriptorForType().findFieldByName("avatar_type"), field(avatar, "avatar_type"));
+      var statusField = row.getDescriptorForType().findFieldByName("avatar_status");
+      var status = DynamicMessage.newBuilder(statusField.getMessageType());
+      for (var entry : Map.of("max_hp", 1000.0, "left_hp", 750.0, "max_sp", 120.0, "left_sp", 30.0).entrySet())
+        status.setField(status.getDescriptorForType().findFieldByName(entry.getKey()), entry.getValue());
+      row.setField(statusField, status.build());
+      stats.addRepeatedField(rows, row.build());
+    }
+    return stats.build();
+  }
+
+  private void awakeningBattle(int group, int instance, boolean win) throws Exception {
+    var target = groupEntities(group).stream().filter(x -> (Integer) field(x, "inst_id") == instance).findFirst().orElseThrow();
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    var sections = Map.<String,Object>of("section_id", 1, "interact_id", field(scene,"interact_id"));
+    call("EnterSectionCsReq", sections, true);
+    call("EnterSectionCsReq", sections, true);
+    int leader = (Integer) field(scene,"leader_entity_id");
+    var motionType = protocol.clientSchema().message("SceneEntityMoveCsReq").findFieldByName("entity_motion_list").getMessageType();
+    var movement = DynamicMessage.newBuilder(motionType)
+        .setField(motionType.findFieldByName("entity_id"),leader)
+        .setField(motionType.findFieldByName("motion"),field(target,"motion")).build();
+    call("SceneEntityMoveCsReq", Map.of("entity_motion_list",List.of(movement)),true);
+    var tag = protocol.clientSchema().message("SceneCastSkillCsReq").findFieldByName("skill_extra_tags").getEnumType().findValueByNumber(1);
+    var entered = call("SceneCastSkillCsReq", Map.of("cast_entity_id",ambushUseId++,
+        "attacked_by_entity_id",field(target,"entity_id"),"assist_monster_entity_id_list",List.of(leader),
+        "skill_extra_tags",List.of(tag),"target_motion",field(target,"motion")),true);
+    var battle = (DynamicMessage)field(entered,"battle_info");
+    var avatars = (List<?>)field(battle,"battle_avatar_list");
+    require(avatars.stream().map(DynamicMessage.class::cast).anyMatch(a -> (Integer)field(a,"id") == 8002),
+        "The selected female path must actually be in this battle");
+    var stats = battleStatistics(battle);
+    var end = protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status");
+    var report = new HashMap<String,Object>();
+    report.put("battle_id",field(battle,"battle_id"));report.put("stage_id",field(battle,"stage_id"));
+    report.put("end_status",end.getEnumType().findValueByName(win?"BATTLE_END_WIN":"BATTLE_END_LOSE"));
+    report.put("stt",stats);
+    var wrong = stats.toBuilder();
+    var rows = stats.getDescriptorForType().findFieldByName("battle_avatar_list");
+    var first = ((DynamicMessage)wrong.getRepeatedField(rows,0)).toBuilder();
+    first.setField(first.getDescriptorForType().findFieldByName("id"),8001);
+    wrong.setRepeatedField(rows,0,first.build());report.put("stt",wrong.build());
+    call("PVEBattleResultCsReq",report,false);
+    require(field((DynamicMessage)field(call("GetCurBattleInfoCsReq"),"battle_info"),"battle_id").equals(field(battle,"battle_id")),
+        "Invalid report must not consume the valid current battle");
+    report.put("stt",stats);
+    call("PVEBattleResultCsReq",report,true);
+    int earned = credits;
+    call("PVEBattleResultCsReq",report,false);
+    require(credits == earned,"Duplicate settlement granted credits twice");
+    require((Integer)field((DynamicMessage)field(call("GetCurBattleInfoCsReq"),"battle_info"),"battle_id") == 0,
+        "Settlement did not release the battle busy flag");
+  }
+
+  private void awakeningBattleFlow(boolean restored) throws Exception {
+    if (!restored) {
+      awakeningBattle(16,200001,false);
+      objective(100020105,1);
+      awakeningBattle(16,200001,true);
+      objective(100020105,2);objective(100020106,1);
+      for (int id : new int[]{100020106,100020107})
+        call("FinishTalkMissionCsReq",Map.of("sub_mission_id",id,"talk_str","Mission_"+id),true);
+      objective(100020131,1);
+      awakeningBattle(5,200002,true);
+    }
+    for (int id : new int[]{100020104,100020105,100020106,100020107,100020131}) objective(id,2);
+    objective(100020109,1);
+    var team = (DynamicMessage)field(call("GetCurLineupDataCsReq"),"lineup");
+    var hero = ((List<?>)field(team,"avatar_list")).stream().map(DynamicMessage.class::cast)
+        .filter(a -> (Integer)field(a,"id") == 8001).findFirst().orElseThrow();
+    require((Integer)field(hero,"hp") == 7500,"Hero HP lost during settlement/reconnect");
+    require((Integer)field((DynamicMessage)field(hero,"sp_bar"),"cur_sp") == 2500,"Hero energy lost during settlement/reconnect");
+    require((Integer)field((DynamicMessage)field(call("GetCurBattleInfoCsReq"),"battle_info"),"battle_id") == 0,
+        "Saved victory resurrected a busy battle");
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-")) expectedFloor = 20002001;
@@ -884,11 +968,14 @@ public final class NativeOpeningStageWinProbe {
     boolean verifyTransfer = control.has("openingTransfer") && control.get("openingTransfer").getAsBoolean();
     boolean interruptedTransfer = control.has("interruptedTransfer") && control.get("interruptedTransfer").getAsBoolean();
     boolean verifyAwakening = control.has("awakeningDoor") && control.get("awakeningDoor").getAsBoolean();
+    boolean verifyAwakeningBattle = control.has("awakeningBattle") && control.get("awakeningBattle").getAsBoolean();
     if (phase.startsWith("awakening-")) {
       require(verifyAwakening, "Unexpected awakening phase");
-      awakeningDoor(true);
+      if (!verifyAwakeningBattle || phase.equals("awakening-reconnect")) awakeningDoor(true);
+      if (verifyAwakeningBattle) awakeningBattleFlow(phase.equals("awakening-restart"));
       return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
-          "awakeningDoorVerified", true, "nextBattlePending", true, "clientGameplayVerified", false);
+          "awakeningDoorVerified", true, "nextBattlePending", !verifyAwakeningBattle,
+          "awakeningBattleVerified", verifyAwakeningBattle, "credits",credits,"clientGameplayVerified", false);
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");

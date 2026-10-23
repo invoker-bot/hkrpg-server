@@ -20,6 +20,7 @@ final class BattleResult46 {
     synchronized (player) {
       var type = protocol.clientSchema().message("PVEBattleResultCsReq");
       if (!identityValid(type, bytes, 0)) {
+        SceneActionDiagnostics46.battleRejected(session, "wire-shape", 0, 0, List.of());
         session.send(new PacketPVEBattleResultScRsp());
         return true;
       }
@@ -27,6 +28,7 @@ final class BattleResult46 {
       var monsters = monsters((DynamicMessage) Gameplay46.value(nativeRequest, "stt"));
       var energies = energies((DynamicMessage) Gameplay46.value(nativeRequest, "stt"));
       if (monsters == null || energies == null) {
+        SceneActionDiagnostics46.battleRejected(session, "monster-or-energy", 0, 0, List.of());
         session.send(new PacketPVEBattleResultScRsp());
         return true;
       }
@@ -43,6 +45,18 @@ final class BattleResult46 {
                   core.getStt(),
                   monsters,
                   energies);
+      if (battle == null) {
+        var ids = new ArrayList<Integer>();
+        for (var avatar : core.getStt().getBattleAvatarList()) {
+          if (ids.size() == 8) break;
+          ids.add(avatar.getId());
+        }
+        var active = player.getBattle();
+        String reason = active == null ? "no-active-battle"
+            : active.getId() != core.getBattleId() || active.getStage().getId() != core.getStageId()
+                ? "battle-identity" : "settlement-constraints";
+        SceneActionDiagnostics46.battleRejected(session, reason, core.getBattleId(), core.getStageId(), ids);
+      }
       session.send(
           battle == null
               ? new PacketPVEBattleResultScRsp()

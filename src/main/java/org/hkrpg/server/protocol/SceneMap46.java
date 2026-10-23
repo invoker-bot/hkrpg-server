@@ -14,6 +14,11 @@ import org.hkrpg.server.gameplay.StoryLineConditions;
 /** Base scene map queries expose authored defaults and saved anchor transitions. */
 public final class SceneMap46 {
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
+    if (command == session.getProtocol().clientCommand("EnterSectionCsReq")) {
+      if (session.getState() != SessionState.ACTIVE) return true;
+      acknowledgeSection(session, bytes);
+      return true;
+    }
     String name;
     if (command == session.getProtocol().clientCommand("GetUnlockTeleportCsReq"))
       name = "GetUnlockTeleportCsReq";
@@ -187,6 +192,38 @@ public final class SceneMap46 {
       }
     }
     return true;
+  }
+
+  /** Same-floor section notification; it cannot teleport, unlock a gate, or finish a mission. */
+  private static void acknowledgeSection(GameSession session, byte[] bytes) throws IOException {
+    boolean valid = bytes.length <= 64;
+    var input = com.google.protobuf.CodedInputStream.newInstance(bytes);
+    var seen = new HashSet<Integer>();
+    long runtime = 0;
+    try {
+      int tag;
+      while (valid && (tag = input.readTag()) != 0) {
+        int field = tag >>> 3;
+        if ((tag & 7) != 0 || (field != 10 && field != 13) || !seen.add(field)) {
+          valid = false;
+          break;
+        }
+        long value = input.readUInt64();
+        if (field == 10) valid = Long.compareUnsigned(value, Integer.MAX_VALUE) <= 0;
+        else runtime = value;
+      }
+    } catch (IOException malformed) {
+      valid = false;
+    }
+    synchronized (session.getPlayer()) {
+      var scene = session.getPlayer().getScene();
+      var result = !valid ? Retcode.REQ_PARA_INVALID
+          : scene == null || runtime != scene.getRuntimeId()
+              ? Retcode.SCENE_ENTRY_ID_NOT_MATCH : Retcode.SUCC;
+      var response = Gameplay46.builder(session, "EnterSectionScRsp");
+      Gameplay46.set(response, "retcode", result.getVal());
+      session.sendClientPacket("EnterSectionScRsp", response.build().toByteArray());
+    }
   }
 
   private static void putMap(DynamicMessage.Builder owner, String field, String key, int value) {
