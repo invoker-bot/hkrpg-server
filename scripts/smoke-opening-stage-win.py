@@ -31,11 +31,12 @@ def main():
     parser.add_argument('--stellaron-console', action='store_true', help='继续到星核控制台，校验任务解锁、交互、后续演出接取及重连/H2恢复；对话为合成回执')
     parser.add_argument('--character-choice', action='store_true', help='继续校验真实昵称请求、重连后明确选角及选角后H2重启；不播放客户端演出')
     parser.add_argument('--opening-transfer', action='store_true', help='继续校验选角后按原始脚本切图、后续对白接取及重连/H2保存；不播放客户端演出')
+    parser.add_argument('--awakening-door', action='store_true', help='继续校验醒来后首个控制台、成对开门、后续战斗目标及重连/H2保存；对白为合成回执')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
-    if args.interrupt_opening_transfer:
+    if args.interrupt_opening_transfer or args.awakening_door:
         args.opening_transfer = True
     if args.opening_transfer:
         args.character_choice = True
@@ -69,6 +70,9 @@ def main():
         guarded += ['ExcelOutput/MapEntrance.json', 'ExcelOutput/MazePlane.json',
                     'Config/LevelOutput/RuntimeFloor/P20002_F20002001.json',
                     'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G1.json']
+    if args.awakening_door:
+        guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000201').glob('*.json')]
+        guarded += [f'Config/LevelOutput/SharedRuntimeGroup/Groups_P20002_F20002001/LevelGroup_P20002_F20002001_G{group}.json' for group in (3, 4)]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -98,7 +102,7 @@ def main():
 
     account_name = 'opening_stage_' + uuid.uuid4().hex + '@example.invalid'
     snapshots, stops = [], 0
-    iterations = 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
+    iterations = 6 if args.awakening_door else 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
     for iteration in range(iterations):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
@@ -126,13 +130,16 @@ def main():
                           else ['doors-restart', 'barriers-reconnect'] if iteration == 2 and args.barriers
                           else ['doors-restart'] if iteration == 2
                           else ['barriers-restart', 'transfer-reconnect'] if iteration == 3 and args.opening_transfer and args.interrupt_opening_transfer != 'restart'
-                          else ['barriers-restart'] if iteration == 3 else ['transfer-restart'])
+                          else ['barriers-restart'] if iteration == 3
+                          else ['transfer-restart', 'awakening-reconnect'] if iteration == 4 and args.awakening_door
+                          else ['transfer-restart'] if iteration == 4 else ['awakening-restart'])
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
                                    'ambush': args.ambush, 'scriptedUnlock': args.scripted_unlock,
                                    'stellaronConsole': args.stellaron_console, 'characterChoice': args.character_choice,
                                    'openingTransfer': args.opening_transfer,
+                                   'awakeningDoor': args.awakening_door,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -141,10 +148,16 @@ def main():
                     (directory / f'probe-{phase}.log').write_text(probe.stderr, encoding='utf-8')
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
+                    if phase.startswith('awakening-'):
+                        assert snapshot['passed'] and snapshot['awakeningDoorVerified'] and snapshot['nextBattlePending']
+                        snapshots.append(snapshot)
+                        time.sleep(1)
+                        continue
                     if phase.startswith('transfer-'):
                         assert snapshot['passed'] and snapshot['openingTransferVerified']
                         assert snapshot['enterSceneRequests'] == 0
                         assert snapshot['interruptedTransferRecovery'] == bool(args.interrupt_opening_transfer)
+                        assert snapshot['awakeningDoorVerified'] == (args.awakening_door and phase == 'transfer-restart')
                         snapshots.append(snapshot)
                         time.sleep(1)
                         continue

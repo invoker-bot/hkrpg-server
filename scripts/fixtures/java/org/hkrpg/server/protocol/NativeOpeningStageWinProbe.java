@@ -25,6 +25,7 @@ public final class NativeOpeningStageWinProbe {
   private Ukcp channel;
   private int requests;
   private int enterSceneRequests;
+  private int expectedFloor = 20001001;
   private int credits;
   private String loginNickname;
   private int rewardHints;
@@ -71,7 +72,7 @@ public final class NativeOpeningStageWinProbe {
         lineupUpdates.add(protocol.clientSchema().parse("SyncLineupNotify", frame.body()));
       if (frame.command() == protocol.clientCommand("SceneGroupRefreshScNotify")) {
         var update = protocol.clientSchema().parse("SceneGroupRefreshScNotify", frame.body());
-        require((Integer) field(update, "floor_id") == 20001001, "Group update floor");
+        require((Integer) field(update, "floor_id") == expectedFloor, "Group update floor");
         for (var raw : (List<?>) field(update, "group_refresh_list")) {
           var group = (DynamicMessage) raw;
           if (((Descriptors.EnumValueDescriptor) field(group, "refresh_type")).getNumber() == 2)
@@ -789,6 +790,7 @@ public final class NativeOpeningStageWinProbe {
         return;
       }
       call("EnterSceneCsReq", Map.of("entry_id", 200020102), false);
+      expectedFloor = 20002001;
       call("EnterSceneCsReq", Map.of("entry_id", 2000201), true);
     }
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
@@ -824,7 +826,43 @@ public final class NativeOpeningStageWinProbe {
     require("克劳德".equals(loginNickname), "Transfer lost selected nickname");
   }
 
+  private void awakeningDoor(boolean restored) throws Exception {
+    if (!restored) {
+      var locked = groupEntities(3).stream().filter(e -> (Integer) field(e, "inst_id") == 300002)
+          .findFirst().orElseThrow();
+      require((Integer) field((DynamicMessage) field(locked, "prop"), "prop_state") == 2,
+          "Awakening console must stay locked before the dialogues finish");
+      // Real protocol receipts for the authored dialogues, not rendered-client acceptance.
+      for (int id : new int[] {100020101, 100020102, 100020103})
+        call("FinishTalkMissionCsReq", Map.of("sub_mission_id", id, "talk_str", "Mission_" + id), true);
+      objective(100020104, 1);
+    }
+    var props = new HashMap<Integer, DynamicMessage>();
+    for (var entity : groupEntities(3)) props.put((Integer) field(entity, "inst_id"), entity);
+    doorState(props, 300002, restored ? 1 : 0);
+    doorState(props, 300001, restored ? 1 : 0);
+    doorState(props, 300006, 2);
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    var request = Map.<String, Object>of("prop_entity_id", field(props.get(300002), "entity_id"),
+        "interact_id2", 1010, "interact_id", field(scene, "interact_id"));
+    if (!restored) {
+      var opened = call("InteractPropCsReq", request, true);
+      require((Integer) field(opened, "prop_state") == 1, "Awakening console did not open");
+    }
+    call("InteractPropCsReq", request, false);
+    for (var entity : groupEntities(3)) props.put((Integer) field(entity, "inst_id"), entity);
+    doorState(props, 300002, 1);
+    doorState(props, 300001, 1);
+    doorState(props, 300006, 2);
+    objective(100020104, 2);
+    objective(100020105, 1);
+    require((Integer) field(scene, "plane_id") == 20002 && (Integer) field(scene, "floor_id") == 20002001,
+        "Opening the door must not teleport or skip the next battle");
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
+    String phase = control.get("phase").getAsString();
+    if (phase.startsWith("transfer-") || phase.startsWith("awakening-")) expectedFloor = 20002001;
     int uid =
         (Integer)
             field(
@@ -843,15 +881,24 @@ public final class NativeOpeningStageWinProbe {
     credits = (Integer) field(loginBasic, "scoin");
     loginNickname = (String) field(loginBasic, "nickname");
     call("PlayerLoginFinishCsReq");
-    String phase = control.get("phase").getAsString();
     boolean verifyTransfer = control.has("openingTransfer") && control.get("openingTransfer").getAsBoolean();
     boolean interruptedTransfer = control.has("interruptedTransfer") && control.get("interruptedTransfer").getAsBoolean();
+    boolean verifyAwakening = control.has("awakeningDoor") && control.get("awakeningDoor").getAsBoolean();
+    if (phase.startsWith("awakening-")) {
+      require(verifyAwakening, "Unexpected awakening phase");
+      awakeningDoor(true);
+      return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
+          "awakeningDoorVerified", true, "nextBattlePending", true, "clientGameplayVerified", false);
+    }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");
       openingTransfer(true, false);
       require(enterSceneRequests == 0, "Recovery must use only the persisted task, not a new EnterScene request");
+      boolean opened = verifyAwakening && phase.equals("transfer-restart");
+      if (opened) awakeningDoor(false);
       return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
           "openingTransferVerified", true, "enterSceneRequests", enterSceneRequests,
+          "awakeningDoorVerified", opened,
           "interruptedTransferRecovery", interruptedTransfer, "clientGameplayVerified", false);
     }
     boolean restoredBarriers = phase.startsWith("barriers-");

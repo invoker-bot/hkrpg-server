@@ -25,6 +25,25 @@ public final class StoryDoors {
   private static final JsonElement ENABLE_TASK =
       JsonParser.parseString(
           "{\"OnInitSequece\":[],\"OnStartSequece\":[{\"TaskList\":[{\"$type\":\"RPG.GameCore.ChangePropState\"}]}],\"Type\":\"Mission\"}");
+  // Three parallel sequences: proximity speech, a delayed reminder, and independent enable.
+  // The signal belongs to the objective; neither speech sequence can change world state.
+  private static final String PROXIMITY_HINT_TASK = """
+      {"OnInitSequece":[],"OnStartSequece":[
+        {"TaskList":[{"$type":"RPG.GameCore.PropSetupTrigger","TargetType":{
+          "$type":"RPG.GameCore.TargetFetchAdvPropEx","FetchType":"SinglePropByPropID",
+          "SinglePropID":{"GroupID":{"IsDynamic":false,"FixedValue":{"Value":%d}},
+                          "ID":{"IsDynamic":false,"FixedValue":{"Value":%d}}}},
+          "TargetGroupID":{"IsDynamic":false,"FixedValue":{"Value":0}},
+          "TargetID":{"IsDynamic":false,"FixedValue":{"Value":0}},"TargetTypes":[],
+          "ColliderRelativePath":"Trigger","DestroyAfterTriggered":true,
+          "OnTriggerEnter":[%s,{"$type":"RPG.GameCore.TriggerCustomString",
+            "CustomString":{"Value":"%d_MissionTalk"}}]}]},
+        {"TaskList":[{"$type":"RPG.GameCore.WaitCustomString",
+          "CustomString":{"Value":"%d_MissionTalk"}},
+          {"$type":"RPG.GameCore.WaitSecond","WaitTime":{"IsDynamic":false,"FixedValue":{"Value":%s}}},%s]},
+        {"TaskList":[{"$type":"RPG.GameCore.ChangePropState"}]}
+      ],"Type":"Mission"}
+      """;
   // A separate authored flow fades out, asks Locked -> Closed, then accepts the next
   // performance. Match its complete literal script and objective, not a mission ID.
   private static final String UNLOCK_TASK = """
@@ -122,10 +141,56 @@ public final class StoryDoors {
         || c.getTask() == null) return false;
     try {
       var script = JsonParser.parseString(c.getTask().getSourceDefinition());
-      return ENABLE_TASK.equals(script) || standalone(info) && enableWithDialogue(script);
+      return ENABLE_TASK.equals(script)
+          || standalone(info) && enableWithDialogue(script)
+          || paired(info) && enableWithProximityHints(scene, c, script);
     } catch (RuntimeException invalid) {
       return false;
     }
+  }
+
+  private static boolean enableWithProximityHints(
+      Scene scene, MissionInfo.SubMissionInfo objective, JsonElement script) {
+    var sequences = script.getAsJsonObject().getAsJsonArray("OnStartSequece");
+    if (sequences.size() != 3) return false;
+    var trigger = sequences.get(0).getAsJsonObject().getAsJsonArray("TaskList")
+        .get(0).getAsJsonObject();
+    var target = trigger.getAsJsonObject("TargetType").getAsJsonObject("SinglePropID");
+    int group = literalPositiveId(target.getAsJsonObject("GroupID").getAsJsonObject("FixedValue").get("Value"));
+    int instance = literalPositiveId(target.getAsJsonObject("ID").getAsJsonObject("FixedValue").get("Value"));
+    var original = original(scene, group, instance);
+    if (original == null || original.getPropID() != 100) return false;
+    var firstTalk = trigger.getAsJsonArray("OnTriggerEnter").get(0);
+    var reminder = sequences.get(1).getAsJsonObject().getAsJsonArray("TaskList");
+    var wait = reminder.get(1).getAsJsonObject().getAsJsonObject("WaitTime")
+        .getAsJsonObject("FixedValue").get("Value");
+    var secondTalk = reminder.get(2);
+    if (!literalDuration(wait) || !hintTalk(firstTalk) || !hintTalk(secondTalk)) return false;
+    return JsonParser.parseString(PROXIMITY_HINT_TASK.formatted(
+        group, instance, firstTalk, objective.getId(), objective.getId(), wait, secondTalk)).equals(script);
+  }
+
+  private static int literalPositiveId(JsonElement value) {
+    if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) return 0;
+    int id = value.getAsBigDecimal().intValueExact();
+    return id > 0 ? id : 0;
+  }
+
+  private static boolean literalDuration(JsonElement value) {
+    return value.isJsonPrimitive() && value.getAsJsonPrimitive().isNumber()
+        && value.getAsBigDecimal().signum() >= 0;
+  }
+
+  private static boolean hintTalk(JsonElement value) {
+    var talk = value.getAsJsonObject();
+    if (!talk.keySet().equals(Set.of("$type", "SimpleTalkList"))
+        || !"RPG.GameCore.PlayMissionTalk".equals(talk.get("$type").getAsString())) return false;
+    var lines = talk.getAsJsonArray("SimpleTalkList");
+    if (lines.size() != 1) return false;
+    var row = lines.get(0).getAsJsonObject();
+    return row.keySet().equals(Set.of("TalkSentenceID", "ProtectTime", "ForceToNextTime"))
+        && literalPositiveId(row.get("TalkSentenceID")) > 0
+        && literalDuration(row.get("ProtectTime")) && literalDuration(row.get("ForceToNextTime"));
   }
 
   /** Allow only an unconditional enable plus parallel, literal ambient speech; no script effects. */
