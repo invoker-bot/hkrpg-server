@@ -27,6 +27,10 @@ export function mountBanners(main,inspector,state) {
       el('section',{class:'action-group'},el('h3',{text:'历史 UP 内容'}),
         el('p',{text:`五星：${banner.up5.map(i=>i.name).join('、')}`}),
         el('p',{class:'muted',text:`四星：${banner.replayable?banner.up4.map(i=>i.name).join('、'):'资料待补全'}`})),
+      el('section',{class:'action-group'},el('h3',{text:'官服历史时间 · UTC+8'}),
+        el('p',{class:'muted',text:`开始：${banner.historicalStart}`}),
+        el('p',{class:'muted',text:`截止：${banner.historicalEnd}`}),
+        el('a',{class:'banner-source',href:banner.sourceUrl,target:'_blank',rel:'noopener noreferrer',text:'查看官方跃迁公告'})),
       el('section',{class:'action-group'},el('h3',{text:'本服当前配置'}),el('p',{text:banner.status}),
         ...(banner.endTime?[el('p',{class:'muted',text:`开始：${date(banner.beginTime)}`}),el('p',{class:'muted',text:`截止：${date(banner.endTime)}`})]:[])),
       field('复刻天数',days,'1–365 天，从执行成功时开始；默认 30 天。'));

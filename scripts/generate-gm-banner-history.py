@@ -1,105 +1,117 @@
-"""从固定的 AGPL 参考模板和本机 4.6 资源生成 GM 档案；不访问网络、不修改运行数据。"""
+"""离线生成 GM 卡池档案：固定的公开公告事实 + 本机 4.6 资源；不修改运行配置。"""
 import argparse
+from datetime import date, time
 import hashlib
+import html
 import json
 import re
-import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = [
-    ('LunarCore', '04b5de871c62', 'data/Banners.json'),
-    ('hkrpg-go', 'ef47e49a2331', 'data/Banners.json'),
-    ('HyacineDH-Core', 'dd54de89ca8df8355fae5727e49e9e2bbba55344', 'Config/GameData/Banners.json'),
-    ('March7thHoney-OpenSource', 'fe00bdbda3c28ca33d01f171566aa35b5ab95083', 'Config/Custom/Banners.json'),
-]
-# 连续排期边界；多卡池的版本/期次另与 GachaGroupData 的 250/300/.../440 标记核对。
-WINDOWS = [
-    ('1.0', 2001, 2002, 2002), ('1.1', 2005, 2006, 2006),
-    ('1.2', 2007, 2008, 2008), ('1.3', 2009, 2010, 2010),
-    ('1.4', 2011, 2013, 2012), ('1.5', 2014, 2016, 2015),
-    ('1.6', 2017, 2020, 2019), ('2.0', 2021, 2024, 2023),
-    ('2.1', 2025, 2028, 2027), ('2.2', 2029, 2032, 2031),
-    ('2.3', 2033, 2036, 2035), ('2.4', 2037, 2040, 2039),
-    ('2.5', 2041, 2046, 2045), ('2.6', 2047, 2050, 2049),
-    ('2.7', 2051, 2054, 2053), ('3.0', 2055, 2062, 2059),
-    ('3.1', 2063, 2066, 2065), ('3.2', 2067, 2072, 2071),
-    ('3.3', 2073, 2076, 2075), ('3.4', 2077, 2083, 2081),
-    ('3.5', 2084, 2087, 2086), ('3.6', 2088, 2091, 2090),
-    ('3.7', 2092, 2098, 2096), ('3.8', 2099, 2104, 2101),
-    ('4.0', 2105, 2112, 2109), ('4.1', 2113, 2115, 2113),
-    ('4.2', 2116, 2123, 2120), ('4.3', 2124, 2127, 2126),
-    ('4.4', 2128, 2134, 2132), ('4.5', 2135, 2138, 2137),
-    ('4.6', 2139, 2141, 2139),
-]
+EVIDENCE = ROOT / 'scripts/data/gm-banner-history-web.json'
+UNUSED = {2003, 2004, 3003, 3004}
 
 
 def load(path):
     return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
-def generate():
+def clean_name(value):
+    return html.unescape(re.sub(r'<[^>]+>', '', value))
+
+
+def phase_label(row, rows):
+    same_version = [r for r in rows if r['version'] == row['version']]
+    first = min(r['startDate'] for r in same_version)
+    last = max(r['endDate'] for r in same_version)
+    if row['startDate'] == first and row['endDate'] == last:
+        return '全期'
+    if row['phaseCount'] == 3:
+        return ('第一期', '第二期', '第三期')[row['phaseIndex'] - 1]
+    return '上半' if row['phaseIndex'] == 1 else '下半'
+
+
+def generate(evidence=None):
+    evidence = load(EVIDENCE) if evidence is None else evidence
+    if evidence['schemaVersion'] != 1:
+        raise ValueError('未知公告事实格式')
     resources = ROOT / 'resources/4.6'
     basics = {r['GachaID']: r for r in load(resources / 'ExcelOutput/GachaBasicInfo.json')}
     items = {r['ID']: r for table in ('ItemConfigAvatar', 'ItemConfigEquipment')
              for r in load(resources / f'ExcelOutput/{table}.json')}
     text = load(resources / 'TextMap/TextMapCHS.json')
-    known, sources = {}, []
-    for project, commit, filename in SOURCES:
-        repo = ROOT / 'references' / project
-        actual = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
-        if not actual.startswith(commit):
-            raise RuntimeError(f'参考提交不符: {project}: {actual}')
-        file = repo / filename
-        sources.append({'project': project, 'commit': actual, 'path': filename, 'license': 'AGPL-3.0',
-                        'sha256': hashlib.sha256(file.read_bytes()).hexdigest()})
-        rows = load(file)
-        if isinstance(rows, dict):
-            rows = rows['Banners']
-        for row in rows:
-            banner_id = row.get('id', row.get('gachaId'))
-            basic = basics.get(banner_id)
-            if not basic or basic['GachaType'] not in ('AvatarUp', 'WeaponUp') or banner_id in known:
-                continue
-            up5 = row['rateUpItems5']
-            if len(up5) != 1 or not basic['PrefabPath'].endswith(f'_{up5[0]}.prefab'):
-                continue  # 已知上游有重复/错配 ID，不能拿错误池套用资源 ID。
-            up4 = [i for i in row['rateUpItems4'] if items.get(i, {}).get('Rarity') == 'VeryRare']
-            if len(up4) != 3 or len(set(up4)) != 3:
-                continue
-            known[banner_id] = (up5, up4, project)
+    notices = {r['url']: r for r in evidence['notices']}
+    if len(notices) != len(evidence['notices']):
+        raise ValueError('公告来源重复')
+    for notice in notices.values():
+        if (not re.fullmatch(r'https://www\.hoyolab\.com/article/[0-9]+', notice['url'])
+                or str(notice['authorUid']) != '172534910'
+                or not re.fullmatch(r'[0-9a-f]{64}', notice['textSHA256'])):
+            raise ValueError('缺少可核对的官方公告身份或快照')
+    rows = evidence['banners']
+    releases = {r['version']: r for r in evidence['versionSources']}
+    if set(releases) != {r['version'] for r in rows}:
+        raise ValueError('版本维护公告目录不完整')
+    for version, release in releases.items():
+        if (not release['sourceUrl'].startswith('https://hsr.hoyoverse.com/en-us/news/')
+                or release['startDate'] != min(r['startDate'] for r in rows if r['version'] == version)):
+            raise ValueError(f'版本维护日期不符: {version}')
+    expected_ids = {r['GachaID'] for r in basics.values()
+                    if r['GachaType'] in ('AvatarUp', 'WeaponUp')} - UNUSED
+    if len({r['id'] for r in rows}) != len(rows) or {r['id'] for r in rows} != expected_ids:
+        raise ValueError('公告档案必须与全部受支持卡池资源逐项对应，不能遗漏或重复')
     banners, names = [], {}
-    for basic in basics.values():
-        banner_id = basic['GachaID']
-        if basic['GachaType'] not in ('AvatarUp', 'WeaponUp'):
-            continue
-        normalized = banner_id - 1000 if basic['GachaType'] == 'WeaponUp' else banner_id
-        window = next((w for w in WINDOWS if w[1] <= normalized <= w[2]), None)
-        if window is None:
-            continue  # 2003/2004 为未采用的早期资源，不冒充正式历史排期。
-        version, _, _, second = window
-        up5 = [int(re.search(r'_(\d+)\.prefab$', basic['PrefabPath'])[1])]
-        up4, source = [], 'resource-display-only'
-        if banner_id in known:
-            up5, up4, source = known[banner_id]
+    for row in rows:
+        banner_id = row['id']
+        basic = basics[banner_id]
+        up5, up4 = row['rateUpItems5'], row['rateUpItems4']
+        if (row['gachaType'] != basic['GachaType'] or len(up5) != 1
+                or len(up4) != 3 or len(set(up4)) != 3 or set(up5) & set(up4)
+                or not basic['PrefabPath'].endswith(f'_{up5[0]}.prefab')):
+            raise ValueError(f'卡池类型、五星展示或四星 UP 不符: {banner_id}')
+        kind = 'AvatarCard' if row['gachaType'] == 'AvatarUp' else 'Equipment'
         for item_id in up5 + up4:
-            names[str(item_id)] = text[str(items[item_id]['ItemName']['Hash'])]
-        banners.append({'id': banner_id, 'version': version,
-                        'phase': '期次待核对' if version in ('4.1', '4.6') else '下半' if normalized >= second else '上半',
-                        'name': text[str(basic['PoolName']['Hash'])], 'gachaType': basic['GachaType'],
-                        'rateUpItems5': up5, 'rateUpItems4': up4, 'replayable': bool(up4), 'source': source})
+            rarity = 'SuperRare' if item_id in up5 else 'VeryRare'
+            if (item_id not in items or items[item_id]['Rarity'] != rarity
+                    or items[item_id]['ItemMainType'] != kind):
+                raise ValueError(f'UP 星级或类型不符: {banner_id}/{item_id}')
+            names[str(item_id)] = clean_name(text[str(items[item_id]['ItemName']['Hash'])])
+        if (row['sourceUrl'] not in notices or row['verification'] not in
+                ('official_text', 'official_text_and_image')):
+            raise ValueError(f'卡池缺少已核对的官方公告: {banner_id}')
+        if row['verification'] == 'official_text_and_image' and not notices[row['sourceUrl']].get('imageRosters'):
+            raise ValueError(f'缺少公告图片来源: {banner_id}')
+        if (not re.fullmatch(r'[0-9]+\.[0-9]+', row['version']) or row['phaseCount'] not in (2, 3)
+                or not 1 <= row['phaseIndex'] <= row['phaseCount']
+                or row['phase'] != phase_label(row, rows)):
+            raise ValueError(f'版本、期次或全期窗口不符: {banner_id}')
+        if date.fromisoformat(row['startDate']) > date.fromisoformat(row['endDate']):
+            raise ValueError(f'历史时间倒置: {banner_id}')
+        if row['serverTimeZone'] != '+08:00' or type(row['startAfterUpdate']) is not bool:
+            raise ValueError(f'历史时区或更新后标记不符: {banner_id}')
+        start = row['startDate'] + (' 更新后' if row['startAfterUpdate'] else
+                                    ' ' + time.fromisoformat(row['startTime']).isoformat())
+        end = row['endDate'] + ' ' + time.fromisoformat(row['endTime']).isoformat()
+        banners.append({'id': banner_id, 'version': row['version'], 'phase': row['phase'],
+                        'phaseIndex': row['phaseIndex'], 'name': clean_name(text[str(basic['PoolName']['Hash'])]),
+                        'gachaType': row['gachaType'], 'rateUpItems5': up5, 'rateUpItems4': up4,
+                        'replayable': True, 'source': 'HoYoLAB official announcement',
+                        'sourceUrl': row['sourceUrl'], 'historicalStart': start, 'historicalEnd': end})
     indexed = {b['id']: b for b in banners}
     for group in load(resources / 'ExcelOutput/GachaGroupData.json'):
         marker = re.search(r'_(\d)(\d)0_([12])\.png$', group['PoolLabelIcon'])
-        if not marker:
-            continue
-        expected_version = f'{marker[1]}.{marker[2]}'
-        expected_phase = '上半' if marker[3] == '1' else '下半'
-        for banner_id in group['GachaIDList']:
-            row = indexed[banner_id]
-            if (row['version'], row['phase']) != (expected_version, expected_phase):
-                raise RuntimeError(f'版本/期次与原始多池分组不符: {banner_id}')
-    return {'sources': sources, 'resourceCommit': load(ROOT / 'resources.lock.json')['commit'],
+        if marker:
+            for banner_id in group['GachaIDList']:
+                row = indexed[banner_id]
+                if (row['version'], row['phaseIndex']) != (f'{marker[1]}.{marker[2]}', int(marker[3])):
+                    raise ValueError(f'版本/期次与原始多池分组不符: {banner_id}')
+    return {'sources': [{'project': 'HoYoLAB official announcements', 'count': len(notices),
+                         'evidence': 'scripts/data/gm-banner-history-web.json',
+                         'digestFormat': 'canonical-json-v1',
+                         'sha256': hashlib.sha256(json.dumps(evidence, ensure_ascii=False, sort_keys=True,
+                                                            separators=(',', ':')).encode('utf-8')).hexdigest(),
+                         'verifiedAt': evidence['verifiedAt']}],
+            'resourceCommit': load(ROOT / 'resources.lock.json')['commit'],
             'itemNames': dict(sorted(names.items(), key=lambda pair: int(pair[0]))),
             'banners': sorted(banners, key=lambda b: b['id'])}
 

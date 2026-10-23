@@ -59,7 +59,15 @@ public final class GmModels {
 
   public record BannerRow(String key, String version, String phase, String name, int id,
       String type, List<BannerItem> up5, List<BannerItem> up4, boolean replayable,
-      String status, long beginTime, long endTime) {}
+      String status, long beginTime, long endTime, String historicalStart,
+      String historicalEnd, String sourceUrl) {
+    public BannerRow(String key, String version, String phase, String name, int id,
+        String type, List<BannerItem> up5, List<BannerItem> up4, boolean replayable,
+        String status, long beginTime, long endTime) {
+      this(key, version, phase, name, id, type, up5, up4, replayable, status, beginTime,
+          endTime, "", "", "");
+    }
+  }
 
   /** Returned means the legacy handler returned; it does not imply gameplay success. */
   public record Result(String state, List<String> output) {

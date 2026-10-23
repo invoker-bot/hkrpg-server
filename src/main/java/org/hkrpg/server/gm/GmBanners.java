@@ -19,7 +19,8 @@ final class GmBanners {
   private final Clock clock;
 
   private record Template(String key, String version, String phase, String name, int id,
-      GachaType type, List<BannerItem> up5, List<BannerItem> up4, boolean replayable) {}
+      GachaType type, List<BannerItem> up5, List<BannerItem> up4, boolean replayable,
+      String historicalStart, String historicalEnd, String sourceUrl) {}
 
   GmBanners(Path directory, GachaService service, Clock clock) {
     this.directory = directory;
@@ -35,14 +36,15 @@ final class GmBanners {
         String status = "未配置";
         if (live != null) {
           boolean matches = live.getGachaType() == t.type()
-              && Arrays.equals(live.getRateUpItems5(), ids(t.up5()))
-              && Arrays.equals(live.getRateUpItems4(), ids(t.up4()));
+              && sameItems(live.getRateUpItems5(), t.up5())
+              && sameItems(live.getRateUpItems4(), t.up4());
           status = !matches ? "当前为其他配置" : live.isActive(now) ? "正在开放"
               : now < live.getBeginTime() ? "尚未开放" : "已到期";
         }
         return new BannerRow(t.key(), t.version(), t.phase(), t.name(), t.id(), t.type().name(),
             t.up5(), t.up4(), t.replayable(), status,
-            live == null ? 0 : live.getBeginTime(), live == null ? 0 : live.getEndTime());
+            live == null ? 0 : live.getBeginTime(), live == null ? 0 : live.getEndTime(),
+            t.historicalStart(), t.historicalEnd(), t.sourceUrl());
       }).toList();
     }
   }
@@ -121,6 +123,14 @@ final class GmBanners {
     return items.stream().mapToInt(BannerItem::id).toArray();
   }
 
+  private static boolean sameItems(int[] actual, List<BannerItem> expected) {
+    if (actual == null) return false;
+    int[] actualIds = actual.clone(), expectedIds = ids(expected);
+    Arrays.sort(actualIds);
+    Arrays.sort(expectedIds);
+    return Arrays.equals(actualIds, expectedIds);
+  }
+
   private static List<Template> readArchive() {
     try (var input = GmBanners.class.getResourceAsStream("/gm/banner-history.json")) {
       if (input == null) throw new IOException("Missing banner archive");
@@ -136,10 +146,14 @@ final class GmBanners {
         var up5 = items(row.getAsJsonArray("rateUpItems5"), names);
         var up4 = items(row.getAsJsonArray("rateUpItems4"), names);
         var type = GachaType.valueOf(row.get("gachaType").getAsString());
-        if (!keys.add(key) || up5.size() != 1 || !Set.of(GachaType.AvatarUp, GachaType.WeaponUp).contains(type))
+        String sourceUrl = row.get("sourceUrl").getAsString();
+        if (!keys.add(key) || up5.size() != 1 || up4.size() != 3
+            || !sourceUrl.matches("https://www\\.hoyolab\\.com/article/[0-9]+")
+            || !Set.of(GachaType.AvatarUp, GachaType.WeaponUp).contains(type))
           throw new IOException("Invalid archive row: " + key);
         result.add(new Template(key, version, row.get("phase").getAsString(),
-            row.get("name").getAsString(), id, type, up5, up4, row.get("replayable").getAsBoolean()));
+            row.get("name").getAsString(), id, type, up5, up4, row.get("replayable").getAsBoolean(),
+            row.get("historicalStart").getAsString(), row.get("historicalEnd").getAsString(), sourceUrl));
       }
       result.sort(Comparator.comparingInt((Template t) -> {
         var parts = t.version().split("\\.");
