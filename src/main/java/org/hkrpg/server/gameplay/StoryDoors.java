@@ -11,11 +11,14 @@ import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
 /**
- * Ordinary-world console/door pairs. Readiness is derived from accepted, source-bound objectives.
+ * Ordinary-world consoles and door pairs. Readiness follows accepted, source-bound objectives.
  */
 public final class StoryDoors {
   private static final String GRAPH =
       "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_01.json";
+  // This authored variant only changes its own state. Its unused shared values are not door links.
+  private static final String STANDALONE_GRAPH =
+      "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json";
   private static final String DOOR_KEY = "Maze_Prop_Chap01_Door";
   // The exported task omits its target. Only a matching PropState objective supplies that target;
   // this is deliberately not a general ChangePropState interpreter.
@@ -38,7 +41,15 @@ public final class StoryDoors {
   private record Link(int group, int instance) {}
 
   public static boolean controller(PropInfo info) {
+    return paired(info) || standalone(info);
+  }
+
+  private static boolean paired(PropInfo info) {
     return info != null && info.getPropID() == 100000 && GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean standalone(PropInfo info) {
+    return info != null && info.getPropID() == 100000 && STANDALONE_GRAPH.equals(info.getInitLevelGraph());
   }
 
   static boolean world(Scene scene) {
@@ -50,7 +61,7 @@ public final class StoryDoors {
   }
 
   private static Link link(PropInfo info) {
-    if (!controller(info)
+    if (!paired(info)
         || info.getValueSource() == null
         || info.getValueSource().getValues() == null) return null;
     try {
@@ -110,10 +121,38 @@ public final class StoryDoors {
         || c.getProgress() != 1
         || c.getTask() == null) return false;
     try {
-      return ENABLE_TASK.equals(JsonParser.parseString(c.getTask().getSourceDefinition()));
+      var script = JsonParser.parseString(c.getTask().getSourceDefinition());
+      return ENABLE_TASK.equals(script) || standalone(info) && enableWithDialogue(script);
     } catch (RuntimeException invalid) {
       return false;
     }
+  }
+
+  /** Allow only an unconditional enable plus parallel, literal ambient speech; no script effects. */
+  private static boolean enableWithDialogue(JsonElement script) {
+    if (!script.isJsonObject()) return false;
+    var copy = script.getAsJsonObject().deepCopy();
+    var sequences = copy.getAsJsonArray("OnStartSequece");
+    if (sequences == null || sequences.size() != 2) return false;
+    var sequence = sequences.get(1).getAsJsonObject();
+    if (!sequence.keySet().equals(Set.of("TaskList"))) return false;
+    var tasks = sequence.getAsJsonArray("TaskList");
+    if (tasks == null || tasks.size() != 1) return false;
+    var talk = tasks.get(0).getAsJsonObject();
+    if (!talk.keySet().equals(Set.of("$type", "SimpleTalkList"))
+        || !"RPG.GameCore.PlayMissionTalk".equals(talk.get("$type").getAsString())) return false;
+    var lines = talk.getAsJsonArray("SimpleTalkList");
+    if (lines == null || lines.isEmpty()) return false;
+    for (var line : lines) {
+      var row = line.getAsJsonObject();
+      if (!row.keySet().equals(Set.of("TalkSentenceID", "ProtectTime"))) return false;
+      var id = row.getAsJsonPrimitive("TalkSentenceID");
+      var duration = row.getAsJsonPrimitive("ProtectTime");
+      if (!id.isNumber() || id.getAsBigDecimal().intValueExact() <= 0
+          || !duration.isNumber() || duration.getAsBigDecimal().signum() < 0) return false;
+    }
+    sequences.remove(1);
+    return ENABLE_TASK.equals(copy);
   }
 
   private static List<MissionInfo.SubMissionInfo> objectives(
@@ -125,7 +164,7 @@ public final class StoryDoors {
 
   private static boolean unlockObjective(Scene scene, int group, PropInfo info,
       MissionInfo.SubMissionInfo c) {
-    if (c == null || !controller(info) || info.getState() != PropState.Locked
+    if (c == null || !paired(info) || info.getState() != PropState.Locked
         || !"PropState".equals(c.getFinishType()) || !"Equal".equals(c.getParamType())
         || c.getLevelPlaneID() != scene.getPlaneId() || c.getLevelFloorID() != scene.getFloorId()
         || c.getMazePlaneID() != scene.getPlaneId() || c.getMazeFloorID() != scene.getFloorId()
@@ -199,7 +238,8 @@ public final class StoryDoors {
     if (completed(scene, group, info)) return PropState.Open;
     if (info.getState() == PropState.Locked && !ready(scene, group, info)
         && !unlocked(scene, group, info)) return PropState.Locked;
-    if (pairReceipt(scene, group, info)) return PropState.Open;
+    if (standalone(info) ? receipt(scene, group, info) : pairReceipt(scene, group, info))
+      return PropState.Open;
     if (info.getState() == PropState.Closed) {
       var old =
           scene
@@ -273,6 +313,7 @@ public final class StoryDoors {
         && unlockReady(scene, prop.getGroupId(), info)
         && GameData.getInteractExcelMap().get(config).getTargetState() == PropState.Closed;
     boolean open = config == 1010 && state(scene, prop.getGroupId(), info) == PropState.Closed;
+    if (standalone(info)) return open ? Retcode.SUCC : Retcode.INTERACT_TYPE_INVALID;
     if ((!unlock && !open) || link == null)
       return Retcode.INTERACT_TYPE_INVALID;
     var doorInfo = original(scene, link.group(), link.instance());
@@ -295,7 +336,7 @@ public final class StoryDoors {
   }
 
   static void transitions(EntityProp prop, Map<EntityProp, PropState> targets) {
-    if (!world(prop.getScene()) || !controller(prop.getPropInfo())
+    if (!world(prop.getScene()) || !paired(prop.getPropInfo())
         || targets.get(prop) != PropState.Open) return;
     var door = actor(prop.getScene(), link(prop.getPropInfo()));
     if (door != null) targets.put(door, PropState.Open);
@@ -310,7 +351,9 @@ public final class StoryDoors {
           && receipt(scene, c.getParamInt1(), info, PropState.Closed);
     return controller(info)
         && objective(scene, c.getParamInt1(), info, c)
-        && pairReceipt(scene, c.getParamInt1(), info);
+        && (standalone(info)
+            ? doing(scene, c) && receipt(scene, c.getParamInt1(), info)
+            : pairReceipt(scene, c.getParamInt1(), info));
   }
 
   private StoryDoors() {}

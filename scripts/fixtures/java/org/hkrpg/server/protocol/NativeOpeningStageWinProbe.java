@@ -630,7 +630,7 @@ public final class NativeOpeningStageWinProbe {
         true);
   }
 
-  private void corridorBarriers(boolean restored, boolean scriptedUnlock) throws Exception {
+  private void corridorBarriers(boolean restored, boolean scriptedUnlock, boolean silverWolfRemoved) throws Exception {
     if (!restored) {
       require(!groupEntities(33).isEmpty(), "Hall barrier must precede its actual defeat");
       call(
@@ -675,10 +675,10 @@ public final class NativeOpeningStageWinProbe {
     require(
         groupEntities(17).isEmpty() && groupEntities(33).isEmpty(),
         "Completed story blockers respawned");
-    openingParty(true);
+    openingParty(!silverWolfRemoved);
   }
 
-  private void scriptedDoorUnlock(boolean restored) throws Exception {
+  private void scriptedDoorUnlock(boolean restored, boolean continued) throws Exception {
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     if (!restored) {
       var entered = call("SceneEnterStageCsReq", Map.of("event_id", 20001006), true);
@@ -697,12 +697,43 @@ public final class NativeOpeningStageWinProbe {
       require((Integer) field(unlocked, "prop_state") == 0, "Scripted unlock must return Closed");
     }
     objective(100010124, 2);
-    objective(100010116, 1);
+    objective(100010116, continued ? 2 : 1);
     var props = doors();
     require((Integer) field((DynamicMessage) field(props.get(300029), "prop"), "prop_state") == 0,
         "Scripted unlock was lost on reconnect/restart");
     require((Integer) field((DynamicMessage) field(props.get(300007), "prop"), "prop_state") == 0,
         "Unlock must not prematurely open the associated door");
+  }
+
+  private void stellaronConsole(boolean restored) throws Exception {
+    if (!restored) {
+      var locked = doors().get(300018);
+      require((Integer) field((DynamicMessage) field(locked, "prop"), "prop_state") == 2,
+          "Stellaron console must stay locked before its objective");
+      // Authored client dialogue receipts, not a claim that the game rendered these performances.
+      for (int id : new int[] {100010116, 100010117, 100010118, 100010127,
+          100010119, 100010125, 100010129, 100010128})
+        call("FinishTalkMissionCsReq", Map.of("sub_mission_id", id, "talk_str", "Mission_" + id), true);
+      objective(100010126, 1);
+      var ready = doors().get(300018);
+      require((Integer) field((DynamicMessage) field(ready, "prop"), "prop_state") == 0,
+          "Accepted stellaron objective must enable its console");
+      var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+      var response = call("InteractPropCsReq", Map.of("prop_entity_id", field(ready, "entity_id"),
+          "interact_id2", 1010, "interact_id", field(scene, "interact_id")), true);
+      require((Integer) field(response, "prop_state") == 1, "Stellaron interaction must return Open");
+    }
+    objective(100010126, 2);
+    objective(100010133, 1);
+    openingParty(false);
+    var props = doors();
+    require((Integer) field((DynamicMessage) field(props.get(300018), "prop"), "prop_state") == 1,
+        "Stellaron console state lost on reconnect/restart");
+    require((Integer) field((DynamicMessage) field(props.get(300007), "prop"), "prop_state") == 0,
+        "Stellaron interaction must not open an unrelated door");
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    call("InteractPropCsReq", Map.of("prop_entity_id", field(props.get(300018), "entity_id"),
+        "interact_id2", 1010, "interact_id", field(scene, "interact_id")), false);
   }
 
   private Map<String, Object> execute(JsonObject control) throws Exception {
@@ -725,11 +756,12 @@ public final class NativeOpeningStageWinProbe {
     call("PlayerLoginFinishCsReq");
     String phase = control.get("phase").getAsString();
     boolean restoredBarriers = phase.startsWith("barriers-");
+    boolean verifyStellaron = control.has("stellaronConsole") && control.get("stellaronConsole").getAsBoolean();
     ambush = control.has("ambush") && control.get("ambush").getAsBoolean();
-    openingParty(restoredBarriers);
+    openingParty(restoredBarriers && !verifyStellaron);
     boolean verifyDoors = control.has("doors") && control.get("doors").getAsBoolean();
     openingScene(
-        !verifyDoors || phase.equals("first") || phase.equals("reconnect"), restoredBarriers);
+        !verifyDoors || phase.equals("first") || phase.equals("reconnect"), restoredBarriers && !verifyStellaron);
     boolean first = phase.equals("first");
     if (first) {
       tutorialProgress(false);
@@ -791,8 +823,9 @@ public final class NativeOpeningStageWinProbe {
             && (phase.equals("doors-restart") || restoredBarriers);
     boolean verifyScriptedUnlock = verifyBarriers && control.has("scriptedUnlock")
         && control.get("scriptedUnlock").getAsBoolean();
-    if (verifyBarriers) corridorBarriers(restoredBarriers, verifyScriptedUnlock);
-    if (verifyScriptedUnlock) scriptedDoorUnlock(restoredBarriers);
+    if (verifyBarriers) corridorBarriers(restoredBarriers, verifyScriptedUnlock, restoredBarriers && verifyStellaron);
+    if (verifyScriptedUnlock) scriptedDoorUnlock(restoredBarriers, restoredBarriers && verifyStellaron);
+    if (verifyScriptedUnlock && verifyStellaron) stellaronConsole(restoredBarriers);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -826,6 +859,7 @@ public final class NativeOpeningStageWinProbe {
     result.put("monsterAmbushVerified", ambush && verifyBarriers && !restoredBarriers);
     result.put("sceneActionAdmissionVerified", ambush && verifyBarriers && !restoredBarriers);
     result.put("scriptedDoorUnlockVerified", verifyScriptedUnlock);
+    result.put("stellaronConsoleVerified", verifyScriptedUnlock && verifyStellaron);
     return result;
   }
 

@@ -1,3 +1,5 @@
+`StoryDoors` 还识别只改变自身状态的 `Console01_OpenDoor_03`，按已接取目标及无条件启用/静态对白图恢复就绪；自身收据与成对门收据分别处理，原始未使用的共享值不产生门联动。证据见[星核控制台说明](stellaron-console-4.6.md)。
+
 `StoryDoors` 区分剧情脚本声明的 Locked→Closed 解锁与 1010 开门；解锁只提交控制台状态，任务回调中断可凭同源保存记录恢复。证据与边界见[剧情解锁黑屏说明](story-door-unlock-black-screen-4.6.md)。
 
 `Battle46` 按当前场景施放者区分玩家与怪物，原生技能流水号只用于关联回包；空怪物命中不创建战斗，实际角色命中继续交给 `BattleService` 的伏击路径。来源和验证见[怪物伏击说明](monster-ambush-4.6.md)。

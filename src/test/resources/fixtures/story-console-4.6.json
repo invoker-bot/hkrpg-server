@@ -1,0 +1,231 @@
+{
+  "repository": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sources": [
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010126.json",
+      "sha256": "f4f47bed29fdcfc2e5162b24d7a7db0643b5daf96ff0aa34d1656d5c3499ba1a"
+    },
+    {
+      "path": "Config/Level/Mission/1000101/Mission_100010133.json",
+      "sha256": "32b3bc0cc9a229456ab6588c2b2af81267a659280d7916476350ef90b723aea1"
+    },
+    {
+      "path": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json",
+      "sha256": "d13970d952383c71e79e7582cd0f2a4ad5859228af2007e3b0f060f2fdea71cd"
+    }
+  ],
+  "records": {
+    "Config/Level/Mission/1000101/Mission_100010126.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.ChangePropState"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PlayMissionTalk",
+              "SimpleTalkList": [
+                {
+                  "TalkSentenceID": 100020101,
+                  "ProtectTime": 2
+                },
+                {
+                  "TalkSentenceID": 100020102,
+                  "ProtectTime": 2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1000101/Mission_100010133.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.TriggerPerformance",
+              "PerformanceType": "D",
+              "PerformanceID": 100010108,
+              "ValueSource": {}
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100010133"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json": {
+      "OnInitSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SelectorConfig",
+              "TaskList": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "State": "Open",
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.EnableBillboard",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "State": "Locked",
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.EnableBillboard",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncAllSubPropState"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "DisableWhenTriggered": true,
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.SelectorConfig",
+                  "TaskList": [
+                    {
+                      "$type": "RPG.GameCore.PropStateExecute",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "Execute": [
+                        {
+                          "$type": "RPG.GameCore.StartPropInteractMode",
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          },
+                          "Mode": "UsePose01"
+                        },
+                        {
+                          "$type": "RPG.GameCore.WaitSecond",
+                          "WaitTime": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 0.2
+                            }
+                          }
+                        },
+                        {
+                          "$type": "RPG.GameCore.PropTriggerAnimState",
+                          "AnimStateName": "Open",
+                          "TransitionDuration": 0,
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          }
+                        },
+                        {
+                          "$type": "RPG.GameCore.WaitSecond",
+                          "WaitTime": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 0.5
+                            }
+                          }
+                        },
+                        {
+                          "$type": "RPG.GameCore.EndPropInteract"
+                        },
+                        {
+                          "$type": "RPG.GameCore.PropReqInteract",
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          },
+                          "InteractID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 1010
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropStateExecute",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "State": "Locked",
+                      "Execute": [
+                        {
+                          "$type": "RPG.GameCore.ToastPile",
+                          "DescTextKey": {
+                            "Custom": true,
+                            "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "InteractAngleRange": 220,
+              "OverrideTargetTypes": [],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        }
+      ],
+      "ValueSource": {
+        "Values": [
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Maze_Prop_Chap01_Door"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Value": "PropInteractTitle_10001",
+            "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Maze_Prop_Chap01_DoorFrame_01"
+          }
+        ]
+      }
+    }
+  }
+}
