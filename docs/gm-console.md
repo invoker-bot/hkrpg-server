@@ -263,3 +263,13 @@ Browser 插件不可用，使用已有 Playwright 与已安装 Chrome；隔离�
 网页使用已有 Playwright 与已安装 Chrome（Browser 插件不可用），页面身份、非空内容、无错误覆盖、相关控制台、截图及交互均通过，手机整页没有横向溢出，既有 favicon 404 单独记录。隔离网页夹具共 55 池，包含原 53 池及仅为验收追加的新手、自定义各一池，不会安装到正式数据。完整游戏客户端抽取、扣费与概率仍属于原有未验收范围。
 
 证据保存在任务可视化目录 `gm-current-banners-20261024/`：`java-acceptance.json`、`focused-final.json`、`fresh-byte-check.json`、`deployed-battle-parity.json`、`source/build/gm-native.json`、`source/build/smoke-summary.json` 及 `browser-acceptance/browser-qa.json`。最初检出触发的换行校验失败日志和真实红/绿回归均保留；最终全量没有降低任何校验标准。
+
+### 正式服务发布与数据保留
+
+2026-10-24 03:46（UTC+8）将提交 `56ee1647bad040f764c4f1221f20fce0e1e2cbd1` 正常发布到原 Compose 服务；相较已测代码仅追加验证文档。停服退出码 143、无 OOM，完整运行目录备份至 `.local/backups/gm-current-20261024-034542-56ee164/runtime/`，其中 12 个数据文件在停服状态下逐文件核对。只替换运行 JAR 与部署元数据，保留旧镜像和旧包以便回退，不恢复或覆盖数据库。新镜像为 `sha256:c6daf59ed8b596d77a917fc27922f900ca7b73a8a6ea5d86e26842531416e9bc`，容器内 JAR 摘要与上述全量及原生验收包一致，服务健康。
+
+启动前核对所有玩家数据、SDK 凭据和配置文件均与停服备份完全一致；启动后 13 个静态配置及凭据文件与发布前一致。`config.json` SHA-256 仍为 `6ab12e00346b47718fa765e2b2a88531e8c855efaa25f8eac925155a7f7d194e`；原 `Banners.json` 与 53 行配置均保留。项目默认及正式数据目录都没有重新生成 `gm-console.key`。只读逐记录核对停服备份与新实例：14 个集合的全部 26 条原始记录及归属保留，含 1 个账号、1 个玩家、6 件物品；只有 `regions.up` 在线状态字段变化。临时数据库副本和检查程序已清除。
+
+正式 `http://127.0.0.1:18080/gm` 在 1505×1045 和 390×844 重跑通过：默认当前卡池的 ID 集合与实际文件完全一致，常驻池可查看且显示停止按钮；历史目录、版本和类型筛选、两处停止确认的取消均通过，实际写操作请求为 0。页面身份、非空内容、无错误覆盖、相关控制台、截图及交互全部通过；手机整页无横向溢出，既有 favicon 404 单列。正式配置没有被验收操作改写；真实启停与跨重启行为由同一包的上述隔离实例验证，不代表完整游戏客户端抽卡验收。
+
+发布前后只读 Compose 检查均通过，覆盖持久挂载、产物、本机端口、CN/OS Dispatch 和 UDP 心跳，没有创建正式测试账号。汇总为 `gm-current-banners-20261024/state.json`、`preservation.json`、`browser-live.json`，截图为 `desktop-live-current.png` 和 `mobile-live-current.png`；Compose 记录为 `build/gm-current-compose-before.json` 与 `build/gm-current-compose-after.json`。
