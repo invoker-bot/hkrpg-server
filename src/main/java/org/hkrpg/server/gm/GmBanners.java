@@ -167,7 +167,11 @@ final class GmBanners {
         }
         var before = rows.deepCopy();
         var result = change.apply(rows);
-        if (rows.equals(before)) return result;
+        if (rows.equals(before)) {
+          // A missed watcher event must not leave an acknowledged state only on disk.
+          service.replaceBanners(parse(rows));
+          return result;
+        }
         var candidate = parse(rows);
         Path backups = directory.resolve("gm-banner-backups");
         Files.createDirectories(backups);
