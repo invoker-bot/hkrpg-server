@@ -12,6 +12,7 @@ import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 import org.hkrpg.server.gameplay.GameplayDefinitions;
+import org.hkrpg.server.gameplay.MissionSceneEntrances;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -37,6 +38,7 @@ class OpeningSceneTransfer46Test {
   static class Actor extends Player {
     final LineupManager teams = new LineupManager(this);
     int saves;
+    boolean failSave;
 
     Actor() {
       resetPosition();
@@ -50,6 +52,7 @@ class OpeningSceneTransfer46Test {
 
     @Override
     public void save() {
+      if (failSave) throw new IllegalStateException("test storage failure");
       saves++;
     }
   }
@@ -209,6 +212,96 @@ class OpeningSceneTransfer46Test {
     assertEquals(saves, actor.saves);
   }
 
+  void refusesRecovery() {
+    var scene = actor.getScene();
+    var before = gson.toJson(actor.getGameplay());
+    int saves = actor.saves;
+    assertFalse(
+        MissionSceneEntrances.resumeOnLogin(actor, MissionSceneEntrances.captureLogin(actor)));
+    assertSame(scene, actor.getScene());
+    assertEquals(before, gson.toJson(actor.getGameplay()));
+    assertEquals(saves, actor.saves);
+  }
+
+  @Test
+  void reconnectResumesAnAlreadyAcceptedTransferWithoutAnotherClientEnterRequest() {
+    var origin = MissionSceneEntrances.captureLogin(actor);
+    assertTrue(MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertEquals(20002, actor.getPlaneId());
+    assertEquals(20002001, actor.getFloorId());
+    assertEquals(ENTRY, actor.getEntryId());
+    assertEquals(QuestState.Phase.FINISHED, actor.getMissionManager().sub(SUB).getPhase());
+    assertFalse(actor.getMissionManager().finished(MAIN));
+    var state = gson.toJson(actor.getGameplay());
+    var scene = actor.getScene();
+    int saves = actor.saves;
+    assertFalse(MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertSame(scene, actor.getScene());
+    assertEquals(state, gson.toJson(actor.getGameplay()));
+    assertEquals(saves, actor.saves);
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void aNewObjectiveAcceptedDuringLoginCannotBeAutoStarted(boolean previouslyCompleted) {
+    var old = actor.getGameplay().getSubMissions().get(SUB);
+    old.advance(1, 1, 100);
+    if (!previouslyCompleted) actor.getGameplay().getSubMissions().remove(SUB);
+    var origin = MissionSceneEntrances.captureLogin(actor);
+    actor.getGameplay().getSubMissions().put(SUB, new QuestState(SUB));
+    assertFalse(MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertEquals(20001001, actor.getFloorId());
+    assertEquals(QuestState.Phase.DOING, actor.getMissionManager().sub(SUB).getPhase());
+  }
+
+  @Test
+  void loginRecoveryDoesNotRunInsideAnAlreadyOnlineSession() throws Exception {
+    var origin = MissionSceneEntrances.captureLogin(actor);
+    actor.setSession(session);
+    field(actor, "loggedIn", true);
+    assertFalse(MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertEquals(20001001, actor.getFloorId());
+    assertEquals(QuestState.Phase.DOING, actor.getMissionManager().sub(SUB).getPhase());
+  }
+
+  @Test
+  void loginFallbackToAnotherSourceCannotBorrowAnOldPendingTransfer() throws Exception {
+    field(actor, "entryId", 2000102);
+    var origin = MissionSceneEntrances.captureLogin(actor);
+    field(actor, "entryId", 2000101);
+    assertFalse(MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertEquals(20001001, actor.getFloorId());
+  }
+
+  @Test
+  void ambiguousPendingStartsRemainForClientOrdering() throws Exception {
+    var other = gson.fromJson(gson.toJson(sub), MissionInfo.SubMissionInfo.class);
+    other.setId(SUB + 1);
+    other.setTask(sub.getTask());
+    GameplayDefinitions.subs.put(other.getId(), other);
+    actor.getGameplay().getSubMissions().put(other.getId(), new QuestState(other.getId()));
+    field(
+        GameData.getMissionInfos().get(MAIN),
+        "subMissionList",
+        new MissionInfo.SubMissionInfo[] {GameplayDefinitions.subs.get(PREVIOUS), sub, other});
+    field(GameData.getMapEntranceExcelMap().get(ENTRY), "FinishSubMissionList", new int[0]);
+    var before = gson.toJson(actor.getGameplay());
+    assertFalse(
+        MissionSceneEntrances.resumeOnLogin(actor, MissionSceneEntrances.captureLogin(actor)));
+    assertEquals(20001001, actor.getFloorId());
+    assertEquals(before, gson.toJson(actor.getGameplay()));
+  }
+
+  @Test
+  void failedLocationSaveCannotAcknowledgeArrival() {
+    actor.failSave = true;
+    var origin = MissionSceneEntrances.captureLogin(actor);
+    assertThrows(
+        IllegalStateException.class, () -> MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertEquals(QuestState.Phase.DOING, actor.getMissionManager().sub(SUB).getPhase());
+    assertEquals(20001001, actor.getScene().getFloorId());
+  }
+
   @Test
   void originalActiveEnterMapBreaksCircularCompletionGateAndFinishesOnlyAfterArrival()
       throws Exception {
@@ -269,7 +362,12 @@ class OpeningSceneTransfer46Test {
     if (change.equals("wrong-place")) {
       enter(ENTRY, 0, Retcode.MISSION_NOT_FINISH);
       assertEquals(20001002, actor.getFloorId());
-    } else blocked(ENTRY, 0);
+      assertFalse(
+          MissionSceneEntrances.resumeOnLogin(actor, MissionSceneEntrances.captureLogin(actor)));
+    } else {
+      blocked(ENTRY, 0);
+      refusesRecovery();
+    }
   }
 
   @Test
@@ -284,6 +382,7 @@ class OpeningSceneTransfer46Test {
     row.getAsJsonArray("FinishSubMissionList").add(100010136);
     GameData.getMapEntranceExcelMap().add(gson.fromJson(row, MapEntranceExcel.class));
     blocked(ENTRY, 0);
+    refusesRecovery();
   }
 
   @Test
@@ -292,6 +391,11 @@ class OpeningSceneTransfer46Test {
     var before = gson.toJson(actor.getGameplay());
     int saves = actor.saves;
     enter(ENTRY, 0, Retcode.SCENE_ENTRY_ID_NOT_MATCH);
+    assertEquals(20001001, actor.getFloorId());
+    assertEquals(before, gson.toJson(actor.getGameplay()));
+    assertEquals(saves, actor.saves);
+    assertFalse(
+        MissionSceneEntrances.resumeOnLogin(actor, MissionSceneEntrances.captureLogin(actor)));
     assertEquals(20001001, actor.getFloorId());
     assertEquals(before, gson.toJson(actor.getGameplay()));
     assertEquals(saves, actor.saves);

@@ -24,6 +24,7 @@ public final class NativeOpeningStageWinProbe {
   private final List<Integer> unloadedGroups = new ArrayList<>();
   private Ukcp channel;
   private int requests;
+  private int enterSceneRequests;
   private int credits;
   private String loginNickname;
   private int rewardHints;
@@ -59,6 +60,7 @@ public final class NativeOpeningStageWinProbe {
       packet.release();
     }
     requests++;
+    if (name.equals("EnterSceneCsReq")) enterSceneRequests++;
     var response = name.replace("CsReq", "ScRsp");
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
     while (System.nanoTime() < deadline) {
@@ -773,12 +775,19 @@ public final class NativeOpeningStageWinProbe {
     openingParty(false);
   }
 
-  private void openingTransfer(boolean restored) throws Exception {
+  private void openingTransfer(boolean restored, boolean interrupted) throws Exception {
     if (!restored) {
       call("FinishTalkMissionCsReq", Map.of("talk_str", "Mission_100010136"), true);
       objective(100010136, 2);
       objective(100010120, 2);
       objective(100010121, 1);
+      if (interrupted) {
+        var source = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+        require((Integer) field(source, "floor_id") == 20001001,
+            "Interrupted transfer must still be pending in the source room");
+        require(enterSceneRequests == 0, "Interrupted run unexpectedly sent EnterScene");
+        return;
+      }
       call("EnterSceneCsReq", Map.of("entry_id", 200020102), false);
       call("EnterSceneCsReq", Map.of("entry_id", 2000201), true);
     }
@@ -836,11 +845,14 @@ public final class NativeOpeningStageWinProbe {
     call("PlayerLoginFinishCsReq");
     String phase = control.get("phase").getAsString();
     boolean verifyTransfer = control.has("openingTransfer") && control.get("openingTransfer").getAsBoolean();
+    boolean interruptedTransfer = control.has("interruptedTransfer") && control.get("interruptedTransfer").getAsBoolean();
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");
-      openingTransfer(true);
+      openingTransfer(true, false);
+      require(enterSceneRequests == 0, "Recovery must use only the persisted task, not a new EnterScene request");
       return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
-          "openingTransferVerified", true, "clientGameplayVerified", false);
+          "openingTransferVerified", true, "enterSceneRequests", enterSceneRequests,
+          "interruptedTransferRecovery", interruptedTransfer, "clientGameplayVerified", false);
     }
     boolean restoredBarriers = phase.startsWith("barriers-");
     boolean verifyStellaron = control.has("stellaronConsole") && control.get("stellaronConsole").getAsBoolean();
@@ -917,7 +929,7 @@ public final class NativeOpeningStageWinProbe {
       stellaronConsole(restoredBarriers, verifyCharacter);
       if (verifyCharacter) characterChoice(phase);
     }
-    if (verifyTransfer && phase.equals("barriers-restart")) openingTransfer(false);
+    if (verifyTransfer && phase.equals("barriers-restart")) openingTransfer(false, interruptedTransfer);
     var result =
         new LinkedHashMap<String, Object>(
             Map.of(
@@ -953,7 +965,8 @@ public final class NativeOpeningStageWinProbe {
     result.put("scriptedDoorUnlockVerified", verifyScriptedUnlock);
     result.put("stellaronConsoleVerified", verifyScriptedUnlock && verifyStellaron);
     result.put("characterChoiceVerified", verifyScriptedUnlock && verifyStellaron && verifyCharacter);
-    result.put("openingTransferVerified", verifyTransfer && phase.equals("barriers-restart"));
+    result.put("openingTransferVerified", verifyTransfer && phase.equals("barriers-restart") && !interruptedTransfer);
+    result.put("openingTransferPending", verifyTransfer && phase.equals("barriers-restart") && interruptedTransfer);
     return result;
   }
 

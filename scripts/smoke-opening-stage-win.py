@@ -31,8 +31,12 @@ def main():
     parser.add_argument('--stellaron-console', action='store_true', help='继续到星核控制台，校验任务解锁、交互、后续演出接取及重连/H2恢复；对话为合成回执')
     parser.add_argument('--character-choice', action='store_true', help='继续校验真实昵称请求、重连后明确选角及选角后H2重启；不播放客户端演出')
     parser.add_argument('--opening-transfer', action='store_true', help='继续校验选角后按原始脚本切图、后续对白接取及重连/H2保存；不播放客户端演出')
+    parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
+                        help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.interrupt_opening_transfer:
+        args.opening_transfer = True
     if args.opening_transfer:
         args.character_choice = True
     if args.character_choice:
@@ -121,14 +125,15 @@ def main():
                 phases = (['first', 'reconnect'] if iteration == 0 else ['restart'] if iteration == 1
                           else ['doors-restart', 'barriers-reconnect'] if iteration == 2 and args.barriers
                           else ['doors-restart'] if iteration == 2
-                          else ['barriers-restart', 'transfer-reconnect'] if iteration == 3 and args.opening_transfer
+                          else ['barriers-restart', 'transfer-reconnect'] if iteration == 3 and args.opening_transfer and args.interrupt_opening_transfer != 'restart'
                           else ['barriers-restart'] if iteration == 3 else ['transfer-restart'])
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
                                    'ambush': args.ambush, 'scriptedUnlock': args.scripted_unlock,
                                    'stellaronConsole': args.stellaron_console, 'characterChoice': args.character_choice,
-                                   'openingTransfer': args.opening_transfer}
+                                   'openingTransfer': args.opening_transfer,
+                                   'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
                                            input=json.dumps(credentials), text=True, capture_output=True,
@@ -138,6 +143,8 @@ def main():
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
                     if phase.startswith('transfer-'):
                         assert snapshot['passed'] and snapshot['openingTransferVerified']
+                        assert snapshot['enterSceneRequests'] == 0
+                        assert snapshot['interruptedTransferRecovery'] == bool(args.interrupt_opening_transfer)
                         snapshots.append(snapshot)
                         time.sleep(1)
                         continue
@@ -155,7 +162,8 @@ def main():
                     assert snapshot['scriptedDoorUnlockVerified'] == (args.scripted_unlock and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     assert snapshot['stellaronConsoleVerified'] == (args.stellaron_console and (phase == 'doors-restart' or phase.startswith('barriers-')))
                     assert snapshot['characterChoiceVerified'] == (args.character_choice and (phase == 'doors-restart' or phase.startswith('barriers-')))
-                    assert snapshot['openingTransferVerified'] == (args.opening_transfer and phase == 'barriers-restart')
+                    assert snapshot['openingTransferVerified'] == (args.opening_transfer and phase == 'barriers-restart' and not args.interrupt_opening_transfer)
+                    assert snapshot['openingTransferPending'] == (bool(args.interrupt_opening_transfer) and phase == 'barriers-restart')
                     snapshots.append(snapshot)
                     time.sleep(1)
             finally:
@@ -175,7 +183,8 @@ def main():
     assert before == {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
     report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'snapshots': snapshots,
-              'normalStops': stops, 'sourceResourcesModified': False, 'clientGameplayVerified': False}
+              'normalStops': stops, 'interruptedTransfer': args.interrupt_opening_transfer,
+              'sourceResourcesModified': False, 'clientGameplayVerified': False}
     output = args.output
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps({'passed': True, 'requests': sum(row['requests'] for row in snapshots),

@@ -1210,6 +1210,7 @@ public class Player implements Tickable, Syncable {
     }
 
     public void onLogin() {
+        var pendingTravel = org.hkrpg.server.gameplay.MissionSceneEntrances.captureLogin(this);
         // Set up lineup manager
         this.getLineupManager().setPlayer(this);
 
@@ -1288,6 +1289,11 @@ public class Player implements Tickable, Syncable {
         }
 
         org.hkrpg.server.gameplay.BoxingClubManager.restore(this);
+
+        // The client may not replay an accepted EnterMap after a fade/disconnect. Resume only a
+        // fully validated, single-action transfer saved before this login and before publishing it.
+        if (getSession() != null && getSession().getProtocol().experimental())
+            org.hkrpg.server.gameplay.MissionSceneEntrances.resumeOnLogin(this, pendingTravel);
 
         // Set logged in flag
         this.lastActiveTime = System.currentTimeMillis() / 1000;
