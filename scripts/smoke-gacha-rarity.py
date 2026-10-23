@@ -1,0 +1,198 @@
+"""隔离原始混合常驻配置：真实 KCP 抽取、扣票、保底、H2 保存及同 UID 重启。"""
+import hashlib
+import http.cookiejar
+import importlib.util
+import json
+import os
+from pathlib import Path
+import socket
+import subprocess
+import tempfile
+import urllib.request
+import uuid
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location('gm_smoke', ROOT / 'scripts/smoke-gm-console.py')
+gm = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(gm)
+
+
+def main():
+    jar = ROOT / 'build/libs/hkrpg-server.jar'
+    digest = hashlib.sha256(jar.read_bytes()).hexdigest()
+    java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
+    runs = ROOT / 'build/smoke'
+    runs.mkdir(exist_ok=True)
+    directory = Path(tempfile.mkdtemp(prefix='gacha-rarity-', dir=runs))
+    helpers = directory / 'helpers'
+    helpers.mkdir()
+    flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+    sources = [ROOT / 'scripts/fixtures/java/org/hkrpg/server/protocol' / (name + '.java')
+               for name in ('NativeGmPlayerProbe', 'GachaRarityFixtureInspector')]
+    subprocess.run([str(java.with_name('javac.exe')), '-encoding', 'UTF-8', '-cp', str(jar), '-d', str(helpers),
+                    *map(str, sources)], check=True, capture_output=True, creationflags=flags)
+    http_port, mongo, game = gm.free_port(), gm.free_port(), gm.free_port(socket.SOCK_DGRAM)
+    config = {'protocol': {'wireVersion': '4.6.0'}, 'resourceDir': str(ROOT / 'resources/4.6'),
+              'httpServer': {'bindAddress': '127.0.0.1', 'bindPort': http_port},
+              'gameServer': {'bindAddress': '127.0.0.1', 'bindPort': game},
+              'internalMongoServer': {'address': '127.0.0.1', 'port': mongo, 'filePath': './data/database.mv'}}
+    (directory / 'config.json').write_text(json.dumps(config), encoding='utf-8')
+    base = f'http://127.0.0.1:{http_port}'
+    java_flags = ['-Dfile.encoding=UTF-8', '-Dio.netty.eventLoopThreads=2',
+                  '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback')]
+    account_name = 'gacha_rarity_' + uuid.uuid4().hex + '@example.invalid'
+    logs, pulls = [], []
+    server = probe = None
+    uid = None
+    csrf = ''
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+    def request(route, body=None):
+        req = urllib.request.Request(base + route, data=None if body is None else json.dumps(body).encode(),
+                                     headers={'Content-Type': 'application/json', 'Origin': base, 'X-GM-CSRF': csrf})
+        with opener.open(req, timeout=30) as response:
+            return json.load(response)
+
+    def stock(snapshot):
+        return next((row['num'] for row in snapshot['bag'].get('material_list', []) if row['tid'] == 101), 0)
+
+    def snapshot():
+        return json.loads((directory / 'snapshot.json').read_text(encoding='utf-8'))
+
+    def operation(action, **values):
+        value = request('/gm/api/operate', {'requestId': str(uuid.uuid4()), 'uid': uid, 'action': action, **values})['data']
+        assert value['state'] == 'completed', value
+
+    def stop(strict=True):
+        nonlocal probe, server
+        results = []
+        if probe:
+            (directory / 'quit').touch()
+            try:
+                probe.wait(timeout=40)
+            except subprocess.TimeoutExpired:
+                probe.terminate()
+                probe.wait(timeout=15)
+            results.append(probe.returncode == 0)
+            probe = None
+        if server:
+            if server.poll() is None:
+                server.stdin.write(b'stop\n')
+                server.stdin.flush()
+                try:
+                    server.wait(timeout=45)
+                except subprocess.TimeoutExpired:
+                    server.terminate()
+                    server.wait(timeout=15)
+            results.append(server.returncode == (1000 if os.name == 'nt' else 232))
+            server.stdin.close()
+            server = None
+        if strict:
+            assert all(results), 'Owned probe/server did not stop normally'
+
+    def inspect(action):
+        result = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
+            'org.hkrpg.server.protocol.GachaRarityFixtureInspector', action, str(directory)],
+            cwd=ROOT, capture_output=True, timeout=90, creationflags=flags)
+        (directory / f'inspect-{action}.log').write_bytes(result.stdout + result.stderr)
+        assert result.returncode == 0, 'Owned H2 inspector failed'
+        return json.loads(next(line.removeprefix('RARITY_FIXTURE=') for line in result.stdout.decode('utf-8').splitlines() if line.startswith('RARITY_FIXTURE=')))
+
+    def pull(count):
+        request_id = str(uuid.uuid4())
+        target = directory / 'gacha-pull-request.json'
+        temp = target.with_suffix('.tmp')
+        temp.write_text(json.dumps({'requestId': request_id, 'count': count}), encoding='utf-8')
+        temp.replace(target)
+        result = gm.wait_for(lambda: (lambda data: data if data.get('gachaPull', {}).get('requestId') == request_id else None)(snapshot()), 40)
+        target.unlink()
+        response = result['gachaPull']['response']
+        assert response['gacha_num'] == count and response['gacha_id'] == 1001
+        rows = response['gacha_item_list']
+        assert len(rows) == count
+        won = [row['gacha_item']['item_id'] for row in rows]
+        pulls.append({'count': count, 'items': won, 'ticketsAfter': stock(result)})
+        return won, result
+
+    rarity = {}
+    for name in ('ItemConfigAvatar.json', 'ItemConfigEquipment.json'):
+        rows = json.loads((ROOT / 'resources/4.6/ExcelOutput' / name).read_text(encoding='utf-8'))
+        rows = rows if isinstance(rows, list) else rows.values()
+        rarity.update({row['ID']: {'Rare': 3, 'VeryRare': 4, 'SuperRare': 5}.get(row['Rarity'], 0) for row in rows})
+    try:
+        seeded = after_draws = restored = None
+        for iteration in range(3):
+            log = (directory / f'server-{iteration}.log').open('w', encoding='utf-8')
+            logs.append(log)
+            server = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
+                cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
+            gm.wait_for(lambda: server.poll() is None and request('/health/ready')['ready'])
+            csrf = request('/gm/api/session', {})['data']['csrf']
+            current = request('/gm/api/banners/current?limit=100')['data']['items']
+            assert all(row['pullable'] for row in current), [(row['id'], row['poolIssues']) for row in current if not row['pullable']]
+            for row in current:
+                assert all(rarity[item['id']] == 5 for item in row['pool5'])
+                assert all(rarity[item['id']] == 4 for item in row['pool4'])
+            normal = next(row for row in current if row['id'] == 1001)
+            assert len(normal['up5']) == 14 and len(normal['up4']) == 34
+            account = request('/hkrpg_cn/mdk/shield/api/login', {'account': account_name, 'password': 'disposable-rarity-smoke'})['data']['account']
+            combo = request('/hkrpg_cn/combo/granter/login/v2/login', {'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
+            credentials = directory / 'credentials.json'
+            credentials.write_text(json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}), encoding='utf-8')
+            (directory / 'quit').unlink(missing_ok=True)
+            (directory / 'snapshot.json').unlink(missing_ok=True)
+            log = (directory / f'probe-{iteration}.log').open('w', encoding='utf-8')
+            logs.append(log)
+            probe = subprocess.Popen([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
+                'org.hkrpg.server.protocol.NativeGmPlayerProbe', str(game), str(credentials), str(directory)],
+                cwd=directory, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
+            initial = gm.wait_for(snapshot)
+            if uid is None:
+                uid = initial['uid']
+            assert initial['uid'] == uid
+            if iteration == 0:
+                original = (directory / 'data/Banners.json').read_bytes()
+                operation('grant', itemId=101, amount=50, level=0, rank=0)
+                gm.wait_for(lambda: stock(snapshot()) == 50, 30)
+                (directory / 'rarity-fixture.json').write_text(json.dumps({'testFixture': True, 'uid': uid}), encoding='utf-8')
+                stop()
+                seeded = inspect('seed')
+                assert (seeded['pity5'], seeded['pity4'], seeded['failedFeatured'], seeded['tickets']) == (89,9,1,50)
+            elif iteration == 1:
+                won5, first = pull(1)
+                assert [rarity[i] for i in won5] == [5], 'Hard five-star pity awarded a lower rarity'
+                won10, last = pull(10)
+                assert any(rarity[i] == 4 for i in won10), 'Ten pulls after four-star pity produced no four-star item'
+                assert stock(first) == 49 and stock(last) == 39
+                stop()
+                after_draws = inspect('inspect')
+                pity5, pity4 = 89, 9
+                for item in won5 + won10:
+                    if rarity[item] == 5: pity5, pity4 = 0, pity4 + 1
+                    elif rarity[item] == 4: pity5, pity4 = pity5 + 1, 0
+                    else: pity5, pity4 = pity5 + 1, pity4 + 1
+                assert (after_draws['pity5'],after_draws['pity4']) == (pity5,pity4)
+                assert after_draws['failedFeatured'] == 1 and after_draws['ceiling'] == seeded['ceiling'] + 11
+            else:
+                assert stock(initial) == 39
+                restored = initial
+                stop()
+                final = inspect('inspect')
+                assert final == after_draws
+            assert (directory / 'data/Banners.json').read_bytes() == original
+        assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
+        report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'uid': uid,
+                  'normalStops': 3, 'actualPulls': 11, 'pulls': pulls, 'seeded': seeded, 'persisted': after_draws,
+                  'actualPlayerReads': 6, 'sameUidAfterTwoRestarts': True, 'ticketCost': 11,
+                  'bannerFileUnchanged': True, 'all53PoolsResourceChecked': True,
+                  'restoredSnapshot': restored, 'operatorDataModified': False, 'clientGameplayVerified': False}
+        (ROOT / 'build/gacha-rarity-native.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+        print(json.dumps({k: report[k] for k in ('passed','actualPulls','normalStops','ticketCost','actualPlayerReads')}))
+    finally:
+        stop(strict=False)
+        for log in logs:
+            log.close()
+
+
+if __name__ == '__main__':
+    main()

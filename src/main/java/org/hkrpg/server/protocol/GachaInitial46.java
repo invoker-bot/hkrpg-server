@@ -37,6 +37,8 @@ final class GachaInitial46 {
       synchronized (player) {
         for (var banner : new TreeMap<>(service.getGachaBanners()).values()) {
           if (!banner.isActive(now)) continue;
+          var pool = service.getPool(banner);
+          if (!pool.canPull()) continue;
           var info = DynamicMessage.newBuilder(schema.message("GachaInfo"));
           set(info, "gacha_id", banner.getId());
           if (banner.getGachaType() != GachaType.Normal) {
@@ -46,10 +48,10 @@ final class GachaInitial46 {
           // Honey fe00bdb Common/Data/Custom/BannersConfig.ToInfo separates five-star display
           // items (10), four-star rate-up items (5), and the avatar-event detail marker (7).
           // The old up_info list combines pools and must not be renamed to any of those fields.
-          int[] featured = banner.getId() == 1001 ? service.getDefaultFeaturedIds() : banner.getRateUpItems5();
+          int[] featured = service.getFeatured5(banner, pool);
           if (featured != null) for (int id : featured) add(info, "prize_item_list", id);
-          if (banner.getGachaType() != GachaType.Normal && banner.getRateUpItems4() != null)
-            for (int id : banner.getRateUpItems4()) add(info, "ONIHOMCELJK", id);
+          if (banner.getGachaType() != GachaType.Normal)
+            for (int id : pool.permanent() ? pool.fourStars() : pool.up4()) add(info, "ONIHOMCELJK", id);
           if (banner.getGachaType() == GachaType.AvatarUp) add(info, "item_detail_list", 11);
           if (banner.getId() == 1001) {
             var ceiling = DynamicMessage.newBuilder(schema.message("GachaCeiling"));

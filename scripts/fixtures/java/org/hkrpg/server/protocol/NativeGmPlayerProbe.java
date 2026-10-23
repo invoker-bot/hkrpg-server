@@ -99,8 +99,23 @@ public final class NativeGmPlayerProbe {
     int uid = (Integer) field(token, "uid");
     basic.putAll(project((DynamicMessage) field(call("PlayerLoginCsReq"), "basic_info")));
     call("PlayerLoginFinishCsReq");
+    String lastPullId = "";
+    Map<String, Object> lastPull = null;
     long deadline = System.nanoTime() + TimeUnit.MINUTES.toNanos(40);
     while (!Files.exists(directory.resolve("quit")) && System.nanoTime() < deadline) {
+      // Optional owned smoke control. No production endpoint or runtime hook is installed.
+      Path pullRequest = directory.resolve("gacha-pull-request.json");
+      if (Files.exists(pullRequest)) {
+        var requested = JsonParser.parseString(Files.readString(pullRequest)).getAsJsonObject();
+        String id = requested.get("requestId").getAsString();
+        if (!id.equals(lastPullId)) {
+          int count = requested.get("count").getAsInt();
+          if (count != 1 && count != 10) throw new IllegalArgumentException("Invalid smoke pull count");
+          var result = call("DoGachaCsReq", Map.of("gacha_id",1001,"gacha_num",count));
+          lastPull = Map.of("requestId",id,"count",count,"response",project(result));
+          lastPullId = id;
+        }
+      }
       call("PlayerHeartBeatCsReq", Map.of("client_time_ms", System.currentTimeMillis()));
       var snapshot = new LinkedHashMap<String, Object>();
       snapshot.put("uid", uid);
@@ -110,6 +125,7 @@ public final class NativeGmPlayerProbe {
       snapshot.put("gacha", project(call("GetGachaInfoCsReq")));
       snapshot.put("basic", Map.copyOf(basic));
       snapshot.put("requests", requests);
+      if (lastPull != null) snapshot.put("gachaPull",lastPull);
       Path temporary = directory.resolve("snapshot.tmp");
       Files.writeString(temporary, new Gson().toJson(snapshot));
       Files.move(

@@ -27,8 +27,13 @@ public class PacketDoGachaScRsp extends BasePacket {
 
         var data = DoGachaScRsp.newInstance()
                 .setGachaNum(num)
-                .setCeilingNum(player.getGachaInfo().getCeilingNum())
                 .setGachaId(banner.getId());
+
+        // CN4.6 has no verified equivalent of this legacy field. Keep the counter in
+        // PlayerGachaInfo and the native GachaCeiling query; do not guess an obfuscated ID.
+        if (player.getSession() == null || !player.getSession().getProtocol().experimental()) {
+            data.setCeilingNum(player.getGachaInfo().getCeilingNum());
+        }
 
         for (GachaItem item : items) {
             data.addGachaItemList(item);

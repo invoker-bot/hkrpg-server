@@ -59,7 +59,16 @@ public final class GmModels {
   public record CurrentBannerRow(int id, String type, String name, String historyKey,
       String version, String phase, List<BannerItem> up5, List<BannerItem> up4,
       String state, String status, long beginTime, long endTime, boolean permanent,
-      boolean disabled, boolean canStop, boolean canEnable) {}
+      boolean disabled, boolean canStop, boolean canEnable,
+      List<BannerItem> pool5, List<BannerItem> pool4, List<String> poolIssues, boolean pullable) {
+    public CurrentBannerRow(int id, String type, String name, String historyKey,
+        String version, String phase, List<BannerItem> up5, List<BannerItem> up4,
+        String state, String status, long beginTime, long endTime, boolean permanent,
+        boolean disabled, boolean canStop, boolean canEnable) {
+      this(id, type, name, historyKey, version, phase, up5, up4, state, status,
+          beginTime, endTime, permanent, disabled, canStop, canEnable, up5, up4, List.of(), true);
+    }
+  }
 
   public record BannerItem(int id, String name) {}
 

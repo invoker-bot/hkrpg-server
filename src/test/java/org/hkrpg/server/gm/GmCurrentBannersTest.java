@@ -48,7 +48,9 @@ class GmCurrentBannersTest {
     assertEquals("常驻跃迁", rows.get(0).name()); assertEquals("新手跃迁", rows.get(1).name());
     assertTrue(rows.stream().allMatch(b -> b.state().equals("active") && b.canStop() && !b.canEnable()));
     assertEquals("自定义卡池 #99999", rows.get(2).name());
-    assertEquals(List.of(new BannerItem(999998,"资源 #999998")), rows.get(2).up5());
+    assertEquals(List.of(), rows.get(2).up5());
+    assertFalse(rows.get(2).pullable());
+    assertTrue(rows.get(2).poolIssues().stream().anyMatch(message -> message.contains("999998")));
     assertEquals("", rows.get(2).historyKey());
     assertEquals(before, Files.readString(directory.resolve("Banners.json")));
     assertFalse(Files.exists(directory.resolve("gm-banner-backups")));

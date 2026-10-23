@@ -58,9 +58,17 @@ export function mountBanners(main,inspector,state) {
     const banner=selected;
     inspector.append(el('p',{class:'mono muted',text:(mode==='history'
       ?'版本 '+banner.version+' · '+banner.phase:typeNames[banner.type.toLowerCase()])+' · #'+banner.id}),
-      el('section',{class:'action-group'},el('h3',{text:mode==='history'?'历史 UP 内容':'本服配置内容'}),
-        el('p',{text:(mode==='history'?'五星：':'五星配置：')+(banner.up5.map(i=>i.name).join('、')||'未设置专属条目')}),
-        el('p',{class:'muted',text:(mode==='history'?'四星：':'四星配置：')+(banner.up4.map(i=>i.name).join('、')||'未设置专属条目')})));
+      el('section',{class:'action-group'},el('h3',{text:mode==='history'?'历史 UP 内容':banner.permanent?'实际可抽取内容':'本服 UP 内容'}),
+        el('p',{text:(mode==='history'?'五星：':banner.permanent?'五星候选：':'五星 UP：')+(banner.up5.map(i=>i.name).join('、')||'未设置专属条目')}),
+        el('p',{class:'muted',text:(mode==='history'?'四星：':banner.permanent?'四星候选：':'四星 UP：')+(banner.up4.map(i=>i.name).join('、')||'未设置专属条目')})));
+    if(mode==='current'){
+      if(banner.permanent)inspector.append(el('p',{class:'inspector-note',text:'常驻与新手池按真实星级分组，没有 UP；五星和四星各从对应候选中抽取。旧配置文件保持原样。'}));
+      else inspector.append(el('section',{class:'action-group'},el('h3',{text:'实际可抽取内容（含非 UP）'}),
+        el('p',{text:'五星候选：'+banner.pool5.map(i=>i.name).join('、')}),
+        el('p',{class:'muted',text:'四星候选：'+banner.pool4.map(i=>i.name).join('、')})));
+      if(!banner.pullable)inspector.append(el('section',{class:'action-group'},el('h3',{text:'配置需检查，当前不能抽取'}),
+        ...banner.poolIssues.map(text=>el('p',{class:'inspector-note',text}))));
+    }
     if(mode==='history'){
       inspector.append(el('section',{class:'action-group'},el('h3',{text:'官服历史时间 · UTC+8'}),
         el('p',{class:'muted',text:'开始：'+banner.historicalStart}),el('p',{class:'muted',text:'截止：'+banner.historicalEnd}),
@@ -112,12 +120,12 @@ export function mountBanners(main,inspector,state) {
       previous.disabled=offset===0;next.disabled=offset+data.items.length>=data.total;
       selected=targetKey?data.items.find(b=>b.key===targetKey)||null:selected?data.items.find(b=>b.id===selected.id)||null:null;
       targetKey='';
-      const headers=view==='history'?['版本 / 期次','卡池','五星 UP','本服状态','选择']:['类型','卡池','五星配置','本服状态','选择'];
+      const headers=view==='history'?['版本 / 期次','卡池','五星 UP','本服状态','选择']:['类型','卡池','五星候选 / UP','本服状态','选择'];
       list.replaceChildren(data.items.length?table(headers,data.items.map(b=>el('tr',{class:selected?.id===b.id?'selected':''},
         el('td',{},el('strong',{text:view==='history'?b.version:typeNames[b.type.toLowerCase()]}),
           el('small',{class:'muted',text:view==='history'?b.phase:b.permanent?'长期':b.version?'版本 '+b.version:''})),
         el('td',{},el('strong',{text:b.name}),el('small',{class:'muted',text:'#'+b.id})),
-        el('td',{text:b.permanent?'常驻角色与光锥':b.up5.map(i=>i.name).join('、')||'未设置专属条目'}),
+        el('td',{text:b.permanent?b.up5.length+' 个五星候选':b.up5.map(i=>i.name).join('、')||'未设置专属条目'}),
         el('td',{},el('span',{class:b.status==='正在开放'?'online-text':'muted',text:b.status})),
         el('td',{},button('查看',()=>{selected=b;renderInspector();
           for(const row of list.querySelectorAll('tbody tr'))row.classList.remove('selected');

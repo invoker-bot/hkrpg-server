@@ -66,6 +66,30 @@ public class GachaService extends BaseGameService {
         return array[randomRange(0, array.length - 1)];
     }
 
+    public GachaPool getPool(GachaBanner banner) {
+        return GachaPool.resolve(banner, this);
+    }
+
+    public int[] getFeatured5(GachaBanner banner, GachaPool pool) {
+        if (!pool.permanent()) return pool.up5().stream().mapToInt(Integer::intValue).toArray();
+        // Older permanent configurations put the five-star display subset in rateUpItems4.
+        var display = java.util.Arrays.stream(banner.getRateUpItems4()).filter(pool.fiveStars()::contains).distinct().toArray();
+        if (display.length == 0) display = java.util.Arrays.stream(defaultFeaturedIds).filter(pool.fiveStars()::contains).toArray();
+        return display.length == 0 ? pool.base5().stream().mapToInt(Integer::intValue).toArray() : display;
+    }
+
+    private int pick(java.util.List<Integer> candidates) {
+        return getRandom(candidates.stream().mapToInt(Integer::intValue).toArray());
+    }
+
+    private int pickBase(java.util.List<Integer> candidates) {
+        var avatars = candidates.stream().filter(id -> GameData.getItemExcelMap().get(id).getItemMainType() == ItemMainType.AvatarCard).toList();
+        var weapons = candidates.stream().filter(id -> GameData.getItemExcelMap().get(id).getItemMainType() == ItemMainType.Equipment).toList();
+        if (avatars.isEmpty()) return pick(weapons);
+        if (weapons.isEmpty()) return pick(avatars);
+        return pick(randomRange(1, 2) == 1 ? avatars : weapons);
+    }
+
     private String getBannerFileName() {
         return LunarCore.getConfig().getDataDir() + "/Banners.json";
     }
@@ -155,6 +179,12 @@ public class GachaService extends BaseGameService {
             return;
         }
 
+        var pool = getPool(banner);
+        if (!pool.canPull()) {
+            player.sendPacket(new PacketDoGachaScRsp(Retcode.FAIL));
+            return;
+        }
+
         // Prevent player from using gacha if they are at max light cones
         if (player.getInventory().getTabByItemType(ItemMainType.Equipment).getSize() >= player.getInventory().getTabByItemType(ItemMainType.Equipment).getMaxCapacity()) {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.EQUIPMENT_EXCEED_LIMIT));
@@ -193,11 +223,11 @@ public class GachaService extends BaseGameService {
             int purpleChance = 10000 - (510 + (int) Math.floor(790f * (gachaInfo.getPity4() / 8f)));
 
             if (random <= yellowChance || gachaInfo.getPity5() >= 89) {
-                if (banner.getRateUpItems5().length > 0) {
+                if (!pool.up5().isEmpty()) {
                     int eventChance = this.randomRange(1, 100);
 
                     if (eventChance <= banner.getEventChance() || gachaInfo.getFailedFeaturedItemPulls() >= 1) {
-                        itemId = getRandom(banner.getRateUpItems5());
+                        itemId = pick(pool.up5());
                         gachaInfo.setFailedFeaturedItemPulls(0);
                     } else {
                         // Lost the 50/50... rip
@@ -206,40 +236,30 @@ public class GachaService extends BaseGameService {
                 }
 
                 if (itemId == 0) {
-                    int typeChance = this.randomRange(banner.getGachaType().getMinItemType(), banner.getGachaType().getMaxItemType());
-                    if (typeChance == 1) {
-                        itemId = getRandom(this.yellowAvatars);
-                    } else {
-                        itemId = getRandom(this.yellowWeapons);
-                    }
+                    itemId = pickBase(pool.base5());
                 }
 
                 // Pity
                 gachaInfo.addPity4(1);
                 gachaInfo.setPity5(0);
             } else if (random >= purpleChance || gachaInfo.getPity4() >= 9) {
-                if (banner.getRateUpItems4().length > 0) {
+                if (!pool.up4().isEmpty()) {
                     int eventChance = this.randomRange(1, 100);
 
                     if (eventChance >= 50) {
-                        itemId = getRandom(banner.getRateUpItems4());
+                        itemId = pick(pool.up4());
                     }
                 }
 
                 if (itemId == 0) {
-                    int typeChance = this.randomRange(banner.getGachaType().getMinItemType(), banner.getGachaType().getMaxItemType());
-                    if (typeChance == 1) {
-                        itemId = getRandom(this.purpleAvatars);
-                    } else {
-                        itemId = getRandom(this.purpleWeapons);
-                    }
+                    itemId = pickBase(pool.base4());
                 }
 
                 // Pity
                 gachaInfo.addPity5(1);
                 gachaInfo.setPity4(0);
             } else {
-                itemId = getRandom(this.blueWeapons);
+                itemId = pick(pool.base3());
 
                 // Pity
                 gachaInfo.addPity4(1);
@@ -376,6 +396,7 @@ public class GachaService extends BaseGameService {
 
         for (GachaBanner banner : getGachaBanners().values()) {
             if (!banner.isActive(System.currentTimeMillis() / 1000L)) continue;
+            if (!getPool(banner).canPull()) continue;
             proto.addGachaInfoList(banner.toProto(this, player));
         }
 

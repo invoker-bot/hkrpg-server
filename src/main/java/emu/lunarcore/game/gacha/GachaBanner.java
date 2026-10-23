@@ -36,6 +36,7 @@ public class GachaBanner {
     }
 
     public GachaInfo toProto(GachaService service, Player player) {
+        var pool = service.getPool(this);
         var info = GachaInfo.newInstance()
                 .setGachaId(this.getId())
                 .setDetailUrl("")
@@ -49,21 +50,13 @@ public class GachaBanner {
         if (this.getId() == 1001) {
             info.setGachaCeiling(player.getGachaInfo().toGachaCeiling(player));
 
-            info.addAllUpInfo(service.getPurpleAvatars());
-            info.addAllUpInfo(service.getYellowAvatars());
-            info.addAllUpInfo(service.getPurpleWeapons());
-            info.addAllUpInfo(service.getYellowWeapons());
-
-            info.addAllFeatured(service.getDefaultFeaturedIds());
+            pool.fourStars().forEach(info::addUpInfo);
+            pool.fiveStars().forEach(info::addUpInfo);
+            info.addAllFeatured(service.getFeatured5(this, pool));
         } else {
-            if (this.getRateUpItems4().length > 0) {
-                info.addAllUpInfo(getRateUpItems4());
-            }
-
-            if (this.getRateUpItems5().length > 0) {
-                info.addAllUpInfo(getRateUpItems5());
-                info.addAllFeatured(getRateUpItems5());
-            }
+            (pool.permanent() ? pool.fourStars() : pool.up4()).forEach(info::addUpInfo);
+            (pool.permanent() ? pool.fiveStars() : pool.up5()).forEach(info::addUpInfo);
+            info.addAllFeatured(service.getFeatured5(this, pool));
         }
 
         return info;

@@ -10,8 +10,14 @@ import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.hkrpg.server.gacha.GachaRarityResources;
 
 class GachaInitial46Test {
+  GachaRarityResources resources;
+  @BeforeEach void loadRarities() throws Exception { resources = new GachaRarityResources(); }
+  @AfterEach void restoreResources() { resources.close(); }
   final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   final GachaService service = new GachaService(null) { @Override public void watch() {} };
   final PlayerGachaInfo history = new PlayerGachaInfo();
@@ -51,6 +57,20 @@ class GachaInitial46Test {
   @Test void absentBannersReturnAnEmptyCatalog() {
     var response = GachaInitial46.snapshot(protocol, player, service);
     assertEquals(List.of(), InitialData46Test.field(response, "gacha_info_list"));
+  }
+
+  @Test void legacyPermanentCatalogueDisplaysOnlyActualFiveStarsAndInvalidEventIsHidden() throws Exception {
+    try (var input = getClass().getResourceAsStream("/defaults/Banners.json")) {
+      var rows = new Gson().fromJson(new java.io.InputStreamReader(java.util.Objects.requireNonNull(input)), GachaBanner[].class);
+      var normal = java.util.Arrays.stream(rows).filter(b -> b.getId() == 1001).findFirst().orElseThrow();
+      service.replaceBanners(List.of(normal));
+      var info = InitialData46Test.first(GachaInitial46.snapshot(protocol,player,service),"gacha_info_list");
+      var featured = (List<?>) InitialData46Test.field(info,"prize_item_list");
+      assertEquals(6,featured.size());
+      assertTrue(featured.stream().allMatch(id -> emu.lunarcore.data.GameData.getItemExcelMap().get((Integer)id).getRarityNum() == 5));
+      service.getGachaBanners().put(2001,new GachaBanner().createBanner(2001,GachaType.AvatarUp,0,Integer.MAX_VALUE,new int[]{1001},new int[]{1002}));
+      assertEquals(1,((List<?>) InitialData46Test.field(GachaInitial46.snapshot(protocol,player,service),"gacha_info_list")).size());
+    }
   }
 
   @Test void version46QueryHonorsTheExactStartAndEndOfARerun() {

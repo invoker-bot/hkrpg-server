@@ -58,6 +58,7 @@ final class GmBanners {
         boolean matches = template != null && sameItems(live.getRateUpItems5(), template.up5())
             && sameItems(live.getRateUpItems4(), template.up4());
         boolean permanent = permanent(live);
+        var pool = service.getPool(live);
         String state = state(live, now);
         String name = switch (live.getGachaType()) {
           case Normal -> "常驻跃迁";
@@ -67,13 +68,14 @@ final class GmBanners {
         };
         return new CurrentBannerRow(live.getId(), live.getGachaType().name(), name,
             template == null ? "" : template.key(), matches ? template.version() : "",
-            matches ? template.phase() : "", currentItems(live.getRateUpItems5(), names),
-            currentItems(live.getRateUpItems4(), names), state, switch (state) {
+            matches ? template.phase() : "", currentItems(permanent ? pool.fiveStars() : pool.up5(), names),
+            currentItems(permanent ? pool.fourStars() : pool.up4(), names), state, switch (state) {
               case "stopped" -> "已停止"; case "active" -> "正在开放";
               case "scheduled" -> "尚未开放"; default -> "已到期";
             }, live.getBeginTime(), live.getEndTime(), permanent, live.isDisabled(),
             !live.isDisabled() && !state.equals("expired"),
-            live.isDisabled() && (permanent || live.getEndTime() > now));
+            live.isDisabled() && (permanent || live.getEndTime() > now),
+            currentItems(pool.fiveStars(), names), currentItems(pool.fourStars(), names), pool.issues(), pool.canPull());
       }).sorted(Comparator.comparing((CurrentBannerRow b) -> !b.permanent())
           .thenComparingInt(CurrentBannerRow::id)).toList();
     }
@@ -88,8 +90,8 @@ final class GmBanners {
         : now < banner.getBeginTime() ? "scheduled" : "expired";
   }
 
-  private static List<BannerItem> currentItems(int[] ids, java.util.function.IntFunction<String> names) {
-    return Arrays.stream(ids).mapToObj(id -> new BannerItem(id, names.apply(id))).toList();
+  private static List<BannerItem> currentItems(List<Integer> ids, java.util.function.IntFunction<String> names) {
+    return ids.stream().map(id -> new BannerItem(id, names.apply(id))).toList();
   }
 
   Result setEnabled(Operation operation) {
