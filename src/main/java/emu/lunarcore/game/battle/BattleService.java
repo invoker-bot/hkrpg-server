@@ -453,10 +453,10 @@ public class BattleService extends BaseGameService {
     }
 
     private static boolean validStats(Battle battle, BattleStatistics stats) {
-        if (stats.getRoundCnt() < 0 || !org.hkrpg.server.gameplay.MissionBattleCustomValues.validStatistics(stats)) return false;
+        if (battle.isAmbiguousParticipants() || stats.getRoundCnt() < 0 || !org.hkrpg.server.gameplay.MissionBattleCustomValues.validStatistics(stats)) return false;
         Set<Integer> seen = new HashSet<>();
         for (var row : stats.getBattleAvatarList()) {
-            if (!battle.getLineup().getAvatars().contains(row.getId()) || !seen.add(row.getId())) return false;
+            if (!battle.getParticipantIds().contains(row.getId()) || !seen.add(row.getId())) return false;
             var value = row.getAvatarStatus();
             if (!Double.isFinite(value.getMaxHp()) || value.getMaxHp() <= 0
                     || !Double.isFinite(value.getLeftHp()) || value.getLeftHp() < 0 || value.getLeftHp() > value.getMaxHp()
@@ -539,7 +539,7 @@ public class BattleService extends BaseGameService {
         if (updateStatus) {
             // Set health/energy for player avatars
             for (var battleAvatar : stats.getBattleAvatarList()) {
-                GameAvatar avatar = player.getAvatarById(battleAvatar.getId());
+                GameAvatar avatar = battle.getParticipants().get(battleAvatar.getId());
                 if (avatar == null) continue;
 
                 AvatarProperty prop = battleAvatar.getAvatarStatus();

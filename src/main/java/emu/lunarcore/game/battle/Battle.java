@@ -28,6 +28,11 @@ public class Battle {
     private final int id;
     private final Player player;
     private final PlayerLineup lineup;
+    // Lineups store base IDs; battle reports use the selected path or trial ID sent to the client.
+    // Freeze membership before victory callbacks can replace the story party.
+    private final java.util.Set<Integer> participantIds;
+    private final java.util.Map<Integer, GameAvatar> participants;
+    private final boolean ambiguousParticipants;
     private final List<EntityMonster> npcMonsters;
     @Getter(lombok.AccessLevel.NONE)
     private final java.util.Map<EntityMonster, IntList> npcWaveNumbers = new java.util.IdentityHashMap<>();
@@ -88,6 +93,18 @@ public class Battle {
         this.player = player;
         this.raidDifficultyScope = org.hkrpg.server.gameplay.RaidDifficultySettings.battleScope(player);
         this.lineup = lineup;
+        var ids = new java.util.HashSet<Integer>();
+        var actors = new java.util.HashMap<Integer, GameAvatar>();
+        boolean ambiguous = false;
+        if (lineup != null) for (int storedId : lineup.getAvatars()) {
+            var avatar = player.getAvatarById(storedId);
+            int reportedId = avatar == null || avatar.getExcel() == null ? storedId : avatar.getBattleAvatarId();
+            if (!ids.add(reportedId)) ambiguous = true;
+            if (avatar != null) actors.put(reportedId, avatar);
+        }
+        this.participantIds = java.util.Set.copyOf(ids);
+        this.participants = java.util.Map.copyOf(actors);
+        this.ambiguousParticipants = ambiguous;
         this.npcMonsters = new ArrayList<>();
         this.buffs = new Int2ObjectLinkedOpenHashMap<>();
         this.waves = new ArrayList<>();
