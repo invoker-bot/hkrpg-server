@@ -20,6 +20,7 @@ public final class ActivityKraterQuests {
 
   public static boolean refresh(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return false;
       var rules = KraterOfferingRules.load();
       var state = p.getGameplay().getKraterOffering();
       return state.valid(rules, p) && state.refresh(rules, p, Instant.now());
@@ -33,7 +34,7 @@ public final class ActivityKraterQuests {
 
   public static QuestState state(Player p, int id) {
     synchronized (p) {
-      if (id != KraterOfferingRules.QUEST) return null;
+      if (id != KraterOfferingRules.QUEST || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = KraterOfferingRules.load();
       var state = p.getGameplay().getKraterOffering();
       return state.valid(rules, p) && rules.window(p, Instant.now()) != null
@@ -44,7 +45,7 @@ public final class ActivityKraterQuests {
 
   public static QuestState completionState(Player p, int id) {
     synchronized (p) {
-      if (id != KraterOfferingRules.QUEST) return null;
+      if (id != KraterOfferingRules.QUEST || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = KraterOfferingRules.load();
       var state = p.getGameplay().getKraterOffering();
       return state.valid(rules, p)

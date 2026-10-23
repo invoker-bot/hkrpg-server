@@ -58,12 +58,12 @@ public final class MissionManager {
 
   private boolean eligible(MainMissionExcel config, boolean manual) {
     return config != null
-        && DailyCommissionAcceptance.check(player, config.getId(), clock.instant()) == Retcode.SUCC
         && !player.getGameplay().getCancelledMissions().contains(config.getId())
         && GameData.getMissionInfos().containsKey(config.getId())
         && (!config.isInRaid() || new MissionRaid(player).owns(config.getId()))
         && gates(config.getTakeParam(), config.getTakeOperation(), manual)
-        && gates(config.getBeginParam(), config.getBeginOperation(), manual);
+        && gates(config.getBeginParam(), config.getBeginOperation(), manual)
+        && DailyCommissionAcceptance.check(player, config.getId(), clock.instant()) == Retcode.SUCC;
   }
 
   boolean canAcceptInRaid(int id) {

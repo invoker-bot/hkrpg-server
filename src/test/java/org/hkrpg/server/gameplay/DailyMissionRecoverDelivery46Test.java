@@ -27,6 +27,37 @@ import org.junit.jupiter.params.provider.*;
  * Real GameItem writes are isolated in an owned MemoryMongo datastore; no operator DB,
  * NPC source-only graph installation, CustomString execution or game UI acceptance occurs. */
 class DailyMissionRecoverDelivery46Test {
+  @Test void sourceScopeChecksResourcesWhenFirstUsed() throws Exception {
+    assertTrue(DailyMissionRecoverDeliveryRules.source());
+    var path = root.resolve("Config/Level/Mission/3011014/MissionInfo_3011014.json");
+    var bytes = Files.readAllBytes(path);
+    var timestamp = Files.getLastModifiedTime(path);
+    try (var scope = DailyMissionRecoverDeliveryRules.sourceScope()) {
+      // An unused scope must not bind a snapshot before its first source-dependent action.
+      var changed = bytes.clone(); changed[0] = '!';
+      Files.write(path, changed); Files.setLastModifiedTime(path, timestamp);
+      assertFalse(DailyMissionRecoverDeliveryRules.source());
+    } finally { Files.write(path, bytes); Files.setLastModifiedTime(path, timestamp); }
+  }
+
+  @Test void firstSourceUseStillChecksTheNextScopeAfterSourceChanges() throws Exception {
+    try (var scope = DailyMissionRecoverDeliveryRules.sourceScope()) {
+      assertTrue(DailyMissionRecoverDeliveryRules.source());
+      assertTrue(DailyMissionRecoverDeliveryRules.source());
+    }
+    var path = root.resolve("Config/Level/Mission/3011014/MissionInfo_3011014.json");
+    var bytes = Files.readAllBytes(path);
+    var timestamp = Files.getLastModifiedTime(path);
+    var changed = bytes.clone(); changed[0] = '!';
+    Files.write(path, changed); Files.setLastModifiedTime(path, timestamp);
+    try (var scope = DailyMissionRecoverDeliveryRules.sourceScope()) {
+      assertFalse(DailyMissionRecoverDeliveryRules.source());
+    } finally { Files.write(path, bytes); Files.setLastModifiedTime(path, timestamp); }
+    try (var scope = DailyMissionRecoverDeliveryRules.sourceScope()) {
+      assertTrue(DailyMissionRecoverDeliveryRules.source());
+    }
+  }
+
   static String sourceSHA(byte[] bytes)throws Exception{return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes));}
   static byte[] sourceBytes(JsonObject metadata)throws Exception{
     if(metadata.has("sourceBlobBase64"))return java.util.Base64.getDecoder().decode(metadata.get("sourceBlobBase64").getAsString());

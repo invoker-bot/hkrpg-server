@@ -20,6 +20,7 @@ public final class ActivityChestQuests {
 
   public static boolean refresh(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return false;
       var rules = WorldChestRules.load();
       var state = p.getGameplay().getWorldChests();
       return state.valid(rules, p) && rules.window(p, Instant.now()) != null && state.accept(rules);
@@ -28,6 +29,7 @@ public final class ActivityChestQuests {
 
   public static List<QuestState> states(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return List.of();
       var rules = WorldChestRules.load();
       var state = p.getGameplay().getWorldChests();
       var out = new ArrayList<QuestState>();
@@ -51,7 +53,7 @@ public final class ActivityChestQuests {
 
   public static QuestState state(Player p, int id) {
     synchronized (p) {
-      if (WorldChestState.goal(id) < 1) return null;
+      if (WorldChestState.goal(id) < 1 || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = WorldChestRules.load();
       var state = p.getGameplay().getWorldChests();
       return state.valid(rules, p) && rules.window(p, Instant.now()) != null
@@ -62,7 +64,7 @@ public final class ActivityChestQuests {
 
   public static QuestState completionState(Player p, int id) {
     synchronized (p) {
-      if (WorldChestState.goal(id) < 1) return null;
+      if (WorldChestState.goal(id) < 1 || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = WorldChestRules.load();
       var state = p.getGameplay().getWorldChests();
       return state.valid(rules, p)

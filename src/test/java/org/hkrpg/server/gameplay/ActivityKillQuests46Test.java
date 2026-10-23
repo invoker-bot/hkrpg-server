@@ -24,6 +24,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /** Original goals, roster and source maps; prerequisite histories and the party are fixtures. */
 class ActivityKillQuests46Test {
+  @Test void lockedActivityDoesNotScanItsBattleSourcesDuringLoginRefresh() throws Exception {
+    assertTrue(ActivityAccess.unlocked(player, 30013));
+    player.getGameplay().getMainMissions().clear();
+    assertFalse(ActivityAccess.unlocked(player, 30013));
+    int saves = player.saves;
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root, () -> {
+      assertFalse(ActivityKillQuests.refresh(player));
+      assertTrue(ActivityKillQuests.states(player).isEmpty());
+    });
+    assertTrue(reads.isEmpty(), "Locked activity scanned resources: " + reads);
+    assertEquals(saves, player.saves);
+  }
+
   @TempDir Path root;
   final Gson gson = ResourceLoader.getGson();
   final JsonObject source =

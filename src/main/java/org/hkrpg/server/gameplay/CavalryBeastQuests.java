@@ -21,6 +21,7 @@ public final class CavalryBeastQuests {
 
   public static boolean refresh(Player player) {
     synchronized (player) {
+      if (!ActivityAccess.unlocked(player, CavalryBeastSources.PANEL)) return false;
       var rules = CavalryBeastRules.load();
       var domain = player.getGameplay().getCavalryBeasts();
       return domain.valid(rules) && rules.window(player, Instant.now()) != null && domain.accept();
@@ -34,7 +35,8 @@ public final class CavalryBeastQuests {
 
   public static QuestState state(Player player, int id) {
     synchronized (player) {
-      if (id != CavalryBeastSources.QUEST) return null;
+      if (id != CavalryBeastSources.QUEST
+          || !ActivityAccess.unlocked(player, CavalryBeastSources.PANEL)) return null;
       var rules = CavalryBeastRules.load();
       var domain = player.getGameplay().getCavalryBeasts();
       return domain.valid(rules) && rules.window(player, Instant.now()) != null
@@ -44,7 +46,8 @@ public final class CavalryBeastQuests {
 
   public static QuestState completionState(Player player, int id) {
     synchronized (player) {
-      if (id != CavalryBeastSources.QUEST) return null;
+      if (id != CavalryBeastSources.QUEST
+          || !ActivityAccess.unlocked(player, CavalryBeastSources.PANEL)) return null;
       var rules = CavalryBeastRules.load();
       var domain = player.getGameplay().getCavalryBeasts();
       return domain.valid(rules) && rules.unlocked(player)

@@ -20,6 +20,7 @@ public final class ActivityFirstTalkQuests {
 
   public static boolean refresh(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return false;
       var rules = WorldFirstTalkRules.load();
       var domain = p.getGameplay().getWorldFirstTalks();
       return domain.valid(rules) && rules.window(p, Instant.now()) != null && domain.accept();
@@ -33,7 +34,7 @@ public final class ActivityFirstTalkQuests {
 
   public static QuestState state(Player p, int id) {
     synchronized (p) {
-      if (id != WorldFirstTalkRules.QUEST) return null;
+      if (id != WorldFirstTalkRules.QUEST || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = WorldFirstTalkRules.load();
       var domain = p.getGameplay().getWorldFirstTalks();
       return domain.valid(rules) && rules.window(p, Instant.now()) != null
@@ -44,7 +45,7 @@ public final class ActivityFirstTalkQuests {
 
   public static QuestState completionState(Player p, int id) {
     synchronized (p) {
-      if (id != WorldFirstTalkRules.QUEST) return null;
+      if (id != WorldFirstTalkRules.QUEST || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = WorldFirstTalkRules.load();
       var domain = p.getGameplay().getWorldFirstTalks();
       return domain.valid(rules)

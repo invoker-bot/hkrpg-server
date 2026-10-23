@@ -26,6 +26,17 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Original activity and map sources. Story prerequisites and group loading are isolated fixtures.
  */
 class TimelineActivity46Test {
+  @Test void lockedActivityDoesNotScanItsTimelineSourcesDuringLoginRefresh() throws Exception {
+    assertTrue(ActivityAccess.unlocked(fixture.actor, 30013));
+    fixture.actor.getGameplay().getMainMissions().clear();
+    assertFalse(ActivityAccess.unlocked(fixture.actor, 30013));
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root, () -> {
+      assertFalse(TimelineActivityQuests.refresh(fixture.actor));
+      assertTrue(TimelineActivityQuests.states(fixture.actor).isEmpty());
+    });
+    assertTrue(reads.isEmpty(), "Locked activity scanned resources: " + reads);
+  }
+
   @TempDir Path root;
   final PropTimeline46Test fixture = new PropTimeline46Test();
   final Gson gson = ResourceLoader.getGson();

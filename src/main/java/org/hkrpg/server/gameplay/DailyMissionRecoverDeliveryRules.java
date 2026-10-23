@@ -25,7 +25,7 @@ final class DailyMissionRecoverDeliveryRules {
   private record TableCache(String hash,String field,Map<Integer,List<JsonObject>> rows){}
   private static final Map<Path,TableCache> TABLE_CACHE=new HashMap<>();
   private static final ThreadLocal<SourceScope> SCOPE=new ThreadLocal<>();
-  /** A refresh reads the complete source once. New requests always read it again.
+  /** A refresh reads the complete source once, only if consulted. New requests read it again.
    * Acceptance/day/UUID/receipt and live entity checks remain uncached. */
   static final class SourceScope implements AutoCloseable {
     private final SourceScope previous;
@@ -33,13 +33,13 @@ final class DailyMissionRecoverDeliveryRules {
     private final MissionInfo graph;
     private final MainMissionExcel main;
     private final Map<String,FloorInfo> floors=new HashMap<>();
-    private final boolean original;
+    private Boolean original;
     SourceScope(){
       previous=SCOPE.get();resource=LunarCore.getConfig().getResourceDir();graph=GameData.getMissionInfos().get(MAIN);main=GameData.getMainMissionExcelMap().get(MAIN);
       for(String path:DailyMissionRecoverDeliverySources.FLOORS.keySet()){
         String name=path.substring(path.lastIndexOf('/')+1).replace(".json","");floors.put(name,GameData.getFloorInfos().get(name));
       }
-      original=source();SCOPE.set(this);
+      SCOPE.set(this);
     }
     boolean unchanged(){
       if(!Objects.equals(resource,LunarCore.getConfig().getResourceDir()) || graph!=GameData.getMissionInfos().get(MAIN) || main!=GameData.getMainMissionExcelMap().get(MAIN))return false;
@@ -92,7 +92,14 @@ final class DailyMissionRecoverDeliveryRules {
   }
   static boolean original(MissionInfo graph){return graph!=null && graph.getMainMissionID()==MAIN && GameData.getMissionInfos().get(MAIN)==graph && source();}
   static boolean source(){
-    var scope=SCOPE.get();if(scope!=null && scope.unchanged())return scope.original;
+    var scope=SCOPE.get();
+    if(scope!=null && scope.unchanged()){
+      if(scope.original==null)scope.original=readSource();
+      return scope.original;
+    }
+    return readSource();
+  }
+  private static boolean readSource(){
     try{
       var main=GameData.getMainMissionExcelMap().get(MAIN);var graph=GameData.getMissionInfos().get(MAIN);
       if(main==null || graph==null || !DailyMissionRecoverDeliverySources.MAIN_PIN.equals(TimelineActivityRules.fingerprint(GSON.toJsonTree(main))))return false;

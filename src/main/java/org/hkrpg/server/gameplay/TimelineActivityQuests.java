@@ -60,6 +60,7 @@ public final class TimelineActivityQuests {
 
   public static boolean refresh(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return false;
       var rules = TimelineActivityRules.load();
       var domain = p.getGameplay().getTimelineActivityQuests();
       if (!domain.valid(rules)) return false;
@@ -76,6 +77,7 @@ public final class TimelineActivityQuests {
 
   public static Map<Integer, QuestState> states(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return Map.of();
       var rules = TimelineActivityRules.load();
       var domain = p.getGameplay().getTimelineActivityQuests();
       if (!domain.valid(rules)) return Map.of();
@@ -94,7 +96,7 @@ public final class TimelineActivityQuests {
   /** Finished observations remain prerequisites; presentation and claims still need a live window. */
   public static QuestState completionState(Player p, int id) {
     synchronized (p) {
-      if (!TimelineActivityRules.IDS.contains(id)) return null;
+      if (!TimelineActivityRules.IDS.contains(id) || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = TimelineActivityRules.load();
       var domain = p.getGameplay().getTimelineActivityQuests();
       if (!domain.valid(rules) || !rules.unlocked(p, id)) return null;

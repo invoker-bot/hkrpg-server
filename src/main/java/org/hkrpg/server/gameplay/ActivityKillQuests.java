@@ -28,6 +28,7 @@ public final class ActivityKillQuests {
 
   public static boolean refresh(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return false;
       var rules = ActivityKillRules.load();
       var domain = p.getGameplay().getActivityKillQuests();
       if (!domain.valid(rules)) return false;
@@ -44,6 +45,7 @@ public final class ActivityKillQuests {
 
   public static Map<Integer, QuestState> states(Player p) {
     synchronized (p) {
+      if (!ActivityAccess.unlocked(p, 30013)) return Map.of();
       var rules = ActivityKillRules.load();
       var domain = p.getGameplay().getActivityKillQuests();
       if (!domain.valid(rules)) return Map.of();
@@ -61,7 +63,7 @@ public final class ActivityKillQuests {
 
   public static QuestState completionState(Player p, int id) {
     synchronized (p) {
-      if (!ActivityKillSources.IDS.contains(id)) return null;
+      if (!ActivityKillSources.IDS.contains(id) || !ActivityAccess.unlocked(p, 30013)) return null;
       var rules = ActivityKillRules.load();
       var domain = p.getGameplay().getActivityKillQuests();
       if (!domain.valid(rules) || !rules.unlocked(p, id)) return null;

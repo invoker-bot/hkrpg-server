@@ -15,6 +15,19 @@ public final class MainMissionQuestCounts {
     return count(player, target, false) > 0;
   }
 
+  /** Repeated login/scene refreshes must not rescan activity catalogs for already observed progress. */
+  public static boolean needsProgress(Player player, QuestExcel target) {
+    synchronized (player) {
+      int observed = count(player, target, false);
+      if (observed <= 0) return false;
+      var state = player.getQuestStates().get(target.getId());
+      if (state == null) return true;
+      var rule = GameData.getFinishWayExcelMap().get(target.getFinishWayID());
+      return MissionStateRecords.doing(state, target.getId(), rule.getProgress())
+          && state.getProgress() < observed;
+    }
+  }
+
   private static int count(Player player, QuestExcel target, boolean requireAccepted) {
     synchronized (player) {
       if (target == null

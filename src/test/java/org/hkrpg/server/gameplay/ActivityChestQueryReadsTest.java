@@ -16,6 +16,42 @@ class ActivityChestQueryReadsTest {
   @BeforeEach void prepare() throws Exception { fixture.root = root; fixture.load(); }
   @AfterEach void restore() throws Exception { fixture.restore(); }
 
+  @Test void lockedActivityDoesNotScanItsWorldCatalogDuringLoginRefresh() throws Exception {
+    assertTrue(ActivityAccess.unlocked(fixture.player, 30013));
+    var unlockedMissions = new HashMap<>(fixture.player.getGameplay().getMainMissions());
+    fixture.player.getGameplay().getMainMissions().clear();
+    assertFalse(ActivityAccess.unlocked(fixture.player, 30013));
+    int saves = fixture.player.saves;
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root, () -> {
+      assertFalse(ActivityChestQuests.refresh(fixture.player));
+      assertTrue(ActivityChestQuests.states(fixture.player).isEmpty());
+    });
+    assertTrue(reads.isEmpty(), "Locked activity scanned resources: " + reads);
+    assertEquals(saves, fixture.player.saves);
+    fixture.player.getGameplay().getMainMissions().putAll(unlockedMissions);
+    assertTrue(ActivityChestQuests.refresh(fixture.player));
+    assertFalse(ActivityChestQuests.states(fixture.player).isEmpty());
+  }
+
+  @Test void alreadyObservedMainCompletionDoesNotReloadUnrelatedQuestCatalogs() throws Exception {
+    var data = emu.lunarcore.data.GameData.getQuestExcelMap();
+    var finishes = emu.lunarcore.data.GameData.getFinishWayExcelMap();
+    var gson = emu.lunarcore.data.ResourceLoader.getGson();
+    data.add(gson.fromJson("{\"QuestID\":19996901,\"QuestType\":1,\"FinishWayID\":19996901,\"UnlockType\":\"AutoUnlock\"}",
+        emu.lunarcore.data.excel.QuestExcel.class));
+    finishes.add(gson.fromJson("{\"ID\":19996901,\"FinishType\":\"FinishMission\",\"Progress\":1,\"ParamType\":\"ListContain\",\"ParamIntList\":[1000510]}",
+        emu.lunarcore.data.excel.FinishWayExcel.class));
+    assertTrue(fixture.player.getQuestManager().onMissionProgress());
+    var completed = fixture.player.getQuestStates().get(19996901);
+    assertEquals(emu.lunarcore.game.quest.QuestState.Phase.FINISHED, completed.getPhase());
+    int saves = fixture.player.saves;
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root,
+        () -> assertFalse(fixture.player.getQuestManager().onMissionProgress()));
+    assertTrue(reads.isEmpty(), "An unchanged completion reloaded unrelated quest catalogs: " + reads);
+    assertSame(completed, fixture.player.getQuestStates().get(19996901));
+    assertEquals(saves, fixture.player.saves);
+  }
+
   @Test void oneSnapshotReadsEveryRequiredSourceOnceWithoutSavingPlayerData() throws Exception {
     ActivityChestQuests.refresh(fixture.player);
     var expected = fixture.player.getGameplay().getWorldChests().getQuests();

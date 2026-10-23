@@ -94,6 +94,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean missionCustomBatchVerified;
   private int rejectedResponseCommand;
   private int playerUid;
+  private long tokenStartedAt;
+  private long tokenCompletedMillis;
   private long initialStartedAt;
   private long initialCompletedMillis;
   private long openingVideoPrimaryKey;
@@ -108,6 +110,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
 
   @Override public void onConnected(Ukcp connection) {
     var type = protocol.clientSchema().message("PlayerGetTokenCsReq");
+    tokenStartedAt = System.nanoTime();
     send(connection, 60, DynamicMessage.newBuilder(type)
         .setField(type.findFieldByName("account_uid"), account)
         .setField(type.findFieldByName("token"), token)
@@ -255,6 +258,9 @@ public final class NativeLoginInitialProbe implements KcpListener {
               "Synthetic token rejected");
           playerUid = (Integer) response.getField(response.getDescriptorForType().findFieldByName("uid"));
           require(playerUid > 0, "Player identity missing");
+          tokenCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tokenStartedAt);
+          require(tokenCompletedMillis <= 4000,
+              "Token response exceeded 4000 ms: " + tokenCompletedMillis);
           send(connection, 34, new byte[0]);
         } else if (frame.cmdId() == 25 && !queriesSent) {
           queriesSent = true;
@@ -479,6 +485,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("requiredBasicSettings", true),
           Map.entry("openingVideoBootstrapContract", true),
           Map.entry("playerUid", probe.playerUid),
+          Map.entry("tokenResponseMillis", probe.tokenCompletedMillis),
+          Map.entry("tokenDeadlineMillis", 4000),
           Map.entry("nativeResponse4515", true),
           Map.entry("sceneAfterUnsupportedQueries", true),
           Map.entry("loginFinishAndHeartbeat", true),

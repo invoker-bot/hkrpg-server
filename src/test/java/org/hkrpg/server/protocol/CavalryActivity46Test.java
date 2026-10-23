@@ -32,6 +32,19 @@ import org.junit.jupiter.params.provider.*;
 
 /** Original ride goal and NPC sources; prerequisites and actor placement are controlled fixtures. */
 class CavalryActivity46Test {
+  @Test void lockedActivityDoesNotScanCavalrySourcesDuringLoginRefresh() throws Exception {
+    assertTrue(ActivityAccess.unlocked(player, 30013));
+    player.getGameplay().getMainMissions().clear();
+    assertFalse(ActivityAccess.unlocked(player, 30013));
+    int saves = player.saves;
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root, () -> {
+      assertFalse(CavalryBeastQuests.refresh(player));
+      assertTrue(CavalryBeastQuests.states(player).isEmpty());
+    });
+    assertTrue(reads.isEmpty(), "Locked activity scanned resources: " + reads);
+    assertEquals(saves, player.saves);
+  }
+
   private static final int QUEST = 6029860;
   private static final Gson GSON = ResourceLoader.getGson();
   private static final JsonObject SOURCE =

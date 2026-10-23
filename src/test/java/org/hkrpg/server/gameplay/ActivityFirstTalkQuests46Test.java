@@ -25,6 +25,19 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Original world props and presentation scripts; prerequisite histories and location are fixtures.
  */
 class ActivityFirstTalkQuests46Test {
+  @Test void lockedActivityDoesNotScanItsPerformanceSourcesDuringLoginRefresh() throws Exception {
+    assertTrue(ActivityAccess.unlocked(player, 30013));
+    player.getGameplay().getMainMissions().clear();
+    assertFalse(ActivityAccess.unlocked(player, 30013));
+    int saves = player.saves;
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root, () -> {
+      assertFalse(ActivityFirstTalkQuests.refresh(player));
+      assertTrue(ActivityFirstTalkQuests.states(player).isEmpty());
+    });
+    assertTrue(reads.isEmpty(), "Locked activity scanned resources: " + reads);
+    assertEquals(saves, player.saves);
+  }
+
   @TempDir Path root;
   final Gson gson = ResourceLoader.getGson();
   final JsonObject source =

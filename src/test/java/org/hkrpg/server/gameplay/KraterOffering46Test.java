@@ -26,6 +26,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /** Actual original NPC and source costs; prerequisite history and inventory are unit fixtures. */
 class KraterOffering46Test {
+  @Test void lockedActivityDoesNotScanOfferingSourcesDuringLoginRefresh() throws Exception {
+    assertTrue(ActivityAccess.unlocked(player, 30013));
+    player.getGameplay().getMainMissions().clear();
+    assertFalse(ActivityAccess.unlocked(player, 30013));
+    int saves = player.saves;
+    var reads = org.hkrpg.server.SourceReadAssertions.reads(root, () -> {
+      assertFalse(ActivityKraterQuests.refresh(player));
+      assertTrue(ActivityKraterQuests.states(player).isEmpty());
+    });
+    assertTrue(reads.isEmpty(), "Locked activity scanned resources: " + reads);
+    assertEquals(saves, player.saves);
+  }
+
   @TempDir Path root;
   final Gson gson = ResourceLoader.getGson();
   final JsonObject source =

@@ -146,7 +146,9 @@ public final class QuestManager extends BasePlayerManager {
   public boolean onMissionProgress() {
     synchronized (getPlayer()) {
       if (GameData.getQuestExcelMap().values().stream()
-          .noneMatch(definition -> MainMissionQuestCounts.hasCompletedSource(getPlayer(), definition)))
+          .noneMatch(definition ->
+              (getPlayer().getQuestStates().containsKey(definition.getId()) || unlocked(definition))
+                  && MainMissionQuestCounts.needsProgress(getPlayer(), definition)))
         return false;
       refreshUnlocks();
       boolean changed = false;
