@@ -48,6 +48,7 @@ public class Battle {
     private final long timestamp;
     private final int logicRandomSeed;
     private boolean settling;
+    private int avatarExperienceReward;
     private final org.hkrpg.server.gameplay.RaidDifficultySettings.BattleScope raidDifficultyScope;
 
     public boolean beginSettlement() {
@@ -190,6 +191,7 @@ public class Battle {
             this.loadStage(stage, npcMonster);
         }
         // The base constructor runs before NPCs are loaded. Bind actual combatants only now.
+        this.avatarExperienceReward = org.hkrpg.server.gameplay.BattleAvatarExperience.capture(this);
         player.getUniverseManager().onBattlePrepared(this);
         this.missionStageWins = org.hkrpg.server.gameplay.MissionStageWins.capture(player, this);
         this.storyChallengeBinding = org.hkrpg.server.gameplay.StoryChallengeScope.capture(player, this);

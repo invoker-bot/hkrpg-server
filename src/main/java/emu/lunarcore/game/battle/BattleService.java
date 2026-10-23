@@ -438,6 +438,10 @@ public class BattleService extends BaseGameService {
                     || active.isSettling()) return null;
             var chess = player.getUniverseManager().chess();
             if (chess.owns(active)) return chess.finishReport(active, result, stats);
+            var experience = result == BattleEndStatus.BATTLE_END_WIN
+                ? org.hkrpg.server.gameplay.BattleAvatarExperience.prepare(active)
+                : java.util.List.<org.hkrpg.server.gameplay.BattleAvatarExperience.Grant>of();
+            if (experience == null) return null;
             if (!org.hkrpg.server.gameplay.ActivityKillQuests.record(player, active, result, monsters)) return null;
             if (!active.beginSettlement()) return null;
             org.hkrpg.server.gameplay.RogueResonance.saveReport(active, energies);
@@ -448,7 +452,7 @@ public class BattleService extends BaseGameService {
                 return resonance.finish(result, stats);
             if (active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend)
                 return legend.finish(result, stats);
-            return settleBattle(player, result, stats);
+            return settleBattle(player, result, stats, experience);
         }
     }
 
@@ -468,7 +472,8 @@ public class BattleService extends BaseGameService {
 
     protected void grantDrops(Battle battle) { getServer().getDropService().calculateDrops(battle); }
 
-    private Battle settleBattle(Player player, BattleEndStatus result, BattleStatistics stats) {
+    private Battle settleBattle(Player player, BattleEndStatus result, BattleStatistics stats,
+            java.util.List<org.hkrpg.server.gameplay.BattleAvatarExperience.Grant> experience) {
         // Sanity check to make sure player is in a battle
         if (!player.isInBattle()) {
             return null;
@@ -495,6 +500,7 @@ public class BattleService extends BaseGameService {
         // Handle result
         switch (result) {
             case BATTLE_END_WIN -> {
+                org.hkrpg.server.gameplay.BattleAvatarExperience.grant(battle, experience);
                 // Classify before other victory callbacks can accept subsequent objectives.
                 player.getQuestManager().onCocoonCategoryVictory(battle);
                 player.getDailyManager().onCocoonCategoryVictory(battle);

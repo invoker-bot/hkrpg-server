@@ -17,6 +17,7 @@ import emu.lunarcore.server.game.GameServer;
 import emu.lunarcore.server.packet.send.*;
 import us.hebi.quickbuf.RepeatedInt;
 import org.hkrpg.server.gameplay.UpgradeMaterials;
+import org.hkrpg.server.gameplay.AvatarExperience;
 
 public class InventoryService extends BaseGameService {
 
@@ -51,31 +52,17 @@ public class InventoryService extends BaseGameService {
         if (plan == null || player.getScoin() < plan.coins()) return null;
         int amount = plan.amount();
         int cost = plan.coins();
+        var progress = AvatarExperience.prepare(avatar, amount);
+        if (progress == null || progress.applied() == 0) return null;
 
         // Pay items
         player.getInventory().removeItemsByParams(plan.items());
         player.addSCoin(-cost);
 
         // Level up
-        int maxLevel = promoteData.getMaxLevel();
-        int level = avatar.getLevel();
-        int exp = avatar.getExp();
-        int reqExp = initialRequired;
-
-        while (amount > 0 && reqExp > 0 && level < maxLevel) {
-            // Do calculations
-            int toGain = Math.min(amount, reqExp - exp);
-            exp += toGain;
-            amount -= toGain;
-            // Level up
-            if (exp >= reqExp) {
-                // Exp
-                exp = 0;
-                level += 1;
-                // Set req exp
-                reqExp = GameData.getAvatarExpRequired(avatar.getExcel().getExpGroup(), level);
-            }
-        }
+        int level = progress.level();
+        int exp = progress.exp();
+        amount = progress.remaining();
 
         // Done
         avatar.setLevel(level);

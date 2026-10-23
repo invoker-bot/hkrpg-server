@@ -39,6 +39,8 @@ public final class ProtocolBridge {
       Map.ofEntries(
           Map.entry("PlayerGetTokenCsReq.platform_type", "platform"),
           Map.entry("PlayerGetTokenScRsp.msg", "stop_desc"),
+          // Honey fe00bdb CmdAvatarType: native request 3 contains ItemCostData (list 2).
+          Map.entry("AvatarExpUpCsReq.item_cost_list", "item_cost"),
           Map.entry("FinishQuestScRsp.retcode", "PLDKENJLKME"),
           Map.entry("Avatar.changed_avatar_type", "cur_multi_path_avatar_type"),
           Map.entry("Avatar.first_met_timestamp", "first_met_time_stamp"),

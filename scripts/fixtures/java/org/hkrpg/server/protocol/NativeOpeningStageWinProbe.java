@@ -32,6 +32,8 @@ public final class NativeOpeningStageWinProbe {
   private boolean ambush;
   private int ambushUseId = 395;
   private int inclinationAcknowledgements;
+  private boolean verifyAvatarProgression;
+  private int avatarProgressNotifications;
 
   private static Object field(DynamicMessage message, String name) {
     return message.getField(
@@ -88,6 +90,14 @@ public final class NativeOpeningStageWinProbe {
         var sync = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
         if (sync.hasField(sync.getDescriptorForType().findFieldByName("basic_info")))
           credits = (Integer) field((DynamicMessage) field(sync, "basic_info"), "scoin");
+        if (sync.hasField(sync.getDescriptorForType().findFieldByName("avatar_sync"))) {
+          for (var value : (List<?>) field((DynamicMessage) field(sync, "avatar_sync"), "avatar_list")) {
+            var avatar = (DynamicMessage) value;
+            if ((Integer) field(avatar, "base_avatar_id") == 8001
+                && ((Integer) field(avatar, "exp") > 0 || (Integer) field(avatar, "level") > 1))
+              avatarProgressNotifications++;
+          }
+        }
       }
       if (frame.command() != protocol.clientCommand(response)) continue;
       var result = protocol.clientSchema().parse(response, frame.body());
@@ -885,6 +895,7 @@ public final class NativeOpeningStageWinProbe {
   }
 
   private void awakeningBattle(int group, int instance, boolean win) throws Exception {
+    var priorProgress = verifyAvatarProgression ? heroProgress() : null;
     var target = groupEntities(group).stream().filter(x -> (Integer) field(x, "inst_id") == instance).findFirst().orElseThrow();
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     var sections = Map.<String,Object>of("section_id", 1, "interact_id", field(scene,"interact_id"));
@@ -925,6 +936,60 @@ public final class NativeOpeningStageWinProbe {
     require(credits == earned,"Duplicate settlement granted credits twice");
     require((Integer)field((DynamicMessage)field(call("GetCurBattleInfoCsReq"),"battle_info"),"battle_id") == 0,
         "Settlement did not release the battle busy flag");
+    if (verifyAvatarProgression) {
+      var after = heroProgress();
+      require((Integer) field(after, "level") == 1, "Opening monster XP should remain below the level-two threshold");
+      require((Integer) field(after, "exp") == (Integer) field(priorProgress, "exp") + (win ? 36 : 0),
+          "Win must grant the original 36 character XP once; loss must grant none");
+    }
+  }
+
+  private DynamicMessage heroProgress() throws Exception {
+    return ((List<?>) field(call("GetAvatarDataCsReq", Map.of("is_get_all", true), true), "avatar_list"))
+        .stream().map(DynamicMessage.class::cast)
+        .filter(a -> (Integer) field(a, "base_avatar_id") == 8001).findFirst().orElseThrow();
+  }
+
+  private int materialCount(int id) throws Exception {
+    int count = 0;
+    for (var value : (List<?>) field(call("GetBagCsReq"), "material_list")) {
+      var item = (DynamicMessage) value;
+      if ((Integer) field(item, "tid") == id) count += (Integer) field(item, "num");
+    }
+    return count;
+  }
+
+  private Map<String, Object> avatarProgression(boolean restored) throws Exception {
+    var before = heroProgress();
+    if (!restored) {
+      require((Integer) field(before, "level") == 1 && (Integer) field(before, "exp") == 72,
+          "Both ordinary awakening victories must persist their own XP");
+      int books = materialCount(212), coins = credits, notices = avatarProgressNotifications;
+      require(books >= 3, "The one opening chest must provide three adventure logs");
+      var pile = DynamicMessage.newBuilder(protocol.clientSchema().message("PileItem"));
+      pile.setField(pile.getDescriptorForType().findFieldByName("item_id"), 212);
+      pile.setField(pile.getDescriptorForType().findFieldByName("item_num"), 3);
+      var item = DynamicMessage.newBuilder(protocol.clientSchema().message("ItemCost"));
+      item.setField(item.getDescriptorForType().findFieldByName("pile_item"), pile.build());
+      var cost = DynamicMessage.newBuilder(protocol.clientSchema().message("ItemCostData"));
+      cost.addRepeatedField(cost.getDescriptorForType().findFieldByName("item_list"), item.build());
+      call("AvatarExpUpCsReq", Map.of("base_avatar_id", 8001, "item_cost", cost.build()), true);
+      require(credits == coins - 1500 && materialCount(212) == books - 3,
+          "Native upgrade must charge exactly three books and 1500 credits");
+      require(avatarProgressNotifications > notices, "Native upgrade did not publish the new character XP");
+      // Unaffordable material quantity must be acknowledged without a second debit.
+      pile.setField(pile.getDescriptorForType().findFieldByName("item_num"), books + 1);
+      item.setField(item.getDescriptorForType().findFieldByName("pile_item"), pile.build());
+      cost.setRepeatedField(cost.getDescriptorForType().findFieldByName("item_list"), 0, item.build());
+      call("AvatarExpUpCsReq", Map.of("base_avatar_id", 8001, "item_cost", cost.build()), false);
+      require(credits == coins - 1500 && materialCount(212) == books - 3, "Rejected upgrade changed the inventory");
+    }
+    var after = heroProgress();
+    require((Integer) field(after, "level") == 10 && (Integer) field(after, "exp") == 1512,
+        "The character's 72 battle XP plus 15000 book XP must survive reconnect/restart");
+    call("PlayerHeartBeatCsReq", Map.of("client_time_ms", 123456789L), true);
+    return Map.of("level", field(after, "level"), "exp", field(after, "exp"),
+        "books", materialCount(212), "notifications", avatarProgressNotifications);
   }
 
   private void awakeningDialogueChoices(boolean completed) throws Exception {
@@ -971,6 +1036,7 @@ public final class NativeOpeningStageWinProbe {
 
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
+    verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-")) expectedFloor = 20002001;
     int uid =
         (Integer)
@@ -1002,12 +1068,14 @@ public final class NativeOpeningStageWinProbe {
         capturedDestructible(12, Map.of(300004, 100026, 300012, 100027), 4,
             phase.equals("awakening-restart"));
       }
+      var avatarProgress = verifyAvatarProgression ? avatarProgression(phase.equals("awakening-restart")) : Map.of();
       return Map.ofEntries(Map.entry("passed", true), Map.entry("uid", uid),
           Map.entry("phase", phase), Map.entry("requests", requests),
           Map.entry("awakeningDoorVerified", true), Map.entry("nextBattlePending", !verifyAwakeningBattle),
           Map.entry("awakeningBattleVerified", verifyAwakeningBattle), Map.entry("credits", credits),
           Map.entry("clientGameplayVerified", false), Map.entry("inclinationAcknowledgements", inclinationAcknowledgements),
-          Map.entry("stationDestructiblesVerified", verifyAwakeningBattle));
+          Map.entry("stationDestructiblesVerified", verifyAwakeningBattle),
+          Map.entry("avatarProgression", avatarProgress));
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");
