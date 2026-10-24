@@ -98,87 +98,11 @@ public class InventoryService extends BaseGameService {
     }
 
     public boolean promoteAvatar(Player player, int avatarId) {
-        // Get avatar
-        GameAvatar avatar = player.getAvatarById(avatarId);
-        if (avatar == null || avatar.getPromotion() >= avatar.getExcel().getMaxPromotion()) return false;
-
-        AvatarPromotionExcel promotion = GameData.getAvatarPromotionExcelMap().get(avatarId, avatar.getPromotion());
-        // Sanity check
-        if ((promotion == null) || avatar.getLevel() < promotion.getMaxLevel() || player.getLevel() < promotion.getPlayerLevelRequire() || player.getWorldLevel() < promotion.getWorldLevelRequire()) {
-            return false;
-        }
-
-        // Verify item params
-        if (!player.getInventory().hasItems(promotion.getPromotionCostList())) {
-            return false;
-        }
-
-        // Pay items
-        player.getInventory().removeItemsByParams(promotion.getPromotionCostList());
-
-        // Promote
-        avatar.setPromotion(avatar.getPromotion() + 1);
-
-        avatar.save();
-        player.save();
-
-        // Send packets
-        player.sendPacket(new PacketPlayerSyncScNotify(avatar));
-        return true;
+        return org.hkrpg.server.gameplay.ProgressionUpgrades.promoteAvatar(player, avatarId) == emu.lunarcore.server.packet.Retcode.SUCC;
     }
 
     public boolean unlockSkillTreeAvatar(Player player, int avatarId, int anchorId, int targetLevel) {
-        // Get avatar + Skill Tree data
-        GameAvatar avatar = player.getAvatarById(avatarId);
-        if (avatar == null) return false;
-
-        // Get current level
-        int curLevel = avatar.getSkillTree().get(anchorId);
-        int level = curLevel + 1;
-
-        // Sanity check
-        if (level > targetLevel) {
-            return false;
-        }
-
-        // Setup item params
-        var cost = new ItemParamMap();
-
-        for (; level <= targetLevel; level++) {
-            AvatarSkillTreeExcel skillTree = GameData.getAvatarSkilltree(avatarId, avatar.getEnhanceId(), anchorId, level);
-            if (skillTree == null) return false;
-
-            // Add to item cost
-            cost.add(skillTree.getMaterialList());
-        }
-
-        // Get cost list
-        var materialList = cost.toItemParamList();
-
-        // Verify item params
-        if (!player.getInventory().hasItems(materialList)) {
-            return false;
-        }
-
-        // Pay items
-        player.getInventory().removeItemsByParams(materialList);
-
-        // Set skill level
-        avatar.getSkillTree().put(anchorId, targetLevel);
-
-        // Save player
-        player.save();
-
-        // Save avatar and send packets
-        if (avatar.getMultiPath() != null) {
-            avatar.getMultiPath().save();
-        } else {
-            avatar.save();
-        }
-
-        player.sendPacket(new PacketPlayerSyncScNotify(avatar));
-
-        return true;
+        return org.hkrpg.server.gameplay.ProgressionUpgrades.unlock(player, avatarId, anchorId, targetLevel, 0) == emu.lunarcore.server.packet.Retcode.SUCC;
     }
 
     public boolean rankUpAvatar(Player player, int avatarId) {
@@ -333,45 +257,7 @@ public class InventoryService extends BaseGameService {
     }
 
     public boolean promoteEquipment(Player player, int equipId) {
-        // Get equipment
-        GameItem equip = player.getInventory().getItemByUid(equipId);
-
-        if (equip == null || !equip.getExcel().isEquipment() || equip.getPromotion() >= equip.getExcel().getEquipmentExcel().getMaxPromotion()) {
-            return false;
-        }
-
-        EquipmentPromotionExcel promotion = GameData.getEquipmentPromotionExcelMap().get(equip.getItemId(), equip.getPromotion());
-        // Sanity check
-        if ((promotion == null) || equip.getLevel() < promotion.getMaxLevel() || player.getLevel() < promotion.getPlayerLevelRequire() || player.getWorldLevel() < promotion.getWorldLevelRequire()) {
-            return false;
-        }
-
-        // Verify items
-        for (ItemParam param : promotion.getPromotionCostList()) {
-            GameItem item = player.getInventory().getItemByParam(param);
-            if (item == null || item.getCount() < param.getCount()) {
-                return false;
-            }
-        }
-
-        // Verify credits
-        if (player.getScoin() < promotion.getPromotionCostCoin()) {
-            return false;
-        }
-
-        // Pay items
-        player.getInventory().removeItemsByParams(promotion.getPromotionCostList());
-        player.addSCoin(-promotion.getPromotionCostCoin());
-
-        // Promote
-        equip.setPromotion(equip.getPromotion() + 1);
-
-        equip.save();
-        player.save();
-
-        // Send packets
-        player.sendPacket(new PacketPlayerSyncScNotify(equip));
-        return true;
+        return org.hkrpg.server.gameplay.ProgressionUpgrades.promoteEquipment(player, equipId) == emu.lunarcore.server.packet.Retcode.SUCC;
     }
 
     public boolean rankUpEquipment(Player player, int equipId, List<ItemParam> items) {

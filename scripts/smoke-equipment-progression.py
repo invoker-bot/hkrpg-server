@@ -49,6 +49,7 @@ def pile(item, count):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'build/equipment-progression-native.json')
+    parser.add_argument('--gates', action='store_true', help='验证突破、行迹和锁定批次；仍使用独立 H2/账号')
     args = parser.parse_args()
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
@@ -113,24 +114,88 @@ def main():
                 result[key] = value
         return result
 
-    def grant(tid, amount):
+    def grant(tid, amount, level=None):
         result = request('/gm/api/operate', {'requestId': str(uuid.uuid4()), 'uid': uid, 'action': 'grant',
                                           'itemId': tid, 'amount': amount,
-                                          'level': 1 if tid in (20000, 24000) else 0,
+                                          'level': level if level is not None else (1 if tid in (20000, 24000) else 0),
                                           'rank': 1 if tid in (20000, 24000) else 0})['data']
         assert result['state'] == 'completed', result
 
     def operate(command, target, costs, success=True):
+        return wire(command, selection(command, target, costs), success)
+
+    def wire(command, payload, success=True):
         key = str(uuid.uuid4())
         data = {'requestId': key, 'command': command, 'success': success,
-                'wire': base64.b64encode(selection(command, target, costs)).decode()}
+                'wire': base64.b64encode(payload).decode()}
         temporary = directory / 'equipment-request.tmp'
         temporary.write_text(json.dumps(data), encoding='utf-8')
         temporary.replace(directory / 'equipment-request.json')
         result = gm.wait_for(lambda: matching_snapshot(lambda s: s.get('equipmentReply', {}).get('requestId') == key), 45)
         observations.append({'command': command, 'success': success, 'reply': result['equipmentReply']})
-        assert (result['equipmentReply']['response'].get('retcode', 0) == 0) == success
+        reply = result['equipmentReply']['response']
+        assert (reply.get('retcode', reply.get('PLDKENJLKME', 0)) == 0) == success
         return result
+
+    def avatar(snap, tid):
+        return next(r for r in snap['avatars']['avatar_list'] if r['base_avatar_id'] == tid)
+
+    def trace(snap, tid, anchor):
+        path = next(r for r in snap['avatars']['avatar_path_data_info_list'] if r['avatar_id'] == tid)
+        return next((r['level'] for r in path['avatar_path_skill_tree'] if r['point_id'] == anchor), 0)
+
+    def reject(command, payload):
+        before = snapshot()
+        after = wire(command, payload, False)
+        assert after['bag'] == before['bag'] and after['avatars'] == before['avatars']
+        assert after['basic']['scoin'] == before['basic']['scoin']
+        return after
+
+    def gates_first():
+        result = request('/gm/api/operate', {'requestId': str(uuid.uuid4()), 'uid': uid,
+                          'action': 'command', 'command': 'setlevel 15'})['data']
+        assert result['state'] == 'returned', result
+        grant(1202, 1, 20)
+        grant(20000, 2, 20)
+        for tid, amount in [(2, 100000), (31011, 1), (113001, 10), (111011, 10), (110161, 10)]:
+            grant(tid, amount)
+        ready = gm.wait_for(lambda: matching_snapshot(lambda s: material(s, 110161) == 10 and
+                            any(a['base_avatar_id'] == 1202 for a in s['avatars']['avatar_list'])), 40)
+        credits = ready['basic']['scoin']
+        cones = sorted(items(ready, 'equipment', 20000), key=lambda r: r['unique_id'])
+        target, donor = (r['unique_id'] for r in cones)
+        relic = items(ready, 'relic', 31011)[0]['unique_id']
+        assert ready['basic']['level'] == 15
+        assert avatar(ready, 1202)['level'] == 20 and not avatar(ready, 1202).get('promotion', 0)
+        assert trace(ready, 1202, 2) == 1
+        upgrade_trace = number(11, 1202002) + number(5, 2)
+        reject('UnlockSkillTreeCsReq', upgrade_trace)  # Needs promotion 1.
+        promoted = wire('PromoteAvatarCsReq', number(5, 1202))
+        assert avatar(promoted, 1202)['promotion'] == 1
+        assert promoted['basic']['scoin'] == credits - 3200 and material(promoted, 113001) == 6
+        reject('PromoteAvatarCsReq', number(5, 1202))
+        upgraded = wire('UnlockSkillTreeCsReq', upgrade_trace)
+        assert trace(upgraded, 1202, 2) == 2 and material(upgraded, 113001) == 4
+        assert upgraded['basic']['scoin'] == credits - 5200
+        assert upgraded['equipmentReply']['response'] == {'point_id': 1202002, 'level': 2}
+        reject('UnlockSkillTreeCsReq', upgrade_trace)
+        reject('UnlockSkillTreeCsReq', number(11, 1202002) + number(5, 3))
+        promoted = wire('PromoteEquipmentCsReq', number(10, target))
+        assert row(promoted, 'equipment', target)['promotion'] == 1
+        assert promoted['basic']['scoin'] == credits - 8200 and material(promoted, 111011) == 6
+        reject('PromoteEquipmentCsReq', number(10, target))
+        locked = wire('LockEquipmentCsReq', number(7, donor) + number(6, 1))
+        assert row(locked, 'equipment', donor)['is_protected']
+        reject('RankUpEquipmentCsReq', selection('RankUpEquipmentCsReq', target, [number(2, donor)]))
+        reject('LockEquipmentCsReq', number(7, target) + number(7, 999999) + number(6, 1))
+        reject('LockEquipmentCsReq', number(7, relic) + number(6, 1))
+        reject('LockRelicCsReq', number(5, target) + number(12, 1))
+        locked = wire('LockRelicCsReq', number(5, relic) + number(12, 1))
+        assert row(locked, 'relic', relic)['is_protected']
+        unlocked = wire('LockRelicCsReq', number(5, relic))
+        assert not row(unlocked, 'relic', relic).get('is_protected', False)
+        locked = wire('LockRelicCsReq', number(5, relic) + number(12, 1))
+        return locked
 
     def stop(strict=True):
         nonlocal probe, server, normal_stops
@@ -176,7 +241,10 @@ def main():
             initial = gm.wait_for(snapshot)
             if uid is None: uid = initial['uid']
             assert initial['uid'] == uid
-            if iteration == 0:
+            if iteration == 0 and args.gates:
+                final = gates_first()
+                (directory / 'before-restart.json').write_text(json.dumps(final, indent=2), encoding='utf-8')
+            elif iteration == 0:
                 for tid, amount in [(2, 100000), (20000, 4), (24000, 1), (31011, 1), (221, 10), (232, 10), (271, 4)]:
                     grant(tid, amount)
                 ready = gm.wait_for(lambda: matching_snapshot(lambda s: material(s, 271) == 4 and len(items(s, 'equipment', 20000)) == 4), 40)
@@ -217,13 +285,24 @@ def main():
                 (directory / 'after-restart.json').write_text(json.dumps(initial, indent=2), encoding='utf-8')
                 assert persisted_bag(initial) == persisted_bag(final), 'Inventory/progression did not survive H2 restart'
                 assert initial['basic']['scoin'] == final['basic']['scoin'], 'Credit debit did not survive restart'
-                restored = next(r for r in items(initial, 'equipment', 20000) if r['rank'] == 2)
-                rejected = operate('ExpUpEquipmentCsReq', restored['unique_id'], [pile(221, 100)], False)
-                assert rejected['bag'] == initial['bag'], 'Rejected request consumed materials after restart'
+                if args.gates:
+                    assert initial['avatars'] == final['avatars'], 'Promotion/traces did not survive H2 restart'
+                    target = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('promotion') == 1)
+                    donor = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('is_protected'))
+                    reject('RankUpEquipmentCsReq', selection('RankUpEquipmentCsReq', target, [number(2, donor)]))
+                    wire('LockEquipmentCsReq', number(7, donor))
+                    ranked = operate('RankUpEquipmentCsReq', target, [number(2, donor)])
+                    assert row(ranked, 'equipment', target)['rank'] == 2
+                    reject('UnlockSkillTreeCsReq', number(11, 1202002) + number(5, 2))
+                else:
+                    restored = next(r for r in items(initial, 'equipment', 20000) if r['rank'] == 2)
+                    rejected = operate('ExpUpEquipmentCsReq', restored['unique_id'], [pile(221, 100)], False)
+                    assert rejected['bag'] == initial['bag'], 'Rejected request consumed materials after restart'
             sessions.append(snapshot())
             stop()
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
         result = {'passed': True, 'clientAccepted': False, 'isolated': True, 'jarSha256': digest,
+                  'suite': 'progression-gates' if args.gates else 'equipment-progression',
                   'uid': uid, 'sessions': len(sessions), 'normalStops': normal_stops,
                   'requests': sum(s['requests'] for s in sessions), 'operations': observations,
                   'finalBag': final['bag'], 'credits': final['basic']['scoin'], 'directory': str(directory)}

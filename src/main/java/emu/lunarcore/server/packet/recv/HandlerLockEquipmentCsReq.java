@@ -13,8 +13,12 @@ public class HandlerLockEquipmentCsReq extends PacketHandler {
     public void handle(GameSession session, byte[] data) throws Exception {
         var req = LockEquipmentCsReq.parseFrom(data);
 
-        session.getServer().getInventoryService().lockItems(session.getPlayer(), req.getEquipmentIdList(), req.getIsProtected());
-        session.send(CmdId.LockEquipmentScRsp);
+        var ids = new java.util.ArrayList<Integer>();
+        for (int id : req.getEquipmentIdList()) ids.add(id);
+        var code = org.hkrpg.server.gameplay.EquipmentProtection.lock(session.getPlayer(), ids, req.getIsProtected(), emu.lunarcore.game.enums.ItemMainType.Equipment);
+        var response = new emu.lunarcore.server.packet.BasePacket(CmdId.LockEquipmentScRsp);
+        response.setData(emu.lunarcore.proto.LockEquipmentScRspOuterClass.LockEquipmentScRsp.newInstance().setRetcode(code.getVal()));
+        session.send(response);
     }
 
 }
