@@ -38,6 +38,6 @@ python scripts/smoke-server.py
 - 最终 JAR SHA-256：`d15acf0cf2bc537ab7919de0cec87b28678223dc8f79206a59aa022a66d714f9`。原生测试和候选镜像中的 JAR 一致，资源未修改。
 - 证据位于忽略目录 `build/story-party-20261024/`，包括 `final-proof.json`、原始失败 XML、完整通过 XML、`resource-audit.json` 与 `native.json`。本条记录不代表真实客户端已验收。
 
-部署运行提交为 `3924e884bd58fa1f7e47c7207e2dbc3267798175`，镜像 `hkrpg-local/server:story-party-20261024`，运行 JAR 与上述通过版本一致，容器及 `/health/ready` 正常。停服备份为 `.local/backups/story-party-20261024-202629-3924e88/`，配置和资源均保持。更新后的只读核对保留 UID 10001 的 51 项完成记录、选角、正式角色养成及背包；补回三月七在下一次登录按完成记录执行，真实客户端结果待确认。
+部署运行提交为 `3924e884bd58fa1f7e47c7207e2dbc3267798175`，镜像 `hkrpg-local/server:story-party-20261024`，运行 JAR 与上述通过版本一致，容器及 `/health/ready` 正常。停服备份为 `.local/backups/story-party-20261024-202629-3924e88/`，配置和资源均保持。更新后及登录后的只读核对均保留 UID 10001 的 51 项完成记录、选角、正式角色养成及背包；最新存档已补回三月七 `1001`，队伍为 `[8001,1001]`，头像 `201001` 已落库，信用点仍为 3916。发放和入队记录均为完成，证据为 `build/story-party-20261024/live-login-proof.json`；真实客户端显示和切换操作待用户确认。
 
 首次发布的保护检查因旧服务停服时额外保存了 36 信用点而触发程序回退。读取停服备份的独立副本证实，新程序启动前余额已是 3916，任务与物品一致，因此改用停服备份作为发布前基准后再次部署通过。两次均未恢复或回滚玩家数据库；首次保护回退证据保存在 `build/story-party-20261024/first-deploy-protected-rollback/`。
