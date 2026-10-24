@@ -38,10 +38,13 @@ def main():
     parser.add_argument('--story-party', action='store_true', help='继续校验三月七获得、丹恒奖励入队、原始三人编队、手动编辑和H2重启；对白为合成回执')
     parser.add_argument('--key-console', action='store_true', help='继续到使用密钥目标，校验前置战斗与对白门槛、控制台和绑定门、后续对白、同进程重连和H2重启')
     parser.add_argument('--story-mechanisms', action='store_true', help='继续校验两座剧情桥梁的前置对白、精确联动、重连/H2保存，以及持钥门和升降机的无钥匙拒绝；不播放真实客户端演出')
+    parser.add_argument('--main-control-transfer', action='store_true', help='继续到电梯前战斗及演出完成，校验未持通行证仍可按原任务切往主控舱段、断线恢复及H2重启；战报和演出回执为合成请求')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.main_control_transfer:
+        args.story_mechanisms = True
     if args.story_mechanisms:
         args.key_console = True
     if args.key_console:
@@ -108,6 +111,11 @@ def main():
         guarded += list(fixture['sourceSHA256'])
         for name, source_digest in fixture['sourceSHA256'].items():
             assert hashlib.sha256((source / name).read_bytes()).hexdigest() == source_digest, name
+    if args.main_control_transfer:
+        fixture = json.loads((ROOT / 'src/test/resources/fixtures/main-control-transfer-4.6.json').read_text(encoding='utf-8'))
+        guarded += list(fixture['sourceSHA256'])
+        for name, source_digest in fixture['sourceSHA256'].items():
+            assert hashlib.sha256((source / name).read_bytes()).hexdigest() == source_digest, name
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -137,7 +145,7 @@ def main():
 
     account_name = 'opening_stage_' + uuid.uuid4().hex + '@example.invalid'
     snapshots, stops = [], 0
-    iterations = 6 if args.awakening_door else 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
+    iterations = 7 if args.main_control_transfer else 6 if args.awakening_door else 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
     for iteration in range(iterations):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
@@ -175,6 +183,11 @@ def main():
                         phases += ['mechanisms-first', 'mechanisms-reconnect']
                     elif iteration == 5:
                         phases = ['mechanisms-restart']
+                if args.main_control_transfer:
+                    if iteration == 5:
+                        phases += ['main-control-prepare', 'main-control-reconnect']
+                    elif iteration == 6:
+                        phases = ['main-control-restart']
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
@@ -188,6 +201,7 @@ def main():
                                    'storyParty': args.story_party,
                                    'keyConsole': args.key_console,
                                    'storyMechanisms': args.story_mechanisms,
+                                   'mainControlTransfer': args.main_control_transfer,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -196,6 +210,16 @@ def main():
                     (directory / f'probe-{phase}.log').write_text(probe.stderr, encoding='utf-8')
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
+                    if phase.startswith('main-control-'):
+                        assert snapshot['passed'] and snapshot['certificateAbsent']
+                        assert snapshot['transferPending'] == (phase == 'main-control-prepare')
+                        assert snapshot['mainControlArrival'] == (phase != 'main-control-prepare')
+                        if phase == 'main-control-restart':
+                            previous = next(row for row in snapshots if row['phase'] == 'main-control-reconnect')
+                            assert snapshot['credits'] == previous['credits'], 'Restart duplicated/lost arrival rewards'
+                        snapshots.append(snapshot)
+                        time.sleep(1)
+                        continue
                     if phase.startswith('mechanisms-'):
                         mechanics = snapshot['storyMechanisms']
                         assert snapshot['passed'] and mechanics['restored'] == (phase != 'mechanisms-first')

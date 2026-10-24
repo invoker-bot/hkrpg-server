@@ -1271,7 +1271,8 @@ public final class NativeOpeningStageWinProbe {
     verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
     boolean verifyKeyConsole = control.has("keyConsole") && control.get("keyConsole").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")
-        || phase.startsWith("mechanisms-")) expectedFloor = 20002001;
+        || phase.startsWith("mechanisms-") || phase.equals("main-control-prepare")) expectedFloor = 20002001;
+    if (phase.equals("main-control-reconnect") || phase.equals("main-control-restart")) expectedFloor = 10001001;
     int uid =
         (Integer)
             field(
@@ -1293,6 +1294,47 @@ public final class NativeOpeningStageWinProbe {
     call("GetMissionDataCsReq");
     call("GetMissionDataCsReq");
     require(missionChangeNotifications == 0, "Login/query replayed historical mission changes");
+    if (phase.startsWith("main-control-")) {
+      require(control.has("mainControlTransfer") && control.get("mainControlTransfer").getAsBoolean(), "Unexpected main control phase");
+      boolean pending = phase.equals("main-control-prepare");
+      if (pending) {
+        objective(100020116, 1);
+        call("EnterSceneCsReq", Map.of("entry_id", 1000101), false);
+        propInteraction(8, 300002, 3200, false);
+        var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+        call("EnterSectionCsReq", Map.of("section_id", 1, "interact_id", field(scene, "interact_id")), true);
+        // The start script requests 20002008; the original StageWin goal requires 20002009.
+        // Submit both synthetic stages without claiming client cinematics were verified.
+        for (int event : new int[] {20002008, 20002009}) {
+          var entered = call("SceneEnterStageCsReq", Map.of("event_id", event), true);
+          var battle = (DynamicMessage) field(entered, "battle_info");
+          var end = protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status");
+          var report = Map.<String, Object>of("battle_id", field(battle, "battle_id"),
+              "stage_id", field(battle, "stage_id"), "stt", battleStatistics(battle),
+              "end_status", end.getEnumType().findValueByName("BATTLE_END_WIN"));
+          call("PVEBattleResultCsReq", report, true);
+          call("PVEBattleResultCsReq", report, false);
+          if (event == 20002008) objective(100020116, 1);
+        }
+        objective(100020116, 2); objective(100020117, 1);
+        call("EnterSceneCsReq", Map.of("entry_id", 1000101), false);
+        call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020117, "talk_str", "Mission_100020117"), true);
+        objective(100020118, 1);
+        propInteraction(8, 300002, 3200, false);
+        require((Integer) field((DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene"), "floor_id") == 20002001,
+            "Interrupted transfer must still be pending in its source scene");
+      } else {
+        var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+        require((Integer) field(scene, "plane_id") == 10001 && (Integer) field(scene, "floor_id") == 10001001,
+            "Pending original transfer did not resume into the main control zone");
+        objective(100020118, 2); objective(100030101, 1);
+        require(enterSceneRequests == 0, "Login recovery must not need another scene request");
+      }
+      require(materialCount(140037) == 0, "Story travel must not invent an elevator certificate");
+      return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
+          "transferPending", pending, "mainControlArrival", !pending,
+          "credits", credits, "certificateAbsent", true, "clientGameplayVerified", false);
+    }
     if (phase.startsWith("mechanisms-")) {
       require(control.has("storyMechanisms") && control.get("storyMechanisms").getAsBoolean(), "Unexpected mechanisms phase");
       var mechanisms = storyMechanisms(!phase.equals("mechanisms-first"));

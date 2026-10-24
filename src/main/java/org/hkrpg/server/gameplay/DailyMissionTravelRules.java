@@ -49,6 +49,12 @@ final class DailyMissionTravelRules {
       var sequences = root.getAsJsonArray("OnStartSequece");
       if (sequences.size() != 1) return false;
       var sequence = sequences.get(0).getAsJsonObject();
+      // A single authored sequence may explicitly be first (e.g. 100020118).
+      // Its order cannot reorder any other work; retain all other structural checks.
+      if (sequence.has("Order")) {
+        if (integer(sequence.get("Order")) != 1) return false;
+        sequence.remove("Order");
+      }
       if (!keys(sequence, "TaskList")
           && !(keys(sequence, "IsLoop", "TaskList") && truth(sequence.get("IsLoop")))) return false;
       var tasks = sequence.getAsJsonArray("TaskList");

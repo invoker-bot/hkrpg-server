@@ -400,4 +400,94 @@ class OpeningSceneTransfer46Test {
     assertEquals(before, gson.toJson(actor.getGameplay()));
     assertEquals(saves, actor.saves);
   }
+
+  void prepareMainControlTransfer() throws Exception {
+    JsonObject original;
+    try (var input = getClass().getResourceAsStream("/fixtures/main-control-transfer-4.6.json")) {
+      original = JsonParser.parseString(new String(Objects.requireNonNull(input).readAllBytes(),
+          java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject().getAsJsonObject("records");
+    }
+    for (var row : original.getAsJsonArray("ExcelOutput/MapEntrance.json"))
+      GameData.getMapEntranceExcelMap().add(gson.fromJson(row, MapEntranceExcel.class));
+    for (var row : original.getAsJsonArray("ExcelOutput/MazePlane.json"))
+      GameData.getMazePlaneExcelMap().add(gson.fromJson(row, MazePlaneExcel.class));
+    for (var row : original.getAsJsonArray("ExcelOutput/MainMission.json"))
+      GameData.getMainMissionExcelMap().add(gson.fromJson(row, MainMissionExcel.class));
+    var floor = gson.fromJson(original.get("Config/LevelOutput/RuntimeFloor/P10001_F10001001.json"), FloorInfo.class);
+    var group = gson.fromJson(original.get("Config/LevelOutput/SharedRuntimeGroup/Groups_P10001_F10001001/LevelGroup_P10001_F10001001_G2.json"), GroupInfo.class);
+    group.setId(2);
+    // Retain the real arrival anchor; unrelated scene population is outside this regression.
+    group.getMonsterList().clear(); group.getNPCList().clear(); group.getPropList().clear();
+    floor.getGroups().put(2, group); field(floor, "loaded", true);
+    GameData.getFloorInfos().put("P10001_F10001001", floor);
+    actor.getGameplay().getMainMissions().clear(); actor.getGameplay().getSubMissions().clear();
+    GameData.getMissionInfos().clear(); GameplayDefinitions.subs.clear();
+    assertTrue(actor.loadScene(20002, 20002001, 2000201,
+        new emu.lunarcore.util.Position(), new emu.lunarcore.util.Position(), false));
+    var graphRow = original.getAsJsonObject("Config/Level/Mission/1000203/MissionInfo_1000203.json").deepCopy();
+    graphRow.add("SubMissionList", original.getAsJsonObject("Config/Level/Mission/1000203/MissionInfo_1000203.partial.json").get("SubMissionList"));
+    var graph = gson.fromJson(graphRow, MissionInfo.class);
+    GameData.getMissionInfos().put(1000203, graph);
+    for (var child : graph.getSubMissionList()) GameplayDefinitions.subs.put(child.getId(), child);
+    sub = GameplayDefinitions.subs.get(100020118);
+    var source = original.get("Config/Level/Mission/1000201/Mission_100020118.json");
+    var task = gson.fromJson(source, MissionTaskInfo.class); task.retainSourceDefinition(source); sub.setTask(task);
+    actor.getGameplay().getMainMissions().put(1000203, new QuestState(1000203));
+    for (int id : new int[] {100020115, 100020116, 100020117}) {
+      var done = new QuestState(id); done.advance(1, 1, 100);
+      actor.getGameplay().getSubMissions().put(id, done);
+    }
+    actor.getGameplay().getSubMissions().put(100020118, new QuestState(100020118));
+  }
+
+  @Test void originalOrderedMainControlTransferAuthorizesOnlyItsOwnArrival() throws Exception {
+    prepareMainControlTransfer();
+    assertEquals(QuestState.Phase.DOING, actor.getMissionManager().sub(100020118).getPhase());
+    enter(1000101, 0, Retcode.SUCC);
+    assertEquals(10001001, actor.getFloorId());
+    assertEquals(GameData.getFloorInfo(10001, 10001001).getAnchorInfo(2, 1).getPos(), actor.getPos());
+    assertEquals(QuestState.Phase.FINISHED, actor.getMissionManager().sub(100020118).getPhase());
+    assertTrue(actor.getMissionManager().finished(1000203));
+  }
+
+  @Test void interruptedMainControlTransferResumesOnLoginAndDoesNotRepeatAfterArrival() throws Exception {
+    prepareMainControlTransfer();
+    var origin = MissionSceneEntrances.captureLogin(actor);
+    assertTrue(MissionSceneEntrances.resumeOnLogin(actor, origin));
+    assertEquals(10001001, actor.getFloorId());
+    assertTrue(actor.getMissionManager().finished(1000203));
+    int saves = actor.saves;
+    var saved = gson.toJson(actor.getGameplay());
+    assertFalse(MissionSceneEntrances.resumeOnLogin(actor, MissionSceneEntrances.captureLogin(actor)));
+    assertEquals(saved, gson.toJson(actor.getGameplay()));
+    assertEquals(saves, actor.saves);
+  }
+
+  @ParameterizedTest @ValueSource(strings = {"unfinished-video", "missing-task", "extra-task", "extra-sequence", "order-zero", "order-two", "order-string", "unknown-control"})
+  void orderedTransferStillRefusesUnfinishedOrUnrecognizedStarts(String change) throws Exception {
+    prepareMainControlTransfer();
+    var source = JsonParser.parseString(sub.getTask().getSourceDefinition()).getAsJsonObject();
+    var sequences = source.getAsJsonArray("OnStartSequece");
+    var sequence = sequences.get(0).getAsJsonObject();
+    switch (change) {
+      case "unfinished-video" -> actor.getGameplay().getSubMissions().put(100020117, new QuestState(100020117));
+      case "missing-task" -> sub.setTask(null);
+      case "extra-task" -> sequence.getAsJsonArray("TaskList").add(sequence.getAsJsonArray("TaskList").get(0).deepCopy());
+      case "extra-sequence" -> sequences.add(sequence.deepCopy());
+      case "order-zero" -> sequence.addProperty("Order", 0);
+      case "order-two" -> sequence.addProperty("Order", 2);
+      case "order-string" -> sequence.addProperty("Order", "1");
+      case "unknown-control" -> sequence.addProperty("SkipOnResume", true);
+    }
+    if (!change.equals("missing-task")) {
+      var task = gson.fromJson(source, MissionTaskInfo.class); task.retainSourceDefinition(source); sub.setTask(task);
+    }
+    var saved = gson.toJson(actor.getGameplay());
+    int saves = actor.saves;
+    enter(1000101, 0, Retcode.MISSION_NOT_FINISH);
+    assertFalse(MissionSceneEntrances.resumeOnLogin(actor, MissionSceneEntrances.captureLogin(actor)));
+    assertEquals(20002001, actor.getFloorId());
+    assertEquals(saved, gson.toJson(actor.getGameplay()));
+    assertEquals(saves, actor.saves);
+  }
 }
