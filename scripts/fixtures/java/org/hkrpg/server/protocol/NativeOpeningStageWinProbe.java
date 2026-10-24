@@ -1189,13 +1189,61 @@ public final class NativeOpeningStageWinProbe {
         "console", 300006, "door", 300004);
   }
 
+  private Map<Integer, DynamicMessage> props(int group) throws Exception {
+    var result = new HashMap<Integer, DynamicMessage>();
+    for (var entity : groupEntities(group)) result.put((Integer) field(entity, "inst_id"), entity);
+    return result;
+  }
+
+  private void propInteraction(int group, int instance, int interaction, boolean success) throws Exception {
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    call("InteractPropCsReq", Map.of("prop_entity_id", field(props(group).get(instance), "entity_id"),
+        "interact_id2", interaction, "interact_id", field(scene, "interact_id")), success);
+  }
+
+  private Map<String, Object> storyMechanisms(boolean restored) throws Exception {
+    if (!restored) {
+      doorState(props(3), 300010, 2);
+      propInteraction(3, 300010, 1010, false);
+      for (int talk : new int[] {100020113, 100020108}) {
+        objective(talk, 1);
+        call("FinishTalkMissionCsReq", Map.of("sub_mission_id", talk, "talk_str", "Mission_" + talk), true);
+      }
+      objective(100020114, 1);
+      doorState(props(3), 300010, 0); doorState(props(3), 300012, 0);
+      propInteraction(3, 300012, 1010, false);
+      propInteraction(3, 300010, 1010, true);
+      objective(100020114, 2); objective(100020119, 1);
+      doorState(props(6), 300002, 2);
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020119, "talk_str", "Mission_100020119"), true);
+      objective(100020115, 1);
+      doorState(props(6), 300002, 0); doorState(props(6), 300001, 0);
+      propInteraction(6, 300002, 1010, true);
+    }
+    doorState(props(3), 300006, 1); doorState(props(3), 300004, 1);
+    doorState(props(3), 300010, 1); doorState(props(3), 300012, 1);
+    doorState(props(6), 300002, 1); doorState(props(6), 300001, 1);
+    doorState(props(6), 300006, 0);
+    objective(100020112, 2); objective(100020114, 2); objective(100020115, 2);
+    objective(100020116, 1);
+    propInteraction(3, 300010, 1010, false);
+    propInteraction(6, 300002, 1010, false);
+    propInteraction(3, 300005, 3016, false);
+    propInteraction(8, 300001, 3200, false);
+    propInteraction(8, 300003, 114150, false);
+    return Map.of("restored", restored, "bridgesOpen", List.of("3:300012", "6:300001"),
+        "unrelatedBridgeClosed", true, "keyDoorPreserved", true, "keyOwnershipRequired", true,
+        "nextBattlePending", true, "credits", credits);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
     verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
     verifySpaceAnchors = control.has("spaceAnchors") && control.get("spaceAnchors").getAsBoolean();
     verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
     boolean verifyKeyConsole = control.has("keyConsole") && control.get("keyConsole").getAsBoolean();
-    if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")) expectedFloor = 20002001;
+    if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")
+        || phase.startsWith("mechanisms-")) expectedFloor = 20002001;
     int uid =
         (Integer)
             field(
@@ -1214,6 +1262,12 @@ public final class NativeOpeningStageWinProbe {
     credits = (Integer) field(loginBasic, "scoin");
     loginNickname = (String) field(loginBasic, "nickname");
     call("PlayerLoginFinishCsReq");
+    if (phase.startsWith("mechanisms-")) {
+      require(control.has("storyMechanisms") && control.get("storyMechanisms").getAsBoolean(), "Unexpected mechanisms phase");
+      var mechanisms = storyMechanisms(!phase.equals("mechanisms-first"));
+      return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
+          "storyMechanisms", mechanisms, "clientGameplayVerified", false);
+    }
     if (phase.equals("key-console-reconnect")) {
       require(verifyKeyConsole, "Unexpected key console phase");
       var key = keyConsole(true);

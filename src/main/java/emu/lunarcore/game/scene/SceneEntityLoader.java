@@ -116,8 +116,12 @@ public class SceneEntityLoader {
             scene.getHealingSprings().add(prop);
         }
 
-        if (scene.getPlaneType() != PlaneType.Raid && propExcel.getPropType() == PropType.PROP_ELEVATOR) {
-            prop.setState(PropState.Elevator1);
+        // Some old exports omit the initial floor (parsed as Closed). Normalize only that
+        // unsupported state; never overwrite an authored or subsequently restored stop.
+        if (scene.getPlaneType() != PlaneType.Raid && propExcel.getPropType() == PropType.PROP_ELEVATOR
+            && !propExcel.getPropStateList().contains(prop.getState())
+            && propExcel.getPropStateList().contains(PropState.Elevator1)) {
+            prop.setState(PropState.Elevator1, false);
         }
 
         // Add trigger to scene

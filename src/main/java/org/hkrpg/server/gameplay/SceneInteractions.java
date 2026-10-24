@@ -25,7 +25,7 @@ public final class SceneInteractions {
         || !row.getItemCostList().isEmpty()
         || row.getInteractCostType() == null
         || !(row.getInteractCostType().isBlank() || row.getInteractCostType().equals("None")))
-      return Retcode.INTERACT_TYPE_INVALID;
+      return StoryDoors.checkCost(prop, config);
     return Retcode.SUCC;
   }
 

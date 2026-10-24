@@ -37,10 +37,13 @@ def main():
     parser.add_argument('--space-anchors', action='store_true', help='继续校验收容舱段锚点靠近激活、地图查询、实际传送和H2重启；移动为合成请求')
     parser.add_argument('--story-party', action='store_true', help='继续校验三月七获得、丹恒奖励入队、原始三人编队、手动编辑和H2重启；对白为合成回执')
     parser.add_argument('--key-console', action='store_true', help='继续到使用密钥目标，校验前置战斗与对白门槛、控制台和绑定门、后续对白、同进程重连和H2重启')
+    parser.add_argument('--story-mechanisms', action='store_true', help='继续校验两座剧情桥梁的前置对白、精确联动、重连/H2保存，以及持钥门和升降机的无钥匙拒绝；不播放真实客户端演出')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.story_mechanisms:
+        args.key_console = True
     if args.key_console:
         args.story_party = True
         if args.avatar_progression or args.space_anchors:
@@ -100,6 +103,11 @@ def main():
         guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000204').glob('*.json')]
     if args.key_console:
         guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000202').glob('*.json')]
+    if args.story_mechanisms:
+        fixture = json.loads((ROOT / 'src/test/resources/fixtures/story-mechanisms-4.6.json').read_text(encoding='utf-8'))
+        guarded += list(fixture['sourceSHA256'])
+        for name, source_digest in fixture['sourceSHA256'].items():
+            assert hashlib.sha256((source / name).read_bytes()).hexdigest() == source_digest, name
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -162,6 +170,11 @@ def main():
                           else ['transfer-restart'] if iteration == 4 else ['awakening-restart'])
                 if args.key_console and iteration == 4:
                     phases.append('key-console-reconnect')
+                if args.story_mechanisms:
+                    if iteration == 4:
+                        phases += ['mechanisms-first', 'mechanisms-reconnect']
+                    elif iteration == 5:
+                        phases = ['mechanisms-restart']
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
@@ -174,6 +187,7 @@ def main():
                                    'spaceAnchors': args.space_anchors,
                                    'storyParty': args.story_party,
                                    'keyConsole': args.key_console,
+                                   'storyMechanisms': args.story_mechanisms,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -182,6 +196,17 @@ def main():
                     (directory / f'probe-{phase}.log').write_text(probe.stderr, encoding='utf-8')
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
+                    if phase.startswith('mechanisms-'):
+                        mechanics = snapshot['storyMechanisms']
+                        assert snapshot['passed'] and mechanics['restored'] == (phase != 'mechanisms-first')
+                        assert mechanics['bridgesOpen'] == ['3:300012', '6:300001']
+                        assert all(mechanics[key] for key in ('unrelatedBridgeClosed', 'keyDoorPreserved', 'keyOwnershipRequired', 'nextBattlePending'))
+                        if phase != 'mechanisms-first':
+                            previous = next(row for row in snapshots if row['phase'] == 'mechanisms-first')
+                            assert mechanics['credits'] == previous['storyMechanisms']['credits'], 'Reconnect duplicated/lost mission rewards'
+                        snapshots.append(snapshot)
+                        time.sleep(1)
+                        continue
                     if phase == 'key-console-reconnect':
                         assert snapshot['passed'] and snapshot['keyConsole']['restored']
                         assert snapshot['keyConsole']['doorOpen'] and snapshot['keyConsole']['nextPerformancePending']

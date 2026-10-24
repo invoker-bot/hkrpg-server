@@ -20,6 +20,15 @@ public final class StoryDoors {
   private static final String STANDALONE_GRAPH =
       "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json";
   private static final String DOOR_KEY = "Maze_Prop_Chap01_Door";
+  private static final String ROOT = "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_";
+  private static final String KEY_DOOR = ROOT + "Console01_OpenDoor_02.json";
+  private static final String BRIDGE = ROOT + "Console01_OpenBridge_04.json";
+  private static final String BRIDGE_SIMPLE = ROOT + "Console01_OpenBridge_03.json";
+  private static final String PRIVATE_LIFT = ROOT + "Console01_Elevator_01.json";
+  private static final Set<String> PAIRED_GRAPHS = Set.of(GRAPH, KEY_DOOR, BRIDGE, BRIDGE_SIMPLE);
+  private static final Set<String> KEY_LIFTS = Set.of(
+      ROOT + "Elevator_Console_1F.json", ROOT + "Elevator_Console_2F.json");
+  private static final String LIFT_KEY = "Maze_Chap00_N201_Prop_ELevator";
   // The exported task omits its target. Only a matching PropState objective supplies that target;
   // this is deliberately not a general ChangePropState interpreter.
   private static final JsonElement ENABLE_TASK =
@@ -60,11 +69,35 @@ public final class StoryDoors {
   private record Link(int group, int instance) {}
 
   public static boolean controller(PropInfo info) {
-    return paired(info) || standalone(info);
+    return paired(info) || standalone(info) || repeatable(info);
   }
 
   private static boolean paired(PropInfo info) {
-    return info != null && info.getPropID() == 100000 && GRAPH.equals(info.getInitLevelGraph());
+    return info != null && info.getPropID() == 100000
+        && info.getInitLevelGraph() != null
+        && PAIRED_GRAPHS.contains(info.getInitLevelGraph());
+  }
+
+  private static boolean keyDoor(PropInfo info) {
+    return info != null && info.getPropID() == 100000 && KEY_DOOR.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean keyLift(PropInfo info) {
+    return info != null && info.getPropID() == 100000 && info.getInitLevelGraph() != null
+        && KEY_LIFTS.contains(info.getInitLevelGraph());
+  }
+
+  private static boolean repeatable(PropInfo info) {
+    return keyLift(info) || info != null && info.getPropID() == 100022
+        && PRIVATE_LIFT.equals(info.getInitLevelGraph());
+  }
+
+  private static String bindingKey(PropInfo info) {
+    if (keyLift(info)) return LIFT_KEY;
+    if (!paired(info)) return null;
+    if (BRIDGE.equals(info.getInitLevelGraph())) return "Maze_Prop_Chap01_BaseControllSimpleDoor";
+    if (BRIDGE_SIMPLE.equals(info.getInitLevelGraph())) return "Maze_Prop_Chap00_BaseControllSimpleDoor";
+    return DOOR_KEY;
   }
 
   private static boolean standalone(PropInfo info) {
@@ -80,13 +113,14 @@ public final class StoryDoors {
   }
 
   private static Link link(PropInfo info) {
-    if (!paired(info)
+    String key = bindingKey(info);
+    if (key == null
         || info.getValueSource() == null
         || info.getValueSource().getValues() == null) return null;
     try {
       var values =
           info.getValueSource().getValues().stream()
-              .filter(v -> v != null && v.has("Key") && DOOR_KEY.equals(v.get("Key").getAsString()))
+              .filter(v -> v != null && v.has("Key") && key.equals(v.get("Key").getAsString()))
               .toList();
       if (values.size() != 1) return null;
       var value = values.getFirst().get("Value");
@@ -116,7 +150,7 @@ public final class StoryDoors {
       if (definition.getPropList() == null) continue;
       for (var p : definition.getPropList()) {
         var link = link(p);
-        if (link != null
+        if (paired(p) && link != null
             && link.group() == group
             && link.instance() == instance
             && original(scene, definition.getId(), p.getID()) == p) found.add(p);
@@ -127,7 +161,20 @@ public final class StoryDoors {
 
   private static boolean objective(
       Scene scene, int group, PropInfo info, MissionInfo.SubMissionInfo c) {
-    if (c == null
+    if (!observes(scene, group, info, c) || c.getTask() == null) return false;
+    try {
+      var script = JsonParser.parseString(c.getTask().getSourceDefinition());
+      return ENABLE_TASK.equals(script)
+          || standalone(info) && enableWithDialogue(script)
+          || !keyDoor(info) && !keyLift(info) && (StoryConsoleTasks.enables(scene, script)
+              || enableWithDelayedHint(script) || enableWithProximityHints(scene, c, script));
+    } catch (RuntimeException invalid) {
+      return false;
+    }
+  }
+
+  private static boolean observes(Scene scene, int group, PropInfo info, MissionInfo.SubMissionInfo c) {
+    return !(c == null || info == null
         || !"PropState".equals(c.getFinishType())
         || !"Equal".equals(c.getParamType())
         || c.getLevelPlaneID() != scene.getPlaneId()
@@ -137,16 +184,7 @@ public final class StoryDoors {
         || c.getParamInt1() != group
         || c.getParamInt2() != info.getID()
         || c.getParamInt3() != 1
-        || c.getProgress() != 1
-        || c.getTask() == null) return false;
-    try {
-      var script = JsonParser.parseString(c.getTask().getSourceDefinition());
-      return ENABLE_TASK.equals(script)
-          || standalone(info) && enableWithDialogue(script)
-          || paired(info) && (enableWithDelayedHint(script) || enableWithProximityHints(scene, c, script));
-    } catch (RuntimeException invalid) {
-      return false;
-    }
+        || c.getProgress() != 1);
   }
 
   /** A parallel literal reminder cannot gate the separate, unconditional console enable. */
@@ -320,12 +358,19 @@ public final class StoryDoors {
   }
 
   private static PropState state(Scene scene, int group, PropInfo info) {
+    // A lift console is a reusable switch. Finishing its first-use objective must not pin it Open.
+    if (repeatable(info)) {
+      if (receipt(scene, group, info, PropState.Closed)) return PropState.Closed;
+      if (receipt(scene, group, info, PropState.Open)) return PropState.Open;
+      return info.getState() == PropState.Locked && !ready(scene, group, info)
+          && !completed(scene, group, info) ? PropState.Locked : PropState.Closed;
+    }
     if (completed(scene, group, info)) return PropState.Open;
     if (info.getState() == PropState.Locked && !ready(scene, group, info)
         && !unlocked(scene, group, info)) return PropState.Locked;
     if (standalone(info) ? receipt(scene, group, info) : pairReceipt(scene, group, info))
       return PropState.Open;
-    if (info.getState() == PropState.Closed) {
+    if (GRAPH.equals(info.getInitLevelGraph()) && info.getState() == PropState.Closed) {
       var old =
           scene
               .getPlayer()
@@ -358,7 +403,7 @@ public final class StoryDoors {
     if (info == null || prop.getPropInfo() != info) return;
     if (controller(info)) {
       prop.setState(state(scene, prop.getGroupId(), info), false);
-    } else if (prop.getExcel().isDoor()) {
+    } else if (prop.getExcel().isDoor() || prop.getPropType() == PropType.PROP_PLATFORM) {
       var owners = controllers(scene, prop.getGroupId(), prop.getInstId());
       if (owners.isEmpty()) return;
       boolean open =
@@ -389,27 +434,90 @@ public final class StoryDoors {
     if (info == null)
       return Retcode.SUCC; // The shared transition validator checks original identity.
     if (!controller(info))
-      return prop.getExcel().isDoor()
-              && !controllers(scene, prop.getGroupId(), prop.getInstId()).isEmpty()
-          ? Retcode.INTERACT_TYPE_INVALID
-          : Retcode.SUCC;
+      return validateTarget(prop, config);
     var link = link(info);
+    if (repeatable(info)) {
+      var current = state(scene, prop.getGroupId(), info);
+      boolean valid = config == 1010 && current == PropState.Closed
+          || config == 1100 && current == PropState.Open
+          || keyLift(info) && config == 3200 && current == PropState.Locked;
+      if (!valid) return Retcode.INTERACT_TYPE_INVALID;
+      return keyLift(info) && !validLink(scene, info, link) ? Retcode.REQ_PARA_INVALID : Retcode.SUCC;
+    }
     boolean unlock = config == 1200 && prop.getState() == PropState.Locked
         && unlockReady(scene, prop.getGroupId(), info)
         && GameData.getInteractExcelMap().get(config).getTargetState() == PropState.Closed;
-    boolean open = config == 1010 && state(scene, prop.getGroupId(), info) == PropState.Closed;
+    boolean open = config == (keyDoor(info) ? keyInteraction(info) : 1010)
+        && state(scene, prop.getGroupId(), info) == PropState.Closed;
     if (standalone(info)) return open ? Retcode.SUCC : Retcode.INTERACT_TYPE_INVALID;
     if ((!unlock && !open) || link == null)
       return Retcode.INTERACT_TYPE_INVALID;
-    var doorInfo = original(scene, link.group(), link.instance());
-    var door = actor(scene, link);
-    if (doorInfo == null
-        || door == null
-        || door.getPropInfo() != doorInfo
-        || !door.getExcel().isDoor()
-        || !door.getExcel().getPropStateList().contains(PropState.Open))
+    if (!validLink(scene, info, link))
       return Retcode.REQ_PARA_INVALID;
     return Retcode.SUCC;
+  }
+
+  private static boolean validLink(Scene scene, PropInfo owner, Link link) {
+    if (link == null) return false;
+    var source = original(scene, link.group(), link.instance());
+    var target = actor(scene, link);
+    return source != null && target != null && target.getPropInfo() == source
+        && (keyLift(owner) ? target.getPropType() == PropType.PROP_ELEVATOR
+            && source.getPropID() == 100007
+            && (ROOT + "Elevator_Move_01.json").equals(source.getInitLevelGraph())
+            : (DOOR_KEY.equals(bindingKey(owner)) ? target.getExcel().isDoor()
+                : target.getPropType() == PropType.PROP_PLATFORM && source.getPropID() == 100013)
+                && target.getExcel().getPropStateList().contains(PropState.Open));
+  }
+
+  private static Retcode validateTarget(EntityProp prop, int config) {
+    var scene = prop.getScene();
+    if ((prop.getExcel().isDoor() || prop.getPropType() == PropType.PROP_PLATFORM)
+        && !controllers(scene, prop.getGroupId(), prop.getInstId()).isEmpty())
+      return Retcode.INTERACT_TYPE_INVALID;
+    if (prop.getPropType() != PropType.PROP_ELEVATOR) return Retcode.SUCC;
+    var owners = new ArrayList<PropInfo>();
+    for (var group : scene.getResourceGroups().values()) for (var source : group.getPropList()) {
+      var link = link(source);
+      if (keyLift(source) && link != null && link.group() == prop.getGroupId()
+          && link.instance() == prop.getInstId()) owners.add(source);
+    }
+    if (owners.isEmpty()) return Retcode.SUCC;
+    if (config != 114150 && config != 115140) return Retcode.INTERACT_TYPE_INVALID;
+    return owners.stream().anyMatch(p -> validLink(scene, p, link(p))
+        && state(scene, p.getGroup().getId(), p) != PropState.Locked)
+        ? Retcode.SUCC : Retcode.INTERACT_TYPE_INVALID;
+  }
+
+  private static int keyInteraction(PropInfo info) {
+    if (!keyDoor(info) || info.getValueSource() == null || info.getValueSource().getValues() == null) return 0;
+    try {
+      var matches = info.getValueSource().getValues().stream().filter(v -> v != null
+          && v.has("Key") && "Maze_Prop_Chap00_CostItem_InteractID".equals(v.get("Key").getAsString())).toList();
+      if (matches.size() != 1 || !"RPG.GameCore.SharedInt".equals(matches.getFirst().get("$type").getAsString())) return 0;
+      return literalPositiveId(matches.getFirst().get("Value"));
+    } catch (RuntimeException invalid) { return 0; }
+  }
+
+  /** This exported key is checked, never consumed. No arbitrary cost type is accepted here. */
+  static Retcode checkCost(EntityProp prop, int config) {
+    var scene = prop.getScene();
+    var info = original(scene, prop.getGroupId(), prop.getInstId());
+    var row = GameData.getInteractExcelMap().get(config);
+    if (!world(scene) || info != prop.getPropInfo() || row == null
+        || !(keyDoor(info) && config == 3016 && keyInteraction(info) == config
+            || keyLift(info) && config == 3200)
+        || row.getSrcState() != (keyDoor(info) ? PropState.Closed : PropState.Locked)
+        || row.getTargetState() != (keyDoor(info) ? PropState.Open : PropState.Closed)
+        || !"CheckItem".equals(row.getInteractCostType()) || row.getItemCostList() == null
+        || !row.getItemCostList().equals(List.of(new emu.lunarcore.data.excel.InteractExcel.InteractCost(140037, 1))))
+      return Retcode.INTERACT_TYPE_INVALID;
+    var validation = validate(prop, config);
+    if (validation != Retcode.SUCC) return validation;
+    var inventory = scene.getPlayer().getInventory();
+    var key = inventory == null ? null : inventory.getMaterialByItemId(140037);
+    return key != null && key.getItemId() == 140037 && key.getCount() >= 1
+        ? Retcode.SUCC : Retcode.ITEM_NOT_ENOUGH;
   }
 
   private static EntityProp actor(Scene scene, Link link) {
@@ -435,8 +543,10 @@ public final class StoryDoors {
       return unlockReady(scene, c.getParamInt1(), info)
           && receipt(scene, c.getParamInt1(), info, PropState.Closed);
     return controller(info)
-        && objective(scene, c.getParamInt1(), info, c)
-        && (standalone(info)
+        && (objective(scene, c.getParamInt1(), info, c)
+            || c.getTask() == null && "".equals(c.getMissionJsonPath())
+                && observes(scene, c.getParamInt1(), info, c) && doing(scene, c))
+        && (standalone(info) || repeatable(info)
             ? doing(scene, c) && receipt(scene, c.getParamInt1(), info)
             : pairReceipt(scene, c.getParamInt1(), info));
   }

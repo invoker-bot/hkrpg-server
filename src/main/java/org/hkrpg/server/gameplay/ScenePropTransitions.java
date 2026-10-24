@@ -139,6 +139,7 @@ public final class ScenePropTransitions {
       var changed = new LinkedHashMap<EntityProp, PropState>();
       targets.keySet().forEach(candidate -> changed.put(candidate, candidate.getState()));
       if (!WorldMechanisms.controller(prop)
+          && !StoryDoors.controller(prop.getPropInfo())
           && prop.getPropType() == PropType.PROP_ORDINARY
           && prop.getPropInfo() != null) {
         for (var candidate : scene.getEntitiesByGroup(EntityProp.class, prop.getGroupId())) {
