@@ -41,6 +41,10 @@ public final class ProtocolBridge {
           Map.entry("PlayerGetTokenScRsp.msg", "stop_desc"),
           // Honey fe00bdb CmdAvatarType: native request 3 contains ItemCostData (list 2).
           Map.entry("AvatarExpUpCsReq.item_cost_list", "item_cost"),
+          // Honey fe00bdb CmdItemType consumes CostData for all three equipment operations.
+          Map.entry("ExpUpEquipmentCsReq.item_cost_list", "cost_data"),
+          Map.entry("ExpUpRelicCsReq.item_cost_list", "cost_data"),
+          Map.entry("RankUpEquipmentCsReq.item_cost_list", "cost_data"),
           Map.entry("FinishQuestScRsp.retcode", "PLDKENJLKME"),
           Map.entry("Avatar.changed_avatar_type", "cur_multi_path_avatar_type"),
           Map.entry("Avatar.first_met_timestamp", "first_met_time_stamp"),

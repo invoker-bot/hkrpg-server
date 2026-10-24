@@ -996,3 +996,6 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 3011014演出入口追加：DailyRecoverPerformanceState仅保存原E演出开始证据，按日、UID和主/子目标实际接取UUID绑定。DailyRecoverPerformances在保存后发布原开场NPC，完成目标后的场景刷新释放；缺失/变化原图或替换接取不恢复。客户端仍负责完整原Act的画面、动作及中间替换；服务端未解释或伪造这些本地字符串，边界见[daily-recover-performance-4.6.md](daily-recover-performance-4.6.md)。
 
 3011014原NPC初遇追加：三名NPC的六份原对话图绑定实际加载实体与固定来源，初遇记录独立于每日接取并随Player保存；保存失败撤回、重复回报不重写，换日与取消日常不删除初遇。原FinishPerformanceMission经本机调用链核对仍发送1205，未新增猜测的同步协议。77份完整原件核对与实际客户端连接边界见[演出入口验证](daily-recover-performance-4.6.md)。
+
+
+光锥与遗器养成的4.6材料容器由 `ProtocolBridge` 显式映射；`EquipmentExperience` 在扣料前校验跨级曲线，`EquipmentSuperimposition` 在玩家锁内校验并执行整批叠影。`EquipmentRank46` 为没有旧版类型响应的叠影入口返回实际错误码。存储与验证边界见[养成检查说明](equipment-progression-4.6.md)。

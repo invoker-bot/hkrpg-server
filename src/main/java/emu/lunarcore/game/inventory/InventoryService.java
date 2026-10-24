@@ -18,6 +18,8 @@ import emu.lunarcore.server.packet.send.*;
 import us.hebi.quickbuf.RepeatedInt;
 import org.hkrpg.server.gameplay.UpgradeMaterials;
 import org.hkrpg.server.gameplay.AvatarExperience;
+import org.hkrpg.server.gameplay.EquipmentExperience;
+import org.hkrpg.server.gameplay.EquipmentSuperimposition;
 
 public class InventoryService extends BaseGameService {
 
@@ -287,31 +289,17 @@ public class InventoryService extends BaseGameService {
         if (plan == null || player.getScoin() < plan.coins()) return null;
         int amount = plan.amount();
         int cost = plan.coins();
+        var progress = EquipmentExperience.prepare(equip, amount);
+        if (progress == null || progress.applied() == 0) return null;
 
         // Pay items
         player.getInventory().removeItemsByParams(plan.items());
         player.addSCoin(-cost);
 
         // Level up
-        int maxLevel = promoteData.getMaxLevel();
-        int level = equip.getLevel();
-        int exp = equip.getExp();
-        int reqExp = initialRequired;
-
-        while (amount > 0 && reqExp > 0 && level < maxLevel) {
-            // Do calculations
-            int toGain = Math.min(amount, reqExp - exp);
-            exp += toGain;
-            amount -= toGain;
-            // Level up
-            if (exp >= reqExp) {
-                // Exp
-                exp = 0;
-                level += 1;
-                // Set req exp
-                reqExp = GameData.getEquipmentExpRequired(equip.getExcel().getEquipmentExcel().getExpType(), level);
-            }
-        }
+        int level = progress.level();
+        int exp = progress.exp();
+        amount = progress.remaining();
 
         // Done
         equip.setLevel(level);
@@ -387,36 +375,7 @@ public class InventoryService extends BaseGameService {
     }
 
     public boolean rankUpEquipment(Player player, int equipId, List<ItemParam> items) {
-        // Get avatar
-        GameItem equip = player.getInventory().getItemByUid(equipId);
-
-        if (equip == null || !equip.getExcel().isEquipment() || equip.getRank() >= equip.getExcel().getEquipmentExcel().getMaxRank()) {
-            return false;
-        }
-
-        // Rank up amount
-        int amount = 0;
-
-        // Verify items
-        for (ItemParam param : items) {
-            GameItem item = player.getInventory().getItemByParam(param);
-            if (item == null || !equip.getExcel().getEquipmentExcel().isRankUpItem(item) || item.getCount() < param.getCount()) {
-                return false;
-            }
-
-            amount += item.getRank();
-        }
-
-        // Pay items
-        player.getInventory().removeItemsByParams(items);
-
-        // Add rank
-        equip.setRank(Math.min(equip.getRank() + amount, equip.getExcel().getEquipmentExcel().getMaxRank()));
-        equip.save();
-
-        // Send packets
-        player.sendPacket(new PacketPlayerSyncScNotify(equip));
-        return true;
+        return EquipmentSuperimposition.apply(player, equipId, items);
     }
 
     // === Relic ===
@@ -446,38 +405,19 @@ public class InventoryService extends BaseGameService {
         if ((long) equip.getTotalExp() + plan.amount() > Integer.MAX_VALUE) return null;
         int amount = plan.amount();
         int cost = plan.coins();
+        var progress = EquipmentExperience.prepare(equip, amount);
+        if (progress == null || progress.applied() == 0) return null;
 
         // Pay items
         player.getInventory().removeItemsByParams(plan.items());
         player.addSCoin(-cost);
 
         // Level up
-        int maxLevel = equip.getExcel().getRelicExcel().getMaxLevel();
-        int level = equip.getLevel();
-        int exp = equip.getExp();
-        int totalExp = equip.getTotalExp();
-        int upgrades = 0;
-        int reqExp = initialRequired;
-
-        while (amount > 0 && reqExp > 0 && level < maxLevel) {
-            // Do calculations
-            int toGain = Math.min(amount, reqExp - exp);
-            exp += toGain;
-            totalExp += toGain;
-            amount -= toGain;
-            // Level up
-            if (exp >= reqExp) {
-                // Exp
-                exp = 0;
-                level += 1;
-                // Check upgrades
-                if (level % 3 == 0) {
-                    upgrades++;
-                }
-                // Set req exp
-                reqExp = GameData.getRelicExpRequired(equip.getExcel().getRelicExcel().getExpType(), level);
-            }
-        }
+        int level = progress.level();
+        int exp = progress.exp();
+        int totalExp = equip.getTotalExp() + progress.applied();
+        int upgrades = level / 3 - oldLevel / 3;
+        amount = progress.remaining();
 
         // Add affixes
         if (upgrades > 0) {

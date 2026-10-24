@@ -20,6 +20,7 @@ public final class NativeGmPlayerProbe {
   private final AtomicReference<Throwable> failure = new AtomicReference<>();
   private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
   private final Map<String, Object> basic = new LinkedHashMap<>();
+  private final List<Map<String, Object>> equipmentSyncs = new ArrayList<>();
   private Ukcp channel;
   private int requests;
 
@@ -51,10 +52,14 @@ public final class NativeGmPlayerProbe {
     fields.forEach(
         (key, value) ->
             request.setField(request.getDescriptorForType().findFieldByName(key), value));
+    return callWire(name, request.build().toByteArray(), true);
+  }
+
+  private DynamicMessage callWire(String name, byte[] payload, boolean success) throws Exception {
     var bytes =
         Unpooled.wrappedBuffer(
             PacketCodec.encode(
-                protocol.clientCommand(name), new byte[0], request.build().toByteArray()));
+                protocol.clientCommand(name), new byte[0], payload));
     try {
       channel.write(bytes);
     } finally {
@@ -70,10 +75,12 @@ public final class NativeGmPlayerProbe {
       if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
         var sync = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
         basic.putAll(project((DynamicMessage) field(sync, "basic_info")));
+        if (!((List<?>) field(sync, "equipment_list")).isEmpty()
+            || !((List<?>) field(sync, "relic_list")).isEmpty()) equipmentSyncs.add(project(sync));
       }
       if (frame.command() != protocol.clientCommand(response)) continue;
       var result = protocol.clientSchema().parse(response, frame.body());
-      if (!result.getUnknownFields().asMap().isEmpty() || (Integer) field(result, "retcode") != 0)
+      if (!result.getUnknownFields().asMap().isEmpty() || ((Integer) field(result, "retcode") == 0) != success)
         throw new IllegalStateException("Unexpected response: " + response);
       return result;
     }
@@ -101,6 +108,8 @@ public final class NativeGmPlayerProbe {
     call("PlayerLoginFinishCsReq");
     String lastPullId = "";
     Map<String, Object> lastPull = null;
+    String lastEquipmentId = "";
+    Map<String, Object> lastEquipment = null;
     long deadline = System.nanoTime() + TimeUnit.MINUTES.toNanos(40);
     while (!Files.exists(directory.resolve("quit")) && System.nanoTime() < deadline) {
       // Optional owned smoke control. No production endpoint or runtime hook is installed.
@@ -116,6 +125,21 @@ public final class NativeGmPlayerProbe {
           lastPullId = id;
         }
       }
+      Path equipmentRequest = directory.resolve("equipment-request.json");
+      if (Files.exists(equipmentRequest)) {
+        var requested = JsonParser.parseString(Files.readString(equipmentRequest)).getAsJsonObject();
+        String id = requested.get("requestId").getAsString();
+        if (!id.equals(lastEquipmentId)) {
+          String command = requested.get("command").getAsString();
+          if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq").contains(command))
+            throw new IllegalArgumentException("Unsupported owned equipment smoke request");
+          equipmentSyncs.clear();
+          var result = callWire(command, Base64.getDecoder().decode(requested.get("wire").getAsString()),
+              requested.get("success").getAsBoolean());
+          lastEquipment = Map.of("requestId", id, "response", project(result), "syncs", List.copyOf(equipmentSyncs));
+          lastEquipmentId = id;
+        }
+      }
       call("PlayerHeartBeatCsReq", Map.of("client_time_ms", System.currentTimeMillis()));
       var snapshot = new LinkedHashMap<String, Object>();
       snapshot.put("uid", uid);
@@ -126,6 +150,7 @@ public final class NativeGmPlayerProbe {
       snapshot.put("basic", Map.copyOf(basic));
       snapshot.put("requests", requests);
       if (lastPull != null) snapshot.put("gachaPull",lastPull);
+      if (lastEquipment != null) snapshot.put("equipmentReply", lastEquipment);
       Path temporary = directory.resolve("snapshot.tmp");
       Files.writeString(temporary, new Gson().toJson(snapshot));
       Files.move(

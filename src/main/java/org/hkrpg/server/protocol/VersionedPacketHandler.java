@@ -16,6 +16,7 @@ public final class VersionedPacketHandler {
     var protocol = session.getProtocol();
     if (!protocol.experimental()) return false;
     if (Tutorial46.handle(session, command, bytes)) return true;
+    if (EquipmentRank46.handle(session, command, bytes)) return true;
     if (PlayerReturn46.handle(session, command, bytes)) return true;
     if (LoginBootstrap46.handle(session, command, bytes)) return true;
     if (TextJoin46.handle(session, command, bytes)) return true;
