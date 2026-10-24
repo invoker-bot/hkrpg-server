@@ -46,3 +46,9 @@ python scripts/smoke-equipment-progression.py --gates
 - 原有升级/叠影隔离复测：12 次操作、93 个请求、两次会话、两次正常停服通过。Dispatch 两轮认证与账号重启保存通过。
 - 输入冻结、完整测试、两份隔离报告和待发布镜像使用同一 JAR：`8baf06386f860e3c28d3b0ad15ecb6f3191ce709dde46fad01a1e609e597e594`。详细报告位于忽略目录 `build/progression-gates-20261025/final-proof.json`。
 - 这轮尚无真实游戏客户端 UI 验收；上述成功均指服务端及隔离原生通信，不将未测机制标为完整。
+
+## 2026-10-25 服务更新
+
+代码提交 `3511788b35f8440662427dc0d6681493b6c18a62` 已更新到本机受管服务，镜像 `hkrpg-local/server:progression-gates-20261025`，实际运行 JAR 与上述验证 SHA 一致，健康检查通过。
+
+停服后的备份位于 `.local/backups/progression-gates-20261025-033822-3511788/`；备份哈希逐文件核对，再从只读副本读取存档作为更新前基线。更新后 UID 10001 的 **58 项已完成目标、剧情选角、角色、队伍、背包、信用点和机关记录**均一致，配置与运行环境保留。没有重置或回滚存档。保存核对覆盖 13 份物品/角色文档，详情在 `build/progression-gates-20261025/deployment.json`。
