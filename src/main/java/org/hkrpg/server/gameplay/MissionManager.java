@@ -119,6 +119,7 @@ public final class MissionManager {
   public void refresh() {
     synchronized (player) {
       player.getMissionTrialManager().reconcile();
+      new StoryParties(player).reconcile();
       var oldSfx = new MusicComposition(player).unlockedSfxSongs();
       var assignmentTime = clock.instant();
       boolean changed =
@@ -158,6 +159,10 @@ public final class MissionManager {
           }
           if (config.getProgress() < 0
               || !MissionStateRecords.doing(state, config.getId(), goal(config))) continue;
+          if (matchesPlace(config) && new StoryActions(player).recoverableLineupCompletion(config)) {
+            pass |= advance(config, state, goal(config) - state.getProgress());
+            if (state.getPhase() != QuestState.Phase.DOING) continue;
+          }
           if ("WaitDays".equals(config.getFinishType())
               && !player.getGameplay().getMissionAcceptedDays().containsKey(config.getId())) {
             // Old documents cannot recover a trustworthy acceptance date: begin
@@ -232,13 +237,11 @@ public final class MissionManager {
           new MissionRewards(player).settle(rewardKey, state);
           continue;
         }
-        var result = player.getRewardLedger().claim(rewardKey, config.getRewardID());
-        if (result.retcode() == Retcode.SUCC || player.getRewardLedger().granted(rewardKey)) {
-          state.reserveReward();
-          state.closeReward();
-          player.save();
-        }
+        new MissionRewards(player).freezeMain(config);
+        player.save();
+        new MissionRewards(player).settle(rewardKey, state);
       }
+      new StoryParties(player).reconcile();
       if (changed) sync();
       else if (player.getScene() != null) player.getScene().refreshMissionGroups();
       Mascots.reconcile(player);

@@ -1,0 +1,2649 @@
+{
+  "resourceSource": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "scope": "Original mission, avatar and reward rows; partial mission rows are the installed matching-client extraction. March 7th grant after 100020103 is an explicit compatibility rule because the server grant is absent.",
+  "sourceFiles": {
+    "Config/Level/Mission/1000101/MissionInfo_1000101.json": "86f1e462444323145585b61de931dbe4622712a77b5f6758bfeb2619fff9b263",
+    "Config/Level/Mission/1000101/MissionInfo_1000101.partial.json": "e0fd3bf047a44484c11d78b6ded23b380f6381caedd64c5904603490d6af9489",
+    "Config/Level/Mission/1000201/MissionInfo_1000201.json": "081e3d30537db34ceacf316c1b6e0aeb4cb0a2ce6f799c1b37f96e89f2f5fe4e",
+    "Config/Level/Mission/1000201/MissionInfo_1000201.partial.json": "60ccda0ba5df7572cb706e984b228c0265b569ce8b1cdc9a3dd78b81daf71175",
+    "Config/Level/Mission/1000204/MissionInfo_1000204.json": "c4e3653ffa7294aa588bf2020026b1a287560498c8b73ec84e2ae51765ff7138",
+    "Config/Level/Mission/1000204/MissionInfo_1000204.partial.json": "7754fa9fab1890850b1d0de01c1d30a2a8e27735da2d8ab668bce459a608e96c",
+    "Config/Level/Mission/1000201/Mission_100020103.json": "d66d0f6956fb991f0f2a3d81478de45e5e27e63fd0db293622692c3704a3720a",
+    "Config/Level/Mission/1000201/Mission_100020109.json": "3e681a99bb6d9d8e7ac1cc50e1f41b0711b910f398d5f0131a18341172662223",
+    "Config/Level/Mission/1000201/Mission_100020133.json": "b277d222c83278ddb27774c2edcdef5d8c73923dbd02485423741baa2de25920",
+    "ExcelOutput/MainMission.json": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "ExcelOutput/AvatarConfig.json": "d8f3c9f55078611ad010751f82333735eb7bc732e22df6b8ad235021658e0456",
+    "ExcelOutput/ItemConfigAvatar.json": "168ae3325ec7dcbecdf9a9e28cb8aaec67fd681b26247f3345ae2ebcea7fd326",
+    "ExcelOutput/ItemConfig.json": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "ExcelOutput/RewardData.json": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+    "ExcelOutput/MultiplePathAvatarConfig.json": "5ff231c17cdfc2f4638625feff97c5436c47b2b2d531978399e9a669efed5b20",
+    "ExcelOutput/ItemConfigEquipment.json": "6b66e649a5bb332448e42f888a588103348ca427e0c41b9351e87500ff442b3d"
+  },
+  "records": {
+    "Config/Level/Mission/1000101/MissionInfo_1000101.json": {
+      "MainMissionID": 1000101,
+      "StartSubMissionList": [
+        100010102
+      ],
+      "FinishSubMissionList": [
+        100020103
+      ],
+      "IsLegacyAssistWayPoint": true
+    },
+    "Config/Level/Mission/1000101/MissionInfo_1000101.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 100010100,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010100.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010102
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010100",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "FinishActionList": [],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "GroupIDList": [],
+          "RequiredNPCSeriesIDList": [],
+          "GotoParam": [],
+          "WayPointFloorID": 20001001,
+          "StoryLineIDList": [],
+          "IgnoreVerseParamList": []
+        },
+        {
+          "ID": 100010102,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010102.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "Auto",
+          "TakeParamIntList": [
+            1000101
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010102",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "FinishActionList": [],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "GroupIDList": [],
+          "RequiredNPCSeriesIDList": [],
+          "GotoParam": [],
+          "WayPointFloorID": 20001001,
+          "StoryLineIDList": [],
+          "IgnoreVerseParamList": []
+        },
+        {
+          "ID": 100010103,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010103.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010104
+          ],
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20001001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010104,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010104.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010100
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010104",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010105,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010105.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010103
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300002,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300002
+        },
+        {
+          "ID": 100010106,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010106.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010105
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010106",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010107,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010107.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010105
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300004,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300004
+        },
+        {
+          "ID": 100010108,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010108.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010107
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010108",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010109,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010109.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E3",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010122
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010109",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010110,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010110.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E3",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010109
+          ],
+          "FinishType": "GetTrialAvatar",
+          "ParamType": "Equal",
+          "ParamInt1": 1001006,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010111,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010111.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010110
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300006,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300006
+        },
+        {
+          "ID": 100010112,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010112.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010111
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010112",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 5
+        },
+        {
+          "ID": 100010113,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010113.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010130
+          ],
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20001006,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 11
+        },
+        {
+          "ID": 100010114,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010114.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010127
+          ],
+          "FinishType": "SubMissionFinishCnt",
+          "ParamType": "ListContain",
+          "ParamIntList": [
+            100010128
+          ],
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010115,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010115.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010119
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010115",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010116,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010116.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010124
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010116",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010117,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010117.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010123
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010117",
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "ProgressGroup": 100010117,
+          "IsShowProgress": true,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 300013
+        },
+        {
+          "ID": 100010118,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010118.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010123
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010118",
+          "ParamItemList": [],
+          "Progress": 1,
+          "ProgressGroup": 100010117,
+          "IsShowProgress": true,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 300014
+        },
+        {
+          "ID": 100010119,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010119.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010127
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010119",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 29,
+          "WayPointEntityID": 300001
+        },
+        {
+          "ID": 100010120,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010120.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E7",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010136
+          ],
+          "FinishType": "DelTrialAvatar",
+          "ParamType": "Equal",
+          "ParamInt1": 1001005,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010121,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010121.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E7",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010120
+          ],
+          "FinishType": "EnterFloor",
+          "ParamType": "Equal",
+          "ParamInt1": 20002,
+          "ParamInt2": 20002001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010122,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010122.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010107
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 21,
+          "ParamInt2": 200003,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 21,
+          "WayPointEntityID": 200003
+        },
+        {
+          "ID": 100010123,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010123.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010116
+          ],
+          "FinishType": "DelTrialAvatar",
+          "ParamType": "Equal",
+          "ParamInt1": 1001006,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010124,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010124.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010113
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300029,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010125,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010125.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010119
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010125",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010126,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010126.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010128
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 300018,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300018
+        },
+        {
+          "ID": 100010127,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010127.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "MultiSequence",
+          "TakeParamIntList": [
+            100010117,
+            100010118
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010127",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 27,
+          "WayPointEntityID": 400003
+        },
+        {
+          "ID": 100010128,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010128.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010129
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010128",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 14,
+          "WayPointEntityID": 10
+        },
+        {
+          "ID": 100010129,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010129.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010125
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010129",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 27,
+          "WayPointEntityID": 400004
+        },
+        {
+          "ID": 100010130,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010130.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010112
+          ],
+          "MazePlaneID": 20001,
+          "MazeFloorID": 20001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 21,
+          "ParamInt2": 200001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 20001001,
+          "WayPointGroupID": 21,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 100010131,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010131.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010130
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010131",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010132,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010132.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010123
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010132",
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010133,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010133.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010126
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010133",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010134,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010134.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E6",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010133
+          ],
+          "FinishType": "CreateCharacter",
+          "ParamType": "Equal",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010136,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010136.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E7",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010134
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010136",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010137,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010137.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "AudioEmotionState": "State_Bgm_E2",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010105
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010137",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010150,
+          "MainMissionID": 1000101,
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "MultiSequence",
+          "TakeParamIntList": [
+            100010122
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010150",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100010151,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000101/Mission_100010151.json",
+          "LevelPlaneID": 20001,
+          "LevelFloorID": 20001001,
+          "TakeType": "MultiSequence",
+          "TakeParamIntList": [
+            100010103
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100010151",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20001001
+        },
+        {
+          "ID": 100020101,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020101.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "AudioEmotionState": "State_Bgm_E1",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100010121
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020101",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20002001
+        },
+        {
+          "ID": 100020102,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020102.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "AudioEmotionState": "State_Bgm_E4",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020101
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020102",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20002001
+        },
+        {
+          "ID": 100020103,
+          "MainMissionID": 1000101,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020103.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020102
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020103",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShowFinishEffect": 2,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 3,
+          "WayPointEntityID": 300002
+        }
+      ]
+    },
+    "Config/Level/Mission/1000201/MissionInfo_1000201.json": {
+      "MainMissionID": 1000201,
+      "StartSubMissionList": [
+        100020104
+      ],
+      "FinishSubMissionList": [
+        100020109
+      ]
+    },
+    "Config/Level/Mission/1000201/MissionInfo_1000201.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 100020104,
+          "MainMissionID": 1000201,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020104.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "Auto",
+          "MazePlaneID": 20002,
+          "MazeFloorID": 20002001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 3,
+          "ParamInt2": 300002,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShowStartHint": "Update",
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 3,
+          "WayPointEntityID": 300002
+        },
+        {
+          "ID": 100020105,
+          "MainMissionID": 1000201,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020105.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020104
+          ],
+          "MazePlaneID": 20002,
+          "MazeFloorID": 20002001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 16,
+          "ParamInt2": 200001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "CustomValueReward": [],
+          "WayPointType": "Monster",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 16,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 100020106,
+          "MainMissionID": 1000201,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020106.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020105
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020106",
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 300013
+        },
+        {
+          "ID": 100020107,
+          "MainMissionID": 1000201,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020107.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020106
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020107",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 300013
+        },
+        {
+          "ID": 100020131,
+          "MainMissionID": 1000201,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020131.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020107
+          ],
+          "MazePlaneID": 20002,
+          "MazeFloorID": 20002001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 200002,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "CustomValueReward": [],
+          "WayPointType": "Monster",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 200002
+        },
+        {
+          "ID": 100020109,
+          "MainMissionID": 1000201,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020109.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            100020131
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020109",
+          "ParamItemList": [],
+          "Progress": 1,
+          "CustomValueReward": [],
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20002001,
+          "WayPointGroupID": 8,
+          "WayPointEntityID": 300001
+        }
+      ]
+    },
+    "Config/Level/Mission/1000204/MissionInfo_1000204.json": {
+      "MainMissionID": 1000204,
+      "StartSubMissionList": [
+        100020133
+      ],
+      "FinishSubMissionList": [
+        100020133
+      ],
+      "IsShow": false
+    },
+    "Config/Level/Mission/1000204/MissionInfo_1000204.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 100020133,
+          "MainMissionID": 1000204,
+          "MissionJsonPath": "Config/Level/Mission/1000201/Mission_100020133.json",
+          "LevelPlaneID": 20002,
+          "LevelFloorID": 20002001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_100020133",
+          "ParamItemList": [],
+          "FinishActionList": [
+            {
+              "FinishActionType": "ChangeLineup",
+              "FinishActionPara": [
+                8001,
+                1001,
+                1002,
+                0,
+                1001
+              ]
+            }
+          ],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20002001
+        }
+      ]
+    },
+    "Config/Level/Mission/1000201/Mission_100020103.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "Order": 1,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100020103"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1000201/Mission_100020109.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "Order": 1,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitCustomString",
+              "CustomString": {
+                "Value": "100020109_Talk"
+              }
+            },
+            {
+              "$type": "RPG.GameCore.SetAudioEmotionState",
+              "StateName": "State_Bgm_E4",
+              "SubMissionID": 100020109
+            },
+            {
+              "$type": "RPG.GameCore.TriggerPerformance",
+              "PerformanceType": "C",
+              "PerformanceID": 100020109,
+              "ValueSource": {}
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100020109"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupTrigger",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 4
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300014
+                    }
+                  }
+                }
+              },
+              "TargetGroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetTypes": [],
+              "ColliderRelativePath": "Trigger",
+              "DestroyAfterTriggered": true,
+              "OnTriggerEnter": [
+                {
+                  "$type": "RPG.GameCore.TriggerCustomString",
+                  "CustomString": {
+                    "Value": "100020109_Talk"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.CreateProp",
+              "GroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 4
+                }
+              },
+              "GroupPropID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 300022
+                }
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropStateExecute",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 1
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300021
+                    }
+                  }
+                }
+              },
+              "State": "CheckPointEnable",
+              "Execute": [
+                {
+                  "$type": "RPG.GameCore.PerformanceTransition",
+                  "CreateNpcList": [],
+                  "CaptureNpcList": [],
+                  "DestroyNpcList": [],
+                  "CreateProp": {
+                    "TaskEnabled": false
+                  },
+                  "DestroyProp": {
+                    "TargetType": {
+                      "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                    },
+                    "TaskEnabled": false
+                  },
+                  "AdvCreateGroupEntity": {
+                    "InstanceIDList": [],
+                    "TaskEnabled": false
+                  },
+                  "AdvDestroyGroupEntity": {
+                    "TaskEnabled": false
+                  },
+                  "ActiveVirtualCamera": {
+                    "TaskEnabled": false
+                  },
+                  "ActiveTemplateVirtualCamera": {
+                    "TaskEnabled": false
+                  },
+                  "SwitchCharacterAnchor": {
+                    "IsLocalPlayer": true,
+                    "CharacterUniqueName": "LocalPlayer",
+                    "AreaName": {
+                      "Value": "LevelArea_P20002_F20002001_G8"
+                    },
+                    "AnchorName": {
+                      "Value": "Elevator_1F_PlayerPoint"
+                    }
+                  },
+                  "AdvNpcFaceToPlayer": {
+                    "SteerImmediately": true,
+                    "FinishImmadiate": true,
+                    "TaskEnabled": false
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1000201/Mission_100020133.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.CollectDataConditions",
+              "TaskIDList": [
+                100020132
+              ],
+              "MainMissionIDList": [],
+              "PerformanceIDList": []
+            },
+            {
+              "$type": "RPG.GameCore.PredicateTaskList",
+              "Predicate": {
+                "$type": "RPG.GameCore.ByCompareSubMissionState",
+                "SubMissionID": 100020132,
+                "SubMissionState": "Finish"
+              },
+              "SuccessTaskList": [
+                {
+                  "$type": "RPG.GameCore.FinishPerformanceMission",
+                  "Key": "Mission_100020133"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Order": 1,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupTrigger",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 4
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300009
+                    }
+                  }
+                }
+              },
+              "TargetGroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetTypes": [],
+              "ColliderRelativePath": "Trigger",
+              "DestroyAfterTriggered": true,
+              "OnTriggerEnter": [
+                {
+                  "$type": "RPG.GameCore.FinishPerformanceMission",
+                  "Key": "Mission_100020133"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1000101,
+        "Type": "Main",
+        "WorldID": 101,
+        "DisplayPriority": 1000101,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 7313040413849220147
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1000201,
+        "TrackWeight": 100,
+        "RewardID": 11000101,
+        "DisplayRewardID": 11000101,
+        "ChapterID": 100001,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1000201,
+        "Type": "Main",
+        "WorldID": 101,
+        "DisplayPriority": 1000201,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 1829630529026038115
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1000101
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1000202,
+        "TrackWeight": 100,
+        "RewardID": 11000201,
+        "DisplayRewardID": 11000203,
+        "MissionPack": 1000201,
+        "ChapterID": 100001,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1000204,
+        "Type": "Main",
+        "WorldID": 101,
+        "DisplayPriority": 1000204,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 7537790909165682508
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1000201
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "TrackWeight": 100,
+        "RewardID": 100,
+        "DisplayRewardID": 100,
+        "MissionPack": 1000201,
+        "ChapterID": 100001,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 1010801,
+        "Type": "Main",
+        "WorldID": 201,
+        "DisplayPriority": 1010801,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 14208135190483644695
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010701
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1010802,
+        "TrackWeight": 100,
+        "RewardID": 11010801,
+        "DisplayRewardID": 11010802,
+        "MissionPack": 1010801,
+        "ChapterID": 101001,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 4030001,
+        "Type": "Main",
+        "SubType": "System",
+        "DisplayPriority": 4030001,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 13821462442071464939
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1000401
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1000402,
+        "TrackWeight": 100,
+        "RewardID": 14030001,
+        "DisplayRewardID": 14030001,
+        "ChapterID": 100001,
+        "SubRewardList": []
+      }
+    ],
+    "ExcelOutput/AvatarConfig.json": [
+      {
+        "AvatarID": 1001,
+        "AvatarName": {
+          "Hash": 6186714091647966180
+        },
+        "AvatarFullName": {
+          "Hash": 9058972803650014395
+        },
+        "AdventurePlayerID": 1001,
+        "AvatarVOTag": "mar7th",
+        "Rarity": "CombatPowerAvatarRarityType4",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Mar_7th_00_Config.json",
+        "DamageType": "Ice",
+        "SPNeed": {
+          "Value": 120
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          100101,
+          100102,
+          100103,
+          100104,
+          100105,
+          100106
+        ],
+        "SkillList": [
+          100101,
+          100102,
+          100103,
+          100104,
+          100106,
+          100107
+        ],
+        "AvatarBaseType": "Knight",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Mar_7th_00/Avatar_Mar_7th_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1001.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1001.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1001.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1001.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Mar_7th_00/Manikin_Avatar_Maid_Mar_7th_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Mar_7th_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Mar_7th_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/KnightSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1001.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1001.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1001.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1001.png",
+        "AvatarCutinIntroText": {
+          "Hash": 7663786577497784004
+        },
+        "AvatarDropOffset": [
+          31,
+          29,
+          0.59,
+          31,
+          29,
+          0.59,
+          31,
+          29,
+          0.59
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          82,
+          -84,
+          0.77
+        ],
+        "AssistOffset": [
+          70,
+          -72,
+          1.1
+        ],
+        "AssistBgOffset": [
+          108,
+          -300,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          0,
+          -100,
+          5
+        ]
+      },
+      {
+        "AvatarID": 1002,
+        "AvatarName": {
+          "Hash": 10239807114774791393
+        },
+        "AvatarFullName": {
+          "Hash": 5982200128528119830
+        },
+        "AdventurePlayerID": 1002,
+        "AvatarVOTag": "danheng",
+        "Rarity": "CombatPowerAvatarRarityType4",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_DanHeng_00_Config.json",
+        "DamageType": "Wind",
+        "SPNeed": {
+          "Value": 100
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          100201,
+          100202,
+          100203,
+          100204,
+          100205,
+          100206
+        ],
+        "SkillList": [
+          100201,
+          100202,
+          100203,
+          100204,
+          100206,
+          100207
+        ],
+        "AvatarBaseType": "Rogue",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/DanHeng_00/Avatar_DanHeng_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1002.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1002.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1002.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1002.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1002B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1002.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/DanHeng_00/Manikin_Avatar_Lad_DanHeng_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_DanHeng_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_DanHeng_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/RogueSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1002.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1002.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1002.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1002.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1002.png",
+        "AvatarCutinIntroText": {
+          "Hash": 9591651858232036873
+        },
+        "AvatarDropOffset": [
+          -65,
+          76.1,
+          0.71,
+          -65,
+          76.1,
+          0.71,
+          -65,
+          76.1,
+          0.71
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          -21,
+          -48,
+          1
+        ],
+        "AssistOffset": [
+          10,
+          -42,
+          1.3
+        ],
+        "AssistBgOffset": [
+          -140,
+          -260,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          -55,
+          -45,
+          5
+        ]
+      },
+      {
+        "AvatarID": 1003,
+        "AvatarName": {
+          "Hash": 17590286599225097191
+        },
+        "AvatarFullName": {
+          "Hash": 4755307755787948674
+        },
+        "AdventurePlayerID": 1003,
+        "AvatarVOTag": "himeko",
+        "Rarity": "CombatPowerAvatarRarityType5",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Himeko_00_Config.json",
+        "DamageType": "Fire",
+        "SPNeed": {
+          "Value": 120
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          100301,
+          100302,
+          100303,
+          100304,
+          100305,
+          100306
+        ],
+        "SkillList": [
+          100301,
+          100302,
+          100303,
+          100304,
+          100306,
+          100307
+        ],
+        "AvatarBaseType": "Mage",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Himeko_00/Avatar_Himeko_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1003.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1003.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1003.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1003.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1003B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1003.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Himeko_00/Manikin_Avatar_Lady_Himeko_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Himeko_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Himeko_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/MageSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1003.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1003.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1003.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1003.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1003.png",
+        "AvatarCutinIntroText": {
+          "Hash": 3146994100761246998
+        },
+        "AvatarDropOffset": [
+          11.9,
+          178,
+          0.66,
+          11.9,
+          178,
+          0.66,
+          11.9,
+          178,
+          0.66
+        ],
+        "AvatarTrialOffset": [
+          135.4,
+          24,
+          1
+        ],
+        "PlayerCardOffset": [
+          65.3,
+          102.2,
+          1.05
+        ],
+        "AssistOffset": [
+          62,
+          42,
+          1.3
+        ],
+        "AssistBgOffset": [
+          108,
+          12,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          -16,
+          26,
+          5
+        ]
+      },
+      {
+        "AvatarID": 1004,
+        "AvatarName": {
+          "Hash": 2178816269909174781
+        },
+        "AvatarFullName": {
+          "Hash": 10896822417289878666
+        },
+        "AdventurePlayerID": 1004,
+        "AvatarVOTag": "welt",
+        "Rarity": "CombatPowerAvatarRarityType5",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Welt_00_Config.json",
+        "DamageType": "Imaginary",
+        "SPNeed": {
+          "Value": 120
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          100401,
+          100402,
+          100403,
+          100404,
+          100405,
+          100406
+        ],
+        "SkillList": [
+          100401,
+          100402,
+          100403,
+          100404,
+          100406,
+          100407
+        ],
+        "AvatarBaseType": "Warlock",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Welt_00/Avatar_Welt_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1004.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1004.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1004.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1004.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1004B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1004.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Welt_00/Manikin_Avatar_Male_Welt_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Welt_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Welt_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/WarlockSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1004.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1004.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1004.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1004.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1004.png",
+        "AvatarCutinIntroText": {
+          "Hash": 2522493300009250447
+        },
+        "AvatarDropOffset": [
+          12,
+          -32,
+          0.61,
+          12,
+          -32,
+          0.61,
+          12,
+          -32,
+          0.61
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          165.6,
+          -142.3,
+          0.81
+        ],
+        "AssistOffset": [
+          112,
+          -116,
+          1.2
+        ],
+        "AssistBgOffset": [
+          -106,
+          -408,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          27,
+          -110,
+          4.5
+        ]
+      },
+      {
+        "AvatarID": 1013,
+        "AvatarName": {
+          "Hash": 6548832256366079839
+        },
+        "AvatarFullName": {
+          "Hash": 4000731344953476658
+        },
+        "AdventurePlayerID": 1013,
+        "AvatarVOTag": "herta",
+        "Rarity": "CombatPowerAvatarRarityType4",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Herta_00_Config.json",
+        "DamageType": "Ice",
+        "SPNeed": {
+          "Value": 110
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          101301,
+          101302,
+          101303,
+          101304,
+          101305,
+          101306
+        ],
+        "SkillList": [
+          101301,
+          101302,
+          101303,
+          101304,
+          101306,
+          101307
+        ],
+        "AvatarBaseType": "Mage",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Herta_00/Avatar_Herta_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1013.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1013.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1013.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1013.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1013B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1013.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Herta_00/Manikin_Avatar_Girl_Herta_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Herta_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Herta_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/MageSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1013.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1013.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1013.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1013.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1013.png",
+        "AvatarCutinIntroText": {
+          "Hash": 6514773557031476769
+        },
+        "AvatarDropOffset": [
+          21.9,
+          -66,
+          0.6,
+          21.9,
+          -66,
+          0.6,
+          21.9,
+          -66,
+          0.6
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          75,
+          -120,
+          0.55
+        ],
+        "AssistOffset": [
+          50,
+          -141.5,
+          1
+        ],
+        "AssistBgOffset": [
+          -42,
+          -148,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          -7,
+          -82,
+          3
+        ]
+      },
+      {
+        "AvatarID": 1105,
+        "AvatarName": {
+          "Hash": 12514207603391426951
+        },
+        "AvatarFullName": {
+          "Hash": 10125622316360813403
+        },
+        "AdventurePlayerID": 1105,
+        "AvatarVOTag": "natasha",
+        "Rarity": "CombatPowerAvatarRarityType4",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Natasha_00_Config.json",
+        "DamageType": "Physical",
+        "SPNeed": {
+          "Value": 90
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          110501,
+          110502,
+          110503,
+          110504,
+          110505,
+          110506
+        ],
+        "SkillList": [
+          110501,
+          110502,
+          110503,
+          110504,
+          110506,
+          110507
+        ],
+        "AvatarBaseType": "Priest",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Natasha_00/Avatar_Natasha_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1105.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1105.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1105.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1105.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1105B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1105.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Natasha_00/Manikin_Avatar_Lady_Natasha_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Natasha_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Natasha_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/PriestSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1105.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1105.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1105.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1105.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1105.png",
+        "AvatarCutinIntroText": {
+          "Hash": 14858420587261808251
+        },
+        "AvatarDropOffset": [
+          -11,
+          -35,
+          0.57,
+          -11,
+          -35,
+          0.57,
+          -11,
+          -35,
+          0.57
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          96,
+          -157,
+          0.67
+        ],
+        "AssistOffset": [
+          75,
+          -196,
+          1.3
+        ],
+        "AssistBgOffset": [
+          -10,
+          -424,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          -4,
+          -120,
+          4
+        ]
+      },
+      {
+        "AvatarID": 1224,
+        "AvatarName": {
+          "Hash": 16417870574330506928
+        },
+        "AvatarFullName": {
+          "Hash": 9058972803650014395
+        },
+        "AdventurePlayerID": 1224,
+        "AvatarVOTag": "mar7th2",
+        "Rarity": "CombatPowerAvatarRarityType4",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Mar_7th_10_Config.json",
+        "DamageType": "Imaginary",
+        "SPNeed": {
+          "Value": 110
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          122401,
+          122402,
+          122403,
+          122404,
+          122405,
+          122406
+        ],
+        "SkillList": [
+          122401,
+          122402,
+          122403,
+          122404,
+          122406,
+          122407,
+          122408
+        ],
+        "AvatarBaseType": "Rogue",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Mar_7th_10/Avatar_Mar_7th_10.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1224.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1224.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1224.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1224.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1224B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1224.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Mar_7th_10/Manikin_Avatar_Maid_Mar_7th_10.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Mar_7th_10_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Mar_7th_10_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/RogueSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1224.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1224.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1224.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1224.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1224.png",
+        "AvatarDropOffset": [
+          31,
+          29,
+          0.59,
+          31,
+          29,
+          0.59,
+          31,
+          29,
+          0.59
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          82,
+          -84,
+          0.77
+        ],
+        "AssistOffset": [
+          70,
+          -72,
+          1.1
+        ],
+        "AssistBgOffset": [
+          108,
+          -300,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          0,
+          -100,
+          5
+        ]
+      },
+      {
+        "AvatarID": 8001,
+        "AvatarName": {
+          "Hash": 15351791685587679468
+        },
+        "AvatarFullName": {
+          "Hash": 1889615116897637623
+        },
+        "AdventurePlayerID": 8001,
+        "AvatarVOTag": "playerboy",
+        "Rarity": "CombatPowerAvatarRarityType5",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_PlayerBoy_00_Config.json",
+        "DamageType": "Physical",
+        "SPNeed": {
+          "Value": 120
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          800101,
+          800102,
+          800103,
+          800104,
+          800105,
+          800106
+        ],
+        "SkillList": [
+          800101,
+          800102,
+          800103,
+          800104,
+          800106,
+          800107,
+          800108,
+          800109
+        ],
+        "AvatarBaseType": "Warrior",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/PlayerBoy_00/Avatar_PlayerBoy_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/8001.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/8001.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/8001.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/8001.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8001B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_8001.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/PlayerBoy_00/Manikin_Avatar_Lad_PlayerBoy_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_PlayerBoy_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_PlayerBoy_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/WarriorSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8001.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8001.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/8001.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/8001.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/8001.png",
+        "AvatarCutinIntroText": {
+          "Hash": 2021220024962210302
+        },
+        "AvatarDropOffset": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          73,
+          -76,
+          0.95
+        ],
+        "AssistOffset": [
+          63.8,
+          -76.5,
+          1.3
+        ],
+        "AssistBgOffset": [],
+        "AvatarSelfShowOffset": []
+      },
+      {
+        "AvatarID": 8002,
+        "AvatarName": {
+          "Hash": 915414112326692585
+        },
+        "AvatarFullName": {
+          "Hash": 10220350920306746709
+        },
+        "AdventurePlayerID": 8002,
+        "AvatarVOTag": "playergirl",
+        "Rarity": "CombatPowerAvatarRarityType5",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_PlayerGirl_00_Config.json",
+        "DamageType": "Physical",
+        "SPNeed": {
+          "Value": 120
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          800201,
+          800202,
+          800203,
+          800204,
+          800205,
+          800206
+        ],
+        "SkillList": [
+          800201,
+          800202,
+          800203,
+          800204,
+          800206,
+          800207,
+          800208,
+          800209
+        ],
+        "AvatarBaseType": "Warrior",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/PlayerGirl_00/Avatar_PlayerGirl_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/8002.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/8002.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/8002.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/8002.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8002B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_8002.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/PlayerGirl_00/Manikin_Avatar_Miss_PlayerGirl_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_PlayerGirl_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_PlayerBoy_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/WarriorSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8002.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/8002.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/8002.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/8002.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/8002.png",
+        "AvatarCutinIntroText": {
+          "Hash": 17748756880574087670
+        },
+        "AvatarDropOffset": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "AvatarTrialOffset": [],
+        "PlayerCardOffset": [
+          86,
+          -97,
+          0.9
+        ],
+        "AssistOffset": [
+          30.5,
+          -90,
+          1.3
+        ],
+        "AssistBgOffset": [],
+        "AvatarSelfShowOffset": []
+      }
+    ],
+    "ExcelOutput/ItemConfigAvatar.json": [
+      {
+        "ID": 1001,
+        "ItemMainType": "AvatarCard",
+        "ItemSubType": "AvatarCard",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "ItemName": {
+          "Hash": 5115085844323377115
+        },
+        "ItemBGDesc": {
+          "Hash": 13926276512027878662
+        },
+        "ItemIconPath": "SpriteOutput/AvatarIcon/Avatar/1001.png",
+        "ItemFigureIconPath": "SpriteOutput/AvatarIcon/Avatar/1001.png",
+        "ItemCurrencyIconPath": "",
+        "ItemAvatarIconPath": "SpriteOutput/AvatarShopIcon/Avatar/1001.png",
+        "PileLimit": 1,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 1002,
+        "ItemMainType": "AvatarCard",
+        "ItemSubType": "AvatarCard",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "ItemName": {
+          "Hash": 3869350091089856242
+        },
+        "ItemBGDesc": {
+          "Hash": 18068337028353250265
+        },
+        "ItemIconPath": "SpriteOutput/AvatarIcon/Avatar/1002.png",
+        "ItemFigureIconPath": "SpriteOutput/AvatarIcon/Avatar/1002.png",
+        "ItemCurrencyIconPath": "",
+        "ItemAvatarIconPath": "SpriteOutput/AvatarShopIcon/Avatar/1002.png",
+        "PileLimit": 1,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 1013,
+        "ItemMainType": "AvatarCard",
+        "ItemSubType": "AvatarCard",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "ItemName": {
+          "Hash": 7411809582374456143
+        },
+        "ItemBGDesc": {
+          "Hash": 8212834695963575798
+        },
+        "ItemIconPath": "SpriteOutput/AvatarIcon/Avatar/1013.png",
+        "ItemFigureIconPath": "SpriteOutput/AvatarIcon/Avatar/1013.png",
+        "ItemCurrencyIconPath": "",
+        "ItemAvatarIconPath": "SpriteOutput/AvatarShopIcon/Avatar/1013.png",
+        "PileLimit": 1,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 1105,
+        "ItemMainType": "AvatarCard",
+        "ItemSubType": "AvatarCard",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "ItemName": {
+          "Hash": 12475743942650817835
+        },
+        "ItemBGDesc": {
+          "Hash": 11327252347441229736
+        },
+        "ItemIconPath": "SpriteOutput/AvatarIcon/Avatar/1105.png",
+        "ItemFigureIconPath": "SpriteOutput/AvatarIcon/Avatar/1105.png",
+        "ItemCurrencyIconPath": "",
+        "ItemAvatarIconPath": "SpriteOutput/AvatarShopIcon/Avatar/1105.png",
+        "PileLimit": 1,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 8001,
+        "ItemMainType": "AvatarCard",
+        "ItemSubType": "AvatarCard",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "ItemName": {
+          "Hash": 1976568521562450739
+        },
+        "ItemBGDesc": {
+          "Hash": 8623253761789416013
+        },
+        "ItemIconPath": "SpriteOutput/AvatarIcon/Avatar/8001.png",
+        "ItemFigureIconPath": "SpriteOutput/AvatarIcon/Avatar/8001.png",
+        "ItemCurrencyIconPath": "",
+        "ItemAvatarIconPath": "SpriteOutput/AvatarShopIcon/Avatar/8001.png",
+        "PileLimit": 1,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      }
+    ],
+    "ExcelOutput/ItemConfig.json": [
+      {
+        "ID": 1,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "PurposeType": 12,
+        "ItemName": {
+          "Hash": 7739077644877555281
+        },
+        "ItemBGDesc": {
+          "Hash": 4559313086410327619
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/900001.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/900001.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/1.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 2,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 11,
+        "ItemName": {
+          "Hash": 8760829406395316734
+        },
+        "ItemDesc": {
+          "Hash": 11786974837413392672
+        },
+        "ItemBGDesc": {
+          "Hash": 11264535423382425308
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/2.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/2.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/2.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 22,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "ItemName": {
+          "Hash": 7499768036889103255
+        },
+        "ItemDesc": {
+          "Hash": 3810096677573298701
+        },
+        "ItemBGDesc": {
+          "Hash": 6266443399168857502
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/22.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/22.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/22.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 211,
+        "ItemMainType": "Material",
+        "ItemSubType": "AvatarExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "NotNormal",
+        "PurposeType": 1,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 16638676482726116455
+        },
+        "ItemDesc": {
+          "Hash": 3046475609744465301
+        },
+        "ItemBGDesc": {
+          "Hash": 12853941879124530548
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/211.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/211.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/211.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1010,
+        "SellType": "Destroy"
+      },
+      {
+        "ID": 212,
+        "ItemMainType": "Material",
+        "ItemSubType": "AvatarExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 1,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 17747764441101505056
+        },
+        "ItemDesc": {
+          "Hash": 13712902436557403541
+        },
+        "ItemBGDesc": {
+          "Hash": 9661696975142592798
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/212.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/212.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/212.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1010,
+        "SellType": "Destroy"
+      },
+      {
+        "ID": 222,
+        "ItemMainType": "Material",
+        "ItemSubType": "EquipmentExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 5,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 11880237416357818806
+        },
+        "ItemDesc": {
+          "Hash": 9299707827284584146
+        },
+        "ItemBGDesc": {
+          "Hash": 9679737055373985385
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/222.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/222.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/222.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1020,
+        "SellType": "Destroy"
+      }
+    ],
+    "ExcelOutput/RewardData.json": [
+      {
+        "RewardID": 100
+      },
+      {
+        "RewardID": 11000201,
+        "ItemID_1": 211,
+        "Count_1": 2,
+        "ItemID_2": 1002,
+        "Count_2": 1,
+        "Level_2": 1
+      },
+      {
+        "RewardID": 14030001,
+        "Hcoin": 50,
+        "ItemID_1": 22,
+        "Count_1": 500,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 212,
+        "Count_3": 2,
+        "ItemID_4": 222,
+        "Count_4": 2,
+        "ItemID_5": 1013,
+        "Count_5": 1,
+        "Level_5": 1,
+        "ItemID_6": 20006,
+        "Count_6": 1,
+        "Level_6": 1,
+        "Rank_6": 1
+      },
+      {
+        "RewardID": 11010801,
+        "ItemID_1": 1105,
+        "Count_1": 1,
+        "Level_1": 1
+      }
+    ],
+    "ExcelOutput/MultiplePathAvatarConfig.json": [
+      {
+        "AvatarID": 8001,
+        "Gender": "GENDER_MAN",
+        "UnlockConditions": [],
+        "BaseAvatarID": 8001,
+        "Desc": {
+          "Hash": 12336609480192427249
+        },
+        "ChangeConfigPath": "Config/ConfigAvatarPathChange/Avatar_PlayerBoy_00_AvatarPathChangeConfig.json"
+      },
+      {
+        "AvatarID": 8002,
+        "Gender": "GENDER_WOMAN",
+        "UnlockConditions": [],
+        "BaseAvatarID": 8001,
+        "Desc": {
+          "Hash": 6772270010029804272
+        },
+        "ChangeConfigPath": "Config/ConfigAvatarPathChange/Avatar_PlayerGirl_00_AvatarPathChangeConfig.json"
+      },
+      {
+        "AvatarID": 1001,
+        "UnlockConditions": [],
+        "BaseAvatarID": 1001,
+        "Desc": {
+          "Hash": 18244176707869243035
+        },
+        "ChangeConfigPath": "Config/ConfigAvatarPathChange/Avatar_Mar_7th_00_AvatarPathChangeConfig.json"
+      },
+      {
+        "AvatarID": 1224,
+        "UnlockConditions": [
+          {
+            "Type": "FinishSubMission",
+            "Param": "202210108"
+          }
+        ],
+        "BaseAvatarID": 1001,
+        "Desc": {
+          "Hash": 6176885001076348527
+        },
+        "ChangeConfigPath": "Config/ConfigAvatarPathChange/Avatar_Mar_7th_10_AvatarPathChangeConfig.json"
+      }
+    ],
+    "ExcelOutput/ItemConfigEquipment.json": [
+      {
+        "ID": 20006,
+        "ItemMainType": "Equipment",
+        "ItemSubType": "Equipment",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 17619168696647341023
+        },
+        "ItemDesc": {
+          "Hash": 7011379596486168959
+        },
+        "ItemBGDesc": {
+          "Hash": 13186214481986558856
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/LightConeIcons/20006.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/LightCone/20006.png",
+        "ItemCurrencyIconPath": "0",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 9999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [
+          {
+            "ItemID": 221,
+            "ItemNum": 1
+          }
+        ],
+        "SellType": "Sell"
+      }
+    ]
+  }
+}

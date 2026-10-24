@@ -34,6 +34,7 @@ public final class NativeOpeningStageWinProbe {
   private int inclinationAcknowledgements;
   private boolean verifyAvatarProgression;
   private boolean verifySpaceAnchors;
+  private boolean verifyStoryParty;
   private int avatarProgressNotifications;
 
   private static Object field(DynamicMessage message, String name) {
@@ -67,6 +68,8 @@ public final class NativeOpeningStageWinProbe {
     requests++;
     if (name.equals("EnterSceneCsReq")) enterSceneRequests++;
     var response = name.replace("CsReq", "ScRsp");
+    boolean formalReplacement = name.equals("ReplaceLineupCsReq");
+    int responseCommand = formalReplacement ? 719 : protocol.clientCommand(response);
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
     while (System.nanoTime() < deadline) {
       if (failure.get() != null) throw new IllegalStateException("KCP failure", failure.get());
@@ -100,7 +103,21 @@ public final class NativeOpeningStageWinProbe {
           }
         }
       }
-      if (frame.command() != protocol.clientCommand(response)) continue;
+      if (frame.command() != responseCommand) continue;
+      if (formalReplacement) {
+        // Independently verified native CN replacement response: command 719, index 7, retcode 9.
+        var fields = UnknownFieldSet.parseFrom(frame.body()).asMap();
+        require(Set.of(7, 9).containsAll(fields.keySet()), "Unexpected native replacement fields");
+        for (var value : fields.values())
+          require(value.getVarintList().size() == 1 && value.getFixed32List().isEmpty()
+              && value.getFixed64List().isEmpty() && value.getLengthDelimitedList().isEmpty()
+              && value.getGroupList().isEmpty(), "Invalid replacement response wire type");
+        require(!fields.containsKey(7) || fields.get(7).getVarintList().getFirst() == 0,
+            "Replacement acknowledged a different normal team");
+        long code = fields.containsKey(9) ? fields.get(9).getVarintList().getFirst() : 0;
+        require((code == 0) == success, "Native replacement rejected: " + code);
+        return null;
+      }
       var result = protocol.clientSchema().parse(response, frame.body());
       require(result.getUnknownFields().asMap().isEmpty(), "Unknown response fields: " + response);
       require(
@@ -851,6 +868,7 @@ public final class NativeOpeningStageWinProbe {
       // Real protocol receipts for the authored dialogues, not rendered-client acceptance.
       for (int id : new int[] {100020101, 100020102, 100020103})
         call("FinishTalkMissionCsReq", Map.of("sub_mission_id", id, "talk_str", "Mission_" + id), true);
+      formalParty(List.of(8001, 1001), 0, Set.of(8001, 1001));
       objective(100020104, 1);
     }
     var props = new HashMap<Integer, DynamicMessage>();
@@ -1025,7 +1043,7 @@ public final class NativeOpeningStageWinProbe {
     }
     if (restored) awakeningDialogueChoices(true);
     for (int id : new int[]{100020104,100020105,100020106,100020107,100020131}) objective(id,2);
-    objective(100020109,1);
+    objective(100020109, verifyStoryParty && restored ? 2 : 1);
     var team = (DynamicMessage)field(call("GetCurLineupDataCsReq"),"lineup");
     var hero = ((List<?>)field(team,"avatar_list")).stream().map(DynamicMessage.class::cast)
         .filter(a -> (Integer)field(a,"id") == 8001).findFirst().orElseThrow();
@@ -1078,10 +1096,66 @@ public final class NativeOpeningStageWinProbe {
         "teleportVerified", true, "restored", restored);
   }
 
+  private void formalParty(List<Integer> expected, int leader, Set<Integer> owned) throws Exception {
+    var current = (DynamicMessage) field(call("GetCurLineupDataCsReq"), "lineup");
+    var roster = ((List<?>) field(current, "avatar_list")).stream().map(DynamicMessage.class::cast)
+        .map(a -> (Integer) field(a, "id")).toList();
+    require(roster.equals(expected) && (Integer) field(current, "leader_slot") == leader,
+        "Formal story roster or leader differs: " + roster);
+    var all = ((List<?>) field(call("GetAllLineupDataCsReq"), "lineup_list")).stream()
+        .map(DynamicMessage.class::cast).filter(t -> (Integer) field(t, "index") == 0).findFirst().orElseThrow();
+    require(all.equals(current), "Current and all-lineup queries disagree");
+    var avatars = ((List<?>) field(call("GetAvatarDataCsReq", Map.of("is_get_all", true), true), "avatar_list"))
+        .stream().map(DynamicMessage.class::cast).map(a -> (Integer) field(a, "base_avatar_id")).toList();
+    require(new HashSet<>(avatars).equals(owned) && avatars.size() == owned.size(), "Formal grants missing or duplicated");
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    var actors = new HashSet<Integer>();
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var entityRaw : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) entityRaw;
+        if (entity.hasField(entity.getDescriptorForType().findFieldByName("actor")))
+          actors.add((Integer) field((DynamicMessage) field(entity, "actor"), "base_avatar_id"));
+      }
+    require(actors.equals(new HashSet<>(expected)), "Scene actors disagree with current party: " + actors);
+  }
+
+  private Map<String, Object> storyParty(boolean restored) throws Exception {
+    if (!restored) {
+      formalParty(List.of(8001, 1001), 0, Set.of(8001, 1001));
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020109, "talk_str", "Mission_100020109"), true);
+      formalParty(List.of(8001, 1001, 1002), 0, Set.of(8001, 1001, 1002));
+      objective(100020133, 1);
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020133, "talk_str", "Mission_100020133"), true);
+      formalParty(List.of(8001, 1001, 1002), 1, Set.of(8001, 1001, 1002));
+      int books = materialCount(211);
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020133, "talk_str", "Mission_100020133"), false);
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020109, "talk_str", "Mission_100020109"), false);
+      require(materialCount(211) == books && books == 2, "Repeated completion duplicated mission rewards");
+      var field = protocol.clientSchema().message("ReplaceLineupCsReq").findFieldByName("lineup_slot_list");
+      var rows = new ArrayList<DynamicMessage>();
+      int slot = 0;
+      for (int id : List.of(1002, 8001)) {
+        var row = DynamicMessage.newBuilder(field.getMessageType());
+        row.setField(row.getDescriptorForType().findFieldByName("id"), id);
+        row.setField(row.getDescriptorForType().findFieldByName("slot"), slot++);
+        var type = row.getDescriptorForType().findFieldByName("avatar_type");
+        row.setField(type, type.getEnumType().findValueByName("AvatarType_AvatarFormalType"));
+        rows.add(row.build());
+      }
+      call("ReplaceLineupCsReq", Map.of("index", 0, "plane_id", 20002, "lineup_slot_list", rows, "leader_slot", 0), true);
+    }
+    objective(100020109, 2); objective(100020133, 2);
+    formalParty(List.of(1002, 8001), 0, Set.of(8001, 1001, 1002));
+    require(materialCount(211) == 2, "Restored story reward changed");
+    return Map.of("owned", List.of(1001, 1002, 8001), "roster", List.of(1002, 8001), "leader", 0,
+        "marchJoined", true, "danHengJoined", true, "authoredLineupCompleted", true, "restored", restored);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
     verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
     verifySpaceAnchors = control.has("spaceAnchors") && control.get("spaceAnchors").getAsBoolean();
+    verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-")) expectedFloor = 20002001;
     int uid =
         (Integer)
@@ -1115,13 +1189,14 @@ public final class NativeOpeningStageWinProbe {
       }
       var avatarProgress = verifyAvatarProgression ? avatarProgression(phase.equals("awakening-restart")) : Map.of();
       var anchor = verifySpaceAnchors ? spaceAnchor(phase.equals("awakening-restart")) : Map.of();
+      var party = verifyStoryParty ? storyParty(phase.equals("awakening-restart")) : Map.of();
       return Map.ofEntries(Map.entry("passed", true), Map.entry("uid", uid),
           Map.entry("phase", phase), Map.entry("requests", requests),
           Map.entry("awakeningDoorVerified", true), Map.entry("nextBattlePending", !verifyAwakeningBattle),
           Map.entry("awakeningBattleVerified", verifyAwakeningBattle), Map.entry("credits", credits),
           Map.entry("clientGameplayVerified", false), Map.entry("inclinationAcknowledgements", inclinationAcknowledgements),
           Map.entry("stationDestructiblesVerified", verifyAwakeningBattle),
-          Map.entry("avatarProgression", avatarProgress), Map.entry("spaceAnchor", anchor));
+          Map.entry("avatarProgression", avatarProgress), Map.entry("spaceAnchor", anchor), Map.entry("storyParty", party));
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");

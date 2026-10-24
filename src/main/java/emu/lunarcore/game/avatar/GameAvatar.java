@@ -90,6 +90,12 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
         this.setExcel(excel);
     }
 
+    /** Stable identity reserved by a durable story grant before the avatar document is written. */
+    public GameAvatar(AvatarExcel excel, ObjectId reservedId) {
+        this(excel);
+        this.id = java.util.Objects.requireNonNull(reservedId);
+    }
+
     @Override
     public Scene getScene() {
         return this.getOwner().getScene();

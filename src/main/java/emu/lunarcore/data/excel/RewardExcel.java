@@ -23,6 +23,8 @@ public class RewardExcel extends GameResource {
     private int Count_4;
     private int ItemID_5;
     private int Count_5;
+    private int ItemID_6;
+    private int Count_6;
 
     private transient ItemParamMap rewards;
 
@@ -49,6 +51,8 @@ public class RewardExcel extends GameResource {
             this.rewards.add(ItemID_4, Count_4);
         } if (ItemID_5 > 0) {
             this.rewards.add(ItemID_5, Count_5);
+        } if (ItemID_6 > 0) {
+            this.rewards.add(ItemID_6, Count_6);
         }
     }
 }

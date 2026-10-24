@@ -383,6 +383,13 @@
       "status": "tested",
       "evidence": "src/main/resources/feature-backlog.json",
       "gap": "492项请求入口按固定来源记录（455个参考实现及37个本地新增原生入口）；存在处理器不等于完整玩法，全部国服客户端验收仍待完成。"
+    },
+    {
+      "id": "story-formal-party",
+      "name": "剧情正式角色发放与编队恢复",
+      "status": "partial",
+      "evidence": "docs/story-formal-party-4.6.md",
+      "gap": "三月七醒来后补发为明确兼容规则；丹恒、娜塔莎、黑塔原始任务奖励使用持久化角色发放意图。开场同伴一次入队、原始三人编队、重复回执、跨文档保存中断、重登及手动编队保护有回归。原有试用脚本的能力边界及客户端演出仍需分别验收，不能称全剧情完成。"
     }
   ]
 }

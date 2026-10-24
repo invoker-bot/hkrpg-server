@@ -133,13 +133,32 @@ final class MissionRewards {
             && MissionStateRecords.subCompleted(player, id))) return false;
     var plan = player.getGameplay().getMissionRewardPlans().get(key);
     if (plan == null || !plan.isReady()) return false;
+    var items = new ItemParamMap();
+    var avatars = new TreeSet<Integer>();
+    for (var entry : plan.getItems().entrySet()) {
+      var item = GameData.getItemExcelMap().get(entry.getKey());
+      if (item == null || entry.getValue() <= 0) return false;
+      if (item.getItemSubType() == emu.lunarcore.game.enums.ItemSubType.AvatarCard) {
+        var avatar = GameData.getAvatarExcelMap().get(entry.getKey());
+        var path = GameData.getMultiplePathAvatarExcelMap().get(entry.getKey());
+        if (entry.getValue() != 1 || avatar == null || (path != null && !path.isDefault())) return false;
+        avatars.add(entry.getKey());
+      } else items.add(entry.getKey(), entry.getValue());
+    }
+    // Formal avatar ownership is idempotent. Keep it out of the non-repeatable currency ledger:
+    // owning a character already must not strand the rest of a mission reward in SYSTEM_BUSY.
+    String source = "mission-avatar-v1:" + plan.getRewardIds() + ":"
+        + new TreeMap<>(plan.getChoices()) + ":" + new TreeMap<>(plan.getItems());
+    for (int avatar : avatars)
+      if (!new StoryParties(player).grantAvatar("reward:" + key + ":" + avatar, source, avatar)) return false;
     if (!player.getRewardLedger().granted(key)) {
-      var items = new ItemParamMap();
-      plan.getItems().forEach((itemId, count) -> items.add(itemId, count));
       var claim = player.getRewardLedger().claimItems(key, items);
-      if (claim.retcode() == emu.lunarcore.server.packet.Retcode.SUCC)
+      if (claim.retcode() == emu.lunarcore.server.packet.Retcode.SUCC) {
+        var published = new ArrayList<>(claim.items());
+        for (int avatar : avatars) published.add(new emu.lunarcore.game.inventory.GameItem(avatar, 1));
         org.hkrpg.server.protocol.Story46.syncReward(
-            player, main, state.getQuestId(), claim.items());
+            player, main, state.getQuestId(), published);
+      }
     }
     if (!player.getRewardLedger().granted(key)) return false;
     if (state.getPhase() == QuestState.Phase.FINISHED) state.reserveReward();

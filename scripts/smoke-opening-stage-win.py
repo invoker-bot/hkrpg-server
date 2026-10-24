@@ -35,11 +35,12 @@ def main():
     parser.add_argument('--awakening-battle', action='store_true', help='继续校验女主真实出战编号结算、失败重试、防重复奖励、后续两场战斗与对白接取、生命能量及H2恢复；战报为合成数据')
     parser.add_argument('--avatar-progression', action='store_true', help='继续校验两场战斗经验、三本实际材料升级、扣费与角色同步及H2重启保存')
     parser.add_argument('--space-anchors', action='store_true', help='继续校验收容舱段锚点靠近激活、地图查询、实际传送和H2重启；移动为合成请求')
+    parser.add_argument('--story-party', action='store_true', help='继续校验三月七获得、丹恒奖励入队、原始三人编队、手动编辑和H2重启；对白为合成回执')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
-    if args.avatar_progression or args.space_anchors:
+    if args.avatar_progression or args.space_anchors or args.story_party:
         args.awakening_battle = True
     if args.awakening_battle:
         args.awakening_door = True
@@ -89,6 +90,9 @@ def main():
     if args.space_anchors:
         guarded += ['Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json',
                     'Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json']
+    if args.story_party:
+        guarded += ['ExcelOutput/AvatarConfig.json', 'ExcelOutput/ItemConfigAvatar.json', 'ExcelOutput/RewardData.json']
+        guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000204').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -159,6 +163,7 @@ def main():
                                    'awakeningBattle': args.awakening_battle,
                                    'avatarProgression': args.avatar_progression,
                                    'spaceAnchors': args.space_anchors,
+                                   'storyParty': args.story_party,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -186,6 +191,12 @@ def main():
                             anchor = snapshot['spaceAnchor']
                             assert anchor['activationPersisted'] and anchor['mapConsistent'] and anchor['teleportVerified']
                             assert anchor['mapping'] == 2000204 and anchor['restored'] == (phase == 'awakening-restart')
+                        if args.story_party:
+                            party = snapshot['storyParty']
+                            assert party['owned'] == [1001, 1002, 8001]
+                            assert party['roster'] == [1002, 8001] and party['leader'] == 0
+                            assert party['marchJoined'] and party['danHengJoined'] and party['authoredLineupCompleted']
+                            assert party['restored'] == (phase == 'awakening-restart')
                         snapshots.append(snapshot)
                         time.sleep(1)
                         continue

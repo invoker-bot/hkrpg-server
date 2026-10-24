@@ -137,6 +137,38 @@ public class AvatarStorage extends BasePlayerManager implements Iterable<GameAva
         return true;
     }
 
+    /** Resume only this reserved formal grant; an acknowledged database write may precede a crash. */
+    public boolean ensureStoryAvatar(int avatarId, ObjectId reservedId) {
+        synchronized (getPlayer()) {
+            if (getAvatars().containsKey(avatarId)) {
+                return saveStoryUnlocks(getAvatars().get(avatarId));
+            }
+            var excel = GameData.getAvatarExcelMap().get(avatarId);
+            if (excel == null || hasAvatar(avatarId)) return false;
+            var path = GameData.getMultiplePathAvatarExcelMap().get(avatarId);
+            if (path != null && !path.isDefault()) return false;
+            var stored = LunarCore.getGameDatabase().getObjectByField(GameAvatar.class, "_id", reservedId);
+            if (stored != null) {
+                if (stored.getOwnerUid() != getPlayer().getUid() || stored.getAvatarId() != avatarId)
+                    return false;
+                if (!loadAvatar(stored)) return false;
+                getPlayer().sendPacket(new PacketPlayerSyncScNotify(stored));
+                return saveStoryUnlocks(stored);
+            }
+            var avatar = new GameAvatar(excel, reservedId);
+            return addAvatar(avatar) && saveStoryUnlocks(avatar);
+        }
+    }
+
+    private boolean saveStoryUnlocks(GameAvatar avatar) {
+        var unlocks = getPlayer().getUnlocks();
+        unlocks.addHeadIcon(avatar.getHeadIconId());
+        // Login reconciliation runs before loggedIn, when addHeadIcon only updates memory.
+        // Save even if already present: a previous write may have failed after the cache changed.
+        unlocks.save();
+        return true;
+    }
+
     public void addTempAvatar(TrialAvatar avatar) {
         this.tempAvatars.put(avatar.getSpecialAvatarExcel().getId(), avatar);
     }

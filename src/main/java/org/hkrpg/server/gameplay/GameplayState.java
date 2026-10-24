@@ -262,6 +262,9 @@ public class GameplayState {
   private int rogueDialogueSequence;
   private Map<String, Integer> storyValues = new HashMap<>();
   private Map<Integer, ActionCursor> storyActions = new HashMap<>();
+  private StoryPartyState storyParty = new StoryPartyState();
+
+  public StoryPartyState getStoryParty() { return storyParty; }
   private Map<Integer, ActionCursor> missionPayments = new HashMap<>();
   private Map<Integer, MissionPaymentPlan> missionPaymentPlans = new HashMap<>();
   private Map<Integer, Set<Integer>> missionAcquiredItems = new HashMap<>();
@@ -1540,6 +1543,7 @@ public class GameplayState {
   public static class ActionCursor {
     private int next;
     private boolean pending;
+    private String lineupSource;
 
     public void reserve() {
       pending = true;
@@ -1548,7 +1552,12 @@ public class GameplayState {
     public void complete() {
       next++;
       pending = false;
+      lineupSource = null;
     }
+
+    void reserveLineup(String source) { pending = true; lineupSource = source; }
+    void retryLineup(String source) { next--; reserveLineup(source); }
+    void cancelLineupReservation() { pending = false; lineupSource = null; }
   }
 
   public void resetDaily(long day) {

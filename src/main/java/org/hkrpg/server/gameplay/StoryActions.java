@@ -18,7 +18,7 @@ public final class StoryActions {
   public Retcode execute(MissionInfo.SubMissionInfo sub) {
     synchronized (player) {
       var cursor = player.getGameplay().getStoryActions().get(sub.getId());
-      if (cursor != null && cursor.isPending()) return Retcode.SYSTEM_BUSY;
+      if (cursor != null && cursor.isPending() && !resumableLineup(sub, cursor)) return Retcode.SYSTEM_BUSY;
       var manager = player.getMissionManager();
       if (!manager.beginActions(sub.getId())) return Retcode.SYSTEM_BUSY;
       try {
@@ -48,7 +48,7 @@ public final class StoryActions {
             .getGameplay()
             .getStoryActions()
             .computeIfAbsent(sub.getId(), k -> new GameplayState.ActionCursor());
-    if (cursor.isPending()) return Retcode.SYSTEM_BUSY;
+    if (cursor.isPending() && !resumableLineup(sub, cursor)) return Retcode.SYSTEM_BUSY;
     while (cursor.getNext() < actions.length) {
       var action = actions[cursor.getNext()];
       if (variable(action)) {
@@ -59,12 +59,25 @@ public final class StoryActions {
         }
       }
       String key = DailyMissionRecoverDeliveryRules.actionKey(player, sub, cursor.getNext());
-      cursor.reserve();
-      player.save();
-      // Interrupted actions remain reserved for explicit operator reconciliation.
+      boolean lineup = "ChangeLineup".equals(action.getType());
+      String source = lineup ? StoryParties.actionSource(sub, cursor.getNext()) : null;
+      if (!cursor.isPending()) {
+        if (lineup) cursor.reserveLineup(source);
+        else cursor.reserve();
+        try { player.save(); }
+        catch (RuntimeException error) {
+          if (lineup) cursor.cancelLineupReservation();
+          throw error;
+        }
+      }
+      // Only source-bound idempotent lineup changes may resume automatically.
       if (!apply(sub, action, key)) return Retcode.PLAYER_DATA_ERROR;
       cursor.complete();
-      player.save();
+      try { player.save(); }
+      catch (RuntimeException error) {
+        if (lineup) cursor.retryLineup(source);
+        throw error;
+      }
       if ("ChangeTrainWorldId".equals(action.getType()))
         org.hkrpg.server.protocol.TrainWorld46.sync(player);
     }
@@ -76,6 +89,7 @@ public final class StoryActions {
     var pending = player.getGameplay().getStoryActions().get(sub.getId());
     if (pending != null
         && pending.isPending()
+        && !resumableLineup(sub, pending)
         && !player.getMissionManager().executingActions(sub.getId())) return Retcode.SYSTEM_BUSY;
     if (!visited.add(sub.getId())) return Retcode.SUCC;
     var actions = sub.getFinishActionList();
@@ -102,6 +116,29 @@ public final class StoryActions {
       }
     }
     return Retcode.SUCC;
+  }
+
+  private boolean resumableLineup(MissionInfo.SubMissionInfo sub, GameplayState.ActionCursor cursor) {
+    int index = cursor.getNext();
+    return index >= 0 && index < sub.getFinishActionList().length
+        && "ChangeLineup".equals(sub.getFinishActionList()[index].getType())
+        && StoryParties.actionSource(sub, index).equals(cursor.getLineupSource());
+  }
+
+  /** The saved cursor proves an accepted completion request; never synthesize a new story event. */
+  boolean recoverableLineupCompletion(MissionInfo.SubMissionInfo sub) {
+    var cursor = player.getGameplay().getStoryActions().get(sub.getId());
+    var party = player.getGameplay().getStoryParty();
+    if (cursor == null || party == null) return false;
+    if (cursor.isPending()) return resumableLineup(sub, cursor);
+    if (cursor.getNext() <= 0 || cursor.getNext() > sub.getFinishActionList().length) return false;
+    for (int i = 0; i < cursor.getNext(); i++) {
+      if (!"ChangeLineup".equals(sub.getFinishActionList()[i].getType())) continue;
+      var change = party.getChanges().get(DailyMissionRecoverDeliveryRules.actionKey(player, sub, i));
+      if (change != null && change.isComplete()
+          && StoryParties.actionSource(sub, i).equals(change.getSource())) return true;
+    }
+    return false;
   }
 
   private static boolean variable(MissionInfo.FinishAction action) {
@@ -183,8 +220,7 @@ public final class StoryActions {
 
   private boolean validLineup(int[] p) {
     if (p.length != 5
-        || player.getCurrentLineup() == null
-        || player.getCurrentLineup().isExtraLineup()
+        || StoryParties.normalTeam(player) == null
         || player.getScene() == null) return false;
     var ids = Arrays.stream(p).limit(4).filter(id -> id != 0).boxed().toList();
     return !ids.isEmpty()
@@ -263,15 +299,8 @@ public final class StoryActions {
         if (!player.getScene().setStoryGroupState(p[0], p[1])) return false;
       }
       case "ChangeLineup" -> {
-        // 4.6 Mission 100020133 has four slots followed by a leader base ID. Trial characters
-        // and automatic character grants need separate lifecycle support and remain unsupported.
-        var team = player.getCurrentLineup();
-        team.getAvatars().clear();
-        Arrays.stream(p).limit(4).filter(id -> id != 0).forEach(id -> team.getAvatars().add(id));
-        team.setLeader(team.getAvatars().indexOf(p[4]));
-        team.save();
-        player.getScene().syncLineup();
-        player.sendPacket(new emu.lunarcore.server.packet.send.PacketSyncLineupNotify(team));
+        if (!new StoryParties(player).changeAction(sub,
+            state.getStoryActions().get(sub.getId()).getNext(), p)) return false;
       }
       case "ChangeStoryLine" -> {
         if (player.getStoryLineManager().change(p[0], p[1], p[2], p[3], player.isOnline())

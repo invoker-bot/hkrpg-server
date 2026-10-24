@@ -1219,6 +1219,8 @@ public class Player implements Tickable, Syncable {
         this.getAvatars().loadFromDatabase();
         this.getInventory().loadFromDatabase();
         this.getLineupManager().loadFromDatabase();
+        // Earned story characters may be reconciled during mission refresh on login.
+        this.loadUnlocksFromDatabase();
         this.getMissionTrialManager().restoreOnLogin();
         this.getFriendList().loadFromDatabase();
         this.getMailbox().loadFromDatabase();
@@ -1227,9 +1229,6 @@ public class Player implements Tickable, Syncable {
         this.getMissionManager().refresh();
         this.getDailyManager().ensureDay();
         this.getLoginActivityManager().recordLogin();
-
-        // Load unlockables
-        this.loadUnlocksFromDatabase();
 
         // Update stamina
         this.updateStamina(System.currentTimeMillis());

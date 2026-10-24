@@ -13,6 +13,8 @@ import emu.lunarcore.proto.SceneEntityInfoOuterClass.SceneEntityInfo;
 import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class StoryLineupTest {
   static class Actor extends GameAvatar {
@@ -40,9 +42,11 @@ class StoryLineupTest {
     final LineupManager teams = new TestTeams(this);
     Scene scene;
     final List<emu.lunarcore.server.packet.BasePacket> packets = new ArrayList<>();
+    int saves, failAtSave = -1;
 
     Director() {
       team.getAvatars().add(199961);
+      teams.getLineups()[0] = team;
     }
 
     public PlayerLineup getCurrentLineup() {
@@ -57,7 +61,9 @@ class StoryLineupTest {
       return actors.get(id);
     }
 
-    public void save() {}
+    public void save() {
+      if (++saves == failAtSave) throw new IllegalStateException("injected player save failure");
+    }
 
     public void sendPacket(emu.lunarcore.server.packet.BasePacket packet) {
       packets.add(packet);
@@ -76,15 +82,64 @@ class StoryLineupTest {
   }
 
   static class TestTeam extends PlayerLineup {
+    boolean failSave;
     TestTeam(Player player) {
       super(player, 0);
     }
 
-    public void save() {}
+    public void save() {
+      if (failSave) throw new IllegalStateException("injected lineup save failure");
+    }
 
     public int getMp() {
       return 5;
     }
+  }
+
+  private static MissionInfo.SubMissionInfo lineupAction() {
+    return new Gson().fromJson("""
+      {"ID":19996303,"FinishActionList":[{"FinishActionType":"ChangeLineup",
+       "FinishActionPara":[199962,0,0,0,199962]}]}
+      """, MissionInfo.SubMissionInfo.class);
+  }
+
+  @ParameterizedTest @ValueSource(ints = {1, 2, 3, 4})
+  void sourceBoundLineupActionResumesEveryPlayerSaveBoundary(int boundary) {
+    var player = new Director();
+    var sub = lineupAction();
+    player.failAtSave = boundary;
+    assertThrows(IllegalStateException.class, () -> new StoryActions(player).execute(sub));
+    assertEquals(Retcode.SUCC, new StoryActions(player).execute(sub));
+    assertEquals(List.of(199962), player.team.getAvatars());
+    assertEquals(1, player.getGameplay().getStoryActions().get(sub.getId()).getNext());
+    assertFalse(player.getGameplay().getStoryActions().get(sub.getId()).isPending());
+    assertEquals(Set.of(199962), player.getScene().getAvatars().keySet());
+  }
+
+  @Test void failedLineupWriteRollsBackLiveTeamAndThenRetriesOnce() {
+    var player = new Director();
+    var sub = lineupAction();
+    ((TestTeam) player.team).failSave = true;
+    assertThrows(IllegalStateException.class, () -> new StoryActions(player).execute(sub));
+    assertEquals(List.of(199961), player.team.getAvatars());
+    ((TestTeam) player.team).failSave = false;
+    assertEquals(Retcode.SUCC, new StoryActions(player).execute(sub));
+    assertEquals(List.of(199962), player.team.getAvatars());
+  }
+
+  @Test void changedActionOrAnUnrelatedRosterCannotBeOverwrittenDuringRecovery() {
+    var player = new Director();
+    var sub = lineupAction();
+    ((TestTeam) player.team).failSave = true;
+    assertThrows(IllegalStateException.class, () -> new StoryActions(player).execute(sub));
+    ((TestTeam) player.team).failSave = false;
+    var changed = lineupAction();
+    changed.getFinishActionList()[0].getParams()[0] = 199961;
+    changed.getFinishActionList()[0].getParams()[4] = 199961;
+    assertEquals(Retcode.SYSTEM_BUSY, new StoryActions(player).execute(changed));
+    player.team.getAvatars().add(199962);
+    assertEquals(Retcode.PLAYER_DATA_ERROR, new StoryActions(player).execute(sub));
+    assertEquals(List.of(199961, 199962), player.team.getAvatars());
   }
 
   static class TestTeams extends LineupManager {
