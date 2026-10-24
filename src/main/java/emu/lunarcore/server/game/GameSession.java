@@ -45,6 +45,8 @@ public class GameSession {
     private final ProtocolBridge protocol;
     private String rogueFinishSentRun = "";
     @Setter private String composeLimitPeriod = "";
+    private final org.hkrpg.server.protocol.MissionNotifications46 missionNotifications =
+            new org.hkrpg.server.protocol.MissionNotifications46();
 
     public boolean hasSentRogueFinish(String runId) {
         return rogueFinishSentRun.equals(runId);

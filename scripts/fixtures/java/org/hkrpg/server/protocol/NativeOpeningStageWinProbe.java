@@ -36,6 +36,10 @@ public final class NativeOpeningStageWinProbe {
   private boolean verifySpaceAnchors;
   private boolean verifyStoryParty;
   private int avatarProgressNotifications;
+  private final Map<Integer, DynamicMessage> knownMissions = new HashMap<>();
+  private final Set<Integer> knownFinishedMainMissions = new HashSet<>();
+  private int missionChangeNotifications;
+  private int newMainCompletions;
 
   private static Object field(DynamicMessage message, String name) {
     return message.getField(
@@ -92,6 +96,20 @@ public final class NativeOpeningStageWinProbe {
       }
       if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
         var sync = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
+        if (sync.hasField(sync.getDescriptorForType().findFieldByName("mission_sync"))) {
+          var delta = (DynamicMessage) field(sync, "mission_sync");
+          missionChangeNotifications++;
+          for (Object value : (List<?>) field(delta, "mission_list")) {
+            var row = (DynamicMessage) value;
+            int id = (Integer) field(row, "id");
+            require(!row.equals(knownMissions.put(id, row)), "Unchanged objective replayed: " + id);
+          }
+          for (Object value : (List<?>) field(delta, "finished_main_mission_id_list")) {
+            int id = (Integer) value;
+            require(knownFinishedMainMissions.add(id), "Historical main completion replayed: " + id);
+            newMainCompletions++;
+          }
+        }
         if (sync.hasField(sync.getDescriptorForType().findFieldByName("basic_info")))
           credits = (Integer) field((DynamicMessage) field(sync, "basic_info"), "scoin");
         if (sync.hasField(sync.getDescriptorForType().findFieldByName("avatar_sync"))) {
@@ -123,6 +141,16 @@ public final class NativeOpeningStageWinProbe {
       require(
           ((Integer) field(result, "retcode") == 0) == success,
           "Unexpected status: " + response + " code=" + field(result, "retcode"));
+      if (name.equals("GetMissionDataCsReq") && success) {
+        knownMissions.clear();
+        for (Object value : (List<?>) field(result, "mission_list")) {
+          var row = (DynamicMessage) value;
+          knownMissions.put((Integer) field(row, "id"), row);
+        }
+        knownFinishedMainMissions.clear();
+        for (Object id : (List<?>) field(result, "finished_main_mission_id_list"))
+          knownFinishedMainMissions.add((Integer) id);
+      }
       return result;
     }
     throw new IllegalStateException("Response timeout: " + response);
@@ -1262,6 +1290,9 @@ public final class NativeOpeningStageWinProbe {
     credits = (Integer) field(loginBasic, "scoin");
     loginNickname = (String) field(loginBasic, "nickname");
     call("PlayerLoginFinishCsReq");
+    call("GetMissionDataCsReq");
+    call("GetMissionDataCsReq");
+    require(missionChangeNotifications == 0, "Login/query replayed historical mission changes");
     if (phase.startsWith("mechanisms-")) {
       require(control.has("storyMechanisms") && control.get("storyMechanisms").getAsBoolean(), "Unexpected mechanisms phase");
       var mechanisms = storyMechanisms(!phase.equals("mechanisms-first"));
@@ -1474,7 +1505,11 @@ public final class NativeOpeningStageWinProbe {
           });
       client.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(args[0])), config);
       probe.channel = probe.connected.get(15, TimeUnit.SECONDS);
-      System.out.println(new Gson().toJson(probe.execute(control)));
+      var result = new LinkedHashMap<String, Object>(probe.execute(control));
+      result.put("loginHistoryQuiet", true);
+      result.put("missionChangeNotifications", probe.missionChangeNotifications);
+      result.put("newMainCompletionNotifications", probe.newMainCompletions);
+      System.out.println(new Gson().toJson(result));
       exit = 0;
     } catch (Exception error) {
       error.printStackTrace(System.err);

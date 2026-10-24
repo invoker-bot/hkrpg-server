@@ -15,6 +15,9 @@ public class HandlerPlayerLoginCsReq extends PacketHandler {
         // Set session flag
         session.setState(SessionState.ACTIVE);
 
+        if (session.getProtocol().experimental())
+            session.getMissionNotifications().initialize(session);
+
         // Send packets
         session.send(new PacketPlayerLoginScRsp(session));
         if (session.getProtocol().experimental()) {

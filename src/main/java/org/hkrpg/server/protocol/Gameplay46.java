@@ -123,9 +123,11 @@ public final class Gameplay46 {
                 "GetCurBattleInfoCsReq", "QuitBattleCsReq" ->
             Battle46.handle(session, name, req);
         case "GetMissionDataCsReq" -> {
+          session.getMissionNotifications().initialize(session);
           if (MissionSnapshotRecords.valid(player)) player.getMissionManager().refresh();
-          session.sendClientPacket(
-              "GetMissionDataScRsp", missionSnapshot(session, false).toByteArray());
+          var snapshot = missionSnapshot(session, false);
+          session.sendClientPacket("GetMissionDataScRsp", snapshot.toByteArray());
+          session.getMissionNotifications().snapshotSent(snapshot);
         }
         case "AcceptMainMissionCsReq" -> {
           int id = number(req, "main_mission_id");
@@ -340,11 +342,7 @@ public final class Gameplay46 {
   public static void syncMissions(Player player) {
     if (!player.isOnline() || !player.getSession().getProtocol().experimental()) return;
     var session = player.getSession();
-    var snapshot = missionSnapshot(session, true);
-    if (snapshot == null) return;
-    var notify = builder(session, "PlayerSyncScNotify");
-    set(notify, "mission_sync", snapshot);
-    session.sendClientPacket("PlayerSyncScNotify", notify.build().toByteArray());
+    session.getMissionNotifications().send(session);
   }
 
   private static void setMissionStatus(DynamicMessage.Builder main, String status) {
