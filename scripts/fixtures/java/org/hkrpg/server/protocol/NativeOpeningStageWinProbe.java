@@ -1151,12 +1151,51 @@ public final class NativeOpeningStageWinProbe {
         "marchJoined", true, "danHengJoined", true, "authoredLineupCompleted", true, "restored", restored);
   }
 
+  private Map<String, Object> keyConsole(boolean restored) throws Exception {
+    var props = new HashMap<Integer, DynamicMessage>();
+    for (var entity : groupEntities(3)) props.put((Integer) field(entity, "inst_id"), entity);
+    if (!restored) {
+      doorState(props, 300006, 2);
+      doorState(props, 300004, 0);
+      var lockedScene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+      call("InteractPropCsReq", Map.of("prop_entity_id", field(props.get(300006), "entity_id"),
+          "interact_id2", 1010, "interact_id", field(lockedScene, "interact_id")), false);
+      objective(100020110, 1);
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020110, "talk_str", "Mission_100020110"), true);
+      objective(100020132, 1);
+      awakeningBattle(5, 200004, true);
+      objective(100020132, 2);
+      objective(100020111, 1);
+      call("FinishTalkMissionCsReq", Map.of("sub_mission_id", 100020111, "talk_str", "Mission_100020111"), true);
+      objective(100020112, 1);
+      for (var entity : groupEntities(3)) props.put((Integer) field(entity, "inst_id"), entity);
+      doorState(props, 300006, 0);
+      doorState(props, 300004, 0);
+      var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+      var opened = call("InteractPropCsReq", Map.of("prop_entity_id", field(props.get(300006), "entity_id"),
+          "interact_id2", 1010, "interact_id", field(scene, "interact_id")), true);
+      require((Integer) field(opened, "prop_state") == 1, "Accepted key console remained locked");
+    }
+    for (var entity : groupEntities(3)) props.put((Integer) field(entity, "inst_id"), entity);
+    doorState(props, 300006, 1);
+    doorState(props, 300004, 1);
+    doorState(props, 300010, 2);
+    objective(100020112, 2);
+    objective(100020113, 1);
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    call("InteractPropCsReq", Map.of("prop_entity_id", field(props.get(300006), "entity_id"),
+        "interact_id2", 1010, "interact_id", field(scene, "interact_id")), false);
+    return Map.of("doorOpen", true, "nextPerformancePending", true, "restored", restored,
+        "console", 300006, "door", 300004);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
     verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
     verifySpaceAnchors = control.has("spaceAnchors") && control.get("spaceAnchors").getAsBoolean();
     verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
-    if (phase.startsWith("transfer-") || phase.startsWith("awakening-")) expectedFloor = 20002001;
+    boolean verifyKeyConsole = control.has("keyConsole") && control.get("keyConsole").getAsBoolean();
+    if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")) expectedFloor = 20002001;
     int uid =
         (Integer)
             field(
@@ -1175,6 +1214,12 @@ public final class NativeOpeningStageWinProbe {
     credits = (Integer) field(loginBasic, "scoin");
     loginNickname = (String) field(loginBasic, "nickname");
     call("PlayerLoginFinishCsReq");
+    if (phase.equals("key-console-reconnect")) {
+      require(verifyKeyConsole, "Unexpected key console phase");
+      var key = keyConsole(true);
+      return Map.of("passed", true, "uid", uid, "phase", phase, "requests", requests,
+          "keyConsole", key, "clientGameplayVerified", false);
+    }
     boolean verifyTransfer = control.has("openingTransfer") && control.get("openingTransfer").getAsBoolean();
     boolean interruptedTransfer = control.has("interruptedTransfer") && control.get("interruptedTransfer").getAsBoolean();
     boolean verifyAwakening = control.has("awakeningDoor") && control.get("awakeningDoor").getAsBoolean();
@@ -1190,13 +1235,15 @@ public final class NativeOpeningStageWinProbe {
       var avatarProgress = verifyAvatarProgression ? avatarProgression(phase.equals("awakening-restart")) : Map.of();
       var anchor = verifySpaceAnchors ? spaceAnchor(phase.equals("awakening-restart")) : Map.of();
       var party = verifyStoryParty ? storyParty(phase.equals("awakening-restart")) : Map.of();
+      var key = verifyKeyConsole ? keyConsole(phase.equals("awakening-restart")) : Map.of();
       return Map.ofEntries(Map.entry("passed", true), Map.entry("uid", uid),
           Map.entry("phase", phase), Map.entry("requests", requests),
           Map.entry("awakeningDoorVerified", true), Map.entry("nextBattlePending", !verifyAwakeningBattle),
           Map.entry("awakeningBattleVerified", verifyAwakeningBattle), Map.entry("credits", credits),
           Map.entry("clientGameplayVerified", false), Map.entry("inclinationAcknowledgements", inclinationAcknowledgements),
           Map.entry("stationDestructiblesVerified", verifyAwakeningBattle),
-          Map.entry("avatarProgression", avatarProgress), Map.entry("spaceAnchor", anchor), Map.entry("storyParty", party));
+          Map.entry("avatarProgression", avatarProgress), Map.entry("spaceAnchor", anchor), Map.entry("storyParty", party),
+          Map.entry("keyConsole", key));
     }
     if (phase.startsWith("transfer-")) {
       require(verifyTransfer, "Unexpected transfer phase");

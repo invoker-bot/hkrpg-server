@@ -143,10 +143,30 @@ public final class StoryDoors {
       var script = JsonParser.parseString(c.getTask().getSourceDefinition());
       return ENABLE_TASK.equals(script)
           || standalone(info) && enableWithDialogue(script)
-          || paired(info) && enableWithProximityHints(scene, c, script);
+          || paired(info) && (enableWithDelayedHint(script) || enableWithProximityHints(scene, c, script));
     } catch (RuntimeException invalid) {
       return false;
     }
+  }
+
+  /** A parallel literal reminder cannot gate the separate, unconditional console enable. */
+  private static boolean enableWithDelayedHint(JsonElement script) {
+    var copy = script.getAsJsonObject().deepCopy();
+    var sequences = copy.getAsJsonArray("OnStartSequece");
+    if (sequences == null || sequences.size() != 2) return false;
+    var hint = sequences.get(0).getAsJsonObject();
+    if (!hint.keySet().equals(Set.of("TaskList"))) return false;
+    var tasks = hint.getAsJsonArray("TaskList");
+    if (tasks == null || tasks.size() != 2 || !hintTalk(tasks.get(1))) return false;
+    var wait = tasks.get(0);
+    var duration = wait.getAsJsonObject().getAsJsonObject("WaitTime")
+        .getAsJsonObject("FixedValue").get("Value");
+    if (!literalDuration(duration) || !JsonParser.parseString("""
+        {"$type":"RPG.GameCore.WaitSecond",
+         "WaitTime":{"IsDynamic":false,"FixedValue":{"Value":%s}}}
+        """.formatted(duration)).equals(wait)) return false;
+    sequences.remove(0);
+    return ENABLE_TASK.equals(copy);
   }
 
   private static boolean enableWithProximityHints(

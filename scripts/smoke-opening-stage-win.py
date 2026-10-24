@@ -36,10 +36,15 @@ def main():
     parser.add_argument('--avatar-progression', action='store_true', help='继续校验两场战斗经验、三本实际材料升级、扣费与角色同步及H2重启保存')
     parser.add_argument('--space-anchors', action='store_true', help='继续校验收容舱段锚点靠近激活、地图查询、实际传送和H2重启；移动为合成请求')
     parser.add_argument('--story-party', action='store_true', help='继续校验三月七获得、丹恒奖励入队、原始三人编队、手动编辑和H2重启；对白为合成回执')
+    parser.add_argument('--key-console', action='store_true', help='继续到使用密钥目标，校验前置战斗与对白门槛、控制台和绑定门、后续对白、同进程重连和H2重启')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.key_console:
+        args.story_party = True
+        if args.avatar_progression or args.space_anchors:
+            parser.error('--key-console 的后续战斗另有经验和生命结果，请与升级/锚点快照分开运行')
     if args.avatar_progression or args.space_anchors or args.story_party:
         args.awakening_battle = True
     if args.awakening_battle:
@@ -93,6 +98,8 @@ def main():
     if args.story_party:
         guarded += ['ExcelOutput/AvatarConfig.json', 'ExcelOutput/ItemConfigAvatar.json', 'ExcelOutput/RewardData.json']
         guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000204').glob('*.json')]
+    if args.key_console:
+        guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000202').glob('*.json')]
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -153,6 +160,8 @@ def main():
                           else ['barriers-restart'] if iteration == 3
                           else ['transfer-restart', 'awakening-reconnect'] if iteration == 4 and args.awakening_door
                           else ['transfer-restart'] if iteration == 4 else ['awakening-restart'])
+                if args.key_console and iteration == 4:
+                    phases.append('key-console-reconnect')
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
@@ -164,6 +173,7 @@ def main():
                                    'avatarProgression': args.avatar_progression,
                                    'spaceAnchors': args.space_anchors,
                                    'storyParty': args.story_party,
+                                   'keyConsole': args.key_console,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -172,6 +182,12 @@ def main():
                     (directory / f'probe-{phase}.log').write_text(probe.stderr, encoding='utf-8')
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
+                    if phase == 'key-console-reconnect':
+                        assert snapshot['passed'] and snapshot['keyConsole']['restored']
+                        assert snapshot['keyConsole']['doorOpen'] and snapshot['keyConsole']['nextPerformancePending']
+                        snapshots.append(snapshot)
+                        time.sleep(1)
+                        continue
                     if phase.startswith('awakening-'):
                         assert snapshot['passed'] and snapshot['awakeningDoorVerified']
                         assert snapshot['nextBattlePending'] == (not args.awakening_battle)
@@ -197,6 +213,10 @@ def main():
                             assert party['roster'] == [1002, 8001] and party['leader'] == 0
                             assert party['marchJoined'] and party['danHengJoined'] and party['authoredLineupCompleted']
                             assert party['restored'] == (phase == 'awakening-restart')
+                        if args.key_console:
+                            console = snapshot['keyConsole']
+                            assert console['doorOpen'] and console['nextPerformancePending']
+                            assert console['restored'] == (phase == 'awakening-restart')
                         snapshots.append(snapshot)
                         time.sleep(1)
                         continue
