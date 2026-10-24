@@ -48,3 +48,9 @@ python scripts/smoke-server.py
 - 全量 `test shadowJar`：602 组、15,267 项测试，0 失败、0 错误、0 跳过，构建成功。新增 27 项测试。源文件冻结校验、回归原始失败记录、资源哈希、KCP 所用程序及待部署镜像内程序均已交叉核对，详见本地 `build/mechanism-audit-20261024/final-proof.json`。
 
 以上均为服务端自动验证，真实客户端的培养按钮、结果展示与动画未在本轮验收。
+
+## 服务更新
+
+修复提交 `03d9ca53c88f112f9594f4a36b45ee2e5b48e33c` 已于 2026-10-24 更新到现有 Compose 服务，镜像 `hkrpg-local/server:equipment-progression-20261024`。部署程序 SHA-256 为 `34c946652afbd6f3d6ee53ce892328597ef160ffd2d08710b72700ff25fac01a`，与单元回归、隔离 KCP 和镜像内程序一致。
+
+更新前正常停服并校验备份 `.local/backups/equipment-progression-20261024-212502-03d9ca5/`，用已停服备份的只读副本作为存档比较基准，避免遗漏退出时才写入的缓存。更新后健康检查通过；10001 的 51 项完成记录、选角、角色、队伍、11 份角色/物品文档、信用点及机关/宝箱等存档字段保持一致。未重置账号，未修改运营配置、连接设置或资源。完整结果见本地 `build/mechanism-audit-20261024/deployment.json`；正式客户端养成流程仍待实机验收。
