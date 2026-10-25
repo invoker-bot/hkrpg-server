@@ -42,3 +42,9 @@
 - 最终 JAR SHA-256：`0951b65912252f36f02bf64236151d4c26827c249be35d4da0bfad6809e7e8df`；上述网络检查、完整构建与待发布镜像使用同一产物，源码冻结摘要核对通过。
 
 证据位于 `build/gacha-banner-display-20261025/` 的 `focused-counts.json`、`full-counts.json`、`native.json`、`gm-native.json`、`final-proof.json`。当前自动化可以读取游戏窗口，但鼠标返回和 Esc 未使游戏离开商店，因此没有把自动化检查记为画面通过。实际游戏仍需重新进入跃迁页面确认名字、星级、三张卡面和光锥预览；网络检查不能替代客户端画面验收。
+
+## 发布
+
+实现提交 `1334ed2b507a7c88827e3a5deb5573ec7fdd665b` 已更新到 `hkrpg-local-server-1`，运行镜像 `sha256:78c9d02e312afeaf60d6b9a624875888208abd45b885e5867ddcc046ee929853` 与上述已验证 JAR 一致。健康检查通过。正常停服后将存档、配置、凭据和旧产物备份至 `.local/backups/gacha-banner-display-20261025-233958-1334ed2`，从备份副本读取停服落盘状态，再与新服务的只读快照对照。
+
+UID 10001 的 97 项完成记录、125 份物品/角色文档、剧情、选角、队伍、余额和保底全部相同；配置与运行环境摘要保持，未重置账号。发布证据为 `deployment.json`。客户端卡面复测已请求，当前仍待用户确认。
