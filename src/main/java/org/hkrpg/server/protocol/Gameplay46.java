@@ -127,7 +127,7 @@ public final class Gameplay46 {
           if (MissionSnapshotRecords.valid(player)) player.getMissionManager().refresh();
           var snapshot = missionSnapshot(session, false);
           session.sendClientPacket("GetMissionDataScRsp", snapshot.toByteArray());
-          session.getMissionNotifications().snapshotSent(snapshot);
+          session.getMissionNotifications().snapshotSent(session, snapshot);
         }
         case "AcceptMainMissionCsReq" -> {
           int id = number(req, "main_mission_id");
@@ -298,6 +298,13 @@ public final class Gameplay46 {
         player.getGameplay().getSubMissions().values().stream()
             .sorted(Comparator.comparingInt(QuestState::getQuestId))
             .toList()) {
+      if (!sync && state.getPhase() != QuestState.Phase.DOING) {
+        // CN4.6 GetMissionData field 15 populates _FinishedSubMissionIDs silently.
+        // Sending historical FINISH rows in mission_list instead runs _UpdateSubMission
+        // and queues the 0x928 completion callback (including function-unlock hints).
+        add(response, "OLKALABEDOA", state.getQuestId());
+        continue;
+      }
       var mission = builder(session, "Mission");
       set(mission, "id", state.getQuestId());
       set(mission, "progress", state.getProgress());
@@ -319,7 +326,7 @@ public final class Gameplay46 {
             .toList()) {
       if (state.getPhase() != QuestState.Phase.DOING)
         add(response, "finished_main_mission_id_list", state.getQuestId());
-      if (!sync) {
+      if (!sync && state.getPhase() == QuestState.Phase.DOING) {
         var main = builder(session, "MainMission");
         set(main, "id", state.getQuestId());
         var field = main.getDescriptorForType().findFieldByName("status");

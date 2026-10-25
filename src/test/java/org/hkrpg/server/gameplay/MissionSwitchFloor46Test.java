@@ -680,13 +680,9 @@ class MissionSwitchFloor46Test {
       var response = snapshots.getLast();
       assertTrue(response.getUnknownFields().asMap().isEmpty());
       assertEquals(0, views.field(response, "retcode"));
-      assertEquals(
-          step == 0 ? 0 : 1,
-          views.field(views.message(response, "mission_list", FIRST), "progress"));
+      views.assertGoalProgress(response, actor, FIRST, step == 0 ? 0 : 1);
       if (step >= 2)
-        assertEquals(
-            step >= 3 ? 1 : 0,
-            views.field(views.message(response, "mission_list", SECOND), "progress"));
+        views.assertGoalProgress(response, actor, SECOND, step >= 3 ? 1 : 0);
       assertEquals(
           step == 4,
           ((List<?>) views.field(response, "finished_main_mission_id_list")).contains(MAIN));

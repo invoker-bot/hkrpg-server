@@ -151,22 +151,24 @@ class OpeningStageWin46Test {
     return message.getField(message.getDescriptorForType().findFieldByName(name));
   }
 
-  void assertSnapshot(DynamicMessage snapshot) {
+  void assertSnapshot(DynamicMessage snapshot, Player owner) {
     assertEquals(0, field(snapshot, "retcode"));
     var missions = (List<?>) field(snapshot, "mission_list");
-    for (int id : new int[] {SUB, NEXT}) {
-      var mission =
-          missions.stream()
-              .map(row -> (DynamicMessage) row)
-              .filter(row -> field(row, "id").equals(id))
-              .findFirst()
-              .orElseThrow();
-      assertEquals(id == SUB ? 1 : 0, field(mission, "progress"));
-      assertEquals(
-          id == SUB ? "MissionStatus_MissionFinish" : "MissionStatus_MissionDoing",
-          ((com.google.protobuf.Descriptors.EnumValueDescriptor) field(mission, "status"))
-              .getName());
-    }
+    assertTrue(((List<?>) field(snapshot, "OLKALABEDOA")).contains(SUB));
+    assertTrue(missions.stream().noneMatch(row -> field((DynamicMessage) row, "id").equals(SUB)),
+        "Reloading the completed battle must not publish another completion callback");
+    assertEquals(1, owner.getMissionManager().sub(SUB).getProgress());
+    assertEquals(QuestState.Phase.FINISHED, owner.getMissionManager().sub(SUB).getPhase());
+    var next =
+        missions.stream()
+            .map(row -> (DynamicMessage) row)
+            .filter(row -> field(row, "id").equals(NEXT))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(0, field(next, "progress"));
+    assertEquals(
+        "MissionStatus_MissionDoing",
+        ((com.google.protobuf.Descriptors.EnumValueDescriptor) field(next, "status")).getName());
   }
 
   @BeforeEach
@@ -341,9 +343,9 @@ class OpeningStageWin46Test {
             "end_status",
             end.getEnumType().findValueByName("BATTLE_END_WIN"));
     assertEquals(0, field(session.request("PVEBattleResultCsReq", report), "retcode"));
-    assertSnapshot(session.request("GetMissionDataCsReq", Map.of()));
+    assertSnapshot(session.request("GetMissionDataCsReq", Map.of()), actor);
     assertNotEquals(0, field(session.request("PVEBattleResultCsReq", report), "retcode"));
-    assertSnapshot(session.request("GetMissionDataCsReq", Map.of()));
+    assertSnapshot(session.request("GetMissionDataCsReq", Map.of()), actor);
   }
 
   @Test
@@ -369,7 +371,7 @@ class OpeningStageWin46Test {
         var restored = Objects.requireNonNull(store.find(Player.class).first());
         assertEquals(QuestState.Phase.FINISHED, restored.getMissionManager().sub(SUB).getPhase());
         assertEquals(QuestState.Phase.DOING, restored.getMissionManager().sub(NEXT).getPhase());
-        assertSnapshot(Gameplay46.missionSnapshot(new Session(restored), false));
+        assertSnapshot(Gameplay46.missionSnapshot(new Session(restored), false), restored);
         store.save(restored);
       }
     } finally {

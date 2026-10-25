@@ -23,9 +23,16 @@ public final class MissionNotifications46 {
     }
   }
 
-  void snapshotSent(DynamicMessage snapshot) {
+  void snapshotSent(GameSession session, DynamicMessage snapshot) {
     // A failed query is not authoritative and must not discard a pending valid update.
-    if (number(snapshot, "retcode") == 0) remember(snapshot);
+    // The login wire snapshot separates historical completions from active rows. Keep
+    // the full stored baseline so the next dialogue does not resend those old rows.
+    synchronized (session.getPlayer()) {
+      if (number(snapshot, "retcode") == 0) {
+        var current = missionSnapshot(session, true);
+        if (current != null) remember(current);
+      }
+    }
   }
 
   void send(GameSession session) {

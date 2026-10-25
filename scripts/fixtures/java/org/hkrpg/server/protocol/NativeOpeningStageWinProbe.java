@@ -37,6 +37,7 @@ public final class NativeOpeningStageWinProbe {
   private boolean verifyStoryParty;
   private int avatarProgressNotifications;
   private final Map<Integer, DynamicMessage> knownMissions = new HashMap<>();
+  private final Set<Integer> knownFinishedSubMissions = new HashSet<>();
   private final Set<Integer> knownFinishedMainMissions = new HashSet<>();
   private int missionChangeNotifications;
   private int newMainCompletions;
@@ -103,6 +104,9 @@ public final class NativeOpeningStageWinProbe {
             var row = (DynamicMessage) value;
             int id = (Integer) field(row, "id");
             require(!row.equals(knownMissions.put(id, row)), "Unchanged objective replayed: " + id);
+            if (((Descriptors.EnumValueDescriptor) field(row, "status")).getNumber() == 2)
+              require(knownFinishedSubMissions.add(id), "Historical child completion replayed: " + id);
+            else knownFinishedSubMissions.remove(id);
           }
           for (Object value : (List<?>) field(delta, "finished_main_mission_id_list")) {
             int id = (Integer) value;
@@ -145,8 +149,17 @@ public final class NativeOpeningStageWinProbe {
         knownMissions.clear();
         for (Object value : (List<?>) field(result, "mission_list")) {
           var row = (DynamicMessage) value;
+          require(((Descriptors.EnumValueDescriptor) field(row, "status")).getNumber() == 1,
+              "History query must not invoke old child completion callbacks");
           knownMissions.put((Integer) field(row, "id"), row);
         }
+        knownFinishedSubMissions.clear();
+        for (Object id : (List<?>) result.getField(result.getDescriptorForType().findFieldByNumber(15)))
+          require(knownFinishedSubMissions.add((Integer) id) && !knownMissions.containsKey(id),
+              "History must be unique and disjoint from active children");
+        for (Object value : (List<?>) field(result, "main_mission_list"))
+          require(((Descriptors.EnumValueDescriptor) field((DynamicMessage) value, "status")).getNumber() == 1,
+              "History query must not recreate finished main missions");
         knownFinishedMainMissions.clear();
         for (Object id : (List<?>) field(result, "finished_main_mission_id_list"))
           knownFinishedMainMissions.add((Integer) id);
@@ -162,12 +175,14 @@ public final class NativeOpeningStageWinProbe {
 
   private void progress(boolean finished) throws Exception {
     var data = call("GetMissionDataCsReq");
+    require(knownFinishedSubMissions.contains(100010103) == finished, "Opening battle history");
     var missions = new HashMap<Integer, DynamicMessage>();
     for (var row : (List<?>) field(data, "mission_list")) {
       var mission = (DynamicMessage) row;
       missions.put((Integer) field(mission, "id"), mission);
     }
-    var battle = missions.get(100010103);
+    var status = call("GetMissionStatusCsReq", Map.of("sub_mission_id_list", List.of(100010103)), true);
+    var battle = (DynamicMessage) ((List<?>) field(status, "sub_mission_status_list")).getFirst();
     require(
         battle != null && (Integer) field(battle, "progress") == (finished ? 1 : 0),
         "Opening battle progress");
@@ -175,7 +190,8 @@ public final class NativeOpeningStageWinProbe {
         ((Descriptors.EnumValueDescriptor) field(battle, "status")).getNumber()
             == (finished ? 2 : 1),
         "Opening battle status");
-    require(missions.containsKey(100010105) == finished, "Next opening objective");
+    require((missions.containsKey(100010105) || knownFinishedSubMissions.contains(100010105)) == finished,
+        "Next opening objective must remain active or in completed history");
   }
 
   private void openingParty(boolean silverWolf) throws Exception {
@@ -327,6 +343,7 @@ public final class NativeOpeningStageWinProbe {
                 ? Map.of(100010105, 2, 100010107, 1)
                 : Map.of(100010105, 2, 100010107, 2);
     var statuses = new HashMap<Integer, Integer>();
+    knownFinishedSubMissions.forEach(id -> statuses.put(id, 2));
     for (var raw : (List<?>) field(missionData, "mission_list")) {
       var m = (DynamicMessage) raw;
       statuses.put(
@@ -586,6 +603,10 @@ public final class NativeOpeningStageWinProbe {
 
   private void objective(int id, int expectedStatus) throws Exception {
     var missions = (List<?>) field(call("GetMissionDataCsReq"), "mission_list");
+    if (knownFinishedSubMissions.contains(id)) {
+      require(expectedStatus == 2, "Unexpected historical objective: " + id);
+      return;
+    }
     var target =
         missions.stream()
             .map(x -> (DynamicMessage) x)
@@ -1622,6 +1643,7 @@ public final class NativeOpeningStageWinProbe {
       probe.channel = probe.connected.get(15, TimeUnit.SECONDS);
       var result = new LinkedHashMap<String, Object>(probe.execute(control));
       result.put("loginHistoryQuiet", true);
+      result.put("nativeHistoryProjectionVerified", true);
       result.put("missionChangeNotifications", probe.missionChangeNotifications);
       result.put("newMainCompletionNotifications", probe.newMainCompletions);
       System.out.println(new Gson().toJson(result));

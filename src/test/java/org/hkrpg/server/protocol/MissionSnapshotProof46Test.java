@@ -88,7 +88,7 @@ class MissionSnapshotProof46Test {
     session.request("GetMissionDataCsReq");
     assertEquals(
         Retcode.PLAYER_DATA_ERROR.getVal(), Gameplay46.number(session.response, "retcode"));
-    for (var name : List.of("mission_list", "main_mission_list", "finished_main_mission_id_list"))
+    for (var name : List.of("mission_list", "main_mission_list", "finished_main_mission_id_list", "OLKALABEDOA"))
       assertTrue(((List<?>) Gameplay46.value(session.response, name)).isEmpty());
     assertEquals(before, gson.toJson(session.actor.getGameplay()));
     assertTrue(session.response.getUnknownFields().asMap().isEmpty());
@@ -199,7 +199,7 @@ class MissionSnapshotProof46Test {
 
   @ParameterizedTest
   @ValueSource(strings = {"FINISHED", "CLAIMING", "CLOSED"})
-  void explicitCompletedHistoryKeepsNativeMainAndChildStatus(String phase) throws Exception {
+  void explicitCompletedHistoryUsesNativeHistoryListsWithoutCompletionCallbacks(String phase) throws Exception {
     for (int id : List.of(MAIN, SUB)) {
       var state = damage(id, id == MAIN ? 1 : 3, "valid");
       if (!phase.equals("FINISHED")) state.reserveReward();
@@ -213,16 +213,10 @@ class MissionSnapshotProof46Test {
     assertEquals(0, Gameplay46.number(session.response, "retcode"));
     assertEquals(
         List.of(MAIN), Gameplay46.value(session.response, "finished_main_mission_id_list"));
-    for (String name : List.of("mission_list", "main_mission_list")) {
-      var row = (DynamicMessage) ((List<?>) Gameplay46.value(session.response, name)).getFirst();
-      assertEquals(2, ((EnumValueDescriptor) Gameplay46.value(row, "status")).getNumber());
-    }
-    assertEquals(
-        3,
-        Gameplay46.number(
-            (DynamicMessage)
-                ((List<?>) Gameplay46.value(session.response, "mission_list")).getFirst(),
-            "progress"));
+    for (String name : List.of("mission_list", "main_mission_list"))
+      assertTrue(((List<?>) Gameplay46.value(session.response, name)).isEmpty());
+    assertEquals(List.of(SUB), Gameplay46.value(session.response, "OLKALABEDOA"));
+    assertEquals(3, session.actor.getGameplay().getSubMissions().get(SUB).getProgress());
   }
 
   @Test
@@ -312,12 +306,9 @@ class MissionSnapshotProof46Test {
       assertEquals(
           QuestState.Phase.CLOSED,
           session.actor.getGameplay().getSubMissions().get(SUB).getPhase());
-      assertEquals(
-          3,
-          Gameplay46.number(
-              (DynamicMessage)
-                  ((List<?>) Gameplay46.value(session.response, "mission_list")).getFirst(),
-              "progress"));
+      assertEquals(List.of(SUB), Gameplay46.value(session.response, "OLKALABEDOA"));
+      assertTrue(((List<?>) Gameplay46.value(session.response, "mission_list")).isEmpty());
+      assertEquals(3, session.actor.getGameplay().getSubMissions().get(SUB).getProgress());
       assertTrue(session.actor.getGameplay().getRewards().isEmpty());
     } finally {
       mongo.shutdownNow();
@@ -359,11 +350,16 @@ class MissionSnapshotProof46Test {
       for (var result : workers.invokeAll(calls)) {
         var snapshot = result.get();
         assertEquals(0, Gameplay46.number(snapshot, "retcode"));
-        var row =
-            (DynamicMessage) ((List<?>) Gameplay46.value(snapshot, "mission_list")).getFirst();
-        int progress = Gameplay46.number(row, "progress"),
-            phase = ((EnumValueDescriptor) Gameplay46.value(row, "status")).getNumber();
-        assertTrue(progress == 0 && phase == 1 || progress == 3 && phase == 2);
+        var active = (List<?>) Gameplay46.value(snapshot, "mission_list");
+        if (active.isEmpty()) {
+          assertEquals(List.of(SUB), Gameplay46.value(snapshot, "OLKALABEDOA"));
+          assertEquals(List.of(MAIN), Gameplay46.value(snapshot, "finished_main_mission_id_list"));
+        } else {
+          var row = (DynamicMessage) active.getFirst();
+          assertEquals(0, Gameplay46.number(row, "progress"));
+          assertEquals(1, ((EnumValueDescriptor) Gameplay46.value(row, "status")).getNumber());
+          assertTrue(((List<?>) Gameplay46.value(snapshot, "OLKALABEDOA")).isEmpty());
+        }
       }
     } finally {
       workers.shutdownNow();

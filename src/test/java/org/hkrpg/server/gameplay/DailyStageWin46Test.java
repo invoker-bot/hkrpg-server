@@ -582,12 +582,7 @@ class DailyStageWin46Test {
       var snapshot = responses.getLast();
       assertTrue(snapshot.getUnknownFields().asMap().isEmpty());
       assertEquals(0, field(snapshot, "retcode"));
-      var goal = message(snapshot, "mission_list", stageGoal(main).getId());
-      assertEquals(i, field(goal, "progress"));
-      assertEquals(
-          i + 1,
-          ((com.google.protobuf.Descriptors.EnumValueDescriptor) field(goal, "status"))
-              .getNumber());
+      assertGoalProgress(snapshot, actor(), stageGoal(main).getId(), i);
       var parent = message(snapshot, "main_mission_list", main);
       assertEquals(
           1,
@@ -601,6 +596,28 @@ class DailyStageWin46Test {
 
   Object field(com.google.protobuf.DynamicMessage message, String name) {
     return message.getField(message.getDescriptorForType().findFieldByName(name));
+  }
+
+  void assertGoalProgress(
+      com.google.protobuf.DynamicMessage snapshot,
+      emu.lunarcore.game.player.Player owner,
+      int id,
+      int progress) {
+    var state = owner.getMissionManager().sub(id);
+    assertNotNull(state);
+    assertEquals(progress, state.getProgress());
+    assertEquals(progress == 0, state.getPhase() == QuestState.Phase.DOING);
+    assertEquals(progress == 1, ((List<?>) field(snapshot, "OLKALABEDOA")).contains(id));
+    if (progress == 0) {
+      var goal = message(snapshot, "mission_list", id);
+      assertEquals(0, field(goal, "progress"));
+      assertEquals(1,
+          ((com.google.protobuf.Descriptors.EnumValueDescriptor) field(goal, "status")).getNumber());
+    } else {
+      assertTrue(((List<?>) field(snapshot, "mission_list")).stream().noneMatch(
+          row -> field((com.google.protobuf.DynamicMessage) row, "id").equals(id)),
+          "Completed goals load as silent history, without repeating completion callbacks");
+    }
   }
 
   com.google.protobuf.DynamicMessage message(
