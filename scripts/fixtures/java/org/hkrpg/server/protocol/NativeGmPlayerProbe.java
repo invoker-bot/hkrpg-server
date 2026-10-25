@@ -135,7 +135,7 @@ public final class NativeGmPlayerProbe {
           String command = requested.get("command").getAsString();
           if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
               "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
-              "RankUpAvatarCsReq", "TakePromotionRewardCsReq").contains(command))
+              "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
           var result = callWire(command, Base64.getDecoder().decode(requested.get("wire").getAsString()),

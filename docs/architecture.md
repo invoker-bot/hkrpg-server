@@ -1001,3 +1001,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 光锥与遗器养成的4.6材料容器由 `ProtocolBridge` 显式映射；`EquipmentExperience` 在扣料前校验跨级曲线，`EquipmentSuperimposition` 在玩家锁内校验并执行整批叠影。`EquipmentRank46` 为没有旧版类型响应的叠影入口返回实际错误码。存储与验证边界见[养成检查说明](equipment-progression-4.6.md)。
 
 `AvatarMilestones` 在玩家锁内按正式持有角色与目标命途处理星魂，以 `AvatarRankChange` 保留扣料阶段；晋阶奖励读取 `AvatarPromotionReward`，先核对容量，复用 `RewardLedger` 完整到账后才标记领取。两类 4.6 原生入口由 `AvatarMilestones46` 返回实际结果。中断恢复和验证边界见[星魂与晋阶奖励](avatar-milestones-4.6.md)。
+
+`ShopPurchase46` 处理 4.6 商品购买的 1505/1575 请求与回复，复用 `ShopService` 扣费和实际到账检查，避免内部未分配的回复命令导致星琼补票等待。来源、正常重启验证和未覆盖的商店机制见[跃迁星琼补票](gacha-ticket-exchange-4.6.md)。
