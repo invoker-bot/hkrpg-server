@@ -11,8 +11,6 @@ public class HandlerGetArchiveDataCsReq extends PacketHandler {
 
     @Override
     public void handle(GameSession session, byte[] data) throws Exception {
-        // TODO The client does not send this packet right now to the server so we send it in HandlerPlayerLoginFinishCsReq instead
-        // session.send(CmdId.GetArchiveDataScRsp);
         session.send(new PacketGetArchiveDataScRsp());
     }
 

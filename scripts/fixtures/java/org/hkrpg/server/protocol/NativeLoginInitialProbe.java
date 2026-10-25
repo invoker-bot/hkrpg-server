@@ -30,7 +30,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
     4193, 8170, 9244, 9604, 8280, 2274, 2275, 9073, 9090, 8364, 9294, 9034, 6600, 9560,
     9641, 9726, 9328, 10290, 6734, 2621, 2534, 379, 6434, 6950, 3983, 1734, 2248, 2634,
     2613, 3134, 4334, 6970, 3758, 4234, 3805, 3968, 3958, 5134, 7159, 8960, 7562, 8150,
-    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222, 834, 2160, 1534
+    8190, 8934, 9171, 9990, 8979, 9958, 10270, 10670, 10038, 10190, 2223, 87, 78, 1222, 834, 2160, 1534, 2334
   };
   // Frozen 4.6 command pairs; 4583/7172/8110/10010 require the independently audited raw names.
   private static final Set<Integer> EXPECTED_RESPONSES = Arrays.stream(new int[] {
@@ -40,7 +40,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
     1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982, 10016, 9866, 9496, 1456, 63,
     4, 1249, 2725, 8376, 2947, 3375, 5523, 4439, 6625, 6936, 7206, 7599, 4173, 9266,
     6592, 2612, 341, 3915, 1725, 2214, 2625, 2623, 3125, 4225, 3875, 5125, 8196, 8906,
-    2202, 825, 2116, 1525, 9996
+    2202, 825, 2116, 1525, 9996, 2325
   }).boxed().collect(Collectors.toUnmodifiableSet());
   private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
       Map.entry(5653, 15), Map.entry(7173, 6), Map.entry(8025, 11),
@@ -93,6 +93,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean inactiveBattleSnapshotVerified;
   private boolean missionCustomBatchVerified;
   private boolean missionStatusBatchVerified;
+  private boolean archiveSnapshotVerified;
+  private boolean heartbeatAfterArchiveVerified;
   private int rejectedResponseCommand;
   private int playerUid;
   private long tokenStartedAt;
@@ -394,12 +396,43 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var skin = protocol.clientSchema().parse("GetPamSkinDataScRsp", frame.body());
           require(skin.getField(skin.getDescriptorForType().findFieldByName("cur_skin")).equals(252000),
               "Default Pam skin must exist in the actual catalog");
+        } else if (frame.cmdId() == 2325) {
+          var data = protocol.clientSchema().parse("GetArchiveDataScRsp", frame.body());
+          require(data.getUnknownFields().asMap().isEmpty()
+              && data.getField(data.getDescriptorForType().findFieldByNumber(8)).equals(0),
+              "Archive query rejected during reconnect initialization");
+          var archive = child(data, "archive_data");
+          require(archive.getUnknownFields().asMap().isEmpty(), "Unknown archive fields");
+          var monsters = (java.util.List<?>) archive.getField(archive.getDescriptorForType().findFieldByNumber(13));
+          var relics = (java.util.List<?>) archive.getField(archive.getDescriptorForType().findFieldByNumber(5));
+          var equipment = (java.util.List<?>) archive.getField(archive.getDescriptorForType().findFieldByNumber(12));
+          require(!monsters.isEmpty() && !relics.isEmpty() && !equipment.isEmpty(),
+              "Existing nonempty archive catalog was dropped or replaced with an empty success");
+          for (var value : monsters) {
+            var row = (DynamicMessage) value;
+            require(row.getUnknownFields().asMap().isEmpty()
+                && (Integer) row.getField(row.getDescriptorForType().findFieldByNumber(2)) > 0
+                && (Integer) row.getField(row.getDescriptorForType().findFieldByNumber(6)) == 1,
+                "Archive monster identity or inherited count changed");
+          }
+          for (var value : relics) {
+            var row = (DynamicMessage) value;
+            int slot = (Integer) row.getField(row.getDescriptorForType().findFieldByNumber(15));
+            require(row.getUnknownFields().asMap().isEmpty()
+                && (Integer) row.getField(row.getDescriptorForType().findFieldByNumber(3)) > 0
+                && slot >= 1 && slot <= 6, "Archive relic set or slot changed");
+          }
+          archiveSnapshotVerified = true;
+          var heartbeat = protocol.clientSchema().message("PlayerHeartBeatCsReq");
+          send(connection, 44, DynamicMessage.newBuilder(heartbeat)
+              .setField(heartbeat.findFieldByName("client_time_ms"), 1234567890124L).build().toByteArray());
         } else if (frame.cmdId() == 62) {
           var heartbeat = protocol.clientSchema().parse("PlayerHeartBeatScRsp", frame.body());
-          require(heartbeat.getField(heartbeat.getDescriptorForType().findFieldByName("client_time_ms"))
-              .equals(1234567890123L), "Heartbeat echo changed");
+          long echo = (Long) heartbeat.getField(heartbeat.getDescriptorForType().findFieldByName("client_time_ms"));
+          require(echo == 1234567890123L || echo == 1234567890124L, "Heartbeat echo changed");
+          if (echo == 1234567890124L) heartbeatAfterArchiveVerified = true;
         }
-        if (!completed.isDone() && received.containsAll(EXPECTED_RESPONSES) && received.contains(62)) {
+        if (!completed.isDone() && received.containsAll(EXPECTED_RESPONSES) && heartbeatAfterArchiveVerified) {
           long nameHash = 0;
           for (char value : "CS_Chap00_Act210".toCharArray()) nameHash = nameHash * 11 + value;
           require(videoModulus != 0
@@ -407,8 +440,9 @@ public final class NativeLoginInitialProbe implements KcpListener {
                   == 26_743_203_654_499_374L,
               "Opening movie cannot derive its native decoder value from both replies");
           require(rogueInfoRetcodeVerified && chessRogueInitialProfileVerified
-                  && inactiveBattleSnapshotVerified && missionCustomBatchVerified && missionStatusBatchVerified,
-              "Rogue, battle or mission initial query contracts were not verified");
+                  && inactiveBattleSnapshotVerified && missionCustomBatchVerified && missionStatusBatchVerified
+                  && archiveSnapshotVerified,
+              "Rogue, battle, mission or archive initial query contracts were not verified");
           initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
           require(initialCompletedMillis <= 4000,
               "Initial query burst exceeded 4000 ms: " + initialCompletedMillis);
@@ -528,6 +562,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("inactiveBattleSnapshotVerified", probe.inactiveBattleSnapshotVerified),
           Map.entry("missionCustomBatchVerified", probe.missionCustomBatchVerified),
           Map.entry("missionStatusBatchVerified", probe.missionStatusBatchVerified),
+          Map.entry("archiveSnapshotVerified", probe.archiveSnapshotVerified),
+          Map.entry("heartbeatAfterArchiveVerified", probe.heartbeatAfterArchiveVerified),
           Map.entry("chessRogueInitialProfile", Map.of(
               "verified", probe.chessRogueInitialProfileVerified,
               "responseCommand", 5435, "retcode", 0,

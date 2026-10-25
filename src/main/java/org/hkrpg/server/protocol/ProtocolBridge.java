@@ -58,6 +58,11 @@ public final class ProtocolBridge {
           Map.entry("AvatarPathInfo.skilltree_list", "avatar_path_skill_tree"),
           Map.entry("AvatarPathSkillTree.anchor_point_id", "point_id"),
           Map.entry("EquipRelic.slot", "type"),
+          // Honey fe00bdb CmdArchiveType / PacketGetArchiveDataScRsp:
+          // monster list 13; relic set 3 and slot/type 15. Preserve the core catalog values.
+          Map.entry("ArchiveData.monster_list", "kill_monster_list"),
+          Map.entry("RelicArchive.relic_id", "set_id"),
+          Map.entry("RelicArchive.slot", "type"),
           Map.entry("SceneEnterStageCsReq.stage_id", "event_id"),
           // Honey fe00bdb consumes CN4.6 wave field4 as the challenge count; the 4.2 handler
           // consumes wave_count, while the unused 4.2 wave field must retain its legacy encoding.
