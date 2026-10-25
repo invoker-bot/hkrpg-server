@@ -153,7 +153,9 @@ public final class NativeGmPlayerProbe {
       snapshot.put("bag", project(call("GetBagCsReq")));
       snapshot.put("avatars", project(call("GetAvatarDataCsReq", Map.of("is_get_all", true))));
       snapshot.put("mail", project(call("GetMailCsReq")));
-      snapshot.put("gacha", project(call("GetGachaInfoCsReq")));
+      var gacha = call("GetGachaInfoCsReq");
+      snapshot.put("gacha", project(gacha));
+      snapshot.put("gachaWire", Base64.getEncoder().encodeToString(gacha.toByteArray()));
       snapshot.put("basic", Map.copyOf(basic));
       snapshot.put("requests", requests);
       if (lastPull != null) snapshot.put("gachaPull",lastPull);

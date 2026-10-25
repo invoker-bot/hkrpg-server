@@ -45,14 +45,18 @@ final class GachaInitial46 {
             set(info, "begin_time", (long) banner.getBeginTime());
             set(info, "end_time", (long) banner.getEndTime());
           }
-          // Honey fe00bdb Common/Data/Custom/BannersConfig.ToInfo separates five-star display
-          // items (10), four-star rate-up items (5), and the avatar-event detail marker (7).
-          // The old up_info list combines pools and must not be renamed to any of those fields.
+          // Verified against the fixed CN 4.6 client's WriteTo + SyncGachaPoolData:
+          // wire 5 -> PrizeItemDatas (headline); wire 10 -> DetailItemDatas (card previews).
+          // Imported descriptor names are misleading here. Wire 7 belongs to selection data,
+          // not an avatar-event marker. See docs/gacha-banner-display-4.6.md.
           int[] featured = service.getFeatured5(banner, pool);
-          if (featured != null) for (int id : featured) add(info, "prize_item_list", id);
-          if (banner.getGachaType() != GachaType.Normal)
-            for (int id : pool.permanent() ? pool.fourStars() : pool.up4()) add(info, "ONIHOMCELJK", id);
-          if (banner.getGachaType() == GachaType.AvatarUp) add(info, "item_detail_list", 11);
+          for (int id : featured) add(info, "ONIHOMCELJK", id);
+          if (pool.permanent()) {
+            // Permanent pools retain their existing five-star preview subset, not the full pool.
+            for (int id : featured) add(info, "prize_item_list", id);
+          } else {
+            for (int id : pool.up4()) add(info, "prize_item_list", id);
+          }
           if (banner.getId() == 1001) {
             var ceiling = DynamicMessage.newBuilder(schema.message("GachaCeiling"));
             set(ceiling, "ceiling_num", player.getGachaInfo().getCeilingNum());

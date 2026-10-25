@@ -127,8 +127,8 @@ def main():
             if iteration == 0:
                 native_banner = next(row for row in snapshot['gacha']['gacha_info_list'] if row['gacha_id'] == 2001)
                 assert (native_banner['begin_time'], native_banner['end_time']) == banner_window
-                assert native_banner['prize_item_list'] == [1102]
-                assert native_banner['ONIHOMCELJK'] == [1105, 1106, 1109]
+                assert native_banner['ONIHOMCELJK'] == [1102]
+                assert native_banner['prize_item_list'] == [1105, 1106, 1109]
             else:
                 assert all(row['gacha_id'] not in (1001, 2001) for row in snapshot['gacha']['gacha_info_list'])
                 stopped = request('/gm/api/banners/current?state=stopped')['data']['items']
