@@ -19,7 +19,13 @@ public class PacketGetMissionStatusScRsp extends BasePacket {
         var data = GetMissionStatusScRsp.newInstance();
 
         for (int missionId : req.getMainMissionIdList()) {
-            if(player!=null&&player.getMissionManager().finished(missionId)) data.addFinishedMainMissionIdList(missionId);
+            if (player != null && player.getMissionManager().finished(missionId)) {
+                data.addFinishedMainMissionIdList(missionId);
+            } else {
+                // The client resolves a pending dependency for each returned ID. Omitting a
+                // negative answer leaves menu/story initialization waiting even after reconnect.
+                data.addUnfinishedMainMissionIdList(missionId);
+            }
         }
 
         for (int missionId : req.getSubMissionIdList()) {

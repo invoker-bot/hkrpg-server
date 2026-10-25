@@ -92,6 +92,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean chessRogueInitialProfileVerified;
   private boolean inactiveBattleSnapshotVerified;
   private boolean missionCustomBatchVerified;
+  private boolean missionStatusBatchVerified;
   private int rejectedResponseCommand;
   private int playerUid;
   private long tokenStartedAt;
@@ -280,6 +281,15 @@ public final class NativeLoginInitialProbe implements KcpListener {
                   .build().toByteArray();
             }
             if (command == 5697) body = new byte[] {106, 2, 1, 2};
+            if (command == 1217) {
+              var type = protocol.clientSchema().message("GetMissionStatusCsReq");
+              var query = DynamicMessage.newBuilder(type);
+              for (int id : new int[] {1000101, 1000201, 1000301, 1000500})
+                query.addRepeatedField(type.findFieldByNumber(9), id);
+              for (int i = 0; i < 600; i++)
+                query.addRepeatedField(type.findFieldByNumber(9), 19900000 + i);
+              body = query.build().toByteArray();
+            }
             if (command == 1222) {
               var type = protocol.clientSchema().message("GetMainMissionCustomValueCsReq");
               var query = DynamicMessage.newBuilder(type);
@@ -333,6 +343,20 @@ public final class NativeLoginInitialProbe implements KcpListener {
           var settings = child(basic, "player_setting_info");
           child(settings, "OJPAODIHAJE");
           requireEmptyProgress(settings);
+        } else if (frame.cmdId() == 1238) {
+          var data = protocol.clientSchema().parse("GetMissionStatusScRsp", frame.body());
+          require(data.getUnknownFields().asMap().isEmpty()
+              && data.getField(data.getDescriptorForType().findFieldByNumber(7)).equals(0),
+              "Mission status dependencies were rejected");
+          var unfinished = (java.util.List<?>) data.getField(data.getDescriptorForType().findFieldByNumber(3));
+          require(data.getRepeatedFieldCount(data.getDescriptorForType().findFieldByNumber(14)) == 0
+              && unfinished.size() == 604,
+              "Fresh login must answer every unfinished dependency without inventing menu unlocks");
+          require(unfinished.subList(0, 4).equals(java.util.List.of(1000101, 1000201, 1000301, 1000500)),
+              "Menu prerequisite identities changed");
+          for (int i = 0; i < 600; i++) require(unfinished.get(i + 4).equals(19900000 + i),
+              "Mission preparation batch omitted a negative answer");
+          missionStatusBatchVerified = true;
         } else if (frame.cmdId() == protocol.clientCommand("GetMainMissionCustomValueScRsp")) {
           var data = protocol.clientSchema().parse("GetMainMissionCustomValueScRsp", frame.body());
           require(data.getField(data.getDescriptorForType().findFieldByName("retcode")).equals(0),
@@ -383,7 +407,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
                   == 26_743_203_654_499_374L,
               "Opening movie cannot derive its native decoder value from both replies");
           require(rogueInfoRetcodeVerified && chessRogueInitialProfileVerified
-                  && inactiveBattleSnapshotVerified && missionCustomBatchVerified,
+                  && inactiveBattleSnapshotVerified && missionCustomBatchVerified && missionStatusBatchVerified,
               "Rogue, battle or mission initial query contracts were not verified");
           initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
           require(initialCompletedMillis <= 4000,
@@ -503,6 +527,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("rogueInfoRetcodeZero", probe.rogueInfoRetcodeVerified),
           Map.entry("inactiveBattleSnapshotVerified", probe.inactiveBattleSnapshotVerified),
           Map.entry("missionCustomBatchVerified", probe.missionCustomBatchVerified),
+          Map.entry("missionStatusBatchVerified", probe.missionStatusBatchVerified),
           Map.entry("chessRogueInitialProfile", Map.of(
               "verified", probe.chessRogueInitialProfileVerified,
               "responseCommand", 5435, "retcode", 0,

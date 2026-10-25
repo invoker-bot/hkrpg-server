@@ -14,8 +14,11 @@ public class HandlerGetMissionStatusCsReq extends PacketHandler {
     public void handle(GameSession session, byte[] data) throws Exception {
         var req = GetMissionStatusCsReq.parseFrom(data);
 
-        session.getPlayer().getMissionManager().refresh();
-        session.send(new PacketGetMissionStatusScRsp(session.getPlayer(),req));
+        // Login/reconnect batches are reads. Progress is advanced by the existing gameplay
+        // events and full mission refresh, never by querying an unlock prerequisite.
+        synchronized (session.getPlayer()) {
+            session.send(new PacketGetMissionStatusScRsp(session.getPlayer(), req));
+        }
     }
 
 }
