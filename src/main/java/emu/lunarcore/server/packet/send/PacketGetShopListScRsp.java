@@ -10,7 +10,12 @@ import emu.lunarcore.server.packet.CmdId;
 public class PacketGetShopListScRsp extends BasePacket {
 
     public PacketGetShopListScRsp(int shopType) {
+        this(null, shopType);
+    }
+
+    public PacketGetShopListScRsp(emu.lunarcore.game.player.Player player, int shopType) {
         super(CmdId.GetShopListScRsp);
+        var now = java.time.Instant.now();
 
         var data = GetShopListScRsp.newInstance()
                 .setShopType(shopType);
@@ -26,7 +31,9 @@ public class PacketGetShopListScRsp extends BasePacket {
                     .setEndTime(Integer.MAX_VALUE);
 
             for (var goodsExcel : shopExcel.getGoods().values()) {
-                shop.addGoodsList(goodsExcel.toProto());
+                var goods = goodsExcel.toProto().setItemId(goodsExcel.itemAt(now));
+                if (player != null) goods.setBuyTimes(emu.lunarcore.game.shop.ShopService.bought(player, goodsExcel, now));
+                shop.addGoodsList(goods);
             }
 
             data.addShopList(shop);

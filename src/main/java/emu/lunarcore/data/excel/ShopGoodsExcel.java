@@ -19,6 +19,12 @@ public class ShopGoodsExcel extends GameResource {
     private int ItemID;
     private int ItemCount;
     private int ShopID;
+    private int ItemGroupID;
+    private int LimitTimes;
+    private int CycleDays;
+    private String RefreshType;
+    private int Level;
+    private int Rank;
 
     @Getter(AccessLevel.NONE)
     private int[] CurrencyList;
@@ -35,7 +41,7 @@ public class ShopGoodsExcel extends GameResource {
     @Override
     public void onLoad() {
         // Skip if we dont have an item id associated with this goods excel
-        if (this.getItemID() == 0) return;
+        if (this.getItemID() == 0 && this.ItemGroupID == 0) return;
 
         // Add to shop excel
         ShopExcel shop = GameData.getShopExcelMap().get(this.ShopID);
@@ -44,6 +50,8 @@ public class ShopGoodsExcel extends GameResource {
         shop.getGoods().put(this.GoodsID, this);
 
         // Cache currency cost
+        this.costList = null;
+        if (CurrencyList == null || CurrencyCostList == null || CurrencyList.length != CurrencyCostList.length) return;
         this.costList = new ArrayList<>(CurrencyList.length);
 
         for (int i = 0; i < CurrencyList.length; i++) {
@@ -63,5 +71,15 @@ public class ShopGoodsExcel extends GameResource {
                 .setEndTime(Integer.MAX_VALUE);
 
         return proto;
+    }
+
+    public int itemAt(java.time.Instant now) {
+        if (ItemID > 0) return ItemID;
+        var rows = GameData.getShopItemGroupExcelMap().stream()
+            .filter(row -> row.getGroupID() == ItemGroupID && "Rotate".equals(row.getGroupType()))
+            .sorted(java.util.Comparator.comparingInt(ShopItemGroupExcel::getRotateOrder)).toList();
+        if (rows.isEmpty()) return 0;
+        int month = now.atOffset(java.time.ZoneOffset.ofHours(8)).minusHours(4).getMonthValue();
+        return rows.get((month - 1) % rows.size()).getItemID();
     }
 }

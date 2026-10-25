@@ -9,6 +9,11 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private ShopPurchaseState shopPurchases = new ShopPurchaseState();
+  public ShopPurchaseState getShopPurchases() {
+    if (shopPurchases == null) shopPurchases = new ShopPurchaseState();
+    return shopPurchases;
+  }
   private ServerPrefsState serverPrefs = new ServerPrefsState();
 
   public ServerPrefsState getServerPrefs() { return serverPrefs; }

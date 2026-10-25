@@ -17,10 +17,10 @@ public class PacketGetPamSkinDataScRsp extends BasePacket {
         int currentSkin = player.getCurrentPamSkinId();
         if (currentSkin == 0 || currentSkin == 25200) currentSkin = 252000;
 
-        var pamSkinsList = GameData.getPomSkinExcelMap().getIds();
+        var pamSkinsList = org.hkrpg.server.protocol.ShopCosmetics46.pamSkins(player);
 
         var data = GetPamSkinDataScRsp.newInstance()
-                .addAllUnlockedPamSkins(pamSkinsList.intStream().toArray())
+                .addAllUnlockedPamSkins(pamSkinsList.stream().mapToInt(Integer::intValue).toArray())
                 .setCurrentPamSkinId(currentSkin);
 
         this.setData(data);

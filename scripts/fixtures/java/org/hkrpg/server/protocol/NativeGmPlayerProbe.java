@@ -85,7 +85,7 @@ public final class NativeGmPlayerProbe {
       var result = protocol.clientSchema().parse(response, frame.body());
       String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp", "RankUpAvatarScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
       if (!result.getUnknownFields().asMap().isEmpty() || ((Integer) field(result, retcodeField) == 0) != success)
-        throw new IllegalStateException("Unexpected response: " + response);
+        throw new IllegalStateException("Unexpected response: " + response + " " + project(result));
       return result;
     }
     throw new IllegalStateException("Timeout: " + response);
@@ -138,6 +138,8 @@ public final class NativeGmPlayerProbe {
           if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
               "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
               "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
+              "GetShopListCsReq", "GetPlayerBoardDataCsReq", "SetPersonalCardCsReq",
+              "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
               "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();

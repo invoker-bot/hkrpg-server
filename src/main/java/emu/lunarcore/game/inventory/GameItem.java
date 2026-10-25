@@ -135,7 +135,7 @@ public class GameItem implements Syncable {
                 }
                 break;
             default:
-                this.count = Math.min(count, excel.getPileLimit());
+                this.count = Math.min(count, emu.lunarcore.game.shop.ShopItems.stackLimit(excel));
         }
     }
 
@@ -352,6 +352,10 @@ public class GameItem implements Syncable {
     // Player sync
 
     public void onSync(PlayerSyncScNotify proto) {
+        if (emu.lunarcore.game.shop.ShopItems.storedVirtual(this.getItemId())) {
+            proto.addMaterialList(this.toMaterialProto());
+            return;
+        }
         switch (this.getExcel().getItemMainType().getTabType()) {
             case MATERIAL -> {
                 proto.addMaterialList(this.toMaterialProto());

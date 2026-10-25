@@ -149,7 +149,7 @@ public class Inventory extends BasePlayerManager {
 
         if (result != null && delivery.amount() > 0) {
             // Send packets
-            if (item.getExcel().getItemMainType().getTabType() != InventoryTabType.NONE) {
+            if (item.getExcel().getItemMainType().getTabType() != InventoryTabType.NONE || isStackType(item.getExcel())) {
                 getPlayer().sendPacket(new PacketPlayerSyncScNotify(result));
             }
             if (showHint) {
@@ -227,6 +227,8 @@ public class Inventory extends BasePlayerManager {
     public static boolean isStackType(ItemExcel excel) {
         var type = excel.getItemMainType();
         return type == ItemMainType.Material || type == ItemMainType.Mission
+            || emu.lunarcore.game.shop.ShopItems.collectible(excel)
+            || type == ItemMainType.Virtual && emu.lunarcore.game.shop.ShopItems.storedVirtual(excel.getId())
             || org.hkrpg.server.gameplay.BookItems.storable(excel)
             || org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(excel)
             || (type == ItemMainType.Usable && (excel.getItemSubType() == ItemSubType.Food
@@ -290,6 +292,8 @@ public class Inventory extends BasePlayerManager {
 
         // Add item to inventory store
         ItemMainType type = item.getExcel().getItemMainType();
+        if (type == ItemMainType.Virtual && emu.lunarcore.game.shop.ShopItems.storedVirtual(item.getItemId()))
+            type = ItemMainType.Material;
         ItemSubType subType = item.getExcel().getItemSubType();
         InventoryTab tab = getTabByItemType(type);
 
@@ -341,6 +345,10 @@ public class Inventory extends BasePlayerManager {
                         getPlayer().getUnlocks().addPhoneTheme(item.getItemId());
                         return item;
                     }
+                    case PhoneCase -> {
+                        getPlayer().getUnlocks().addPhoneCase(item.getItemId());
+                        return item;
+                    }
                     case AvatarSkin -> {
                         getPlayer().getUnlocks().addAvatarSkin(item.getItemId());
                         return item;
@@ -352,6 +360,7 @@ public class Inventory extends BasePlayerManager {
 
                 // Consumable gifts and food remain in inventory until actually used.
                 if (subType != ItemSubType.Food && subType != ItemSubType.Gift
+                    && !emu.lunarcore.game.shop.ShopItems.collectible(item.getExcel())
                     && subType != ItemSubType.PlayerOutfit
                     && !org.hkrpg.server.gameplay.BookItems.storable(item.getExcel())
                     && !org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(item.getExcel())
@@ -382,7 +391,7 @@ public class Inventory extends BasePlayerManager {
                     return item;
                 } else {
                     // Add count to item
-                    int amount = Utils.safeAdd(existingItem.getCount(), item.getCount(), item.getExcel().getPileLimit(), 0);
+                    int amount = Utils.safeAdd(existingItem.getCount(), item.getCount(), emu.lunarcore.game.shop.ShopItems.stackLimit(item.getExcel()), 0);
                     if (existingItem.setCount(amount)) {
                         existingItem.save();
                     }
@@ -473,6 +482,12 @@ public class Inventory extends BasePlayerManager {
             getPlayer().addHCoin(-param.getCount() * multiplier);
             if (before > getPlayer().getHcoin())
               consumed.merge(param.getId(), before - getPlayer().getHcoin(), Math::addExact);
+            continue;
+          } else if (param.getId() == 3) {
+            int before = getPlayer().getMcoin();
+            getPlayer().addMCoin(-param.getCount() * multiplier);
+            if (before > getPlayer().getMcoin())
+              consumed.merge(3, before - getPlayer().getMcoin(), Math::addExact);
             continue;
           }
         }
@@ -599,6 +614,7 @@ public class Inventory extends BasePlayerManager {
       InventoryTab tab = null;
       if (item.getExcel() != null) {
         tab = getTabByItemType(item.getExcel().getItemMainType());
+        if (emu.lunarcore.game.shop.ShopItems.storedVirtual(item.getItemId())) tab = getTab(InventoryTabType.MATERIAL);
 
         if (tab != null) {
           tab.onRemoveItem(item);
@@ -642,6 +658,8 @@ public class Inventory extends BasePlayerManager {
             } else if (itemId == GameConstants.MATERIAL_HCOIN_ID) {
               // Check jades
               yield this.getPlayer().getHcoin() >= count;
+            } else if (itemId == 3) {
+              yield this.getPlayer().getMcoin() >= count;
             } else if (itemId == GameConstants.ROGUE_TALENT_COIN_ID) {
               // Check rogue talents
               yield this.getPlayer().getTalentPoints() >= count;
@@ -650,6 +668,10 @@ public class Inventory extends BasePlayerManager {
                   >= count;
             }
 
+            if (emu.lunarcore.game.shop.ShopItems.storedVirtual(itemId)) {
+              var stored=getMaterialByItemId(itemId);
+              yield stored!=null && stored.getCount()>=count;
+            }
             // Not supported
             yield false;
           }
@@ -763,7 +785,8 @@ public class Inventory extends BasePlayerManager {
         item.setExcel(excel);
 
         // Put in inventory
-        InventoryTab tab = getTabByItemType(item.getExcel().getItemMainType());
+        InventoryTab tab = emu.lunarcore.game.shop.ShopItems.storedVirtual(item.getItemId())
+            ? getTab(InventoryTabType.MATERIAL) : getTabByItemType(item.getExcel().getItemMainType());
         putItem(item, tab);
 
         // Equip to a character if possible

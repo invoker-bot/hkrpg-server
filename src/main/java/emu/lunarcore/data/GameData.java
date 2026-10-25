@@ -52,6 +52,8 @@ public class GameData {
     @Getter private static ExcelMap<MazePlaneExcel> mazePlaneExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<MapEntranceExcel> mapEntranceExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<ShopExcel> shopExcelMap = new ExcelMap<>();
+    @Getter private static MultiKeyExcelMap<ShopItemGroupExcel> shopItemGroupExcelMap = new MultiKeyExcelMap<>();
+    @Getter private static MultiKeyExcelMap<ItemGiftPackExcel> itemGiftPackExcelMap = new MultiKeyExcelMap<>();
     @Getter private static ExcelMap<RewardExcel> rewardExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<InteractExcel> interactExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<PlayerIconExcel> playerIconExcelMap = new ExcelMap<>();

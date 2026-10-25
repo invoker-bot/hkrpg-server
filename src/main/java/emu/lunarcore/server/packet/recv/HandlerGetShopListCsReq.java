@@ -14,7 +14,7 @@ public class HandlerGetShopListCsReq extends PacketHandler {
     public void handle(GameSession session, byte[] data) throws Exception {
         var req = GetShopListCsReq.parseFrom(data);
 
-        session.send(new PacketGetShopListScRsp(req.getShopType()));
+        session.send(new PacketGetShopListScRsp(session.getPlayer(), req.getShopType()));
     }
 
 }

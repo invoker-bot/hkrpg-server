@@ -14,8 +14,9 @@ public class HandlerBuyGoodsCsReq extends PacketHandler {
     public void handle(GameSession session, byte[] data) throws Exception {
         var req = BuyGoodsCsReq.parseFrom(data);
 
-        var items = session.getServer().getShopService().buyGoods(session.getPlayer(), req.getShopId(), req.getGoodsId(), req.getGoodsNum());
-        session.send(new PacketBuyGoodsScRsp(req, items));
+        var result = session.getServer().getShopService().buy(session.getPlayer(), req.getShopId(),
+                req.getGoodsId(), req.getGoodsNum(), req.getItemId(), java.util.List.of(), java.time.Instant.now());
+        session.send(new PacketBuyGoodsScRsp(req, result));
     }
 
 }

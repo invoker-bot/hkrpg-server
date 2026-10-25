@@ -92,6 +92,9 @@ public final class ProtocolBridge {
           Map.entry("EntityBuffChangeInfo.add_buff_info", "buff_change_info"),
           Map.entry("GetAvatarDataScRsp.avatar_path_info_list", "avatar_path_data_info_list"),
           Map.entry("GetAvatarDataScRsp.owned_skin_list", "skin_list"),
+          // Honey fe00bdb CmdAvatarType: unlock field 11 and dress request field 3.
+          Map.entry("UnlockAvatarSkinScNotify.avatar_skin_id", "skin_id"),
+          Map.entry("DressAvatarSkinCsReq.avatar_skin_id", "skin_id"),
           Map.entry("GetAvatarDataScRsp.player_outfit_data", "DHKFCDAGHDM"),
           Map.entry("AvatarSync.avatar_path_info_list", "avatar_path_data_info_list"),
           Map.entry("PlayerSyncScNotify.player_outfit_data", "DHKFCDAGHDM"),

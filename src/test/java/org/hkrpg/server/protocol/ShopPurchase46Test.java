@@ -54,6 +54,10 @@ class ShopPurchase46Test {
         .setItemId(101).setServerEntityId(789);
     var converted=ProtocolBridge.forVersion("4.2.0").inbound(CmdId.BuyGoodsCsReq,source.toByteArray());
     assertEquals(source,BuyGoodsCsReq.parseFrom(converted.body()));
+    var packet = new emu.lunarcore.server.packet.send.PacketBuyGoodsScRsp(source,
+        new emu.lunarcore.game.shop.ShopService.Purchase(Retcode.SUCC,List.of(),17));
+    var response = emu.lunarcore.proto.BuyGoodsScRspOuterClass.BuyGoodsScRsp.parseFrom(packet.getData().toByteArray());
+    assertEquals(17,response.getGoodsBuyTimes());
   }
 
   @Test void invalidPurchasesReceiveAResponseWithoutDisconnecting() throws Exception {
@@ -72,5 +76,23 @@ class ShopPurchase46Test {
 
   private static Object field(DynamicMessage message,String name) {
     return message.getField(message.getDescriptorForType().findFieldByName(name));
+  }
+
+  @Test void nativeOptionalRewardsKeepTheirOrderAndMultiplicity() throws Exception {
+    var protocol = ProtocolBridge.forVersion("4.6.0");
+    var type = protocol.clientSchema().message("BuyGoodsCsReq");
+    var nativeRequest = DynamicMessage.newBuilder(type)
+        .setField(type.findFieldByNumber(1),900).setField(type.findFieldByNumber(9),900001)
+        .setField(type.findFieldByNumber(3),1).setField(type.findFieldByNumber(13),311001)
+        .addRepeatedField(type.findFieldByNumber(4),1202001)
+        .addRepeatedField(type.findFieldByNumber(4),1202011)
+        .addRepeatedField(type.findFieldByNumber(4),1202011).build();
+    assertTrue(ShopPurchase46.validWire(nativeRequest.toByteArray()));
+    var decoded = ShopPurchase46.parse(protocol,nativeRequest.toByteArray());
+    assertEquals(List.of(1202001,1202011,1202011),decoded.choices());
+    assertEquals(311001,decoded.request().getItemId());
+    var session = new ProgressionGates46Test.CheckedSession();
+    ShopPurchase46.reply(session,decoded.request(),List.of(),Retcode.SUCC,7);
+    assertEquals(7,field(session.response,"goods_buy_times"));
   }
 }

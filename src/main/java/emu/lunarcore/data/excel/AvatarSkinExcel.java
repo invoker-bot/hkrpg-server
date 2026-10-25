@@ -9,6 +9,7 @@ import lombok.Getter;
 public class AvatarSkinExcel extends GameResource {
     private int ID;
     private int AvatarID;
+    private int PlayerCardID;
 
     @Override
     public int getId() {
