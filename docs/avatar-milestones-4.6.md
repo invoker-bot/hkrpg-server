@@ -43,3 +43,11 @@ python scripts/smoke-server.py
 - 原光锥升级、遗器强化与叠影复测 12 次操作、93 个请求通过；两次会话和两次正常停服的保存核对通过。Dispatch 认证与账号重启保存通过。
 - 3,573 个代码、测试、脚本及资源输入已冻结核对。完整测试、两份网络测试及待发布镜像使用同一 JAR：`d403172d025c08e7f9a2b94e0585dd17aadc9408e22645fbdcc90c53e66f44d6`。
 - 固定资源与 Git 原件逐项一致，生产资源未修改。证据汇总：`build/avatar-milestones-20261025/final-proof.json`；本轮游戏 UI 验收仍未完成。
+
+## 2026-10-25 服务更新
+
+修复提交 `ebdcf18b8196928514c1834e4e22993e00f0eaf3` 已部署至本机受管服务，镜像 `hkrpg-local/server:avatar-milestones-20261025`，运行 JAR 与上述验证哈希一致，健康检查及 `scripts/verify-compose.py` 通过。
+
+正常停服后备份位于 `.local/backups/avatar-milestones-20261025-171027-ebdcf18/`；逐文件核对备份哈希，并从备份的独立副本读取停服后基线。更新前后 UID 10001 的 **72 项完成记录**、选角、队伍、角色、命途、背包、信用点、机关记录及养成/发奖记录一致，物品和角色文档共 18 份。配置和运行环境保留，没有重置或回滚存档。
+
+更新记录为 `build/avatar-milestones-20261025/deployment.json` 和 `compose-verification.json`；没有将健康检查标为客户端游戏验收。
