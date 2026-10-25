@@ -31,3 +31,11 @@
 冻结的 3,576 个源文件与构建输入核对通过。完整构建、原生剧情验证和容器内的 JAR SHA-256 一致：`b2cd24eb6d0dd4ed6138bbc93e2e072841f16759761037c81e208f63efe47814`。容器镜像为 `sha256:4796bddbf1eb524e4378022b4043deada06454ee8a3fa60ab922029a7e1f3a6a`，汇总证据为 `build/function-unlock-hints-20261025/final-proof.json`。
 
 静态消费者和网络探针不能替代客户端实际提示验收；用户报告的对白后弹窗仍需更新后实机复测。
+
+## 本机服务更新
+
+2026-10-25 19:29（Asia/Singapore），代码提交 `c33c0866e356c978dccf79e4e1213f2cdc4385ea` 的验证产物已更新到本机 Compose 服务。正常停服后的完整备份为 `.local/backups/function-unlock-hints-20261025-192853-c33c086/`，各文件哈希核对通过；停服数据库使用副本读取，原备份未改写。
+
+以停服写盘后的保存状态为基准，更新后 UID 10001 的 80 项完成记录、选角、剧情、角色、队伍、背包、货币及抽卡记录逐字段一致，25 份物品和角色记录保留。运行配置、连接环境和资源清单保持原样。
+
+服务恢复 `healthy`，HTTP 就绪和游戏端口检查通过，运行 JAR 与上述全量测试产物一致；启动日志无 ERROR 或异常。部署证据为 `build/function-unlock-hints-20261025/deployment.json`，随后 `scripts/verify-compose.py` 只读复查通过，报告为同目录 `compose-verification.json`。本轮未自动操作生产账号进行任务、领取或抽卡，也未将协议测试登记为真实客户端弹窗验收。
