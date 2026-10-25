@@ -106,68 +106,13 @@ public class InventoryService extends BaseGameService {
     }
 
     public boolean rankUpAvatar(Player player, int avatarId) {
-        // Get avatar
-        GameAvatar avatar = player.getAvatarById(avatarId);
-        if (avatar == null || avatar.getRank() >= avatar.getExcel().getMaxRank()) return false;
-
-        int rankId = avatar.getExcel().getRankId(avatar.getRank());
-        AvatarRankExcel rankData = GameData.getAvatarRankExcelMap().get(rankId);
-        if (rankData == null) return false;
-
-        // Verify items
-        if (!player.getInventory().hasItems(rankData.getUnlockCost())) {
-            return false;
-        }
-
-        // Pay items
-        player.getInventory().removeItemsByParams(rankData.getUnlockCost());
-
-        // Add rank
-        avatar.setRank(avatar.getRank() + 1);
-
-        // Save avatar and send packets
-        if (avatar.getMultiPath() != null) {
-            avatar.getMultiPath().save();
-        } else {
-            avatar.save();
-        }
-
-        player.sendPacket(new PacketPlayerSyncScNotify(avatar));
-
-        return true;
+        return org.hkrpg.server.gameplay.AvatarMilestones.activateRank(player, avatarId, null)
+                == emu.lunarcore.server.packet.Retcode.SUCC;
     }
 
     public List<GameItem> takePromotionRewardAvatar(Player player, int avatarId, int promotion) {
-        // Get avatar
-        GameAvatar avatar = player.getAvatarById(avatarId);
-        if (avatar == null) {
-            return null;
-        }
-
-        // Sanity
-        if (promotion <= 0 || promotion > avatar.getPromotion()) {
-            return null;
-        }
-
-        // Make sure promotion level is odd + Make sure promotion reward isnt already taken
-        if (promotion % 2 == 0 || avatar.hasTakenReward(promotion)) {
-            return null;
-        }
-
-        // Set reward as taken
-        avatar.takeReward(promotion);
-        avatar.save();
-
-        // Setup rewards
-        List<GameItem> rewards = new ArrayList<>();
-        rewards.add(new GameItem(101, 1)); // Promotion reward is in excels, but we will hardcode it for now as its easier
-
-        // Add items to player inventory
-        player.getInventory().addItems(rewards);
-
-        // Send packets
-        player.sendPacket(new PacketPlayerSyncScNotify(avatar));
-        return rewards;
+        var result = org.hkrpg.server.gameplay.AvatarMilestones.claimPromotion(player, avatarId, promotion);
+        return result.retcode() == emu.lunarcore.server.packet.Retcode.SUCC ? result.items() : null;
     }
 
     public GameAvatar markAvatar(Player player, int avatarId, boolean isMarked) {

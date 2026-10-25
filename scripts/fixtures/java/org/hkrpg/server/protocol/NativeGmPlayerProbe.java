@@ -76,11 +76,12 @@ public final class NativeGmPlayerProbe {
         var sync = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
         basic.putAll(project((DynamicMessage) field(sync, "basic_info")));
         if (!((List<?>) field(sync, "equipment_list")).isEmpty()
-            || !((List<?>) field(sync, "relic_list")).isEmpty()) equipmentSyncs.add(project(sync));
+            || !((List<?>) field(sync, "relic_list")).isEmpty()
+            || !((DynamicMessage) field(sync, "avatar_sync")).getAllFields().isEmpty()) equipmentSyncs.add(project(sync));
       }
       if (frame.command() != protocol.clientCommand(response.replace("UnlockSkillTree", "UnlockSkilltree"))) continue;
       var result = protocol.clientSchema().parse(response, frame.body());
-      String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
+      String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp", "RankUpAvatarScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
       if (!result.getUnknownFields().asMap().isEmpty() || ((Integer) field(result, retcodeField) == 0) != success)
         throw new IllegalStateException("Unexpected response: " + response);
       return result;
@@ -133,7 +134,8 @@ public final class NativeGmPlayerProbe {
         if (!id.equals(lastEquipmentId)) {
           String command = requested.get("command").getAsString();
           if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
-              "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq").contains(command))
+              "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
+              "RankUpAvatarCsReq", "TakePromotionRewardCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
           var result = callWire(command, Base64.getDecoder().decode(requested.get("wire").getAsString()),

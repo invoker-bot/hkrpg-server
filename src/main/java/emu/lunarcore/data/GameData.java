@@ -35,6 +35,7 @@ public class GameData {
     }
     @Getter private static ExcelMap<AvatarSkinExcel> avatarSkinExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<AvatarRankExcel> avatarRankExcelMap = new ExcelMap<>();
+    @Getter private static ExcelMap<AvatarPromotionRewardExcel> avatarPromotionRewardExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<AvatarRelicRecommendExcel> avatarRelicRecommendExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<MultiplePathAvatarExcel> multiplePathAvatarExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<AvatarGlobalBuffExcel> avatarGlobalBuffExcelMap = new ExcelMap<>();

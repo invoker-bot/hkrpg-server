@@ -253,6 +253,12 @@ public class GameplayState {
   void dailyMissionSelectedItems(DailyMissionSelectedItemState value) { dailyMissionSelectedItems = Objects.requireNonNull(value); }
   void dailyMissionSelections(DailyMissionSelections value) { dailyMissionSelections = Objects.requireNonNull(value); }
   private Map<String, Receipt> rewards = new HashMap<>();
+  private Map<Integer, AvatarRankChange> avatarRankChanges = new HashMap<>();
+
+  public Map<Integer, AvatarRankChange> getAvatarRankChanges() {
+    if (avatarRankChanges == null) avatarRankChanges = new HashMap<>();
+    return avatarRankChanges;
+  }
   private Map<String, MissionRewardPlan> missionRewardPlans = new HashMap<>();
   private Map<Integer, LoginDays> activityDays = new HashMap<>();
   private long dailyDay = Long.MIN_VALUE;

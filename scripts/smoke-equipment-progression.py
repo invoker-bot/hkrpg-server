@@ -50,7 +50,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'build/equipment-progression-native.json')
     parser.add_argument('--gates', action='store_true', help='验证突破、行迹和锁定批次；仍使用独立 H2/账号')
+    parser.add_argument('--milestones', action='store_true', help='加验星魂扣料、晋阶奖励、重复请求和 H2 重登；包含 gates')
     args = parser.parse_args()
+    args.gates |= args.milestones
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
@@ -221,6 +223,42 @@ def main():
             assert results and all(results), 'Owned probe/server did not stop normally'
             normal_stops += 1
 
+    def rank_request(rank=1, item=11202, count=1):
+        # Pinned CmdAvatarType: rank=6, avatar_id=7, cost_data=14.
+        return number(6, rank) + number(7, 1202) + message(14, message(2, pile(item, count)))
+
+    def milestone_rank(snap):
+        path = next(r for r in snap['avatars']['avatar_path_data_info_list'] if r['avatar_id'] == 1202)
+        return path.get('rank', 0)
+
+    def milestones_first():
+        grant(11202, 1)
+        ready = gm.wait_for(lambda: matching_snapshot(lambda s: material(s, 11202) == 1), 40)
+        before_tickets = material(ready, 101)
+        assert milestone_rank(ready) == 0
+        reject('RankUpAvatarCsReq', rank_request(item=101))
+        reject('RankUpAvatarCsReq', rank_request(count=2))
+        reject('RankUpAvatarCsReq', number(7, 1202))
+        ranked = wire('RankUpAvatarCsReq', rank_request())
+        assert milestone_rank(ranked) == 1 and material(ranked, 11202) == 0
+        assert any(r.get('avatar_sync') for r in ranked['equipmentReply']['syncs'])
+        reject('RankUpAvatarCsReq', rank_request())  # The single material was already spent.
+        reject('TakePromotionRewardCsReq', number(5, 1202) + number(2, 3))
+        claimed = wire('TakePromotionRewardCsReq', number(5, 1202) + number(2, 1))
+        assert material(claimed, 101) == before_tickets + 1
+        assert claimed['equipmentReply']['response'].get('reward_list')
+        assert any(r.get('avatar_sync') for r in claimed['equipmentReply']['syncs'])
+        return reject('TakePromotionRewardCsReq', number(5, 1202) + number(2, 1))
+
+    def milestones_after_restart():
+        assert milestone_rank(snapshot()) == 1
+        reject('TakePromotionRewardCsReq', number(5, 1202) + number(2, 1))
+        reject('RankUpAvatarCsReq', rank_request())
+        grant(11202, 1)
+        gm.wait_for(lambda: matching_snapshot(lambda s: material(s, 11202) == 1), 40)
+        ranked = wire('RankUpAvatarCsReq', rank_request(rank=2))
+        assert milestone_rank(ranked) == 2 and material(ranked, 11202) == 0
+
     try:
         for iteration in range(2):
             log = (directory / f'server-{iteration}.log').open('wb'); logs.append(log)
@@ -243,6 +281,8 @@ def main():
             assert initial['uid'] == uid
             if iteration == 0 and args.gates:
                 final = gates_first()
+                if args.milestones:
+                    final = milestones_first()
                 (directory / 'before-restart.json').write_text(json.dumps(final, indent=2), encoding='utf-8')
             elif iteration == 0:
                 for tid, amount in [(2, 100000), (20000, 4), (24000, 1), (31011, 1), (221, 10), (232, 10), (271, 4)]:
@@ -294,6 +334,8 @@ def main():
                     ranked = operate('RankUpEquipmentCsReq', target, [number(2, donor)])
                     assert row(ranked, 'equipment', target)['rank'] == 2
                     reject('UnlockSkillTreeCsReq', number(11, 1202002) + number(5, 2))
+                    if args.milestones:
+                        milestones_after_restart()
                 else:
                     restored = next(r for r in items(initial, 'equipment', 20000) if r['rank'] == 2)
                     rejected = operate('ExpUpEquipmentCsReq', restored['unique_id'], [pile(221, 100)], False)
@@ -302,7 +344,7 @@ def main():
             stop()
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
         result = {'passed': True, 'clientAccepted': False, 'isolated': True, 'jarSha256': digest,
-                  'suite': 'progression-gates' if args.gates else 'equipment-progression',
+                  'suite': 'avatar-milestones' if args.milestones else ('progression-gates' if args.gates else 'equipment-progression'),
                   'uid': uid, 'sessions': len(sessions), 'normalStops': normal_stops,
                   'requests': sum(s['requests'] for s in sessions), 'operations': observations,
                   'finalBag': final['bag'], 'credits': final['basic']['scoin'], 'directory': str(directory)}
