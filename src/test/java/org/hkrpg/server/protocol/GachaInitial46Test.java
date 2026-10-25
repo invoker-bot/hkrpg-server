@@ -7,6 +7,8 @@ import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.CodedInputStream;
 import emu.lunarcore.game.gacha.*;
 import emu.lunarcore.game.player.Player;
+import emu.lunarcore.Config;
+import emu.lunarcore.LunarCore;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.util.List;
@@ -16,6 +18,54 @@ import org.junit.jupiter.api.AfterEach;
 import org.hkrpg.server.gacha.GachaRarityResources;
 
 class GachaInitial46Test {
+  @Test void bothProtocolsGiveTheBrowserAbsoluteUrlsOnTheAdvertisedHttpOrigin() throws Exception {
+    var configField = LunarCore.class.getDeclaredField("config");
+    configField.setAccessible(true);
+    var original = configField.get(null);
+    var config = new Config();
+    config.httpServer.publicAddress = "game.example.test";
+    config.httpServer.publicPort = 18443;
+    config.httpServer.useSSL = true;
+    configField.set(null, config);
+    try {
+      var banner = new GachaBanner().createBanner(2001, GachaType.AvatarUp,
+          100, 200, new int[] {1102}, new int[] {1105, 1106, 1109});
+      service.getGachaBanners().put(2001, banner);
+      var before = new Gson().toJson(history);
+      var legacy = banner.toProto(service, player);
+      var current = InitialData46Test.first(GachaInitial46.snapshot(protocol, player, service, 150), "gacha_info_list");
+      // Confirmed independently in the fixed client's WriteTo + SyncGachaPoolData:
+      // field 6 is DetailURL; field 12 is HistoryURL. Empty strings throw after WebView.Init.
+      assertAll(
+          () -> assertBrowserUrl(legacy.getDetailUrl(), "/gacha/details"),
+          () -> assertBrowserUrl(legacy.getHistoryUrl(), "/gacha/history"),
+          () -> assertBrowserUrl(wireString(current, 6), "/gacha/details"),
+          () -> assertBrowserUrl(wireString(current, 12), "/gacha/history"));
+      assertEquals(before, new Gson().toJson(history));
+    } finally {
+      configField.set(null, original);
+    }
+  }
+
+  private static void assertBrowserUrl(String value, String path) {
+    var url = java.net.URI.create(value);
+    assertTrue(url.isAbsolute(), "The SDK creates the browser before validating this URL");
+    assertEquals("https", url.getScheme());
+    assertEquals("game.example.test", url.getHost());
+    assertEquals(18443, url.getPort(), "Use the public port, not the container bind port");
+    assertEquals(path, url.getPath());
+    assertEquals("gacha_id=2001", url.getQuery());
+  }
+
+  private static String wireString(DynamicMessage message, int number) throws Exception {
+    var input = CodedInputStream.newInstance(message.toByteArray());
+    for (int tag; (tag = input.readTag()) != 0;) {
+      if (tag == ((number << 3) | 2)) return input.readStringRequireUtf8();
+      input.skipField(tag);
+    }
+    return "";
+  }
+
   GachaRarityResources resources;
   @BeforeEach void loadRarities() throws Exception { resources = new GachaRarityResources(); }
   @AfterEach void restoreResources() { resources.close(); }

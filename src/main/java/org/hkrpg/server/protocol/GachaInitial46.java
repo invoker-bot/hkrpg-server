@@ -10,6 +10,7 @@ import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.util.TreeMap;
+import org.hkrpg.server.GachaWebRoutes;
 
 /** Read-only banner snapshot; pulling, selection and payment retain their existing limitations. */
 final class GachaInitial46 {
@@ -41,6 +42,9 @@ final class GachaInitial46 {
           if (!pool.canPull()) continue;
           var info = DynamicMessage.newBuilder(schema.message("GachaInfo"));
           set(info, "gacha_id", banner.getId());
+          // Fixed client's native SyncGachaPoolData consumes detail/history at wire 6/12.
+          set(info, "detail_url", GachaWebRoutes.detailUrl(banner.getId()));
+          set(info, "history_url", GachaWebRoutes.historyUrl(banner.getId()));
           if (banner.getGachaType() != GachaType.Normal) {
             set(info, "begin_time", (long) banner.getBeginTime());
             set(info, "end_time", (long) banner.getEndTime());

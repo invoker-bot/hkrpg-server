@@ -95,6 +95,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean missionStatusBatchVerified;
   private boolean archiveSnapshotVerified;
   private boolean heartbeatAfterArchiveVerified;
+  private final java.util.List<String> gachaBrowserUrls = new java.util.ArrayList<>();
   private int rejectedResponseCommand;
   private int playerUid;
   private long tokenStartedAt;
@@ -128,6 +129,19 @@ public final class NativeLoginInitialProbe implements KcpListener {
         if (frame == null) throw new IllegalStateException("Truncated initial response");
         currentResponse = frame.cmdId();
         received.add(frame.cmdId());
+        if (frame.cmdId() == 1925) {
+          var gacha = protocol.clientSchema().parse("GetGachaInfoScRsp", frame.body());
+          var banners = gacha.getDescriptorForType().findFieldByName("gacha_info_list");
+          require(gacha.getRepeatedFieldCount(banners) > 0, "Missing isolated gacha catalogue");
+          for (int i = 0; i < gacha.getRepeatedFieldCount(banners); i++) {
+            var banner = (DynamicMessage) gacha.getRepeatedField(banners, i);
+            for (int field : new int[] {6, 12}) {
+              String value = (String) banner.getField(banner.getDescriptorForType().findFieldByNumber(field));
+              require(!value.isBlank(), "Empty native gacha browser URL leaves an SDK window registered");
+              gachaBrowserUrls.add(value);
+            }
+          }
+        }
         if (frame.cmdId() == 91) {
           // Native video bootstrap: type 2 decimal value initializes the movie divisor.
           var input = CodedInputStream.newInstance(frame.body());
@@ -541,6 +555,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
       client.init(config, probe);
       client.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(args[0])), config);
       probe.completed.get(20, TimeUnit.SECONDS);
+      int browserPages = probe.verifyGachaBrowserPages(args[1]);
       System.out.println(new Gson().toJson(Map.ofEntries(
           Map.entry("passed", true),
           Map.entry("initialRequests", QUERIES.length),
@@ -564,6 +579,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("missionStatusBatchVerified", probe.missionStatusBatchVerified),
           Map.entry("archiveSnapshotVerified", probe.archiveSnapshotVerified),
           Map.entry("heartbeatAfterArchiveVerified", probe.heartbeatAfterArchiveVerified),
+          Map.entry("gachaBrowserUrlsVerified", probe.gachaBrowserUrls.size()),
+          Map.entry("gachaBrowserPagesVerified", browserPages),
           Map.entry("chessRogueInitialProfile", Map.of(
               "verified", probe.chessRogueInitialProfileVerified,
               "responseCommand", 5435, "retcode", 0,
@@ -585,5 +602,31 @@ public final class NativeLoginInitialProbe implements KcpListener {
       if (detail instanceof ContractViolation) System.err.println("Contract: " + detail.getMessage());
     } finally { client.stop(); }
     System.exit(exit);
+  }
+
+  private int verifyGachaBrowserPages(String expectedOrigin) throws Exception {
+    var origin = java.net.URI.create(expectedOrigin);
+    var checked = new HashSet<String>();
+    try (var http = java.net.http.HttpClient.newHttpClient()) {
+      for (String value : gachaBrowserUrls) {
+        var url = java.net.URI.create(value);
+        require(url.isAbsolute() && origin.getScheme().equals(url.getScheme())
+            && origin.getHost().equals(url.getHost()) && origin.getPort() == url.getPort()
+            && url.getUserInfo() == null && url.getFragment() == null,
+            "Gacha browser URL does not use the advertised HTTP origin");
+        require(Set.of("/gacha/details", "/gacha/history").contains(url.getPath())
+            && url.getQuery() != null && url.getQuery().matches("gacha_id=[1-9][0-9]*"),
+            "Invalid gacha browser page or banner query");
+        if (!checked.add(url.getPath())) continue;
+        var reply = http.send(java.net.http.HttpRequest.newBuilder(url)
+            .timeout(java.time.Duration.ofSeconds(5)).GET().build(),
+            java.net.http.HttpResponse.BodyHandlers.ofString());
+        require(reply.statusCode() == 200 && reply.body().contains("<!doctype html>")
+            && reply.headers().firstValue("Content-Type").orElse("").contains("text/html"),
+            "Packaged gacha browser page is not available");
+      }
+    }
+    require(checked.size() == 2, "Both native gacha browser entries must resolve");
+    return checked.size();
   }
 }

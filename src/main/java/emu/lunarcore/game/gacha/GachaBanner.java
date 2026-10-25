@@ -3,6 +3,7 @@ package emu.lunarcore.game.gacha;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.proto.GachaInfoOuterClass.GachaInfo;
 import lombok.Getter;
+import org.hkrpg.server.GachaWebRoutes;
 
 @Getter
 public class GachaBanner {
@@ -39,8 +40,8 @@ public class GachaBanner {
         var pool = service.getPool(this);
         var info = GachaInfo.newInstance()
                 .setGachaId(this.getId())
-                .setDetailUrl("")
-                .setHistoryUrl("");
+                .setDetailUrl(GachaWebRoutes.detailUrl(this.getId()))
+                .setHistoryUrl(GachaWebRoutes.historyUrl(this.getId()));
 
         if (this.gachaType != GachaType.Normal) {
             info.setBeginTime(this.getBeginTime());

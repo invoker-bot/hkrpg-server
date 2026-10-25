@@ -264,11 +264,14 @@ def java_tools():
     return java, java.with_name('javac' + suffix)
 
 
-def run_probe(java, jar, port, report_dir, label, helpers=None, credentials=None):
+def run_probe(java, jar, port, report_dir, label, helpers=None, credentials=None, http_origin=None):
     entry = 'NativeLoginInitialProbe' if credentials else 'LoopbackHeartbeatProbe'
     classpath = str(jar) if helpers is None else str(helpers) + os.pathsep + str(jar)
     args = [java, '-Dio.netty.eventLoopThreads=2', '-Djdk.net.unixdomain.tmpdir=' + str(ROOT / '.tools/tcp-fallback'),
             '-cp', classpath, 'org.hkrpg.server.protocol.' + entry, str(port)]
+    if credentials:
+        require(http_origin is not None, '初始化探针需要明确的 HTTP 源')
+        args.append(http_origin)
     result = subprocess.run([str(x) for x in args], cwd=report_dir,
                             input=None if credentials is None else json.dumps(credentials),
                             capture_output=True, text=True, encoding='utf-8', timeout=40,
@@ -370,7 +373,8 @@ def run(args):
                 credentials = login(http, username, 'compose-test-' + str(iteration))
                 identities.append(credentials['accountUid'])
                 with smoke.DatagramBoundary(target['gamePort'], 1200) as boundary:
-                    summary = run_probe(java, jar, boundary.port, report_dir, 'login-' + str(iteration), helpers, credentials)
+                    summary = run_probe(java, jar, boundary.port, report_dir, 'login-' + str(iteration),
+                                        helpers, credentials, http.base)
                 require(boundary.dropped == 0 and boundary.largest_server <= 1200 and boundary.largest_client <= 1200,
                         '合成会话的数据报超过1200字节边界')
                 player_ids.append(summary.pop('playerUid'))

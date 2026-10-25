@@ -152,6 +152,7 @@ public class HttpServer {
         getApp().error(404, this::notFoundHandler);
         getApp().get("/status/server", new StatusServerHandler()::handle);
         org.hkrpg.server.HealthRoutes.register(getApp());
+        org.hkrpg.server.GachaWebRoutes.register(getApp());
         org.hkrpg.server.gm.GmRoutes.register(getApp());
     }
 

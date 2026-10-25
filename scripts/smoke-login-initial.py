@@ -172,7 +172,7 @@ def run(jar, output):
                         probe = subprocess.run([str(java), '-Dio.netty.eventLoopThreads=2',
                             '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback'),
                             '-cp', str(helpers) + os.pathsep + str(jar),
-                            'org.hkrpg.server.protocol.NativeLoginInitialProbe', str(boundary.port)],
+                            'org.hkrpg.server.protocol.NativeLoginInitialProbe', str(boundary.port), base],
                             input=json.dumps({'accountUid': account['uid'], 'comboToken': combo['data']['combo_token']}),
                             cwd=directory, capture_output=True, text=True, encoding='utf-8', timeout=40,
                             creationflags=flags)
@@ -189,6 +189,8 @@ def run(jar, output):
                     assert summaries[-1]['passed']
                     assert summaries[-1]['rogueInfoRetcodeZero'] is True
                     assert summaries[-1]['chessRogueInitialProfile']['verified'] is True
+                    assert summaries[-1]['gachaBrowserUrlsVerified'] > 0
+                    assert summaries[-1]['gachaBrowserPagesVerified'] == 2
                 finally:
                     if process.poll() is None:
                         try:
