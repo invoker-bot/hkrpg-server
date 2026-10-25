@@ -25,7 +25,7 @@ class LoginBootstrap46Test {
         Arguments.of(9, 27, 5), Arguments.of(522, 549, 1),
         Arguments.of(2922, 2949, 6), Arguments.of(3405, 3475, 8),
         Arguments.of(5734, 5725, 4), Arguments.of(5834, 5825, 10),
-        Arguments.of(6134, 6125, 9), Arguments.of(8680, 8580, 9),
+        Arguments.of(8680, 8580, 9),
         Arguments.of(8948, 8914, 13), Arguments.of(9504, 9548, 8),
         Arguments.of(6029, 6017, 2), Arguments.of(9990, 9996, 9));
   }
@@ -95,11 +95,13 @@ class LoginBootstrap46Test {
     var input = io.netty.buffer.Unpooled.buffer();
     queries().forEach(args -> input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(
         (Integer) args.get()[0], new byte[0], new byte[0])));
+    input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(6134, new byte[0], new byte[0]));
     input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(
         session.bridge.clientCommand("ContentPackageGetDataCsReq"), new byte[0], new byte[0]));
     try { session.onMessage(input); } finally { input.release(); }
     assertFalse(session.closed);
-    assertEquals(24, session.nativePackets.size());
+    assertEquals(23, session.nativePackets.size());
+    assertTrue(session.clientBodies.containsKey("GetAllServerPrefsDataScRsp"));
     assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));
     assertEquals(SessionState.ACTIVE, session.getState());
   }

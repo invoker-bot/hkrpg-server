@@ -9,6 +9,10 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private ServerPrefsState serverPrefs = new ServerPrefsState();
+
+  public ServerPrefsState getServerPrefs() { return serverPrefs; }
+
   private DestructibleRewardState destructibleRewards = new DestructibleRewardState();
   public DestructibleRewardState getDestructibleRewards() { return destructibleRewards; }
   void destructibleRewards(DestructibleRewardState value) { destructibleRewards = Objects.requireNonNull(value); }

@@ -47,7 +47,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
       Map.entry(8116, 7), Map.entry(47, 8), Map.entry(9776, 4), Map.entry(8982, 14),
       Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
       Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
-      Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(6125, 9), Map.entry(8580, 9),
+      Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(8580, 9),
       Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2), Map.entry(9996, 9));
   // Additional supported snapshots observed in the second real initialization burst.
   private static final Map<Integer, String> FOLLOWUP_RESPONSES = Map.ofEntries(
@@ -152,6 +152,13 @@ public final class NativeLoginInitialProbe implements KcpListener {
               && key.readTag() == 112 && key.readUInt32() == 8
               && key.readTag() == 0 && input.readTag() == 0,
               "Opening video ID or source key differs from the pinned native contract");
+        }
+        if (frame.cmdId() == 6125) {
+          var prefs = protocol.clientSchema().parse("GetAllServerPrefsDataScRsp", frame.body());
+          require(prefs.getUnknownFields().asMap().isEmpty()
+              && prefs.getField(prefs.getDescriptorForType().findFieldByNumber(9)).equals(0)
+              && prefs.getRepeatedFieldCount(prefs.getDescriptorForType().findFieldByNumber(11)) == 0,
+              "Fresh account preferences must succeed without invented seen markers");
         }
         if (INACTIVE_RETCODES.containsKey(frame.cmdId())) {
           var input = CodedInputStream.newInstance(frame.body());

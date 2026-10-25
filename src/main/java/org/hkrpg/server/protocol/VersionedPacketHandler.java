@@ -21,6 +21,7 @@ public final class VersionedPacketHandler {
     if (ShopPurchase46.handle(session, command, bytes)) return true;
     if (ProgressionGates46.handle(session, command, bytes)) return true;
     if (PlayerReturn46.handle(session, command, bytes)) return true;
+    if (ServerPrefs46.handle(session, command, bytes)) return true;
     if (LoginBootstrap46.handle(session, command, bytes)) return true;
     if (TextJoin46.handle(session, command, bytes)) return true;
     if (GachaInitial46.handle(session, command, bytes)) return true;

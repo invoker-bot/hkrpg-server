@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "server-prefs",
+      "name": "客户端已读偏好保存",
+      "status": "partial",
+      "evidence": "docs/server-prefs-4.6.md",
+      "gap": "固定4.6更新、全量与单项读取接通，按玩家保存不透明字节；重复请求、空值覆盖、失败回退、容量限制和旧文档兼容有回归。原生请求及正常H2重启的验证范围见证据文档。偏好不能代替权威任务与教程进度，尚未证明教学目录重复弹窗由这些偏好造成，真实客户端验收仍未通过。"
+    },
+    {
       "id": "world-mechanisms",
       "name": "地图机关与守卫挑战宝箱",
       "status": "integrated",

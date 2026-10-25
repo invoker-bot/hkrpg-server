@@ -59,14 +59,16 @@ public final class NativeGmPlayerProbe {
     var bytes =
         Unpooled.wrappedBuffer(
             PacketCodec.encode(
-                protocol.clientCommand(name.replace("UnlockSkillTree", "UnlockSkilltree")), new byte[0], payload));
+                name.equals("GetServerPrefsDataCsReq") ? 6105
+                    : protocol.clientCommand(name.replace("UnlockSkillTree", "UnlockSkilltree")), new byte[0], payload));
     try {
       channel.write(bytes);
     } finally {
       bytes.release();
     }
     requests++;
-    String response = name.replace("CsReq", "ScRsp");
+    String response = name.equals("UpdateServerPrefsCsReq") ? "UpdateServerPrefsDataScRsp"
+        : name.replace("CsReq", "ScRsp");
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
     while (System.nanoTime() < deadline) {
       if (failure.get() != null) throw new IllegalStateException("KCP failure", failure.get());
@@ -135,7 +137,8 @@ public final class NativeGmPlayerProbe {
           String command = requested.get("command").getAsString();
           if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
               "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
-              "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq").contains(command))
+              "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
+              "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
           var result = callWire(command, Base64.getDecoder().decode(requested.get("wire").getAsString()),

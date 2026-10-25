@@ -23,7 +23,7 @@ final class LoginBootstrap46 {
       case 8110 -> 8116; case 96 -> 47; case 9804 -> 9776; case 8991 -> 8982;
       case 10010 -> 10016; case 9894 -> 9866; case 9490 -> 9496; case 78 -> 4;
       case 9 -> 27; case 522 -> 549; case 2922 -> 2949; case 3405 -> 3475;
-      case 5734 -> 5725; case 5834 -> 5825; case 6134 -> 6125; case 8680 -> 8580;
+      case 5734 -> 5725; case 5834 -> 5825; case 8680 -> 8580;
       case 8948 -> 8914; case 9504 -> 9548;
       case 6029 -> 6017; case 9990 -> 9996;
       default -> 0;
@@ -43,7 +43,7 @@ final class LoginBootstrap46 {
       case 8110 -> 7; case 9804 -> 4; case 8991 -> 14; case 10010 -> 12;
       case 9894 -> 13; case 9490, 78, 9990 -> 9;
       case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
-      case 5734 -> 4; case 5834 -> 10; case 6134, 8680 -> 9; case 8948 -> 13;
+      case 5734 -> 4; case 5834 -> 10; case 8680 -> 9; case 8948 -> 13;
       case 6029 -> 2;
       default -> throw new AssertionError(command);
     };
