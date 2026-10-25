@@ -1215,6 +1215,7 @@ public class Player implements Tickable, Syncable {
 
     public void onTick(long timestamp, long delta) {
         org.hkrpg.server.protocol.CompositionLimit46.refresh(this, java.time.Instant.ofEpochMilli(timestamp));
+        org.hkrpg.server.protocol.Tutorial46.refresh(this);
         // Update stamina
         this.updateStamina(timestamp);
         // Scene update

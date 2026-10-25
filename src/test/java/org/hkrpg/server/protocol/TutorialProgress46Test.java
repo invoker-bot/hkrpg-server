@@ -38,6 +38,8 @@ class TutorialProgress46Test {
     BasePacket packet;
     final ProtocolBridge bridge = ProtocolBridge.forVersion("4.6.0");
     DynamicMessage response;
+    final List<String> sent = new ArrayList<>();
+    final List<DynamicMessage> responses = new ArrayList<>();
 
     Session() {
       super(null);
@@ -62,7 +64,9 @@ class TutorialProgress46Test {
     @Override
     public void sendClientPacket(String name, byte[] body) {
       try {
+        sent.add(name);
         response = bridge.clientSchema().parse(name, body);
+        responses.add(response);
       } catch (Exception e) {
         throw new AssertionError(e);
       }
@@ -144,6 +148,196 @@ class TutorialProgress46Test {
     return ((Descriptors.EnumValueDescriptor)
             item.getField(item.getDescriptorForType().findFieldByName("status")))
         .getNumber();
+  }
+
+  void installMissionBoundTutorial() {
+    GameData.getTutorialExcelMap()
+        .add(
+            new Gson()
+                .fromJson(
+                    """
+{"TutorialID":4006,"RestoreType":"AutoFinish",
+ "FinishTriggerParams":[{"TriggerType":"FinishMainMission","TriggerParam":"1000302"}]}
+""",
+                    TutorialExcel.class));
+  }
+
+  void finishTeachingMainMission(Session session) {
+    var main = new emu.lunarcore.game.quest.QuestState(1000302);
+    main.advance(1, 1, 1792939357L);
+    main.reserveReward();
+    main.closeReward();
+    session.actor.getGameplay().getMainMissions().put(1000302, main);
+  }
+
+  @Test
+  void lateUnlockCannotRestartTeachingWhoseMainMissionHasAlreadyEnded() throws Exception {
+    installMissionBoundTutorial();
+    var session = new Session();
+    finishTeachingMainMission(session);
+    var response = call(session, "UnlockTutorial", 4006, 0);
+    assertEquals(0, ret(response));
+    assertEquals(
+        2, status(response, false), "A stale unlock must not start a control-locking graph");
+    assertEquals(Map.of(4006, 2), session.actor.getGameplay().getTutorials().snapshot(false));
+  }
+
+  @Test
+  void reconnectRetiresOnlyPreviouslyStartedTeachingPastItsOriginalEndCondition() throws Exception {
+    installMissionBoundTutorial();
+    var session = new Session();
+    assertEquals(1, status(call(session, "UnlockTutorial", 4006, 0), false));
+    assertEquals(1, status(call(session, "UnlockTutorial", 1001, 0), false));
+    finishTeachingMainMission(session);
+    session.sent.clear();
+    session.responses.clear();
+    var response = call(session, "GetTutorial", 0, 0);
+    assertEquals(0, ret(response));
+    assertEquals(List.of("GetTutorialScRsp", "FinishTutorialScRsp"), session.sent);
+    assertEquals(
+        2,
+        entries(session.responses.getFirst(), false).stream()
+            .map(DynamicMessage.class::cast)
+            .filter(
+                row -> (int) row.getField(row.getDescriptorForType().findFieldByName("id")) == 4006)
+            .mapToInt(
+                row ->
+                    ((Descriptors.EnumValueDescriptor)
+                            row.getField(row.getDescriptorForType().findFieldByName("status")))
+                        .getNumber())
+            .findFirst()
+            .orElseThrow());
+    assertEquals(
+        Map.of(1001, 1, 4006, 2),
+        session.actor.getGameplay().getTutorials().snapshot(false),
+        "The completed story must retire its stale teaching without skipping unrelated teaching");
+    var restored =
+        new Gson()
+            .fromJson(
+                new Gson().toJson(session.actor.getGameplay()),
+                org.hkrpg.server.gameplay.GameplayState.class);
+    assertEquals(Map.of(1001, 1, 4006, 2), restored.getTutorials().snapshot(false));
+  }
+
+  @Test
+  void originalClientCanAcknowledgeMissionExpiredTeachingBeforeUnlock() throws Exception {
+    installMissionBoundTutorial();
+    var session = new Session();
+    finishTeachingMainMission(session);
+    var response = call(session, "FinishTutorial", 4006, 0);
+    assertEquals(
+        0, ret(response), "The original client checks finish triggers before unlock triggers");
+    assertEquals(2, status(response, false));
+  }
+
+  @Test
+  void activeSessionReceivesOneNativeFinishAfterDurableRetirement() throws Exception {
+    installMissionBoundTutorial();
+    var session = new Session();
+    session.actor.setSession(session);
+    assertEquals(1, status(call(session, "UnlockTutorial", 4006, 0), false));
+    finishTeachingMainMission(session);
+    session.sent.clear();
+    int saves = session.actor.saves;
+    int credits = session.actor.getScoin();
+    int jade = session.actor.getHcoin();
+    Tutorial46.refresh(session.actor);
+    assertEquals(List.of("FinishTutorialScRsp"), session.sent);
+    assertEquals(2, status(session.response, false));
+    assertEquals(saves + 1, session.actor.saves);
+    Tutorial46.refresh(session.actor);
+    assertEquals(1, session.sent.size(), "Do not repeat completion notifications every tick");
+    assertEquals(saves + 1, session.actor.saves);
+    assertEquals(credits, session.actor.getScoin());
+    assertEquals(jade, session.actor.getHcoin());
+  }
+
+  @Test
+  void retirementRollbackDoesNotPublishFinishAndCanBeRetried() throws Exception {
+    installMissionBoundTutorial();
+    var session = new Session();
+    session.actor.setSession(session);
+    call(session, "UnlockTutorial", 4006, 0);
+    finishTeachingMainMission(session);
+    session.sent.clear();
+    session.actor.failSave = true;
+    assertThrows(IllegalStateException.class, () -> Tutorial46.refresh(session.actor));
+    assertEquals(Map.of(4006, 1), session.actor.getGameplay().getTutorials().snapshot(false));
+    assertTrue(session.sent.isEmpty(), "Never release the client using unsaved completion");
+    session.actor.failSave = false;
+    Tutorial46.refresh(session.actor);
+    assertEquals(Map.of(4006, 2), session.actor.getGameplay().getTutorials().snapshot(false));
+    assertEquals(List.of("FinishTutorialScRsp"), session.sent);
+  }
+
+  @Test
+  void missingCancelledOrDamagedMissionRecordsCannotExpireTeaching() throws Exception {
+    installMissionBoundTutorial();
+    for (String record :
+        List.of(
+            "{\"questId\":1000302,\"progress\":0,\"phase\":\"DOING\",\"finishTime\":0}",
+            "{\"questId\":1000303,\"progress\":1,\"phase\":\"CLOSED\",\"finishTime\":10}",
+            "{\"questId\":1000302,\"progress\":0,\"phase\":\"CLOSED\",\"finishTime\":10}",
+            "{\"questId\":1000302,\"progress\":1,\"phase\":\"CLOSED\",\"finishTime\":0}")) {
+      var session = new Session();
+      session
+          .actor
+          .getGameplay()
+          .getMainMissions()
+          .put(1000302, new Gson().fromJson(record, emu.lunarcore.game.quest.QuestState.class));
+      assertEquals(1, status(call(session, "UnlockTutorial", 4006, 0), false));
+      assertTrue(
+          session
+              .actor
+              .getGameplay()
+              .getTutorials()
+              .expireFinishedMissions(session.actor)
+              .isEmpty());
+    }
+    var cancelled = new Session();
+    finishTeachingMainMission(cancelled);
+    cancelled.actor.getGameplay().getCancelledMissions().add(1000302);
+    assertEquals(1, status(call(cancelled, "UnlockTutorial", 4006, 0), false));
+    assertTrue(
+        cancelled
+            .actor
+            .getGameplay()
+            .getTutorials()
+            .expireFinishedMissions(cancelled.actor)
+            .isEmpty());
+  }
+
+  @Test
+  void completedMissionDoesNotPopulateUnstartedCatalogAndUnknownFinishRulesStayPending()
+      throws Exception {
+    installMissionBoundTutorial();
+    var session = new Session();
+    finishTeachingMainMission(session);
+    assertTrue(entries(call(session, "GetTutorial", 0, 0), false).isEmpty());
+    assertEquals(0, session.actor.saves);
+    for (String triggers :
+        List.of(
+            "null",
+            "[]",
+            "[null]",
+            "[{\"TriggerType\":\"EnterBattle\",\"TriggerParam\":\"1000302\"}]",
+            "[{\"TriggerType\":\"FinishMainMission\",\"TriggerParam\":\"2147483648\"}]",
+            "[{\"TriggerType\":\"FinishMainMission\",\"TriggerParam\":\"1000302\"},{}]")) {
+      GameData.getTutorialExcelMap()
+          .add(
+              new Gson()
+                  .fromJson(
+                      "{\"TutorialID\":4006,\"FinishTriggerParams\":" + triggers + "}",
+                      TutorialExcel.class));
+      assertEquals(1, status(call(session, "UnlockTutorial", 4006, 0), false));
+      assertTrue(
+          session
+              .actor
+              .getGameplay()
+              .getTutorials()
+              .expireFinishedMissions(session.actor)
+              .isEmpty());
+    }
   }
 
   @Test

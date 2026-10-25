@@ -15,7 +15,7 @@ import org.hkrpg.server.gameplay.TutorialProgress;
  * Verified 4.6 ordinary tutorial and default-guide wire fields. Subguide semantics stay
  * unsupported.
  */
-final class Tutorial46 {
+public final class Tutorial46 {
   private record Request(int id, int type) {}
 
   static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
@@ -34,10 +34,12 @@ final class Tutorial46 {
     var player = session.getPlayer();
     synchronized (player) {
       boolean guide = name.endsWith("Guide"), query = name.startsWith("Get");
+      List<Integer> expired = List.of();
       var response = builder(session, name + "ScRsp");
       if (query) {
         set(response, "retcode", bytes.length == 0 ? 0 : Retcode.REQ_PARA_INVALID.getVal());
         if (bytes.length == 0) {
+          if (!guide) expired = player.getGameplay().getTutorials().expireFinishedMissions(player);
           for (var entry : player.getGameplay().getTutorials().snapshot(guide).entrySet()) {
             response.addRepeatedField(
                 response
@@ -78,7 +80,28 @@ final class Tutorial46 {
         }
       }
       session.sendClientPacket(name + "ScRsp", response.build().toByteArray());
+      sendFinished(session, expired);
       return true;
+    }
+  }
+
+  /** Publish newly expired teaching during an active connection, after its state is saved. */
+  public static void refresh(emu.lunarcore.game.player.Player player) {
+    var session = player.getSession();
+    if (session == null
+        || !session.getProtocol().experimental()
+        || session.getState() != SessionState.ACTIVE) return;
+    synchronized (player) {
+      sendFinished(session, player.getGameplay().getTutorials().expireFinishedMissions(player));
+    }
+  }
+
+  private static void sendFinished(GameSession session, List<Integer> ids) {
+    for (int id : ids) {
+      var response = builder(session, "FinishTutorialScRsp");
+      set(response, "retcode", 0);
+      set(response, "tutorial", record(session, false, id, 2));
+      session.sendClientPacket("FinishTutorialScRsp", response.build().toByteArray());
     }
   }
 

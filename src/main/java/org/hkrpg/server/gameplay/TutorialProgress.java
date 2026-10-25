@@ -34,16 +34,58 @@ public final class TutorialProgress {
             : GameData.getTutorialExcelMap().get(id) != null);
   }
 
+  /** Only the original, unambiguous main-mission end condition is resolved here. */
+  private static boolean endedWithMainMission(Player player, int id) {
+    var config = GameData.getTutorialExcelMap().get(id);
+    if (config == null || config.getId() != id) return false;
+    var triggers = config.getFinishTriggerParams();
+    if (triggers == null || triggers.size() != 1) return false;
+    var trigger = triggers.getFirst();
+    if (trigger == null
+        || !"FinishMainMission".equals(trigger.TriggerType())
+        || trigger.TriggerParam() == null
+        || !trigger.TriggerParam().matches("[1-9][0-9]{0,9}")) return false;
+    try {
+      return MissionStateRecords.mainCompleted(player, Integer.parseInt(trigger.TriggerParam()));
+    } catch (NumberFormatException invalid) {
+      return false;
+    }
+  }
+
+  /** Retire started teaching after its original end condition; never complete the catalog. */
+  public List<Integer> expireFinishedMissions(Player player) {
+    synchronized (player) {
+      var expired = new ArrayList<Integer>();
+      for (var entry : tutorials.entrySet()) {
+        if (Integer.valueOf(1).equals(entry.getValue())
+            && endedWithMainMission(player, entry.getKey())) expired.add(entry.getKey());
+      }
+      if (expired.isEmpty()) return List.of();
+      Collections.sort(expired);
+      expired.forEach(id -> tutorials.put(id, 2));
+      try {
+        player.save();
+      } catch (RuntimeException failure) {
+        expired.forEach(id -> tutorials.put(id, 1));
+        throw failure;
+      }
+      return List.copyOf(expired);
+    }
+  }
+
   public Result change(Player player, boolean guide, int id, boolean finish) {
     synchronized (player) {
       if (!known(guide, id)) return new Result(Retcode.TUTORIAL_TUTORIAL_NOT_FOUND, 0, List.of());
       var states = guide ? guides : tutorials;
       int previous = states.getOrDefault(id, 0);
       if (previous < 0 || previous > 2) return new Result(Retcode.PLAYER_DATA_ERROR, 0, List.of());
-      if (previous == 2 || !finish && previous == 1)
+      boolean expired = !guide && endedWithMainMission(player, id);
+      if (previous == 2 || !finish && previous == 1 && !expired)
         return new Result(Retcode.SUCC, previous, List.of());
       // Legacy clients report guide completion directly; ordinary tutorials have an unlock RPC.
-      if (finish && !guide && previous == 0)
+      // The original client checks finish triggers before unlock and can retire obsolete teaching
+      // directly. Accept that only when its server-owned main-mission end condition is proven.
+      if (finish && !guide && previous == 0 && !expired)
         return new Result(Retcode.TUTORIAL_NOT_UNLOCK, 0, List.of());
       List<GameItem> rewards = List.of();
       if (finish && guide) {
@@ -57,7 +99,7 @@ public final class TutorialProgress {
           rewards = claim.items();
         }
       }
-      int next = finish ? 2 : 1;
+      int next = finish || expired ? 2 : 1;
       states.put(id, next);
       try {
         player.save();
