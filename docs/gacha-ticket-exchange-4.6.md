@@ -42,3 +42,11 @@ python scripts/smoke-gacha-rarity.py --ticket-exchange --output build/gacha-tick
 614 组、15,483 项完整测试通过，失败、错误、跳过均为零，构建用时 17 分 28 秒。新增的 10 项回归全部通过。3,575 份代码、测试、脚本和构建资源输入在验证期间保持一致，完整回归、上述网络验证及镜像 `hkrpg-local/server:gacha-ticket-exchange-20261025` 使用同一 JAR。
 
 候选镜像为 `sha256:c59cabecf1e604d956ffa9efdee455875d6342544d3ff4896d2a246970e613b8`。证据汇总 `build/gacha-ticket-exchange-20261025/final-proof.json` 包含完整测试统计和输入哈希，原始 XML、分阶段失败记录和网络报告独立保留。未改变存储、认证或 HTTP 处理；测试号由既有隔离 HTTP 登录后使用 KCP 验证。
+
+## 服务更新
+
+修复提交 `7a9d99795c04280004b0fa88af17ab0bf1359f43` 已部署到本机受管服务。正常停服后的备份为 `.local/backups/gacha-ticket-exchange-20261025-182057-7a9d997/`，备份逐文件哈希已核对，停服基线从备份的独立副本读取。程序更新没有用旧备份覆盖玩家数据。
+
+更新前后 UID 10001 的 80 项完成记录、选角、队伍、角色、命途、25 份物品/角色文档、机关记录、星琼、信用点和抽卡保底一致。正式存档仍有 100,114 星琼、1 张普通车票，与故障截图一致。配置和运行环境保留。新服务运行的 JAR 与上述完整测试及隔离网络报告一致；健康检查和只读 `scripts/verify-compose.py` 通过。
+
+发布证据为 `build/gacha-ticket-exchange-20261025/deployment.json` 与 `compose-verification.json`。已请用户完全退出后重新登录，复测确认星琼补票后的十连；截至本次发布记录，真实客户端结果仍待反馈。
