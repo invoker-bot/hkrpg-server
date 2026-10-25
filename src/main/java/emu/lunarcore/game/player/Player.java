@@ -1093,6 +1093,10 @@ public class Player implements Tickable, Syncable {
             nextScene = new Scene(this, planeExcel, floorId, dimensionId);
         }
 
+        var previousLocation = captureSceneLocation();
+        String visitKey = "train:visited:" + planeExcel.getWorldID();
+        boolean hadVisit = getGameplay().getStoryValues().containsKey(visitKey);
+        Integer previousVisit = getGameplay().getStoryValues().get(visitKey);
         // Keep confirmed ordinary-world visits with the location in the same player document.
         boolean trainWorldRecorded = false;
         if (planeExcel.getPlaneType() == PlaneType.Town || planeExcel.getPlaneType() == PlaneType.Maze) {
@@ -1114,7 +1118,16 @@ public class Player implements Tickable, Syncable {
             this.planeId = planeId;
             this.floorId = floorId;
             this.entryId = entryId;
-            this.save();
+            try {
+                this.save();
+            } catch (RuntimeException failed) {
+                // No destination scene or arrival callback has been published yet. Keep location
+                // and the visit receipt together, so retry/reconnect starts from the saved scene.
+                restoreSceneLocation(previousLocation);
+                if (hadVisit) getGameplay().getStoryValues().put(visitKey, previousVisit);
+                else getGameplay().getStoryValues().remove(visitKey);
+                throw failed;
+            }
         }
 
         // Set player scene

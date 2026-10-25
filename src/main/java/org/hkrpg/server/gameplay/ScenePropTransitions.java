@@ -136,9 +136,11 @@ public final class ScenePropTransitions {
       var target = GameData.getInteractExcelMap().get(config).getTargetState();
       var targets = WorldMechanisms.transitions(player, config, prop);
       StoryDoors.transitions(prop, targets);
+      StationEnergyBridges.transitions(prop,config,targets);
       var changed = new LinkedHashMap<EntityProp, PropState>();
       targets.keySet().forEach(candidate -> changed.put(candidate, candidate.getState()));
       if (!WorldMechanisms.controller(prop)
+          && !StationEnergyBridges.applies(prop)
           && !StoryDoors.controller(prop.getPropInfo())
           && prop.getPropType() == PropType.PROP_ORDINARY
           && prop.getPropInfo() != null) {
@@ -205,7 +207,8 @@ public final class ScenePropTransitions {
       if (session != null
           && !session.getProtocol().experimental()
           && !StoryDoors.controller(prop.getPropInfo())
-          && !WorldMechanisms.controller(prop))
+          && !WorldMechanisms.controller(prop)
+          && !StationEnergyBridges.applies(prop))
         player.sendPacket(
             new PacketGroupStateChangeScNotify(player.getEntryId(), prop.getGroupId(), target));
       if (scene.isLoaded())

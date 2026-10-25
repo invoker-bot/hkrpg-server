@@ -186,6 +186,52 @@ public final class MissionTrialManager {
     }
   }
 
+  /** Parameterless Talk task with an explicit, bounded compatibility policy. Never finishes dialogue. */
+  boolean initializeStation() {
+    synchronized (player) {
+      if (!StationTrial.eligible(player) || player.isInBattle() || !context(StationTrial.MAIN)) return false;
+      var scene = player.getScene();
+      if (scene != null && (scene.getPlayer() != player || !ordinary(scene.getPlaneType())
+          || scene.getDimensionId() != 0 || scene.getStoryLineId() != 0
+          || scene.getPlaneId() != player.getPlaneId() || scene.getFloorId() != player.getFloorId())) return false;
+      String source = StationTrial.source();
+      if (source == null || !player.getAvatars().getTempAvatars().isEmpty()) return false;
+      var team = player.getCurrentLineup();
+      if (team == null || team.isExtraLineup() || team.getOwner() != player
+          || team.getOwnerUid() != player.getUid() || team.getAvatars().isEmpty() || team.size() > 4
+          || team.getLeader() < 0 || team.getLeader() >= team.size()
+          || team.getMp() < 0 || team.getMp() > team.getMaxMp()
+          || new HashSet<>(team.getAvatars()).size() != team.size()) return false;
+      var trial = player.getTrialManager().buildTrialAvatar(StationTrial.HIMEKO);
+      if (trial == null || trial.getSkillTree().isEmpty() || !completeEquipment(trial)) return false;
+      var prepared = new MissionTrialState.Party(StationTrial.MAIN, StationTrial.PLANE, StationTrial.FLOOR,
+          player.getLineupManager().getCurrentIndex(), team.getAvatars(), team.getLeader(), team.getMp());
+      for (int id : team.getAvatars()) {
+        var formal = player.getAvatars().getAvatars().get(id);
+        if (formal == null || formal instanceof TrialAvatar || formal.getAvatarId() != id
+            || formal.getOwner() != player || formal.getOwnerUid() != player.getUid()) return false;
+        prepared.getVitals().put(id,new StoryLineState.Vital(formal.getCurrentHp(team),formal.getCurrentSp(team)));
+      }
+      prepared.bindStation(source);
+      var roster = StationTrial.roster(team.getAvatars(),team.getLeader());
+      int captain = roster.indexOf(team.getAvatars().get(team.getLeader()));
+      prepared.select(roster, captain < 0 ? roster.indexOf(StationTrial.HIMEKO) : captain, false, 0);
+      prepared.getActors().put(StationTrial.HIMEKO,new MissionTrialState.Actor(trial));
+      prepared.getVitals().put(StationTrial.HIMEKO,new StoryLineState.Vital(10000,7000));
+      final Map<Integer,TrialAvatar> built;
+      try { built = rebuild(prepared,false); }
+      catch (IllegalArgumentException | IllegalStateException invalid) { return false; }
+      state().publish(prepared);
+      try { player.save(); }
+      catch (RuntimeException failed) {
+        state().retire(); state().stationSource(null); throw failed;
+      }
+      install(prepared,built);
+      sync();
+      return true;
+    }
+  }
+
   /** Reserve the frozen action before publishing a scene role or completing its condition. */
   boolean execute(MissionInfo.SubMissionInfo c) {
     synchronized (player) {
@@ -436,7 +482,8 @@ public final class MissionTrialManager {
         || party.getPlane() <= 0
         || party.getFloor() <= 0
         || party.getIndex() != player.getLineupManager().getCurrentIndex()
-        || !MissionStateRecords.mainDoing(player, party.getMain())
+        || (party.getStationSource() == null
+            ? !MissionStateRecords.mainDoing(player, party.getMain()) : !StationTrial.active(player))
         || party.getRoster().isEmpty()
         || party.getRoster().size() > 4
         || new HashSet<>(party.getRoster()).size() != party.getRoster().size()
@@ -446,7 +493,7 @@ public final class MissionTrialManager {
         || party.getMp() > maximum(party)
         || party.getActors().isEmpty() && party.getBaseActors().isEmpty()
         || party.getActors().size() > 64
-        || party.getSources().isEmpty() && party.getOpeningSource() == null
+        || party.getSources().isEmpty() && party.getOpeningSource() == null && party.getStationSource() == null
         || party.getSources().size() > 64
         || !party.getVitals().keySet().containsAll(party.getActors().keySet())
         || !party.getVitals().keySet().containsAll(party.getRoster()))
@@ -454,6 +501,12 @@ public final class MissionTrialManager {
     validateBaseActors(party);
     var selectedActors = new HashSet<Integer>();
     boolean opening = party.getOpeningSource() != null;
+    boolean station = party.getStationSource() != null;
+    if (station) {
+      if (!StationTrial.matches(player,party,restoring))
+        throw new IllegalStateException("Invalid station compatibility trial source");
+      selectedActors.add(StationTrial.HIMEKO);
+    }
     if (opening) {
       if (!OpeningPlayer.matches(player, party, restoring))
         throw new IllegalStateException("Invalid opening trial source");
@@ -480,7 +533,7 @@ public final class MissionTrialManager {
     selectedActors.removeAll(party.getBaseActors().keySet());
     if (!selectedActors.equals(party.getActors().keySet())
         || (last == null
-            ? !opening || party.getLastSub() != 0 || !party.getSources().isEmpty()
+            ? !(opening || station) || party.getLastSub() != 0 || !party.getSources().isEmpty()
             : !party.getSources().containsKey(last.sub())
               || !party.getRoster().contains(selected(last))
               || party.isVirtual() != last.task().equals("RPG.GameCore.ReplaceVirtualTeam")
@@ -636,7 +689,8 @@ public final class MissionTrialManager {
     synchronized (player) {
       var party = state() == null ? null : state().getParty();
       if (party == null || player.isInBattle()) return false;
-      boolean ended =
+      boolean station = party.getStationSource() != null;
+      boolean ended = station ? !StationTrial.active(player) :
           MissionStateRecords.mainCompleted(player, party.getMain())
               || player.getGameplay().getCancelledMissions().contains(party.getMain())
               || party.getSources().keySet().stream()
@@ -644,7 +698,7 @@ public final class MissionTrialManager {
               || party.getOpeningSource() != null
                   && (player.getGameplay().getCancelledSubs().contains(OpeningPlayer.INTRO)
                       || player.getGameplay().getCancelledSubs().contains(OpeningPlayer.REMOVE));
-      boolean left =
+      boolean left = station ? !StationTrial.place(player) :
           party.getRaid() == 0
               && (party.getPlane() != player.getPlaneId()
                   || party.getFloor() != player.getFloorId());
@@ -658,8 +712,15 @@ public final class MissionTrialManager {
                     : scene.getPlaneType() != PlaneType.Raid);
       if (!ended && !left) return false;
       state().retire();
+      try {
+        player.save();
+      } catch (RuntimeException failed) {
+        // Keep the same frozen party and published actors until retirement is durable.
+        // Otherwise a failed save loses the team in memory and revives it on reconnect.
+        state().publish(party);
+        throw failed;
+      }
       unpublish();
-      player.save();
       sync();
       return true;
     }

@@ -72,7 +72,7 @@ public final class SceneMap46 {
                     .allMatch(id -> StoryLineConditions.finished(player, id)))
             && !MissionSceneEntrances.allows(player, entry, teleport))
           result = Retcode.MISSION_NOT_FINISH;
-        if (result == Retcode.SUCC && !player.enterScene(entryId, teleport, player.isOnline()))
+        if (result == Retcode.SUCC && !MissionSceneEntrances.enter(player, entryId, teleport, player.isOnline()))
           result = Retcode.SCENE_ENTRY_ID_NOT_MATCH;
         var response = Gameplay46.builder(session, "EnterSceneScRsp");
         Gameplay46.set(response, "retcode", result.getVal());

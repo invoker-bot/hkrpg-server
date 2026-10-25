@@ -33,6 +33,7 @@ public final class SceneInteractions {
     var result = validate(player, config, entity);
     if (result != Retcode.SUCC) return result;
     var prop = (EntityProp) player.getScene().getEntityById(entity);
+    if (StationEnergyBridges.applies(prop)) return StationEnergyBridges.validate(prop,config);
     if (BookPickups.applies(prop)) return BookPickups.validate(player, config, prop);
     if (CompatibleMechanisms.controller(prop)) return CompatibleMechanisms.validateControl(player, config, prop);
     if (WorldMechanisms.controller(prop))

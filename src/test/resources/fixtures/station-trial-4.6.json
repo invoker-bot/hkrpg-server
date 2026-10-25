@@ -1,0 +1,2308 @@
+{
+  "source": "Original 4.6 scripts and rows. Trial 1011003 mapping is operator-approved compatibility, not an original script parameter.",
+  "sourceSHA256": {
+    "Config/Level/Mission/1000300/MissionInfo_1000300.partial.json": "51258f285001f0f6b07c456eecb5f086d408d40fed877f20311ca8a04200a85e",
+    "Config/Level/Mission/1000301/Mission_100030101.json": "6719cceb46671e4a0f3365e8e0765b1f1fc64e5e4f6562296963e5d47aa0109c",
+    "Config/Level/Mission/1000301/Mission_100030100.json": "4feedf35489a74b9ccf2bb3c0cc7f533d25e4d4e1f470fc47b96ee9e6c37c76a",
+    "Config/Level/Mission/1000400/MissionInfo_1000400.partial.json": "80dc658b842c23a787ef8fd431ec81f99e29e27d771047e7c88293e4fb001a3b",
+    "Config/Level/Mission/1000401/Mission_100040112.json": "e964e8246136020bfb436fd2de7efb1edaa47eb5b001e6dbc9f06a1a4435ac39",
+    "Config/Level/Mission/1000401/MissionInfo_1000401.partial.json": "99be081ff6629c56c77ac30b2eac46b6deb5d6261774e95c36a4634c3856f99b",
+    "Config/Level/Mission/1000401/Mission_100040125.json": "950fa424b30685798cddf41a7f55a66d0a9f90aee3280c7787cfff29ddf01348",
+    "ExcelOutput/SpecialAvatar.json": "8a86827c8c36b2ca4048f735d6cde2d41c056c792f56673a95fda20da3b625d4",
+    "ExcelOutput/AvatarConfig.json": "d8f3c9f55078611ad010751f82333735eb7bc732e22df6b8ad235021658e0456",
+    "ExcelOutput/ItemConfigEquipment.json": "6b66e649a5bb332448e42f888a588103348ca427e0c41b9351e87500ff442b3d",
+    "ExcelOutput/EquipmentConfig.json": "74ea91580ab4a251ee16c3b491be46465f37ec2f6178982a92a6cbf4c0086ebc",
+    "ExcelOutput/AvatarSkillTreeConfig.json": "718aab34ef5583ca3e42f2d9b7bc910eaeea947ae386fbf132942c7e90e69f36"
+  },
+  "records": {
+    "100030101": {
+      "ID": 100030101,
+      "MainMissionID": 1000300,
+      "MissionJsonPath": "Config/Level/Mission/1000301/Mission_100030101.json",
+      "LevelPlaneID": 10001,
+      "LevelFloorID": 10001001,
+      "TakeType": "Auto",
+      "TakeParamIntList": [],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100030101",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "Recover",
+          "FinishActionPara": []
+        }
+      ],
+      "Progress": 1,
+      "IsShowStartHint": "Update",
+      "WayPointFloorID": 10001001
+    },
+    "Config/Level/Mission/1000301/Mission_100030101.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "Order": 1,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.TriggerPerformance",
+              "PerformanceType": "C",
+              "PerformanceID": 100030101,
+              "ValueSource": {}
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100030101"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "100030100": {
+      "ID": 100030100,
+      "MainMissionID": 1000300,
+      "MissionJsonPath": "Config/Level/Mission/1000301/Mission_100030100.json",
+      "LevelPlaneID": 10001,
+      "LevelFloorID": 10001001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100030101
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100030100",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointFloorID": 10001001
+    },
+    "Config/Level/Mission/1000301/Mission_100030100.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "Order": 1,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.CreateTrialPlayer"
+            },
+            {
+              "$type": "RPG.GameCore.SetVirtualLineupBindPlane"
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100030100"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "100040112": {
+      "ID": 100040112,
+      "MainMissionID": 1000400,
+      "MissionJsonPath": "Config/Level/Mission/1000401/Mission_100040112.json",
+      "LevelPlaneID": 20003,
+      "LevelFloorID": 20003001,
+      "AudioEmotionState": "State_Esilence",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100040111
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100040112",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointFloorID": 20003001
+    },
+    "Config/Level/Mission/1000401/Mission_100040112.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "Order": 1,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.RemoveVirtualLineupBindPlane"
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100040112"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "100040125": {
+      "ID": 100040125,
+      "MainMissionID": 1000401,
+      "MissionJsonPath": "Config/Level/Mission/1000401/Mission_100040125.json",
+      "LevelPlaneID": 10001,
+      "LevelFloorID": 10001001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        100040124
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_100040125",
+      "ParamIntList": [],
+      "ParamItemList": [],
+      "FinishActionList": [],
+      "Progress": 1,
+      "CustomValueList": [],
+      "CustomValueReward": [],
+      "GroupIDList": [],
+      "RequiredNPCSeriesIDList": [],
+      "IsShow": false,
+      "GotoParam": [],
+      "WayPointFloorID": 10001001,
+      "StoryLineIDList": [],
+      "IgnoreVerseParamList": []
+    },
+    "Config/Level/Mission/1000401/Mission_100040125.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.DestroyTrialPlayer"
+            },
+            {
+              "$type": "RPG.GameCore.FinishPerformanceMission",
+              "Key": "Mission_100040125"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "SpecialAvatar": [
+      {
+        "SpecialAvatarID": 1011003,
+        "PlayerID": 1003,
+        "AvatarID": 1003,
+        "Type": "TYPE_TRIAL",
+        "LevelAreaPrefab": "",
+        "AnchorName": "",
+        "Level": 8,
+        "OverrideProperty": [],
+        "HaveActionDelay": true,
+        "SkillTreeTemplate": "TYPE_CUSTOM",
+        "CustomSkillTreeKey": "None",
+        "EquipmentID": 20006,
+        "EquipmentLevel": 5,
+        "EquipmentRank": 1,
+        "HasJoinHint": true,
+        "HasLeaveHint": true,
+        "AbilityNameList": [],
+        "PlayerJsonPath": "",
+        "JsonPath": "",
+        "AIPath": ""
+      }
+    ],
+    "AvatarConfig": [
+      {
+        "AvatarID": 1003,
+        "AvatarName": {
+          "Hash": 17590286599225097191
+        },
+        "AvatarFullName": {
+          "Hash": 4755307755787948674
+        },
+        "AdventurePlayerID": 1003,
+        "AvatarVOTag": "himeko",
+        "Rarity": "CombatPowerAvatarRarityType5",
+        "JsonPath": "Config/ConfigCharacter/Avatar/Avatar_Himeko_00_Config.json",
+        "DamageType": "Fire",
+        "SPNeed": {
+          "Value": 120
+        },
+        "ExpGroup": 1,
+        "MaxPromotion": 6,
+        "MaxRank": 6,
+        "RankIDList": [
+          100301,
+          100302,
+          100303,
+          100304,
+          100305,
+          100306
+        ],
+        "SkillList": [
+          100301,
+          100302,
+          100303,
+          100304,
+          100306,
+          100307
+        ],
+        "AvatarBaseType": "Mage",
+        "DefaultAvatarModelPath": "Characters/CharacterPrefabs/Avatar/Himeko_00/Avatar_Himeko_00.prefab",
+        "DefaultAvatarHeadIconPath": "SpriteOutput/AvatarIcon/Avatar/1003.png",
+        "AvatarSideIconPath": "SpriteOutput/AvatarRoundIcon/Avatar/1003.png",
+        "AvatarMiniIconPath": "SpriteOutput/AvatarMiniIcon/1003.png",
+        "AvatarGachaResultImgPath": "SpriteOutput/AvatarDrawCardResult/1003.png",
+        "ActionAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1003B.png",
+        "UltraSkillCutInPrefabPath": "UI/Battle/UltraSkillCutIn/Avatar/UltraSkillCutIn_1003.prefab",
+        "UIAvatarModelPath": "Characters/CharacterPrefabs/Manikin/Avatar/Himeko_00/Manikin_Avatar_Lady_Himeko_00.prefab",
+        "ManikinJsonPath": "Config/ConfigCharacter/Manikin/Avatar/Manikin_Avatar_Himeko_00_Config.json",
+        "AIPath": "Config/ConfigAI/ComplexSkillAIGlobalGroup/Avatar/Avatar_Himeko_00_ComplexSkillAI.json",
+        "SkilltreePrefabPath": "UI/Avatar/Widget/MageSkillTreeGroup.prefab",
+        "DamageTypeResistance": [],
+        "Release": true,
+        "SideAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1003.png",
+        "WaitingAvatarHeadIconPath": "SpriteOutput/AvatarIconTeam/1003.png",
+        "AvatarCutinImgPath": "SpriteOutput/AvatarCutinFigures/1003.png",
+        "AvatarCutinBgImgPath": "SpriteOutput/AvatarCutinBg/1003.png",
+        "AvatarCutinFrontImgPath": "SpriteOutput/AvatarDrawCard/1003.png",
+        "AvatarCutinIntroText": {
+          "Hash": 3146994100761246998
+        },
+        "AvatarDropOffset": [
+          11.9,
+          178,
+          0.66,
+          11.9,
+          178,
+          0.66,
+          11.9,
+          178,
+          0.66
+        ],
+        "AvatarTrialOffset": [
+          135.4,
+          24,
+          1
+        ],
+        "PlayerCardOffset": [
+          65.3,
+          102.2,
+          1.05
+        ],
+        "AssistOffset": [
+          62,
+          42,
+          1.3
+        ],
+        "AssistBgOffset": [
+          108,
+          12,
+          1
+        ],
+        "AvatarSelfShowOffset": [
+          -16,
+          26,
+          5
+        ]
+      }
+    ],
+    "ItemConfigEquipment": [
+      {
+        "ID": 20006,
+        "ItemMainType": "Equipment",
+        "ItemSubType": "Equipment",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 17619168696647341023
+        },
+        "ItemDesc": {
+          "Hash": 7011379596486168959
+        },
+        "ItemBGDesc": {
+          "Hash": 13186214481986558856
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/LightConeIcons/20006.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/LightCone/20006.png",
+        "ItemCurrencyIconPath": "0",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 9999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [
+          {
+            "ItemID": 221,
+            "ItemNum": 1
+          }
+        ],
+        "SellType": "Sell"
+      }
+    ],
+    "EquipmentConfig": [
+      {
+        "EquipmentID": 20006,
+        "Release": true,
+        "EquipmentName": {
+          "Hash": 2920583894071632168
+        },
+        "Rarity": "CombatPowerLightconeRarity3",
+        "AvatarBaseType": "Mage",
+        "MaxPromotion": 6,
+        "MaxRank": 5,
+        "ExpType": 1,
+        "SkillID": 20006,
+        "ExpProvide": 500,
+        "CoinCost": 250,
+        "RankUpCostList": [],
+        "ThumbnailPath": "SpriteOutput/LightConeMediumIcon/20006.png",
+        "ImagePath": "SpriteOutput/LightConeMaxFigures/20006.png",
+        "ItemRightPanelOffset": [
+          0,
+          -162,
+          0.7
+        ],
+        "AvatarDetailOffset": [
+          0,
+          -186,
+          1.15
+        ],
+        "BattleDialogOffset": [
+          0,
+          0,
+          0.6
+        ],
+        "GachaResultOffset": [
+          -1,
+          -17,
+          0.545
+        ]
+      }
+    ],
+    "AvatarSkillTreeConfig": [
+      {
+        "PointID": 1003001,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100301
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003001,
+        "Level": 2,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 5000
+          },
+          {
+            "ItemID": 110131,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100301
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003001,
+        "Level": 3,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 10000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100301
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003001,
+        "Level": 4,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 20000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100301
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003001,
+        "Level": 5,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 45000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100301
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003001,
+        "Level": 6,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point01",
+        "MaxLevel": 6,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100301
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Normal.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 3,
+        "AbilityName": "",
+        "PointTriggerKey": "PointNormal",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 2,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2500
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 1,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 3,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 5000
+          },
+          {
+            "ItemID": 110131,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 4,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 10000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 5,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 20000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 6,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 30000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 7
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 7,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 45000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 8,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 80000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 9,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003002,
+        "Level": 10,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point02",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 300000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 14
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100302
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_BP.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointBPSkill",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 2,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2500
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 1,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 3,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 5000
+          },
+          {
+            "ItemID": 110131,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 4,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 10000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 5,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 20000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 6,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 30000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 7
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 7,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 45000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 8,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 80000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 9,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003003,
+        "Level": 10,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point03",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 300000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 14
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100303
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Ultra.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 2,
+        "AbilityName": "",
+        "PointTriggerKey": "PointUltra",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 2,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2500
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 1,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 3,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 5000
+          },
+          {
+            "ItemID": 110131,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 4,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 10000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 5,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 20000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 6,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 30000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 7
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 7,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 45000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 8,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 80000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 9,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003004,
+        "Level": 10,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point04",
+        "MaxLevel": 10,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 300000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 14
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [
+          100304
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Passive.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "RecommendPriority": 1,
+        "AbilityName": "",
+        "PointTriggerKey": "PointPassive",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003007,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 2,
+        "AnchorType": "Point05",
+        "MaxLevel": 1,
+        "DefaultUnlock": true,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [],
+        "LevelUpSkillID": [
+          100307
+        ],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_Maze.png",
+        "PointName": "",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointMaze",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003101,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 3,
+        "AnchorType": "Point06",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 5000
+          },
+          {
+            "ItemID": 110131,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_SkillTree1.png",
+        "PointName": "SkillPointName_1003101",
+        "PointDesc": "SkillPointDesc_1003101",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [
+          30000001
+        ],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "Avatar_Himeko_SkillTree01",
+        "PointTriggerKey": "PointB1",
+        "ParamList": [
+          {
+            "Value": 0.5
+          },
+          {
+            "Value": 2
+          },
+          {
+            "Value": 0.3
+          }
+        ]
+      },
+      {
+        "PointID": 1003102,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 3,
+        "AnchorType": "Point07",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 20000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_SkillTree2.png",
+        "PointName": "SkillPointName_1003102",
+        "PointDesc": "SkillPointDesc_1003102",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointB2",
+        "ParamList": [
+          {
+            "Value": 0.2
+          }
+        ]
+      },
+      {
+        "PointID": 1003103,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 3,
+        "AnchorType": "Point08",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 241,
+            "ItemNum": 1
+          },
+          {
+            "ItemID": 110501,
+            "ItemNum": 1
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/SkillIcons/Avatar/1003/SkillIcon_1003_SkillTree3.png",
+        "PointName": "SkillPointName_1003103",
+        "PointDesc": "SkillPointDesc_1003103",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "Avatar_Himeko_SkillTree03",
+        "PointTriggerKey": "PointB3",
+        "ParamList": [
+          {
+            "Value": 0.8
+          },
+          {
+            "Value": 0.15
+          }
+        ]
+      },
+      {
+        "PointID": 1003201,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point09",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [
+          {
+            "PropertyType": "FireAddedRatio",
+            "Value": {
+              "Value": 0.032
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 2500
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 2
+          }
+        ],
+        "AvatarLevelLimit": 1,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconFireAddedRatio.png",
+        "PointName": "SkillPointName_1003201",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS1",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003202,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point10",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003101
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "AttackAddedRatio",
+            "Value": {
+              "Value": 0.04
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 5000
+          },
+          {
+            "ItemID": 110131,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111001,
+            "ItemNum": 6
+          }
+        ],
+        "AvatarPromotionLimit": 2,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconAttack.png",
+        "PointName": "SkillPointName_1003202",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS2",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003203,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point11",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003202
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "FireAddedRatio",
+            "Value": {
+              "Value": 0.032
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 10000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconFireAddedRatio.png",
+        "PointName": "SkillPointName_1003203",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS3",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003204,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point12",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003202
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "StatusResistanceBase",
+            "Value": {
+              "Value": 0.04
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 10000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 3,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconStatusResistance.png",
+        "PointName": "SkillPointName_1003204",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS4",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003205,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point13",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003102
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "FireAddedRatio",
+            "Value": {
+              "Value": 0.048
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 20000
+          },
+          {
+            "ItemID": 110132,
+            "ItemNum": 5
+          },
+          {
+            "ItemID": 111002,
+            "ItemNum": 4
+          }
+        ],
+        "AvatarPromotionLimit": 4,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconFireAddedRatio.png",
+        "PointName": "SkillPointName_1003205",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS5",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003206,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point14",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003205
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "AttackAddedRatio",
+            "Value": {
+              "Value": 0.06
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 45000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconAttack.png",
+        "PointName": "SkillPointName_1003206",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS6",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003207,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point15",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003205
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "FireAddedRatio",
+            "Value": {
+              "Value": 0.048
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 45000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 3
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 3
+          }
+        ],
+        "AvatarPromotionLimit": 5,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconFireAddedRatio.png",
+        "PointName": "SkillPointName_1003207",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS7",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003208,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point16",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003103
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "StatusResistanceBase",
+            "Value": {
+              "Value": 0.06
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 8
+          }
+        ],
+        "AvatarPromotionLimit": 6,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconStatusResistance.png",
+        "PointName": "SkillPointName_1003208",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS8",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003209,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point17",
+        "MaxLevel": 1,
+        "PrePoint": [
+          1003103
+        ],
+        "StatusAddList": [
+          {
+            "PropertyType": "AttackAddedRatio",
+            "Value": {
+              "Value": 0.08
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 8
+          }
+        ],
+        "AvatarLevelLimit": 75,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconAttack.png",
+        "PointName": "SkillPointName_1003209",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS9",
+        "ParamList": []
+      },
+      {
+        "PointID": 1003210,
+        "Level": 1,
+        "AvatarID": 1003,
+        "PointType": 1,
+        "AnchorType": "Point18",
+        "MaxLevel": 1,
+        "PrePoint": [],
+        "StatusAddList": [
+          {
+            "PropertyType": "FireAddedRatio",
+            "Value": {
+              "Value": 0.064
+            }
+          }
+        ],
+        "MaterialList": [
+          {
+            "ItemID": 2,
+            "ItemNum": 160000
+          },
+          {
+            "ItemID": 110133,
+            "ItemNum": 8
+          },
+          {
+            "ItemID": 111003,
+            "ItemNum": 8
+          }
+        ],
+        "AvatarLevelLimit": 80,
+        "LevelUpSkillID": [],
+        "IconPath": "SpriteOutput/UI/Avatar/Icon/IconFireAddedRatio.png",
+        "PointName": "SkillPointName_1003210",
+        "PointDesc": "",
+        "SimplePointDesc": "",
+        "ExtraEffectIDList": [],
+        "SimpleExtraEffectIDList": [],
+        "AbilityName": "",
+        "PointTriggerKey": "PointS10",
+        "ParamList": []
+      }
+    ]
+  }
+}

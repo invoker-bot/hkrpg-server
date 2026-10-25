@@ -23,13 +23,14 @@ public final class SceneEventBattle46 {
     synchronized (session.getPlayer()) {
       var player = session.getPlayer();
       int event = request == null ? 0 : number(request, "event_id");
+      int canonical = org.hkrpg.server.gameplay.StoryBattleEvents.canonicalEvent(player, event);
       boolean valid =
           request != null
               && only(request, "event_id", "NKDAAAGPCDB")
               && ((EnumValueDescriptor) value(request, "NKDAAAGPCDB")).getNumber() == 0
               && SceneEventBattles.resolveClientEvent(
-                      event,
-                      org.hkrpg.server.gameplay.StageEventDifficultySettings.world(player, event))
+                      canonical,
+                      org.hkrpg.server.gameplay.StageEventDifficultySettings.world(player, canonical))
                   != null;
       var battle =
           valid ? session.getServer().getBattleService().startEventBattle(player, event) : null;

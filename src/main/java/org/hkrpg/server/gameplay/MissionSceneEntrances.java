@@ -43,6 +43,7 @@ public final class MissionSceneEntrances {
           || origin.floor() != player.getFloorId()
           || origin.entry() != player.getEntryId()) return false;
       MapEntranceExcel destination = null;
+      MissionInfo.SubMissionInfo accepted = null;
       for (int id : origin.accepted()) {
         var sub = GameplayDefinitions.subs.get(id);
         var entry = sub == null ? null : GameData.getMapEntranceExcelMap().get(literalEntry(sub));
@@ -50,11 +51,40 @@ public final class MissionSceneEntrances {
         // Two pending starts require explicit client ordering; never choose one arbitrarily.
         if (destination != null) return false;
         destination = entry;
+        accepted = sub;
       }
       // loadScene persists the real location, then completes arrival and accepts the next dialogue.
       // No scene push is sent before login: the first ordinary scene response contains the result.
-      return destination != null && player.enterScene(destination.getId(), 0, false);
+      return destination != null && transfer(player, accepted, destination, false);
     }
+  }
+
+  /** Resolve the same source-bound destination for a live request, even if the map is already open. */
+  public static boolean enter(Player player, int entryId, int teleport, boolean sendPacket) {
+    synchronized (player) {
+      var entry = GameData.getMapEntranceExcelMap().get(entryId);
+      MissionInfo.SubMissionInfo accepted = null;
+      if (entry != null && teleport == 0 && ordinaryContext(player)) {
+        for (var state : player.getGameplay().getSubMissions().values()) {
+          var sub = state == null ? null : GameplayDefinitions.subs.get(state.getQuestId());
+          if (sub == null || !authorizes(player, sub, entry)) continue;
+          if (accepted != null) return false;
+          accepted = sub;
+        }
+      }
+      return accepted == null ? player.enterScene(entryId, teleport, sendPacket)
+          : transfer(player, accepted, entry, sendPacket);
+    }
+  }
+
+  private static boolean transfer(Player player, MissionInfo.SubMissionInfo sub,
+      MapEntranceExcel entry, boolean sendPacket) {
+    var task = literalTask(sub);
+    // Anchor identifiers come only from the completely validated original script, never the request.
+    return task.has("GroupID")
+        ? player.enterSceneAtAnchor(entry.getId(), task.get("GroupID").getAsInt(),
+            task.get("AnchorID").getAsInt(), sendPacket)
+        : player.enterScene(entry.getId(), 0, sendPacket);
   }
 
   public static boolean allows(Player player, MapEntranceExcel entry, int teleport) {
@@ -140,8 +170,11 @@ public final class MissionSceneEntrances {
 
   private static int literalEntry(MissionInfo.SubMissionInfo sub) {
     if (!DailyMissionTravelRules.enterFloor(sub)) return 0;
-    var task =
-        JsonParser.parseString(sub.getTask().getSourceDefinition())
+    return literalTask(sub).get("EntranceID").getAsInt();
+  }
+
+  private static com.google.gson.JsonObject literalTask(MissionInfo.SubMissionInfo sub) {
+    return JsonParser.parseString(sub.getTask().getSourceDefinition())
             .getAsJsonObject()
             .getAsJsonArray("OnStartSequece")
             .get(0)
@@ -149,10 +182,6 @@ public final class MissionSceneEntrances {
             .getAsJsonArray("TaskList")
             .get(0)
             .getAsJsonObject();
-    // Overrides need their own anchor-aware transition. This path uses the original entry anchor.
-    return task.keySet().equals(Set.of("$type", "EntranceID"))
-        ? task.get("EntranceID").getAsInt()
-        : 0;
   }
 
   private MissionSceneEntrances() {}

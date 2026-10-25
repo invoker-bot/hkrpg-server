@@ -43,6 +43,7 @@ class MissionTrialProvisioning46Test {
 
   static class Actor extends Player {
     int saves;
+    boolean failSave;
     final List<byte[]> packets = new ArrayList<>();
 
     Actor() {
@@ -61,6 +62,7 @@ class MissionTrialProvisioning46Test {
     @Override
     public void save() {
       saves++;
+      if (failSave) throw new IllegalStateException("Injected player save failure");
     }
 
     @Override
@@ -600,6 +602,42 @@ class MissionTrialProvisioning46Test {
         IllegalStateException.class, () -> restored.getMissionTrialManager().restoreOnLogin());
     assertTrue(restored.getAvatars().getTempAvatars().isEmpty());
     assertEquals(0, restored.saves);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"mainFinished", "cancelMain", "cancelSub", "leaveFloor"})
+  void failedRetirementKeepsTheSavedPartyAndPublishedActorsUntilRetry(String cause) {
+    var sub = accept(100010110, 1001006);
+    player.getMissionManager().refresh();
+    var party = player.getGameplay().getMissionTrials().getParty();
+    var actor = player.getAvatars().getTempAvatars().get(1001006);
+    var external = player.getTrialManager().buildTrialAvatar(1101006);
+    player.getAvatars().addTempAvatar(external);
+    switch (cause) {
+      case "mainFinished" -> player.getGameplay().getMainMissions().get(sub.getMainMissionID()).advance(1, 1, 1);
+      case "cancelMain" -> player.getGameplay().getCancelledMissions().add(sub.getMainMissionID());
+      case "cancelSub" -> player.getGameplay().getCancelledSubs().add(sub.getId());
+      case "leaveFloor" -> set(player, "floorId", 1);
+    }
+    var before = gson.toJson(player.getGameplay());
+    player.packets.clear();
+    player.failSave = true;
+    assertThrows(IllegalStateException.class, () -> player.getMissionTrialManager().reconcile());
+    assertSame(party, player.getGameplay().getMissionTrials().getParty());
+    assertEquals(before, gson.toJson(player.getGameplay()));
+    assertSame(actor, player.getAvatars().getTempAvatars().get(1001006));
+    assertSame(external, player.getAvatars().getTempAvatars().get(1101006));
+    assertTrue(player.packets.isEmpty(), "Do not announce a retirement which did not persist");
+    player.failSave = false;
+    assertTrue(player.getMissionTrialManager().reconcile());
+    assertNull(player.getGameplay().getMissionTrials().getParty());
+    assertNull(player.getAvatars().getTempAvatars().get(1001006));
+    assertSame(external, player.getAvatars().getTempAvatars().get(1101006));
+    assertFalse(player.getMissionTrialManager().reconcile());
+    var restored = reload(player.getGameplay());
+    restored.getMissionTrialManager().restoreOnLogin();
+    assertNull(restored.getGameplay().getMissionTrials().getParty());
+    assertNull(restored.getAvatars().getTempAvatars().get(1001006));
   }
 
   @ParameterizedTest

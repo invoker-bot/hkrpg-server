@@ -233,7 +233,8 @@ public class FloorInfo {
 
                     // Keep the authored graph identity for instance loaders and script dispatch.
                     if(!org.hkrpg.server.gameplay.GoldenSpears.keepsSourceValues(group)
-                        && !org.hkrpg.server.gameplay.StoryDoors.controller(prop)) prop.setValueSource(null);
+                        && !org.hkrpg.server.gameplay.StoryDoors.controller(prop)
+                        && !org.hkrpg.server.gameplay.StationEnergyBridges.controller(prop)) prop.setValueSource(null);
                 }
             }
         }

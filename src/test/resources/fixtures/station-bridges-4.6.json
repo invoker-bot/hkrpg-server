@@ -1,0 +1,1026 @@
+{
+  "source": "Original 4.6 repulsion bridge bindings and scripts. Missing SyncSubPropState parameters are implemented as the observed mutually exclusive blue/orange states.",
+  "sourceSHA256": {
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20003_F20003001/LevelGroup_P20003_F20003001_G4.json": "b25ad6b2490d0e83215f4cb409537188df9100ad8f05b1b223164dcf2fae0d11",
+    "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console02_EnergyBridge_01.json": "0482280965b32ef67cebe0ab88ad7deb5132b383f0f2ba5a791d05de929ce29a",
+    "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_EnergyBridge_01.json": "f4aa742995de5e9b8b7e4345f9748e1a9cc8751900a40913b4b024d115eac2b9",
+    "ExcelOutput/MazeProp.json": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418",
+    "ExcelOutput/InteractConfig.json": "3a1e0f178b95a482fa2c03975f3a8f2a4ffa1e609c4819aeee5108dc9ef29de9",
+    "Config/Level/Mission/1000401/Mission_100040114.json": "10939414200814c2f8b86fca1ceb4e313b349ec02a50169b832450b481128a5c",
+    "Config/Level/Mission/1000400/MissionInfo_1000400.partial.json": "80dc658b842c23a787ef8fd431ec81f99e29e27d771047e7c88293e4fb001a3b"
+  },
+  "records": {
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20003_F20003001/LevelGroup_P20003_F20003001_G4.json": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "FlipBridgeController",
+      "AreaAnchorName": "LevelArea_P20003_F20003001_G4",
+      "LoadSide": "Server",
+      "LoadOnInitial": true,
+      "AnchorList": [],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100014,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console02_EnergyBridge_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300004",
+                "Key": "FlipBridge02"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300003",
+                "Key": "FlipBridge01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "Chap00_MAZ_N3_LevelArea,LookToBridge_Cam_04",
+                "Key": "Vcam01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300015",
+                "Key": "Controller02"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Controller02",
+          "RotY": 90,
+          "ID": 300002,
+          "PosX": 64.619,
+          "PosY": 80.338,
+          "PosZ": 99.13
+        },
+        {
+          "PropID": 100014,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console02_EnergyBridge_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300004",
+                "Key": "FlipBridge02"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300003",
+                "Key": "FlipBridge01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "Chap00_MAZ_N3_LevelArea,LookToBridge_Cam_04",
+                "Key": "Vcam01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300002",
+                "Key": "Controller02"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Controller01",
+          "RotY": 90,
+          "ID": 300015,
+          "PosX": 94.614,
+          "PosY": 74.053,
+          "PosZ": 103.22
+        },
+        {
+          "RotX": 359.3,
+          "Scale": {
+            "X": 1,
+            "Y": 1,
+            "Z": 0.95
+          },
+          "PropID": 100011,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_EnergyBridge_01.json",
+          "CampID": 4,
+          "State": "Open",
+          "CustomTriggerMap": {
+            "CustomTrigger_DetectNPC": {
+              "Shape": "Box",
+              "Radius": 1,
+              "DimX": 5,
+              "DimY": 2,
+              "DimZ": 10,
+              "PointList": []
+            }
+          },
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "RBridge01",
+          "ID": 300003,
+          "PosX": 67.646,
+          "PosY": 80,
+          "PosZ": 110.35
+        },
+        {
+          "RotX": 0.392662,
+          "Scale": {
+            "X": 1,
+            "Y": 1,
+            "Z": 0.945
+          },
+          "PropID": 100012,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_EnergyBridge_01.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "BBridge01",
+          "ID": 300004,
+          "PosX": 67.68,
+          "PosY": 79.98,
+          "PosZ": 88.24
+        },
+        {
+          "PropID": 100014,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console02_EnergyBridge_03.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300003",
+                "Key": "FlipBridge02"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300002",
+                "Key": "FlipBridge01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300004",
+                "Key": "FlipBridge04"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "Chap00_MAZ_N3_LevelArea,LookToBridge_Cam_01",
+                "Key": "Vcam01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300006",
+                "Key": "Controller02"
+              }
+            ]
+          },
+          "CampID": 4,
+          "State": "Locked",
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Controller03",
+          "RotY": 90,
+          "ID": 300005,
+          "PosX": 92.596,
+          "PosY": 65.096,
+          "PosZ": 102.443
+        },
+        {
+          "PropID": 100014,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console02_EnergyBridge_03.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300003",
+                "Key": "FlipBridge02"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300002",
+                "Key": "FlipBridge01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300004",
+                "Key": "FlipBridge04"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "Chap00_MAZ_N3_LevelArea,LookToBridge_Cam_02",
+                "Key": "Vcam01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "4,300005",
+                "Key": "Controller02"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Controller04",
+          "RotY": 270,
+          "ID": 300006,
+          "PosX": 53.462,
+          "PosY": 63.965,
+          "PosZ": 96.389
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenBridge_01.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300006",
+                "Key": "Maze_Prop_Chap00_BaseControllSimpleDoor"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "Chap00_MAZ_N3_LevelArea,LookToBridge_Cam_03",
+                "Key": "Vcam01"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Controller05",
+          "RotY": 180,
+          "ID": 300007,
+          "PosX": 50.937,
+          "PosY": 63.986,
+          "PosZ": 78.396
+        },
+        {
+          "PropID": 100000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenBridge_02.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "28,300005",
+                "Key": "Maze_Prop_Chap01_BaseControllSimpleDoor"
+              },
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "PropInteractTitle_10001",
+                "Key": "Maze_Prop_Chap00_BaseControlLockDesc"
+              }
+            ]
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Controller05",
+          "RotY": 270,
+          "ID": 300008,
+          "PosX": 79.06,
+          "PosY": 64.016,
+          "PosZ": 96.537
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console02_EnergyBridge_01.json": {
+      "OnInitSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            },
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            },
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            }
+          ]
+        }
+      ],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            },
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            },
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncAllSubPropState"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "ColliderRelativePath": "TriggerUIBtn",
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.PredicateTaskList",
+                  "Predicate": {
+                    "$type": "RPG.GameCore.ByAny",
+                    "PredicateList": [
+                      {
+                        "$type": "RPG.GameCore.PropPredicateWithEntity",
+                        "LayerMask": [
+                          "NPC",
+                          "NPCMonster"
+                        ],
+                        "TargetType": {
+                          "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                          "FetchType": "SinglePropByPropKey",
+                          "SinglePropKey": {
+                            "Custom": true,
+                            "Key": "FlipBridge01"
+                          }
+                        }
+                      },
+                      {
+                        "$type": "RPG.GameCore.PropPredicateWithEntity",
+                        "LayerMask": [
+                          "NPC",
+                          "NPCMonster"
+                        ],
+                        "TargetType": {
+                          "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                          "FetchType": "SinglePropByPropKey",
+                          "SinglePropKey": {
+                            "Custom": true,
+                            "Key": "FlipBridge02"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "SuccessTaskList": [
+                    {
+                      "$type": "RPG.GameCore.ToastPile",
+                      "DescTextID": {
+                        "Hash": 4187082636403226722
+                      }
+                    }
+                  ],
+                  "FailedTaskList": [
+                    {
+                      "$type": "RPG.GameCore.StartPropInteractMode",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "Mode": "UsePose01"
+                    },
+                    {
+                      "$type": "RPG.GameCore.BlockInputController",
+                      "Enable": true,
+                      "ActionNameList": []
+                    },
+                    {
+                      "$type": "RPG.GameCore.SelectorConfig",
+                      "TaskList": [
+                        {
+                          "$type": "RPG.GameCore.PropStateExecute",
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          },
+                          "Execute": [
+                            {
+                              "$type": "RPG.GameCore.WaitSecond",
+                              "WaitTime": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 0.7
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.PropReqInteract",
+                              "TargetType": {
+                                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                              },
+                              "InteractID": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 1010
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.WaitSecond",
+                              "WaitTime": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 0.5
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.ActiveVirtualCamera",
+                              "LevelAreaCameraKey": {
+                                "Custom": true,
+                                "Key": "Vcam01"
+                              },
+                              "WaitBlendFinish": true,
+                              "BlendConfig": {
+                                "ExportToJson": true,
+                                "BlendType": "Cut",
+                                "BlendTime": 1
+                              },
+                              "KeepMainCameraRotation": true
+                            },
+                            {
+                              "$type": "RPG.GameCore.WaitSecond",
+                              "WaitTime": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 0.5
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.TriggerCustomString",
+                              "CustomString": {
+                                "Value": "N2_FlipBridge_Triggerd"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "$type": "RPG.GameCore.PropStateExecute",
+                          "TargetType": {
+                            "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                          },
+                          "State": "Open",
+                          "Execute": [
+                            {
+                              "$type": "RPG.GameCore.WaitSecond",
+                              "WaitTime": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 0.7
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.PropReqInteract",
+                              "TargetType": {
+                                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                              },
+                              "InteractID": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 1100
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.WaitSecond",
+                              "WaitTime": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 0.5
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.ActiveVirtualCamera",
+                              "LevelAreaCameraKey": {
+                                "Custom": true,
+                                "Key": "Vcam01"
+                              },
+                              "WaitBlendFinish": true,
+                              "BlendConfig": {
+                                "ExportToJson": true,
+                                "BlendType": "Cut",
+                                "BlendTime": 1
+                              },
+                              "KeepMainCameraRotation": true
+                            },
+                            {
+                              "$type": "RPG.GameCore.WaitSecond",
+                              "WaitTime": {
+                                "IsDynamic": false,
+                                "FixedValue": {
+                                  "Value": 0.5
+                                }
+                              }
+                            },
+                            {
+                              "$type": "RPG.GameCore.TriggerCustomString",
+                              "CustomString": {
+                                "Value": "N2_FlipBridge_Triggerd"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "OverrideTargetTypes": [],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        },
+        {
+          "IsLoop": true,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitCustomString",
+              "CustomString": {
+                "Value": "N2_FlipBridge_Triggerd"
+              },
+              "WaitOwnerOnly": true
+            },
+            {
+              "$type": "RPG.GameCore.WaitSecond",
+              "WaitTime": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 2.5
+                }
+              }
+            },
+            {
+              "$type": "RPG.GameCore.ActiveVirtualCamera",
+              "LevelAreaCameraKey": {
+                "Custom": true,
+                "Key": "Vcam01"
+              },
+              "IsActive": false,
+              "BlendConfig": {
+                "ExportToJson": true,
+                "BlendType": "Cut",
+                "BlendTime": 1
+              },
+              "KeepMainCameraRotation": true
+            },
+            {
+              "$type": "RPG.GameCore.EndPropInteract"
+            },
+            {
+              "$type": "RPG.GameCore.EnableBillboard",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              },
+              "Enable": true
+            }
+          ]
+        }
+      ],
+      "ValueSource": {
+        "Values": [
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "FlipBridge02"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "FlipBridge01"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Vcam01"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Controller02"
+          }
+        ]
+      }
+    },
+    "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_EnergyBridge_01.json": {
+      "OnInitSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SelectorConfig",
+              "TaskList": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.SetNavMeshState",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "Name": {
+                        "Value": "Close"
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropEnableCollider",
+                      "OPType": "ColliderOnly",
+                      "SpecifiedRelativePaths": [],
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "State": "Open",
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.SetNavMeshState",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "Name": {
+                        "Custom": true,
+                        "Key": "TargetNavMeshState"
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropEnableCollider",
+                      "OPType": "ColliderOnly",
+                      "Enabled": true,
+                      "SpecifiedRelativePaths": [],
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "OnStartSequece": [
+        {
+          "TaskList": []
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupTrigger",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              },
+              "TargetGroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetTypes": [
+                "NPCMonster"
+              ],
+              "ColliderRelativePath": "CustomTrigger_DetectNPC",
+              "OnTriggerEnter": []
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropStateChangeListenerConfig",
+              "ToState": "Open",
+              "FromAnyState": true,
+              "OnChange": [
+                {
+                  "$type": "RPG.GameCore.SetNavMeshState",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Name": {
+                    "Custom": true,
+                    "Key": "TargetNavMeshState"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.PropEnableCollider",
+                  "OPType": "ColliderOnly",
+                  "Enabled": true,
+                  "SpecifiedRelativePaths": [],
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  }
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropStateChangeListenerConfig",
+              "FromAnyState": true,
+              "OnChange": [
+                {
+                  "$type": "RPG.GameCore.SetNavMeshState",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Name": {
+                    "Value": "Close"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.PropEnableCollider",
+                  "OPType": "ColliderOnly",
+                  "SpecifiedRelativePaths": [],
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  }
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        }
+      ],
+      "ValueSource": {
+        "Values": [
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Value": "Default",
+            "Key": "TargetNavMeshState"
+          }
+        ]
+      }
+    },
+    "ExcelOutput/MazeProp.json": [
+      {
+        "ID": 100011,
+        "PropType": "PROP_PLATFORM",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_EnergyBridge_Orange_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Open",
+            "IconID": 60,
+            "Color": "#ffc795"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_EnergyBridgeOranger_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100012,
+        "PropType": "PROP_PLATFORM",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_EnergyBridge_Blue_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [
+          {
+            "State": "Open",
+            "IconID": 60,
+            "Color": "#bad4fe"
+          }
+        ],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_EnergyBridgeBlue_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 3
+      },
+      {
+        "ID": 100014,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 7228887569957197459
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/TriggerProp.png",
+        "BoardShowList": [
+          4
+        ],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap00/Prop_Chap00_BaseConsole_03_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapIconType": 9,
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap00/Prop_Chap00_BaseConsole_03_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      }
+    ],
+    "ExcelOutput/InteractConfig.json": [
+      {
+        "InteractID": 1010,
+        "TargetState": "Open",
+        "ItemCostList": []
+      },
+      {
+        "InteractID": 1100,
+        "SrcState": "Open",
+        "ItemCostList": []
+      }
+    ],
+    "Config/Level/Mission/1000401/Mission_100040114.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitSecond",
+              "WaitTime": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 60
+                }
+              }
+            },
+            {
+              "$type": "RPG.GameCore.PropStateExecute",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 4
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300015
+                    }
+                  }
+                }
+              },
+              "Execute": [
+                {
+                  "$type": "RPG.GameCore.PlayMissionTalk",
+                  "SimpleTalkList": [
+                    {
+                      "TalkSentenceID": 100040120,
+                      "ProtectTime": 4,
+                      "ForceToNextTime": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.CreateProp",
+              "GroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 10
+                }
+              },
+              "GroupPropID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 300010
+                }
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.CreateProp",
+              "GroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 10
+                }
+              },
+              "GroupPropID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 300007
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    }
+  }
+}

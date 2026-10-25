@@ -282,6 +282,8 @@ public class BattleService extends BaseGameService {
     }
     public Battle startEventBattle(Player player, int eventId) {
         synchronized (player) {
+            eventId = org.hkrpg.server.gameplay.StoryBattleEvents.canonicalEvent(player, eventId);
+            if (eventId <= 0) return null;
             if (player.isInBattle() || activityBlocksBattle(player)
                 || org.hkrpg.server.gameplay.StoryChallengeScope.isNativeStory(player)) return null;
             if (org.hkrpg.server.gameplay.StageEventDifficultySettings.applies(player, eventId)) {

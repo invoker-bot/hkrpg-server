@@ -1264,6 +1264,74 @@ public final class NativeOpeningStageWinProbe {
         "nextBattlePending", true, "credits", credits);
   }
 
+  private void talk(int id) throws Exception {
+    objective(id,1);
+    call("FinishTalkMissionCsReq",Map.of("sub_mission_id",id,"talk_str","Mission_"+id),true);
+    objective(id,2);
+  }
+
+  private void stationParty() throws Exception {
+    var team=(DynamicMessage)field(call("GetCurLineupDataCsReq"),"lineup");
+    var avatars=((List<?>)field(team,"avatar_list")).stream().map(DynamicMessage.class::cast).toList();
+    require(avatars.stream().map(a->(Integer)field(a,"id")).toList().equals(List.of(1002,8001,1011003)),"Station trial must append to the retained edited formal team");
+    require(((Descriptors.EnumValueDescriptor)field(avatars.getLast(),"avatar_type")).getNumber()==1,"Himeko must remain temporary");
+    var owned=(List<?>)field(call("GetAvatarDataCsReq",Map.of("is_get_all",true),true),"avatar_list");
+    require(owned.stream().map(DynamicMessage.class::cast).noneMatch(a->(Integer)field(a,"base_avatar_id")==1003),"Temporary Himeko became a permanent grant");
+  }
+
+  private void stationBridges(boolean blue) throws Exception {
+    var props=props(4);
+    doorState(props,300015,blue?1:0);doorState(props,300002,blue?1:0);
+    doorState(props,300003,blue?0:1);doorState(props,300004,blue?1:0);
+  }
+
+  private Map<String,Object> stationStory(String phase) throws Exception {
+    if(phase.equals("station-prepare")) {
+      talk(100030101); objective(100030100,1); stationParty();
+      for(int id:new int[]{100030100,100030103,100030111,100030112,100030113,100030202,100030203}) talk(id);
+      objective(100030204,1);stationParty();
+    } else if(phase.equals("station-blue")) {
+      objective(100030204,2);talk(100040102);stationParty();
+      objective(100040123,1);awakeningBattle(5,200001,true);objective(100040123,2);
+      propInteraction(1,300005,1010,true);objective(100040103,2);talk(100040104);
+      objective(100040114,1);stationBridges(false);propInteraction(4,300015,1010,true);
+      stationBridges(true);objective(100040114,2);objective(100040145,1);
+    } else if(phase.equals("station-reconnect")) {
+      stationParty();stationBridges(true);objective(100040114,2);objective(100040145,1);
+    } else if(phase.equals("station-orange")) {
+      stationParty();stationBridges(true);propInteraction(4,300002,1100,true);
+      stationBridges(false);objective(100040145,2);
+      for(int id:new int[]{100040105,100040106,100040108}) talk(id);
+      propInteraction(1,300007,1010,true);objective(100040109,2);objective(100040110,1);
+      var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
+      call("EnterSectionCsReq",Map.of("section_id",1,"interact_id",field(scene,"interact_id")),true);
+      var entered=call("SceneEnterStageCsReq",Map.of("event_id",20003012),true);
+      var battle=(DynamicMessage)field(entered,"battle_info");
+      require((Integer)field(battle,"stage_id")==200030110,"Doomsday source event/stage mapping");
+      require(((List<?>)field(battle,"battle_avatar_list")).stream().map(DynamicMessage.class::cast)
+          .anyMatch(a->(Integer)field(a,"id")==1011003 && (Integer)field(a,"level")==8),"Doomsday must include the level-eight Himeko trial");
+      var end=protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status");
+      var report=Map.<String,Object>of("battle_id",field(battle,"battle_id"),"stage_id",field(battle,"stage_id"),
+          "stt",battleStatistics(battle),"end_status",end.getEnumType().findValueByName("BATTLE_END_WIN"));
+      call("PVEBattleResultCsReq",report,true);call("PVEBattleResultCsReq",report,false);
+      objective(100040110,2);talk(100040111);talk(100040112);objective(100040113,1);stationParty();
+    } else {
+      stationParty();objective(100040113,2);objective(100040115,1);
+      var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
+      var leader=(Integer)field(scene,"leader_entity_id");
+      DynamicMessage actor=null;
+      for(var raw:(List<?>)field(scene,"entity_group_list"))
+        for(var value:(List<?>)field((DynamicMessage)raw,"entity_list"))
+          if((Integer)field((DynamicMessage)value,"entity_id")==leader)actor=(DynamicMessage)value;
+      require(actor!=null,"Waking scene leader is missing");
+      var pos=(DynamicMessage)field((DynamicMessage)field(actor,"motion"),"pos");
+      require((Integer)field(pos,"x")==-13871 && (Integer)field(pos,"z")==-58309,"Waking transfer used the generic entrance rather than the authored anchor");
+      require(enterSceneRequests==0,"Interrupted story must resume without client teleport");
+    }
+    return Map.of("passed",true,"phase",phase,"requests",requests,"credits",credits,
+        "temporaryHimeko",true,"clientGameplayVerified",false);
+  }
+
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String phase = control.get("phase").getAsString();
     verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
@@ -1273,6 +1341,7 @@ public final class NativeOpeningStageWinProbe {
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")
         || phase.startsWith("mechanisms-") || phase.equals("main-control-prepare")) expectedFloor = 20002001;
     if (phase.equals("main-control-reconnect") || phase.equals("main-control-restart")) expectedFloor = 10001001;
+    if (phase.startsWith("station-")) expectedFloor=phase.equals("station-prepare") || phase.startsWith("station-wakeup") ? 10001001 : 20003001;
     int uid =
         (Integer)
             field(
@@ -1294,6 +1363,10 @@ public final class NativeOpeningStageWinProbe {
     call("GetMissionDataCsReq");
     call("GetMissionDataCsReq");
     require(missionChangeNotifications == 0, "Login/query replayed historical mission changes");
+    if(phase.startsWith("station-")) {
+      require(control.has("stationStory")&&control.get("stationStory").getAsBoolean(),"Unexpected station phase");
+      var result=new LinkedHashMap<>(stationStory(phase));result.put("uid",uid);return result;
+    }
     if (phase.startsWith("main-control-")) {
       require(control.has("mainControlTransfer") && control.get("mainControlTransfer").getAsBoolean(), "Unexpected main control phase");
       boolean pending = phase.equals("main-control-prepare");

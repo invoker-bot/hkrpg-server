@@ -39,10 +39,13 @@ def main():
     parser.add_argument('--key-console', action='store_true', help='继续到使用密钥目标，校验前置战斗与对白门槛、控制台和绑定门、后续对白、同进程重连和H2重启')
     parser.add_argument('--story-mechanisms', action='store_true', help='继续校验两座剧情桥梁的前置对白、精确联动、重连/H2保存，以及持钥门和升降机的无钥匙拒绝；不播放真实客户端演出')
     parser.add_argument('--main-control-transfer', action='store_true', help='继续到电梯前战斗及演出完成，校验未持通行证仍可按原任务切往主控舱段、断线恢复及H2重启；战报和演出回执为合成请求')
+    parser.add_argument('--station-story', action='store_true', help='继续校验姬子兼容试用、科员对话、支援舱段双色桥、末日兽战报及醒来指定落点；合成输入，不等同实机演出')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.station_story:
+        args.main_control_transfer = True
     if args.main_control_transfer:
         args.story_mechanisms = True
     if args.story_mechanisms:
@@ -116,6 +119,12 @@ def main():
         guarded += list(fixture['sourceSHA256'])
         for name, source_digest in fixture['sourceSHA256'].items():
             assert hashlib.sha256((source / name).read_bytes()).hexdigest() == source_digest, name
+    if args.station_story:
+        for name in ('station-trial-4.6.json','station-bridges-4.6.json','story-transfers-4.6.json','station-boss-event-4.6.json'):
+            fixture=json.loads((ROOT/'src/test/resources/fixtures'/name).read_text('utf-8'))
+            guarded += list(fixture['sourceSHA256'])
+            for path,source_digest in fixture['sourceSHA256'].items():
+                assert hashlib.sha256((source/path).read_bytes()).hexdigest()==source_digest,path
     before = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -145,7 +154,7 @@ def main():
 
     account_name = 'opening_stage_' + uuid.uuid4().hex + '@example.invalid'
     snapshots, stops = [], 0
-    iterations = 7 if args.main_control_transfer else 6 if args.awakening_door else 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
+    iterations = 11 if args.station_story else 7 if args.main_control_transfer else 6 if args.awakening_door else 5 if args.opening_transfer else 4 if args.barriers else 3 if args.doors else 2
     for iteration in range(iterations):
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen([str(java), *java_flags, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
@@ -188,6 +197,12 @@ def main():
                         phases += ['main-control-prepare', 'main-control-reconnect']
                     elif iteration == 6:
                         phases = ['main-control-restart']
+                if args.station_story:
+                    if iteration==6: phases.append('station-prepare')
+                    elif iteration==7: phases=['station-blue','station-reconnect']
+                    elif iteration==8: phases=['station-orange']
+                    elif iteration==9: phases=['station-wakeup','station-wakeup-reconnect']
+                    elif iteration==10: phases=['station-wakeup-restart']
                 for phase in phases:
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'phase': phase,
                                    'doors': args.doors, 'readings': args.readings, 'barriers': args.barriers,
@@ -202,6 +217,7 @@ def main():
                                    'keyConsole': args.key_console,
                                    'storyMechanisms': args.story_mechanisms,
                                    'mainControlTransfer': args.main_control_transfer,
+                                   'stationStory': args.station_story,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -210,6 +226,14 @@ def main():
                     (directory / f'probe-{phase}.log').write_text(probe.stderr, encoding='utf-8')
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
+                    if phase.startswith('station-'):
+                        assert snapshot['passed'] and snapshot['temporaryHimeko']
+                        if phase in ('station-wakeup-reconnect','station-wakeup-restart'):
+                            previous=next(row for row in snapshots if row['phase']=='station-wakeup')
+                            assert snapshot['credits']==previous['credits'],'Reconnect duplicated/lost waking rewards'
+                        snapshots.append(snapshot)
+                        time.sleep(1)
+                        continue
                     if phase.startswith('main-control-'):
                         assert snapshot['passed'] and snapshot['certificateAbsent']
                         assert snapshot['transferPending'] == (phase == 'main-control-prepare')
