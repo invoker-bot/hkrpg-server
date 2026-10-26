@@ -154,6 +154,9 @@ public final class ProtocolBridge {
           Map.entry("AvatarPathChangedNotify.changed_avatar_type", "cur_multi_path_avatar_type"));
   private static final Set<String> FIELDLESS_CORE_HANDLERS =
       Set.of("PlayerLoginCsReq", "PlayerLoginFinishCsReq", "GetAvatarDataCsReq", "GetMailCsReq");
+  private static final Set<String> GACHA_CEILING_TYPE_FIELDS = Set.of(
+      "legacy.GetGachaCeilingCsReq.gacha_type", "legacy.GetGachaCeilingScRsp.gacha_type",
+      "legacy.ExchangeGachaCeilingCsReq.gacha_type", "legacy.ExchangeGachaCeilingScRsp.gacha_type");
   private final boolean legacy;
   private final ProtocolSchema coreSchema;
   private final ProtocolSchema clientSchema;
@@ -382,7 +385,14 @@ public final class ProtocolBridge {
         for (Object value : (List<?>) entry.getValue())
           result.addRepeatedField(field, convertValue(value, field, outbound, depth));
       } else {
-        result.setField(field, convertValue(entry.getValue(), field, outbound, depth));
+        Object value = convertValue(entry.getValue(), field, outbound, depth);
+        // The fixed CN4.6 GachaType enum is Normal=1/Newbie=2; the core's enum is
+        // Normal=2/Newbie=1. These scalar IDs need the same semantic conversion in
+        // both directions, even though protobuf describes them as uint32.
+        var coreField = outbound ? sourceField : field;
+        if (GACHA_CEILING_TYPE_FIELDS.contains(coreField.getFullName()) && value instanceof Integer id)
+          value = id == 1 ? 2 : id == 2 ? 1 : id;
+        result.setField(field, value);
       }
     }
     if (outbound && input.getDescriptorForType().getName().equals("EntityBuffChangeInfo")) {

@@ -134,9 +134,9 @@ def main():
         return result, reply['response']
 
     def query(expected, claimed=False):
-        result, reply = native('GetGachaCeilingCsReq', [(15, 2)])
+        result, reply = native('GetGachaCeilingCsReq', [(15, 1)])
         ceiling = reply['gacha_ceiling']
-        assert reply['gacha_type'] == 2 and ceiling.get('ceiling_num', 0) == expected
+        assert reply['gacha_type'] == 1 and ceiling.get('ceiling_num', 0) == expected
         assert ceiling.get('is_claimed', False) == claimed
         assert {row['avatar_id'] for row in ceiling['avatar_list']} == {1003, 1004, 1101, 1104, 1107, 1209, 1211}
         return result
@@ -180,7 +180,7 @@ def main():
             assert initial['uid'] == uid
             if iteration == 0:
                 query(0)
-                native('ExchangeGachaCeilingCsReq', [(1, 2), (6, chosen)], False)
+                native('ExchangeGachaCeilingCsReq', [(1, 1), (6, chosen)], False)
                 operation(101)
                 gm.wait_for(lambda: material(snapshot(), 101) == 1, 30)
                 if args.duplicate:
@@ -194,16 +194,16 @@ def main():
                 assert seeded['ceiling'] == 299 and not seeded['claimed'] and seeded['receipt'] == 'none'
             elif iteration == 1:
                 query(299)
-                native('ExchangeGachaCeilingCsReq', [(1, 2), (6, chosen)], False)
+                native('ExchangeGachaCeilingCsReq', [(1, 1), (6, chosen)], False)
                 pull()
                 before = query(300)
-                native('ExchangeGachaCeilingCsReq', [(1, 2), (6, 1102)], False)
-                native('ExchangeGachaCeilingCsReq', [(1, 11), (6, chosen)], False)
+                native('ExchangeGachaCeilingCsReq', [(1, 1), (6, 1102)], False)
+                native('ExchangeGachaCeilingCsReq', [(1, 2), (6, chosen)], False)
                 if not args.duplicate:
                     chosen = next(id for id in (1101, 1003, 1004, 1104, 1107, 1209, 1211)
                                   if id not in avatars(before))
-                after, reply = native('ExchangeGachaCeilingCsReq', [(1, 2), (6, chosen)])
-                assert reply['avatar_id'] == chosen and reply['gacha_type'] == 2
+                after, reply = native('ExchangeGachaCeilingCsReq', [(1, 1), (6, chosen)])
+                assert reply['avatar_id'] == chosen and reply['gacha_type'] == 1
                 assert reply['gacha_ceiling']['is_claimed']
                 if args.duplicate:
                     expected_eidolons = material(before, 11003) + 1
@@ -211,7 +211,7 @@ def main():
                 else:
                     assert chosen not in avatars(before) and chosen in avatars(after)
                 query(300, True)
-                native('ExchangeGachaCeilingCsReq', [(1, 2), (6, chosen)], False)
+                native('ExchangeGachaCeilingCsReq', [(1, 1), (6, chosen)], False)
                 stop()
                 delivered = inspect('inspect')
                 assert delivered['ceiling'] == 300 and delivered['claimed'] and delivered['receipt'] == 'granted'
@@ -223,7 +223,7 @@ def main():
                     assert 1003 in avatars(restored) and material(restored, 11003) == expected_eidolons
                 else:
                     assert chosen in avatars(restored)
-                native('ExchangeGachaCeilingCsReq', [(1, 2), (6, chosen)], False)
+                native('ExchangeGachaCeilingCsReq', [(1, 1), (6, chosen)], False)
                 stop()
                 final = inspect('inspect')
                 assert final == delivered, 'Saved entitlement or reward changed after normal restart'
