@@ -10,6 +10,10 @@ PERSISTENT=CLIENT/'StarRail_Data/Persistent/DesignData/Windows'
 BUNDLED=CLIENT/'StarRail_Data/StreamingAssets/DesignData/Windows'
 CHUNK='3fe3df4c53e2f8389ce65eb73ec8c55e.bytes'
 UPDATED_INDEX='5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed'
+COMPAT_INDEX='bcac71ed6783dfd447de127bdcab7c40ae4e21d488c39cba1af6ef6aa801b608'
+active_index=PERSISTENT/'DesignV_702d7f1e6dc48d92b85f9ae4ca2b139b.bytes'
+if active_index.is_file() and hashlib.sha256(active_index.read_bytes()).hexdigest()==COMPAT_INDEX:
+ UPDATED_INDEX=COMPAT_INDEX
 def parse_index(directory, bundled=None):
  return design.parse_index(directory,bundled,index_sha256=UPDATED_INDEX)
 

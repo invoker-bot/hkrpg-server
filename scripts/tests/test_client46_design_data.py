@@ -1,4 +1,5 @@
 """设计数据路径与只读导出的边界；实际记录测试依赖指定的本机客户端。"""
+import hashlib
 import importlib.util
 import json
 import tempfile
@@ -9,6 +10,10 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[2]
 CLIENT = Path(r'C:\Users\InvokerBot\AppData\Local\hoyo\hkrpg\versions\current')
 UPDATED_INDEX = '5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed'
+COMPAT_INDEX = 'bcac71ed6783dfd447de127bdcab7c40ae4e21d488c39cba1af6ef6aa801b608'
+active_index = CLIENT / 'StarRail_Data/Persistent/DesignData/Windows/DesignV_702d7f1e6dc48d92b85f9ae4ca2b139b.bytes'
+if active_index.is_file() and hashlib.sha256(active_index.read_bytes()).hexdigest() == COMPAT_INDEX:
+    UPDATED_INDEX = COMPAT_INDEX
 spec = importlib.util.spec_from_file_location('read_design', ROOT / 'scripts/read-client-design-data.py')
 design = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(design)
