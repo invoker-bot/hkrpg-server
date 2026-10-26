@@ -235,6 +235,14 @@ public final class ProtocolBridge {
     return id;
   }
 
+  /** A reply must have a named request/response pair in this exact wire command table. */
+  public int clientResponseCommand(int requestCommand) {
+    String request = clientNames.get(requestCommand);
+    if (request == null || !request.endsWith("CsReq")) return 0;
+    String response = request.substring(0, request.length() - 5) + "ScRsp";
+    return clientCommands.getOrDefault(response, 0);
+  }
+
   public Packet inbound(int id, byte[] bytes) {
     if (legacy) return new Packet(id, bytes);
     String name = clientNames.get(id);

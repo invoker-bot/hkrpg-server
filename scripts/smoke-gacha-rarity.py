@@ -134,12 +134,15 @@ def main():
         key = str(uuid.uuid4())
         request_file = directory / 'equipment-request.json'
         temporary = request_file.with_suffix('.tmp')
+        packet_id = 73597 + len(exchanges)
         temporary.write_text(json.dumps({'requestId': key, 'command': 'BuyGoodsCsReq', 'success': success,
+                                        'packetId': packet_id,
                                         'wire': base64.b64encode(payload).decode()}), encoding='utf-8')
         temporary.replace(request_file)
         result = gm.wait_for(lambda: (lambda s: s if s.get('equipmentReply', {}).get('requestId') == key else None)(snapshot()), 40)
         request_file.unlink()
         reply = result['equipmentReply']['response']
+        assert base64.b64decode(result['equipmentReply']['replyHeader']) == varint(8) + varint(packet_id)
         assert (reply.get('retcode', 0) == 0) == success
         assert result['gacha'] == before['gacha'], 'Ticket purchase changed pity before a draw'
         if success:
@@ -150,6 +153,7 @@ def main():
         else:
             assert result['bag'] == before['bag'] and result['basic'] == before['basic']
         exchanges.append({'shop': shop, 'goods': goods, 'item': item, 'count': count, 'success': success,
+                          'matchedReplyPacketId': packet_id,
                           'jadeAfter': result['basic']['hcoin'], 'stockAfter': stock(result, item), 'response': reply})
         return result
 

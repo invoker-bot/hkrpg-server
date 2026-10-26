@@ -47,6 +47,8 @@ public class GameSession {
     @Setter private String composeLimitPeriod = "";
     private final org.hkrpg.server.protocol.MissionNotifications46 missionNotifications =
             new org.hkrpg.server.protocol.MissionNotifications46();
+    private final org.hkrpg.server.protocol.ReplyCorrelation46 replyCorrelation =
+            new org.hkrpg.server.protocol.ReplyCorrelation46();
 
     public boolean hasSentRogueFinish(String runId) {
         return rogueFinishSentRun.equals(runId);
@@ -128,29 +130,31 @@ public class GameSession {
             while (packet.readableBytes() > 0) {
                 var frame = PacketCodec.decodeNext(packet);
                 if (frame == null) return;
-                if (VersionedPacketHandler.handle(this, frame.cmdId(), frame.body())) continue;
-                ProtocolBridge.Packet converted;
-                try {
-                    converted = protocol.inbound(frame.cmdId(), frame.body());
-                } catch (UnsupportedInboundCommandException unsupported) {
-                    // Match the core's unhandled-command behavior. An optional module query must
-                    // not terminate login or discard later frames in this same KCP message.
-                    // Never guess a response command, acknowledge success, or log its payload.
-                    LunarCore.getLogger().warn("Unhandled {} inbound command: {}", protocol.version(), frame.cmdId());
-                    continue;
-                }
-                int opcode = converted.cmdId();
-                byte[] data = converted.body();
-
-                // Log packet
-                if (LunarCore.getConfig().getLogOptions().packets) {
-                    if (!(LunarCore.getConfig().getLogOptions().filterLoopingPackets && CmdIdUtils.IGNORED_LOG_PACKETS.contains(opcode))) {
-                        logPacket("RECV", opcode, data);
+                try (var reply = replyCorrelation.enter(getProtocol(), frame.cmdId(), frame.header())) {
+                    if (VersionedPacketHandler.handle(this, frame.cmdId(), frame.body())) continue;
+                    ProtocolBridge.Packet converted;
+                    try {
+                        converted = protocol.inbound(frame.cmdId(), frame.body());
+                    } catch (UnsupportedInboundCommandException unsupported) {
+                        // Match the core's unhandled-command behavior. An optional module query must
+                        // not terminate login or discard later frames in this same KCP message.
+                        // Never guess a response command, acknowledge success, or log its payload.
+                        LunarCore.getLogger().warn("Unhandled {} inbound command: {}", protocol.version(), frame.cmdId());
+                        continue;
                     }
-                }
+                    int opcode = converted.cmdId();
+                    byte[] data = converted.body();
 
-                // Handle
-                getServer().getPacketHandler().handle(this, opcode, data);
+                    // Log packet
+                    if (LunarCore.getConfig().getLogOptions().packets) {
+                        if (!(LunarCore.getConfig().getLogOptions().filterLoopingPackets && CmdIdUtils.IGNORED_LOG_PACKETS.contains(opcode))) {
+                            logPacket("RECV", opcode, data);
+                        }
+                    }
+
+                    // Handle
+                    getServer().getPacketHandler().handle(this, opcode, data);
+                }
             }
         } catch (Exception e) {
             LunarCore.getLogger().warn("Rejected {} packet from {}: {}", protocol.version(), address, e.getMessage());
@@ -210,7 +214,7 @@ public class GameSession {
     }
 
     public void send(byte[] bytes) {
-        writeTransport(getProtocol().outboundFrames(bytes, getPlayer()));
+        sendFrames(getProtocol().outboundFrames(bytes, getPlayer()));
     }
 
     public void sendClientPacket(String name, byte[] bytes) {
@@ -218,16 +222,20 @@ public class GameSession {
         var body = bridge.experimental() ? org.hkrpg.server.protocol.Scene46.enrich(bridge.clientSchema(), name, bytes, getPlayer()) : bytes;
         if (bridge.experimental()) body = org.hkrpg.server.protocol.StoryParty46.enrich(bridge.clientSchema(), name, body, getPlayer());
         if (bridge.experimental()) body = org.hkrpg.server.protocol.FormulaLearning46.enrich(bridge.clientSchema(), name, body, getPlayer());
-        writeTransport(PacketCodec.encode(bridge.clientCommand(name), Utils.EMPTY_BYTE_ARRAY, body));
+        sendFrames(PacketCodec.encode(bridge.clientCommand(name), Utils.EMPTY_BYTE_ARRAY, body));
     }
 
     /** Independently verified native commands whose upstream names collide across modes. */
     public void sendClientPacket(int command, byte[] bytes) {
         if (!getProtocol().experimental()) throw new org.hkrpg.server.protocol.ProtocolException("Native packet requires experimental protocol");
-        writeTransport(PacketCodec.encode(command, Utils.EMPTY_BYTE_ARRAY, bytes));
+        sendFrames(PacketCodec.encode(command, Utils.EMPTY_BYTE_ARRAY, bytes));
     }
 
-    private void writeTransport(byte[] bytes) {
+    private void sendFrames(byte[] bytes) {
+        writeTransport(replyCorrelation.outbound(bytes));
+    }
+
+    protected void writeTransport(byte[] bytes) {
         if (this.ukcp != null) {
             ByteBuf buf = Unpooled.wrappedBuffer(bytes);
             this.ukcp.write(buf);

@@ -13,7 +13,7 @@ import kcp.highway.*;
 
 /** A real isolated KCP player kept online for the GM HTTP/browser acceptance flow. */
 public final class NativeGmPlayerProbe {
-  private record Frame(int command, byte[] body) {}
+  private record Frame(int command, byte[] header, byte[] body) {}
 
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final BlockingQueue<Frame> inbox = new LinkedBlockingQueue<>();
@@ -23,6 +23,7 @@ public final class NativeGmPlayerProbe {
   private final List<Map<String, Object>> equipmentSyncs = new ArrayList<>();
   private Ukcp channel;
   private int requests;
+  private byte[] lastReplyHeader = new byte[0];
 
   private static Object field(DynamicMessage message, String name) {
     return message.getField(
@@ -56,11 +57,15 @@ public final class NativeGmPlayerProbe {
   }
 
   private DynamicMessage callWire(String name, byte[] payload, boolean success) throws Exception {
+    return callWire(name, payload, success, new byte[0]);
+  }
+
+  private DynamicMessage callWire(String name, byte[] payload, boolean success, byte[] header) throws Exception {
     var bytes =
         Unpooled.wrappedBuffer(
             PacketCodec.encode(
                 name.equals("GetServerPrefsDataCsReq") ? 6105
-                    : protocol.clientCommand(name.replace("UnlockSkillTree", "UnlockSkilltree")), new byte[0], payload));
+                    : protocol.clientCommand(name.replace("UnlockSkillTree", "UnlockSkilltree")), header, payload));
     try {
       channel.write(bytes);
     } finally {
@@ -75,6 +80,8 @@ public final class NativeGmPlayerProbe {
       var frame = inbox.poll(1, TimeUnit.SECONDS);
       if (frame == null) continue;
       if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
+        if (header.length > 0 && frame.header().length > 0)
+          throw new IllegalStateException("Notification inherited a request packet ID");
         var sync = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body());
         basic.putAll(project((DynamicMessage) field(sync, "basic_info")));
         if (!((List<?>) field(sync, "equipment_list")).isEmpty()
@@ -82,6 +89,9 @@ public final class NativeGmPlayerProbe {
             || !((DynamicMessage) field(sync, "avatar_sync")).getAllFields().isEmpty()) equipmentSyncs.add(project(sync));
       }
       if (frame.command() != protocol.clientCommand(response.replace("UnlockSkillTree", "UnlockSkilltree"))) continue;
+      lastReplyHeader = frame.header();
+      if (header.length > 0 && !Arrays.equals(header, lastReplyHeader))
+        throw new IllegalStateException("Response did not complete the matching async request: " + response);
       var result = protocol.clientSchema().parse(response, frame.body());
       String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp", "RankUpAvatarScRsp",
           "DressAvatarScRsp", "TakeOffEquipmentScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
@@ -145,9 +155,19 @@ public final class NativeGmPlayerProbe {
               "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
+          byte[] header = new byte[0];
+          if (requested.has("packetId")) {
+            int packetId = requested.get("packetId").getAsInt();
+            if (packetId <= 0) throw new IllegalArgumentException("Invalid smoke packet ID");
+            header = new byte[CodedOutputStream.computeUInt32Size(1, packetId)];
+            var encoded = CodedOutputStream.newInstance(header);
+            encoded.writeUInt32(1, packetId);
+            encoded.checkNoSpaceLeft();
+          }
           var result = callWire(command, Base64.getDecoder().decode(requested.get("wire").getAsString()),
-              requested.get("success").getAsBoolean());
-          lastEquipment = Map.of("requestId", id, "response", project(result), "syncs", List.copyOf(equipmentSyncs));
+              requested.get("success").getAsBoolean(), header);
+          lastEquipment = Map.of("requestId", id, "response", project(result), "syncs", List.copyOf(equipmentSyncs),
+              "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader));
           lastEquipmentId = id;
         }
       }
@@ -198,7 +218,7 @@ public final class NativeGmPlayerProbe {
                 while (bytes.isReadable()) {
                   var frame = PacketCodec.decodeNext(bytes);
                   if (frame == null) throw new IllegalStateException("Truncated GM frame");
-                  probe.inbox.add(new Frame(frame.cmdId(), frame.body()));
+                  probe.inbox.add(new Frame(frame.cmdId(), frame.header(), frame.body()));
                 }
               } catch (Throwable error) {
                 probe.failure.set(error);

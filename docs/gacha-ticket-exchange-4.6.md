@@ -50,3 +50,37 @@ python scripts/smoke-gacha-rarity.py --ticket-exchange --output build/gacha-tick
 更新前后 UID 10001 的 80 项完成记录、选角、队伍、角色、命途、25 份物品/角色文档、机关记录、星琼、信用点和抽卡保底一致。正式存档仍有 100,114 星琼、1 张普通车票，与故障截图一致。配置和运行环境保留。新服务运行的 JAR 与上述完整测试及隔离网络报告一致；健康检查和只读 `scripts/verify-compose.py` 通过。
 
 发布证据为 `build/gacha-ticket-exchange-20261025/deployment.json` 与 `compose-verification.json`。已请用户完全退出后重新登录，复测确认星琼补票后的十连；截至本次发布记录，真实客户端结果仍待反馈。
+
+## 2026-10-26：补票到账后没有自动继续跃迁
+
+用户进一步确认：在跃迁页点击十连、确认星琼补票后，只增加车票，等待十秒仍不抽取。不能把后续再次点击产生的 `DoGachaCsReq` 当成自动继续已验收。
+
+本机固定客户端的原始 Lua 已有完整的继续路径：`GachaConfirmDialog._buy_insufficient_token` 使用静默购买策略；`ShopModule.on_buy_goods_rsp` 在成功时广播 `ShopBuyGoods`；`GachaDrawPanel._on_buy_tokens_finish` 校验同一商店，再按缓存的单抽或十连类型调用原有 `on_draw`，保留票数、卡池时间与背包容量检查。通用商店购票本身不应直接在服务端触发抽取。
+
+这次定位到请求与回复关联缺失。实际购买请求带有非零包编号，而服务端的 `GameSession.onMessage` 丢弃了解码后的请求头，两个原生回复出口和内部协议回复出口均发送空头。客户端异步购买等待的是编号与命令共同匹配的回复；物品同步虽然更新了车票，异步购买完成路径却没有被正常唤醒。
+
+静态证据只读提取自固定客户端：`GameAssembly.dll` SHA256 为 `8cc7380066343b6152069a6d1c90e230322aa78b780b1e738c13185b3692f1d3`，元数据为 `09ce2093b78779d4bbe9dc866bb472438efd96cc6546b7cbc34edf4006736130`。
+
+- `NetworkManager.FIMGFBHGCCG`（635334）在 RVA `0x0d9b6990` 至 `0x0d9b699e` 递增请求编号并写入 `NetPacket + 0x5c`。
+- `NetPacket.Serialize`（301126）在 `0x1dd7d131` 至 `0x1dd7d136` 将该编号写入头对象 `+0x24`；`Deserialize`（301127）在 `0x1dd7dfcc` 至 `0x1dd7dfcf` 反向读取。
+- 头类型 `GOCBELPFLHO.WriteTo`（244466）在 `0x1e4bc00c` 检查该成员，并以标记 `8` 写出，即 protobuf 的 uint32 字段 1。其余头字段未按猜测映射。
+- 购买回复 `BuyGoodsScRsp`（类型 34181）的字段常量再次核对为购买次数 2、商品 4、结果 9、商店 10、返还物品 14，未改动这些已经正确的含义。Lua `_apply_buy_goods_rsp` 将购买次数赋给累计 `BuyTimes`，不能将其改为本次购票张数。
+
+修复 `ReplyCorrelation46` 在处理每个原生请求时建立限定作用域，统一在协议转换之后为对应回复写入编号，覆盖具名、数字原生回复和内部协议回复。只处理当前版本命令表中存在的请求／回复配对；只回传编号，不照搬其他客户端头字段。同步通知、其他请求的回复、不同线程及作用域外发送均不继承编号，异常、连续帧与嵌套处理会正确清理。旧 4.2 和无编号请求保持原有行为。
+
+验证先在真实 `GameSession.onMessage` 上保留 4 项回归中 3 项失败，再实现修复。后续补充通知不串号、嵌套与异常清理、线程隔离、连续帧、完整 uint32 范围、畸形编号在业务执行前拒绝、旧协议及内部协议转换等检查。隔离 KCP 探针也开始发送并严格匹配购买包编号，成功和失败回复均必须匹配，物品通知不得带上购买编号。
+
+原始证据与构建、隔离网络、发布记录位于 `build/gacha-purchase-continuation-20261026/`。没有修改客户端文件、运营卡池或玩家资产；网络验证只操作独立 H2 测试账号。完整测试、正常重启保存、发布与真实客户端动画的最终结果追加于后，不能用静态代码或网络探针替代画面验收。
+
+本轮隔离网络通过：七次原生购买（四次成功，余额不足、零数量、未知商品各一次失败）均匹配独立请求编号 73597—73603；同步通知不带购买编号。测试从 1 张普通票和 3,200 星琼开始，补 9 张后完成十连，再补 1 张完成单抽，另验证两家商店的专票。最终普通票 0、专票 2、星琼 1,280；购买本身未改变保底，11 次抽取才增加抽取累计。三次正常停服、两次同号重启、六次独立存档读取均通过。`scripts/smoke-server.py` 的两次登录及账号重启恢复检查亦通过。
+
+可复验命令（测试使用隔离数据库）：
+
+```powershell
+./gradlew.bat test --tests '*ReplyCorrelation46Test' --tests '*ShopPurchase46Test' --tests '*ProtocolBridgeTest' --tests '*PacketCodecTest'
+python scripts/smoke-gacha-rarity.py --ticket-exchange --output build/gacha-purchase-continuation-20261026/native.json
+python scripts/smoke-server.py --java .tools/jdk-21.0.12.1+1/bin/java.exe
+./gradlew.bat test shadowJar
+```
+
+本轮完整构建通过 625 组、15,574 项测试，失败、错误、跳过均为零，新增 15 项回归；测试执行约 12 分 49 秒，完整构建约 13 分 10 秒。3,604 份代码、脚本与构建输入冻结后保持不变，隔离网络、登录恢复测试与候选镜像使用同一 JAR `284946998ec794f1baf5f683b48f28698eb12d9c80bc44d63d136b17a825c73c`。原始客户端 DLL、元数据、Lua 索引及已安装的剧情试用设计数据索引均核对未改动。
