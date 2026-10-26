@@ -276,7 +276,9 @@ def main():
         matches = [r for r in items(snap, 'equipment', 20006) if r.get('dress_avatar_id') == owner]
         assert len(matches) == 1, (owner, matches)
         unique = matches[0]['unique_id']
-        assert avatar(snap, owner)['base_avatar_id'] == owner
+        current = next(r for r in snap['avatars']['avatar_list']
+                       if r.get('cur_multi_path_avatar_type', r['base_avatar_id']) == owner)
+        assert current.get('equipment_unique_id') == unique, 'Avatar field7 omitted the current light cone'
         path = next(r for r in snap['avatars']['avatar_path_data_info_list'] if r['avatar_id'] == owner)
         assert path.get('path_equipment_id') == unique
         return unique
@@ -287,18 +289,39 @@ def main():
         assert equipped(result, avatar_id) == unique
         assert any(s.get('equipment_list') and s.get('avatar_sync')
                    for s in result['equipmentReply']['syncs']), 'Missing equipment/avatar notification'
+        assert any(r.get('equipment_unique_id') == unique
+                   and r.get('cur_multi_path_avatar_type', r['base_avatar_id']) == avatar_id
+                   for s in result['equipmentReply']['syncs']
+                   for r in s.get('avatar_sync', {}).get('avatar_list', [])), 'Active avatar delta omitted field7'
+        return result
+
+    def path_updates(snap):
+        return [r for s in snap['equipmentReply']['syncs']
+                for r in s.get('avatar_sync', {}).get('avatar_path_data_info_list', [])]
+
+    def switch_path(path_id, base_id=8001):
+        # Independently pinned CN4.6 CmdAvatarType: request enum field4, reply enum field11.
+        result = wire('SetAvatarPathCsReq', number(4, path_id))
+        assert avatar(result, base_id)['cur_multi_path_avatar_type'] == path_id
+        path = next(r for r in result['avatars']['avatar_path_data_info_list'] if r['avatar_id'] == path_id)
+        assert avatar(result, base_id).get('equipment_unique_id', 0) == path.get('path_equipment_id', 0)
+        assert any(r.get('cur_multi_path_avatar_type') == path_id
+                   and r.get('equipment_unique_id', 0) == path.get('path_equipment_id', 0)
+                   for s in result['equipmentReply']['syncs']
+                   for r in s.get('avatar_sync', {}).get('avatar_list', [])), 'Path switch omitted current equipment'
         return result
 
     def selection_first():
         # Only this disposable server/account receives fixtures. Keep production equipment intact.
         grant(1003, 1, 1)
         grant(1202, 1, 1)
-        grant(20006, 2)
-        ready = gm.wait_for(lambda: matching_snapshot(lambda s: len(items(s, 'equipment', 20006)) == 2
-                            and {1003, 1202}.issubset({r['base_avatar_id'] for r in s['avatars']['avatar_list']})), 40)
+        grant(1001, 1, 1)
+        grant(20006, 4)
+        ready = gm.wait_for(lambda: matching_snapshot(lambda s: len(items(s, 'equipment', 20006)) == 4
+                            and {1001, 1003, 1202}.issubset({r['base_avatar_id'] for r in s['avatars']['avatar_list']})), 40)
         for avatar_id, kind in ((1003, 1), (1202, 1), (1003, 2)):
             ready = recommendation(ready, avatar_id, kind)
-        first, second = sorted(r['unique_id'] for r in items(ready, 'equipment', 20006))
+        first, second, third, fourth = sorted(r['unique_id'] for r in items(ready, 'equipment', 20006))
         dress(1003, first)
         dress(1202, second)
         swapped = dress(1003, second)
@@ -309,7 +332,36 @@ def main():
         assert not path.get('path_equipment_id')
         assert equipped(removed, 1202) == first
         final = dress(1003, second)
-        return recommendation(final, 1003)
+        switch_path(8002)
+        dress(8002, third)
+        removed = wire('TakeOffEquipmentCsReq', number(9, 8002))
+        assert not avatar(removed, 8001).get('equipment_unique_id')
+        assert any(r['avatar_id'] == 8002 and not r.get('path_equipment_id') for r in path_updates(removed))
+        assert any(r['base_avatar_id'] == 8001 and not r.get('equipment_unique_id')
+                   for s in removed['equipmentReply']['syncs']
+                   for r in s.get('avatar_sync', {}).get('avatar_list', [])), 'Unequip did not clear the avatar slot'
+        dress(8002, third)
+        inactive = wire('DressAvatarCsReq', number(2, 8004) + number(4, first))
+        assert equipped(inactive, 8002) == third
+        assert any(r['avatar_id'] == 8004 and r.get('path_equipment_id') == first for r in path_updates(inactive))
+        selected = switch_path(8004)
+        assert equipped(selected, 8004) == first
+        selected = switch_path(8002)
+        assert equipped(selected, 8002) == third
+        returned = dress(1202, first)
+        assert any(r['avatar_id'] == 8004 and not r.get('path_equipment_id') for r in path_updates(returned))
+        empty = switch_path(8004)
+        assert not avatar(empty, 8001).get('equipment_unique_id')
+        final = switch_path(8002)
+        assert equipped(final, 8002) == third
+        switch_path(1224, 1001)
+        dress(1224, fourth)
+        empty = switch_path(1001, 1001)
+        assert not avatar(empty, 1001).get('equipment_unique_id')
+        final = switch_path(1224, 1001)
+        assert equipped(final, 1224) == fourth
+        final = recommendation(final, 1003)
+        return recommendation(final, 8002)
 
     try:
         for iteration in range(2):
@@ -383,9 +435,10 @@ def main():
                 if args.selection:
                     # Session wire IDs can change; both persisted ownership and each fresh avatar
                     # reference must agree with the new bag, without relying on old unique IDs.
-                    assert equipped(initial, 1003) != equipped(initial, 1202)
+                    assert len({equipped(initial, id) for id in (1003, 1202, 8002, 1224)}) == 4
                     restored = recommendation(initial, 1003)
-                    recommendation(restored, 1202)
+                    restored = recommendation(restored, 1202)
+                    recommendation(restored, 8002)
                 elif args.gates:
                     assert initial['avatars'] == final['avatars'], 'Promotion/traces did not survive H2 restart'
                     target = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('promotion') == 1)

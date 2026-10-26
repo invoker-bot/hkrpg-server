@@ -359,7 +359,8 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
             }
         }
 
-        if (this.isHero()) {
+        // Every bound multi-path avatar publishes the selected path, including March 7th.
+        if (this.getMultiPath() != null) {
             proto.setChangedAvatarType(this.getMultiPath().getExcelId());
         } else {
             proto.setChangedAvatarType(this.getAvatarId());

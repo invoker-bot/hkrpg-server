@@ -30,6 +30,8 @@ Pearl 的 4.6.51/4.7 测试版使用另一套命令号与字段；不能合并�
 
 角色路径映射 AvatarPathInfo → AvatarPathData，保留技能点、装备槽、皮肤、强化、晋阶奖励与首次获得时间；光锥/遗器的 equip_avatar_id → dress_avatar_id。玩家外观 PlayerOutfitInfo → CJLCPMDGIBO 及其混淆字段有同一固定源码中的明确构造证据。AvatarPathInfo.first_met_timestamp 等无充分语义证据的字段仍不映射。
 
+4.6 `Avatar.equipment_unique_id`（字段 7）还需要独立填充：`AvatarEquipment46` 从同一完整快照或角色增量中匹配当前命途的 `AvatarPathData.path_equipment_id`（字段 2），不借用其他命途或临时查询在线对象。完整原因、命途通知和验证边界见[装备显示说明](avatar-equipment-display-4.6.md)。
+
 场景的组属性和楼层属性按语义重新编码，负数保留。旧 group_state_list 合并到 entity_group_list.state，保留没有实体的状态组，冲突状态拒绝；旧 is_default 标记没有单独对应字段。SceneIdentifierInfo → SceneIdentifier 保留已确认的 floor_id；未猜测 game_id 的新含义。源路径与固定提交见 [NOTICE](../NOTICE.md)，生成类和原始协议定义未改动。
 
 4.6 的 FinishQuest 完成目标与 TakeQuestReward 领取奖励分开。领取命令 905 的原始类型 EMHALMBFHKG、字段 2 的目标列表，以及完成响应 942 的 BICDPPOGHND、字段 11 的 retcode，均有同一参考提交的显式来源，不根据旧字段号推断。

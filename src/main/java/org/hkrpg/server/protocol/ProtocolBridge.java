@@ -383,7 +383,8 @@ public final class ProtocolBridge {
             reason.getEnumType().findValueByName("SCENE_ENTITY_BUFF_CHANGE_TYPE_ADD_MAZEBUFF"));
       }
     }
-    return result.build();
+    var converted = result.build();
+    return outbound ? AvatarEquipment46.project(converted) : converted;
   }
 
   static FieldDescriptor mappedField(FieldDescriptor source, Descriptor target, boolean outbound) {

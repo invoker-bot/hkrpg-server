@@ -74,7 +74,14 @@ public class AvatarMultiPath extends BaseAvatar {
     // Player sync
 
     public void onSync(PlayerSyncScNotify proto) {
-        // TODO
+        var sync = proto.getMutableAvatarSync();
+        sync.addAvatarPathInfoList(this.toPathInfoProto());
+        // Equipment mutations operate on BaseAvatar, so active multi-path characters arrive
+        // here rather than GameAvatar.onSync. Publish their current formal view as well.
+        // An inactive path has no bound avatar and must not change the active equipment slot.
+        if (this.avatar != null && this.avatar.getMultiPath() == this) {
+            sync.addAvatarList(this.avatar.toProto());
+        }
     }
 
     // Proto
