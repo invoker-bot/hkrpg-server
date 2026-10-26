@@ -21,6 +21,9 @@ INDEX_SHA256 = '2836fe8dba9a28fd48a27eae0220179e7804e31167222ea3fabf3608e1cf6e89
 INDEX_PROFILES = {
     INDEX_SHA256: (255, 4, 33, 141295),
     '5a5981c06b0d7d1cbff5f89b8450fefb40278c60a5ca10b092b3381094dfcbed': (255, 4, 33, 141295),
+    # Explicit local station-himeko-menu-v1 profile: one SpecialAvatar UI Type byte and
+    # its block digest, without changing index layout or any other design record.
+    'bcac71ed6783dfd447de127bdcab7c40ae4e21d488c39cba1af6ef6aa801b608': (255, 4, 33, 141295),
 }
 
 
