@@ -49,6 +49,13 @@ public final class ProtocolBridge {
           Map.entry("ExpUpEquipmentCsReq.item_cost_list", "cost_data"),
           Map.entry("ExpUpRelicCsReq.item_cost_list", "cost_data"),
           Map.entry("RankUpEquipmentCsReq.item_cost_list", "cost_data"),
+          // Honey fe00bdb CmdRecommendType and pinned CN4.6 KOAGMGNMMOC/BGGIHLHFPGA:
+          // request 2416 uses avatar 10 / kind 12; reply 2411 echoes avatar 9 / kind 12.
+          // The client awaits that exact pair before opening the light-cone selection page.
+          Map.entry("GetBigDataRecommendCsReq.trailblazer_path_id", "equip_avatar"),
+          Map.entry("GetBigDataRecommendCsReq.recommend_type", "big_data_recommend_type"),
+          Map.entry("GetBigDataRecommendScRsp.trailblazer_path_id", "equip_avatar"),
+          Map.entry("GetBigDataRecommendScRsp.recommend_type", "big_data_recommend_type"),
           Map.entry("FinishQuestScRsp.retcode", "PLDKENJLKME"),
           Map.entry("Avatar.changed_avatar_type", "cur_multi_path_avatar_type"),
           Map.entry("Avatar.first_met_timestamp", "first_met_time_stamp"),

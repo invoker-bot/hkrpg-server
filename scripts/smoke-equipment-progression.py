@@ -51,7 +51,10 @@ def main():
     parser.add_argument('--output', type=Path, default=ROOT / 'build/equipment-progression-native.json')
     parser.add_argument('--gates', action='store_true', help='验证突破、行迹和锁定批次；仍使用独立 H2/账号')
     parser.add_argument('--milestones', action='store_true', help='加验星魂扣料、晋阶奖励、重复请求和 H2 重登；包含 gates')
+    parser.add_argument('--selection', action='store_true', help='独立验证光锥推荐查询、装备、跨角色交换、卸下及 H2 重登')
     args = parser.parse_args()
+    if args.selection and (args.gates or args.milestones):
+        parser.error('--selection 与养成门槛测试分别运行')
     args.gates |= args.milestones
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
@@ -119,8 +122,8 @@ def main():
     def grant(tid, amount, level=None):
         result = request('/gm/api/operate', {'requestId': str(uuid.uuid4()), 'uid': uid, 'action': 'grant',
                                           'itemId': tid, 'amount': amount,
-                                          'level': level if level is not None else (1 if tid in (20000, 24000) else 0),
-                                          'rank': 1 if tid in (20000, 24000) else 0})['data']
+                                          'level': level if level is not None else (1 if tid in (20000, 20006, 24000) else 0),
+                                          'rank': 1 if tid in (20000, 20006, 24000) else 0})['data']
         assert result['state'] == 'completed', result
 
     def operate(command, target, costs, success=True):
@@ -259,6 +262,55 @@ def main():
         ranked = wire('RankUpAvatarCsReq', rank_request(rank=2))
         assert milestone_rank(ranked) == 2 and material(ranked, 11202) == 0
 
+    def recommendation(snap, avatar_id, kind=1):
+        # Pinned CN4.6: request 2416 fields 10/12; reply 2411 fields 9/12.
+        result = wire('GetBigDataRecommendCsReq', number(10, avatar_id) + number(12, kind))
+        reply = result['equipmentReply']['response']
+        assert reply == {'equip_avatar': avatar_id, 'big_data_recommend_type':
+                         'BIG_DATA_RECOMMEND_TYPE_' + ('EQUIPMENT' if kind == 1 else 'RELIC_SUIT')}, reply
+        assert result['bag'] == snap['bag'] and result['avatars'] == snap['avatars']
+        assert result['basic'] == snap['basic'], 'Read-only recommendation changed player state'
+        return result
+
+    def equipped(snap, owner):
+        matches = [r for r in items(snap, 'equipment', 20006) if r.get('dress_avatar_id') == owner]
+        assert len(matches) == 1, (owner, matches)
+        unique = matches[0]['unique_id']
+        assert avatar(snap, owner)['base_avatar_id'] == owner
+        path = next(r for r in snap['avatars']['avatar_path_data_info_list'] if r['avatar_id'] == owner)
+        assert path.get('path_equipment_id') == unique
+        return unique
+
+    def dress(avatar_id, unique):
+        # Native CmdAvatarType: avatar 2 / unique item 4; never persistent DB object IDs.
+        result = wire('DressAvatarCsReq', number(2, avatar_id) + number(4, unique))
+        assert equipped(result, avatar_id) == unique
+        assert any(s.get('equipment_list') and s.get('avatar_sync')
+                   for s in result['equipmentReply']['syncs']), 'Missing equipment/avatar notification'
+        return result
+
+    def selection_first():
+        # Only this disposable server/account receives fixtures. Keep production equipment intact.
+        grant(1003, 1, 1)
+        grant(1202, 1, 1)
+        grant(20006, 2)
+        ready = gm.wait_for(lambda: matching_snapshot(lambda s: len(items(s, 'equipment', 20006)) == 2
+                            and {1003, 1202}.issubset({r['base_avatar_id'] for r in s['avatars']['avatar_list']})), 40)
+        for avatar_id, kind in ((1003, 1), (1202, 1), (1003, 2)):
+            ready = recommendation(ready, avatar_id, kind)
+        first, second = sorted(r['unique_id'] for r in items(ready, 'equipment', 20006))
+        dress(1003, first)
+        dress(1202, second)
+        swapped = dress(1003, second)
+        assert equipped(swapped, 1202) == first, 'Cross-avatar replacement must swap the old cone'
+        removed = wire('TakeOffEquipmentCsReq', number(9, 1003))
+        assert not row(removed, 'equipment', second).get('dress_avatar_id')
+        path = next(r for r in removed['avatars']['avatar_path_data_info_list'] if r['avatar_id'] == 1003)
+        assert not path.get('path_equipment_id')
+        assert equipped(removed, 1202) == first
+        final = dress(1003, second)
+        return recommendation(final, 1003)
+
     try:
         for iteration in range(2):
             log = (directory / f'server-{iteration}.log').open('wb'); logs.append(log)
@@ -279,7 +331,10 @@ def main():
             initial = gm.wait_for(snapshot)
             if uid is None: uid = initial['uid']
             assert initial['uid'] == uid
-            if iteration == 0 and args.gates:
+            if iteration == 0 and args.selection:
+                final = selection_first()
+                (directory / 'before-restart.json').write_text(json.dumps(final, indent=2), encoding='utf-8')
+            elif iteration == 0 and args.gates:
                 final = gates_first()
                 if args.milestones:
                     final = milestones_first()
@@ -324,8 +379,14 @@ def main():
             else:
                 (directory / 'after-restart.json').write_text(json.dumps(initial, indent=2), encoding='utf-8')
                 assert persisted_bag(initial) == persisted_bag(final), 'Inventory/progression did not survive H2 restart'
-                assert initial['basic']['scoin'] == final['basic']['scoin'], 'Credit debit did not survive restart'
-                if args.gates:
+                assert initial['basic'].get('scoin', 0) == final['basic'].get('scoin', 0), 'Credit debit did not survive restart'
+                if args.selection:
+                    # Session wire IDs can change; both persisted ownership and each fresh avatar
+                    # reference must agree with the new bag, without relying on old unique IDs.
+                    assert equipped(initial, 1003) != equipped(initial, 1202)
+                    restored = recommendation(initial, 1003)
+                    recommendation(restored, 1202)
+                elif args.gates:
                     assert initial['avatars'] == final['avatars'], 'Promotion/traces did not survive H2 restart'
                     target = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('promotion') == 1)
                     donor = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('is_protected'))
@@ -344,10 +405,10 @@ def main():
             stop()
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
         result = {'passed': True, 'clientAccepted': False, 'isolated': True, 'jarSha256': digest,
-                  'suite': 'avatar-milestones' if args.milestones else ('progression-gates' if args.gates else 'equipment-progression'),
+                  'suite': 'equipment-selection' if args.selection else ('avatar-milestones' if args.milestones else ('progression-gates' if args.gates else 'equipment-progression')),
                   'uid': uid, 'sessions': len(sessions), 'normalStops': normal_stops,
                   'requests': sum(s['requests'] for s in sessions), 'operations': observations,
-                  'finalBag': final['bag'], 'credits': final['basic']['scoin'], 'directory': str(directory)}
+                  'finalBag': final['bag'], 'credits': final['basic'].get('scoin', 0), 'directory': str(directory)}
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         print(json.dumps({k: v for k, v in result.items() if k not in ('operations', 'finalBag')}, ensure_ascii=False))

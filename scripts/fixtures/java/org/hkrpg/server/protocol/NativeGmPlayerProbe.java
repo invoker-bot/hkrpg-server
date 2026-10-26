@@ -83,7 +83,8 @@ public final class NativeGmPlayerProbe {
       }
       if (frame.command() != protocol.clientCommand(response.replace("UnlockSkillTree", "UnlockSkilltree"))) continue;
       var result = protocol.clientSchema().parse(response, frame.body());
-      String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp", "RankUpAvatarScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
+      String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp", "RankUpAvatarScRsp",
+          "DressAvatarScRsp", "TakeOffEquipmentScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
       if (!result.getUnknownFields().asMap().isEmpty() || ((Integer) field(result, retcodeField) == 0) != success)
         throw new IllegalStateException("Unexpected response: " + response + " " + project(result));
       return result;
@@ -140,6 +141,7 @@ public final class NativeGmPlayerProbe {
               "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
               "GetShopListCsReq", "GetPlayerBoardDataCsReq", "SetPersonalCardCsReq",
               "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
+              "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq",
               "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
