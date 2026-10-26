@@ -45,6 +45,9 @@ public final class ProtocolBridge {
           Map.entry("RankUpAvatarCsReq.item_cost_list", "cost_data"),
           // Honey fe00bdb CmdShopType: CN4.6 field 15 is the interacted scene prop.
           Map.entry("BuyGoodsCsReq.server_entity_id", "interacted_prop_entity_id"),
+          // CN4.6 GachaModule.GetGachaCeiling sends its banner type in field 15.
+          // GHJGEGJAODM's sole value is copied from the method argument at offset 0x18.
+          Map.entry("GetGachaCeilingCsReq.gacha_type", "DDMCNOJFGON"),
           // Honey fe00bdb CmdItemType consumes CostData for all three equipment operations.
           Map.entry("ExpUpEquipmentCsReq.item_cost_list", "cost_data"),
           Map.entry("ExpUpRelicCsReq.item_cost_list", "cost_data"),

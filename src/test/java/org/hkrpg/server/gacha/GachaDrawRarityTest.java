@@ -37,11 +37,12 @@ class GachaDrawRarityTest {
       @Override public GameItem getMaterialByItemId(int id) {
         return id == 101 || id == 102 ? new GameItem(new Gson().fromJson("{\"ID\":"+id+",\"PileLimit\":999}", ItemExcel.class), 100) : null;
       }
-      @Override public boolean removeItem(GameItem item, int count) { charged += count; return true; }
+      @Override public boolean removeItem(GameItem item, int count) { if (denyCharge) return false; charged += count; return true; }
       @Override public boolean addItem(GameItem item) { awarded.add(item.getItemId()); return true; }
       @Override public boolean addItem(int id, int count) { return true; }
     };
     int charged;
+    boolean denyCharge;
     DoGachaScRsp response;
     @Override public Inventory getInventory() { return inventory; }
     @Override public AvatarStorage getAvatars() { return avatars; }
@@ -99,6 +100,32 @@ class GachaDrawRarityTest {
     player.history.getStandardBanner().setFailedFeaturedItemPulls(1);
     service.doPulls(player, 1001, 1);
     assertEquals(1, player.history.getStandardBanner().getFailedFeaturedItemPulls());
+  }
+
+  @Test void beginnerAndEventPullsDoNotIncreaseThePermanentBannerSelector() throws Exception {
+    for (var type : List.of(GachaType.Newbie, GachaType.AvatarUp, GachaType.WeaponUp)) {
+      var service = new DrawService(); var player = new Resident();
+      GachaBanner banner = type == GachaType.Newbie
+          ? new GachaBanner().createBanner(4001, type, 0, Integer.MAX_VALUE, new int[0], new int[0])
+          : type == GachaType.AvatarUp
+              ? new GachaBanner().createBanner(2001, type, 0, Integer.MAX_VALUE, new int[]{1102}, new int[]{1002}, 100)
+              : new GachaBanner().createBanner(3001, type, 0, Integer.MAX_VALUE, new int[]{23000}, new int[]{21000}, 100);
+      service.getGachaBanners().put(banner.getId(), banner);
+      service.doPulls(player, banner.getId(), 1);
+      assertEquals(1, player.charged, "The test must actually perform the draw");
+      assertEquals(0, player.history.getCeilingNum(), type.toString());
+    }
+  }
+
+  @Test void failedTicketDebitDoesNotIncreaseProgressOrAwardItems() throws Exception {
+    var service = new DrawService(); var player = new Resident();
+    service.getGachaBanners().put(1001, standard());
+    player.denyCharge = true;
+    service.doPulls(player, 1001, 1);
+    assertEquals(0, player.history.getCeilingNum());
+    assertTrue(player.awarded.isEmpty());
+    assertNotNull(player.response);
+    assertNotEquals(0, player.response.getRetcode());
   }
 
   @Test void eventWithAFourStarInTheFiveStarSlotIsRejectedBeforePaymentOrPity() {

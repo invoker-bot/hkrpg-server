@@ -14,7 +14,9 @@ import emu.lunarcore.game.avatar.GameAvatar;
 import emu.lunarcore.game.enums.ItemMainType;
 import emu.lunarcore.game.enums.ItemRarity;
 import emu.lunarcore.game.inventory.GameItem;
+import emu.lunarcore.game.inventory.ItemParamMap;
 import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.shop.ShopService;
 import emu.lunarcore.proto.GachaItemOuterClass.GachaItem;
 import emu.lunarcore.proto.GetGachaInfoScRspOuterClass.GetGachaInfoScRsp;
 import emu.lunarcore.proto.ItemListOuterClass.ItemList;
@@ -201,11 +203,14 @@ public class GachaService extends BaseGameService {
                 return;
             }
 
-            player.getInventory().removeItem(costItem, times);
+            if (!player.getInventory().removeItem(costItem, times)) {
+                player.sendPacket(new PacketDoGachaScRsp(Retcode.FAIL));
+                return;
+            }
         }
 
         // Add gacha ceiling
-        if (banner.getGachaType() == GachaType.Normal || banner.getGachaType() == GachaType.Newbie) {
+        if (banner.getGachaType() == GachaType.Normal) {
             player.getGachaInfo().addCeilingNum(times);
             player.save();
         }
@@ -364,31 +369,38 @@ public class GachaService extends BaseGameService {
     }
 
     public List<GameItem> exchangeGachaCeiling(Player player, int avatarId) {
-        // Sanity check
-        if (player.getGachaInfo().getCeilingNum() < GameConstants.GACHA_CEILING_MAX || player.getGachaInfo().isCeilingClaimed()) {
-            return null;
+        synchronized (player) {
+            var history = player.getGachaInfo();
+            if (history.getCeilingNum() < GameConstants.GACHA_CEILING_MAX
+                    || history.isCeilingClaimed(player)
+                    || !Utils.arrayContains(this.getYellowAvatars(), avatarId)) return null;
+
+            // A receipt is reserved before delivery. An interrupted grant is not replayed
+            // automatically because inventory and player state are separate documents.
+            if (player.getGameplay().getRewards().containsKey(PlayerGachaInfo.CEILING_REWARD_KEY))
+                return null;
+            int itemId = avatarId;
+            int amount = 1;
+            var avatar = player.getAvatars().getAvatarById(avatarId);
+            if (avatar != null) {
+                if (avatar.getExcel() == null || avatar.getRank() < 0 || avatar.getRank() > 6)
+                    return null;
+                int rankItem = avatar.getExcel().getRankUpItemId();
+                var held = player.getInventory().getMaterialByItemId(rankItem);
+                int pending = held == null ? 0 : held.getCount();
+                if (pending < 0) return null;
+                if ((long) avatar.getRank() + pending < 6) itemId = rankItem;
+                else { itemId = starglightId; amount = 100; }
+            }
+            if (!ShopService.canDeliver(player, java.util.Map.of(itemId, amount))) return null;
+            var reward = new ItemParamMap();
+            reward.put(itemId, amount);
+            var claim = player.getRewardLedger().claimItems(PlayerGachaInfo.CEILING_REWARD_KEY, reward);
+            if (claim.retcode() != Retcode.SUCC) return null;
+            history.setCeilingClaimed(true);
+            player.save();
+            return claim.items();
         }
-
-        // Make sure the player is getting a valid avatar
-        if (!Utils.arrayContains(this.getYellowAvatars(), avatarId)) {
-            return null;
-        }
-
-        // Add items
-        List<GameItem> items = new ArrayList<>();
-
-        if (player.getAvatars().hasAvatar(avatarId)) {
-            // Add eidolon if player already has the avatar
-            items.add(new GameItem(avatarId + 10000));
-        } else {
-            items.add(new GameItem(avatarId));
-        }
-
-        player.getInventory().addItems(items);
-        player.getGachaInfo().setCeilingClaimed(true);
-        player.save();
-
-        return items;
     }
 
     public synchronized GetGachaInfoScRsp toProto(Player player) {

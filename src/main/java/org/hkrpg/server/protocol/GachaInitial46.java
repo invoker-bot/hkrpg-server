@@ -64,7 +64,7 @@ final class GachaInitial46 {
           if (banner.getId() == 1001) {
             var ceiling = DynamicMessage.newBuilder(schema.message("GachaCeiling"));
             set(ceiling, "ceiling_num", player.getGachaInfo().getCeilingNum());
-            set(ceiling, "is_claimed", player.getGachaInfo().isCeilingClaimed());
+            set(ceiling, "is_claimed", player.getGachaInfo().isCeilingClaimed(player));
             for (int id : service.getYellowAvatars()) {
               var avatar = player.getAvatarById(id);
               var row = DynamicMessage.newBuilder(schema.message("GachaCeilingAvatar"));

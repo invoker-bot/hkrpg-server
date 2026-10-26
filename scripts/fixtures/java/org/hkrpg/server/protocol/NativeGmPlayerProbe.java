@@ -152,6 +152,7 @@ public final class NativeGmPlayerProbe {
               "GetShopListCsReq", "GetPlayerBoardDataCsReq", "SetPersonalCardCsReq",
               "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
               "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
+              "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
               "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();

@@ -11,6 +11,7 @@ import lombok.Setter;
 
 @Getter @Entity(useDiscriminator = false)
 public class PlayerGachaInfo {
+    public static final String CEILING_REWARD_KEY = "gacha:standard-ceiling";
     private PlayerGachaBannerInfo standardBanner;
     private PlayerGachaBannerInfo eventCharacterBanner;
     private PlayerGachaBannerInfo eventWeaponBanner;
@@ -40,7 +41,7 @@ public class PlayerGachaInfo {
 
     public GachaCeiling toGachaCeiling(Player player) {
         var proto = GachaCeiling.newInstance()
-                .setIsClaimed(this.isCeilingClaimed())
+                .setIsClaimed(this.isCeilingClaimed(player))
                 .setCeilingNum(this.getCeilingNum());
 
         // Gacha ceiling avatars are the avatars that we can pick
@@ -62,5 +63,10 @@ public class PlayerGachaInfo {
         }
 
         return proto;
+    }
+
+    /** A durable delivery receipt is authoritative even if the legacy flag was not saved. */
+    public boolean isCeilingClaimed(Player player) {
+        return this.ceilingClaimed || player.getRewardLedger().granted(CEILING_REWARD_KEY);
     }
 }
