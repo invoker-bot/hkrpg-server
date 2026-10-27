@@ -31,6 +31,7 @@ public class PlayerLineup {
 
     @Setter private int leader;
     @Setter private String name;
+    @Setter private boolean favourite;
 
     @Deprecated // Morphia only!
     public PlayerLineup() {}

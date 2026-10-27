@@ -303,10 +303,16 @@ public class LineupManager {
         }
 
         // Set index
+        int previousIndex = this.currentIndex;
         this.currentIndex = index;
 
-        // Save player
-        this.getPlayer().save();
+        // A failed player save must not leave the live session on an uncommitted team.
+        try {
+            this.getPlayer().save();
+        } catch (RuntimeException failure) {
+            this.currentIndex = previousIndex;
+            throw failure;
+        }
 
         // Sync lineup data
         player.getScene().syncLineup();

@@ -226,6 +226,7 @@ public final class ProtocolBridge {
         var body =
             Scene46.enrich(clientSchema, coreNames.get(frame.cmdId()), converted.body(), player);
         body = StoryParty46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
+        body = PresetLineup46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
         body = FormulaLearning46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
         output.writeBytes(PacketCodec.encode(converted.cmdId(), frame.header(), body));
       }
@@ -243,6 +244,10 @@ public final class ProtocolBridge {
 
   /** A reply must have a named request/response pair in this exact wire command table. */
   public int clientResponseCommand(int requestCommand) {
+    // The pinned CN4.6 response is named SetTeamFavourite, not MarkPresetLineupScRsp.
+    if (experimental() && requestCommand == 793) return 773;
+    // The native replacement reply shares a misleading JoinLineupScRsp descriptor name.
+    if (experimental() && requestCommand == 704) return 719;
     String request = clientNames.get(requestCommand);
     if (request == null || !request.endsWith("CsReq")) return 0;
     String response = request.substring(0, request.length() - 5) + "ScRsp";

@@ -38,6 +38,9 @@ public final class VersionedPacketHandler {
     if (BookCollection46.handle(session, command, bytes)) return true;
     if (PlayerOutfit46.handle(session, command, bytes)) return true;
     if (LineupLeader46.handle(session, command, bytes)) return true;
+    if (PresetLineup46.handle(session, command, bytes)) return true;
+    if (LineupSwitch46.handle(session, command, bytes)) return true;
+    if (AllRecommendation46.handle(session, command, bytes)) return true;
     if (HeartDial46.handle(session, command, bytes)) return true;
     if (Cocoon46.handle(session, command, bytes)) return true;
     if (Music46.handle(session, command, bytes)) return true;

@@ -14,7 +14,7 @@ import kcp.highway.*;
 
 /** Fresh opening party, tutorial progress and first victory over KCP; no seeded player state. */
 public final class NativeOpeningStageWinProbe {
-  private record Frame(int command, byte[] body) {}
+  private record Frame(int command, byte[] body, byte[] header) {}
 
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final BlockingQueue<Frame> inbox = new LinkedBlockingQueue<>();
@@ -35,6 +35,7 @@ public final class NativeOpeningStageWinProbe {
   private boolean verifyAvatarProgression;
   private boolean verifySpaceAnchors;
   private boolean verifyStoryParty;
+  private boolean verifyPresetLineup;
   private int avatarProgressNotifications;
   private final Map<Integer, DynamicMessage> knownMissions = new HashMap<>();
   private final Set<Integer> knownFinishedSubMissions = new HashSet<>();
@@ -61,10 +62,18 @@ public final class NativeOpeningStageWinProbe {
   }
 
   private DynamicMessage callRaw(String name, byte[] bytes, boolean success) throws Exception {
+    byte[] requestHeader = new byte[0];
+    if (verifyPresetLineup && (name.equals("ReplaceLineupCsReq") || name.equals("SwitchLineupIndexCsReq"))) {
+      var header = new java.io.ByteArrayOutputStream();
+      var out = CodedOutputStream.newInstance(header);
+      out.writeUInt32(1, 10000 + requests);
+      out.flush();
+      requestHeader = header.toByteArray();
+    }
     var packet =
         Unpooled.wrappedBuffer(
             PacketCodec.encode(
-                protocol.clientCommand(name), new byte[0], bytes));
+                protocol.clientCommand(name), requestHeader, bytes));
     try {
       channel.write(packet);
     } finally {
@@ -126,6 +135,8 @@ public final class NativeOpeningStageWinProbe {
         }
       }
       if (frame.command() != responseCommand) continue;
+      if (requestHeader.length > 0)
+        require(Arrays.equals(requestHeader, frame.header()), "Team response did not resolve its own request");
       if (formalReplacement) {
         // Independently verified native CN replacement response: command 719, index 7, retcode 9.
         var fields = UnknownFieldSet.parseFrom(frame.body()).asMap();
@@ -134,7 +145,8 @@ public final class NativeOpeningStageWinProbe {
           require(value.getVarintList().size() == 1 && value.getFixed32List().isEmpty()
               && value.getFixed64List().isEmpty() && value.getLengthDelimitedList().isEmpty()
               && value.getGroupList().isEmpty(), "Invalid replacement response wire type");
-        require(!fields.containsKey(7) || fields.get(7).getVarintList().getFirst() == 0,
+        int requestedIndex = (Integer) field(protocol.clientSchema().parse("ReplaceLineupCsReq", bytes), "index");
+        require((fields.containsKey(7) ? fields.get(7).getVarintList().getFirst() : 0) == requestedIndex,
             "Replacement acknowledged a different normal team");
         long code = fields.containsKey(9) ? fields.get(9).getVarintList().getFirst() : 0;
         require((code == 0) == success, "Native replacement rejected: " + code);
@@ -1195,9 +1207,35 @@ public final class NativeOpeningStageWinProbe {
     }
     objective(100020109, 2); objective(100020133, 2);
     formalParty(List.of(1002, 8001), 0, Set.of(8001, 1001, 1002));
+    if (verifyPresetLineup) presetLineup(restored);
     require(materialCount(211) == 2, "Restored story reward changed");
     return Map.of("owned", List.of(1001, 1002, 8001), "roster", List.of(1002, 8001), "leader", 0,
-        "marchJoined", true, "danHengJoined", true, "authoredLineupCompleted", true, "restored", restored);
+        "marchJoined", true, "danHengJoined", true, "authoredLineupCompleted", true, "restored", restored,
+        "presetTeamsVerified", verifyPresetLineup);
+  }
+
+  private void presetLineup(boolean restored) throws Exception {
+    var field = protocol.clientSchema().message("ReplaceLineupCsReq").findFieldByName("lineup_slot_list");
+    if (!restored) {
+      var row = DynamicMessage.newBuilder(field.getMessageType());
+      row.setField(row.getDescriptorForType().findFieldByName("id"), 1001);
+      var avatarType = row.getDescriptorForType().findFieldByName("avatar_type");
+      row.setField(avatarType, avatarType.getEnumType().findValueByName("AvatarType_AvatarFormalType"));
+      call("ReplaceLineupCsReq", Map.of("index", 1, "plane_id", 20002,
+          "lineup_slot_list", List.of(row.build()), "leader_slot", 0), true);
+    }
+    var all = ((List<?>) field(call("GetAllLineupDataCsReq"), "lineup_list")).stream()
+        .map(DynamicMessage.class::cast).filter(t -> (Integer) field(t, "index") == 1).findFirst().orElseThrow();
+    var ids = ((List<?>) field(all, "avatar_list")).stream().map(DynamicMessage.class::cast)
+        .map(a -> (Integer) field(a, "id")).toList();
+    require(ids.equals(List.of(1001)), "Preset team did not survive reconnect/H2 restart");
+    call("SwitchLineupIndexCsReq", Map.of("index", 1), true);
+    var current = (DynamicMessage) field(call("GetCurLineupDataCsReq"), "lineup");
+    require((Integer) field(current, "index") == 1, "Preset team did not become active");
+    require(((List<?>) field(current, "avatar_list")).stream().map(DynamicMessage.class::cast)
+        .map(a -> (Integer) field(a, "id")).toList().equals(List.of(1001)), "Active preset members differ");
+    call("SwitchLineupIndexCsReq", Map.of("index", 0), true);
+    formalParty(List.of(1002, 8001), 0, Set.of(8001, 1001, 1002));
   }
 
   private Map<String, Object> keyConsole(boolean restored) throws Exception {
@@ -1358,6 +1396,7 @@ public final class NativeOpeningStageWinProbe {
     verifyAvatarProgression = control.has("avatarProgression") && control.get("avatarProgression").getAsBoolean();
     verifySpaceAnchors = control.has("spaceAnchors") && control.get("spaceAnchors").getAsBoolean();
     verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
+    verifyPresetLineup = control.has("presetLineup") && control.get("presetLineup").getAsBoolean();
     boolean verifyKeyConsole = control.has("keyConsole") && control.get("keyConsole").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")
         || phase.startsWith("mechanisms-") || phase.equals("main-control-prepare")) expectedFloor = 20002001;
@@ -1622,7 +1661,7 @@ public final class NativeOpeningStageWinProbe {
                 while (bytes.isReadable()) {
                   var frame = PacketCodec.decodeNext(bytes);
                   require(frame != null, "Truncated opening frame");
-                  probe.inbox.add(new Frame(frame.cmdId(), frame.body()));
+                  probe.inbox.add(new Frame(frame.cmdId(), frame.body(), frame.header()));
                 }
               } catch (Throwable error) {
                 probe.failure.set(error);

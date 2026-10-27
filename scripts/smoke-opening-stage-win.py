@@ -36,6 +36,7 @@ def main():
     parser.add_argument('--avatar-progression', action='store_true', help='继续校验两场战斗经验、三本实际材料升级、扣费与角色同步及H2重启保存')
     parser.add_argument('--space-anchors', action='store_true', help='继续校验收容舱段锚点靠近激活、地图查询、实际传送和H2重启；移动为合成请求')
     parser.add_argument('--story-party', action='store_true', help='继续校验三月七获得、丹恒奖励入队、原始三人编队、手动编辑和H2重启；对白为合成回执')
+    parser.add_argument('--preset-lineup', action='store_true', help='继续校验备用队伍编辑、切换及重连/H2重启；包含剧情队伍测试')
     parser.add_argument('--key-console', action='store_true', help='继续到使用密钥目标，校验前置战斗与对白门槛、控制台和绑定门、后续对白、同进程重连和H2重启')
     parser.add_argument('--story-mechanisms', action='store_true', help='继续校验两座剧情桥梁的前置对白、精确联动、重连/H2保存，以及持钥门和升降机的无钥匙拒绝；不播放真实客户端演出')
     parser.add_argument('--main-control-transfer', action='store_true', help='继续到电梯前战斗及演出完成，校验未持通行证仍可按原任务切往主控舱段、断线恢复及H2重启；战报和演出回执为合成请求')
@@ -44,6 +45,8 @@ def main():
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
+    if args.preset_lineup:
+        args.story_party = True
     if args.station_story:
         args.main_control_transfer = True
     if args.main_control_transfer:
@@ -214,6 +217,7 @@ def main():
                                    'avatarProgression': args.avatar_progression,
                                    'spaceAnchors': args.space_anchors,
                                    'storyParty': args.story_party,
+                                   'presetLineup': args.preset_lineup,
                                    'keyConsole': args.key_console,
                                    'storyMechanisms': args.story_mechanisms,
                                    'mainControlTransfer': args.main_control_transfer,
@@ -286,6 +290,7 @@ def main():
                             assert party['roster'] == [1002, 8001] and party['leader'] == 0
                             assert party['marchJoined'] and party['danHengJoined'] and party['authoredLineupCompleted']
                             assert party['restored'] == (phase == 'awakening-restart')
+                            assert party['presetTeamsVerified'] == args.preset_lineup
                         if args.key_console:
                             console = snapshot['keyConsole']
                             assert console['doorOpen'] and console['nextPerformancePending']

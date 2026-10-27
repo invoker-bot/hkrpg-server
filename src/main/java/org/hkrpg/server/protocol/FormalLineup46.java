@@ -9,7 +9,7 @@ import emu.lunarcore.server.packet.*;
 import java.io.*;
 import java.util.*;
 
-/** Active normal formal roster; native CN replacement reply is command719 fields7/9. */
+/** Normal formal roster; native CN replacement reply is command719 fields7/9. */
 public final class FormalLineup46 {
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
     if (!session.getProtocol().experimental() || command != 704) return false;
@@ -25,9 +25,15 @@ public final class FormalLineup46 {
             && req.getUnknownFields().asMap().isEmpty()) {
           var p = session.getPlayer();
           var g = p.getGameplay();
-          var lineup = p.getCurrentLineup();
+          var current = p.getCurrentLineup();
+          var teams = p.getLineupManager().getLineups();
+          var lineup = index >= 0 && index < teams.length ? teams[index] : null;
           if (p.isInBattle()
               || p.getInstance() != null
+              || p.getMissionTrialManager().inside()
+              || p.getRaidTrialManager().inside()
+              || current == null
+              || current.isExtraLineup()
               || g.getCurrentMissionRaid() != 0
               || g.getTrialRun() != null
               || g.getRogue().isInside()
@@ -38,14 +44,13 @@ public final class FormalLineup46 {
               || g.getRhythm().getActiveLevel() != 0) code = Retcode.SYSTEM_BUSY;
           else if (lineup != null
               && !lineup.isExtraLineup()
-              && index == p.getLineupManager().getCurrentIndex()
               && (number(req, "plane_id") == 0 || number(req, "plane_id") == p.getPlaneId())
               && p.getScene() != null) {
             var rows = (List<?>) value(req, "lineup_slot_list");
             var slots = new TreeMap<Integer, Integer>();
             int leader = number(req, "leader_slot");
-            boolean valid =
-                !rows.isEmpty() && rows.size() <= 4 && leader >= 0 && leader < rows.size();
+            boolean valid = rows.size() <= 4 && leader >= 0
+                && (rows.isEmpty() ? lineup != current && leader == 0 : leader < rows.size());
             for (Object raw : rows) {
               var row = (DynamicMessage) raw;
               int slot = number(row, "slot"), id = number(row, "id");
@@ -78,7 +83,7 @@ public final class FormalLineup46 {
                 lineup.setLeader(leader);
                 lineup.replace(roster);
                 p.save();
-                if (oldLeader != roster.get(leader))
+                if (lineup == current && !roster.isEmpty() && oldLeader != roster.get(leader))
                   p.getMissionManager().onTeamLeaderChange(roster.get(leader));
               }
               code = Retcode.SUCC;

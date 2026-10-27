@@ -221,6 +221,7 @@ public class GameSession {
         var bridge = getProtocol();
         var body = bridge.experimental() ? org.hkrpg.server.protocol.Scene46.enrich(bridge.clientSchema(), name, bytes, getPlayer()) : bytes;
         if (bridge.experimental()) body = org.hkrpg.server.protocol.StoryParty46.enrich(bridge.clientSchema(), name, body, getPlayer());
+        if (bridge.experimental()) body = org.hkrpg.server.protocol.PresetLineup46.enrich(bridge.clientSchema(), name, body, getPlayer());
         if (bridge.experimental()) body = org.hkrpg.server.protocol.FormulaLearning46.enrich(bridge.clientSchema(), name, body, getPlayer());
         sendFrames(PacketCodec.encode(bridge.clientCommand(name), Utils.EMPTY_BYTE_ARRAY, body));
     }

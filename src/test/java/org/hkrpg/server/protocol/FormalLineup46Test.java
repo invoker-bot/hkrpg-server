@@ -20,6 +20,7 @@ class FormalLineup46Test {
 
   static class Actor extends MissionRaid46Test.Actor {
     int lineupSaves, sceneSyncs;
+    boolean failPlayerSave;
 
     Actor() {
       for (int id : List.of(MissionRaid46Test.AVATAR, 1209)) {
@@ -52,6 +53,11 @@ class FormalLineup46Test {
 
     public GameAvatar getAvatarById(int id) {
       return getAvatars().getAvatars().get(id);
+    }
+
+    @Override
+    public void save() {
+      if (failPlayerSave) throw new IllegalStateException("simulated player save failure");
     }
 
     public Scene getScene() {
@@ -156,7 +162,7 @@ class FormalLineup46Test {
       case "virtual" -> Gameplay46.set(req, "_is_virtual", true);
       case "story" -> Gameplay46.set(req, "game_story_line_id", 2022304);
       case "wrong-plane" -> Gameplay46.set(req, "plane_id", 1);
-      case "wrong-index" -> Gameplay46.set(req, "index", 1);
+      case "wrong-index" -> Gameplay46.set(req, "index", 9);
       default -> {
         var field = req.getDescriptorForType().findFieldByName("lineup_slot_list");
         var row = ((DynamicMessage) req.getRepeatedField(field, 0)).toBuilder();
