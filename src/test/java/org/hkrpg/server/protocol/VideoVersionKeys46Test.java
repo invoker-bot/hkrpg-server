@@ -23,7 +23,16 @@ class VideoVersionKeys46Test {
     assertEquals(112, key.readTag());
     assertEquals(8, key.readUInt32());
     assertEquals(0, key.readTag(), "Do not invent modern encryption components");
-    assertEquals(0, input.readTag(), "Only the source-matched opening video is supported");
+    assertEquals(122, input.readTag(), "Post-boss video is registered in the same ordinary dictionary");
+    var boss = CodedInputStream.newInstance(input.readByteArray());
+    assertEquals(48, boss.readTag());
+    assertEquals(75_563_019_682_118_330L, boss.readUInt64());
+    assertEquals(64, boss.readTag());
+    assertEquals(3_385_157_949_291_746L, boss.readUInt64());
+    assertEquals(112, boss.readTag());
+    assertEquals(21, boss.readUInt32());
+    assertEquals(0, boss.readTag());
+    assertEquals(0, input.readTag(), "Do not invent other movie keys");
   }
 
   @Test void encryptedOpeningVideoGetsItsSourceMatchedKeyWithoutChangingPlayerState() throws Exception {
@@ -48,6 +57,36 @@ class VideoVersionKeys46Test {
       openingVideoKey(session.nativePackets.getFirst().body());
       assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));
     }
+  }
+
+  @Test void postBossMovieReceivesItsOwnSourceMatchedKey() throws Exception {
+    var session = new PlayerReturnInitial46Test.Session();
+    assertTrue(VersionedPacketHandler.handle(session, 9, new byte[0]));
+    var packet = com.google.protobuf.UnknownFieldSet.parseFrom(session.nativePackets.getFirst().body());
+    var matched = packet.getField(15).getLengthDelimitedList().stream()
+        .map(bytes -> {
+          try { return com.google.protobuf.UnknownFieldSet.parseFrom(bytes); }
+          catch (com.google.protobuf.InvalidProtocolBufferException e) { throw new AssertionError(e); }
+        })
+        .filter(entry -> entry.hasField(14) && entry.getField(14).getVarintList().contains(21L))
+        .toList();
+    assertEquals(1, matched.size(), "The post-boss movie must have an ordinary video entry");
+    assertEquals(java.util.List.of(75_563_019_682_118_330L), matched.getFirst().getField(6).getVarintList());
+    assertEquals(java.util.List.of(3_385_157_949_291_746L), matched.getFirst().getField(8).getVarintList());
+    assertFalse(matched.getFirst().hasField(13));
+  }
+
+  @Test void postBossAudioComponentMatchesBothInstalledGenderVariants() {
+    assertEquals(16_653_020_713_184_805L, audioKey("CS_Chap00_Act300_f"));
+    assertEquals(16_653_020_718_949_606L, audioKey("CS_Chap00_Act300_m"));
+  }
+
+  private static long audioKey(String name) {
+    long hash = 0;
+    int rotation = 7;
+    for (int i = 0; i < name.length(); i++)
+      hash = hash * 7 + name.charAt((i + rotation) % name.length());
+    return Long.remainderUnsigned(hash + rotation + 3_385_157_949_291_746L, 72_043_514_036_987_937L);
   }
 
   @Test void invalidVideoKeyRequestsDoNotReceiveTheCatalog() throws Exception {

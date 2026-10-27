@@ -167,8 +167,14 @@ public final class NativeLoginInitialProbe implements KcpListener {
           openingVideoPrimaryKey = key.readUInt64();
           require(openingVideoPrimaryKey == 70_220_919L
               && key.readTag() == 112 && key.readUInt32() == 8
-              && key.readTag() == 0 && input.readTag() == 0,
+              && key.readTag() == 0 && input.readTag() == 122,
               "Opening video ID or source key differs from the pinned native contract");
+          var boss = CodedInputStream.newInstance(input.readByteArray());
+          require(boss.readTag() == 48 && boss.readUInt64() == 75_563_019_682_118_330L
+              && boss.readTag() == 64 && boss.readUInt64() == 3_385_157_949_291_746L
+              && boss.readTag() == 112 && boss.readUInt32() == 21
+              && boss.readTag() == 0 && input.readTag() == 0,
+              "Post-boss video parameters differ from the validated 4.6 candidate");
         }
         if (frame.cmdId() == 6125) {
           var prefs = protocol.clientSchema().parse("GetAllServerPrefsDataScRsp", frame.body());
