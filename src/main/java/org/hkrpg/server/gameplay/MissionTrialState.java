@@ -72,6 +72,11 @@ public final class MissionTrialState {
     private String openingSource;
     private String stationSource;
     private boolean virtual;
+    // User edits belong to the station trial until its plot actor leaves. A representable
+    // ordinary preset is journaled here before the separate lineup document is updated.
+    private boolean stationEdited, stationFinalizing;
+    private List<Integer> stationPreset;
+    private int stationPresetLeader;
     private List<Integer> roster = new ArrayList<>();
     private List<Integer> entryRoster = new ArrayList<>();
     private Map<Integer, Actor> actors = new HashMap<>();
@@ -101,10 +106,20 @@ public final class MissionTrialState {
 
     void leader(int value) {
       leader = value;
+      if (stationEdited && stationPreset != null) stationPresetLeader = value;
     }
 
     void bindOpening(String source) { openingSource = source; }
     void bindStation(String source) { stationSource = source; }
+
+    void stationEdit(List<Integer> preset, int leader) {
+      stationEdited = true;
+      stationPreset = preset == null ? null : new ArrayList<>(preset);
+      stationPresetLeader = leader;
+      stationFinalizing = false;
+    }
+
+    void stationFinalizing(boolean value) { stationFinalizing = value; }
 
     void bindRaid(int id, String source) {
       raid = id;

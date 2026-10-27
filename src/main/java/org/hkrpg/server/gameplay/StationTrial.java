@@ -89,15 +89,44 @@ final class StationTrial {
 
   static boolean matches(Player p, MissionTrialState.Party party, boolean restoring) {
     var normal = p.getLineupManager().getLineups()[party.getIndex()];
+    boolean original = normal != null && normal.getAvatars().equals(party.getEntryRoster());
+    boolean finalized = party.isStationFinalizing() && party.getStationPreset() != null
+        && normal != null && normal.getAvatars().equals(party.getStationPreset())
+        && normal.getLeader() == party.getStationPresetLeader();
     return active(p) && place(p) && party.getMain() == MAIN && party.getPlane() == PLANE
         && party.getFloor() == FLOOR && party.getRaid() == 0 && !party.isVirtual()
         && party.getOpeningSource() == null && party.getSources().isEmpty()
         && party.getBaseActors().isEmpty() && party.getActors().keySet().equals(Set.of(HIMEKO))
         && party.getStationSource().equals(source())
         && (!restoring || party.getStationSource().equals(p.getGameplay().getMissionTrials().getStationSource()))
-        && normal != null && normal.getAvatars().equals(party.getEntryRoster())
+        && (original || finalized)
         && normal.getLeader() >= 0 && normal.getLeader() < normal.size()
-        && roster(party.getEntryRoster(),normal.getLeader()).equals(party.getRoster());
+        && (party.isStationEdited() ? validEdit(p, party)
+            : !party.isStationFinalizing() && party.getStationPreset() == null
+                && roster(party.getEntryRoster(),normal.getLeader()).equals(party.getRoster()));
+  }
+
+  private static boolean validEdit(Player p, MissionTrialState.Party party) {
+    var ids = party.getRoster();
+    if (ids == null || ids.isEmpty() || ids.size() > 4 || new HashSet<>(ids).size() != ids.size())
+      return false;
+    var actorIds = new HashSet<Integer>();
+    for (int id : ids) {
+      int actorId = id == HIMEKO ? 1003 : id;
+      if (!actorIds.add(actorId)) return false;
+      if (id != HIMEKO) {
+        var actor = p.getAvatars().getAvatars().get(id);
+        if (actor == null || actor.getAvatarId() != id || actor.getOwner() != p
+            || actor.getOwnerUid() != p.getUid()) return false;
+      }
+    }
+    var preset = party.getStationPreset();
+    if (preset == null) return !party.isStationFinalizing();
+    if (preset.size() != ids.size() || party.getStationPresetLeader() != party.getLeader()
+        || new HashSet<>(preset).size() != preset.size()) return false;
+    for (int i = 0; i < ids.size(); i++)
+      if (preset.get(i) != (ids.get(i) == HIMEKO ? 1003 : ids.get(i))) return false;
+    return true;
   }
 
   private StationTrial() {}

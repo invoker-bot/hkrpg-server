@@ -21,6 +21,37 @@ class StationTrial46Test {
   final MissionTrialProvisioning46Test f = new MissionTrialProvisioning46Test();
   static final int HIMEKO = 1011003;
 
+  static final class WritableTeam extends emu.lunarcore.game.player.lineup.PlayerLineup {
+    int saves;
+    boolean fail, failPlayerAfterWrite;
+    WritableTeam(emu.lunarcore.game.player.Player player) { super(player, 0); }
+    @Override public void save() {
+      if (fail) throw new IllegalStateException("Injected lineup save failure");
+      saves++;
+      if (failPlayerAfterWrite) ((MissionTrialProvisioning46Test.Actor) getOwner()).failSave = true;
+    }
+  }
+
+  WritableTeam writableTeam() {
+    var old = f.player.getLineupManager().getLineups()[0];
+    var replacement = new WritableTeam(f.player);
+    replacement.getAvatars().addAll(old.getAvatars());
+    replacement.setLeader(old.getLeader());
+    f.player.getLineupManager().getLineups()[0] = replacement;
+    return replacement;
+  }
+
+  void ownHimeko() {
+    var actor = new emu.lunarcore.game.avatar.GameAvatar(GameData.getAvatarExcelMap().get(1003));
+    actor.setOwner(f.player);
+    f.player.getAvatars().getAvatars().put(1003, actor);
+  }
+
+  void endStationTrial() {
+    f.player.getGameplay().getMainMissions().put(1000401, new QuestState(1000401));
+    complete(100040125);
+  }
+
   @BeforeEach void prepare() throws Exception {
     f.root = root;
     f.prepare();
@@ -80,6 +111,180 @@ class StationTrial46Test {
     String before = f.gson.toJson(f.player.getGameplay());
     f.player.getMissionManager().refresh();
     assertEquals(before, f.gson.toJson(f.player.getGameplay()));
+  }
+
+  @Test void capturedPresetSaveAcceptsFixedPathAndSparseTrialSlots() throws Exception {
+    var paths = GameData.getMultiplePathAvatarExcelMap();
+    var old1 = paths.get(8001);
+    var old2 = paths.get(8002);
+    try {
+      for (int id : List.of(8001, 8002)) {
+        var excel = f.gson.fromJson("{\"AvatarID\":" + id + "}", AvatarExcel.class);
+        GameData.getAvatarExcelMap().add(excel);
+        paths.add(f.gson.fromJson("{\"AvatarID\":" + id
+            + ",\"BaseAvatarID\":8001,\"Gender\":\""
+            + (id == 8001 ? "GENDER_MAN" : "GENDER_WOMAN") + "\"}", MultiplePathAvatarExcel.class));
+        f.player.getAvatars().getMultiPaths().put(id,
+            new emu.lunarcore.game.avatar.AvatarMultiPath(f.player, excel));
+      }
+      MissionTrialProvisioning46Test.set(f.player, "gender", emu.lunarcore.game.player.PlayerGender.GENDER_WOMAN);
+      var hero = new emu.lunarcore.game.avatar.GameAvatar(GameData.getAvatarExcelMap().get(8001));
+      hero.setOwner(f.player);
+      hero.setMultiPath(f.player.getAvatars().getMultiPathById(8002));
+      f.player.getAvatars().getAvatars().put(8001, hero);
+      f.player.getCurAvatarPaths().put(8001, 8002);
+      var normal = f.player.getLineupManager().getLineups()[0];
+      normal.getAvatars().clear();
+      normal.getAvatars().add(8001);
+      assertTrue(f.player.getMissionTrialManager().initializeStation());
+      assertEquals(List.of(8001, HIMEKO), f.player.getCurrentLineup().getAvatars());
+
+      // Exact native request captured from UID 10001, including slots 0 and 3 and leader 3.
+      var session = new StoryLineWireTest.NativeSession(f.player);
+      byte[] request = java.util.HexFormat.of().parseHex("3a0528c23e50083a0828bbda3d480350014803");
+      assertTrue(org.hkrpg.server.protocol.VersionedPacketHandler.handle(session, 704, request));
+      assertEquals(719, session.command);
+      var response = com.google.protobuf.UnknownFieldSet.parseFrom(session.payload);
+      assertFalse(response.hasField(9), "Saving the current station party must succeed");
+      assertEquals(List.of(8001, HIMEKO), f.player.getCurrentLineup().getAvatars());
+      assertEquals(1, f.player.getCurrentLineup().getLeader());
+      assertEquals(List.of(8001), normal.getAvatars(), "The trial must not become a permanent avatar");
+    } finally {
+      paths.keySet().remove(8001);
+      paths.keySet().remove(8002);
+      if (old1 != null) paths.add(old1);
+      if (old2 != null) paths.add(old2);
+    }
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"unowned", "duplicate-role", "unknown-trial", "wrong-slot", "wrong-leader", "wrong-index", "assist"})
+  void invalidStationEditsCannotChangeTheTrialOrFormalTeam(String variant) throws Exception {
+    ownHimeko();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    var before = f.gson.toJson(f.player.getGameplay());
+    var session = new StoryLineWireTest.NativeSession(f.player);
+    var req = com.google.protobuf.DynamicMessage.newBuilder(session.getProtocol().clientSchema().message("ReplaceLineupCsReq"));
+    var rows = req.getDescriptorForType().findFieldByName("lineup_slot_list");
+    var formal = com.google.protobuf.DynamicMessage.newBuilder(rows.getMessageType());
+    var trial = com.google.protobuf.DynamicMessage.newBuilder(rows.getMessageType());
+    var id = formal.getDescriptorForType().findFieldByName("id");
+    var slot = formal.getDescriptorForType().findFieldByName("slot");
+    var type = formal.getDescriptorForType().findFieldByName("avatar_type");
+    formal.setField(id, variant.equals("unowned") ? 999999 : variant.equals("duplicate-role") ? 1003 : 199986);
+    formal.setField(type, type.getEnumType().findValueByName("AvatarType_AvatarFormalType"));
+    if (variant.equals("assist")) formal.setField(formal.getDescriptorForType().findFieldByName("assist_uid"), 12345);
+    trial.setField(id, variant.equals("unknown-trial") ? 1011004 : HIMEKO);
+    trial.setField(slot, variant.equals("wrong-slot") ? 4 : 3);
+    trial.setField(type, type.getEnumType().findValueByName("AvatarType_AvatarTrialType"));
+    req.addRepeatedField(rows, formal.build()).addRepeatedField(rows, trial.build());
+    req.setField(req.getDescriptorForType().findFieldByName("leader_slot"), variant.equals("wrong-leader") ? 2 : 3);
+    if (variant.equals("wrong-index")) req.setField(req.getDescriptorForType().findFieldByName("index"), 1);
+    assertTrue(org.hkrpg.server.protocol.VersionedPacketHandler.handle(session, 704, req.build().toByteArray()));
+    var result = com.google.protobuf.UnknownFieldSet.parseFrom(session.payload);
+    assertTrue(result.hasField(9), variant);
+    assertEquals(before, f.gson.toJson(f.player.getGameplay()), variant);
+    assertEquals(List.of(199986), f.player.getLineupManager().getLineups()[0].getAvatars());
+  }
+
+  @Test void editedStationPartyAndOwnedPresetSurviveRelogAndTrialRetirement() throws Exception {
+    ownHimeko();
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    var originalTrial = f.player.getAvatarById(HIMEKO);
+    var code = f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1);
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC, code);
+    assertSame(originalTrial, f.player.getAvatarById(HIMEKO), "Editing must not recreate the active trial actor");
+    assertEquals(List.of(199986), team.getAvatars(), "No formal document changes during the plot trial");
+    assertEquals(0, team.saves);
+    assertEquals(List.of(199986, 1003), f.player.getGameplay().getMissionTrials().getParty().getStationPreset());
+    int saves = f.player.saves;
+    assertEquals(code, f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    assertEquals(saves, f.player.saves, "Retry must not save or grant twice");
+
+    f.player = f.reload(f.player.getGameplay());
+    ownHimeko();
+    team = writableTeam();
+    f.player.getMissionTrialManager().restoreOnLogin();
+    assertEquals(List.of(199986, HIMEKO), f.player.getCurrentLineup().getAvatars());
+    assertEquals(1, f.player.getCurrentLineup().getLeader());
+    endStationTrial();
+    assertTrue(f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986, 1003), team.getAvatars());
+    assertEquals(1, team.getLeader());
+    assertEquals(1, team.saves);
+    assertNull(f.player.getAvatarById(HIMEKO));
+    assertSame(f.player.getAvatars().getAvatars().get(1003), f.player.getAvatarById(1003));
+  }
+
+  @Test void unownedTrialIsNeverConvertedIntoAnOwnedPreset() {
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    assertNull(f.player.getGameplay().getMissionTrials().getParty().getStationPreset());
+    endStationTrial();
+    assertTrue(f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986), team.getAvatars());
+    assertEquals(0, team.saves);
+    assertFalse(f.player.getAvatars().getAvatars().containsKey(1003));
+  }
+
+  @Test void failedPresetWritesKeepARecoverableJournalAndDoNotDuplicateTheUpdate() {
+    ownHimeko();
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    var before = f.gson.toJson(f.player.getGameplay());
+    f.player.failSave = true;
+    assertEquals(emu.lunarcore.server.packet.Retcode.SYSTEM_BUSY,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    assertEquals(before, f.gson.toJson(f.player.getGameplay()));
+    f.player.failSave = false;
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    endStationTrial();
+    team.fail = true;
+    assertThrows(IllegalStateException.class, () -> f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986), team.getAvatars());
+    assertTrue(f.player.getGameplay().getMissionTrials().getParty().isStationFinalizing());
+    team.fail = false;
+    team.failPlayerAfterWrite = true;
+    assertThrows(IllegalStateException.class, () -> f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986, 1003), team.getAvatars());
+    assertEquals(1, team.saves);
+    assertTrue(f.player.getGameplay().getMissionTrials().getParty().isStationFinalizing());
+    f.player.failSave = false;
+    team.failPlayerAfterWrite = false;
+    assertTrue(f.player.getMissionTrialManager().reconcile());
+    assertEquals(1, team.saves, "Retry of a completed lineup write must be idempotent");
+    assertEquals(List.of(199986, 1003), f.player.getCurrentLineup().getAvatars());
+  }
+
+  @ParameterizedTest @ValueSource(booleans = {false, true})
+  void restartFinishesTheJournalBeforeOrAfterTheSeparateLineupWrite(boolean lineupAlreadyWritten)
+      throws Exception {
+    ownHimeko();
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    endStationTrial();
+    team.fail = true;
+    assertThrows(IllegalStateException.class, () -> f.player.getMissionTrialManager().reconcile());
+    var saved = f.gson.fromJson(f.gson.toJson(f.player.getGameplay()), GameplayState.class);
+
+    f.player = f.reload(saved);
+    ownHimeko();
+    var restored = writableTeam();
+    if (lineupAlreadyWritten) {
+      restored.getAvatars().add(1003);
+      restored.setLeader(1);
+    }
+    f.player.getMissionTrialManager().restoreOnLogin();
+    assertFalse(f.player.getMissionTrialManager().inside());
+    assertEquals(List.of(199986, 1003), restored.getAvatars());
+    assertEquals(1, restored.getLeader());
+    assertEquals(lineupAlreadyWritten ? 0 : 1, restored.saves);
   }
 
   @Test void trialSurvivesMainCompletionSupportZoneWakingAndTwoReconnectsThenLeavesOnce() {
@@ -161,7 +366,10 @@ class StationTrial46Test {
   }
 
   @Test void frozenCompatibilityReceiptActorsAndVitalsSurviveRealMorphiaRoundTrips() throws Exception {
+    ownHimeko();
     assertTrue(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986,HIMEKO),1));
     f.player.getAvatarById(HIMEKO).setCurrentHp(f.player.getCurrentLineup(),5432);
     var server=new de.bwaldvogel.mongo.MongoServer(new de.bwaldvogel.mongo.backend.memory.MemoryBackend());
     var address=server.bind();
@@ -174,9 +382,11 @@ class StationTrial46Test {
       MissionTrialProvisioning46Test.set(document,"gameplay",f.player.getGameplay()); store.save(document);
       for(int i=0;i<2;i++) {
         var loaded=Objects.requireNonNull(store.find(emu.lunarcore.game.player.Player.class).first());
-        f.player=f.reload(loaded.getGameplay()); f.player.getMissionTrialManager().restoreOnLogin();
+        f.player=f.reload(loaded.getGameplay()); ownHimeko(); f.player.getMissionTrialManager().restoreOnLogin();
         assertEquals(5432,f.player.getAvatarById(HIMEKO).getCurrentHp(f.player.getCurrentLineup()));
         assertEquals(List.of(199986,HIMEKO),f.player.getCurrentLineup().getAvatars());
+        assertEquals(1,f.player.getCurrentLineup().getLeader());
+        assertEquals(List.of(199986,1003),f.player.getGameplay().getMissionTrials().getParty().getStationPreset());
         assertFalse(f.player.getMissionTrialManager().initializeStation()); store.save(loaded);
       }
     } finally { server.shutdownNow(); }

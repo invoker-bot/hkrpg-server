@@ -20,7 +20,7 @@ class FormalLineup46Test {
 
   static class Actor extends MissionRaid46Test.Actor {
     int lineupSaves, sceneSyncs;
-    boolean failPlayerSave;
+    boolean failPlayerSave, failLineupSave;
 
     Actor() {
       for (int id : List.of(MissionRaid46Test.AVATAR, 1209)) {
@@ -41,10 +41,12 @@ class FormalLineup46Test {
                     return LineupAvatar.newInstance().setId(id).setSlot(slot).setAvatarTypeValue(1);
                   }
                 });
+        getAvatars().getAvatars().get(id).setOwner(this);
       }
       teams.getLineups()[0] =
           new PlayerLineup(this, 0) {
             public void save() {
+              if (failLineupSave) throw new IllegalStateException("simulated lineup save failure");
               lineupSaves++;
             }
           };
@@ -135,6 +137,28 @@ class FormalLineup46Test {
     assertEquals(1, session.actor.sceneSyncs);
     assertEquals(0, code(req));
     assertEquals(1, session.actor.lineupSaves);
+  }
+
+  @Test
+  void sparseNativeSlotsAreCompactedWithTheSameLeader() throws Exception {
+    var req = request(MissionRaid46Test.AVATAR, 1209);
+    var rows = req.getDescriptorForType().findFieldByName("lineup_slot_list");
+    var second = ((DynamicMessage) req.getRepeatedField(rows, 1)).toBuilder();
+    Gameplay46.set(second, "slot", 3);
+    req.setRepeatedField(rows, 1, second.build());
+    Gameplay46.set(req, "leader_slot", 3);
+    assertEquals(0, code(req));
+    assertEquals(List.of(MissionRaid46Test.AVATAR, 1209), session.actor.getCurrentLineup().getAvatars());
+    assertEquals(1, session.actor.getCurrentLineup().getLeader());
+  }
+
+  @Test
+  void failedRosterSaveReturnsBusyAndPreservesTheOldParty() throws Exception {
+    session.actor.failLineupSave = true;
+    assertEquals(Retcode.SYSTEM_BUSY.getVal(), code(request(1209)));
+    assertEquals(List.of(MissionRaid46Test.AVATAR), session.actor.getCurrentLineup().getAvatars());
+    assertEquals(0, session.actor.getCurrentLineup().getLeader());
+    assertEquals(0, session.actor.sceneSyncs);
   }
 
   @ParameterizedTest

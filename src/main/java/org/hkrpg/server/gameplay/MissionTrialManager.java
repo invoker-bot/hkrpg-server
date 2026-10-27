@@ -8,6 +8,7 @@ import emu.lunarcore.game.enums.PlaneType;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.trial.TrialAvatar;
 import emu.lunarcore.server.packet.send.PacketSyncLineupNotify;
+import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
 /** Executes whole supported trial tasks. Conditions remain observers of actual published actors. */
@@ -399,6 +400,104 @@ public final class MissionTrialManager {
     }
   }
 
+  /** Only the explicitly approved station compatibility party may be edited by the player. */
+  public boolean editableStation() {
+    synchronized (player) {
+      if (!inside() || state().getParty().getStationSource() == null || player.isInBattle()
+          || !context(StationTrial.MAIN) || !StationTrial.active(player) || !StationTrial.place(player))
+        return false;
+      var scene = player.getScene();
+      if (scene == null || scene.getPlayer() != player || !ordinary(scene.getPlaneType())
+          || scene.getPlaneId() != player.getPlaneId() || scene.getFloorId() != player.getFloorId()
+          || scene.getDimensionId() != 0 || scene.getStoryLineId() != 0) return false;
+      ensure();
+      return true;
+    }
+  }
+
+  /** Save a compact station party; permanent equivalents are queued only when actually owned. */
+  public Retcode replaceStation(List<Integer> ids, int leader) {
+    synchronized (player) {
+      if (!editableStation()) return Retcode.SYSTEM_BUSY;
+      if (ids == null || ids.isEmpty() || ids.size() > 4 || leader < 0 || leader >= ids.size()
+          || new HashSet<>(ids).size() != ids.size()) return Retcode.REQ_PARA_INVALID;
+      var previous = state().getParty();
+      var next = GSON.fromJson(GSON.toJson(previous), MissionTrialState.Party.class);
+      var formal = player.getLineupManager().getLineups()[previous.getIndex()];
+      var projection = new ArrayList<Integer>();
+      var actorsSeen = new HashSet<Integer>();
+      boolean representable = true;
+      for (int id : ids) {
+        int permanent = id == StationTrial.HIMEKO ? 1003 : id;
+        var avatar = player.getAvatars().getAvatars().get(permanent);
+        if (!actorsSeen.add(permanent)) return Retcode.REQ_PARA_INVALID;
+        if (avatar == null || avatar instanceof TrialAvatar || avatar.getAvatarId() != permanent
+            || avatar.getOwner() != player || avatar.getOwnerUid() != player.getUid()) {
+          if (id != StationTrial.HIMEKO) return Retcode.REQ_PARA_INVALID;
+          representable = false;
+        }
+        projection.add(permanent);
+        if (!next.getVitals().containsKey(id)) {
+          if (id == StationTrial.HIMEKO || avatar == null) return Retcode.PLAYER_DATA_ERROR;
+          next.getVitals().put(id, new StoryLineState.Vital(
+              avatar.getCurrentHp(formal), avatar.getCurrentSp(formal)));
+        }
+      }
+      List<Integer> pending = representable ? projection : null;
+      if (previous.isStationEdited() && previous.getRoster().equals(ids)
+          && previous.getLeader() == leader && Objects.equals(previous.getStationPreset(), pending))
+        return Retcode.SUCC;
+      next.select(ids, leader, false, 0);
+      next.stationEdit(pending, leader);
+      try { rebuild(next, false); }
+      catch (IllegalArgumentException | IllegalStateException invalid) { return Retcode.PLAYER_DATA_ERROR; }
+      int oldLeader = previous.getRoster().get(previous.getLeader());
+      state().publish(next);
+      try { player.save(); }
+      catch (RuntimeException failed) {
+        state().publish(previous);
+        return Retcode.SYSTEM_BUSY;
+      }
+      // Only the party view changed: retain the already published trial actor and its live effects.
+      cached = next;
+      lineup = new MissionTrialLineup(player, next);
+      sync();
+      if (oldLeader != ids.get(leader)) player.getMissionManager().onTeamLeaderChange(ids.get(leader));
+      return Retcode.SUCC;
+    }
+  }
+
+  /** Journal a station edit before touching the separate ordinary-team document. */
+  private void finalizeStationPreset(MissionTrialState.Party party) {
+    var preset = party.getStationPreset();
+    if (!party.isStationEdited() || preset == null) return;
+    for (int id : preset) {
+      var actor = player.getAvatars().getAvatars().get(id);
+      if (actor == null || actor instanceof TrialAvatar || actor.getAvatarId() != id
+          || actor.getOwner() != player || actor.getOwnerUid() != player.getUid()) return;
+    }
+    var team = player.getLineupManager().getLineups()[party.getIndex()];
+    if (team == null || team.isExtraLineup()) throw new IllegalStateException("Missing station preset team");
+    if (!party.isStationFinalizing()) {
+      party.stationFinalizing(true);
+      try { player.save(); }
+      catch (RuntimeException failed) { party.stationFinalizing(false); throw failed; }
+    }
+    if (team.getAvatars().equals(preset) && team.getLeader() == party.getStationPresetLeader()) return;
+    var old = new ArrayList<>(team.getAvatars());
+    int oldLeader = team.getLeader();
+    team.getAvatars().clear();
+    team.getAvatars().addAll(preset);
+    team.setLeader(party.getStationPresetLeader());
+    try { team.save(); }
+    catch (RuntimeException failed) {
+      team.getAvatars().clear();
+      team.getAvatars().addAll(old);
+      team.setLeader(oldLeader);
+      throw failed;
+    }
+  }
+
   private void ensure() {
     var party = state().getParty();
     if (party == null) throw new IllegalStateException("Missing mission trial party");
@@ -711,6 +810,7 @@ public final class MissionTrialManager {
                     ? !ordinary(scene.getPlaneType())
                     : scene.getPlaneType() != PlaneType.Raid);
       if (!ended && !left) return false;
+      if (station) finalizeStationPreset(party);
       state().retire();
       try {
         player.save();

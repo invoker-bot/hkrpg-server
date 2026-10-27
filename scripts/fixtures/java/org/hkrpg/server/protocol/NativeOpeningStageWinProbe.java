@@ -36,6 +36,7 @@ public final class NativeOpeningStageWinProbe {
   private boolean verifySpaceAnchors;
   private boolean verifyStoryParty;
   private boolean verifyPresetLineup;
+  private boolean verifyStationPreset;
   private int avatarProgressNotifications;
   private final Map<Integer, DynamicMessage> knownMissions = new HashMap<>();
   private final Set<Integer> knownFinishedSubMissions = new HashSet<>();
@@ -63,7 +64,7 @@ public final class NativeOpeningStageWinProbe {
 
   private DynamicMessage callRaw(String name, byte[] bytes, boolean success) throws Exception {
     byte[] requestHeader = new byte[0];
-    if (verifyPresetLineup && (name.equals("ReplaceLineupCsReq") || name.equals("SwitchLineupIndexCsReq"))) {
+    if ((verifyPresetLineup || verifyStationPreset) && (name.equals("ReplaceLineupCsReq") || name.equals("SwitchLineupIndexCsReq"))) {
       var header = new java.io.ByteArrayOutputStream();
       var out = CodedOutputStream.newInstance(header);
       out.writeUInt32(1, 10000 + requests);
@@ -1329,13 +1330,46 @@ public final class NativeOpeningStageWinProbe {
     objective(id,2);
   }
 
-  private void stationParty() throws Exception {
+  private void stationParty(boolean edited) throws Exception {
     var team=(DynamicMessage)field(call("GetCurLineupDataCsReq"),"lineup");
     var avatars=((List<?>)field(team,"avatar_list")).stream().map(DynamicMessage.class::cast).toList();
-    require(avatars.stream().map(a->(Integer)field(a,"id")).toList().equals(List.of(1002,8001,1011003)),"Station trial must append to the retained edited formal team");
+    var expected=edited ? List.of(8001,1011003) : List.of(1002,8001,1011003);
+    require(avatars.stream().map(a->(Integer)field(a,"id")).toList().equals(expected),"Station party did not retain the requested members");
+    if(edited) require((Integer)field(team,"leader_slot")==1,"Sparse native leader must follow its selected member");
     require(((Descriptors.EnumValueDescriptor)field(avatars.getLast(),"avatar_type")).getNumber()==1,"Himeko must remain temporary");
     var owned=(List<?>)field(call("GetAvatarDataCsReq",Map.of("is_get_all",true),true),"avatar_list");
     require(owned.stream().map(DynamicMessage.class::cast).noneMatch(a->(Integer)field(a,"base_avatar_id")==1003),"Temporary Himeko became a permanent grant");
+  }
+
+  private void stationPreset(boolean edited) throws Exception {
+    var owned=(List<?>)field(call("GetAvatarDataCsReq",Map.of("is_get_all",true),true),"avatar_list");
+    var hero=owned.stream().map(DynamicMessage.class::cast)
+        .filter(a->(Integer)field(a,"base_avatar_id")==8001).findFirst().orElseThrow();
+    int path=(Integer)field(hero,"cur_multi_path_avatar_type");
+    require(path>0,"Opening hero must advertise an active path");
+    var slots=protocol.clientSchema().message("ReplaceLineupCsReq").findFieldByName("lineup_slot_list");
+    var rows=new ArrayList<DynamicMessage>();
+    if(!edited) {
+      var other=DynamicMessage.newBuilder(slots.getMessageType());
+      other.setField(other.getDescriptorForType().findFieldByName("id"),1002);
+      var type=other.getDescriptorForType().findFieldByName("avatar_type");
+      other.setField(type,type.getEnumType().findValueByName("AvatarType_AvatarFormalType"));
+      rows.add(other.build());
+    }
+    var main=DynamicMessage.newBuilder(slots.getMessageType());
+    main.setField(main.getDescriptorForType().findFieldByName("id"),path);
+    main.setField(main.getDescriptorForType().findFieldByName("slot"),edited?0:1);
+    var mainType=main.getDescriptorForType().findFieldByName("avatar_type");
+    main.setField(mainType,mainType.getEnumType().findValueByName("AvatarType_AvatarFixedPathType"));
+    rows.add(main.build());
+    var himeko=DynamicMessage.newBuilder(slots.getMessageType());
+    himeko.setField(himeko.getDescriptorForType().findFieldByName("id"),1011003);
+    himeko.setField(himeko.getDescriptorForType().findFieldByName("slot"),edited?3:2);
+    var trialType=himeko.getDescriptorForType().findFieldByName("avatar_type");
+    himeko.setField(trialType,trialType.getEnumType().findValueByName("AvatarType_AvatarTrialType"));
+    rows.add(himeko.build());
+    call("ReplaceLineupCsReq",Map.of("lineup_slot_list",rows,"leader_slot",edited?3:0),true);
+    stationParty(edited);
   }
 
   private void stationBridges(boolean blue) throws Exception {
@@ -1346,19 +1380,19 @@ public final class NativeOpeningStageWinProbe {
 
   private Map<String,Object> stationStory(String phase) throws Exception {
     if(phase.equals("station-prepare")) {
-      talk(100030101); objective(100030100,1); stationParty();
+      talk(100030101); objective(100030100,1); stationParty(false); stationPreset(true);
       for(int id:new int[]{100030100,100030103,100030111,100030112,100030113,100030202,100030203}) talk(id);
-      objective(100030204,1);stationParty();
+      objective(100030204,1);stationParty(true);
     } else if(phase.equals("station-blue")) {
-      objective(100030204,2);talk(100040102);stationParty();
+      objective(100030204,2);talk(100040102);stationParty(true);
       objective(100040123,1);awakeningBattle(5,200001,true);objective(100040123,2);
       propInteraction(1,300005,1010,true);objective(100040103,2);talk(100040104);
       objective(100040114,1);stationBridges(false);propInteraction(4,300015,1010,true);
       stationBridges(true);objective(100040114,2);objective(100040145,1);
     } else if(phase.equals("station-reconnect")) {
-      stationParty();stationBridges(true);objective(100040114,2);objective(100040145,1);
+      stationParty(true);stationBridges(true);objective(100040114,2);objective(100040145,1);
     } else if(phase.equals("station-orange")) {
-      stationParty();stationBridges(true);propInteraction(4,300002,1100,true);
+      stationParty(true);stationPreset(false);stationBridges(true);propInteraction(4,300002,1100,true);
       stationBridges(false);objective(100040145,2);
       for(int id:new int[]{100040105,100040106,100040108}) talk(id);
       propInteraction(1,300007,1010,true);objective(100040109,2);objective(100040110,1);
@@ -1373,9 +1407,9 @@ public final class NativeOpeningStageWinProbe {
       var report=Map.<String,Object>of("battle_id",field(battle,"battle_id"),"stage_id",field(battle,"stage_id"),
           "stt",battleStatistics(battle),"end_status",end.getEnumType().findValueByName("BATTLE_END_WIN"));
       call("PVEBattleResultCsReq",report,true);call("PVEBattleResultCsReq",report,false);
-      objective(100040110,2);talk(100040111);talk(100040112);objective(100040113,1);stationParty();
+      objective(100040110,2);talk(100040111);talk(100040112);objective(100040113,1);stationParty(false);
     } else {
-      stationParty();objective(100040113,2);objective(100040115,1);
+      stationParty(false);objective(100040113,2);objective(100040115,1);
       var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
       var leader=(Integer)field(scene,"leader_entity_id");
       DynamicMessage actor=null;
@@ -1397,6 +1431,7 @@ public final class NativeOpeningStageWinProbe {
     verifySpaceAnchors = control.has("spaceAnchors") && control.get("spaceAnchors").getAsBoolean();
     verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
     verifyPresetLineup = control.has("presetLineup") && control.get("presetLineup").getAsBoolean();
+    verifyStationPreset = control.has("stationStory") && control.get("stationStory").getAsBoolean();
     boolean verifyKeyConsole = control.has("keyConsole") && control.get("keyConsole").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")
         || phase.startsWith("mechanisms-") || phase.equals("main-control-prepare")) expectedFloor = 20002001;

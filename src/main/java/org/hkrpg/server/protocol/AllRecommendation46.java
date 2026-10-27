@@ -24,7 +24,8 @@ public final class AllRecommendation46 {
           && Gameplay46.only(request, "big_data_recommend_type");
       kind = ((EnumValueDescriptor) Gameplay46.value(request, "big_data_recommend_type")).getNumber();
     }
-    valid &= kind >= 3 && kind <= 8;
+    // The team builder requests kind 9 and expects the same lineup-list oneof as 5–8.
+    valid &= kind >= 3 && kind <= 9;
     if (kind != 0) {
       var type = typeField.getEnumType().findValueByNumber(kind);
       if (type != null) response.setField(typeField, type);

@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 /** Empty local statistics still need a native response matching the client's requested kind. */
 class AllRecommendation46Test {
   @ParameterizedTest
-  @ValueSource(ints = {3, 4, 5, 6, 7, 8})
+  @ValueSource(ints = {3, 4, 5, 6, 7, 8, 9})
   void allRecommendationQueryCompletesWithoutInventingStatistics(int kind) throws Exception {
     var session = new Gameplay46HandlerTest.Session();
     assertTrue(VersionedPacketHandler.handle(session, 2426, scalar(9, kind)));

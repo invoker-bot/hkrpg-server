@@ -92,7 +92,7 @@ public final class NativePresetLineupProbe {
   void recommendations() throws Exception {
     var request = protocol.clientSchema().message("GetBigDataAllRecommendCsReq");
     var kindField = request.findFieldByName("big_data_recommend_type");
-    for (int kind : List.of(3, 4, 5, 6, 7, 8)) {
+    for (int kind : List.of(3, 4, 5, 6, 7, 8, 9)) {
       var response = call("GetBigDataAllRecommendCsReq", Map.of("big_data_recommend_type",
           kindField.getEnumType().findValueByNumber(kind)), 1000 + requests);
       check(((Descriptors.EnumValueDescriptor) field(response, "big_data_recommend_type")).getNumber() == kind,

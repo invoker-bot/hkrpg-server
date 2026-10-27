@@ -28,12 +28,15 @@ public final class FormalLineup46 {
           var current = p.getCurrentLineup();
           var teams = p.getLineupManager().getLineups();
           var lineup = index >= 0 && index < teams.length ? teams[index] : null;
+          boolean station = p.getMissionTrialManager().inside()
+              && p.getMissionTrialManager().editableStation();
+          boolean stationCurrent = station && index == p.getLineupManager().getCurrentIndex();
           if (p.isInBattle()
               || p.getInstance() != null
-              || p.getMissionTrialManager().inside()
+              || p.getMissionTrialManager().inside() && !station
               || p.getRaidTrialManager().inside()
               || current == null
-              || current.isExtraLineup()
+              || current.isExtraLineup() && !station
               || g.getCurrentMissionRaid() != 0
               || g.getTrialRun() != null
               || g.getRogue().isInside()
@@ -48,45 +51,67 @@ public final class FormalLineup46 {
               && p.getScene() != null) {
             var rows = (List<?>) value(req, "lineup_slot_list");
             var slots = new TreeMap<Integer, Integer>();
+            var actors = new HashSet<Integer>();
             int leader = number(req, "leader_slot");
-            boolean valid = rows.size() <= 4 && leader >= 0
-                && (rows.isEmpty() ? lineup != current && leader == 0 : leader < rows.size());
+            boolean valid = rows.size() <= 4 && leader >= 0 && leader < 4
+                && (rows.isEmpty() ? lineup != current && !stationCurrent && leader == 0 : true);
             for (Object raw : rows) {
               var row = (DynamicMessage) raw;
               int slot = number(row, "slot"), id = number(row, "id");
               var avatar = p.getAvatarById(id);
-              valid &=
-                  row.getUnknownFields().asMap().isEmpty()
-                      && only(row, "slot", "id", "avatar_type")
-                      && "AvatarType_AvatarFormalType"
-                          .equals(
-                              ((Descriptors.EnumValueDescriptor) value(row, "avatar_type"))
-                                  .getName())
-                      && slot >= 0
-                      && slot < rows.size()
-                      && id > 0
-                      && slots.putIfAbsent(slot, id) == null
-                      && avatar != null
-                      && avatar.getAvatarId() == id
-                      && avatar.getAvatarType() == AvatarType.AVATAR_FORMAL_TYPE
-                      && p.getAvatars().getAvatars().get(id) == avatar;
+              String avatarType = ((Descriptors.EnumValueDescriptor) value(row, "avatar_type")).getName();
+              int canonical = avatar == null ? 0 : avatar.getAvatarId();
+              boolean owned = avatar != null && avatar.getAvatarType() == AvatarType.AVATAR_FORMAL_TYPE
+                  && p.getAvatars().getAvatars().get(canonical) == avatar
+                  && avatar.getOwner() == p && avatar.getOwnerUid() == p.getUid();
+              boolean formal = owned && avatarType.equals("AvatarType_AvatarFormalType") && canonical == id;
+              var path = p.getAvatars().getMultiPathById(id);
+              var pathRow = emu.lunarcore.data.GameData.getMultiplePathAvatarExcelMap().get(id);
+              boolean fixedPath = owned && avatarType.equals("AvatarType_AvatarFixedPathType")
+                  && path != null && path == avatar.getMultiPath() && pathRow != null
+                  && path.getOwner() == p && path.getOwnerUid() == p.getUid()
+                  && pathRow.getId() == id && pathRow.getBaseAvatarID() == canonical;
+              boolean trial = stationCurrent && avatarType.equals("AvatarType_AvatarTrialType")
+                  && id == 1011003 && avatar instanceof emu.lunarcore.game.trial.TrialAvatar
+                  && avatar.getAvatarId() == id && avatar.getOwner() == p
+                  && avatar.getOwnerUid() == p.getUid();
+              valid &= row.getUnknownFields().asMap().isEmpty() && only(row, "slot", "id", "avatar_type")
+                  && slot >= 0 && slot < 4 && id > 0 && (formal || fixedPath || trial)
+                  && slots.putIfAbsent(slot, canonical) == null
+                  && avatar != null && actors.add(avatar.getActorId());
             }
             if (valid
                 && slots.size() == rows.size()
-                && new HashSet<>(slots.values()).size() == slots.size()) {
+                && new HashSet<>(slots.values()).size() == slots.size()
+                && (rows.isEmpty() || slots.containsKey(leader))) {
               var roster = new ArrayList<>(slots.values());
-              if (!roster.equals(lineup.getAvatars()) || leader != lineup.getLeader()) {
-                int oldLeader =
-                    lineup.isActiveSlot(lineup.getLeader())
-                        ? lineup.getAvatars().get(lineup.getLeader())
-                        : 0;
-                lineup.setLeader(leader);
-                lineup.replace(roster);
-                p.save();
-                if (lineup == current && !roster.isEmpty() && oldLeader != roster.get(leader))
-                  p.getMissionManager().onTeamLeaderChange(roster.get(leader));
+              int compactLeader = rows.isEmpty() ? 0 : new ArrayList<>(slots.keySet()).indexOf(leader);
+              if (stationCurrent) {
+                code = p.getMissionTrialManager().replaceStation(roster, compactLeader);
+              } else {
+                code = Retcode.SUCC;
+                if (!roster.equals(lineup.getAvatars()) || compactLeader != lineup.getLeader()) {
+                  var previous = new ArrayList<>(lineup.getAvatars());
+                  int previousLeader = lineup.getLeader();
+                  int oldLeader = lineup.isActiveSlot(previousLeader) ? previous.get(previousLeader) : 0;
+                  lineup.getAvatars().clear();
+                  lineup.getAvatars().addAll(roster);
+                  lineup.setLeader(compactLeader);
+                  try { lineup.save(); }
+                  catch (RuntimeException failed) {
+                    lineup.getAvatars().clear();
+                    lineup.getAvatars().addAll(previous);
+                    lineup.setLeader(previousLeader);
+                    code = Retcode.SYSTEM_BUSY;
+                  }
+                  if (code == Retcode.SUCC) {
+                    if (lineup == current) p.getScene().syncLineup();
+                    lineup.refreshLineup();
+                    if (lineup == current && !roster.isEmpty() && oldLeader != roster.get(compactLeader))
+                      p.getMissionManager().onTeamLeaderChange(roster.get(compactLeader));
+                  }
+                }
               }
-              code = Retcode.SUCC;
             }
           }
         }
