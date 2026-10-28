@@ -4,10 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.Gson;
 import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.UnknownFieldSet;
 import emu.lunarcore.server.packet.PacketCodec;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import io.netty.buffer.Unpooled;
+import java.util.HexFormat;
+import java.util.Locale;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import org.junit.jupiter.api.Test;
 
 class VideoVersionKeys46Test {
@@ -26,9 +31,11 @@ class VideoVersionKeys46Test {
     assertEquals(122, input.readTag(), "Post-boss video is registered in the same ordinary dictionary");
     var boss = CodedInputStream.newInstance(input.readByteArray());
     assertEquals(48, boss.readTag());
-    assertEquals(75_563_019_682_118_330L, boss.readUInt64());
+    assertEquals(73_772_858_016_446_646L, boss.readUInt64());
     assertEquals(64, boss.readTag());
     assertEquals(3_385_157_949_291_746L, boss.readUInt64());
+    assertEquals(104, boss.readTag());
+    assertEquals(5_627_075_162_192_835_560L, boss.readUInt64());
     assertEquals(112, boss.readTag());
     assertEquals(21, boss.readUInt32());
     assertEquals(0, boss.readTag());
@@ -59,7 +66,7 @@ class VideoVersionKeys46Test {
     }
   }
 
-  @Test void postBossMovieReceivesItsOwnSourceMatchedKey() throws Exception {
+  private static UnknownFieldSet postBossMovieKey() throws Exception {
     var session = new PlayerReturnInitial46Test.Session();
     assertTrue(VersionedPacketHandler.handle(session, 9, new byte[0]));
     var packet = com.google.protobuf.UnknownFieldSet.parseFrom(session.nativePackets.getFirst().body());
@@ -71,22 +78,50 @@ class VideoVersionKeys46Test {
         .filter(entry -> entry.hasField(14) && entry.getField(14).getVarintList().contains(21L))
         .toList();
     assertEquals(1, matched.size(), "The post-boss movie must have an ordinary video entry");
-    assertEquals(java.util.List.of(75_563_019_682_118_330L), matched.getFirst().getField(6).getVarintList());
-    assertEquals(java.util.List.of(3_385_157_949_291_746L), matched.getFirst().getField(8).getVarintList());
-    assertFalse(matched.getFirst().hasField(13));
+    return matched.getFirst();
   }
 
-  @Test void postBossAudioComponentMatchesBothInstalledGenderVariants() {
-    assertEquals(16_653_020_713_184_805L, audioKey("CS_Chap00_Act300_f"));
-    assertEquals(16_653_020_718_949_606L, audioKey("CS_Chap00_Act300_m"));
+  @Test void postBossMovieReceivesItsOwnSourceMatchedKey() throws Exception {
+    var key = postBossMovieKey();
+    assertEquals(java.util.List.of(73_772_858_016_446_646L), key.getField(6).getVarintList());
+    assertEquals(java.util.List.of(3_385_157_949_291_746L), key.getField(8).getVarintList());
+    assertEquals(java.util.List.of(5_627_075_162_192_835_560L), key.getField(13).getVarintList());
   }
 
-  private static long audioKey(String name) {
+  @Test void postBossAudioComponentMatchesBothInstalledGenderVariants() throws Exception {
+    var key = postBossMovieKey();
+    assertEquals(16_653_020_713_184_805L, audioKey(key, "CS_Chap00_Act300_f"));
+    assertEquals(16_653_020_718_949_606L, audioKey(key, "CS_Chap00_Act300_m"));
+  }
+
+  @Test void postBossVideoComponentDerivesBothPublishedAesKeys() throws Exception {
+    var key = postBossMovieKey();
+    assertEquals("5DB4867828519F98ADCF963EBED6C351", aesKey(key, "CS_Chap00_Act300_f"));
+    assertEquals("EC09DD25C756D08900B13550B28FD5C7", aesKey(key, "CS_Chap00_Act300_m"));
+  }
+
+  private static long audioKey(UnknownFieldSet key, String name) {
     long hash = 0;
-    int rotation = 7;
+    int rotation = (int) (key.getField(6).getVarintList().getFirst() / 10_000_000_000_000_000L);
     for (int i = 0; i < name.length(); i++)
       hash = hash * 7 + name.charAt((i + rotation) % name.length());
-    return Long.remainderUnsigned(hash + rotation + 3_385_157_949_291_746L, 72_043_514_036_987_937L);
+    return Long.remainderUnsigned(hash + rotation + key.getField(8).getVarintList().getFirst(),
+        72_043_514_036_987_937L);
+  }
+
+  private static String aesKey(UnknownFieldSet key, String name) throws Exception {
+    long primary = key.getField(6).getVarintList().getFirst();
+    long component = key.getField(13).getVarintList().stream().findFirst().orElse(0L);
+    String password = String.format(Locale.ROOT, "VideoAES_Seed_7svc05j3vc|%02d|%016d|%020d",
+        primary / 10_000_000_000_000_000L, primary % 10_000_000_000_000_000L, component);
+    byte[] salt = ("VideoAES_Salt_yzt89k1huq|" + name).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    var spec = new PBEKeySpec(password.toCharArray(), salt, 10_000, 128);
+    try {
+      return HexFormat.of().withUpperCase().formatHex(
+          SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(spec).getEncoded());
+    } finally {
+      spec.clearPassword();
+    }
   }
 
   @Test void invalidVideoKeyRequestsDoNotReceiveTheCatalog() throws Exception {

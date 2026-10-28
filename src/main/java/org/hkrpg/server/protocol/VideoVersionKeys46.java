@@ -13,10 +13,13 @@ final class VideoVersionKeys46 {
   // See docs/opening-video-key-4.6.md for independent native routing and cross-checks.
   private static final int OPENING_VIDEO_ID = 8;
   private static final long OPENING_VIDEO_KEY = 70_220_919L;
-  // Video 21: 4.6 source key and asset-matched HCA component, see the same evidence document.
+  // Video 21: pinned 4.6 AES inputs and asset-matched HCA component.
+  // The raw 4.6 tuple's HCA input does not match the installed 4.6 movie assets;
+  // the calibrated component is independently checked against both audio tracks.
   private static final int POST_BOSS_VIDEO_ID = 21;
-  private static final long POST_BOSS_VIDEO_KEY = 75_563_019_682_118_330L;
+  private static final long POST_BOSS_VIDEO_KEY = 73_772_858_016_446_646L;
   private static final long POST_BOSS_HCA_COMPONENT = 3_385_157_949_291_746L;
+  private static final long POST_BOSS_AES_COMPONENT = 5_627_075_162_192_835_560L;
 
   static void send(GameSession session, byte[] request) throws IOException {
     var body = new ByteArrayOutputStream();
@@ -35,6 +38,7 @@ final class VideoVersionKeys46 {
       key = CodedOutputStream.newInstance(entry);
       key.writeUInt64(6, POST_BOSS_VIDEO_KEY);
       key.writeUInt64(8, POST_BOSS_HCA_COMPONENT);
+      key.writeUInt64(13, POST_BOSS_AES_COMPONENT);
       key.writeUInt32(14, POST_BOSS_VIDEO_ID);
       key.flush();
       output.writeByteArray(15, entry.toByteArray());
