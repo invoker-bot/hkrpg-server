@@ -41,12 +41,15 @@ def main():
     parser.add_argument('--story-mechanisms', action='store_true', help='继续校验两座剧情桥梁的前置对白、精确联动、重连/H2保存，以及持钥门和升降机的无钥匙拒绝；不播放真实客户端演出')
     parser.add_argument('--main-control-transfer', action='store_true', help='继续到电梯前战斗及演出完成，校验未持通行证仍可按原任务切往主控舱段、断线恢复及H2重启；战报和演出回执为合成请求')
     parser.add_argument('--station-story', action='store_true', help='继续校验姬子兼容试用、科员对话、支援舱段双色桥、末日兽战报及醒来指定落点；合成输入，不等同实机演出')
+    parser.add_argument('--live-station-transfer', action='store_true', help='完成末日兽后在同一会话等待切图恢复，检查服务端场景通知、迟到请求与重启保存；对白为合成回执')
     parser.add_argument('--interrupt-opening-transfer', choices=('reconnect', 'restart'),
                         help='完成选角演出后不发送切图请求，验证同进程重连或H2重启能续接原任务')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/opening-battle-native.json')
     args = parser.parse_args()
     if args.preset_lineup:
         args.story_party = True
+    if args.live_station_transfer:
+        args.station_story = True
     if args.station_story:
         args.main_control_transfer = True
     if args.main_control_transfer:
@@ -222,6 +225,7 @@ def main():
                                    'storyMechanisms': args.story_mechanisms,
                                    'mainControlTransfer': args.main_control_transfer,
                                    'stationStory': args.station_story,
+                                   'liveStationTransfer': args.live_station_transfer,
                                    'interruptedTransfer': bool(args.interrupt_opening_transfer)}
                     probe = subprocess.run([str(java), *java_flags, '-cp', str(helpers) + os.pathsep + str(jar),
                                             'org.hkrpg.server.protocol.NativeOpeningStageWinProbe', str(game)],
@@ -232,6 +236,9 @@ def main():
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
                     if phase.startswith('station-'):
                         assert snapshot['passed'] and snapshot['temporaryHimeko']
+                        if phase == 'station-orange' and args.live_station_transfer:
+                            assert snapshot['liveTransferVerified'] and snapshot['serverSceneNotifications'] == 1
+                            assert snapshot['lateRequestKeptAnchor']
                         if phase in ('station-wakeup-reconnect','station-wakeup-restart'):
                             previous=next(row for row in snapshots if row['phase']=='station-wakeup')
                             assert snapshot['credits']==previous['credits'],'Reconnect duplicated/lost waking rewards'
@@ -342,6 +349,7 @@ def main():
     assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
     report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'snapshots': snapshots,
               'normalStops': stops, 'interruptedTransfer': args.interrupt_opening_transfer,
+              'liveStationTransfer': args.live_station_transfer,
               'sourceResourcesModified': False, 'clientGameplayVerified': False}
     output = args.output
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

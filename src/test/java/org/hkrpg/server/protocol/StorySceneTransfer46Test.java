@@ -8,6 +8,9 @@ import emu.lunarcore.data.config.*;
 import emu.lunarcore.data.excel.*;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.server.packet.Retcode;
+import emu.lunarcore.server.packet.BasePacket;
+import emu.lunarcore.server.packet.CmdId;
+import emu.lunarcore.server.packet.SessionState;
 import emu.lunarcore.util.Position;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -98,6 +101,205 @@ class StorySceneTransfer46Test {
     assertEquals(GameData.getFloorInfo(destination.getPlaneID(), destination.getFloorID()).getAnchorInfo(group, anchor).getPos(),
         f.actor.getPos(), "Original story anchor must replace the generic entrance anchor");
     assertEquals(QuestState.Phase.FINISHED, f.actor.getMissionManager().sub(sub.getId()).getPhase());
+  }
+
+  void online() throws Exception {
+    f.actor.setSession(f.session);
+    OpeningSceneTransfer46Test.field(f.actor, "loggedIn", true);
+    OpeningSceneTransfer46Test.field(f.actor, "nextStaminaRecover", Long.MAX_VALUE);
+  }
+
+  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102})
+  void acceptedLiteralTransferRecoversInTheSameSessionAfterClientFailsToEnter(int id) throws Exception {
+    setup(id);
+    online();
+    long start = 1_800_000_000_000L;
+    var source = f.actor.getScene();
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 14_000, 1000);
+    assertSame(source, f.actor.getScene(), "Do not interrupt the ordinary client transition");
+    f.actor.onTick(start + 16_000, 1000);
+    arrived();
+    var destination = f.actor.getScene();
+    int saves = f.actor.saves;
+    f.actor.onTick(start + 40_000, 1000);
+    assertSame(destination, f.actor.getScene(), "The same transfer must not run twice");
+    assertEquals(saves, f.actor.saves);
+  }
+
+  @Test
+  void lateClientRequestAfterRecoveryDoesNotReplaceTheAuthoredAnchor() throws Exception {
+    setup(100040113);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 16_000, 1000);
+    arrived();
+    var destination = f.actor.getScene();
+    f.enter(entry, 0, Retcode.SUCC);
+    assertSame(destination, f.actor.getScene());
+    arrived();
+  }
+
+  @Test
+  void clientTransferBeforeRecoveryIsNotRepeated() throws Exception {
+    setup(100040113);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.enter(entry, 0, Retcode.SUCC);
+    arrived();
+    var destination = f.actor.getScene();
+    int saves = f.actor.saves;
+    f.actor.onTick(start + 30_000, 1000);
+    assertSame(destination, f.actor.getScene());
+    assertEquals(saves, f.actor.saves);
+  }
+
+  @Test
+  void stalledTransferDoesNotSkipAnUnfinishedPredecessor() throws Exception {
+    setup(100040113);
+    online();
+    int previous = sub.getTakeParamIntList()[0];
+    f.actor.getGameplay().getSubMissions().put(previous, new QuestState(previous));
+    var source = f.actor.getScene();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 30_000, 1000);
+    assertSame(source, f.actor.getScene());
+    assertEquals(QuestState.Phase.DOING, f.actor.getMissionManager().sub(sub.getId()).getPhase());
+  }
+
+  @Test
+  void recoveryWaitsAgainAfterSessionOrPrerequisiteBecomesInvalid() throws Exception {
+    setup(100040113);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.session.setState(SessionState.INACTIVE);
+    f.actor.onTick(start + 10_000, 1000);
+    f.session.setState(SessionState.ACTIVE);
+    var source = f.actor.getScene();
+    f.actor.onTick(start + 20_000, 1000);
+    f.actor.onTick(start + 34_000, 1000);
+    assertSame(source, f.actor.getScene());
+    f.actor.onTick(start + 36_000, 1000);
+    arrived();
+  }
+
+  @Test
+  void replacingTheAcceptanceStartsANewGracePeriod() throws Exception {
+    setup(100040113);
+    online();
+    long start = 1_800_000_000_000L;
+    var source = f.actor.getScene();
+    f.actor.onTick(start, 1000);
+    f.actor.getGameplay().getSubMissions().put(sub.getId(), new QuestState(sub.getId()));
+    f.actor.onTick(start + 10_000, 1000);
+    f.actor.onTick(start + 24_000, 1000);
+    assertSame(source, f.actor.getScene());
+    f.actor.onTick(start + 26_000, 1000);
+    arrived();
+  }
+
+  @Test
+  void cancelledTransferIsNotRecovered() throws Exception {
+    setup(100040113);
+    online();
+    var source = f.actor.getScene();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.getGameplay().getCancelledSubs().add(sub.getId());
+    f.actor.onTick(start + 20_000, 1000);
+    assertSame(source, f.actor.getScene());
+    assertEquals(QuestState.Phase.DOING, f.actor.getMissionManager().sub(sub.getId()).getPhase());
+  }
+
+  @Test
+  void aChangedLoopingScriptIsNotTreatedAsTheAuditedOneShot() throws Exception {
+    setup(100040113);
+    online();
+    var changed = JsonParser.parseString(sub.getTask().getSourceDefinition()).getAsJsonObject();
+    changed.getAsJsonArray("OnStartSequece").get(0).getAsJsonObject().addProperty("IsLoop", true);
+    sub.getTask().retainSourceDefinition(changed);
+    var source = f.actor.getScene();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 20_000, 1000);
+    assertSame(source, f.actor.getScene(), "A new script cannot inherit an old recovery rule");
+  }
+
+  @Test
+  void recoveryPublishesExactlyOneSceneTransition() throws Exception {
+    setup(100040113);
+    var sent = new ArrayList<Integer>();
+    f.session = new Gameplay46HandlerTest.Session() {
+      @Override public emu.lunarcore.game.player.Player getPlayer() { return f.actor; }
+      @Override public void send(int command) { sent.add(command); }
+      @Override public void send(BasePacket packet) { sent.add(packet.getCmdId()); }
+    };
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 16_000, 1000);
+    arrived();
+    assertEquals(1, Collections.frequency(sent, CmdId.SyncServerSceneChangeNotify));
+    assertEquals(1, Collections.frequency(sent, CmdId.EnterSceneByServerScNotify));
+    assertTrue(sent.indexOf(CmdId.SyncServerSceneChangeNotify)
+        < sent.indexOf(CmdId.EnterSceneByServerScNotify));
+    f.actor.onTick(start + 32_000, 1000);
+    assertEquals(1, Collections.frequency(sent, CmdId.EnterSceneByServerScNotify));
+  }
+
+  @Test
+  void missingAnchorCannotCauseARecoveryOrGenericSpawn() throws Exception {
+    setup(100040113);
+    online();
+    var destination = GameData.getMapEntranceExcelMap().get(entry);
+    var anchors = GameData.getFloorInfo(destination.getPlaneID(), destination.getFloorID())
+        .getGroups().get(group).getAnchorList();
+    anchors.clear();
+    var source = f.actor.getScene();
+    var state = f.gson.toJson(f.actor.getGameplay());
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 16_000, 1000);
+    assertSame(source, f.actor.getScene());
+    assertEquals(state, f.gson.toJson(f.actor.getGameplay()));
+  }
+
+  @Test
+  void recoveryCanRetryAfterLocationSaveFails() throws Exception {
+    setup(100040113);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    var source = f.actor.getScene();
+    var state = f.gson.toJson(f.actor.getGameplay());
+    f.actor.failSave = true;
+    assertThrows(IllegalStateException.class, () -> f.actor.onTick(start + 16_000, 1000));
+    assertSame(source, f.actor.getScene());
+    assertEquals(state, f.gson.toJson(f.actor.getGameplay()));
+    f.actor.failSave = false;
+    f.actor.onTick(start + 17_000, 1000);
+    f.actor.onTick(start + 33_000, 1000);
+    arrived();
+  }
+
+  @Test
+  void receiptDoesNotSwallowAnOrdinaryTeleportAfterThePlayerMoves() throws Exception {
+    setup(100040113);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 16_000, 1000);
+    arrived();
+    f.actor.getPos().setX(f.actor.getPos().getX() + 1000);
+    f.enter(entry, 0, Retcode.SUCC);
+    var destination = GameData.getMapEntranceExcelMap().get(entry);
+    var floor = GameData.getFloorInfo(destination.getPlaneID(), destination.getFloorID());
+    assertEquals(floor.getAnchorInfo(destination.getStartGroupID(), destination.getStartAnchorID()).getPos(),
+        f.actor.getPos(), "An intentional later teleport uses the map's ordinary spawn");
   }
 
   @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102})

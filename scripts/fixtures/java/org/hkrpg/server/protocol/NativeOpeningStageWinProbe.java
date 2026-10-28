@@ -37,6 +37,9 @@ public final class NativeOpeningStageWinProbe {
   private boolean verifyStoryParty;
   private boolean verifyPresetLineup;
   private boolean verifyStationPreset;
+  private boolean verifyLiveStationTransfer;
+  private int serverSceneNotifications;
+  private boolean lateRequestKeptAnchor;
   private int avatarProgressNotifications;
   private final Map<Integer, DynamicMessage> knownMissions = new HashMap<>();
   private final Set<Integer> knownFinishedSubMissions = new HashSet<>();
@@ -92,6 +95,12 @@ public final class NativeOpeningStageWinProbe {
       if (frame == null) continue;
       if (frame.command() == protocol.clientCommand("SyncLineupNotify"))
         lineupUpdates.add(protocol.clientSchema().parse("SyncLineupNotify", frame.body()));
+      if (frame.command() == protocol.clientCommand("EnterSceneByServerScNotify")) {
+        var notification = protocol.clientSchema().parse("EnterSceneByServerScNotify", frame.body());
+        var scene = (DynamicMessage) field(notification, "scene");
+        expectedFloor = (Integer) field(scene, "floor_id");
+        serverSceneNotifications++;
+      }
       if (frame.command() == protocol.clientCommand("SceneGroupRefreshScNotify")) {
         var update = protocol.clientSchema().parse("SceneGroupRefreshScNotify", frame.body());
         require((Integer) field(update, "floor_id") == expectedFloor, "Group update floor");
@@ -1408,6 +1417,44 @@ public final class NativeOpeningStageWinProbe {
           "stt",battleStatistics(battle),"end_status",end.getEnumType().findValueByName("BATTLE_END_WIN"));
       call("PVEBattleResultCsReq",report,true);call("PVEBattleResultCsReq",report,false);
       objective(100040110,2);talk(100040111);talk(100040112);objective(100040113,1);stationParty(false);
+      if (verifyLiveStationTransfer) {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
+        DynamicMessage arriving = null;
+        while (System.nanoTime() < deadline) {
+          Thread.sleep(1000);
+          var current = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+          if ((Integer) field(current, "floor_id") == 10001001 && serverSceneNotifications > 0) {
+            arriving = current;
+            break;
+          }
+        }
+        require(arriving != null, "Same-session server scene transfer did not arrive");
+        require(serverSceneNotifications == 1 && enterSceneRequests == 0,
+            "Recovery must send one server transition without a client entry request");
+        objective(100040113,2);objective(100040115,1);
+        int leader = (Integer) field(arriving, "leader_entity_id");
+        DynamicMessage motion = null;
+        for (var raw : (List<?>) field(arriving, "entity_group_list"))
+          for (var value : (List<?>) field((DynamicMessage) raw, "entity_list"))
+            if ((Integer) field((DynamicMessage) value, "entity_id") == leader)
+              motion = (DynamicMessage) field((DynamicMessage) value, "motion");
+        require(motion != null, "Recovered scene leader is missing");
+        var pos = (DynamicMessage) field(motion, "pos");
+        require((Integer) field(pos,"x") == -13871 && (Integer) field(pos,"z") == -58309,
+            "Recovery did not use the authored story anchor");
+        call("EnterSceneCsReq", Map.of("entry_id",1000101), true);
+        var after = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+        leader = (Integer) field(after, "leader_entity_id");
+        motion = null;
+        for (var raw : (List<?>) field(after, "entity_group_list"))
+          for (var value : (List<?>) field((DynamicMessage) raw, "entity_list"))
+            if ((Integer) field((DynamicMessage) value, "entity_id") == leader)
+              motion = (DynamicMessage) field((DynamicMessage) value, "motion");
+        var afterPos = (DynamicMessage) field(Objects.requireNonNull(motion), "pos");
+        lateRequestKeptAnchor = (Integer) field(afterPos,"x") == -13871
+            && (Integer) field(afterPos,"z") == -58309;
+        require(lateRequestKeptAnchor, "Late entry changed the authored anchor");
+      }
     } else {
       stationParty(false);objective(100040113,2);objective(100040115,1);
       var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
@@ -1422,7 +1469,9 @@ public final class NativeOpeningStageWinProbe {
       require(enterSceneRequests==0,"Interrupted story must resume without client teleport");
     }
     return Map.of("passed",true,"phase",phase,"requests",requests,"credits",credits,
-        "temporaryHimeko",true,"clientGameplayVerified",false);
+        "temporaryHimeko",true,"clientGameplayVerified",false,
+        "liveTransferVerified", verifyLiveStationTransfer && phase.equals("station-orange"),
+        "serverSceneNotifications", serverSceneNotifications, "lateRequestKeptAnchor", lateRequestKeptAnchor);
   }
 
   private Map<String, Object> execute(JsonObject control) throws Exception {
@@ -1432,6 +1481,7 @@ public final class NativeOpeningStageWinProbe {
     verifyStoryParty = control.has("storyParty") && control.get("storyParty").getAsBoolean();
     verifyPresetLineup = control.has("presetLineup") && control.get("presetLineup").getAsBoolean();
     verifyStationPreset = control.has("stationStory") && control.get("stationStory").getAsBoolean();
+    verifyLiveStationTransfer = control.has("liveStationTransfer") && control.get("liveStationTransfer").getAsBoolean();
     boolean verifyKeyConsole = control.has("keyConsole") && control.get("keyConsole").getAsBoolean();
     if (phase.startsWith("transfer-") || phase.startsWith("awakening-") || phase.startsWith("key-console-")
         || phase.startsWith("mechanisms-") || phase.equals("main-control-prepare")) expectedFloor = 20002001;

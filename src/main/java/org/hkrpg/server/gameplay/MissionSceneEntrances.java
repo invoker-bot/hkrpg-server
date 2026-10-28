@@ -5,6 +5,10 @@ import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.data.excel.MapEntranceExcel;
 import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.quest.QuestState;
+import emu.lunarcore.game.scene.Scene;
+import emu.lunarcore.server.packet.SessionState;
+import emu.lunarcore.util.Position;
 import java.util.*;
 
 /** An active literal EnterMap may authorize its own arrival before that arrival is completed. */
@@ -62,6 +66,9 @@ public final class MissionSceneEntrances {
   /** Resolve the same source-bound destination for a live request, even if the map is already open. */
   public static boolean enter(Player player, int entryId, int teleport, boolean sendPacket) {
     synchronized (player) {
+      if (sendPacket && player.isOnline()
+          && player.getSession().getMissionSceneRecovery().isLateRequest(player, entryId, teleport))
+        return true;
       var entry = GameData.getMapEntranceExcelMap().get(entryId);
       MissionInfo.SubMissionInfo accepted = null;
       if (entry != null && teleport == 0 && ordinaryContext(player)) {
@@ -74,6 +81,124 @@ public final class MissionSceneEntrances {
       }
       return accepted == null ? player.enterScene(entryId, teleport, sendPacket)
           : transfer(player, accepted, entry, sendPacket);
+    }
+  }
+
+  /**
+   * Bounded same-session recovery for the five source-audited, single-step chapter transfers.
+   * The client has the first opportunity to run the original EnterMap. If it does not, wait for
+   * the exact accepted goal and source scene to remain unchanged before sending the ordinary
+   * server scene transition. Connection-local state is never persisted as mission progress.
+   */
+  public static final class LiveRecovery {
+    private record AuditedTransfer(int id, int main, int plane, int floor, int predecessor,
+        int entry, int group, int anchor, boolean ordered) {}
+    private static final List<AuditedTransfer> AUDITED_TRANSFERS = List.of(
+        new AuditedTransfer(100010121, 1000101, 20001, 20001001, 100010120, 2000201, 0, 0, false),
+        new AuditedTransfer(100020118, 1000203, 20002, 20002001, 100020117, 1000101, 0, 0, true),
+        new AuditedTransfer(100030204, 1000302, 10001, 10001001, 100030203, 2000301, 0, 0, true),
+        new AuditedTransfer(100040113, 1000400, 20003, 20003001, 100040112, 1000101, 12, 1, true),
+        new AuditedTransfer(100050102, 1000501, 20003, 20003001, 100050101, 1000001, 4, 2, true));
+    private static final long GRACE_MILLIS = 15_000;
+    private static final long RECEIPT_NANOS = 30_000_000_000L;
+
+    private Scene source;
+    private QuestState acceptance;
+    private int subId;
+    private long observedAt;
+    private Scene recoveredScene;
+    private Position recoveredPosition;
+    private int recoveredEntry;
+    private long recoveredAt;
+
+    public void tick(Player player, long timestamp) {
+      synchronized (player) {
+        var session = player.getSession();
+        if (!player.isOnline() || session == null || session.getState() != SessionState.ACTIVE
+            || !session.getProtocol().experimental() || !ordinaryContext(player)) {
+          clearObservation();
+          return;
+        }
+        MissionInfo.SubMissionInfo selected = null;
+        MapEntranceExcel destination = null;
+        for (var audit : AUDITED_TRANSFERS) {
+          int id = audit.id();
+          var sub = GameplayDefinitions.subs.get(id);
+          if (sub == null || !MissionStateRecords.doing(
+              player.getGameplay().getSubMissions().get(id), id, 1)) continue;
+          var entry = GameData.getMapEntranceExcelMap().get(literalEntry(sub));
+          if (entry == null || !authorizes(player, sub, entry) || !matchesAudit(sub, entry, audit))
+            continue;
+          if (selected != null) {
+            clearObservation(); // Never choose between two accepted starts.
+            return;
+          }
+          selected = sub;
+          destination = entry;
+        }
+        if (selected == null) {
+          clearObservation();
+          return;
+        }
+        var state = player.getGameplay().getSubMissions().get(selected.getId());
+        if (source != player.getScene() || acceptance != state || subId != selected.getId()
+            || timestamp < observedAt) {
+          source = player.getScene();
+          acceptance = state;
+          subId = selected.getId();
+          observedAt = timestamp;
+          return;
+        }
+        if (timestamp - observedAt < GRACE_MILLIS) return;
+        // Reset the observation even when persistence fails, so the next tick cannot busy-loop.
+        clearObservation();
+        if (transfer(player, selected, destination, true)) {
+          recoveredScene = player.getScene();
+          recoveredPosition = new Position(player.getPos());
+          recoveredEntry = destination.getId();
+          recoveredAt = System.nanoTime();
+          emu.lunarcore.LunarCore.getLogger().warn(
+              "[UID: {}] Recovered stalled story transfer {} to entry {}",
+              player.getUid(), selected.getId(), recoveredEntry);
+        }
+      }
+    }
+
+    private boolean matchesAudit(MissionInfo.SubMissionInfo sub, MapEntranceExcel entry,
+        AuditedTransfer audit) {
+      if (sub.getMainMissionID() != audit.main() || sub.getLevelPlaneID() != audit.plane()
+          || sub.getLevelFloorID() != audit.floor() || entry.getId() != audit.entry()
+          || !"AnySequence".equals(sub.getTakeType()) || sub.getTakeParamIntList() == null
+          || sub.getTakeParamIntList().length != 1
+          || !Objects.equals(sub.getTakeParamIntList()[0], audit.predecessor())) return false;
+      // authorizes already validated the complete literal script and all source/destination gates.
+      var sequence = JsonParser.parseString(sub.getTask().getSourceDefinition()).getAsJsonObject()
+          .getAsJsonArray("OnStartSequece").get(0).getAsJsonObject();
+      if (sequence.has("IsLoop") || sequence.has("Order") != audit.ordered()) return false;
+      var task = literalTask(sub);
+      return audit.group() == 0 ? !task.has("GroupID") && !task.has("AnchorID")
+          : task.has("GroupID") && task.has("AnchorID")
+              && task.get("GroupID").getAsInt() == audit.group()
+              && task.get("AnchorID").getAsInt() == audit.anchor();
+    }
+
+    private boolean isLateRequest(Player player, int entry, int teleport) {
+      if (recoveredScene == null) return false;
+      long elapsed = System.nanoTime() - recoveredAt;
+      if (elapsed < 0 || elapsed > RECEIPT_NANOS || player.getScene() != recoveredScene
+          || !player.getPos().equals(recoveredPosition)) {
+        recoveredScene = null;
+        recoveredPosition = null;
+        return false;
+      }
+      return teleport == 0 && entry == recoveredEntry;
+    }
+
+    private void clearObservation() {
+      source = null;
+      acceptance = null;
+      subId = 0;
+      observedAt = 0;
     }
   }
 

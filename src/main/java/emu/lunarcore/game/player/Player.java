@@ -1222,6 +1222,9 @@ public class Player implements Tickable, Syncable {
         if (this.getScene() != null) {
             this.getScene().onTick(timestamp, delta);
         }
+        if (this.getSession() != null) {
+            this.getSession().getMissionSceneRecovery().tick(this, timestamp);
+        }
     }
 
     public void onLogin() {
