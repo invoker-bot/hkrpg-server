@@ -14,6 +14,8 @@ import java.util.Locale;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class VideoVersionKeys46Test {
   // Independently matched native consumer: ordinary list wire 15, id 14, legacy key 6.
@@ -39,6 +41,16 @@ class VideoVersionKeys46Test {
     assertEquals(112, boss.readTag());
     assertEquals(21, boss.readUInt32());
     assertEquals(0, boss.readTag());
+    for (long[] expected : new long[][] {{16, 70_220_919L}, {310, 71_220_927L},
+        {1, 60_220_919L}, {2, 60_220_919L}, {100, 12_230_601L}}) {
+      assertEquals(122, input.readTag());
+      var legacy = CodedInputStream.newInstance(input.readByteArray());
+      assertEquals(48, legacy.readTag());
+      assertEquals(expected[1], legacy.readUInt64());
+      assertEquals(112, legacy.readTag());
+      assertEquals(expected[0], legacy.readUInt32());
+      assertEquals(0, legacy.readTag());
+    }
     assertEquals(0, input.readTag(), "Do not invent other movie keys");
   }
 
@@ -98,6 +110,60 @@ class VideoVersionKeys46Test {
     var key = postBossMovieKey();
     assertEquals("5DB4867828519F98ADCF963EBED6C351", aesKey(key, "CS_Chap00_Act300_f"));
     assertEquals("EC09DD25C756D08900B13550B28FD5C7", aesKey(key, "CS_Chap00_Act300_m"));
+  }
+
+  @Test void awakeningMovieHasItsOwnVerifiedLegacyKey() throws Exception {
+    assertLegacyMovie(16, 70_220_919L, "CS_Chap00_Act270", "00D0E9FA20EAD9F7", "00D0E9FA20EAD9FE");
+  }
+
+  @Test void trainDepartureMovieHasItsOwnVerifiedLegacyKey() throws Exception {
+    assertLegacyMovie(310, 71_220_927L, "CS_Chap00_Act310", "00D0E9FA20FA363E", "00D0E9FA20FA3645");
+  }
+
+  @ParameterizedTest @ValueSource(longs = {1, 2, 100})
+  void nextChapterMoviesHaveTheirOwnVerifiedLegacyKeys(long id) throws Exception {
+    switch ((int) id) {
+      case 1 -> assertLegacyMovie(1, 60_220_919L, "CS_Chap01_Act010", "00D0E9FAACDD1F0E", "00D0E9FAACDD1F15");
+      case 2 -> assertLegacyMovie(2, 60_220_919L, "CS_Chap01_Act020", "00D0E9FAACDD2441", "00D0E9FAACDD2448");
+      case 100 -> {
+        var key = legacyMovie(100, 12_230_601L);
+        assertEquals("0015520B6B16DC78", legacyKey(key, "CS_Chap01_Act3010"));
+      }
+      default -> fail("Unexpected movie");
+    }
+  }
+
+  private static void assertLegacyMovie(long movie, long primary, String name,
+      String female, String male) throws Exception {
+    var key = legacyMovie(movie, primary);
+    assertEquals(female, legacyKey(key, name + "_f"));
+    assertEquals(male, legacyKey(key, name + "_m"));
+  }
+
+  private static UnknownFieldSet legacyMovie(long movie, long primary) throws Exception {
+    var session = new PlayerReturnInitial46Test.Session();
+    assertTrue(VersionedPacketHandler.handle(session, 9, new byte[0]));
+    var packet = UnknownFieldSet.parseFrom(session.nativePackets.getFirst().body());
+    var keys = new java.util.HashMap<Long, UnknownFieldSet>();
+    for (var bytes : packet.getField(15).getLengthDelimitedList()) {
+      var key = UnknownFieldSet.parseFrom(bytes);
+      long id = key.getField(14).getVarintList().getFirst();
+      assertNull(keys.put(id, key), "Duplicate movie ID");
+    }
+    var key = keys.get(movie);
+    assertNotNull(key, "Missing key for encrypted story movie " + movie);
+    assertEquals(java.util.List.of(primary), key.getField(6).getVarintList());
+    assertFalse(key.hasField(8));
+    assertFalse(key.hasField(13));
+    return key;
+  }
+
+  private static String legacyKey(UnknownFieldSet key, String name) {
+    long hash = 0;
+    for (int i = 0; i < name.length(); i++) hash = hash * 11 + name.charAt(i);
+    long value = Long.remainderUnsigned(hash + key.getField(6).getVarintList().getFirst(),
+        72_043_514_036_987_937L);
+    return String.format(Locale.ROOT, "%016X", value);
   }
 
   private static long audioKey(UnknownFieldSet key, String name) {

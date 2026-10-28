@@ -62,6 +62,9 @@ public final class SceneMap46 {
                           case Town, Maze, Train -> Retcode.SUCC;
                           default -> Retcode.PLANE_TYPE_NOT_ALLOW;
                         };
+        // A recovered transition is already applied; the main mission may still be unfinished.
+        boolean recovered = result == Retcode.SUCC
+            && MissionSceneEntrances.acknowledgesRecovery(session, entry, teleport);
         if (result == Retcode.SUCC
             && (!Arrays.stream(entry.getFinishMainMissionList())
                     .allMatch(
@@ -70,9 +73,11 @@ public final class SceneMap46 {
                                 && !player.getGameplay().getCancelledMissions().contains(id))
                 || !Arrays.stream(entry.getFinishSubMissionList())
                     .allMatch(id -> StoryLineConditions.finished(player, id)))
-            && !MissionSceneEntrances.allows(player, entry, teleport))
+            && !MissionSceneEntrances.allows(player, entry, teleport)
+            && !recovered)
           result = Retcode.MISSION_NOT_FINISH;
-        if (result == Retcode.SUCC && !MissionSceneEntrances.enter(player, entryId, teleport, player.isOnline()))
+        if (result == Retcode.SUCC && !recovered
+            && !MissionSceneEntrances.enter(player, entryId, teleport, player.isOnline()))
           result = Retcode.SCENE_ENTRY_ID_NOT_MATCH;
         var response = Gameplay46.builder(session, "EnterSceneScRsp");
         Gameplay46.set(response, "retcode", result.getVal());

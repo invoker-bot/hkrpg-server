@@ -19,7 +19,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Actual five original chapter transfers; prerequisites are fixtures, scenes and wire entry are real. */
+/** Original chapter transfers; prerequisites are fixtures, scenes and wire entry are real. */
 class StorySceneTransfer46Test {
   final OpeningSceneTransfer46Test f = new OpeningSceneTransfer46Test();
   JsonObject records;
@@ -109,7 +109,7 @@ class StorySceneTransfer46Test {
     OpeningSceneTransfer46Test.field(f.actor, "nextStaminaRecover", Long.MAX_VALUE);
   }
 
-  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102})
+  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102, 101000205})
   void acceptedLiteralTransferRecoversInTheSameSessionAfterClientFailsToEnter(int id) throws Exception {
     setup(id);
     online();
@@ -127,9 +127,9 @@ class StorySceneTransfer46Test {
     assertEquals(saves, f.actor.saves);
   }
 
-  @Test
-  void lateClientRequestAfterRecoveryDoesNotReplaceTheAuthoredAnchor() throws Exception {
-    setup(100040113);
+  @ParameterizedTest @ValueSource(ints = {100040113, 101000205})
+  void lateClientRequestAfterRecoveryDoesNotReplaceTheAuthoredAnchor(int id) throws Exception {
+    setup(id);
     online();
     long start = 1_800_000_000_000L;
     f.actor.onTick(start, 1000);
@@ -142,8 +142,47 @@ class StorySceneTransfer46Test {
   }
 
   @Test
-  void clientTransferBeforeRecoveryIsNotRepeated() throws Exception {
-    setup(100040113);
+  void recoveryReceiptCannotBypassTheNextWorldGateForAnotherTeleportOrAfterMoving() throws Exception {
+    setup(101000205);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 16_000, 1000);
+    arrived();
+    var destination = f.actor.getScene();
+    int saves = f.actor.saves;
+    f.enter(entry, 1, Retcode.MISSION_NOT_FINISH);
+    assertSame(destination, f.actor.getScene());
+    f.enter(entry, 0, Retcode.SUCC);
+    assertEquals(saves, f.actor.saves);
+    f.actor.getPos().setX(f.actor.getPos().getX() + 1000);
+    f.enter(entry, 0, Retcode.MISSION_NOT_FINISH);
+    assertSame(destination, f.actor.getScene());
+    assertEquals(saves, f.actor.saves);
+  }
+
+  @Test
+  void recoveryReceiptCannotAuthorizeAnotherSessionOrExpiredRequest() throws Exception {
+    setup(101000205);
+    online();
+    long start = 1_800_000_000_000L;
+    f.actor.onTick(start, 1000);
+    f.actor.onTick(start + 16_000, 1000);
+    arrived();
+    var destination = GameData.getMapEntranceExcelMap().get(entry);
+    var other = new Gameplay46HandlerTest.Session() {
+      @Override public emu.lunarcore.game.player.Player getPlayer() { return f.actor; }
+    };
+    assertFalse(MissionSceneEntrances.acknowledgesRecovery(other, destination, 0));
+    OpeningSceneTransfer46Test.field(f.session.getMissionSceneRecovery(), "recoveredAt",
+        System.nanoTime() - 31_000_000_000L);
+    f.enter(entry, 0, Retcode.MISSION_NOT_FINISH);
+    assertEquals(QuestState.Phase.FINISHED, f.actor.getMissionManager().sub(sub.getId()).getPhase());
+  }
+
+  @ParameterizedTest @ValueSource(ints = {100040113, 101000205})
+  void clientTransferBeforeRecoveryIsNotRepeated(int id) throws Exception {
+    setup(id);
     online();
     long start = 1_800_000_000_000L;
     f.actor.onTick(start, 1000);
@@ -156,9 +195,9 @@ class StorySceneTransfer46Test {
     assertEquals(saves, f.actor.saves);
   }
 
-  @Test
-  void stalledTransferDoesNotSkipAnUnfinishedPredecessor() throws Exception {
-    setup(100040113);
+  @ParameterizedTest @ValueSource(ints = {100040113, 101000205})
+  void stalledTransferDoesNotSkipAnUnfinishedPredecessor(int id) throws Exception {
+    setup(id);
     online();
     int previous = sub.getTakeParamIntList()[0];
     f.actor.getGameplay().getSubMissions().put(previous, new QuestState(previous));
@@ -215,9 +254,9 @@ class StorySceneTransfer46Test {
     assertEquals(QuestState.Phase.DOING, f.actor.getMissionManager().sub(sub.getId()).getPhase());
   }
 
-  @Test
-  void aChangedLoopingScriptIsNotTreatedAsTheAuditedOneShot() throws Exception {
-    setup(100040113);
+  @ParameterizedTest @ValueSource(ints = {100040113, 101000205})
+  void aChangedLoopingScriptIsNotTreatedAsTheAuditedOneShot(int id) throws Exception {
+    setup(id);
     online();
     var changed = JsonParser.parseString(sub.getTask().getSourceDefinition()).getAsJsonObject();
     changed.getAsJsonArray("OnStartSequece").get(0).getAsJsonObject().addProperty("IsLoop", true);
@@ -229,9 +268,9 @@ class StorySceneTransfer46Test {
     assertSame(source, f.actor.getScene(), "A new script cannot inherit an old recovery rule");
   }
 
-  @Test
-  void recoveryPublishesExactlyOneSceneTransition() throws Exception {
-    setup(100040113);
+  @ParameterizedTest @ValueSource(ints = {100040113, 101000205})
+  void recoveryPublishesExactlyOneSceneTransition(int id) throws Exception {
+    setup(id);
     var sent = new ArrayList<Integer>();
     f.session = new Gameplay46HandlerTest.Session() {
       @Override public emu.lunarcore.game.player.Player getPlayer() { return f.actor; }
@@ -302,12 +341,12 @@ class StorySceneTransfer46Test {
         f.actor.getPos(), "An intentional later teleport uses the map's ordinary spawn");
   }
 
-  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102})
+  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102, 101000205})
   void originalChapterTransferUsesItsAuthoredAnchor(int id) throws Exception {
     setup(id); f.enter(entry, 0, Retcode.SUCC); arrived();
   }
 
-  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102})
+  @ParameterizedTest @ValueSource(ints = {100010121, 100020118, 100030204, 100040113, 100050102, 101000205})
   void interruptedChapterTransferResumesAtItsAuthoredAnchor(int id) throws Exception {
     setup(id);
     assertTrue(MissionSceneEntrances.resumeOnLogin(f.actor, MissionSceneEntrances.captureLogin(f.actor)));
@@ -317,7 +356,7 @@ class StorySceneTransfer46Test {
     assertEquals(saves, f.actor.saves);
   }
 
-  @ParameterizedTest @ValueSource(ints = {100040113, 100050102})
+  @ParameterizedTest @ValueSource(ints = {100040113, 100050102, 101000205})
   void missingStoryAnchorNeverFallsBackToTheGenericMapSpawn(int id) throws Exception {
     setup(id);
     var destination = GameData.getMapEntranceExcelMap().get(entry);
@@ -333,7 +372,7 @@ class StorySceneTransfer46Test {
     assertEquals(saves, f.actor.saves);
   }
 
-  @ParameterizedTest @ValueSource(ints = {100040113, 100050102})
+  @ParameterizedTest @ValueSource(ints = {100040113, 100050102, 101000205})
   void interruptedStoryTransferCannotSkipItsPreviousDialogue(int id) throws Exception {
     setup(id);
     int previous = sub.getTakeParamIntList()[0];
@@ -345,7 +384,7 @@ class StorySceneTransfer46Test {
     assertEquals(before, f.gson.toJson(f.actor.getGameplay()));
   }
 
-  @ParameterizedTest @ValueSource(ints = {100040113, 100050102})
+  @ParameterizedTest @ValueSource(ints = {100040113, 100050102, 101000205})
   void failedStoryLocationSaveKeepsThePendingArrivalAndCanRetry(int id) throws Exception {
     setup(id);
     var origin = MissionSceneEntrances.captureLogin(f.actor);

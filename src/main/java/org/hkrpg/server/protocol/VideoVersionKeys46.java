@@ -13,6 +13,15 @@ final class VideoVersionKeys46 {
   // See docs/opening-video-key-4.6.md for independent native routing and cross-checks.
   private static final int OPENING_VIDEO_ID = 8;
   private static final long OPENING_VIDEO_KEY = 70_220_919L;
+  // sasami666/hsr-VideoVersionKey@7c1452a60e91d2c824c9df905c52580951baa96d,
+  // GetVideoVersionKeyScRsp.json: ordinary video_key_info_list ids 1, 2, 16, 100, 310.
+  // These source entries use the original legacy cipher, with no AES/HCA component.
+  private static final int AWAKENING_VIDEO_ID = 16;
+  private static final long AWAKENING_VIDEO_KEY = 70_220_919L;
+  private static final int TRAIN_VIDEO_ID = 310;
+  private static final long TRAIN_VIDEO_KEY = 71_220_927L;
+  private static final long NEXT_WORLD_VIDEO_KEY = 60_220_919L;
+  private static final long NEXT_WORLD_LATER_VIDEO_KEY = 12_230_601L;
   // Video 21: the complete pinned 4.6 tuple. Native AES and HCA calculations
   // have both been checked against the installed male/female movie assets.
   private static final int POST_BOSS_VIDEO_ID = 21;
@@ -41,6 +50,16 @@ final class VideoVersionKeys46 {
       key.writeUInt32(14, POST_BOSS_VIDEO_ID);
       key.flush();
       output.writeByteArray(15, entry.toByteArray());
+      for (var legacy : new long[][] {
+          {AWAKENING_VIDEO_ID, AWAKENING_VIDEO_KEY}, {TRAIN_VIDEO_ID, TRAIN_VIDEO_KEY},
+          {1, NEXT_WORLD_VIDEO_KEY}, {2, NEXT_WORLD_VIDEO_KEY}, {100, NEXT_WORLD_LATER_VIDEO_KEY}}) {
+        entry.reset();
+        key = CodedOutputStream.newInstance(entry);
+        key.writeUInt64(6, legacy[1]);
+        key.writeUInt32(14, (int) legacy[0]);
+        key.flush();
+        output.writeByteArray(15, entry.toByteArray());
+      }
     }
     output.flush();
     session.sendClientPacket(27, body.toByteArray());

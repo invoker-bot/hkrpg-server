@@ -7,6 +7,7 @@ import emu.lunarcore.data.excel.MapEntranceExcel;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.Scene;
+import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.SessionState;
 import emu.lunarcore.util.Position;
 import java.util.*;
@@ -84,8 +85,18 @@ public final class MissionSceneEntrances {
     }
   }
 
+  /** A bounded acknowledgement of the same connection's already applied scene transition. */
+  public static boolean acknowledgesRecovery(GameSession session, MapEntranceExcel entry, int teleport) {
+    var player = session.getPlayer();
+    synchronized (player) {
+      return entry != null && player.isOnline() && player.getSession() == session
+          && GameData.getMapEntranceExcelMap().get(entry.getId()) == entry
+          && session.getMissionSceneRecovery().isLateRequest(player, entry.getId(), teleport);
+    }
+  }
+
   /**
-   * Bounded same-session recovery for the five source-audited, single-step chapter transfers.
+   * Bounded same-session recovery for source-audited, single-step chapter transfers.
    * The client has the first opportunity to run the original EnterMap. If it does not, wait for
    * the exact accepted goal and source scene to remain unchanged before sending the ordinary
    * server scene transition. Connection-local state is never persisted as mission progress.
@@ -98,7 +109,8 @@ public final class MissionSceneEntrances {
         new AuditedTransfer(100020118, 1000203, 20002, 20002001, 100020117, 1000101, 0, 0, true),
         new AuditedTransfer(100030204, 1000302, 10001, 10001001, 100030203, 2000301, 0, 0, true),
         new AuditedTransfer(100040113, 1000400, 20003, 20003001, 100040112, 1000101, 12, 1, true),
-        new AuditedTransfer(100050102, 1000501, 20003, 20003001, 100050101, 1000001, 4, 2, true));
+        new AuditedTransfer(100050102, 1000501, 20003, 20003001, 100050101, 1000001, 4, 2, true),
+        new AuditedTransfer(101000205, 1010002, 10000, 10000000, 101000204, 2010101, 2, 1, false));
     private static final long GRACE_MILLIS = 15_000;
     private static final long RECEIPT_NANOS = 30_000_000_000L;
 

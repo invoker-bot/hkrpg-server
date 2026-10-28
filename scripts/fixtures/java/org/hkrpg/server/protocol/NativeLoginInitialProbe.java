@@ -95,6 +95,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean missionStatusBatchVerified;
   private boolean archiveSnapshotVerified;
   private boolean heartbeatAfterArchiveVerified;
+  private boolean laterStoryVideoKeysVerified;
   private final java.util.List<String> gachaBrowserUrls = new java.util.ArrayList<>();
   private int rejectedResponseCommand;
   private int playerUid;
@@ -174,8 +175,18 @@ public final class NativeLoginInitialProbe implements KcpListener {
               && boss.readTag() == 64 && boss.readUInt64() == 73_385_157_949_291_753L
               && boss.readTag() == 104 && boss.readUInt64() == 5_627_075_162_192_835_560L
               && boss.readTag() == 112 && boss.readUInt32() == 21
-              && boss.readTag() == 0 && input.readTag() == 0,
+              && boss.readTag() == 0,
               "Post-boss video parameters differ from the validated 4.6 candidate");
+          for (long[] expected : new long[][] {{16, 70_220_919L}, {310, 71_220_927L},
+              {1, 60_220_919L}, {2, 60_220_919L}, {100, 12_230_601L}}) {
+            require(input.readTag() == 122, "Missing later encrypted story movie");
+            var legacy = CodedInputStream.newInstance(input.readByteArray());
+            require(legacy.readTag() == 48 && legacy.readUInt64() == expected[1]
+                && legacy.readTag() == 112 && legacy.readUInt32() == expected[0]
+                && legacy.readTag() == 0, "Incorrect later story movie key");
+          }
+          require(input.readTag() == 0, "Unexpected movie entry");
+          laterStoryVideoKeysVerified = true;
         }
         if (frame.cmdId() == 6125) {
           var prefs = protocol.clientSchema().parse("GetAllServerPrefsDataScRsp", frame.body());
@@ -462,8 +473,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
               "Opening movie cannot derive its native decoder value from both replies");
           require(rogueInfoRetcodeVerified && chessRogueInitialProfileVerified
                   && inactiveBattleSnapshotVerified && missionCustomBatchVerified && missionStatusBatchVerified
-                  && archiveSnapshotVerified,
-              "Rogue, battle, mission or archive initial query contracts were not verified");
+                  && archiveSnapshotVerified && laterStoryVideoKeysVerified,
+              "Rogue, battle, mission, archive or later story video initial contracts were not verified");
           initialCompletedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initialStartedAt);
           require(initialCompletedMillis <= 4000,
               "Initial query burst exceeded 4000 ms: " + initialCompletedMillis);
@@ -571,6 +582,7 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("requiredNestedProfiles", true),
           Map.entry("requiredBasicSettings", true),
           Map.entry("openingVideoBootstrapContract", true),
+          Map.entry("laterStoryVideoKeysVerified", probe.laterStoryVideoKeysVerified),
           Map.entry("playerUid", probe.playerUid),
           Map.entry("tokenResponseMillis", probe.tokenCompletedMillis),
           Map.entry("tokenDeadlineMillis", 4000),
