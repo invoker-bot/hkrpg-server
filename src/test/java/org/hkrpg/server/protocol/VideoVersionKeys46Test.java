@@ -33,7 +33,7 @@ class VideoVersionKeys46Test {
     assertEquals(48, boss.readTag());
     assertEquals(73_772_858_016_446_646L, boss.readUInt64());
     assertEquals(64, boss.readTag());
-    assertEquals(3_385_157_949_291_746L, boss.readUInt64());
+    assertEquals(73_385_157_949_291_753L, boss.readUInt64());
     assertEquals(104, boss.readTag());
     assertEquals(5_627_075_162_192_835_560L, boss.readUInt64());
     assertEquals(112, boss.readTag());
@@ -84,7 +84,7 @@ class VideoVersionKeys46Test {
   @Test void postBossMovieReceivesItsOwnSourceMatchedKey() throws Exception {
     var key = postBossMovieKey();
     assertEquals(java.util.List.of(73_772_858_016_446_646L), key.getField(6).getVarintList());
-    assertEquals(java.util.List.of(3_385_157_949_291_746L), key.getField(8).getVarintList());
+    assertEquals(java.util.List.of(73_385_157_949_291_753L), key.getField(8).getVarintList());
     assertEquals(java.util.List.of(5_627_075_162_192_835_560L), key.getField(13).getVarintList());
   }
 
@@ -105,7 +105,10 @@ class VideoVersionKeys46Test {
     int rotation = (int) (key.getField(6).getVarintList().getFirst() / 10_000_000_000_000_000L);
     for (int i = 0; i < name.length(); i++)
       hash = hash * 7 + name.charAt((i + rotation) % name.length());
-    return Long.remainderUnsigned(hash + rotation + key.getField(8).getVarintList().getFirst(),
+    // Native code replaces the rotation register with -rotation * 10^16 before
+    // adding it to the audio hash. Java's long overflow matches uint64 wraparound.
+    return Long.remainderUnsigned(hash - rotation * 10_000_000_000_000_000L
+            + key.getField(8).getVarintList().getFirst(),
         72_043_514_036_987_937L);
   }
 
