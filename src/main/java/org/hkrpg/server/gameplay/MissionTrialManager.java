@@ -404,7 +404,8 @@ public final class MissionTrialManager {
   public boolean editableStation() {
     synchronized (player) {
       if (!inside() || state().getParty().getStationSource() == null || player.isInBattle()
-          || !context(StationTrial.MAIN) || !StationTrial.active(player) || !StationTrial.place(player))
+          || !context(StationTrial.MAIN) || !StationTrial.active(player)
+          || StationTrial.unbound(player) || !StationTrial.place(player))
         return false;
       var scene = player.getScene();
       if (scene == null || scene.getPlayer() != player || !ordinary(scene.getPlaneType())
@@ -789,7 +790,7 @@ public final class MissionTrialManager {
       var party = state() == null ? null : state().getParty();
       if (party == null || player.isInBattle()) return false;
       boolean station = party.getStationSource() != null;
-      boolean ended = station ? !StationTrial.active(player) :
+      boolean ended = station ? !StationTrial.active(player) || StationTrial.unbound(player) :
           MissionStateRecords.mainCompleted(player, party.getMain())
               || player.getGameplay().getCancelledMissions().contains(party.getMain())
               || party.getSources().keySet().stream()

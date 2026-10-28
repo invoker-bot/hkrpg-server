@@ -235,7 +235,8 @@ def main():
                     assert probe.returncode == 0, f'Opening probe failed: {directory / ("probe-" + phase + ".log")}'
                     snapshot = json.loads(probe.stdout.strip().splitlines()[-1])
                     if phase.startswith('station-'):
-                        assert snapshot['passed'] and snapshot['temporaryHimeko']
+                        assert snapshot['passed'] and snapshot['stationPartyVerified']
+                        assert snapshot['postBattleUnbindVerified'] == (phase == 'station-orange' or phase.startswith('station-wakeup'))
                         if phase == 'station-orange' and args.live_station_transfer:
                             assert snapshot['liveTransferVerified'] and snapshot['serverSceneNotifications'] == 1
                             assert snapshot['lateRequestKeptAnchor']

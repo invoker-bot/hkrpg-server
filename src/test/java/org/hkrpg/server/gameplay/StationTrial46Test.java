@@ -52,6 +52,15 @@ class StationTrial46Test {
     complete(100040125);
   }
 
+  void reachPostBattleUnbind(boolean finished) {
+    complete(100030100);
+    f.player.getGameplay().getMainMissions().get(1000300).advance(1, 1, 100);
+    f.player.getGameplay().getMainMissions().put(1000400, new QuestState(1000400));
+    complete(100040111);
+    if (finished) complete(100040112);
+    else f.player.getGameplay().getSubMissions().put(100040112, new QuestState(100040112));
+  }
+
   @BeforeEach void prepare() throws Exception {
     f.root = root;
     f.prepare();
@@ -230,6 +239,87 @@ class StationTrial46Test {
     assertFalse(f.player.getAvatars().getAvatars().containsKey(1003));
   }
 
+  @ParameterizedTest @ValueSource(booleans = {false, true})
+  void postBattleUnbindRestoresOwnedPresetBeforeFindingHimeko(boolean finished) {
+    ownHimeko();
+    var owned = f.player.getAvatars().getAvatars().get(1003);
+    owned.setLevel(17);
+    owned.setRank(1);
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    reachPostBattleUnbind(finished);
+    assertDoesNotThrow(() -> f.player.getCurrentLineup(),
+        "The trial roster remains readable until its retirement is durably reconciled");
+    assertTrue(f.player.getMissionTrialManager().reconcile(),
+        "The original unbind script must stop publishing the story trial before finding Himeko");
+    assertFalse(f.player.getMissionTrialManager().inside());
+    assertNull(f.player.getAvatarById(HIMEKO));
+    assertSame(owned, f.player.getAvatarById(1003));
+    assertEquals(17, owned.getLevel());
+    assertEquals(1, owned.getRank());
+    assertEquals(List.of(199986, 1003), team.getAvatars());
+    assertEquals(1, team.getLeader());
+    assertEquals(1, team.saves);
+    assertFalse(f.player.getMissionTrialManager().reconcile());
+    assertFalse(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(finished ? QuestState.Phase.FINISHED : QuestState.Phase.DOING,
+        f.player.getMissionManager().sub(100040112).getPhase());
+  }
+
+  @Test void reconnectRetiresAnAlreadyUnboundLegacyTrialAndPersistsTheOwnedPreset() {
+    ownHimeko();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    reachPostBattleUnbind(true);
+    place(10001, 10001001);
+    f.player = f.reload(f.player.getGameplay());
+    ownHimeko();
+    var restored = writableTeam();
+    f.player.getMissionTrialManager().restoreOnLogin();
+    assertFalse(f.player.getMissionTrialManager().inside());
+    assertNull(f.player.getAvatarById(HIMEKO));
+    assertEquals(List.of(199986, 1003), restored.getAvatars());
+    assertEquals(1, restored.getLeader());
+    assertEquals(1, restored.saves);
+    f.player.getMissionTrialManager().restoreOnLogin();
+    assertEquals(1, restored.saves);
+  }
+
+  @Test void unboundUnownedTrialLeavesWithoutGrantingAFormalHimeko() {
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    reachPostBattleUnbind(false);
+    assertTrue(f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986), team.getAvatars());
+    assertNull(f.player.getAvatarById(HIMEKO));
+    assertFalse(f.player.getAvatars().getAvatars().containsKey(1003));
+    assertEquals(0, team.saves);
+  }
+
+  @Test void failedPostBattleUnbindKeepsTheTrialUntilTheOwnedPresetCanBeSaved() {
+    ownHimeko();
+    var team = writableTeam();
+    assertTrue(f.player.getMissionTrialManager().initializeStation());
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,
+        f.player.getMissionTrialManager().replaceStation(List.of(199986, HIMEKO), 1));
+    reachPostBattleUnbind(false);
+    team.fail = true;
+    assertThrows(IllegalStateException.class, () -> f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986), team.getAvatars());
+    assertTrue(f.player.getGameplay().getMissionTrials().getParty().isStationFinalizing());
+    assertNotNull(f.player.getAvatarById(HIMEKO));
+    team.fail = false;
+    assertTrue(f.player.getMissionTrialManager().reconcile());
+    assertEquals(List.of(199986, 1003), team.getAvatars());
+    assertNull(f.player.getAvatarById(HIMEKO));
+    assertEquals(1, team.saves);
+    assertFalse(f.player.getMissionTrialManager().reconcile());
+    assertEquals(1, team.saves);
+  }
+
   @Test void failedPresetWritesKeepARecoverableJournalAndDoNotDuplicateTheUpdate() {
     ownHimeko();
     var team = writableTeam();
@@ -287,7 +377,7 @@ class StationTrial46Test {
     assertEquals(lineupAlreadyWritten ? 0 : 1, restored.saves);
   }
 
-  @Test void trialSurvivesMainCompletionSupportZoneWakingAndTwoReconnectsThenLeavesOnce() {
+  @Test void trialSurvivesMainCompletionAndSupportZoneReconnectsUntilPostBattleUnbind() {
     f.player.getMissionManager().refresh();
     assertNotNull(f.player.getAvatarById(HIMEKO));
     f.player.getAvatarById(HIMEKO).setCurrentHp(f.player.getCurrentLineup(), 4321);
@@ -297,8 +387,6 @@ class StationTrial46Test {
     f.player.getGameplay().getMainMissions().put(1000400,new QuestState(1000400));
     place(20003,20003001);
     assertFalse(f.player.getMissionTrialManager().reconcile(), "A task boundary must not retire Himeko");
-    complete(100040112);
-    place(10001,10001001);
     for (int i=0;i<2;i++) {
       f.player = f.reload(f.player.getGameplay());
       f.player.getMissionTrialManager().restoreOnLogin();
@@ -306,10 +394,11 @@ class StationTrial46Test {
       assertEquals(4321,f.player.getAvatarById(HIMEKO).getCurrentHp(f.player.getCurrentLineup()));
       assertEquals(2345,f.player.getAvatarById(HIMEKO).getCurrentSp(f.player.getCurrentLineup()));
     }
-    f.player.getGameplay().getMainMissions().put(1000401,new QuestState(1000401));
-    complete(100040125);
+    complete(100040111);
+    f.player.getGameplay().getSubMissions().put(100040112,new QuestState(100040112));
     assertTrue(f.player.getMissionTrialManager().reconcile());
     assertNull(f.player.getAvatarById(HIMEKO));
+    place(10001,10001001);
     f.player = f.reload(f.player.getGameplay());
     f.player.getMissionManager().refresh();
     assertNull(f.player.getAvatarById(HIMEKO));

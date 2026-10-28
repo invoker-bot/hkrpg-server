@@ -1416,7 +1416,8 @@ public final class NativeOpeningStageWinProbe {
       var report=Map.<String,Object>of("battle_id",field(battle,"battle_id"),"stage_id",field(battle,"stage_id"),
           "stt",battleStatistics(battle),"end_status",end.getEnumType().findValueByName("BATTLE_END_WIN"));
       call("PVEBattleResultCsReq",report,true);call("PVEBattleResultCsReq",report,false);
-      objective(100040110,2);talk(100040111);talk(100040112);objective(100040113,1);stationParty(false);
+      objective(100040110,2);talk(100040111);talk(100040112);objective(100040113,1);
+      formalParty(List.of(1002,8001),0,Set.of(8001,1001,1002));
       if (verifyLiveStationTransfer) {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
         DynamicMessage arriving = null;
@@ -1456,7 +1457,7 @@ public final class NativeOpeningStageWinProbe {
         require(lateRequestKeptAnchor, "Late entry changed the authored anchor");
       }
     } else {
-      stationParty(false);objective(100040113,2);objective(100040115,1);
+      formalParty(List.of(1002,8001),0,Set.of(8001,1001,1002));objective(100040113,2);objective(100040115,1);
       var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq"),"scene");
       var leader=(Integer)field(scene,"leader_entity_id");
       DynamicMessage actor=null;
@@ -1469,7 +1470,8 @@ public final class NativeOpeningStageWinProbe {
       require(enterSceneRequests==0,"Interrupted story must resume without client teleport");
     }
     return Map.of("passed",true,"phase",phase,"requests",requests,"credits",credits,
-        "temporaryHimeko",true,"clientGameplayVerified",false,
+        "stationPartyVerified",true,"postBattleUnbindVerified",phase.equals("station-orange") || phase.startsWith("station-wakeup"),
+        "clientGameplayVerified",false,
         "liveTransferVerified", verifyLiveStationTransfer && phase.equals("station-orange"),
         "serverSceneNotifications", serverSceneNotifications, "lateRequestKeptAnchor", lateRequestKeptAnchor);
   }

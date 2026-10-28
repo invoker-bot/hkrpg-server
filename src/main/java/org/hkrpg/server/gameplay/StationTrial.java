@@ -59,6 +59,11 @@ final class StationTrial {
         && !p.getGameplay().getCancelledSubs().contains(REMOVE);
   }
 
+  static boolean unbound(Player p) {
+    // The original post-battle task unbinds the virtual lineup before the player seeks Himeko.
+    return MissionStateRecords.subAccepted(p, UNBIND);
+  }
+
   static boolean place(Player p) {
     return p.getPlaneId() == PLANE && p.getFloorId() == FLOOR
         || p.getPlaneId() == 20003 && p.getFloorId() == 20003001
@@ -70,7 +75,7 @@ final class StationTrial {
   static boolean eligible(Player p) {
     return p.getGameplay().getMissionTrials().getParty() == null
         && p.getGameplay().getMissionTrials().getStationSource() == null
-        && p.getGameplay().getCurrentMissionRaid() == 0 && active(p) && place(p);
+        && p.getGameplay().getCurrentMissionRaid() == 0 && active(p) && !unbound(p) && place(p);
   }
 
   // A full operator-edited team retains its formal document; reserve one temporary slot and keep its captain.
