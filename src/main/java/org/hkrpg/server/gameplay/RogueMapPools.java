@@ -126,6 +126,30 @@ final class RogueMapPools {
               .equals(room.GroupWithContent())) return Optional.empty();
       return Optional.of(new Assignment(1, Map.of(1, 100)));
     }
+    // The second story test has three fixed rooms, distinct from the first area-100 run.
+    // An explicit operator pool retains precedence and is checked by the story entry.
+    if (mapId == 2 && area == 100 && !GameplayDefinitions.roomPoolByMap.containsKey(2)) {
+      var source = GameplayDefinitions.areas.get(area);
+      var a = GameplayDefinitions.rooms.get(201);
+      var b = GameplayDefinitions.rooms.get(202);
+      var c = GameplayDefinitions.rooms.get(203);
+      if (source == null || source.RogueAreaID() != 100 || source.AreaProgress() != 0
+          || source.Difficulty() != 1 || start != 1 || sites.size() != 3
+          || !indexed.containsKey(2) || !indexed.containsKey(3)
+          || !List.of(2).equals(indexed.get(1).NextSiteIDList())
+          || !List.of(3).equals(indexed.get(2).NextSiteIDList())
+          || indexed.get(3).NextSiteIDList() == null || !indexed.get(3).NextSiteIDList().isEmpty()
+          || a == null || a.RogueRoomID() != 201 || a.RogueRoomType() != 1
+          || a.MapEntrance() != 8000102 || a.GroupID() != 19
+          || !Map.of(19, 2003, 3, 2001, 4, 2002).equals(a.GroupWithContent())
+          || b == null || b.RogueRoomID() != 202 || b.RogueRoomType() != 1
+          || b.MapEntrance() != 8000102 || b.GroupID() != 18
+          || !Map.of(18, 2006, 6, 2004, 7, 2005).equals(b.GroupWithContent())
+          || c == null || c.RogueRoomID() != 203 || c.RogueRoomType() != 7
+          || c.MapEntrance() != 8000102 || c.GroupID() != 29
+          || !Map.of(29, 2007).equals(c.GroupWithContent())) return Optional.empty();
+      return Optional.of(new Assignment(1, Map.of(1, 201, 2, 202, 3, 203)));
+    }
     var rooms = new HashMap<Integer, Integer>();
     for (var site : sites) {
       var pool =

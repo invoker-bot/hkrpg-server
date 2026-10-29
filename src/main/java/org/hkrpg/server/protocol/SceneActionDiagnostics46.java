@@ -47,6 +47,17 @@ final class SceneActionDiagnostics46 {
         reportedAvatars.stream().limit(8).toList());
   }
 
+  /** The second tutorial's missing entry request fields are reported without packet payloads. */
+  static void rogueEntry(GameSession session, int area, java.util.List<?> regular,
+      java.util.List<?> special, java.util.Set<Integer> unknown, Retcode result) {
+    if (!allow(session)) return;
+    LunarCore.getLogger().info(
+        "Second tutorial start: uid={} area={} regular={} special={} unknownFields={} retcode={}",
+        session.getPlayer().getUid(), area, regular.stream().limit(4).toList(),
+        special.stream().limit(4).toList(), unknown.stream().sorted().limit(12).toList(),
+        result.getVal());
+  }
+
   private static boolean allow(GameSession session) {
     synchronized (BUDGETS) {
       var budget = BUDGETS.get(session);

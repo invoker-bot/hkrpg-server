@@ -100,8 +100,9 @@ public class SceneEntityLoader {
             if (propInfo.getMappingInfoID() == 2220) {
                 // Regular simulated universe is locked behind a mission requirement by default
                 prop.setState(PropState.Open, false);
-            } else {
-                // Skip tutorial simulated universe
+            } else if (!org.hkrpg.server.gameplay.RogueSecondStoryEntry.officeProp(scene, group, propInfo)
+                    || !org.hkrpg.server.gameplay.RogueSecondStoryEntry.inProgress(scene.getPlayer())) {
+                // Other tutorial entries are not enabled by this source-bound rule.
                 return null;
             }
         } else if (prop.getPropId() == 1025)  {

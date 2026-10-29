@@ -136,12 +136,17 @@ public final class UniverseManager {
                           || player.getAvatarById(id).getAvatarType()
                               != emu.lunarcore.proto.AvatarTypeOuterClass.AvatarType
                                   .AVATAR_FORMAL_TYPE)) return Retcode.REQ_PARA_INVALID;
-      var planned = RogueMapPools.assign(area.mapId(), player.getUid(), areaId);
+      boolean secondStory = areaId == 100 && RogueSecondStoryEntry.inProgress(player);
+      if (secondStory && !RogueSecondStoryEntry.awaiting(player)) return Retcode.ROGUE_AREA_INVALID;
+      if (secondStory && !RogueSecondStoryEntry.inOffice(player)) return Retcode.ROGUE_STATUS_NOT_MATCH;
+      int mapId = secondStory ? 2 : area.mapId();
+      var planned = RogueMapPools.assign(mapId, player.getUid(), areaId);
       if (planned.isEmpty()) return Retcode.ROGUE_AREA_INVALID;
       var assignments = planned.get().rooms();
+      if (secondStory && !RogueSecondStoryEntry.plan(assignments)) return Retcode.ROGUE_AREA_INVALID;
       var boss = RogueBossEncounters.prepare(area, assignments);
       if (!boss.valid()) return Retcode.ROGUE_AREA_INVALID;
-      var run = new GameplayState.RogueRun(areaId, area.mapId(), assignments, boss.plan(), aeon);
+      var run = new GameplayState.RogueRun(areaId, mapId, assignments, boss.plan(), aeon);
       run.setupTeam(player, ids);
       int first = planned.get().start();
       var room = GameplayDefinitions.rooms.get(assignments.get(first));
@@ -149,13 +154,15 @@ public final class UniverseManager {
       boolean firstStory = RogueFirstStorySpawn.applies(run, room);
       if (firstStory && !RogueFirstStorySpawn.hasAuthoredAnchor(player, room))
         return Retcode.ROGUE_AREA_INVALID;
+      if (secondStory && (!RogueSecondStoryEntry.room(run, room)
+          || !RogueSecondStoryEntry.hasAnchor(player, room))) return Retcode.ROGUE_AREA_INVALID;
       if (firstStory) run.markFirstStoryEntrancePlaced();
       player.getGameplay().setRogue(run);
       if (run.getTalents().contains(21)) {
         var pool = RogueTalentEffects.group(100005);
         if (pool.isPresent()) createBlessingOffer(run, pool.get(), false);
       }
-      boolean entered = firstStory
+      boolean entered = firstStory || secondStory
           ? player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket)
           : player.enterScene(room.MapEntrance(), 0, sendPacket);
       if (!entered) {
@@ -190,7 +197,12 @@ public final class UniverseManager {
       if (room == null) return Retcode.ROGUE_AREA_INVALID;
       int priorSite = run.getSiteId(), priorRoom = run.getRoomId();
       run.enter(siteId, room.RogueRoomID());
-      if (!player.enterScene(room.MapEntrance(), 0, true)) {
+      boolean secondStory = RogueSecondStoryEntry.room(run, room);
+      boolean entered = secondStory
+          ? RogueSecondStoryEntry.hasAnchor(player, room)
+              && player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, true)
+          : player.enterScene(room.MapEntrance(), 0, true);
+      if (!entered) {
         run.enter(priorSite, priorRoom);
         return Retcode.ROGUE_AREA_INVALID;
       }
@@ -230,11 +242,14 @@ public final class UniverseManager {
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       var room = GameplayDefinitions.rooms.get(run.getRoomId());
       boolean firstStory = RogueFirstStorySpawn.applies(run, room);
+      boolean secondStory = RogueSecondStoryEntry.room(run, room);
       if (firstStory && !RogueFirstStorySpawn.hasAuthoredAnchor(player, room))
+        return Retcode.ROGUE_AREA_INVALID;
+      if (secondStory && !RogueSecondStoryEntry.hasAnchor(player, room))
         return Retcode.ROGUE_AREA_INVALID;
       boolean wasInside = run.isInside();
       run.setInside(true);
-      boolean entered = room != null && (firstStory
+      boolean entered = room != null && (firstStory || secondStory
           ? player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket)
           : player.enterScene(room.MapEntrance(), 0, sendPacket));
       if (entered) {

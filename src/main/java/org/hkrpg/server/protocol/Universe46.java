@@ -138,6 +138,8 @@ public final class Universe46 {
       if (start) {
         var season = activeSeason(Instant.now());
         int area = number(request, "area_id");
+        boolean secondEntry = area == 100
+            && org.hkrpg.server.gameplay.RogueSecondStoryEntry.inProgress(player);
         boolean valid =
             request.getUnknownFields().asMap().isEmpty()
                 && only(
@@ -160,6 +162,8 @@ public final class Universe46 {
                         || !season.RogueAreaIDList().contains(area)
                     ? Retcode.ROGUE_AREA_INVALID
                     : player.getUniverseManager().start(area, ids, number(request, "AFEMBLFCCCH"), false);
+        if (secondEntry) SceneActionDiagnostics46.rogueEntry(session, area, ids,
+            (List<?>) value(request, "JKPIPNMGGOA"), request.getUnknownFields().asMap().keySet(), result);
       } else {
         boolean valid =
             request.getUnknownFields().asMap().isEmpty()
@@ -269,7 +273,11 @@ public final class Universe46 {
         if (definition == null) continue;
         var area = builder(session, "CAJEBOPPMCJ");
         set(area, "area_id", id);
-        set(area, "map_id", definition.mapId());
+        int map = definition.mapId();
+        if (id == 100 && run.getAreaId() == 100 && run.getMapId() == 2
+            && run.getPhase() == GameplayState.RogueRun.Phase.EXPLORING) map = 2;
+        else if (id == 100 && org.hkrpg.server.gameplay.RogueSecondStoryEntry.awaiting(player)) map = 2;
+        set(area, "map_id", map);
         boolean claimed = player.getRewardLedger().granted("rogue-first:" + id);
         enumValue(
             area,
