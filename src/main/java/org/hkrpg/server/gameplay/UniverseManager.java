@@ -122,7 +122,13 @@ public final class UniverseManager {
           || player.getScene() == null
           || player.getScene().getPlaneType() == emu.lunarcore.game.enums.PlaneType.Rogue)
         return Retcode.ROGUE_STATUS_NOT_MATCH;
+      boolean secondStory = areaId == 100 && RogueSecondStoryEntry.inProgress(player);
+      if (secondStory && !RogueSecondStoryEntry.awaiting(player)) return Retcode.ROGUE_AREA_INVALID;
+      if (secondStory && !RogueSecondStoryEntry.inOffice(player)) return Retcode.ROGUE_STATUS_NOT_MATCH;
       var ids = selected == null ? List.<Integer>of() : List.copyOf(selected);
+      // The native 4.6 story trigger sends no roster. Reuse the current formal party only for
+      // the exact second tutorial entrance; its scripted trial-party mapping remains unverified.
+      if (secondStory && ids.isEmpty() && aeon == 0) ids = List.copyOf(team.getAvatars());
       if (ids.isEmpty()
           || ids.size() > 4
           || new HashSet<>(ids).size() != ids.size()
@@ -136,9 +142,6 @@ public final class UniverseManager {
                           || player.getAvatarById(id).getAvatarType()
                               != emu.lunarcore.proto.AvatarTypeOuterClass.AvatarType
                                   .AVATAR_FORMAL_TYPE)) return Retcode.REQ_PARA_INVALID;
-      boolean secondStory = areaId == 100 && RogueSecondStoryEntry.inProgress(player);
-      if (secondStory && !RogueSecondStoryEntry.awaiting(player)) return Retcode.ROGUE_AREA_INVALID;
-      if (secondStory && !RogueSecondStoryEntry.inOffice(player)) return Retcode.ROGUE_STATUS_NOT_MATCH;
       int mapId = secondStory ? 2 : area.mapId();
       var planned = RogueMapPools.assign(mapId, player.getUid(), areaId);
       if (planned.isEmpty()) return Retcode.ROGUE_AREA_INVALID;

@@ -12,14 +12,25 @@ import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.game.scene.SceneEntityLoader;
+import emu.lunarcore.game.scene.Scene;
+import emu.lunarcore.proto.SceneInfoOuterClass.SceneInfo;
 import emu.lunarcore.server.packet.Retcode;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.*;
+import org.hkrpg.server.protocol.Universe46;
 
 /** The completed first test and the second test's active entrance are explicit fixtures. */
 class RogueSecondStoryOffice46Test {
+  static class CapturingSession extends RogueFirstStoryEntry46Test.Session {
+    String name;
+    byte[] response;
+    @Override public void sendClientPacket(String type, byte[] bytes) {
+      name = type;
+      response = bytes;
+    }
+  }
   final RogueFirstStoryEntry46Test fixture = new RogueFirstStoryEntry46Test();
   FloorInfo previousFloor;
   MapEntranceExcel previousEntry;
@@ -157,6 +168,92 @@ class RogueSecondStoryOffice46Test {
     assertEquals(-42980, fixture.actor.getPos().getX());
     assertEquals(-91380, fixture.actor.getPos().getZ());
     assertEquals(GameplayState.RogueRun.Phase.FINISHED, old.getPhase());
+  }
+
+  @Test
+  void nativeEmptySelectionUsesCurrentFormalPartyAtSecondEntrance() {
+    new SceneEntityLoader().onSceneLoad(fixture.actor.actual);
+    var normal = fixture.actor.getCurrentLineup();
+    var selected = List.copyOf(normal.getAvatars());
+    assertFalse(selected.isEmpty());
+    assertEquals(Retcode.SUCC,
+        fixture.actor.getUniverseManager().start(100, List.of(), 0, false));
+    assertEquals(selected, fixture.actor.getGameplay().getRogue().getRoster());
+    assertEquals(selected, normal.getAvatars(), "Entering must not modify the normal lineup");
+    assertEquals(201, fixture.actor.getGameplay().getRogue().getRoomId());
+  }
+
+  @Test
+  void capturedEmptyNativeStartGetsARealResponseAndSecondMap() throws Exception {
+    var original = fixture.actor.actual;
+    var scene = new Scene(fixture.actor, original.getExcel(), 80112001) {
+      @Override public SceneInfo toProto() {
+        return SceneInfo.newInstance().setEntryId(fixture.actor.getEntryId())
+            .setPlaneId(fixture.actor.getPlaneId()).setFloorId(fixture.actor.getFloorId());
+      }
+    };
+    scene.setEntryId(8011201);
+    scene.getResourceGroups().putAll(original.getResourceGroups());
+    fixture.actor.actual = scene;
+    new SceneEntityLoader().onSceneLoad(scene);
+    var session = new CapturingSession();
+    session.actor = fixture.actor;
+    fixture.actor.session = session;
+    var season = new GameplayDefinitions.RogueSeason(
+        199963, 1, List.of(100), "2024-01-01 00:00:00", "2099-01-01 00:00:00");
+    GameplayDefinitions.rogueSeasons.add(season);
+    GameplayDefinitions.rogueConstants.put("Start_Rogue_Coin_Base", "50");
+    try {
+      var descriptor = session.getProtocol().clientSchema().message("StartRogueCsReq");
+      var request = com.google.protobuf.DynamicMessage.newBuilder(descriptor)
+          .setField(descriptor.findFieldByName("area_id"), 100).build();
+      assertTrue(Universe46.handle(session,
+          session.getProtocol().clientCommand("StartRogueCsReq"), request.toByteArray()));
+      assertEquals("StartRogueScRsp", session.name);
+      var response = session.getProtocol().clientSchema().parse(session.name, session.response);
+      assertEquals(0, response.getField(response.getDescriptorForType().findFieldByName("retcode")));
+      assertEquals(2, fixture.actor.getGameplay().getRogue().getMapId());
+      assertEquals(201, fixture.actor.getGameplay().getRogue().getRoomId());
+    } finally {
+      GameplayDefinitions.rogueSeasons.remove(season);
+    }
+  }
+
+  @Test
+  void secondTutorialPartyAndAnchorSurviveSavedRunRoundTrip() {
+    new SceneEntityLoader().onSceneLoad(fixture.actor.actual);
+    assertEquals(Retcode.SUCC, fixture.actor.getUniverseManager().start(100, List.of(), 0, false));
+    var saved = fixture.actor.getGameplay().getRogue();
+    var copy = fixture.gson.fromJson(fixture.gson.toJson(saved), GameplayState.RogueRun.class);
+    copy.setInside(false);
+    fixture.actor.getGameplay().setRogue(copy);
+    assertEquals(Retcode.SUCC, fixture.actor.getUniverseManager().resume(100, false));
+    assertEquals(saved.getRunId(), copy.getRunId());
+    assertEquals(saved.getRoster(), copy.getRoster());
+    assertEquals(2, copy.getMapId());
+    assertEquals(201, copy.getRoomId());
+    assertEquals(-42980, fixture.actor.getPos().getX());
+    assertEquals(-91380, fixture.actor.getPos().getZ());
+  }
+
+  @Test
+  void fallbackDoesNotAcceptAnUnownedPartyMember() {
+    new SceneEntityLoader().onSceneLoad(fixture.actor.actual);
+    fixture.actor.getCurrentLineup().getAvatars().add(199962);
+    var prior = fixture.actor.getGameplay().getRogue();
+    assertEquals(Retcode.REQ_PARA_INVALID,
+        fixture.actor.getUniverseManager().start(100, List.of(), 0, false));
+    assertSame(prior, fixture.actor.getGameplay().getRogue());
+  }
+
+  @Test
+  void emptySelectionIsNotAUniversalFallback() {
+    new SceneEntityLoader().onSceneLoad(fixture.actor.actual);
+    var prior = fixture.actor.getGameplay().getRogue();
+    fixture.actor.getGameplay().getMainMissions().remove(4030002);
+    assertEquals(Retcode.REQ_PARA_INVALID,
+        fixture.actor.getUniverseManager().start(100, List.of(), 0, false));
+    assertSame(prior, fixture.actor.getGameplay().getRogue());
   }
 
   @Test
