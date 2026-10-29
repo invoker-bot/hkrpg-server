@@ -24,7 +24,13 @@ def free_port(kind=socket.SOCK_STREAM):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target', type=int, choices=[15, 1000], required=True)
+    parser.add_argument('--verify-story-blessing', action='store_true',
+                        help='验证首战祝福通知、重启保存、选择防重及原始机关状态')
+    parser.add_argument('--selected-before-restart', action='store_true',
+                        help='在首次停服之前选择祝福，验证已选结果和机关跨进程恢复')
     args = parser.parse_args()
+    if args.selected_before_restart and not args.verify_story_blessing:
+        parser.error('--selected-before-restart requires --verify-story-blessing')
     source = ROOT / 'resources/4.6'
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'), None)
@@ -139,11 +145,20 @@ def main():
                         'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
                     assert combo['retcode'] == 0
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'],
-                                   'target': args.target, 'mode': 'checkpoint'}
+                                   'target': args.target, 'mode': 'checkpoint',
+                                   'verifyStoryBlessing': args.verify_story_blessing,
+                                   'selectedBeforeRestart': args.selected_before_restart}
                     checkpoint = probe('checkpoint.log', credentials)
                     assert checkpoint['count'] == checkpoint['actualReportedDeaths'] == 2
                     assert checkpoint['actualEncounters'] == checkpoint['actualExplorations'] == 1
                     assert checkpoint['questQueries'] == 2 and checkpoint['jadeNotifications'] == 0
+                    if args.verify_story_blessing:
+                        assert checkpoint['blessingNotifications'] == 1
+                        assert checkpoint['blessingSelections'] == (1 if args.selected_before_restart else 0)
+                        prefix = 'selected' if args.selected_before_restart else 'pending'
+                        credentials['expectedBatch'] = checkpoint[prefix + 'BlessingBatch']
+                        credentials['expectedBuff'] = checkpoint[prefix + 'BlessingBuff']
+                        assert credentials['expectedBatch'] > 0 and credentials['expectedBuff'] > 0
                     snapshots.append(checkpoint)
                 elif iteration == 1:
                     credentials['mode'] = 'complete'
@@ -152,6 +167,9 @@ def main():
                     assert completed['actualExplorations'] == completed['actualEncounters'] == (args.target + 1)//2 - 1
                     assert completed['jadeNotifications'] == (1 if args.target == 15 else 2)
                     assert completed['questQueries'] == 3
+                    if args.verify_story_blessing:
+                        assert completed['blessingSelections'] == completed['actualEncounters'] + (0 if args.selected_before_restart else 1)
+                        assert completed['blessingNotifications'] == completed['actualEncounters']
                     snapshots.append(completed)
                 if iteration > 0:
                     credentials['mode'] = 'resume'

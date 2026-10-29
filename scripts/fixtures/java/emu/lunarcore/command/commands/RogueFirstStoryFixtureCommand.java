@@ -15,7 +15,7 @@ import java.nio.file.Path;
     permission = "fixture.console-only", desc = "仅隔离探针：设置首次宇宙入口前置")
 public final class RogueFirstStoryFixtureCommand implements CommandHandler {
   @Override public void execute(CommandArgs args) {
-    if (args.getSender() != null || args.getList().size() != 2) return;
+    if (args.getSender() != null || (args.getList().size() != 2 && args.getList().size() != 3)) return;
     try {
       int uid = Integer.parseInt(args.getList().get(0));
       int nonce = Integer.parseInt(args.getList().get(1));
@@ -29,6 +29,21 @@ public final class RogueFirstStoryFixtureCommand implements CommandHandler {
       var player = LunarCore.getGameServer().getOnlinePlayerByUid(uid);
       if (player == null) throw new IllegalStateException("Fixture player is not online");
       synchronized (player) {
+        if (args.getList().size() == 3) {
+          if (!"legacy".equals(args.getList().get(2)) || player.getEntryId() != 8000101
+              || player.getGameplay().getRogue().getAreaId() != 100
+              || !player.getGameplay().getRogue().getProcessedBattles().isEmpty())
+            throw new IllegalStateException("Not an untouched first-story fixture run");
+          var run = player.getGameplay().getRogue();
+          var marker = run.getClass().getDeclaredField("firstStoryEntrancePlaced");
+          marker.setAccessible(true);
+          marker.setBoolean(run, false);
+          player.getPos().set(1285, 122, 42242);
+          player.save();
+          System.out.println("HKRPG_ROGUE_FIRST_STORY_LEGACY_ACK:" + uid + ":" + nonce);
+          System.out.flush();
+          return;
+        }
         if (player.isInBattle() || player.getGameplay().getRogue().isInside()
             || player.getGameplay().getTrialRun() != null)
           throw new IllegalStateException("Fixture player is not in an ordinary context");

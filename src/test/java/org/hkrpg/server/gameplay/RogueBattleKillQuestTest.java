@@ -26,6 +26,13 @@ class RogueBattleKillQuestTest {
 
   static class Explorer extends UniverseCombatFragmentsTest.Explorer {
     Scene scene;
+    boolean failSave;
+
+    @Override
+    public void save() {
+      if (failSave) throw new IllegalStateException("simulated save failure");
+      super.save();
+    }
 
     public Scene getScene() {
       return scene;
@@ -691,4 +698,131 @@ class RogueBattleKillQuestTest {
         player.scene.getEntities().values().stream().noneMatch(EntityMonster.class::isInstance));
     assertEquals(2, state(4090301).getProgress());
   }
+
+  @Test void firstVictoryOffersABlessingBeforeOtherEncountersAreCleared() {
+    int buff = 19997101;
+    var oldBuff = GameData.getMazeBuffExcelMap().get(buff, 1);
+    var oldProp = GameData.getPropExcelMap().get(100);
+    var oldBlessings = List.copyOf(GameplayDefinitions.blessings);
+    try {
+      GameData.getMazeBuffExcelMap().add(gson.fromJson("{\"ID\":" + buff + ",\"Lv\":1}", MazeBuffExcel.class));
+      GameplayDefinitions.blessings.clear();
+      GameplayDefinitions.blessings.add(new GameplayDefinitions.Blessing(buff, 1, 100, "Common", 1, List.of()));
+      var trigger = gson.fromJson("{\"ID\":100,\"PropType\":\"PROP_ORDINARY\","
+          + "\"PropStateList\":[\"Closed\",\"Open\"]}", PropExcel.class);
+      trigger.onLoad(); GameData.getPropExcelMap().add(trigger);
+      var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
+      run.setupTeam(player, List.of(199961));
+      run.enter(1, 100);
+      player.getGameplay().setRogue(run);
+      player.scene = new Scene(player, plane, 80001001);
+      player.scene.setEntryId(8000101);
+      var laterGroup = new GroupInfo(); laterGroup.setId(4);
+      var later = new EntityMonster(player.scene, new NpcMonsterExcel(), laterGroup,
+          gson.fromJson("{\"ID\":200002}", MonsterInfo.class));
+      later.setEntityId(99999);
+      player.scene.getEntities().put(later.getEntityId(), later);
+      var first = battle();
+      assertNotNull(service.finishBattle(player, first.getId(), STAGE, BattleEndStatus.BATTLE_END_WIN,
+          BattleStatistics.newInstance(), reports(2)));
+      assertFalse(run.getCleared().contains(1), "A later encounter is still alive");
+      assertTrue(run.getDefeatedRogueMonsters().contains("1:100:80001:80001001:3:200001"),
+          "The first encounter must be saved before its blessing is offered");
+      assertEquals(List.of(buff), run.getOffers(), "The first victory should offer its own blessing");
+      var source = player.scene.getEntities().values().stream()
+          .filter(emu.lunarcore.game.scene.entity.EntityProp.class::isInstance)
+          .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
+          .filter(p -> p.getGroupId() == 3 && p.getInstId() == 300001).findFirst().orElseThrow();
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, source.getState());
+      int selection = run.getSelectionId();
+      assertEquals(Retcode.SUCC, player.getUniverseManager().selectBlessing(selection, buff));
+      assertEquals(1, run.getBlessings().get(buff));
+      assertEquals(emu.lunarcore.game.enums.PropState.Open, source.getState(), "The source trigger opens after selection");
+      assertEquals(Retcode.REQ_PARA_INVALID, player.getUniverseManager().selectBlessing(selection, buff));
+      var reloaded = new Scene(player, plane, 80001001);
+      var restored = reloaded.getEntities().values().stream()
+          .filter(emu.lunarcore.game.scene.entity.EntityProp.class::isInstance)
+          .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
+          .filter(p -> p.getGroupId() == 3 && p.getInstId() == 300001).findFirst().orElseThrow();
+      assertEquals(emu.lunarcore.game.enums.PropState.Open, restored.getState(), "A reconnect preserves the opened source trigger");
+    } finally {
+      GameplayDefinitions.blessings.clear(); GameplayDefinitions.blessings.addAll(oldBlessings);
+      GameData.getMazeBuffExcelMap().values().removeIf(v -> v.getID() == buff && v.getLv() == 1);
+      if (oldBuff != null) GameData.getMazeBuffExcelMap().add(oldBuff);
+      GameData.getPropExcelMap().keySet().remove(100);
+      if (oldProp != null) GameData.getPropExcelMap().add(oldProp);
+    }
+  }
+
+  @Test void queuedVictoriesSurviveReloadAndOfferExactlyOneSelectionEach() {
+    var oldBlessings = List.copyOf(GameplayDefinitions.blessings);
+    var old4 = floor.getGroups().get(4);
+    int firstBuff = 19997121, secondBuff = 19997122;
+    try {
+      GameplayDefinitions.blessings.clear();
+      for (int id : List.of(firstBuff, secondBuff)) {
+        GameData.getMazeBuffExcelMap().add(gson.fromJson("{\"ID\":" + id + ",\"Lv\":1}", MazeBuffExcel.class));
+        GameplayDefinitions.blessings.add(new GameplayDefinitions.Blessing(id, 1, 100, "Common", 1, List.of()));
+      }
+      var four = gson.fromJson(gson.toJson(group), GroupInfo.class);
+      four.setId(4); floor.getGroups().put(4, four);
+      var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
+      run.setupTeam(player, List.of(199961)); run.enter(1, 100);
+      run.getDefeatedRogueMonsters().add("1:100:80001:80001001:3:200001");
+      run.getDefeatedRogueMonsters().add("1:100:80001:80001001:4:200001");
+      player.getGameplay().setRogue(run);
+      player.scene = new Scene(player, plane, 80001001); player.scene.setEntryId(8000101);
+      player.getUniverseManager().restoreFirstStoryBlessings();
+      assertEquals(2, run.getFirstStoryBlessingReceipts().size());
+      assertEquals(0, run.getFirstStoryBlessingReceipts().get(4));
+      int firstSelection = run.getSelectionId();
+      int selected = run.getOffers().getFirst();
+      run = gson.fromJson(gson.toJson(run), GameplayState.RogueRun.class);
+      player.getGameplay().setRogue(run);
+      assertEquals(Retcode.SUCC, player.getUniverseManager().selectBlessing(firstSelection, selected));
+      assertEquals(-1, run.getFirstStoryBlessingReceipts().get(3));
+      assertTrue(run.getSelectionId() > firstSelection);
+      assertEquals(run.getSelectionId(), run.getFirstStoryBlessingReceipts().get(4));
+      int secondSelection = run.getSelectionId();
+      int second = run.getOffers().getFirst();
+      assertNotEquals(selected, second);
+      assertEquals(Retcode.SUCC, player.getUniverseManager().selectBlessing(secondSelection, second));
+      assertEquals(Map.of(3, -1, 4, -1), run.getFirstStoryBlessingReceipts());
+      player.getUniverseManager().restoreFirstStoryBlessings();
+      assertTrue(run.getOffers().isEmpty());
+      assertEquals(2, run.getBlessings().size());
+    } finally {
+      GameplayDefinitions.blessings.clear(); GameplayDefinitions.blessings.addAll(oldBlessings);
+      GameData.getMazeBuffExcelMap().values().removeIf(v -> v.getID() == firstBuff || v.getID() == secondBuff);
+      if (old4 == null) floor.getGroups().remove(4); else floor.getGroups().put(4, old4);
+    }
+  }
+
+  @Test void completedEncountersResumeAnInterruptedRoomClearOnlyWithAllGroupsLoaded() {
+    var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
+    run.setupTeam(player, List.of(199961)); run.enter(1, 100);
+    for (int id : List.of(3, 4, 5, 10, 11, 12))
+      run.getDefeatedRogueMonsters().add("1:100:80001:80001001:" + id + ":200001");
+    for (int id : List.of(3, 4, 5, 11, 12)) run.getFirstStoryBlessingReceipts().put(id, -1);
+    run = gson.fromJson(gson.toJson(run), GameplayState.RogueRun.class);
+    player.getGameplay().setRogue(run);
+    player.scene = new Scene(player, plane, 80001001); player.scene.setEntryId(8000101);
+    player.getUniverseManager().restoreFirstStoryBlessings();
+    assertFalse(run.getCleared().contains(1), "An incomplete scene cannot prove the room is clear");
+    for (int id : List.of(4, 5, 10, 11, 12)) {
+      var placement = gson.fromJson(gson.toJson(group), GroupInfo.class);
+      placement.setId(id); floor.getGroups().put(id, placement);
+    }
+    player.scene = new Scene(player, plane, 80001001); player.scene.setEntryId(8000101);
+    player.failSave = true;
+    assertThrows(IllegalStateException.class, () -> player.getUniverseManager().restoreFirstStoryBlessings());
+    assertFalse(run.getCleared().contains(1), "A failed save must not acknowledge the clear");
+    player.failSave = false;
+    player.getUniverseManager().restoreFirstStoryBlessings();
+    assertTrue(run.getCleared().contains(1), "A saved final victory must recover the interrupted clear");
+    int saves = player.saves;
+    player.getUniverseManager().restoreFirstStoryBlessings();
+    assertEquals(saves, player.saves, "Recovery must be idempotent");
+  }
+
 }

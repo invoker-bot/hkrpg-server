@@ -28,6 +28,8 @@ def free_port(kind=socket.SOCK_STREAM):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resources', type=Path, default=ROOT / 'resources/4.6')
+    parser.add_argument('--legacy-recovery', action='store_true',
+                        help='隔离夹具先模拟旧版错误出生点，再验证同局重登恢复')
     args = parser.parse_args()
     source = args.resources.resolve()
     jar = ROOT / 'build/libs/hkrpg-server.jar'
@@ -116,7 +118,10 @@ def main():
             stage = next(r for r in stages if r['StageID'] == monster['EventID'])
             choices.append({'monster': int(monster_id), 'npc': monster['NpcMonsterID'], 'stage': monster['EventID'],
                             'waves': [list(wave.values()) for wave in stage['MonsterList']]})
-        actors[str(group)] = {'content': content, 'inst': authored['MonsterList'][0]['ID'], 'weights': weights, 'choices': choices}
+        placement = authored['MonsterList'][0]
+        actors[str(group)] = {'content': content, 'inst': placement['ID'], 'weights': weights,
+                              'pos': {axis: int(placement.get('Pos' + axis.upper(), 0) * 1000)
+                                      for axis in ('x', 'y', 'z')}, 'choices': choices}
     assert set(actors) == {'3', '4', '5', '10', '11', '12'}
     (directory / 'actors.json').write_text(json.dumps(actors), 'utf-8')
     http, mongo, game = free_port(), free_port(), free_port(socket.SOCK_DGRAM)
@@ -160,7 +165,8 @@ def main():
         reader = threading.Thread(target=collect, daemon=True)
         reader.start()
         try:
-            child.stdin.write(json.dumps(dict(credentials, mode=mode)) + '\n')
+            child.stdin.write(json.dumps(dict(credentials, mode=mode,
+                                              simulateLegacy=args.legacy_recovery and mode == 'trigger')) + '\n')
             child.stdin.flush()
             deadline = time.monotonic() + 75
             if mode == 'trigger':
@@ -178,6 +184,20 @@ def main():
                     if time.monotonic() > deadline: raise TimeoutError('Isolated story setup did not acknowledge')
                     time.sleep(.1)
                 child.stdin.write('resume\n'); child.stdin.flush()
+                if args.legacy_recovery:
+                    while True:
+                        line = available.get(timeout=max(.1, deadline - time.monotonic()))
+                        assert line is not None, directory
+                        if line.startswith('HKRPG_ROGUE_FIRST_STORY_LEGACY_READY:'):
+                            break
+                    legacy_marker = f'HKRPG_ROGUE_FIRST_STORY_LEGACY_ACK:{uid}:{nonce}'
+                    server.stdin.write(f'roguefirststoryfixture {uid} {nonce} legacy\n'.encode())
+                    server.stdin.flush()
+                    while legacy_marker not in server_log.read_text('utf-8', errors='replace'):
+                        assert server.poll() is None and child.poll() is None, directory
+                        if time.monotonic() > deadline: raise TimeoutError('Legacy fixture was not acknowledged')
+                        time.sleep(.1)
+                    child.stdin.write('legacy-ready\n'); child.stdin.flush()
             child.stdin.close()
             child.wait(timeout=max(.1, deadline - time.monotonic()))
             reader.join(timeout=3)
@@ -237,7 +257,7 @@ def main():
                         process.stdin.close()
         child = subprocess.run([str(java), *encoding, fallback, '-cp', str(probe_classes) + os.pathsep + str(jar),
             'org.hkrpg.server.gameplay.RogueFirstStoryEntryFixtureInspector', str(directory),
-            str(snapshots[0]['uid']), 'active'], cwd=ROOT,
+            str(snapshots[0]['uid']), 'legacy' if args.legacy_recovery and iteration == 0 else 'active'], cwd=ROOT,
             text=True, encoding='utf-8', capture_output=True, timeout=45, creationflags=flags)
         log = directory / f'inspector-{iteration}.log'
         log.write_text(child.stdout + child.stderr, 'utf-8')
@@ -261,6 +281,7 @@ def main():
             'firstRoomAssigned': 100, 'area': 100, 'sourceMap': 1,
             'mapScopedDefaultsInstalledByProduction': True, 'operatorPoolOverrides': False,
             'originalAreaRoomMapAndWeightedActorsUnchanged': True,
+            'legacySpawnSimulatedInIsolatedFixture': args.legacy_recovery,
             'missingBossGroupCompatibility': {'1006': 1101},
             'officialRoomGenerationVerified': False},
         'clientGameplayVerified': False, 'storyTriggerNetworkVerified': True,

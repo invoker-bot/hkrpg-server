@@ -7,6 +7,7 @@ import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.ResourceLoader;
 import emu.lunarcore.data.config.*;
 import emu.lunarcore.data.excel.MazePlaneExcel;
+import emu.lunarcore.data.excel.MapEntranceExcel;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.Scene;
@@ -29,6 +30,8 @@ class RogueFirstStoryEntry46Test {
   final Map<Integer, Integer> savedBosses = new HashMap<>();
   final Map<String, String> savedConstants = new HashMap<>();
   FloorInfo oldFloor;
+  FloorInfo oldTutorialFloor;
+  MapEntranceExcel oldTutorialEntry;
   Actor actor;
   Session session;
 
@@ -46,15 +49,25 @@ class RogueFirstStoryEntry46Test {
     Scene actual;
     Session session;
     int starts;
+    int saves;
+    boolean failSave;
     @Override public int getPlaneId() { return entry == 11 ? 80112 : 80001; }
     @Override public int getFloorId() { return entry == 11 ? 80112001 : 80001001; }
     @Override public int getEntryId() { return entry == 11 ? 8011201 : entry; }
     @Override public Scene getScene() { return actual; }
     @Override public GameSession getSession() { return session; }
     @Override public boolean isOnline() { return session != null; }
+    @Override public void save() {
+      if (failSave) throw new IllegalStateException("fixture save failed");
+      saves++;
+    }
     @Override public boolean enterScene(int id, int teleport, boolean send) {
       starts++;
       return super.enterScene(id, teleport, send);
+    }
+    @Override public boolean enterSceneAtAnchor(int id, int group, int anchor, boolean send) {
+      starts++;
+      return super.enterSceneAtAnchor(id, group, anchor, send);
     }
   }
 
@@ -74,6 +87,17 @@ class RogueFirstStoryEntry46Test {
     GameplayDefinitions.bossContentByArea.remove(100);
     GameplayDefinitions.rogueConstants.remove("Start_Rogue_Coin_Base");
     oldFloor = GameData.getFloorInfos().get("P80112_F80112001");
+    oldTutorialFloor = GameData.getFloorInfos().get("P80001_F80001001");
+    oldTutorialEntry = GameData.getMapEntranceExcelMap().get(8000101);
+    var tutorialFloor = new FloorInfo();
+    var tutorialGroup = gson.fromJson(
+        "{\"AnchorList\":[{\"ID\":1,\"PosX\":-23.854,\"PosY\":0.005451,"
+            + "\"PosZ\":236.15,\"RotY\":180}]}", GroupInfo.class);
+    tutorialGroup.setId(10);
+    tutorialFloor.getGroups().put(10, tutorialGroup);
+    GameData.getFloorInfos().put("P80001_F80001001", tutorialFloor);
+    GameData.getMapEntranceExcelMap().add(gson.fromJson(
+        "{\"ID\":8000101,\"PlaneID\":80001,\"FloorID\":80001001}", MapEntranceExcel.class));
     var input = Objects.requireNonNull(getClass().getResourceAsStream("/fixtures/rogue-first-story-entry-4.6.json"));
     var records = JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8))
         .getAsJsonObject().getAsJsonObject("records");
@@ -108,6 +132,10 @@ class RogueFirstStoryEntry46Test {
     GameplayDefinitions.rogueConstants.clear(); GameplayDefinitions.rogueConstants.putAll(savedConstants);
     if (oldFloor == null) GameData.getFloorInfos().remove("P80112_F80112001");
     else GameData.getFloorInfos().put("P80112_F80112001", oldFloor);
+    if (oldTutorialFloor == null) GameData.getFloorInfos().remove("P80001_F80001001");
+    else GameData.getFloorInfos().put("P80001_F80001001", oldTutorialFloor);
+    if (oldTutorialEntry == null) GameData.getMapEntranceExcelMap().keySet().remove(8000101);
+    else GameData.getMapEntranceExcelMap().add(oldTutorialEntry);
   }
 
   @Test void waitingInTheAuthoredTriggerStartsTheFirstStoryRunOnce() {
@@ -116,6 +144,8 @@ class RogueFirstStoryEntry46Test {
     assertEquals(0, actor.starts);
     actor.onTick(NOW + 16_000, 1000);
     assertEquals(1, actor.starts);
+    assertEquals(-23854, actor.getPos().getX(), "The tutorial begins at its authored room anchor");
+    assertEquals(236150, actor.getPos().getZ(), "The first encounter is ahead of the player");
     actor.onTick(NOW + 40_000, 1000);
     assertEquals(1, actor.starts);
   }
@@ -163,6 +193,17 @@ class RogueFirstStoryEntry46Test {
     assertEquals(1, actor.starts);
   }
 
+  @Test void resumingTheTutorialUsesTheAuthoredStartAndKeepsTheSameRun() {
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC, actor.getUniverseManager().start(100));
+    var run = actor.getGameplay().getRogue();
+    var id = run.getRunId();
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC, actor.getUniverseManager().leave(false));
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC, actor.getUniverseManager().resume(100, false));
+    assertEquals(id, run.getRunId());
+    assertEquals(-23854, actor.position.getX());
+    assertEquals(236150, actor.position.getZ());
+  }
+
   @Test void aDifferentTargetOrMissingAuthoredTriggerCannotStartTheRun() {
     var original = GameplayDefinitions.subs.get(403000102);
     var altered = gson.fromJson("{\"ID\":403000102,\"MainMissionID\":4030001,"
@@ -188,5 +229,79 @@ class RogueFirstStoryEntry46Test {
     GameplayDefinitions.roomPoolByMap.put(1, Map.of(1, List.of(304)));
     actor.onTick(NOW + 40_000, 1000); actor.onTick(NOW + 60_000, 1000);
     assertEquals(0, actor.starts);
+  }
+
+  private GameplayState.RogueRun strandedLegacyRun() {
+    actor.entry = 8000101;
+    actor.position.set(1285, 122, 42242);
+    var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
+    run.enter(1, 100);
+    run.setInside(true);
+    actor.getGameplay().setRogue(run);
+    var entered = new QuestState(403000102);
+    assertTrue(entered.advance(1, 1, 100));
+    actor.getGameplay().getSubMissions().put(403000102, entered);
+    actor.getGameplay().getSubMissions().put(403000104, new QuestState(403000104));
+    return run;
+  }
+
+  @Test void untouchedLegacyRunAtWrongEndRecoversOnceWithoutResettingProgress() {
+    var run = strandedLegacyRun();
+    var id = run.getRunId();
+    assertTrue(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertEquals(-23854, actor.position.getX());
+    assertEquals(236150, actor.position.getZ());
+    assertEquals(180000, actor.rotation.getY());
+    assertTrue(run.isFirstStoryEntrancePlaced());
+    assertEquals(id, run.getRunId());
+    assertEquals(GameplayState.RogueRun.Phase.EXPLORING, run.getPhase());
+    assertEquals(QuestState.Phase.DOING, actor.getGameplay().getSubMissions().get(403000104).getPhase());
+    assertEquals(1, actor.saves);
+    var restored = gson.fromJson(gson.toJson(run), GameplayState.RogueRun.class);
+    assertTrue(restored.isFirstStoryEntrancePlaced(), "The one-time receipt survives a reload");
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertEquals(1, actor.saves);
+  }
+
+  @Test void progressedOrCorrectlyPositionedRunsAreNeverMoved() {
+    var run = strandedLegacyRun();
+    run.getProcessedBattles().add("1:123");
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertEquals(42242, actor.position.getZ());
+    run.getProcessedBattles().clear();
+    run.getDefeatedRogueMonsters().add("1:100:80001:80001001:3:200001");
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    run.getDefeatedRogueMonsters().clear();
+    actor.position.set(-23854, 5, 236150);
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertFalse(run.isFirstStoryEntrancePlaced());
+  }
+
+  @Test void untouchedLegacyRunStillRecoversAfterWalkingBackThroughEmptyCorridor() {
+    strandedLegacyRun();
+    actor.position.set(-12000, 122, 150000);
+    assertTrue(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertEquals(-23854, actor.position.getX());
+    assertEquals(236150, actor.position.getZ());
+  }
+
+  @Test void legacyRecoveryRequiresItsMissionAndUnmodifiedSourceAnchor() {
+    var run = strandedLegacyRun();
+    actor.getGameplay().getSubMissions().remove(403000104);
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    actor.getGameplay().getSubMissions().put(403000104, new QuestState(403000104));
+    GameData.getFloorInfo(80001, 80001001).getGroups().get(10).getAnchorList().clear();
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertEquals(42242, actor.position.getZ());
+    assertFalse(run.isFirstStoryEntrancePlaced());
+  }
+
+  @Test void recoverySaveFailureLeavesTheOldPositionAndReceiptIntact() {
+    var run = strandedLegacyRun();
+    actor.failSave = true;
+    assertFalse(RogueFirstStorySpawn.recoverOnLogin(actor));
+    assertEquals(1285, actor.position.getX());
+    assertEquals(42242, actor.position.getZ());
+    assertFalse(run.isFirstStoryEntrancePlaced());
   }
 }

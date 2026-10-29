@@ -25,8 +25,9 @@ public final class RogueFirstStoryEntryFixtureInspector {
         || !marker.get("rogueFirstStoryTriggerFixture").getAsBoolean())
       throw new IllegalArgumentException("Missing fixture marker");
     int uid = Integer.parseInt(args[1]);
-    boolean active = args[2].equals("active");
-    if (uid <= 0 || !Set.of("pending", "active").contains(args[2]))
+    boolean active = !args[2].equals("pending");
+    boolean legacy = args[2].equals("legacy");
+    if (uid <= 0 || !Set.of("pending", "active", "legacy").contains(args[2]))
       throw new IllegalArgumentException("Invalid inspector arguments");
     var expected =
         JsonParser.parseString(Files.readString(directory.resolve("actors.json")))
@@ -64,6 +65,11 @@ public final class RogueFirstStoryEntryFixtureInspector {
             || run.getSiteId() != 1
             || run.getRoomId() != 100
             || player.getEntryId() != 8000101
+            || (legacy
+                ? player.getPos().getX() != 1285 || player.getPos().getZ() != 42242
+                    || run.isFirstStoryEntrancePlaced()
+                : player.getPos().getX() != -23854 || player.getPos().getZ() != 236150
+                    || player.getRot().getY() != 180000 || !run.isFirstStoryEntrancePlaced())
             || !run.getRooms()
                 .equals(Map.of(1, 100))
             || !run.getRoster().equals(List.of(emu.lunarcore.GameConstants.TRAILBLAZER_AVATAR_ID))

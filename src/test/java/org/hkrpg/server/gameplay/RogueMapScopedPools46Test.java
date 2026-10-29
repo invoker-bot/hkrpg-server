@@ -115,11 +115,31 @@ class RogueMapScopedPools46Test {
     assertFalse(GameplayDefinitions.roomPoolByMap.containsKey(1));
     assertEquals(Map.of(1, 100), RogueMapPools.assign(1, 10001, 100).orElseThrow().rooms());
     assertEquals(Map.of(1, 100), RogueMapPools.assign(1, 10002, 100).orElseThrow().rooms());
-    var player = new UniverseLifecycleTest.Explorer();
-    assertEquals(Retcode.SUCC, player.getUniverseManager().start(100));
-    assertEquals(8000101, player.getEntryId());
-    assertEquals(100, player.getGameplay().getRogue().getRoomId());
-    assertEquals(Retcode.ROGUE_STATUS_NOT_MATCH, player.getUniverseManager().start(100));
+    var oldFloor = GameData.getFloorInfos().get("P80001_F80001001");
+    var oldEntry = GameData.getMapEntranceExcelMap().get(8000101);
+    var gson = emu.lunarcore.data.ResourceLoader.getGson();
+    var floor = new emu.lunarcore.data.config.FloorInfo();
+    var group = gson.fromJson("{\"AnchorList\":[{\"ID\":1,\"PosX\":-23.854,"
+        + "\"PosY\":0.005451,\"PosZ\":236.15,\"RotY\":180}]}",
+        emu.lunarcore.data.config.GroupInfo.class);
+    group.setId(10);
+    floor.getGroups().put(10, group);
+    GameData.getFloorInfos().put("P80001_F80001001", floor);
+    GameData.getMapEntranceExcelMap().add(gson.fromJson(
+        "{\"ID\":8000101,\"PlaneID\":80001,\"FloorID\":80001001}",
+        emu.lunarcore.data.excel.MapEntranceExcel.class));
+    try {
+      var player = new UniverseLifecycleTest.Explorer();
+      assertEquals(Retcode.SUCC, player.getUniverseManager().start(100));
+      assertEquals(8000101, player.getEntryId());
+      assertEquals(100, player.getGameplay().getRogue().getRoomId());
+      assertEquals(Retcode.ROGUE_STATUS_NOT_MATCH, player.getUniverseManager().start(100));
+    } finally {
+      if (oldFloor == null) GameData.getFloorInfos().remove("P80001_F80001001");
+      else GameData.getFloorInfos().put("P80001_F80001001", oldFloor);
+      if (oldEntry == null) GameData.getMapEntranceExcelMap().keySet().remove(8000101);
+      else GameData.getMapEntranceExcelMap().add(oldEntry);
+    }
   }
 
   @Test

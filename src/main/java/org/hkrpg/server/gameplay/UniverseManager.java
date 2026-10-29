@@ -146,12 +146,19 @@ public final class UniverseManager {
       int first = planned.get().start();
       var room = GameplayDefinitions.rooms.get(assignments.get(first));
       run.enter(first, room.RogueRoomID());
+      boolean firstStory = RogueFirstStorySpawn.applies(run, room);
+      if (firstStory && !RogueFirstStorySpawn.hasAuthoredAnchor(player, room))
+        return Retcode.ROGUE_AREA_INVALID;
+      if (firstStory) run.markFirstStoryEntrancePlaced();
       player.getGameplay().setRogue(run);
       if (run.getTalents().contains(21)) {
         var pool = RogueTalentEffects.group(100005);
         if (pool.isPresent()) createBlessingOffer(run, pool.get(), false);
       }
-      if (!player.enterScene(room.MapEntrance(), 0, sendPacket)) {
+      boolean entered = firstStory
+          ? player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket)
+          : player.enterScene(room.MapEntrance(), 0, sendPacket);
+      if (!entered) {
         player.getGameplay().setRogue(prior);
         return Retcode.ROGUE_AREA_INVALID;
       }
@@ -222,10 +229,16 @@ public final class UniverseManager {
           || run.getRoster().stream().anyMatch(id -> player.getAvatarById(id) == null))
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       var room = GameplayDefinitions.rooms.get(run.getRoomId());
+      boolean firstStory = RogueFirstStorySpawn.applies(run, room);
+      if (firstStory && !RogueFirstStorySpawn.hasAuthoredAnchor(player, room))
+        return Retcode.ROGUE_AREA_INVALID;
       boolean wasInside = run.isInside();
       run.setInside(true);
-      boolean entered = room != null && player.enterScene(room.MapEntrance(), 0, sendPacket);
+      boolean entered = room != null && (firstStory
+          ? player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket)
+          : player.enterScene(room.MapEntrance(), 0, sendPacket));
       if (entered) {
+        if (firstStory) run.markFirstStoryEntrancePlaced();
         readyRestRoom(run, room);
         // Recover earned choices saved before their deferred notification/queue completed.
         RogueResonance.queue(run);
@@ -354,6 +367,7 @@ public final class UniverseManager {
         if (debt.changed()) org.hkrpg.server.protocol.Universe46.syncMiracle(player, 60, false, 0);
         if (credited) org.hkrpg.server.protocol.RogueTalent46.syncCurrency(player);
       }
+      restoreFirstStoryBlessings();
       // GroupID can be a portal. Every configured content group participates in clear checks.
       if (player.getScene() == null
           || player.getScene().getEntities().values().stream()
@@ -362,12 +376,15 @@ public final class UniverseManager {
                       e instanceof emu.lunarcore.game.scene.entity.EntityMonster m
                           && UniverseEntityLoader.roomGroups(player).contains(m.getGroupId())
                           && m.isAlive())) return;
+      if (RogueFirstStorySpawn.applies(run, room)
+          && !RogueFirstStoryCombat.allEncountersDefeated(player)) return;
       if (!run.clear()) return;
       player.save();
       player.getDailyManager().onRogueRoom();
       var site = site(run.getMapId(), run.getSiteId());
       if (site != null && site.NextSiteIDList() != null && site.NextSiteIDList().isEmpty()) {
-        finishRun(FINISHED);
+        if (!RogueFirstStorySpawn.applies(run, room)
+            || (!RogueFirstStoryCombat.hasOutstanding(player) && !run.pending())) finishRun(FINISHED);
       } else offerBlessings();
       org.hkrpg.server.protocol.Universe46.syncMap(player);
     }
@@ -524,6 +541,55 @@ public final class UniverseManager {
           id -> org.hkrpg.server.protocol.Universe46.syncMiracle(player, id, false, 0));
       org.hkrpg.server.protocol.Universe46.syncPending(player);
       return List.copyOf(run.getOffers());
+    }
+  }
+
+  private record StoryOffer(boolean created, Set<Integer> consumed) {}
+
+  private StoryOffer offerFirstStoryBlessing(GameplayState.RogueRun run) {
+    var next = RogueFirstStoryCombat.next(player);
+    if (next.isEmpty()) return new StoryOffer(false, Set.of());
+    var consumed = createBlessingOffer(run, null, true);
+    if (run.getOffers().isEmpty()) return new StoryOffer(false, Set.of());
+    run.getFirstStoryBlessingReceipts().put(next.getAsInt(), run.getSelectionId());
+    return new StoryOffer(true, consumed);
+  }
+
+  /** Restore a deferred first-story menu after normal login or a saved encounter. */
+  public void restoreFirstStoryBlessings() {
+    synchronized (player) {
+      if (!RogueFirstStoryCombat.inContext(player)) return;
+      var run = player.getGameplay().getRogue();
+      var before = GSON.fromJson(GSON.toJson(player.getGameplay()), GameplayState.class);
+      boolean changed;
+      StoryOffer offer;
+      try {
+        changed = RogueFirstStoryCombat.reconcile(player);
+        offer = offerFirstStoryBlessing(run);
+        if (changed || offer.created()) player.save();
+      } catch (RuntimeException failed) {
+        player.getGameplay().restoreMiracleShop(before);
+        throw failed;
+      }
+      offer.consumed().forEach(
+          id -> org.hkrpg.server.protocol.Universe46.syncMiracle(player, id, false, 0));
+      if (offer.created()) org.hkrpg.server.protocol.Universe46.syncPending(player);
+      if (!run.getCleared().contains(run.getSiteId()) && RogueFirstStoryCombat.canRecoverClear(player)
+          && run.clear()) {
+        try {
+          player.save();
+        } catch (RuntimeException failed) {
+          run.getCleared().remove(run.getSiteId());
+          throw failed;
+        }
+        player.getDailyManager().onRogueRoom();
+      }
+      var site = site(run.getMapId(), run.getSiteId());
+      if (run.getCleared().contains(run.getSiteId()) && !run.pending()
+          && !RogueFirstStoryCombat.hasOutstanding(player)
+          && RogueFirstStoryCombat.allEncountersDefeated(player)
+          && site != null && site.NextSiteIDList() != null && site.NextSiteIDList().isEmpty())
+        finishRun(FINISHED);
     }
   }
 
@@ -725,13 +791,22 @@ public final class UniverseManager {
           emu.lunarcore.data.GameData.getMazeBuffExcelMap().get(buff, run.offerLevel(buff));
       if (binding == null || binding.getID() != buff || binding.getLv() != run.offerLevel(buff))
         return Retcode.REQ_PARA_INVALID;
+      var storyGroup = RogueFirstStoryCombat.current(player, selectionId);
+      StoryOffer nextStoryOffer = new StoryOffer(false, Set.of());
+      boolean storyFinished = false;
       if (!RogueDialogueRewards.acquireBlessing(player, selectionId, buff)) {
         var before = GSON.fromJson(GSON.toJson(player.getGameplay()), GameplayState.class);
         try {
           run.select(buff);
+          if (storyGroup.isPresent()) {
+            storyFinished = run.getOffers().isEmpty();
+            run.getFirstStoryBlessingReceipts().put(storyGroup.getAsInt(),
+                storyFinished ? -1 : run.getSelectionId());
+          }
           run.activateResonance(buff);
           player.getGameplay().getRogueCollectedBuffs().add(buff);
           RogueResonance.queue(run);
+          nextStoryOffer = offerFirstStoryBlessing(run);
           player.save();
         } catch (RuntimeException failed) {
           player.getGameplay().restoreMiracleShop(before);
@@ -740,6 +815,15 @@ public final class UniverseManager {
       }
       player.getQuestManager().onRogueHandbookProgress();
       org.hkrpg.server.protocol.Universe46.syncBlessing(player, buff, selectionId);
+      if (storyFinished) RogueFirstStoryCombat.syncTrigger(player, storyGroup.getAsInt());
+      nextStoryOffer.consumed().forEach(
+          id -> org.hkrpg.server.protocol.Universe46.syncMiracle(player, id, false, 0));
+      var site = site(run.getMapId(), run.getSiteId());
+      if (storyGroup.isPresent() && run.getCleared().contains(run.getSiteId())
+          && !run.pending() && !RogueFirstStoryCombat.hasOutstanding(player)
+          && RogueFirstStoryCombat.allEncountersDefeated(player)
+          && site != null && site.NextSiteIDList() != null && site.NextSiteIDList().isEmpty())
+        finishRun(FINISHED);
       org.hkrpg.server.protocol.Universe46.syncMap(player);
       if (run.pending()) org.hkrpg.server.protocol.Universe46.syncPending(player);
       return Retcode.SUCC;

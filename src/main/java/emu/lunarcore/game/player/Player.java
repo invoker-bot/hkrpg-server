@@ -1271,13 +1271,17 @@ public class Player implements Tickable, Syncable {
         }
 
         // Load into saved scene (should happen after everything else loads)
-        if (!trialRestored && !getStoryLineManager().restoreOnLogin())
+        if (!trialRestored && !getStoryLineManager().restoreOnLogin()) {
+            org.hkrpg.server.gameplay.RogueFirstStorySpawn.recoverOnLogin(this);
             this.loadScene(planeId, floorId, entryId, this.getPos(), this.getRot(), false);
+        }
 
         // Reset position to starting scene in case we couldn't load the scene
         if (this.getScene() == null) {
             this.enterScene(GameConstants.START_ENTRY_ID, 0, false);
         }
+
+        this.getUniverseManager().restoreFirstStoryBlessings();
 
         // Make sure the current lineup's leader exists
         var lineup = this.getCurrentLineup();

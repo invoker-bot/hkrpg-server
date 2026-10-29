@@ -36,9 +36,13 @@ public final class NativeRogueFirstStoryTriggerProbe {
   }
 
   private boolean transferNotified;
-  private void observe(Frame frame) {
-    if (frame.command() == protocol.clientCommand("EnterSceneByServerScNotify"))
+  private DynamicMessage transferScene;
+  private void observe(Frame frame) throws Exception {
+    if (frame.command() == protocol.clientCommand("EnterSceneByServerScNotify")) {
       transferNotified = true;
+      var notify = protocol.clientSchema().parse("EnterSceneByServerScNotify", frame.body());
+      transferScene = (DynamicMessage) field(notify, "scene");
+    }
   }
 
   private Map<Integer, Integer> assignments(DynamicMessage game, boolean active) {
@@ -76,15 +80,31 @@ public final class NativeRogueFirstStoryTriggerProbe {
             && number(scene, "floor_id") == 80001001,
         "Wrong original room entrance");
     var actual = new TreeMap<Integer, Map<String, Integer>>();
+    boolean foundLeader = false;
+    int leader = number(scene, "leader_entity_id");
     for (var rawGroup : (List<?>) field(scene, "entity_group_list"))
       for (var raw : (List<?>) field((DynamicMessage) rawGroup, "entity_list")) {
         var entity = (DynamicMessage) raw;
+        if (number(entity, "entity_id") == leader) {
+          var motion = (DynamicMessage) field(entity, "motion");
+          var pos = (DynamicMessage) field(motion, "pos");
+          var rot = (DynamicMessage) field(motion, "rot");
+          require(number(pos, "x") == -23854 && number(pos, "z") == 236150
+                  && number(rot, "y") == 180000,
+              "The native leader is not at the authored first-story room entrance");
+          foundLeader = true;
+        }
         if (!entity.hasField(entity.getDescriptorForType().findFieldByName("npc_monster")))
           continue;
         int group = number(entity, "group_id"), inst = number(entity, "inst_id");
         var expected = source.getAsJsonObject(Integer.toString(group));
         require(
             expected != null && inst == expected.get("inst").getAsInt(), "Wrong authored actor");
+        var pos = (DynamicMessage) field((DynamicMessage) field(entity, "motion"), "pos");
+        var expectedPos = expected.getAsJsonObject("pos");
+        for (String axis : List.of("x", "y", "z"))
+          require(Math.abs(number(pos, axis) - expectedPos.get(axis).getAsInt()) <= 2,
+              "The transfer places an actor away from its authored position");
         var npc = (DynamicMessage) field(entity, "npc_monster");
         int id = number(npc, "monster_id"), stage = number(npc, "event_id");
         boolean found = false;
@@ -101,6 +121,7 @@ public final class NativeRogueFirstStoryTriggerProbe {
     require(
         actual.size() == 6 && actual.keySet().equals(Set.of(3, 4, 5, 10, 11, 12)),
         "Missing source room actors");
+    require(foundLeader, "Native scene did not contain its leader at the authored entrance");
     return actual;
   }
 
@@ -139,11 +160,19 @@ public final class NativeRogueFirstStoryTriggerProbe {
       require(number(scene, "entry_id") == 8000101, "Automatic entry did not reach the first story room");
       require(transferNotified, "Automatic entry lacked the native scene-change notification");
       var bindings = actors(scene, credentials.getAsJsonObject("actors"));
+      require(transferScene != null && bindings.equals(actors(transferScene, credentials.getAsJsonObject("actors"))),
+          "The transfer notification did not publish the same authored room actors");
       var current = assignments((DynamicMessage) field(call("GetRogueInfoCsReq"), "rogue_game_info"), true);
+      if (credentials.has("simulateLegacy") && credentials.get("simulateLegacy").getAsBoolean()) {
+        System.out.println("HKRPG_ROGUE_FIRST_STORY_LEGACY_READY:" + uid);
+        System.out.flush();
+        require("legacy-ready".equals(control.readLine()), "Legacy fixture coordination failed");
+      }
       var result = new LinkedHashMap<String, Object>();
       result.put("uid", uid); result.put("passed", true); result.put("mode", mode);
       result.put("assignments", current); result.put("actors", bindings); result.put("requests", requests);
-      result.put("serverTransferNotified", true); result.put("startRequestSent", false);
+      result.put("serverTransferNotified", true); result.put("transferActorsVerified", true);
+      result.put("startRequestSent", false);
       result.put("clientGameplayVerified", false);
       return result;
     }

@@ -34,6 +34,11 @@ public final class NativeBattleKillQuestProbe {
       staleResults,
       expectedEntity;
   private boolean awaitKills, awaitClaim;
+  private boolean verifyStoryBlessing;
+  private boolean selectedBeforeRestart;
+  private String mode;
+  private int pendingBatch, pendingBuff, blessingNotifications, blessingSelections;
+  private int selectedBatch, selectedBuff;
   private Set<Integer> claimed = Set.of();
   private final Map<Integer, Integer> questProgress = new TreeMap<>(),
       questPhases = new TreeMap<>();
@@ -81,6 +86,12 @@ public final class NativeBattleKillQuestProbe {
   }
 
   private void observe(Frame frame) throws Exception {
+    if (verifyStoryBlessing && awaitKills
+        && frame.command() == protocol.clientCommand("SyncRogueCommonPendingActionScNotify")) {
+      var notify = protocol.clientSchema().parse("SyncRogueCommonPendingActionScNotify", frame.body());
+      readBlessingAction((DynamicMessage) field(notify, "action"));
+      blessingNotifications++;
+    }
     if (awaitKills && frame.command() == protocol.clientCommand("GetQuestDataScRsp")) {
       validateQuests(
           protocol.clientSchema().parse("GetQuestDataScRsp", frame.body()), current, claimed);
@@ -112,6 +123,53 @@ public final class NativeBattleKillQuestProbe {
         jadeNotifications++;
       }
     }
+  }
+
+  private void readBlessingAction(DynamicMessage action) {
+    int batch = number(action, "queue_position");
+    var detail = (DynamicMessage) field(action, "detail");
+    var info = (DynamicMessage) field(detail, "PCHGEGFBKLF");
+    var choices = (List<?>) field(info, "LEOFNINDJDB");
+    require(batch > 0 && !choices.isEmpty(), "Missing saved first-story blessing offer");
+    int buff = number((DynamicMessage) choices.getFirst(), "buff_id");
+    require(buff > 0, "Invalid first-story blessing choice");
+    pendingBatch = batch; pendingBuff = buff;
+  }
+
+  private void selectStoryBlessing() throws Exception {
+    require(pendingBatch > 0 && pendingBuff > 0, "No first-story blessing to select");
+    int batch = pendingBatch, buff = pendingBuff;
+    var choice = DynamicMessage.newBuilder(protocol.clientSchema().message("BPLNKHGAILK"));
+    choice.setField(choice.getDescriptorForType().findFieldByName("BAOFIGFFMLN"), buff);
+    var request = DynamicMessage.newBuilder(protocol.clientSchema().message("OFEDNNJIJFL"));
+    request.setField(request.getDescriptorForType().findFieldByName("MPLGEEGOAMC"), batch);
+    request.setField(request.getDescriptorForType().findFieldByName("DLKIKBIDJDB"), choice.build());
+    var reply = protocol.clientSchema().parse("HandleRogueCommonPendingActionScRsp",
+        raw(5676, request.build().toByteArray(), protocol.clientCommand("HandleRogueCommonPendingActionScRsp")).body());
+    require(number(reply, "retcode") == 0 && number(reply, "queue_position") == batch,
+        "First-story blessing selection was rejected");
+    var duplicate = protocol.clientSchema().parse("HandleRogueCommonPendingActionScRsp",
+        raw(5676, request.build().toByteArray(), protocol.clientCommand("HandleRogueCommonPendingActionScRsp")).body());
+    require(number(duplicate, "retcode") != 0, "Repeated first-story blessing selection succeeded");
+    var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+    requireTriggerOpen(scene);
+    blessingSelections++;
+    selectedBatch = batch; selectedBuff = buff;
+    pendingBatch = 0; pendingBuff = 0;
+  }
+
+  private void requireTriggerOpen(DynamicMessage scene) {
+    boolean opened = false;
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var row : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) row;
+        if (number(entity, "group_id") == 3 && number(entity, "inst_id") == 300001
+            && entity.hasField(entity.getDescriptorForType().findFieldByName("prop"))) {
+          var prop = (DynamicMessage) field(entity, "prop");
+          opened = number(prop, "prop_id") == 100 && number(prop, "prop_state") == 1;
+        }
+      }
+    require(opened, "First-story trigger did not open after selection");
   }
 
   private int actor(DynamicMessage scene, boolean consumed) {
@@ -219,6 +277,10 @@ public final class NativeBattleKillQuestProbe {
     require(
         progressNotifications == before + 1 && removalNotifications == removed + 1,
         "Kill progress/removal not observed before settlement success");
+    if (verifyStoryBlessing) {
+      require(pendingBatch > 0 && pendingBuff > 0, "No first-story blessing notification after victory");
+      if (!mode.equals("checkpoint") || selectedBeforeRestart) selectStoryBlessing();
+    }
     actualDeaths += deaths;
     encounters++;
     operations.add(Map.of("battle", id, "stage", 80010011, "deaths", deaths, "count", current));
@@ -255,7 +317,9 @@ public final class NativeBattleKillQuestProbe {
       throws Exception {
     target = credentials.get("target").getAsInt();
     require(target == 15 || target == 1000, "Unsupported source kill goal");
-    String mode = credentials.get("mode").getAsString();
+    mode = credentials.get("mode").getAsString();
+    verifyStoryBlessing = credentials.has("verifyStoryBlessing") && credentials.get("verifyStoryBlessing").getAsBoolean();
+    selectedBeforeRestart = credentials.has("selectedBeforeRestart") && credentials.get("selectedBeforeRestart").getAsBoolean();
     var token =
         call(
             "PlayerGetTokenCsReq",
@@ -288,8 +352,28 @@ public final class NativeBattleKillQuestProbe {
         require(mode.equals("complete"), "Unknown source test mode");
         current = 2;
         quests(2);
-        actor(
-            (DynamicMessage) field(call("EnterRogueCsReq", Map.of("area_id", 100)), "scene"), true);
+        var resumed = call("EnterRogueCsReq", Map.of("area_id", 100));
+        actor((DynamicMessage) field(resumed, "scene"), true);
+        if (verifyStoryBlessing) {
+          var game = (DynamicMessage) field(resumed, "rogue_game_info");
+          var currentRun = (DynamicMessage) field(game, "CFDIKLBINHK");
+          if (selectedBeforeRestart) {
+            requireTriggerOpen((DynamicMessage) field(resumed, "scene"));
+            var buffs = (DynamicMessage) field(currentRun, "HABJHGPFGEB");
+            int expected = credentials.get("expectedBuff").getAsInt();
+            require(((List<?>) field(buffs, "CHCMEKAFKAF")).stream()
+                    .map(DynamicMessage.class::cast).anyMatch(b -> number(b, "buff_id") == expected),
+                "Selected blessing did not survive H2 restart");
+            checks.add("selected-first-story-blessing-and-open-trigger-restored");
+          } else {
+            readBlessingAction((DynamicMessage) field(currentRun, "FMIGOKIDKJL"));
+            require(pendingBatch == credentials.get("expectedBatch").getAsInt()
+                    && pendingBuff == credentials.get("expectedBuff").getAsInt(),
+                "Pending blessing changed across H2 restart");
+            selectStoryBlessing();
+            checks.add("pending-first-story-blessing-restored-and-selected-once");
+          }
+        }
         checks.add(
             "normal-h2-restart-restores-defeated-original-actor-and-remaining-original-monsters");
         call("LeaveRogueCsReq");
@@ -352,6 +436,12 @@ public final class NativeBattleKillQuestProbe {
     result.put("questNotifications", progressNotifications);
     result.put("removalNotifications", removalNotifications);
     result.put("staleResultsRejected", staleResults);
+    result.put("pendingBlessingBatch", pendingBatch);
+    result.put("pendingBlessingBuff", pendingBuff);
+    result.put("blessingNotifications", blessingNotifications);
+    result.put("blessingSelections", blessingSelections);
+    result.put("selectedBlessingBatch", selectedBatch);
+    result.put("selectedBlessingBuff", selectedBuff);
     result.put("jadeNotifications", jadeNotifications);
     result.put("questQueries", queries);
     result.put("jades", observedJades);

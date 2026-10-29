@@ -52,6 +52,11 @@ public final class UniverseEntityLoader extends SceneEntityLoader {
       return super.loadProp(scene, group, info);
     if (RoguePropDestruction.alreadyDestroyed(scene, group, info)
         || RoguePropRecovery.alreadyDestroyed(scene, group, info)) return null;
+    if (info.getPropID() == 100 && RogueFirstStoryCombat.restoresTrigger(scene, group.getId(), info.getID())) {
+      var prop = super.loadProp(scene, group, info);
+      if (prop != null) prop.setState(emu.lunarcore.game.enums.PropState.Open, false);
+      return prop;
+    }
     if (info.getPropID() == 1001) {
       var prop = super.loadProp(scene, group, info);
       if (prop != null && RogueDownload.used(scene.getPlayer(), group.getId(), info.getID()))

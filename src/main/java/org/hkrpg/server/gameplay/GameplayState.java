@@ -1706,6 +1706,12 @@ public class GameplayState {
     private Map<Integer, Integer> rooms = new HashMap<>();
     private RogueBossEncounters.Plan bossEncounter;
     private boolean bossEncounterPlanned;
+    // Distinguishes corrected first-story runs from runs created at the old floor origin.
+    private boolean firstStoryEntrancePlaced;
+    void markFirstStoryEntrancePlaced() { firstStoryEntrancePlaced = true; }
+    void restoreFirstStoryEntrancePlaced(boolean value) { firstStoryEntrancePlaced = value; }
+    // 0 = earned and queued, positive = current selection, -1 = selected.
+    private Map<Integer, Integer> firstStoryBlessingReceipts = new LinkedHashMap<>();
     private Map<Integer, Integer> blessings = new HashMap<>();
     private Map<Integer, RogueMiracle> miracles = new HashMap<>();
     private List<Integer> miracleOffers = new ArrayList<>();
@@ -2116,6 +2122,7 @@ public class GameplayState {
       // Includes the exact ordinary/resonance selection fields and currency changed by the shop.
       // The existing immutable resonance plan, live run and authored dialogue objects are retained.
       restoreEventReward(prior);
+      firstStoryBlessingReceipts = prior.firstStoryBlessingReceipts;
       miracles = prior.miracles;
       miracleFragmentGrants = prior.miracleFragmentGrants;
       miracleShops = prior.miracleShops;
