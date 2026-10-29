@@ -51,6 +51,8 @@ public class GameSession {
             new org.hkrpg.server.protocol.ReplyCorrelation46();
     private final org.hkrpg.server.gameplay.MissionSceneEntrances.LiveRecovery missionSceneRecovery =
             new org.hkrpg.server.gameplay.MissionSceneEntrances.LiveRecovery();
+    private final org.hkrpg.server.gameplay.RogueFirstStoryEntry.LiveRecovery rogueFirstStoryRecovery =
+            new org.hkrpg.server.gameplay.RogueFirstStoryEntry.LiveRecovery();
 
     public boolean hasSentRogueFinish(String runId) {
         return rogueFinishSentRun.equals(runId);

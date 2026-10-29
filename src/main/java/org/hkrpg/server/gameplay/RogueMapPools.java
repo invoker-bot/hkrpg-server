@@ -113,6 +113,19 @@ final class RogueMapPools {
     }
     if (traversed != indexed.size()) return Optional.empty();
     var scoped = GameplayDefinitions.roomPoolByMap.getOrDefault(mapId, Map.of());
+    // The first story universe is a single authored room, not the legacy site-1 pool used by
+    // random worlds. Preserve an explicit operator override, including an empty disabled pool.
+    if (mapId == 1 && area == 100 && !scoped.containsKey(1)) {
+      var source = GameplayDefinitions.areas.get(area);
+      var room = GameplayDefinitions.rooms.get(100);
+      if (source == null || source.RogueAreaID() != 100 || source.AreaProgress() != 0
+          || source.Difficulty() != 1 || start != 1 || sites.size() != 1
+          || room == null || room.RogueRoomID() != 100 || room.RogueRoomType() != 1
+          || room.MapEntrance() != 8000101 || room.GroupID() != 10
+          || !Map.of(10, 1006, 3, 1001, 4, 1002, 5, 1003, 11, 1004, 12, 1005)
+              .equals(room.GroupWithContent())) return Optional.empty();
+      return Optional.of(new Assignment(1, Map.of(1, 100)));
+    }
     var rooms = new HashMap<Integer, Integer>();
     for (var site : sites) {
       var pool =

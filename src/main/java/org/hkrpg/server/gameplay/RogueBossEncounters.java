@@ -190,6 +190,21 @@ final class RogueBossEncounters {
   static Integer content(GameplayState.RogueRun run, GameplayDefinitions.Room room, int group) {
     if (room == null || room.GroupWithContent() == null) return null;
     var original = room.GroupWithContent().get(group);
+    // In the first story room the authored link 1006 has no row in the 4.6 catalogue. Its only
+    // level-seven Trampler encounter is 1101/11011; use it solely for that exact missing link.
+    // If the original link is supplied later, it takes precedence over this compatibility mapping.
+    if (run != null && run.getAreaId() == 100 && run.getMapId() == 1 && run.getSiteId() == 1
+        && run.getRoomId() == 100 && Objects.equals(run.getRooms().get(1), 100)
+        && room.RogueRoomID() == 100 && room.RogueRoomType() == 1 && room.MapEntrance() == 8000101
+        && group == 10 && Objects.equals(original, 1006)
+        && !GameplayDefinitions.rogueMonsterGroups.containsKey(1006)) {
+      var source = GameplayDefinitions.rogueMonsterGroups.get(1101);
+      var monster = GameplayDefinitions.rogueMonsters.get(11011);
+      return source != null && source.RogueMonsterGroupID() == 1101
+              && Map.of(11011, 1).equals(source.RogueMonsterListAndWeight())
+              && new GameplayDefinitions.RogueMonster(11011, 8013010, 80011011).equals(monster)
+          ? 1101 : null;
+    }
     var plan = run.getBossEncounter();
     if (room.RogueRoomType() != 7 || original == null || original == 0) return original;
     if (!run.isBossEncounterPlanned()) return plan == null ? original : null;

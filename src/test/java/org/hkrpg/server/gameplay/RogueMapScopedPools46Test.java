@@ -102,6 +102,65 @@ class RogueMapScopedPools46Test {
     assertEquals(8000103, player.getEntryId());
   }
 
+  @Test
+  void firstStoryUniverseUsesItsAuthoredRoomInsteadOfTheLegacyGenericPool() {
+    GameplayDefinitions.load(resources);
+    GameplayDefinitions.areas.put(100, new GameplayDefinitions.Area(100, 0, 1, 0, 0));
+    GameplayDefinitions.maps.put(1, List.of(new GameplayDefinitions.Site(1, 1, true, List.of(), 0)));
+    GameplayDefinitions.rooms.put(
+        100, new GameplayDefinitions.Room(100, 1, 8000101, 10,
+            Map.of(10, 1006, 3, 1001, 4, 1002, 5, 1003, 11, 1004, 12, 1005)));
+    // The existing operator file configures map 101 only; the legacy site 1 is another world.
+    assertFalse(GameplayDefinitions.roomPool.get(1).contains(100));
+    assertFalse(GameplayDefinitions.roomPoolByMap.containsKey(1));
+    assertEquals(Map.of(1, 100), RogueMapPools.assign(1, 10001, 100).orElseThrow().rooms());
+    assertEquals(Map.of(1, 100), RogueMapPools.assign(1, 10002, 100).orElseThrow().rooms());
+    var player = new UniverseLifecycleTest.Explorer();
+    assertEquals(Retcode.SUCC, player.getUniverseManager().start(100));
+    assertEquals(8000101, player.getEntryId());
+    assertEquals(100, player.getGameplay().getRogue().getRoomId());
+    assertEquals(Retcode.ROGUE_STATUS_NOT_MATCH, player.getUniverseManager().start(100));
+  }
+
+  @Test
+  void missingOrAlteredTutorialRoomCannotFallBackToAnUnrelatedWorld() {
+    GameplayDefinitions.load(resources);
+    GameplayDefinitions.areas.put(100, new GameplayDefinitions.Area(100, 0, 1, 0, 0));
+    GameplayDefinitions.maps.put(1, List.of(new GameplayDefinitions.Site(1, 1, true, List.of(), 0)));
+    GameplayDefinitions.rooms.remove(100);
+    assertTrue(RogueMapPools.assign(1, 10001, 100).isEmpty());
+    GameplayDefinitions.rooms.put(100, new GameplayDefinitions.Room(100, 1, 8000102, 10));
+    assertTrue(RogueMapPools.assign(1, 10001, 100).isEmpty());
+  }
+
+  @Test
+  void firstStoryBossUsesTheExistingLevelSevenTramplerEncounterWhenItsLinkIsMissing() {
+    GameplayDefinitions.load(resources);
+    var room = new GameplayDefinitions.Room(100, 1, 8000101, 10,
+        Map.of(10, 1006, 3, 1001, 4, 1002, 5, 1003, 11, 1004, 12, 1005));
+    GameplayDefinitions.rooms.put(100, room);
+    GameplayDefinitions.rogueMonsterGroups.remove(1006);
+    GameplayDefinitions.rogueMonsterGroups.put(1101,
+        new GameplayDefinitions.RogueMonsterGroup(1101, Map.of(11011, 1)));
+    GameplayDefinitions.rogueMonsters.put(11011,
+        new GameplayDefinitions.RogueMonster(11011, 8013010, 80011011));
+    var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
+    run.enter(1, 100);
+    assertEquals(1101, RogueBossEncounters.content(run, room, 10));
+    assertEquals(1001, RogueBossEncounters.content(run, room, 3));
+    var other = new GameplayState.RogueRun(101, 1, Map.of(1, 100));
+    other.enter(1, 100);
+    assertEquals(1006, RogueBossEncounters.content(other, room, 10));
+    GameplayDefinitions.rogueMonsterGroups.remove(1101);
+    assertNull(RogueBossEncounters.content(run, room, 10));
+    GameplayDefinitions.rogueMonsterGroups.put(1101,
+        new GameplayDefinitions.RogueMonsterGroup(1101, Map.of(11011, 2)));
+    assertNull(RogueBossEncounters.content(run, room, 10));
+    GameplayDefinitions.rogueMonsterGroups.put(1006,
+        new GameplayDefinitions.RogueMonsterGroup(1006, Map.of(10061, 1)));
+    assertEquals(1006, RogueBossEncounters.content(run, room, 10));
+  }
+
   @ParameterizedTest
   @ValueSource(
       strings = {

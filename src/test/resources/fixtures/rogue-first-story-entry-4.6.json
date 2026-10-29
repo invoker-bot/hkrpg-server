@@ -1,0 +1,489 @@
+{
+  "sourceVersion": "4.6.0",
+  "records": {
+    "Config/Level/Mission/4030001/MissionInfo_4030001.json": {
+      "MainMissionID": 4030001,
+      "StartSubMissionList": [
+        403000101,
+        403000102
+      ],
+      "FinishSubMissionList": [
+        403000116
+      ]
+    },
+    "Config/Level/Mission/4030001/MissionInfo_4030001.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 403000101,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000101.json",
+          "LevelPlaneID": 80112,
+          "LevelFloorID": 80112001,
+          "TakeType": "Auto",
+          "TakeParamIntList": [
+            4030001
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000101",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 80112001
+        },
+        {
+          "ID": 403000102,
+          "MainMissionID": 4030001,
+          "LevelPlaneID": 80112,
+          "LevelFloorID": 80112001,
+          "TakeType": "Auto",
+          "TakeParamIntList": [
+            4030001
+          ],
+          "FinishType": "EnterFloor",
+          "ParamType": "Equal",
+          "ParamInt1": 80001,
+          "ParamInt2": 80001001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShowStartHint": "New",
+          "WayPointType": "Prop",
+          "WayPointFloorID": 80112001,
+          "WayPointGroupID": 3,
+          "WayPointEntityID": 300001
+        },
+        {
+          "ID": 403000103,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000103.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "TakeParamIntList": [],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000103",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 80001001
+        },
+        {
+          "ID": 403000104,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000104.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000102
+          ],
+          "MazePlaneID": 80001,
+          "MazeFloorID": 80001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 3,
+          "ParamInt2": 200001,
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 3,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 403000105,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000105.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000105",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 80001001
+        },
+        {
+          "ID": 403000106,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000106.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000104
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000106",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 300001
+        },
+        {
+          "ID": 403000107,
+          "MainMissionID": 4030001,
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000106
+          ],
+          "MazePlaneID": 80001,
+          "MazeFloorID": 80001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 4,
+          "ParamInt2": 200001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 403000108,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000108.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000108",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 80001001
+        },
+        {
+          "ID": 403000109,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000109.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000109",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 300001
+        },
+        {
+          "ID": 403000110,
+          "MainMissionID": 4030001,
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000107,
+            403000108
+          ],
+          "MazePlaneID": 80001,
+          "MazeFloorID": 80001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 5,
+          "ParamInt2": 200001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 5,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 403000111,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000111.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000111",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 80001001
+        },
+        {
+          "ID": 403000112,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000112.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000112",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 2,
+          "WayPointEntityID": 200005
+        },
+        {
+          "ID": 403000113,
+          "MainMissionID": 4030001,
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000110,
+            403000111
+          ],
+          "MazePlaneID": 80001,
+          "MazeFloorID": 80001001,
+          "FinishType": "KillMonster",
+          "ParamType": "Equal",
+          "ParamInt1": 10,
+          "ParamInt2": 200001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsBackTrack": true,
+          "WayPointType": "Monster",
+          "WayPointFloorID": 80001001,
+          "WayPointGroupID": 10,
+          "WayPointEntityID": 200001
+        },
+        {
+          "ID": 403000114,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000114.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000113
+          ],
+          "FinishType": "RoguePassAreaProgress",
+          "ParamType": "Equal",
+          "ParamItemList": [],
+          "FinishActionList": [],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "RequiredNPCSeriesIDList": [],
+          "IsShow": false,
+          "WayPointFloorID": 80001001
+        },
+        {
+          "ID": 403000115,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000115.json",
+          "LevelPlaneID": 80001,
+          "LevelFloorID": 80001001,
+          "TakeType": "Auto",
+          "FinishType": "EnterFloor",
+          "ParamType": "Equal",
+          "ParamInt1": 80112,
+          "ParamInt2": 80112001,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 80001001
+        },
+        {
+          "ID": 403000116,
+          "MainMissionID": 4030001,
+          "MissionJsonPath": "Config/Level/Mission/4030001/Mission_403000116.json",
+          "LevelPlaneID": 80112,
+          "LevelFloorID": 80112001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            403000114
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_403000116",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 80112001,
+          "WayPointGroupID": 7,
+          "WayPointEntityID": 400001
+        }
+      ]
+    },
+    "Config/Level/Mission/4030001/Mission_403000101.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupTrigger",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 18
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300002
+                    }
+                  }
+                }
+              },
+              "TargetTypes": [],
+              "DestroyAfterTriggered": true,
+              "OnTriggerEnter": [
+                {
+                  "$type": "RPG.GameCore.PlayMissionTalk",
+                  "SimpleTalkList": [
+                    {
+                      "TalkSentenceID": 403010518,
+                      "ProtectTime": 2
+                    }
+                  ]
+                },
+                {
+                  "$type": "RPG.GameCore.FinishPerformanceMission",
+                  "Key": "Mission_403000101"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "TaskList": []
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P80112_F80112001/LevelGroup_P80112_F80112001_G18.json": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "S2Mission",
+      "AreaAnchorName": "LevelArea_P80112_F80112001_G18",
+      "SaveType": "Reset",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "ID": 4030009
+          },
+          {
+            "Type": "SubMission",
+            "ID": 403000702
+          },
+          {
+            "Type": "SubMission",
+            "ID": 403000116
+          },
+          {
+            "Type": "SubMission",
+            "ID": 403000221
+          },
+          {
+            "Type": "SubMission",
+            "ID": 403000314
+          },
+          {
+            "Type": "SubMission",
+            "ID": 403000101
+          }
+        ],
+        "Operation": "Or"
+      },
+      "ConflictIDList": [],
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "RotY": 114.8695,
+          "ID": 1,
+          "PosX": 8.515,
+          "PosY": 0.608033,
+          "PosZ": -2.575
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 4,
+            "DimY": 1,
+            "DimZ": 5,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop1",
+          "ID": 300001,
+          "PosX": 9.14,
+          "PosY": 0.608102,
+          "PosZ": -1.25
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 3,
+            "DimY": 1,
+            "DimZ": 3,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "ID": 300002,
+          "PosX": 9.25,
+          "PosY": 0.608102,
+          "PosZ": -0.09
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    }
+  },
+  "sha256": {
+    "Config/Level/Mission/4030001/MissionInfo_4030001.json": "adef7aad97baead22e0dd6fdfa1d76e31d003bbd100f984feb9e2cbd99e3ebaf",
+    "Config/Level/Mission/4030001/MissionInfo_4030001.partial.json": "ecad0e92e436b01a9d8d62b126134f86794d13ef9d9418fc8ee9076c50241bd4",
+    "Config/Level/Mission/4030001/Mission_403000101.json": "a3c8d597adc3cfec759263adf3a7657c374a8f998a60f4e49413c9d1cf86185f",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P80112_F80112001/LevelGroup_P80112_F80112001_G18.json": "c508c273421a822a40636dfec716fcc4354d2f745264183db6be872cc3b18577"
+  }
+}

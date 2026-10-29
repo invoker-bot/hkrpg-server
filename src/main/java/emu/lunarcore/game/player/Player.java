@@ -1224,6 +1224,7 @@ public class Player implements Tickable, Syncable {
         }
         if (this.getSession() != null) {
             this.getSession().getMissionSceneRecovery().tick(this, timestamp);
+            this.getSession().getRogueFirstStoryRecovery().tick(this, timestamp);
         }
     }
 
