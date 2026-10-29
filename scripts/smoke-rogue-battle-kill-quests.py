@@ -28,14 +28,26 @@ def main():
                         help='验证首战祝福通知、重启保存、选择防重及原始机关状态')
     parser.add_argument('--selected-before-restart', action='store_true',
                         help='在首次停服之前选择祝福，验证已选结果和机关跨进程恢复')
+    parser.add_argument('--legacy-checkpoint-jar', type=Path,
+                        help='在隔离旧版服务上先选择祝福，再用当前构建验证同一存档升级恢复')
+    parser.add_argument('--checkpoint-inside', action='store_true',
+                        help='停服时保留在探索场景，验证登录时场景直接恢复')
     args = parser.parse_args()
     if args.selected_before_restart and not args.verify_story_blessing:
         parser.error('--selected-before-restart requires --verify-story-blessing')
+    if args.legacy_checkpoint_jar and not (args.verify_story_blessing and args.selected_before_restart):
+        parser.error('--legacy-checkpoint-jar requires selected-before-restart and verify-story-blessing')
+    if args.checkpoint_inside and not args.legacy_checkpoint_jar:
+        parser.error('--checkpoint-inside requires legacy-checkpoint-jar')
     source = ROOT / 'resources/4.6'
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'), None)
     assert java and jar.is_file()
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
+    legacy_jar = args.legacy_checkpoint_jar.resolve() if args.legacy_checkpoint_jar else None
+    if legacy_jar:
+        assert legacy_jar.is_file() and hashlib.sha256(legacy_jar.read_bytes()).hexdigest() != digest
+    legacy_digest = hashlib.sha256(legacy_jar.read_bytes()).hexdigest() if legacy_jar else None
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
     directory = Path(tempfile.mkdtemp(prefix=f'battle-kill-quests-{args.target}-', dir=runs))
@@ -96,7 +108,8 @@ def main():
     (directory / 'javac.log').write_bytes(compilation.stdout + compilation.stderr)
     assert compilation.returncode == 0, directory / 'javac.log'
     fallback = '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback')
-    command = [str(java), '-Xmx1536m', fallback, '-jar', str(jar), '--no-handbook']
+    def server_command(runtime_jar):
+        return [str(java), '-Xmx1536m', fallback, '-jar', str(runtime_jar), '--no-handbook']
 
     def request(route, body=None):
         req = urllib.request.Request(f'http://127.0.0.1:{http}' + route,
@@ -120,8 +133,10 @@ def main():
 
     snapshots, credentials, stops = [], None, 0
     for iteration in range(3):
+        runtime_jar = legacy_jar if iteration == 0 and legacy_jar else jar
+        if legacy_jar: assert hashlib.sha256(legacy_jar.read_bytes()).hexdigest() == legacy_digest
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
-            process = subprocess.Popen(command, cwd=directory, stdin=subprocess.PIPE,
+            process = subprocess.Popen(server_command(runtime_jar), cwd=directory, stdin=subprocess.PIPE,
                 stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
             try:
                 deadline = time.monotonic() + 90
@@ -147,7 +162,9 @@ def main():
                     credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'],
                                    'target': args.target, 'mode': 'checkpoint',
                                    'verifyStoryBlessing': args.verify_story_blessing,
-                                   'selectedBeforeRestart': args.selected_before_restart}
+                                   'selectedBeforeRestart': args.selected_before_restart,
+                                   'legacyCheckpoint': bool(legacy_jar),
+                                   'checkpointInside': args.checkpoint_inside}
                     checkpoint = probe('checkpoint.log', credentials)
                     assert checkpoint['count'] == checkpoint['actualReportedDeaths'] == 2
                     assert checkpoint['actualEncounters'] == checkpoint['actualExplorations'] == 1
@@ -162,6 +179,7 @@ def main():
                     snapshots.append(checkpoint)
                 elif iteration == 1:
                     credentials['mode'] = 'complete'
+                    credentials['legacyCheckpoint'] = False
                     completed = probe('completed.log', credentials)
                     assert completed['count'] == args.target and completed['actualReportedDeaths'] == args.target - 2
                     assert completed['actualExplorations'] == completed['actualEncounters'] == (args.target + 1)//2 - 1
@@ -200,6 +218,8 @@ def main():
     assert sum(s['actualReportedDeaths'] for s in snapshots) == args.target
     assert sum(s['actualExplorations'] for s in snapshots) == (args.target + 1)//2
     print(json.dumps({'passed': True, 'runtimeDirectory': str(directory), 'rootJarSHA256': digest,
+        'legacyCheckpointJarSHA256': legacy_digest,
+        'checkpointInside': args.checkpoint_inside,
         'target': args.target, 'snapshots': snapshots, 'normalStops': stops,
         'sameUIDNormalH2ProcessRestarts': 2, 'sourceResourceHashes': hashes, 'sourceResourcesModified': False,
         'fixture': {'syntheticNoRewardPrerequisites': [1000201], 'initialFragments': 50,

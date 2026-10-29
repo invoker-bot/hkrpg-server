@@ -36,6 +36,10 @@ public final class NativeBattleKillQuestProbe {
   private boolean awaitKills, awaitClaim;
   private boolean verifyStoryBlessing;
   private boolean selectedBeforeRestart;
+  private boolean legacyCheckpoint;
+  private boolean checkpointInside;
+  private boolean awaitBarrier;
+  private int barrierNotifications;
   private String mode;
   private int pendingBatch, pendingBuff, blessingNotifications, blessingSelections;
   private int selectedBatch, selectedBuff;
@@ -86,6 +90,25 @@ public final class NativeBattleKillQuestProbe {
   }
 
   private void observe(Frame frame) throws Exception {
+    if (awaitBarrier && frame.command() == protocol.clientCommand("SceneGroupRefreshScNotify")) {
+      var notify = protocol.clientSchema().parse("SceneGroupRefreshScNotify", frame.body());
+      require(number(notify, "floor_id") == 80001001, "Wrong barrier notification floor");
+      for (var rawGroup : (List<?>) field(notify, "group_refresh_list")) {
+        var group = (DynamicMessage) rawGroup;
+        if (number(group, "group_id") != 10) continue;
+        for (var rawEntity : (List<?>) field(group, "refresh_entity")) {
+          var refresh = (DynamicMessage) rawEntity;
+          var add = refresh.getDescriptorForType().findFieldByName("add_entity");
+          if (!refresh.hasField(add)) continue;
+          var entity = (DynamicMessage) refresh.getField(add);
+          if (number(entity, "inst_id") != 300005) continue;
+          var prop = (DynamicMessage) field(entity, "prop");
+          require(number(prop, "prop_id") == 100006 && number(prop, "prop_state") == 1,
+              "First-story barrier notification did not open the source prop");
+          barrierNotifications++;
+        }
+      }
+    }
     if (verifyStoryBlessing && awaitKills
         && frame.command() == protocol.clientCommand("SyncRogueCommonPendingActionScNotify")) {
       var notify = protocol.clientSchema().parse("SyncRogueCommonPendingActionScNotify", frame.body());
@@ -144,15 +167,23 @@ public final class NativeBattleKillQuestProbe {
     var request = DynamicMessage.newBuilder(protocol.clientSchema().message("OFEDNNJIJFL"));
     request.setField(request.getDescriptorForType().findFieldByName("MPLGEEGOAMC"), batch);
     request.setField(request.getDescriptorForType().findFieldByName("DLKIKBIDJDB"), choice.build());
-    var reply = protocol.clientSchema().parse("HandleRogueCommonPendingActionScRsp",
-        raw(5676, request.build().toByteArray(), protocol.clientCommand("HandleRogueCommonPendingActionScRsp")).body());
+    int previousBarrierNotifications = barrierNotifications;
+    awaitBarrier = true;
+    DynamicMessage reply;
+    try {
+      reply = protocol.clientSchema().parse("HandleRogueCommonPendingActionScRsp",
+          raw(5676, request.build().toByteArray(), protocol.clientCommand("HandleRogueCommonPendingActionScRsp")).body());
+    } finally { awaitBarrier = false; }
     require(number(reply, "retcode") == 0 && number(reply, "queue_position") == batch,
         "First-story blessing selection was rejected");
+    require(barrierNotifications == previousBarrierNotifications + (legacyCheckpoint ? 0 : 1),
+        "Selection did not publish the expected first barrier opening");
     var duplicate = protocol.clientSchema().parse("HandleRogueCommonPendingActionScRsp",
         raw(5676, request.build().toByteArray(), protocol.clientCommand("HandleRogueCommonPendingActionScRsp")).body());
     require(number(duplicate, "retcode") != 0, "Repeated first-story blessing selection succeeded");
     var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
     requireTriggerOpen(scene);
+    requireBarriers(scene, !legacyCheckpoint);
     blessingSelections++;
     selectedBatch = batch; selectedBuff = buff;
     pendingBatch = 0; pendingBuff = 0;
@@ -170,6 +201,20 @@ public final class NativeBattleKillQuestProbe {
         }
       }
     require(opened, "First-story trigger did not open after selection");
+  }
+
+  private void requireBarriers(DynamicMessage scene, boolean firstOpen) {
+    var states = new TreeMap<Integer, Integer>();
+    for (var raw : (List<?>) field(scene, "entity_group_list"))
+      for (var row : (List<?>) field((DynamicMessage) raw, "entity_list")) {
+        var entity = (DynamicMessage) row;
+        if (number(entity, "group_id") != 10 || !Set.of(300005, 300006, 300007).contains(number(entity, "inst_id"))) continue;
+        var prop = (DynamicMessage) field(entity, "prop");
+        require(number(prop, "prop_id") == 100006, "Unexpected tutorial barrier type");
+        require(states.put(number(entity, "inst_id"), number(prop, "prop_state")) == null, "Duplicate tutorial barrier");
+      }
+    require(states.equals(Map.of(300005, firstOpen ? 1 : 0, 300006, 0, 300007, 0)),
+        "Tutorial barriers do not match the selected encounter");
   }
 
   private int actor(DynamicMessage scene, boolean consumed) {
@@ -199,6 +244,7 @@ public final class NativeBattleKillQuestProbe {
   }
 
   private void encounter(DynamicMessage scene, int deaths) throws Exception {
+    if (verifyStoryBlessing) requireBarriers(scene, false);
     int entity = actor(scene, false), leader = number(scene, "leader_entity_id");
     require(leader > 0, "Missing caster");
     var cast =
@@ -279,6 +325,7 @@ public final class NativeBattleKillQuestProbe {
         "Kill progress/removal not observed before settlement success");
     if (verifyStoryBlessing) {
       require(pendingBatch > 0 && pendingBuff > 0, "No first-story blessing notification after victory");
+      requireBarriers((DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene"), false);
       if (!mode.equals("checkpoint") || selectedBeforeRestart) selectStoryBlessing();
     }
     actualDeaths += deaths;
@@ -320,6 +367,8 @@ public final class NativeBattleKillQuestProbe {
     mode = credentials.get("mode").getAsString();
     verifyStoryBlessing = credentials.has("verifyStoryBlessing") && credentials.get("verifyStoryBlessing").getAsBoolean();
     selectedBeforeRestart = credentials.has("selectedBeforeRestart") && credentials.get("selectedBeforeRestart").getAsBoolean();
+    legacyCheckpoint = credentials.has("legacyCheckpoint") && credentials.get("legacyCheckpoint").getAsBoolean();
+    checkpointInside = credentials.has("checkpointInside") && credentials.get("checkpointInside").getAsBoolean();
     var token =
         call(
             "PlayerGetTokenCsReq",
@@ -340,7 +389,7 @@ public final class NativeBattleKillQuestProbe {
       quests(0);
       encounter(start(), 2);
       quests(2);
-      call("LeaveRogueCsReq");
+      if (!checkpointInside) call("LeaveRogueCsReq");
       checks.add("source-encounter-and-two-reported-deaths-saved-with-room-still-partial");
     } else {
       var ids = target == 15 ? List.of(4090301) : List.of(4090301, 4090303);
@@ -352,13 +401,16 @@ public final class NativeBattleKillQuestProbe {
         require(mode.equals("complete"), "Unknown source test mode");
         current = 2;
         quests(2);
-        var resumed = call("EnterRogueCsReq", Map.of("area_id", 100));
-        actor((DynamicMessage) field(resumed, "scene"), true);
+        var resumed = checkpointInside ? call("GetRogueInfoCsReq") : call("EnterRogueCsReq", Map.of("area_id", 100));
+        var resumedScene = checkpointInside ? (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene")
+            : (DynamicMessage) field(resumed, "scene");
+        actor(resumedScene, true);
         if (verifyStoryBlessing) {
           var game = (DynamicMessage) field(resumed, "rogue_game_info");
           var currentRun = (DynamicMessage) field(game, "CFDIKLBINHK");
           if (selectedBeforeRestart) {
-            requireTriggerOpen((DynamicMessage) field(resumed, "scene"));
+            requireTriggerOpen(resumedScene);
+            requireBarriers(resumedScene, true);
             var buffs = (DynamicMessage) field(currentRun, "HABJHGPFGEB");
             int expected = credentials.get("expectedBuff").getAsInt();
             require(((List<?>) field(buffs, "CHCMEKAFKAF")).stream()
@@ -366,6 +418,7 @@ public final class NativeBattleKillQuestProbe {
                 "Selected blessing did not survive H2 restart");
             checks.add("selected-first-story-blessing-and-open-trigger-restored");
           } else {
+            requireBarriers(resumedScene, false);
             readBlessingAction((DynamicMessage) field(currentRun, "FMIGOKIDKJL"));
             require(pendingBatch == credentials.get("expectedBatch").getAsInt()
                     && pendingBuff == credentials.get("expectedBuff").getAsInt(),
@@ -440,6 +493,7 @@ public final class NativeBattleKillQuestProbe {
     result.put("pendingBlessingBuff", pendingBuff);
     result.put("blessingNotifications", blessingNotifications);
     result.put("blessingSelections", blessingSelections);
+    result.put("barrierNotifications", barrierNotifications);
     result.put("selectedBlessingBatch", selectedBatch);
     result.put("selectedBlessingBuff", selectedBuff);
     result.put("jadeNotifications", jadeNotifications);

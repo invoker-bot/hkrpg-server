@@ -699,10 +699,12 @@ class RogueBattleKillQuestTest {
     assertEquals(2, state(4090301).getProgress());
   }
 
-  @Test void firstVictoryOffersABlessingBeforeOtherEncountersAreCleared() {
+  @Test void firstVictoryOffersABlessingBeforeOtherEncountersAreCleared() throws Exception {
     int buff = 19997101;
     var oldBuff = GameData.getMazeBuffExcelMap().get(buff, 1);
     var oldProp = GameData.getPropExcelMap().get(100);
+    var oldBarrier = GameData.getPropExcelMap().get(100006);
+    var old10 = floor.getGroups().get(10);
     var oldBlessings = List.copyOf(GameplayDefinitions.blessings);
     try {
       GameData.getMazeBuffExcelMap().add(gson.fromJson("{\"ID\":" + buff + ",\"Lv\":1}", MazeBuffExcel.class));
@@ -711,12 +713,24 @@ class RogueBattleKillQuestTest {
       var trigger = gson.fromJson("{\"ID\":100,\"PropType\":\"PROP_ORDINARY\","
           + "\"PropStateList\":[\"Closed\",\"Open\"]}", PropExcel.class);
       trigger.onLoad(); GameData.getPropExcelMap().add(trigger);
+      var barrier = gson.fromJson("{\"ID\":100006,\"PropType\":\"PROP_ORDINARY\","
+          + "\"PropStateList\":[\"Closed\",\"Open\"]}", PropExcel.class);
+      barrier.onLoad(); GameData.getPropExcelMap().add(barrier);
+      try (var in = getClass().getResourceAsStream("/fixtures/rogue-first-story-group10-4.6.json")) {
+        var group10 = gson.fromJson(new String(Objects.requireNonNull(in).readAllBytes(), StandardCharsets.UTF_8), GroupInfo.class);
+        group10.setId(10); floor.getGroups().put(10, group10);
+      }
+      floor.onLoad();
+      assertEquals("3,300001", floor.getGroups().get(10).getPropList().stream()
+          .filter(p -> p.getID() == 300005).findFirst().orElseThrow().getSharedValueByKey("怪物死亡标记"),
+          "Production floor loading must retain the authored encounter binding");
       var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
       run.setupTeam(player, List.of(199961));
       run.enter(1, 100);
       player.getGameplay().setRogue(run);
       player.scene = new Scene(player, plane, 80001001);
       player.scene.setEntryId(8000101);
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300005).getState());
       var laterGroup = new GroupInfo(); laterGroup.setId(4);
       var later = new EntityMonster(player.scene, new NpcMonsterExcel(), laterGroup,
           gson.fromJson("{\"ID\":200002}", MonsterInfo.class));
@@ -734,10 +748,22 @@ class RogueBattleKillQuestTest {
           .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
           .filter(p -> p.getGroupId() == 3 && p.getInstId() == 300001).findFirst().orElseThrow();
       assertEquals(emu.lunarcore.game.enums.PropState.Closed, source.getState());
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300005).getState(),
+          "The barrier remains until its blessing has been selected");
       int selection = run.getSelectionId();
+      player.failSave = true;
+      assertThrows(IllegalStateException.class, () -> player.getUniverseManager().selectBlessing(selection, buff));
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300005).getState(),
+          "A failed save must not publish a barrier opening");
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, source.getState());
+      player.failSave = false;
       assertEquals(Retcode.SUCC, player.getUniverseManager().selectBlessing(selection, buff));
       assertEquals(1, run.getBlessings().get(buff));
       assertEquals(emu.lunarcore.game.enums.PropState.Open, source.getState(), "The source trigger opens after selection");
+      assertEquals(emu.lunarcore.game.enums.PropState.Open, barrier(player.scene, 300005).getState(),
+          "The matching barrier must open after its source encounter and blessing");
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300006).getState());
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300007).getState());
       assertEquals(Retcode.REQ_PARA_INVALID, player.getUniverseManager().selectBlessing(selection, buff));
       var reloaded = new Scene(player, plane, 80001001);
       var restored = reloaded.getEntities().values().stream()
@@ -745,13 +771,123 @@ class RogueBattleKillQuestTest {
           .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
           .filter(p -> p.getGroupId() == 3 && p.getInstId() == 300001).findFirst().orElseThrow();
       assertEquals(emu.lunarcore.game.enums.PropState.Open, restored.getState(), "A reconnect preserves the opened source trigger");
+      assertEquals(emu.lunarcore.game.enums.PropState.Open, barrier(reloaded, 300005).getState(),
+          "The matching barrier remains open after reconnect");
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(reloaded, 300006).getState());
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(reloaded, 300007).getState());
     } finally {
       GameplayDefinitions.blessings.clear(); GameplayDefinitions.blessings.addAll(oldBlessings);
       GameData.getMazeBuffExcelMap().values().removeIf(v -> v.getID() == buff && v.getLv() == 1);
       if (oldBuff != null) GameData.getMazeBuffExcelMap().add(oldBuff);
       GameData.getPropExcelMap().keySet().remove(100);
       if (oldProp != null) GameData.getPropExcelMap().add(oldProp);
+      GameData.getPropExcelMap().keySet().remove(100006);
+      if (oldBarrier != null) GameData.getPropExcelMap().add(oldBarrier);
+      if (old10 == null) floor.getGroups().remove(10); else floor.getGroups().put(10, old10);
     }
+  }
+
+  emu.lunarcore.game.scene.entity.EntityProp barrier(Scene scene, int id) {
+    return scene.getEntities().values().stream()
+        .filter(emu.lunarcore.game.scene.entity.EntityProp.class::isInstance)
+        .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
+        .filter(p -> p.getGroupId() == 10 && p.getInstId() == id && p.getPropId() == 100006)
+        .findFirst().orElseThrow();
+  }
+
+  JsonObject originalBarrierGroup() throws Exception {
+    try (var in = getClass().getResourceAsStream("/fixtures/rogue-first-story-group10-4.6.json")) {
+      return JsonParser.parseString(new String(Objects.requireNonNull(in).readAllBytes(), StandardCharsets.UTF_8))
+          .getAsJsonObject();
+    }
+  }
+
+  void installBarrierGroup(JsonObject original) {
+    var group10 = gson.fromJson(original, GroupInfo.class); group10.setId(10);
+    floor.getGroups().put(10, group10);
+    for (int id : List.of(4, 5)) {
+      var copy = gson.fromJson(gson.toJson(group), GroupInfo.class);
+      copy.setId(id); floor.getGroups().put(id, copy);
+    }
+    for (int id : List.of(100, 100006)) {
+      var prop = gson.fromJson("{\"ID\":" + id + ",\"PropType\":\"PROP_ORDINARY\","
+          + "\"PropStateList\":[\"Closed\",\"Open\"]}", PropExcel.class);
+      prop.onLoad(); GameData.getPropExcelMap().add(prop);
+    }
+  }
+
+  void restoreBarrierProps(PropExcel trigger, PropExcel barrier) {
+    for (int id : List.of(100, 100006)) GameData.getPropExcelMap().keySet().remove(id);
+    if (trigger != null) GameData.getPropExcelMap().add(trigger);
+    if (barrier != null) GameData.getPropExcelMap().add(barrier);
+  }
+
+  @Test void eachEncounterOnlyOpensItsBoundBarrierAndSurvivesReload() throws Exception {
+    var oldTrigger = GameData.getPropExcelMap().get(100);
+    var oldBarrier = GameData.getPropExcelMap().get(100006);
+    try {
+      installBarrierGroup(originalBarrierGroup());
+      floor.onLoad();
+      var run = new GameplayState.RogueRun(100, 1, Map.of(1, 100));
+      run.setupTeam(player, List.of(199961)); run.enter(1, 100); player.getGameplay().setRogue(run);
+      player.scene = new Scene(player, plane, 80001001); player.scene.setEntryId(8000101);
+      for (int encounter : List.of(3, 4, 5)) {
+        int id = 300002 + encounter;
+        assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, id).getState());
+        run.getDefeatedRogueMonsters().add("1:100:80001:80001001:" + encounter + ":200001");
+        run.getFirstStoryBlessingReceipts().put(encounter, -1);
+        RogueFirstStoryCombat.syncTrigger(player, encounter);
+        assertEquals(emu.lunarcore.game.enums.PropState.Open, barrier(player.scene, id).getState());
+        if (encounter < 5)
+          assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, id + 1).getState());
+        run = gson.fromJson(gson.toJson(run), GameplayState.RogueRun.class);
+        player.getGameplay().setRogue(run);
+        player.scene = new Scene(player, plane, 80001001); player.scene.setEntryId(8000101);
+        assertEquals(emu.lunarcore.game.enums.PropState.Open, barrier(player.scene, id).getState());
+      }
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300010).getState());
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300011).getState());
+    } finally { restoreBarrierProps(oldTrigger, oldBarrier); }
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"missing-victory", "unselected", "wrong-binding", "wrong-key", "extra-source",
+      "wrong-type", "wrong-script", "duplicate", "other-area"})
+  void incompatibleOrIncompleteEvidenceCannotOpenABarrier(String variant) throws Exception {
+    var oldTrigger = GameData.getPropExcelMap().get(100);
+    var oldBarrier = GameData.getPropExcelMap().get(100006);
+    try {
+      var data = originalBarrierGroup();
+      var props = data.getAsJsonArray("PropList");
+      var target = java.util.stream.StreamSupport.stream(props.spliterator(), false)
+          .map(JsonElement::getAsJsonObject).filter(p -> p.get("ID").getAsInt() == 300005).findFirst().orElseThrow();
+      if (variant.equals("wrong-binding"))
+        target.getAsJsonObject("ValueSource").getAsJsonArray("Values").get(0).getAsJsonObject().addProperty("Value", "4,300001");
+      if (variant.equals("wrong-key"))
+        target.getAsJsonObject("ValueSource").getAsJsonArray("Values").get(0).getAsJsonObject().addProperty("Key", "Other");
+      if (variant.equals("wrong-type"))
+        target.getAsJsonObject("ValueSource").getAsJsonArray("Values").get(0).getAsJsonObject().addProperty("$type", "RPG.GameCore.SharedInt");
+      if (variant.equals("extra-source"))
+        target.getAsJsonObject("ValueSource").getAsJsonArray("Values").add(
+            target.getAsJsonObject("ValueSource").getAsJsonArray("Values").get(0).deepCopy());
+      if (variant.equals("wrong-script")) target.addProperty("InitLevelGraph", "Config/Other.json");
+      if (variant.equals("duplicate")) props.add(target.deepCopy());
+      installBarrierGroup(data);
+      floor.onLoad();
+      var run = new GameplayState.RogueRun(variant.equals("other-area") ? 101 : 100, 1, Map.of(1, 100));
+      run.setupTeam(player, List.of(199961)); run.enter(1, 100); player.getGameplay().setRogue(run);
+      if (!variant.equals("missing-victory"))
+        run.getDefeatedRogueMonsters().add("1:100:80001:80001001:3:200001");
+      run.getFirstStoryBlessingReceipts().put(3, variant.equals("unselected") ? 0 : -1);
+      player.scene = new Scene(player, plane, 80001001); player.scene.setEntryId(8000101);
+      assertTrue(player.scene.getEntities().values().stream()
+          .filter(emu.lunarcore.game.scene.entity.EntityProp.class::isInstance)
+          .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
+          .filter(p -> p.getGroupId() == 10 && p.getInstId() == 300005)
+          .allMatch(p -> p.getState() == emu.lunarcore.game.enums.PropState.Closed));
+      RogueFirstStoryCombat.syncTrigger(player, 3);
+      assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300005).getState());
+    } finally { restoreBarrierProps(oldTrigger, oldBarrier); }
   }
 
   @Test void queuedVictoriesSurviveReloadAndOfferExactlyOneSelectionEach() {

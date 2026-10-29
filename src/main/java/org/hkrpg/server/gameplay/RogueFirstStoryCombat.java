@@ -1,6 +1,9 @@
 package org.hkrpg.server.gameplay;
 
 import emu.lunarcore.game.enums.PropState;
+import emu.lunarcore.data.config.GroupInfo;
+import emu.lunarcore.data.config.PropInfo;
+import emu.lunarcore.data.config.FloorInfo;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityProp;
@@ -13,6 +16,8 @@ import java.util.Set;
 public final class RogueFirstStoryCombat {
   private static final Set<Integer> GROUPS = Set.of(3, 4, 5, 11, 12);
   private static final String SCRIPT = "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_TriggerBuffSelect.json";
+  private static final String BARRIER_SCRIPT = "Config/Level/Maze/MazeRogue/Maze_Rogue_Tutorial_BlockLine.json";
+  private static final Map<Integer, Integer> BARRIERS = Map.of(3, 300005, 4, 300006, 5, 300007);
 
   private static boolean valid(Player player, Scene scene) {
     var run = player.getGameplay().getRogue();
@@ -106,7 +111,13 @@ public final class RogueFirstStoryCombat {
 
   static boolean selected(Player player, int group) {
     return valid(player, player.getScene()) && source(player.getScene(), group)
-        && player.getGameplay().getRogue().getFirstStoryBlessingReceipts().getOrDefault(group, 0) == -1;
+        && selected(player.getGameplay().getRogue(), group);
+  }
+
+  private static boolean selected(GameplayState.RogueRun run, int group) {
+    return run.getDefeatedRogueMonsters() != null && run.getFirstStoryBlessingReceipts() != null
+        && run.getDefeatedRogueMonsters().contains("1:100:80001:80001001:" + group + ":200001")
+        && run.getFirstStoryBlessingReceipts().getOrDefault(group, 0) == -1;
   }
 
   static void syncTrigger(Player player, int group) {
@@ -115,7 +126,65 @@ public final class RogueFirstStoryCombat {
         .filter(EntityProp.class::isInstance).map(EntityProp.class::cast)
         .filter(p -> p.getGroupId() == group && p.getInstId() == 300001 && p.getPropId() == 100)
         .toList();
-    if (matches.size() == 1) matches.getFirst().setState(PropState.Open);
+    if (matches.size() != 1) return;
+    matches.getFirst().setState(PropState.Open);
+    if (matches.getFirst().getState() != PropState.Open || !BARRIERS.containsKey(group)) return;
+    var scene = player.getScene();
+    var sourceGroup = scene.getResourceGroups().get(10);
+    var barriers = scene.getEntities().values().stream()
+        .filter(EntityProp.class::isInstance).map(EntityProp.class::cast)
+        .filter(p -> p.getGroupId() == 10 && p.getInstId() == BARRIERS.get(group)
+            && p.getPropId() == 100006 && restoresBarrier(scene, sourceGroup, p.getPropInfo()))
+        .toList();
+    if (scene.getLoadedGroups().contains(10) && barriers.size() == 1)
+      barriers.getFirst().setState(PropState.Open);
+  }
+
+  private static int authoredBarrier(GroupInfo group, PropInfo info) {
+    if (group == null || info == null || group.getId() != 10 || info.getPropID() != 100006
+        || !info.isLoadOnInitial() || info.isIsDelete() || info.isIsClientOnly()
+        || !BARRIER_SCRIPT.equals(info.getInitLevelGraph()) || group.getPropList() == null
+        || group.getPropList().stream().filter(Objects::nonNull).filter(p -> p.getID() == info.getID()).count() != 1)
+      return 0;
+    int encounter = BARRIERS.entrySet().stream().filter(e -> e.getValue() == info.getID())
+        .mapToInt(Map.Entry::getKey).findFirst().orElse(0);
+    if (encounter == 0) return 0;
+    try {
+      var values = info.getValueSource() == null ? null : info.getValueSource().getValues();
+      if (values == null || values.size() != 1) return 0;
+      var marker = values.getFirst();
+      return marker != null && marker.keySet().equals(Set.of("$type", "Key", "Value"))
+          && "RPG.GameCore.SharedString".equals(marker.get("$type").getAsString())
+          && "怪物死亡标记".equals(marker.get("Key").getAsString())
+          && (encounter + ",300001").equals(marker.get("Value").getAsString()) ? encounter : 0;
+    } catch (RuntimeException malformed) { return 0; }
+  }
+
+  /** Keep only the three validated authored links while normalizing this exact floor. */
+  public static boolean retainsBarrierSource(FloorInfo floor, GroupInfo group, PropInfo info) {
+    return floor != null && floor.getFloorID() == 80001001
+        && floor.getGroups(0).get(10) == group && authoredBarrier(group, info) > 0;
+  }
+
+  /** Only the authored first-room barrier linked to a selected, won encounter is restored. */
+  static boolean restoresBarrier(Scene scene, GroupInfo group, PropInfo info) {
+    if (scene == null || group == null || info == null || scene.getFloorInfo() == null
+        || group.getId() != 10 || scene.getResourceGroups().get(10) != group
+        || scene.getPlaneId() != 80001 || scene.getFloorId() != 80001001
+        || scene.getDimensionId() != 0)
+      return false;
+    int encounter = authoredBarrier(group, info);
+    var markerExcel = emu.lunarcore.data.GameData.getPropExcelMap().get(100);
+    var barrierExcel = emu.lunarcore.data.GameData.getPropExcelMap().get(100006);
+    if (markerExcel == null || markerExcel.getPropStateList() == null
+        || !markerExcel.getPropStateList().contains(PropState.Open)
+        || barrierExcel == null || barrierExcel.getPropStateList() == null
+        || !barrierExcel.getPropStateList().contains(PropState.Open)) return false;
+    var run = scene.getPlayer().getGameplay().getRogue();
+    return encounter > 0
+        && RogueFirstStorySpawn.applies(run, GameplayDefinitions.rooms.get(run.getRoomId()))
+        && run.getPhase() == GameplayState.RogueRun.Phase.EXPLORING && run.isInside()
+        && selected(run, encounter) && source(scene, encounter);
   }
 
   static boolean restoresTrigger(Scene scene, int group, int instance) {
@@ -124,8 +193,7 @@ public final class RogueFirstStoryCombat {
         && RogueFirstStorySpawn.applies(run, GameplayDefinitions.rooms.get(run.getRoomId()))
         && run.getPhase() == GameplayState.RogueRun.Phase.EXPLORING && run.isInside()
         && scene.getPlaneId() == 80001 && scene.getFloorId() == 80001001
-        && scene.getDimensionId() == 0 && run.getFirstStoryBlessingReceipts() != null
-        && run.getFirstStoryBlessingReceipts().getOrDefault(group, 0) == -1
+        && scene.getDimensionId() == 0 && selected(run, group)
         && source(scene, group);
   }
 
