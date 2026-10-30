@@ -366,6 +366,10 @@ public class Player implements Tickable, Syncable {
     }
 
     public GameAvatar getAvatarById(int avatarId) {
+        if (getGameplay().getRogue().isInside()) {
+            var downloaded = getUniverseManager().downloadedTrial(avatarId);
+            if (downloaded != null) return downloaded;
+        }
         var trial = getStoryLineManager().avatar(avatarId);
         if (trial != null) return trial;
         return getAvatars().getAvatarById(avatarId);

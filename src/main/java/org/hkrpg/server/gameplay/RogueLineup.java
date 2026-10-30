@@ -89,15 +89,27 @@ public final class RogueLineup extends PlayerExtraLineup {
                           || getOwner().getAvatarById(id).getAvatarId() != id
                           || getOwner().getAvatarById(id).getAvatarType()
                               != emu.lunarcore.proto.AvatarTypeOuterClass.AvatarType
-                                  .AVATAR_FORMAL_TYPE)
+                                  .AVATAR_FORMAL_TYPE
+                              && !(RogueTutorialDownload.downloaded(run, id)
+                                  && getOwner().getAvatarById(id) == getOwner().getUniverseManager().downloadedTrial(id)))
           || leaderSlot < -1
           || leaderSlot >= ids.size()) return Retcode.REQ_PARA_INVALID;
       int oldLeader = getLeader() < size() ? getAvatars().get(getLeader()) : 0;
+      var actors = new HashSet<Integer>();
+      for (int id : ids) {
+        int actor = getOwner().getAvatarById(id).getActorId();
+        if (actor > 0 && !actors.add(actor)) return Retcode.REQ_PARA_INVALID;
+      }
+      var previous = List.copyOf(run.getRoster()); int previousLeader = run.getLeader();
       ids = List.copyOf(ids);
       run.getRoster().clear();
       run.getRoster().addAll(ids);
       run.setLeader(leaderSlot >= 0 ? leaderSlot : Math.max(ids.indexOf(oldLeader), 0));
-      save();
+      try { save(); }
+      catch (RuntimeException failed) {
+        run.getRoster().clear(); run.getRoster().addAll(previous); run.setLeader(previousLeader);
+        throw failed;
+      }
       if (getOwner().getScene() != null) getOwner().getScene().syncLineup();
       sync();
       return Retcode.SUCC;

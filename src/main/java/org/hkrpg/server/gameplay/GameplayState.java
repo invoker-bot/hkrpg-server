@@ -1000,6 +1000,7 @@ public class GameplayState {
     private int reachedRooms;
     private List<Integer> avatars = new ArrayList<>();
     private Map<Integer, Integer> avatarLevels = new HashMap<>();
+    private Set<Integer> trialAvatars = new HashSet<>();
     private Map<Integer, Integer> blessings = new HashMap<>();
     private List<Integer> miracles = new ArrayList<>();
     private int firstRewardId;
@@ -1039,6 +1040,8 @@ public class GameplayState {
       for (int id : avatars) {
         var avatar = player.getAvatarById(id);
         if (avatar != null) avatarLevels.put(id, avatar.getLevel());
+        if (avatar != null && avatar.getAvatarType() == emu.lunarcore.proto.AvatarTypeOuterClass.AvatarType.AVATAR_TRIAL_TYPE)
+          trialAvatars.add(id);
       }
       blessings.putAll(run.blessings);
       miracles.addAll(new TreeSet<>(run.miracles.keySet()));
@@ -1730,6 +1733,7 @@ public class GameplayState {
     private Set<String> defeatedRogueMonsters = new HashSet<>();
     private Map<String, RogueMonsterSelection.Choice> monsterSelections = new HashMap<>();
     private Set<String> usedDownloadConsoles = new HashSet<>();
+    private Map<Integer, RogueTrialState> downloadedTrials = new HashMap<>();
     private int initialAvatarSp = -1;
     private List<Integer> offers = new ArrayList<>();
     private int selectionId;

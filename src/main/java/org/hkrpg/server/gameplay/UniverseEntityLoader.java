@@ -52,7 +52,8 @@ public final class UniverseEntityLoader extends SceneEntityLoader {
       return super.loadProp(scene, group, info);
     if (RoguePropDestruction.alreadyDestroyed(scene, group, info)
         || RoguePropRecovery.alreadyDestroyed(scene, group, info)) return null;
-    if (info.getPropID() == 100006 && RogueTutorialCombat.restoresBarrier(scene, group, info)) {
+    if (info.getPropID() == 100006 && (RogueTutorialCombat.restoresBarrier(scene, group, info)
+        || RogueTutorialDownload.barrier(scene, group, info))) {
       var prop = super.loadProp(scene, group, info);
       if (prop != null) prop.setState(emu.lunarcore.game.enums.PropState.Open, false);
       return prop;
@@ -64,7 +65,9 @@ public final class UniverseEntityLoader extends SceneEntityLoader {
     }
     if (info.getPropID() == 1001) {
       var prop = super.loadProp(scene, group, info);
-      if (prop != null && RogueDownload.used(scene.getPlayer(), group.getId(), info.getID()))
+      var tutorial = RogueTutorialDownload.state(scene, group, info);
+      if (prop != null && tutorial != null) prop.setState(tutorial, false);
+      else if (prop != null && RogueDownload.used(scene.getPlayer(), group.getId(), info.getID()))
         prop.setState(emu.lunarcore.game.enums.PropState.Locked, false);
       return prop;
     }

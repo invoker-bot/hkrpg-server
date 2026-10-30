@@ -37,11 +37,12 @@ public final class RogueLineup46 {
         valid &=
             row.getUnknownFields().asMap().isEmpty()
                 && only(row, "slot", "id", "avatar_type")
-                && "AvatarType_AvatarFormalType"
-                    .equals(
-                        ((com.google.protobuf.Descriptors.EnumValueDescriptor)
-                                value(row, "avatar_type"))
-                            .getName())
+                && ("AvatarType_AvatarFormalType".equals(
+                        ((com.google.protobuf.Descriptors.EnumValueDescriptor) value(row, "avatar_type")).getName())
+                        && !org.hkrpg.server.gameplay.RogueTutorialDownload.downloaded(s.getPlayer().getGameplay().getRogue(), id)
+                    || "AvatarType_AvatarTrialType".equals(
+                        ((com.google.protobuf.Descriptors.EnumValueDescriptor) value(row, "avatar_type")).getName())
+                        && org.hkrpg.server.gameplay.RogueTutorialDownload.downloaded(s.getPlayer().getGameplay().getRogue(), id))
                 && id > 0
                 && slot >= 0
                 && slot < rows.size()

@@ -155,6 +155,7 @@ public final class RogueTutorialCombat {
               && prop.getPropId() == 100006 && restoresBarrier(scene, scene.getResourceGroups().get(link.group()), prop.getPropInfo())).toList();
       if (barriers.size() == 1) barriers.getFirst().setState(PropState.Open);
     }
+    RogueTutorialDownload.sync(player);
   }
 
   private static Barrier authoredBarrier(int floor, GroupInfo group, PropInfo info) {

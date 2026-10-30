@@ -22,6 +22,20 @@ public final class UniverseManager {
 
   private GameplayState.RogueRun lineupRun;
   private RogueLineup lineup;
+  private RogueTrialState downloadedTrialState;
+  private emu.lunarcore.game.trial.TrialAvatar downloadedTrial;
+
+  /** Run-local lookup also permits a paused run's resume preflight; never publishes owned actors. */
+  public emu.lunarcore.game.trial.TrialAvatar downloadedTrial(int id) {
+    var run = player.getGameplay().getRogue();
+    if (!RogueTutorialDownload.downloaded(run, id)) return null;
+    var frozen = run.getDownloadedTrials().get(id);
+    if (frozen != downloadedTrialState) {
+      downloadedTrial = frozen.restore(player);
+      downloadedTrialState = frozen;
+    }
+    return downloadedTrial;
+  }
   private Battle boundBattle;
   private String battleRun;
   private int battleSite, battleRoom;
@@ -241,7 +255,7 @@ public final class UniverseManager {
       if (area != run.getAreaId()) return Retcode.ROGUE_AREA_INVALID;
       if (run.getRoster().isEmpty()
           || run.getReturnTo() == null
-          || run.getRoster().stream().anyMatch(id -> player.getAvatarById(id) == null))
+          || run.getRoster().stream().anyMatch(id -> player.getAvatarById(id) == null && downloadedTrial(id) == null))
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       var room = GameplayDefinitions.rooms.get(run.getRoomId());
       boolean firstStory = RogueFirstStorySpawn.applies(run, room);
@@ -578,6 +592,7 @@ public final class UniverseManager {
   public void restoreFirstStoryBlessings() {
     synchronized (player) {
       if (!RogueTutorialCombat.inContext(player)) return;
+      RogueTutorialDownload.sync(player);
       var run = player.getGameplay().getRogue();
       var before = GSON.fromJson(GSON.toJson(player.getGameplay()), GameplayState.class);
       boolean changed;

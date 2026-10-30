@@ -32,6 +32,11 @@ class RogueSecondStoryCombat46Test {
     @Override public int getPlaneId() { return 80001; }
     @Override public int getFloorId() { return 80001002; }
     @Override public int getEntryId() { return 8000102; }
+    @Override public emu.lunarcore.game.avatar.GameAvatar getAvatarById(int id) {
+      var formal = super.getAvatarById(id);
+      return formal != null ? formal : getGameplay().getRogue().isInside()
+          ? getUniverseManager().downloadedTrial(id) : null;
+    }
     @Override public void save() {
       if (failSave) throw new IllegalStateException("fixture persistence failure");
       persistence.run();

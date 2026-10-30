@@ -21,15 +21,21 @@ public final class RogueDownload46 {
           valid ? session.getProtocol().clientSchema().parse("PickRogueAvatarCsReq", bytes) : null;
       @SuppressWarnings("unchecked")
       var ids = valid ? (List<Integer>) value(request, "NOEPBNMJFGL") : List.<Integer>of();
+      @SuppressWarnings("unchecked")
+      var trials = valid ? (List<Integer>) value(request, "DFPPCAJDBFK") : List.<Integer>of();
       var status =
           valid
                   && request.getUnknownFields().asMap().isEmpty()
-                  && only(request, "NOEPBNMJFGL", "prop_entity_id")
-              ? RogueDownload.pick(session.getPlayer(), ids, number(request, "prop_entity_id"))
+                  && only(request, "NOEPBNMJFGL", "DFPPCAJDBFK", "prop_entity_id")
+              ? trials.isEmpty()
+                  ? RogueDownload.pick(session.getPlayer(), ids, number(request, "prop_entity_id"))
+                  : org.hkrpg.server.gameplay.RogueTutorialDownload.pick(session.getPlayer(), trials, number(request, "prop_entity_id"))
               : Retcode.REQ_PARA_INVALID;
       var response = builder(session, "PickRogueAvatarScRsp");
       set(response, "retcode", status.getVal());
       if (status == Retcode.SUCC) ids.forEach(id -> add(response, "NOEPBNMJFGL", id));
+      // CN _OnCmdPickRogueAvatarScRsp consumes tag 6 with AddPickTrialAvatar.
+      if (status == Retcode.SUCC) trials.forEach(id -> add(response, "BFEDFBEKOBI", id));
       session.sendClientPacket("PickRogueAvatarScRsp", response.build().toByteArray());
     }
     return true;
@@ -40,6 +46,7 @@ public final class RogueDownload46 {
     var input = CodedInputStream.newInstance(bytes);
     boolean entitySeen = false;
     int count = 0;
+    int listField = 0;
     try {
       int tag;
       while ((tag = input.readTag()) != 0) {
@@ -48,7 +55,9 @@ public final class RogueDownload46 {
           if (entitySeen || wire != 0 || Long.compareUnsigned(input.readUInt64(), 0xffffffffL) > 0)
             return false;
           entitySeen = true;
-        } else if (number == 14) {
+        } else if (number == 14 || number == 11) {
+          if (listField != 0 && listField != number) return false;
+          listField = number;
           if (wire == 2) {
             var packed = CodedInputStream.newInstance(input.readByteArray());
             while (!packed.isAtEnd())

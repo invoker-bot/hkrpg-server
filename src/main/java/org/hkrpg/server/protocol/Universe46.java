@@ -351,7 +351,9 @@ public final class Universe46 {
     var avatars = builder(session, "ENOBKLGCHOD");
     // Downloaded base-avatar IDs: LunarCore development toAvatarInfoProto / hkrpg-go
     // GetRogueLineupInfo, matched to local ENOBKLGCHOD codec tag 0x0a at 1e2c6931.
-    for (int id : new TreeSet<>(run.getVitals().keySet())) add(avatars, "NOEPBNMJFGL", id);
+    for (int id : new TreeSet<>(run.getVitals().keySet()))
+      add(avatars, org.hkrpg.server.gameplay.RogueTutorialDownload.downloaded(run, id)
+          ? "unfinished_story_line_id_list" : "NOEPBNMJFGL", id);
     var revive = RogueRevival46.info(session);
     if (revive != null) set(avatars, "MFEODNJNGDP", revive);
     set(current, "EIOHFJMFOKF", avatars.build());
@@ -537,7 +539,8 @@ public final class Universe46 {
       set(avatar, "id", id);
       set(avatar, "slot", slot);
       set(avatar, "level", result.getAvatarLevels().getOrDefault(id, 0));
-      enumValue(avatar, "avatar_type", "AvatarType_AvatarFormalType");
+      enumValue(avatar, "avatar_type", result.getTrialAvatars().contains(id)
+          ? "AvatarType_AvatarTrialType" : "AvatarType_AvatarFormalType");
       add(record, "avatar_list", avatar.build());
     }
     set(data, "record_info", record.build());
