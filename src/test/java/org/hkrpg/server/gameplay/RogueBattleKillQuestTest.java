@@ -836,7 +836,7 @@ class RogueBattleKillQuestTest {
         assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, id).getState());
         run.getDefeatedRogueMonsters().add("1:100:80001:80001001:" + encounter + ":200001");
         run.getFirstStoryBlessingReceipts().put(encounter, -1);
-        RogueFirstStoryCombat.syncTrigger(player, encounter);
+        RogueTutorialCombat.syncTrigger(player, encounter);
         assertEquals(emu.lunarcore.game.enums.PropState.Open, barrier(player.scene, id).getState());
         if (encounter < 5)
           assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, id + 1).getState());
@@ -885,7 +885,7 @@ class RogueBattleKillQuestTest {
           .map(emu.lunarcore.game.scene.entity.EntityProp.class::cast)
           .filter(p -> p.getGroupId() == 10 && p.getInstId() == 300005)
           .allMatch(p -> p.getState() == emu.lunarcore.game.enums.PropState.Closed));
-      RogueFirstStoryCombat.syncTrigger(player, 3);
+      RogueTutorialCombat.syncTrigger(player, 3);
       assertEquals(emu.lunarcore.game.enums.PropState.Closed, barrier(player.scene, 300005).getState());
     } finally { restoreBarrierProps(oldTrigger, oldBarrier); }
   }

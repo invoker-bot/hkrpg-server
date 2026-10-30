@@ -1712,6 +1712,8 @@ public class GameplayState {
     void restoreFirstStoryEntrancePlaced(boolean value) { firstStoryEntrancePlaced = value; }
     // 0 = earned and queued, positive = current selection, -1 = selected.
     private Map<Integer, Integer> firstStoryBlessingReceipts = new LinkedHashMap<>();
+    // The second tutorial reuses group IDs on another floor; do not mix its receipts with map 1.
+    private Map<Integer, Integer> secondStoryBlessingReceipts = new LinkedHashMap<>();
     private Map<Integer, Integer> blessings = new HashMap<>();
     private Map<Integer, RogueMiracle> miracles = new HashMap<>();
     private List<Integer> miracleOffers = new ArrayList<>();
@@ -2123,6 +2125,7 @@ public class GameplayState {
       // The existing immutable resonance plan, live run and authored dialogue objects are retained.
       restoreEventReward(prior);
       firstStoryBlessingReceipts = prior.firstStoryBlessingReceipts;
+      secondStoryBlessingReceipts = prior.secondStoryBlessingReceipts;
       miracles = prior.miracles;
       miracleFragmentGrants = prior.miracleFragmentGrants;
       miracleShops = prior.miracleShops;

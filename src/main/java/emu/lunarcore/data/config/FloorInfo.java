@@ -235,7 +235,7 @@ public class FloorInfo {
                     if(!org.hkrpg.server.gameplay.GoldenSpears.keepsSourceValues(group)
                         && !org.hkrpg.server.gameplay.StoryDoors.controller(prop)
                         && !org.hkrpg.server.gameplay.StationEnergyBridges.controller(prop)
-                        && !org.hkrpg.server.gameplay.RogueFirstStoryCombat.retainsBarrierSource(this, group, prop)) prop.setValueSource(null);
+                        && !org.hkrpg.server.gameplay.RogueTutorialCombat.retainsBarrierSource(this, group, prop)) prop.setValueSource(null);
                 }
             }
         }

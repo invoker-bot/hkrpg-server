@@ -394,15 +394,15 @@ public final class UniverseManager {
                       e instanceof emu.lunarcore.game.scene.entity.EntityMonster m
                           && UniverseEntityLoader.roomGroups(player).contains(m.getGroupId())
                           && m.isAlive())) return;
-      if (RogueFirstStorySpawn.applies(run, room)
-          && !RogueFirstStoryCombat.allEncountersDefeated(player)) return;
+      if (RogueTutorialCombat.applies(run)
+          && !RogueTutorialCombat.allEncountersDefeated(player)) return;
       if (!run.clear()) return;
       player.save();
       player.getDailyManager().onRogueRoom();
       var site = site(run.getMapId(), run.getSiteId());
       if (site != null && site.NextSiteIDList() != null && site.NextSiteIDList().isEmpty()) {
-        if (!RogueFirstStorySpawn.applies(run, room)
-            || (!RogueFirstStoryCombat.hasOutstanding(player) && !run.pending())) finishRun(FINISHED);
+        if (!RogueTutorialCombat.applies(run)
+            || (!RogueTutorialCombat.hasOutstanding(player) && !run.pending())) finishRun(FINISHED);
       } else offerBlessings();
       org.hkrpg.server.protocol.Universe46.syncMap(player);
     }
@@ -552,6 +552,7 @@ public final class UniverseManager {
         org.hkrpg.server.protocol.Universe46.syncPending(player);
         return List.copyOf(run.getOffers());
       }
+      if (RogueTutorialCombat.applies(run)) return List.of();
       if (!run.getSelectionRooms().add(run.getSiteId())) return List.of();
       var consumed = createBlessingOffer(run, null, true);
       player.save();
@@ -564,26 +565,26 @@ public final class UniverseManager {
 
   private record StoryOffer(boolean created, Set<Integer> consumed) {}
 
-  private StoryOffer offerFirstStoryBlessing(GameplayState.RogueRun run) {
-    var next = RogueFirstStoryCombat.next(player);
+  private StoryOffer offerTutorialBlessing(GameplayState.RogueRun run) {
+    var next = RogueTutorialCombat.next(player);
     if (next.isEmpty()) return new StoryOffer(false, Set.of());
     var consumed = createBlessingOffer(run, null, true);
     if (run.getOffers().isEmpty()) return new StoryOffer(false, Set.of());
-    run.getFirstStoryBlessingReceipts().put(next.getAsInt(), run.getSelectionId());
+    RogueTutorialCombat.receipts(run).put(next.getAsInt(), run.getSelectionId());
     return new StoryOffer(true, consumed);
   }
 
-  /** Restore a deferred first-story menu after normal login or a saved encounter. */
+  /** Restore earned tutorial menus after login or a saved encounter; kept name for existing callers. */
   public void restoreFirstStoryBlessings() {
     synchronized (player) {
-      if (!RogueFirstStoryCombat.inContext(player)) return;
+      if (!RogueTutorialCombat.inContext(player)) return;
       var run = player.getGameplay().getRogue();
       var before = GSON.fromJson(GSON.toJson(player.getGameplay()), GameplayState.class);
       boolean changed;
       StoryOffer offer;
       try {
-        changed = RogueFirstStoryCombat.reconcile(player);
-        offer = offerFirstStoryBlessing(run);
+        changed = RogueTutorialCombat.reconcile(player);
+        offer = offerTutorialBlessing(run);
         if (changed || offer.created()) player.save();
       } catch (RuntimeException failed) {
         player.getGameplay().restoreMiracleShop(before);
@@ -592,7 +593,7 @@ public final class UniverseManager {
       offer.consumed().forEach(
           id -> org.hkrpg.server.protocol.Universe46.syncMiracle(player, id, false, 0));
       if (offer.created()) org.hkrpg.server.protocol.Universe46.syncPending(player);
-      if (!run.getCleared().contains(run.getSiteId()) && RogueFirstStoryCombat.canRecoverClear(player)
+      if (!run.getCleared().contains(run.getSiteId()) && RogueTutorialCombat.canRecoverClear(player)
           && run.clear()) {
         try {
           player.save();
@@ -604,8 +605,8 @@ public final class UniverseManager {
       }
       var site = site(run.getMapId(), run.getSiteId());
       if (run.getCleared().contains(run.getSiteId()) && !run.pending()
-          && !RogueFirstStoryCombat.hasOutstanding(player)
-          && RogueFirstStoryCombat.allEncountersDefeated(player)
+          && !RogueTutorialCombat.hasOutstanding(player)
+          && RogueTutorialCombat.allEncountersDefeated(player)
           && site != null && site.NextSiteIDList() != null && site.NextSiteIDList().isEmpty())
         finishRun(FINISHED);
     }
@@ -809,7 +810,7 @@ public final class UniverseManager {
           emu.lunarcore.data.GameData.getMazeBuffExcelMap().get(buff, run.offerLevel(buff));
       if (binding == null || binding.getID() != buff || binding.getLv() != run.offerLevel(buff))
         return Retcode.REQ_PARA_INVALID;
-      var storyGroup = RogueFirstStoryCombat.current(player, selectionId);
+      var storyGroup = RogueTutorialCombat.current(player, selectionId);
       StoryOffer nextStoryOffer = new StoryOffer(false, Set.of());
       boolean storyFinished = false;
       if (!RogueDialogueRewards.acquireBlessing(player, selectionId, buff)) {
@@ -818,13 +819,13 @@ public final class UniverseManager {
           run.select(buff);
           if (storyGroup.isPresent()) {
             storyFinished = run.getOffers().isEmpty();
-            run.getFirstStoryBlessingReceipts().put(storyGroup.getAsInt(),
+            RogueTutorialCombat.receipts(run).put(storyGroup.getAsInt(),
                 storyFinished ? -1 : run.getSelectionId());
           }
           run.activateResonance(buff);
           player.getGameplay().getRogueCollectedBuffs().add(buff);
           RogueResonance.queue(run);
-          nextStoryOffer = offerFirstStoryBlessing(run);
+          nextStoryOffer = offerTutorialBlessing(run);
           player.save();
         } catch (RuntimeException failed) {
           player.getGameplay().restoreMiracleShop(before);
@@ -833,13 +834,13 @@ public final class UniverseManager {
       }
       player.getQuestManager().onRogueHandbookProgress();
       org.hkrpg.server.protocol.Universe46.syncBlessing(player, buff, selectionId);
-      if (storyFinished) RogueFirstStoryCombat.syncTrigger(player, storyGroup.getAsInt());
+      if (storyFinished) RogueTutorialCombat.syncTrigger(player, storyGroup.getAsInt());
       nextStoryOffer.consumed().forEach(
           id -> org.hkrpg.server.protocol.Universe46.syncMiracle(player, id, false, 0));
       var site = site(run.getMapId(), run.getSiteId());
       if (storyGroup.isPresent() && run.getCleared().contains(run.getSiteId())
-          && !run.pending() && !RogueFirstStoryCombat.hasOutstanding(player)
-          && RogueFirstStoryCombat.allEncountersDefeated(player)
+          && !run.pending() && !RogueTutorialCombat.hasOutstanding(player)
+          && RogueTutorialCombat.allEncountersDefeated(player)
           && site != null && site.NextSiteIDList() != null && site.NextSiteIDList().isEmpty())
         finishRun(FINISHED);
       org.hkrpg.server.protocol.Universe46.syncMap(player);
