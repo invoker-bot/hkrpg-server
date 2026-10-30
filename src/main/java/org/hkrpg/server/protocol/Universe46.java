@@ -140,6 +140,13 @@ public final class Universe46 {
         int area = number(request, "area_id");
         boolean secondEntry = area == 100
             && org.hkrpg.server.gameplay.RogueSecondStoryEntry.inProgress(player);
+        @SuppressWarnings("unchecked")
+        var ids = (List<Integer>) value(request, "NOEPBNMJFGL");
+        // Verified from command 1805 at the authored office entrance (2026-10-30):
+        // packed field 4 = [4000004,4000001,4000002], not unfinished story IDs.
+        @SuppressWarnings("unchecked")
+        var trials = (List<Integer>) request.getField(request.getDescriptorForType().findFieldByNumber(4));
+        int aeon = number(request, "AFEMBLFCCCH");
         boolean valid =
             request.getUnknownFields().asMap().isEmpty()
                 && only(
@@ -150,9 +157,8 @@ public final class Universe46 {
                     "JKPIPNMGGOA",
                     "unfinished_story_line_id_list")
                 && ((List<?>) value(request, "JKPIPNMGGOA")).isEmpty()
-                && ((List<?>) value(request, "unfinished_story_line_id_list")).isEmpty();
-        @SuppressWarnings("unchecked")
-        var ids = (List<Integer>) value(request, "NOEPBNMJFGL");
+                && (trials.isEmpty() || secondEntry && ids.isEmpty() && aeon == 0
+                    && org.hkrpg.server.gameplay.RogueSecondStoryEntry.acceptsClientTrials(player, trials));
         result =
             !valid
                 ? Retcode.REQ_PARA_INVALID
@@ -161,9 +167,9 @@ public final class Universe46 {
                         || season.RogueAreaIDList() == null
                         || !season.RogueAreaIDList().contains(area)
                     ? Retcode.ROGUE_AREA_INVALID
-                    : player.getUniverseManager().start(area, ids, number(request, "AFEMBLFCCCH"), false);
-        if (secondEntry) SceneActionDiagnostics46.rogueEntry(session, area, ids,
-            (List<?>) value(request, "JKPIPNMGGOA"), request.getUnknownFields().asMap().keySet(), result);
+                    : player.getUniverseManager().start(area, ids, aeon, false);
+        if (secondEntry) SceneActionDiagnostics46.rogueEntry(session, area, ids, trials, aeon,
+            (List<?>) value(request, "JKPIPNMGGOA"), request.getUnknownFields().asMap().keySet(), valid, result);
       } else {
         boolean valid =
             request.getUnknownFields().asMap().isEmpty()

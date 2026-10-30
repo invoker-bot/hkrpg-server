@@ -8,6 +8,9 @@ import emu.lunarcore.data.config.GroupInfo;
 import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.data.excel.MapEntranceExcel;
 import emu.lunarcore.data.excel.PropExcel;
+import emu.lunarcore.data.excel.SpecialAvatarExcel;
+import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.player.PlayerGender;
 import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.entity.EntityProp;
@@ -19,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.hkrpg.server.protocol.Universe46;
 
 /** The completed first test and the second test's active entrance are explicit fixtures. */
@@ -35,10 +40,19 @@ class RogueSecondStoryOffice46Test {
   FloorInfo previousFloor;
   MapEntranceExcel previousEntry;
   PropExcel previousProp;
+  final java.util.List<SpecialAvatarExcel> previousTrials = new java.util.ArrayList<>();
 
   @BeforeEach
   void setup() throws Exception {
     fixture.prepare();
+    previousTrials.addAll(GameData.getSpecialAvatarExcelMap().values());
+    GameData.getSpecialAvatarExcelMap().values().clear();
+    try (var input = getClass().getResourceAsStream("/fixtures/rogue-second-story-trials-4.6.json")) {
+      assertNotNull(input);
+      var source = com.google.gson.JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8));
+      for (var row : source.getAsJsonObject().getAsJsonArray("rows"))
+        GameData.getSpecialAvatarExcelMap().add(fixture.gson.fromJson(row, SpecialAvatarExcel.class));
+    }
     var first = fixture.actor.getGameplay().getMainMissions().get(4030001);
     assertTrue(first.advance(1, 1, 100));
     fixture.actor.getGameplay().getMainMissions().put(4030002, new QuestState(4030002));
@@ -99,6 +113,8 @@ class RogueSecondStoryOffice46Test {
 
   @AfterEach
   void cleanup() {
+    GameData.getSpecialAvatarExcelMap().values().clear();
+    previousTrials.forEach(GameData.getSpecialAvatarExcelMap()::add);
     if (previousFloor == null) GameData.getFloorInfos().remove("P80001_F80001002");
     else GameData.getFloorInfos().put("P80001_F80001002", previousFloor);
     if (previousEntry == null) GameData.getMapEntranceExcelMap().keySet().remove(8000102);
@@ -184,7 +200,82 @@ class RogueSecondStoryOffice46Test {
   }
 
   @Test
-  void capturedEmptyNativeStartGetsARealResponseAndSecondMap() throws Exception {
+  void emptyNativeStartGetsARealResponseAndSecondMap() throws Exception {
+    assertEquals(0, nativeStart(List.of(), List.of(), 0));
+    assertEquals(2, fixture.actor.getGameplay().getRogue().getMapId());
+    assertEquals(201, fixture.actor.getGameplay().getRogue().getRoomId());
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {4000003, 4000004})
+  void observedTrialWireFieldEntersSecondMapWithoutChangingOwnedParty(int protagonist) throws Exception {
+    gender(protagonist);
+    var normal = fixture.actor.getCurrentLineup();
+    var roster = List.copyOf(normal.getAvatars());
+    var owned = java.util.Set.copyOf(fixture.actor.getAvatars().getAvatars().keySet());
+    // Live command 1805: field 10 = 100, packed field 4 = [4000004,4000001,4000002].
+    // This field is wrongly named unfinished_story_line_id_list in the frozen descriptor.
+    assertEquals(0, nativeStart(List.of(protagonist, 4000001, 4000002), List.of(), 0));
+    var run = fixture.actor.getGameplay().getRogue();
+    assertEquals(2, run.getMapId());
+    assertEquals(201, run.getRoomId());
+    assertEquals(roster, run.getRoster(), "Documented formal-party compatibility remains explicit");
+    assertEquals(roster, normal.getAvatars());
+    assertEquals(owned, fixture.actor.getAvatars().getAvatars().keySet());
+    assertTrue(fixture.actor.getAvatars().getTempAvatars().isEmpty());
+    var saved = fixture.gson.fromJson(fixture.gson.toJson(run), GameplayState.RogueRun.class);
+    saved.setInside(false);
+    fixture.actor.getGameplay().setRogue(saved);
+    assertEquals(Retcode.SUCC, fixture.actor.getUniverseManager().resume(100, false));
+    assertEquals(run.getRunId(), saved.getRunId());
+    assertEquals(roster, saved.getRoster());
+    assertEquals(-42980, fixture.actor.getPos().getX());
+  }
+
+  @Test
+  void trialFieldRejectsWrongGenderDuplicatesUnknownAndIncompleteCombinations() throws Exception {
+    gender(4000004);
+    var prior = fixture.actor.getGameplay().getRogue();
+    for (var trials : List.of(List.of(4000003, 4000001, 4000002),
+        List.of(4000004, 4000001, 4000001), List.of(4000004, 4000001, 9999999),
+        List.of(4000004, 4000001), List.of(4030002))) {
+      assertEquals(Retcode.REQ_PARA_INVALID.getVal(), nativeStart(trials, List.of(), 0));
+      assertSame(prior, fixture.actor.getGameplay().getRogue());
+    }
+    assertEquals(0, fixture.actor.starts);
+  }
+
+  @Test
+  void trialFieldCannotAuthorizeAnotherMissionOrMissingTrialSource() throws Exception {
+    gender(4000004);
+    var prior = fixture.actor.getGameplay().getRogue();
+    var mission = fixture.actor.getGameplay().getMainMissions().remove(4030002);
+    assertEquals(Retcode.REQ_PARA_INVALID.getVal(), nativeStart(List.of(4000004, 4000001, 4000002), List.of(), 0));
+    fixture.actor.getGameplay().getMainMissions().put(4030002, mission);
+    GameData.getSpecialAvatarExcelMap().values().removeIf(r -> r.getId() == 4000001);
+    assertEquals(Retcode.REQ_PARA_INVALID.getVal(), nativeStart(List.of(4000004, 4000001, 4000002), List.of(), 0));
+    assertSame(prior, fixture.actor.getGameplay().getRogue());
+    assertEquals(0, fixture.actor.starts);
+  }
+
+  @Test
+  void trialFieldCannotBeMixedWithFormalSelectionOrPathChoice() throws Exception {
+    gender(4000004);
+    var trials = List.of(4000004, 4000001, 4000002);
+    var prior = fixture.actor.getGameplay().getRogue();
+    assertEquals(Retcode.REQ_PARA_INVALID.getVal(), nativeStart(trials, List.of(199961), 0));
+    assertEquals(Retcode.REQ_PARA_INVALID.getVal(), nativeStart(trials, List.of(), 1));
+    assertSame(prior, fixture.actor.getGameplay().getRogue());
+    assertEquals(0, fixture.actor.starts);
+  }
+
+  private void gender(int protagonist) throws Exception {
+    var field = Player.class.getDeclaredField("gender");
+    field.setAccessible(true);
+    field.set(fixture.actor, protagonist == 4000003 ? PlayerGender.GENDER_MAN : PlayerGender.GENDER_WOMAN);
+  }
+
+  private int nativeStart(List<Integer> trials, List<Integer> formal, int aeon) throws Exception {
     var original = fixture.actor.actual;
     var scene = new Scene(fixture.actor, original.getExcel(), 80112001) {
       @Override public SceneInfo toProto() {
@@ -206,14 +297,18 @@ class RogueSecondStoryOffice46Test {
     try {
       var descriptor = session.getProtocol().clientSchema().message("StartRogueCsReq");
       var request = com.google.protobuf.DynamicMessage.newBuilder(descriptor)
-          .setField(descriptor.findFieldByName("area_id"), 100).build();
+          .setField(descriptor.findFieldByName("area_id"), 100)
+          .setField(descriptor.findFieldByName("AFEMBLFCCCH"), aeon);
+      for (int id : formal) request.addRepeatedField(descriptor.findFieldByName("NOEPBNMJFGL"), id);
+      // Use the observed wire number rather than the misleading semantic name.
+      for (int id : trials) request.addRepeatedField(descriptor.findFieldByNumber(4), id);
+      if (!trials.isEmpty() && formal.isEmpty() && aeon == 0 && trials.size() == 3)
+        assertEquals(16, request.build().toByteArray().length);
       assertTrue(Universe46.handle(session,
-          session.getProtocol().clientCommand("StartRogueCsReq"), request.toByteArray()));
+          session.getProtocol().clientCommand("StartRogueCsReq"), request.build().toByteArray()));
       assertEquals("StartRogueScRsp", session.name);
       var response = session.getProtocol().clientSchema().parse(session.name, session.response);
-      assertEquals(0, response.getField(response.getDescriptorForType().findFieldByName("retcode")));
-      assertEquals(2, fixture.actor.getGameplay().getRogue().getMapId());
-      assertEquals(201, fixture.actor.getGameplay().getRogue().getRoomId());
+      return (Integer) response.getField(response.getDescriptorForType().findFieldByName("retcode"));
     } finally {
       GameplayDefinitions.rogueSeasons.remove(season);
     }

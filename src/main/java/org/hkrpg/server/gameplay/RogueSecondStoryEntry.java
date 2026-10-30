@@ -8,6 +8,7 @@ import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.scene.Scene;
 import java.util.Map;
+import java.util.List;
 
 /** The office prop and the three authored rooms for the second tutorial. */
 public final class RogueSecondStoryEntry {
@@ -41,6 +42,36 @@ public final class RogueSecondStoryEntry {
         && entry.getProgress() == 1 && inProgress(player)
         && !player.getGameplay().getCancelledSubs().contains(403000202)
         && MissionStateRecords.doing(player.getGameplay().getSubMissions().get(403000202), 403000202, 1);
+  }
+
+  /**
+   * CN 4.6 StartRogue field 4 carries the authored trial selection, despite the imported
+   * descriptor naming it unfinished_story_line_id_list. Recognize only this entrance's
+   * gender-filtered script roster; the existing formal-party compatibility is unchanged.
+   */
+  public static boolean acceptsClientTrials(Player player, List<Integer> trials) {
+    int protagonist = switch (player.getGender()) {
+      case GENDER_MAN -> 4000003;
+      case GENDER_WOMAN -> 4000004;
+      default -> 0;
+    };
+    if (protagonist == 0 || !List.of(protagonist, 4000001, 4000002).equals(trials)
+        || !awaiting(player) || !inOffice(player)) return false;
+    for (int id : trials) {
+      var row = player.getTrialManager().specialRow(id);
+      int actor = switch (id) {
+        case 4000001 -> 1002;
+        case 4000002 -> 1001;
+        case 4000003 -> 8001;
+        case 4000004 -> 8002;
+        default -> 0;
+      };
+      if (row == null || row.getId() != id || row.getAvatarID() != actor
+          || row.getLevel() != 6 || row.isIsUseWorldLevel()
+          || !"TYPE_TRIAL".equals(row.getType())
+          || !player.getTrialManager().matchesGender(actor)) return false;
+    }
+    return true;
   }
 
   public static boolean inOffice(Player player) {
