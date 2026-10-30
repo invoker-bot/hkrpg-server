@@ -314,3 +314,7 @@ Browser 插件不可用，使用已有 Playwright 与已安装 Chrome；隔离�
 正式 `http://127.0.0.1:18080/gm` 使用同一 Chrome / Playwright 再验 1505×1045 与 390×844：实际 53 个池的 ID 集合正确，常驻显示 14 个五星候选，三月七/丹恒只在四星区；全部实际候选星级、活动 UP/非 UP 详情、历史筛选和取消停止通过。页面身份、非空内容、无错误覆盖、相关控制台、截图和交互均通过，手机无整页横向溢出；favicon 404 作为既有无关项单列。正式启停与无效池注入未重复执行，已由同包的隔离网页及原生检查覆盖。
 
 发布前后只读 Compose 检查通过，包含挂载、配置、产物、本机端口、CN/OS Dispatch 与 UDP 心跳。最终汇总为 `gm-rarity-20261024/state.json`、`preservation.json`、`browser-live/browser-qa.json`；截图为 `browser-live/desktop-rarity.png`、`browser-live/mobile-rarity.png`；Compose 记录为 `build/gm-rarity-compose-before.json` 和 `build/gm-rarity-compose-after.json`。实际游戏客户端抽取画面及官服概率一致性仍需单独验收。
+
+## 卡池批量管理与缺失配置
+
+已配置卡池可按版本筛选、从早到晚排列，并勾选批量启用或停止；“补齐缺失配置”会追加新手池及当前资源支持的后续活动模板，新增默认停用，现有配置保留。首次启用新活动模板可设置开放天数，详情与验证边界见 [批量卡池说明](gm-banner-batch.md)。

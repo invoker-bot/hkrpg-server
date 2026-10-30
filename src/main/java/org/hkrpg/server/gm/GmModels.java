@@ -47,7 +47,15 @@ public final class GmModels {
       String confirm,
       String bannerKey,
       Integer durationDays,
-      Integer bannerId) {
+      Integer bannerId,
+      List<Integer> bannerIds) {
+    public Operation(String requestId, String action, int uid, int itemId, int amount,
+        int level, int rank, String title, String sender, String content,
+        List<Attachment> attachments, String command, String confirm, String bannerKey,
+        Integer durationDays, Integer bannerId) {
+      this(requestId, action, uid, itemId, amount, level, rank, title, sender, content,
+          attachments, command, confirm, bannerKey, durationDays, bannerId, null);
+    }
     public Operation(String requestId, String action, int uid, int itemId, int amount,
         int level, int rank, String title, String sender, String content,
         List<Attachment> attachments, String command, String confirm) {
@@ -60,7 +68,16 @@ public final class GmModels {
       String version, String phase, List<BannerItem> up5, List<BannerItem> up4,
       String state, String status, long beginTime, long endTime, boolean permanent,
       boolean disabled, boolean canStop, boolean canEnable,
-      List<BannerItem> pool5, List<BannerItem> pool4, List<String> poolIssues, boolean pullable) {
+      List<BannerItem> pool5, List<BannerItem> pool4, List<String> poolIssues, boolean pullable,
+      boolean needsSchedule) {
+    public CurrentBannerRow(int id, String type, String name, String historyKey,
+        String version, String phase, List<BannerItem> up5, List<BannerItem> up4,
+        String state, String status, long beginTime, long endTime, boolean permanent,
+        boolean disabled, boolean canStop, boolean canEnable,
+        List<BannerItem> pool5, List<BannerItem> pool4, List<String> poolIssues, boolean pullable) {
+      this(id,type,name,historyKey,version,phase,up5,up4,state,status,beginTime,endTime,
+          permanent,disabled,canStop,canEnable,pool5,pool4,poolIssues,pullable,false);
+    }
     public CurrentBannerRow(int id, String type, String name, String historyKey,
         String version, String phase, List<BannerItem> up5, List<BannerItem> up4,
         String state, String status, long beginTime, long endTime, boolean permanent,

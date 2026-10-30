@@ -15,6 +15,8 @@ public class GachaBanner {
     private int[] rateUpItems4;
     private int eventChance = 50;
     private boolean disabled;
+    // Bundled but not scheduled yet; first explicit GM enable assigns its opening window.
+    private boolean gmTemplatePending;
 
     public boolean isActive(long now) {
         return !disabled && (gachaType == GachaType.Normal || gachaType == GachaType.Newbie

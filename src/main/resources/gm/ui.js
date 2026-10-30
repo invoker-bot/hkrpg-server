@@ -73,7 +73,7 @@ export async function confirmOperation(title,details,dangerous=false) {
   });
 }
 export function table(headers,rows) {
-  return el('div',{class:'table-scroll'},el('table',{},el('thead',{},el('tr',{},...headers.map(text=>el('th',{scope:'col',text})))),el('tbody',{},...rows)));
+  return el('div',{class:'table-scroll'},el('table',{},el('thead',{},el('tr',{},...headers.map(text=>text instanceof Node?el('th',{scope:'col'},text):el('th',{scope:'col',text})))),el('tbody',{},...rows)));
 }
 export function renderSummary(inspector,state) {
   inspector.replaceChildren(el('p',{class:'eyebrow',text:'当前目标'}));

@@ -68,7 +68,7 @@ class GmRoutesTest {
                     "active","正在开放",0,0,true,false,true,false),
                 new CurrentBannerRow(4001,"Newbie","新手跃迁","","","",List.of(),List.of(),
                     "active","正在开放",0,0,true,false,true,false),
-                new CurrentBannerRow(99999,"AvatarUp","自定义卡池 #99999","","","",
+                new CurrentBannerRow(99999,"AvatarUp","自定义卡池 #99999","","1.1","上半",
                     List.of(new BannerItem(1006,"银狼")),List.of(),"stopped","已停止",1,2000000000,false,true,false,true));
           }
 
@@ -119,6 +119,27 @@ class GmRoutesTest {
         .getAsJsonObject("data").getAsJsonArray("items").size());
     assertEquals(400, request("GET", "/gm/api/banners/current?type=unknown", null, true).statusCode());
     assertEquals(400, request("GET", "/gm/api/banners/current?state=unknown", null, true).statusCode());
+    var version=json(request("GET","/gm/api/banners/current?version=1.1",null,true)).getAsJsonObject("data");
+    assertEquals(1,version.get("total").getAsInt());
+    assertEquals("1.1",version.getAsJsonArray("versions").get(0).getAsString());
+    assertEquals(3,version.get("missingCount").getAsInt());
+    assertEquals(400,request("GET","/gm/api/banners/current?version=bad",null,true).statusCode());
+  }
+
+  @Test void batchAndCatalogEndpointsUseExistingSessionCsrfAndReplayProtection() throws Exception {
+    openSession();
+    for(String action:List.of("banner-batch-enable","banner-batch-stop","banner-complete")) {
+      String body="{\"requestId\":\""+UUID.randomUUID()+"\",\"action\":\""+action+"\",\"bannerIds\":[1001,4001],\"durationDays\":7}";
+      int before=executions.get();
+      assertEquals(401,request("POST","/gm/api/operate",body,false).statusCode());
+      var withoutCsrf=HttpRequest.newBuilder(URI.create(base+"/gm/api/operate"))
+          .header("Cookie",cookie).header("Origin",base).header("Content-Type","application/json")
+          .POST(HttpRequest.BodyPublishers.ofString(body)).build();
+      assertEquals(403,client.send(withoutCsrf,HttpResponse.BodyHandlers.ofString()).statusCode());
+      assertEquals(200,request("POST","/gm/api/operate",body,true).statusCode());
+      assertEquals(200,request("POST","/gm/api/operate",body,true).statusCode());
+      assertEquals(before+1,executions.get());
+    }
   }
 
   @Test

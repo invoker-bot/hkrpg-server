@@ -165,6 +165,10 @@ final class GmJournal {
           + (op.durationDays() == null ? 30 : op.durationDays()) + " 天 · 全服";
       case "banner-stop" -> "停止卡池 #" + op.bannerId() + " · 全服";
       case "banner-enable" -> "启用卡池 #" + op.bannerId() + " · 原排期 · 全服";
+      case "banner-batch-stop" -> "批量停止卡池 " + op.bannerIds() + " · 全服";
+      case "banner-batch-enable" -> "批量启用卡池 " + op.bannerIds() + " · 新模板 "
+          + (op.durationDays() == null ? 30 : op.durationDays()) + " 天 · 全服";
+      case "banner-complete" -> "补齐缺失卡池配置 · 新增默认停用 · 全服";
       case "command" -> op.command();
       case "heal" -> "恢复生命";
       case "refill" -> "补满秘技点";

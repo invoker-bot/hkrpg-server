@@ -172,7 +172,8 @@ final class LiveGmBackend implements GmBackend {
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
     if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
-    if (Set.of("banner-stop", "banner-enable").contains(operation.action())) return banners().setEnabled(operation);
+    if (Set.of("banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable").contains(operation.action())) return banners().setEnabled(operation);
+    if (operation.action().equals("banner-complete")) return banners().completeCatalog(operation);
     if (operation.action().equals("command")) return command(operation);
     return withPlayer(
         operation.uid(),

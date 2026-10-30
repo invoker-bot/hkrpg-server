@@ -15,15 +15,28 @@ final class GmValidation {
       fail("请求编号格式不正确。");
     }
     if (op.action() == null
-        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable").contains(op.action()))
+        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete").contains(op.action()))
       fail("未知操作。");
-    if (op.uid() < 0 || !Set.of("command", "banner-rerun", "banner-stop", "banner-enable").contains(op.action()) && op.uid() == 0)
+    if (op.uid() < 0 || !op.action().startsWith("banner-") && !op.action().equals("command") && op.uid() == 0)
       fail("请选择目标玩家。");
     switch (op.action()) {
+      case "banner-batch-stop", "banner-batch-enable" -> {
+        if (op.uid() != 0) fail("卡池启停是全服操作，无需指定玩家。");
+        if (op.bannerId() != null || op.bannerIds() == null || op.bannerIds().isEmpty()
+            || op.bannerIds().size() > 500) fail("请选择 1–500 个卡池。");
+        var ids = new java.util.HashSet<Integer>();
+        for (var id : op.bannerIds())
+          if (id == null || id <= 0 || !ids.add(id)) fail("卡池列表包含无效或重复的 ID。");
+        range(op.durationDays() == null ? 30 : op.durationDays(), 1, 365, "首次开放天数");
+      }
+      case "banner-complete" -> {
+        if (op.uid() != 0) fail("补齐卡池是全服操作，无需指定玩家。");
+      }
       case "banner-stop", "banner-enable" -> {
         if (op.uid() != 0) fail("卡池启停是全服操作，无需指定玩家。");
         if (op.bannerId() == null) fail("请选择当前卡池。");
         range(op.bannerId(), 1, Integer.MAX_VALUE, "卡池 ID");
+        range(op.durationDays() == null ? 30 : op.durationDays(), 1, 365, "首次开放天数");
       }
       case "banner-rerun" -> {
         if (op.uid() != 0) fail("卡池复刻是全服操作，无需指定玩家。");

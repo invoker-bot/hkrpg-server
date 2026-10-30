@@ -117,18 +117,28 @@ public final class GmRoutes {
             }));
     app.get("/gm/api/banners/current", safe(ctx -> {
       auth.require(ctx, false);
-      String q = query(ctx, "q"), type = query(ctx, "type"), state = query(ctx, "state");
+      String q = query(ctx, "q"), type = query(ctx, "type"), state = query(ctx, "state"), version = query(ctx, "version");
+      if (!version.isEmpty() && !version.matches("[0-9]{1,2}\\.[0-9]{1,2}"))
+        throw new GmError(400, "版本筛选格式不正确。");
       if (!type.isEmpty() && !Set.of("normal", "newbie", "avatarup", "weaponup").contains(type))
         throw new GmError(400, "卡池类型不正确。");
       if (!state.isEmpty() && !Set.of("active", "stopped", "scheduled", "expired").contains(state))
         throw new GmError(400, "卡池状态不正确。");
       int offset = integer(ctx, "offset", 0, 0, 1_000_000), limit = integer(ctx, "limit", 30, 1, 100);
-      var filtered = backend.currentBanners().stream()
+      var current = backend.currentBanners();
+      var filtered = current.stream()
+          .filter(b -> version.isEmpty() || version.equals(b.version()))
           .filter(b -> type.isEmpty() || type.equals(b.type().toLowerCase(Locale.ROOT)))
           .filter(b -> state.isEmpty() || state.equals(b.state()))
           .filter(b -> q.isEmpty() || (b.id() + " " + b.name() + " " + b.up5() + " " + b.up4())
               .toLowerCase(Locale.ROOT).contains(q)).toList();
-      ok(ctx, Map.of("total", filtered.size(),
+      var versions = current.stream().map(CurrentBannerRow::version).filter(v -> !v.isBlank()).distinct()
+          .sorted(java.util.Comparator.comparingInt((String v) -> Integer.parseInt(v.split("\\.")[0]))
+              .thenComparingInt(v -> Integer.parseInt(v.split("\\.")[1]))).toList();
+      var catalog = new java.util.HashSet<Integer>(List.of(1001,4001));
+      backend.bannerHistory().forEach(b -> catalog.add(b.id()));
+      current.forEach(b -> catalog.remove(b.id()));
+      ok(ctx, Map.of("total", filtered.size(), "versions", versions, "missingCount", catalog.size(),
           "items", filtered.stream().skip(offset).limit(limit).toList()));
     }));
     app.get("/gm/api/banners/history", safe(ctx -> {

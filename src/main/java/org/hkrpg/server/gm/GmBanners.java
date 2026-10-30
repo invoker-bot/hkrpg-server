@@ -67,18 +67,29 @@ final class GmBanners {
               : template.name() + (matches ? "" : "（本服配置）");
         };
         return new CurrentBannerRow(live.getId(), live.getGachaType().name(), name,
-            template == null ? "" : template.key(), matches ? template.version() : "",
-            matches ? template.phase() : "", currentItems(permanent ? pool.fiveStars() : pool.up5(), names),
+            template == null ? "" : template.key(), template == null ? "" : template.version(),
+            template == null ? "" : template.phase(), currentItems(permanent ? pool.fiveStars() : pool.up5(), names),
             currentItems(permanent ? pool.fourStars() : pool.up4(), names), state, switch (state) {
               case "stopped" -> "已停止"; case "active" -> "正在开放";
               case "scheduled" -> "尚未开放"; default -> "已到期";
             }, live.getBeginTime(), live.getEndTime(), permanent, live.isDisabled(),
             !live.isDisabled() && !state.equals("expired"),
-            live.isDisabled() && (permanent || live.getEndTime() > now),
-            currentItems(pool.fiveStars(), names), currentItems(pool.fourStars(), names), pool.issues(), pool.canPull());
+            live.isDisabled() && (permanent || live.isGmTemplatePending() || live.getEndTime() > now),
+            currentItems(pool.fiveStars(), names), currentItems(pool.fourStars(), names), pool.issues(), pool.canPull(), live.isGmTemplatePending());
       }).sorted(Comparator.comparing((CurrentBannerRow b) -> !b.permanent())
+          .thenComparingInt(b -> versionPart(b.version(), 0))
+          .thenComparingInt(b -> versionPart(b.version(), 1))
+          .thenComparingInt(b -> phaseOrder(b.phase()))
           .thenComparingInt(CurrentBannerRow::id)).toList();
     }
+  }
+
+  private static int versionPart(String version, int index) {
+    return version.isBlank() ? Integer.MAX_VALUE : Integer.parseInt(version.split("\\.")[index]);
+  }
+
+  private static int phaseOrder(String phase) {
+    return switch (phase) { case "全期", "上半", "第一期" -> 0; case "下半", "第二期" -> 1; case "第三期" -> 2; default -> 3; };
   }
 
   private static boolean permanent(GachaBanner banner) {
@@ -96,24 +107,60 @@ final class GmBanners {
 
   Result setEnabled(Operation operation) {
     GmValidation.validate(operation);
-    boolean enable = operation.action().equals("banner-enable");
+    boolean enable = Set.of("banner-enable", "banner-batch-enable").contains(operation.action());
+    var targets = operation.action().startsWith("banner-batch-") ? operation.bannerIds() : List.of(operation.bannerId());
     return update(operation, rows -> {
-      var row = rows.asList().stream().map(JsonElement::getAsJsonObject)
-          .filter(r -> r.get("id").getAsInt() == operation.bannerId()).findFirst()
-          .orElseThrow(() -> new GmError(409, "该卡池已不在当前配置中，请刷新列表。"));
-      var banner = JSON.fromJson(row, GachaBanner.class);
       long now = clock.instant().getEpochSecond();
-      if (banner.isDisabled() == !enable)
-        return Result.completed("卡池 #" + banner.getId() + (enable ? " 已启用。" : " 已停止。"));
-      if (enable && !permanent(banner) && banner.getEndTime() <= now)
-        throw new GmError(409, "原开放时间已到期，请重新复刻或调整排期。");
-      if (!enable && state(banner, now).equals("expired"))
-        throw new GmError(409, "卡池已到期，无需停止，请刷新列表。");
-      row.addProperty("disabled", !enable);
-      return new Result("completed", List.of(
-          (enable ? "已启用卡池 #" : "已停止卡池 #") + banner.getId(),
-          enable ? "沿用原配置与开放时间，不延长排期。" : "立即停止开放，原配置与开放时间保留。",
+      int changed = 0, scheduled = 0;
+      for (int id : targets) {
+        var row = rows.asList().stream().map(JsonElement::getAsJsonObject)
+            .filter(r -> r.get("id").getAsInt() == id).findFirst()
+            .orElseThrow(() -> new GmError(409, "卡池 #" + id + " 已不在当前配置中，请刷新列表；本批次未修改。"));
+        var banner = JSON.fromJson(row, GachaBanner.class);
+        if (banner.isDisabled() == !enable) continue;
+        if (enable && banner.isGmTemplatePending()) {
+          int days = operation.durationDays() == null ? 30 : operation.durationDays();
+          long end = now + days * 86400L;
+          if (now < 0 || end > Integer.MAX_VALUE) throw new GmError(400, "开放时间超出协议范围。");
+          row.addProperty("beginTime", now); row.addProperty("endTime", end);
+          row.addProperty("gmTemplatePending", false); scheduled++;
+        } else if (enable && !permanent(banner) && banner.getEndTime() <= now)
+          throw new GmError(409, "卡池 #" + id + " 原开放时间已到期，请重新复刻；本批次未修改。");
+        if (!enable && state(banner, now).equals("expired"))
+          throw new GmError(409, "卡池 #" + id + " 已到期，无需停止；本批次未修改。");
+        row.addProperty("disabled", !enable); changed++;
+      }
+      return new Result("completed", List.of((enable ? "已启用 " : "已停止 ") + changed + " 个卡池，"
+          + (targets.size()-changed) + " 个已处于目标状态。",
+          scheduled > 0 ? scheduled + " 个新配置已设置首次开放时间，已有排期保持原样。" : "原配置与开放时间保留。",
           "全服配置已加载，玩家保底记录保留；请重新打开游戏内跃迁页面。"));
+    });
+  }
+
+  Result completeCatalog(Operation operation) {
+    GmValidation.validate(operation);
+    return update(operation, rows -> {
+      var ids = new HashSet<Integer>(); rows.forEach(r -> ids.add(r.getAsJsonObject().get("id").getAsInt()));
+      int added = 0;
+      try (var input = GmBanners.class.getResourceAsStream("/defaults/Banners.json")) {
+        if (input == null) throw new IOException("Missing basic banner defaults");
+        var bundled = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonArray();
+        for (var element : bundled) {
+          var row = element.getAsJsonObject(); int id = row.get("id").getAsInt();
+          if ((id == 1001 || id == 4001) && ids.add(id)) {
+            var copy = row.deepCopy(); copy.addProperty("disabled", true); rows.add(copy); added++;
+          }
+        }
+      } catch (IOException failure) { throw new GmError(503, "基础卡池模板读取失败，本次未修改。"); }
+      if (!ids.containsAll(Set.of(1001,4001))) throw new GmError(503, "基础卡池模板不完整，本次未修改。");
+      for (var template : ARCHIVE) if (ids.add(template.id())) {
+        var row = new JsonObject(); row.addProperty("id",template.id()); row.addProperty("gachaType",template.type().name());
+        row.addProperty("beginTime",0); row.addProperty("endTime",0); row.addProperty("disabled",true);
+        row.addProperty("gmTemplatePending",true); row.addProperty("eventChance",50);
+        row.add("rateUpItems5",JSON.toJsonTree(ids(template.up5()))); row.add("rateUpItems4",JSON.toJsonTree(ids(template.up4())));
+        rows.add(row); added++;
+      }
+      return Result.completed("已补齐 " + added + " 个缺失卡池，新增配置均为停用；现有配置、排期和玩家保底记录保留。");
     });
   }
 
@@ -136,6 +183,7 @@ final class GmBanners {
       replacement.add("rateUpItems4", JSON.toJsonTree(ids(template.up4())));
       replacement.addProperty("eventChance", 50);
       replacement.addProperty("disabled", false);
+      replacement.addProperty("gmTemplatePending", false);
       boolean found = false;
       for (var element : rows) {
         var row = element.getAsJsonObject();

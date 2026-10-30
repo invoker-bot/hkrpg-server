@@ -132,7 +132,7 @@ def main():
             else:
                 assert all(row['gacha_id'] not in (1001, 2001) for row in snapshot['gacha']['gacha_info_list'])
                 stopped = request('/gm/api/banners/current?state=stopped')['data']['items']
-                assert {row['id'] for row in stopped} == {1001, 2001}
+                assert {row['id'] for row in stopped} >= {1001, 2001}
                 operation('banner-enable', uid=0, bannerId=1001)
                 operation('banner-enable', uid=0, bannerId=2001)
                 snapshot = wait_for(lambda: (lambda data: data if {row['gacha_id'] for row in data['gacha']['gacha_info_list']} >= {1001, 2001} else None)(json.loads((directory / 'snapshot.json').read_text(encoding='utf-8'))), 30)
@@ -140,6 +140,16 @@ def main():
                 assert (native_banner['begin_time'], native_banner['end_time']) == banner_window
             assert len(request('/gm/api/players')['data']) == 1
             if iteration == 0:
+                latest = request('/gm/api/banners/history?version=4.6&type=avatarup&limit=1')['data']['items'][0]
+                latest_id = latest['id']
+                operation('banner-batch-enable', uid=0, bannerIds=[4001, latest_id], durationDays=5)
+                snapshot = wait_for(lambda: (lambda data: data if {row['gacha_id'] for row in data['gacha']['gacha_info_list']} >= {4001, latest_id} else None)(json.loads((directory / 'snapshot.json').read_text(encoding='utf-8'))), 30)
+                later_banner = next(row for row in snapshot['gacha']['gacha_info_list'] if row['gacha_id'] == latest_id)
+                assert later_banner['end_time'] - later_banner['begin_time'] == 5 * 86400
+                assert later_banner['ONIHOMCELJK'] == [item['id'] for item in latest['up5']]
+                operation('banner-batch-stop', uid=0, bannerIds=[4001, latest_id])
+                operation('banner-complete', uid=0)
+                assert request('/gm/api/banners/current')['data']['missingCount'] == 0
                 operation('grant', itemId=1, amount=37, level=0, rank=0)
                 operation('grant', itemId=101, amount=37, level=0, rank=0)
                 operation('grant', itemId=211, amount=7, level=0, rank=0)

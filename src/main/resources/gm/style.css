@@ -19,3 +19,10 @@
 .banner-source{display:inline-block;margin-top:10px;color:var(--accent);font-size:13px;text-underline-offset:3px}
 
 .banner-filters > [hidden]{display:none}
+
+.banner-bulk{padding:14px;margin:14px 0;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.banner-bulk-actions,.banner-catalog{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.banner-catalog{justify-content:space-between;margin:10px 0}.banner-bulk-actions strong{margin-right:auto}.banner-bulk .field{margin:14px 0 0;max-width:360px}.banner-check{width:18px;height:18px;min-height:18px;margin:0;accent-color:var(--accent,#4bd6c7);cursor:pointer}.banner-check-cell{width:36px}.banner-results th:first-child:has(.banner-check){width:36px}.banner-results td{vertical-align:middle}.banner-bulk[hidden],.banner-catalog[hidden]{display:none}
+@media(max-width:600px){.banner-bulk-actions strong{flex-basis:100%}.banner-bulk-actions button{flex:1 1 120px}.banner-catalog button{width:100%}.banner-bulk .field{max-width:none}}
+
+.banner-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.banner-bulk .field[hidden],.banner-catalog>[hidden]{display:none}
+@media(max-width:600px){.banner-filters{grid-template-columns:1fr 1fr}}

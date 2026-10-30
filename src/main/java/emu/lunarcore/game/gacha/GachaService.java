@@ -164,6 +164,9 @@ public class GachaService extends BaseGameService {
             if (banner == null || banner.getId() <= 0 || !ids.add(banner.getId())
                     || banner.getGachaType() == null || banner.getGachaType() == GachaType.Unknown
                     || banner.getRateUpItems5() == null || banner.getRateUpItems4() == null
+                    || banner.isGmTemplatePending() && (!banner.isDisabled() || banner.getBeginTime() != 0
+                        || banner.getEndTime() != 0 || banner.getGachaType() != GachaType.AvatarUp
+                            && banner.getGachaType() != GachaType.WeaponUp)
                     || banner.getEventChance() < 0 || banner.getEventChance() > 100
                     || java.util.Arrays.stream(banner.getRateUpItems5()).anyMatch(id -> id <= 0)
                     || java.util.Arrays.stream(banner.getRateUpItems4()).anyMatch(id -> id <= 0))
