@@ -1200,6 +1200,7 @@ public final class MissionManager {
           TrialAvatarMissionConditions.satisfied(player, c);
       case "DelTrialAvatar" -> MissionTrialRemovals.satisfied(player, c);
       case "RogueExploreScore" -> RogueExploreScoreMission.satisfied(player, c);
+      case "RogueEnterRoomWithLevel", "KillMonster" -> RogueSecondStoryProgress.satisfied(player, c);
       case "ClockParkProgress" -> matchesPlace(c) && ClockParkMissionProgress.satisfied(player, c);
       case "StoryLineAddTrialAvatar" -> StoryTrialReplacement.apply(player, c);
       case "EnterRaidScene" -> new MissionRaid(player).transfer(c);
@@ -1312,6 +1313,8 @@ public final class MissionManager {
         || c.getParamIntList().length != 0
         || !c.getParamItemList().isEmpty()
         || c.getProgress() <= 0) return -1;
+    if (c.getId() == 403000220 && c.getMainMissionID() == 4030002
+        && !RogueSecondStoryProgress.finished(player)) return 0;
     long count = 0;
     for (var entry : player.getGameplay().getRogueWins().entrySet()) {
       var area = GameplayDefinitions.areas.get(entry.getKey());

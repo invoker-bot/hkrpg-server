@@ -1,3 +1,5 @@
+`RogueSecondStoryProgress` 按原始房间、进入顺序、怪物摆放和持久化胜利恢复漫游测试目标；`RogueBossEncounters` 对缺失的首领组使用限定兼容映射。首次测试和二次测试的结算分开核对，见[首领与任务恢复](rogue-second-story-boss-4.6.md)。
+
 `StoryParties` 用来源绑定的发放意图、预留角色文档 ID 与编队变更记录连接任务、角色、头像和队伍保存。`MissionRewards` 将正式角色与普通物品账本分开防重；`StoryActions` 仅恢复有来源证明的编队动作。登录补发保留已完成任务及玩家后续手动编队，兼容规则和验证边界见[剧情正式队伍说明](story-formal-party-4.6.md)。
 
 `SceneAnchors` 绑定原始球形服务器触发范围，在移动入口持久化单个实际锚点的激活，再刷新场景；地图查询和传送共读来源绑定状态。触发缓存不改变旧物件指纹，适用范围见[锚点激活说明](space-anchor-activation-4.6.md)。

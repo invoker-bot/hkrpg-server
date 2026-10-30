@@ -15,7 +15,10 @@
     "ExcelOutput/NPCMonsterData.json": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
     "ExcelOutput/StageConfig.json": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
     "ExcelOutput/MonsterConfig.json": "dfdfe23c803419c4fd96e8ef3a7bf1028c985d64135c89f5f7a43123eec703c8",
-    "ExcelOutput/MazeProp.json": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418"
+    "ExcelOutput/MazeProp.json": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001002/LevelGroup_P80001_F80001002_G29.json": "c0371dd81a74cd13fb2a9af4903d2cea48b0b3b7fadce09a2c4d1428827fedc7",
+    "ExcelOutput/RogueAreaConfig.json": "70645444c7d08c1911c57f50af8ed7084a975c0c252f0617ab6e945c11ee6932",
+    "Config/Level/Mission/4030002/MissionInfo_4030002.partial.json": "755f6d8434b8e49de2ce82f62e2bcb907ea2b1d99156a4f034afd691d12c8f64"
   },
   "records": {
     "3": {
@@ -1430,6 +1433,12 @@
         "RogueMonsterListAndWeight": {
           "20061": 1
         }
+      },
+      {
+        "RogueMonsterGroupID": 2101,
+        "RogueMonsterListAndWeight": {
+          "21011": 1
+        }
       }
     ],
     "RogueMonster.json": [
@@ -1462,6 +1471,12 @@
         "RogueMonsterID": 20061,
         "NpcMonsterID": 8012010,
         "EventID": 80020061
+      },
+      {
+        "RogueMonsterID": 21011,
+        "NpcMonsterID": 8003020,
+        "EventID": 80021011,
+        "MonsterDropType": "AreaDrop"
       }
     ],
     "NPCMonsterData.json": [
@@ -1520,6 +1535,33 @@
         "IsMazeLink": true,
         "PrototypeID": 8012030,
         "MappingInfoID": 3002
+      },
+      {
+        "ID": 8001010,
+        "NPCName": {
+          "Hash": 4913410267485439092
+        },
+        "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Minion01_00_Entity.json",
+        "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Minion01_00_Config.json",
+        "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Steer.json",
+        "MiniMapIconType": 5,
+        "Rank": "Minion",
+        "IsMazeLink": true,
+        "PrototypeID": 8001010,
+        "MappingInfoID": 3001
+      },
+      {
+        "ID": 8003020,
+        "NPCName": {
+          "Hash": 10013521999676941589
+        },
+        "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Elite01_00_Entity.json",
+        "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Elite01_00_Config.json",
+        "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Steer.json",
+        "MiniMapIconType": 5,
+        "Rank": "Elite",
+        "IsMazeLink": true,
+        "PrototypeID": 8003020
       }
     ],
     "StageConfig.json": [
@@ -1730,6 +1772,42 @@
             "Monster0": 8012010,
             "Monster1": 8012030,
             "Monster2": 8012010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 0.1,
+        "TrialAvatarList": []
+      },
+      {
+        "StageID": 80021011,
+        "StageType": "VerseSimulation",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 2,
+        "Level": 8,
+        "EliteGroup": 32006,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
           }
         ],
         "LevelLoseCondition": [],
@@ -2125,6 +2203,172 @@
           801203002
         ],
         "OverrideSkillParams": []
+      },
+      {
+        "MonsterName": {
+          "Hash": 13918336830861741821
+        },
+        "MonsterIntroduction": {
+          "Hash": 13299751638471359410
+        },
+        "MonsterStrategy": [],
+        "MonsterID": 8001010,
+        "MonsterTemplateID": 8001010,
+        "EliteGroup": 1,
+        "HardLevelGroup": 1,
+        "AttackModifyRatio": {
+          "Value": 1
+        },
+        "DefenceModifyRatio": {
+          "Value": 1
+        },
+        "HPModifyRatio": {
+          "Value": 1
+        },
+        "SpeedModifyRatio": {
+          "Value": 1
+        },
+        "StanceModifyRatio": {
+          "Value": 1
+        },
+        "StanceWeakList": [
+          "Physical",
+          "Ice"
+        ],
+        "DamageTypeResistance": [
+          {
+            "DamageType": "Fire",
+            "Value": {
+              "Value": 0.4
+            }
+          },
+          {
+            "DamageType": "Thunder",
+            "Value": {
+              "Value": 0.2
+            }
+          },
+          {
+            "DamageType": "Wind",
+            "Value": {
+              "Value": 0.2
+            }
+          },
+          {
+            "DamageType": "Quantum",
+            "Value": {
+              "Value": 0.2
+            }
+          },
+          {
+            "DamageType": "Imaginary",
+            "Value": {
+              "Value": 0.2
+            }
+          }
+        ],
+        "DebuffResist": [
+          {
+            "Key": "STAT_DOT_Burn",
+            "Value": {
+              "Value": 1
+            }
+          }
+        ],
+        "CustomValueTags": [
+          "LockTarget"
+        ],
+        "CustomValues": [],
+        "DynamicValues": [],
+        "SummonIDList": [],
+        "OverrideAIPath": "",
+        "OverrideAISkillSequence": [],
+        "AbilityNameList": [],
+        "SkillList": [
+          800101001
+        ],
+        "OverrideSkillParams": []
+      },
+      {
+        "MonsterName": {
+          "Hash": 11380886388086495789
+        },
+        "MonsterIntroduction": {
+          "Hash": 1297356319535940146
+        },
+        "MonsterStrategy": [],
+        "MonsterID": 8003020,
+        "MonsterTemplateID": 8003020,
+        "EliteGroup": 1,
+        "HardLevelGroup": 1,
+        "AttackModifyRatio": {
+          "Value": 1
+        },
+        "DefenceModifyRatio": {
+          "Value": 1
+        },
+        "HPModifyRatio": {
+          "Value": 1
+        },
+        "SpeedModifyRatio": {
+          "Value": 1
+        },
+        "StanceModifyRatio": {
+          "Value": 1
+        },
+        "StanceWeakList": [
+          "Physical",
+          "Ice",
+          "Quantum"
+        ],
+        "DamageTypeResistance": [
+          {
+            "DamageType": "Fire",
+            "Value": {
+              "Value": 0.4
+            }
+          },
+          {
+            "DamageType": "Thunder",
+            "Value": {
+              "Value": 0.2
+            }
+          },
+          {
+            "DamageType": "Wind",
+            "Value": {
+              "Value": 0.2
+            }
+          },
+          {
+            "DamageType": "Imaginary",
+            "Value": {
+              "Value": 0.2
+            }
+          }
+        ],
+        "DebuffResist": [
+          {
+            "Key": "STAT_DOT_Burn",
+            "Value": {
+              "Value": 1
+            }
+          }
+        ],
+        "CustomValueTags": [],
+        "CustomValues": [],
+        "DynamicValues": [],
+        "SummonIDList": [],
+        "OverrideAIPath": "",
+        "OverrideAISkillSequence": [],
+        "AbilityNameList": [],
+        "SkillList": [
+          800302001,
+          800302002,
+          800302003,
+          800302004
+        ],
+        "OverrideSkillParams": []
       }
     ],
     "MazeProp.json": [
@@ -2268,6 +2512,373 @@
         "PerformanceType": "B",
         "HasRendererComponent": true,
         "LodPriority": 3
+      }
+    ],
+    "29": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "Rogue_BossRoom",
+      "LevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Group_BossRoom.json",
+      "AreaAnchorName": "LevelArea_P80001_F80001002_G29",
+      "LoadSide": "Server",
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "RotY": 290,
+          "ID": 1,
+          "PosX": 24.735,
+          "PosY": 3.44376,
+          "PosZ": -109.695
+        }
+      ],
+      "MonsterList": [
+        {
+          "NPCMonsterID": 1002040,
+          "AIConfig": {
+            "AIFile": "Config/ConfigAI/Adventure/NPCMonster/ST_NPCMonster_Master_Dummy.json",
+            "PathwayList": [],
+            "SlaveConfigList": []
+          },
+          "CampID": 3,
+          "BattleArea": {
+            "GroupID": 1,
+            "ID": 1
+          },
+          "BoardShowList": [
+            2
+          ],
+          "Name": "Monster1",
+          "RotY": 110,
+          "ID": 200001,
+          "PosX": 8.36,
+          "PosY": 2.84,
+          "PosZ": -104.09
+        }
+      ],
+      "PropList": [
+        {
+          "PropID": 1000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_FinalDoor.json",
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {
+            "CustomTrigger_DoorOpen": {
+              "Radius": 3.5
+            }
+          },
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Door",
+          "RotY": 110,
+          "ID": 300004,
+          "PosX": -4.16,
+          "PosY": 2.84,
+          "PosZ": -100.01
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_BossRoomFinishToast.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Toast",
+          "ID": 300002
+        },
+        {
+          "PropID": 1004,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogue/Maze_Rogue_Prop_GachaMachine.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Gacha",
+          "RotY": 110,
+          "ID": 300001,
+          "PosX": 8.36,
+          "PosY": -0.16,
+          "PosZ": -104.09
+        },
+        {
+          "PropID": 100,
+          "LoadOnInitial": false,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeRogueV3/Maze_Rogue_Prop_ElitHint03.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "OverrideMapStateIcons": [
+            {
+              "IconID": 97
+            }
+          ],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "RotY": 110,
+          "ID": 300003,
+          "PosX": 8.36,
+          "PosY": 2.84,
+          "PosZ": -104.09
+        },
+        {
+          "PropID": 100005,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop5",
+          "RotY": 288,
+          "ID": 300005,
+          "PosX": 42.73,
+          "PosY": 3.4839,
+          "PosZ": -115.46
+        },
+        {
+          "PropID": 100001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_AutoDoor_01.json",
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop6",
+          "RotY": 106.9516,
+          "ID": 300006,
+          "PosX": -2.498417,
+          "PosY": 2.936872,
+          "PosZ": -100.8093
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "RogueAreaConfig.json": [
+      {
+        "RogueAreaID": 100,
+        "Difficulty": 1,
+        "AreaEnvironment": [],
+        "RecommendLevel": 5,
+        "RecommendNature": [
+          "Ice"
+        ],
+        "AreaNameID": {
+          "Hash": 10117035598078858438
+        },
+        "AreaIcon": "SpriteOutput/Rogue/World/PicRogueN2.png",
+        "AreaFigure": "UI/Rogue/World/PicRogueN2.png",
+        "DisplayMonsterMap": {
+          "8003020": 8
+        },
+        "DisplayMonsterMap2": {},
+        "MapDisplayItemList": [],
+        "ChestDisplayItemList": [],
+        "ScoreMap": {},
+        "AreaTipsIcon": "SpriteOutput/Rogue/Planet/IconRoguePlanetM1.png"
+      }
+    ],
+    "missionBossChain": [
+      {
+        "ID": 403000211,
+        "MainMissionID": 4030002,
+        "MissionJsonPath": "Config/Level/Mission/4030002/Mission_403000211.json",
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000210
+        ],
+        "FinishType": "RogueEnterRoomWithLevel",
+        "ParamType": "Equal",
+        "ParamInt1": 2,
+        "ParamInt2": 2,
+        "ParamItemList": [],
+        "Progress": 1,
+        "CustomValueReward": [],
+        "WayPointType": "Prop",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 19,
+        "WayPointEntityID": 300002
+      },
+      {
+        "ID": 403000212,
+        "MainMissionID": 4030002,
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000211
+        ],
+        "MazePlaneID": 80001,
+        "MazeFloorID": 80001002,
+        "FinishType": "KillMonster",
+        "ParamType": "Equal",
+        "ParamInt1": 6,
+        "ParamInt2": 200001,
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true,
+        "WayPointType": "Prop",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 18,
+        "WayPointEntityID": 300002
+      },
+      {
+        "ID": 403000214,
+        "MainMissionID": 4030002,
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000212
+        ],
+        "MazePlaneID": 80001,
+        "MazeFloorID": 80001002,
+        "FinishType": "KillMonster",
+        "ParamType": "Equal",
+        "ParamInt1": 7,
+        "ParamInt2": 200001,
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true,
+        "WayPointType": "Prop",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 18,
+        "WayPointEntityID": 300002
+      },
+      {
+        "ID": 403000217,
+        "MainMissionID": 4030002,
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000214
+        ],
+        "MazePlaneID": 80001,
+        "MazeFloorID": 80001002,
+        "FinishType": "KillMonster",
+        "ParamType": "Equal",
+        "ParamInt1": 18,
+        "ParamInt2": 200005,
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true,
+        "CustomValueReward": [],
+        "WayPointType": "Monster",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 18,
+        "WayPointEntityID": 200005
+      },
+      {
+        "ID": 403000218,
+        "MainMissionID": 4030002,
+        "MissionJsonPath": "Config/Level/Mission/4030002/Mission_403000218.json",
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000217
+        ],
+        "FinishType": "RogueEnterRoomWithLevel",
+        "ParamType": "Equal",
+        "ParamInt1": 2,
+        "ParamInt2": 3,
+        "ParamItemList": [],
+        "Progress": 1,
+        "CustomValueReward": [],
+        "WayPointType": "Prop",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 18,
+        "WayPointEntityID": 300002
+      },
+      {
+        "ID": 403000219,
+        "MainMissionID": 4030002,
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000218
+        ],
+        "MazePlaneID": 80001,
+        "MazeFloorID": 80001002,
+        "FinishType": "KillMonster",
+        "ParamType": "Equal",
+        "ParamInt1": 29,
+        "ParamInt2": 200001,
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true,
+        "CustomValueReward": [],
+        "WayPointType": "Monster",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 21,
+        "WayPointEntityID": 200001
+      },
+      {
+        "ID": 403000220,
+        "MainMissionID": 4030002,
+        "MissionJsonPath": "Config/Level/Mission/4030002/Mission_403000220.json",
+        "LevelPlaneID": 80001,
+        "LevelFloorID": 80001002,
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          403000219
+        ],
+        "FinishType": "RoguePassAreaProgress",
+        "ParamType": "Equal",
+        "ParamItemList": [],
+        "Progress": 1,
+        "CustomValueReward": [],
+        "IsShow": false,
+        "WayPointType": "Prop",
+        "WayPointFloorID": 80001002,
+        "WayPointGroupID": 3,
+        "WayPointEntityID": 300001
       }
     ]
   }

@@ -205,6 +205,28 @@ final class RogueBossEncounters {
               && new GameplayDefinitions.RogueMonster(11011, 8013010, 80011011).equals(monster)
           ? 1101 : null;
     }
+    // The second tutorial's room points to missing group 2007. The same resource set
+    // contains its level-eight preview and the matching 2101/21011 battle (one elite and
+    // two flamespawn). Restrict this compatibility link to the original boss room, and
+    // prefer group 2007 if an operator supplies it in the future.
+    if (run != null && RogueSecondStoryEntry.room(run, room)
+        && run.getSiteId() == 3 && room.RogueRoomID() == 203 && room.RogueRoomType() == 7
+        && Map.of(29, 2007).equals(room.GroupWithContent()) && group == 29
+        && !run.isBossEncounterPlanned() && run.getBossEncounter() == null
+        && !GameplayDefinitions.rogueMonsterGroups.containsKey(2007)) {
+      var source = GameplayDefinitions.rogueMonsterGroups.get(2101);
+      var monster = GameplayDefinitions.rogueMonsters.get(21011);
+      var stage = GameData.getStageExcelMap().get(80021011);
+      var area = GameplayDefinitions.areas.get(100);
+      return source != null && source.RogueMonsterGroupID() == 2101
+              && Map.of(21011, 1).equals(source.RogueMonsterListAndWeight())
+              && new GameplayDefinitions.RogueMonster(21011, 8003020, 80021011).equals(monster)
+              && RogueMonsterSelection.complete(monster)
+              && stage != null && stage.getLevel() == 8 && stage.getMonsterWaves().size() == 1
+              && List.of(8001010, 8003020, 8001010).equals(new ArrayList<>(stage.getMonsterWaves().getFirst()))
+              && area != null && Map.of(8003020, 8).equals(area.DisplayMonsterMap())
+          ? 2101 : null;
+    }
     var plan = run.getBossEncounter();
     if (room.RogueRoomType() != 7 || original == null || original == 0) return original;
     if (!run.isBossEncounterPlanned()) return plan == null ? original : null;

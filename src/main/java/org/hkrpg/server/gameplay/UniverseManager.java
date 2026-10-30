@@ -230,6 +230,7 @@ public final class UniverseManager {
       if (run.getCoins() != beforeRoomEffects)
         org.hkrpg.server.protocol.RogueTalent46.syncCurrency(player);
       org.hkrpg.server.protocol.Universe46.syncMap(player);
+      if (secondStory) player.getMissionManager().refresh();
       return Retcode.SUCC;
     }
   }

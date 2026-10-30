@@ -72,7 +72,7 @@ class RogueSecondStoryCombat46Test {
       records = JsonParser.parseString(new String(Objects.requireNonNull(in).readAllBytes(), StandardCharsets.UTF_8))
           .getAsJsonObject().getAsJsonObject("records");
     }
-    saveMaps(GameplayDefinitions.rooms, GameplayDefinitions.maps, GameplayDefinitions.rogueMonsters,
+    saveMaps(GameplayDefinitions.rooms, GameplayDefinitions.maps, GameplayDefinitions.areas, GameplayDefinitions.rogueMonsters,
         GameplayDefinitions.rogueMonsterGroups);
     var oldFloor = GameData.getFloorInfos().get("P80001_F80001002");
     undo.add(() -> { if (oldFloor == null) GameData.getFloorInfos().remove("P80001_F80001002");
@@ -82,6 +82,8 @@ class RogueSecondStoryCombat46Test {
       var room = gson.fromJson(r, GameplayDefinitions.Room.class);
       GameplayDefinitions.rooms.put(room.RogueRoomID(), room);
     }
+    var area = gson.fromJson(records.getAsJsonArray("RogueAreaConfig.json").get(0), GameplayDefinitions.Area.class);
+    GameplayDefinitions.areas.put(area.RogueAreaID(), area);
     for (var r : records.getAsJsonArray("RogueMonster.json")) {
       var mob = gson.fromJson(r, GameplayDefinitions.RogueMonster.class);
       GameplayDefinitions.rogueMonsters.put(mob.RogueMonsterID(), mob);
@@ -118,7 +120,7 @@ class RogueSecondStoryCombat46Test {
       GameplayDefinitions.blessings.add(new GameplayDefinitions.Blessing(id, 1, 100, "Common", 1, List.of()));
     }
     floor = gson.fromJson(records.get("floor"), FloorInfo.class);
-    for (int group : List.of(3, 4, 6, 7, 18, 19)) {
+    for (int group : List.of(3, 4, 6, 7, 18, 19, 29)) {
       var source = gson.fromJson(records.get(Integer.toString(group)), GroupInfo.class);
       source.setId(group); floor.getGroups().put(group, source);
     }
@@ -179,6 +181,188 @@ class RogueSecondStoryCombat46Test {
     int id = run().getOffers().getFirst();
     assertEquals(Retcode.SUCC, player.getUniverseManager().selectBlessing(run().getSelectionId(), id));
     return id;
+  }
+
+  @Test void secondStoryBossRoomSpawnsTheAuthoredLevelEightEncounter() {
+    var run = run();
+    run.getCleared().addAll(List.of(1, 2));
+    run.enter(3, 203);
+    String originalRun = run.getRunId();
+    reloadScene();
+    var monsters = player.actual.getEntities(EntityMonster.class);
+    assertEquals(1, monsters.size(), "The boss room must contain its single authored encounter");
+    var boss = monsters.getFirst();
+    assertEquals(29, boss.getGroupId());
+    assertEquals(200001, boss.getInstId());
+    assertEquals(8003020, boss.getExcel().getId());
+    assertEquals(80021011, boss.getCustomStage().getId());
+    assertEquals(8, GameData.getStageExcelMap().get(80021011).getLevel());
+    assertEquals(List.of(8001010, 8003020, 8001010),
+        new ArrayList<>(boss.getCustomStage().getMonsterWaves().getFirst()));
+    roundTrip();
+    assertEquals(originalRun, run().getRunId());
+    assertEquals(Set.of(1, 2), run().getCleared());
+    assertEquals(8003020, player.actual.getEntities(EntityMonster.class).getFirst().getExcel().getId());
+  }
+
+  @Test void malformedBossSourceNeverInventsAnEncounterOrOverwritesOriginalContent() {
+    var run = run();
+    run.getCleared().addAll(List.of(1, 2)); run.enter(3, 203);
+    GameplayDefinitions.rogueMonsterGroups.remove(2101);
+    reloadScene(); assertTrue(player.actual.getEntities(EntityMonster.class).isEmpty());
+    var fallback = gson.fromJson(records.getAsJsonArray("RogueMonsterGroup.json").asList().stream()
+        .filter(e -> e.getAsJsonObject().get("RogueMonsterGroupID").getAsInt() == 2101)
+        .findFirst().orElseThrow(), GameplayDefinitions.RogueMonsterGroup.class);
+    GameplayDefinitions.rogueMonsterGroups.put(2101, fallback);
+    GameplayDefinitions.rogueMonsterGroups.put(2007, new GameplayDefinitions.RogueMonsterGroup(2007, Map.of(999999, 1)));
+    reloadScene(); assertTrue(player.actual.getEntities(EntityMonster.class).isEmpty());
+    assertFalse(run.getCleared().contains(3));
+    assertTrue(run.getMonsterSelections().keySet().stream().noneMatch(key -> key.startsWith("3:203:")));
+  }
+
+  void prepareBossMission() {
+    saveMap(GameplayDefinitions.subs);
+    GameplayDefinitions.subs.clear();
+    for (var raw : records.getAsJsonArray("missionBossChain")) {
+      var sub = gson.fromJson(raw, MissionInfo.SubMissionInfo.class);
+      GameplayDefinitions.subs.put(sub.getId(), sub);
+    }
+    var gameplay = player.getGameplay();
+    var first = new emu.lunarcore.game.quest.QuestState(4030001);
+    first.advance(1, 1, 1);
+    gameplay.getMainMissions().put(4030001, first);
+    gameplay.getMainMissions().put(4030002, new emu.lunarcore.game.quest.QuestState(4030002));
+    var previous = new emu.lunarcore.game.quest.QuestState(403000210);
+    previous.advance(1, 1, 1);
+    gameplay.getSubMissions().put(403000210, previous);
+    gameplay.getSubMissions().put(403000211, new emu.lunarcore.game.quest.QuestState(403000211));
+    var run = run();
+    run.getCleared().add(1);
+    run.enter(2, 202); reloadScene(); // Capture the same source choices recorded during play.
+    run.getDefeatedRogueMonsters().addAll(Set.of("2:202:80001:80001002:6:200001",
+        "2:202:80001:80001002:7:200001", "2:202:80001:80001002:18:200005"));
+    run.getCleared().add(2);
+    run.enter(3, 203); reloadScene();
+    player.getMissionManager().refresh();
+  }
+
+  @Test void pastSecondRoomReceiptsRecoverTheBossObjectiveWithoutInventingVictory() {
+    prepareBossMission();
+    var gameplay = player.getGameplay();
+    var run = run();
+    for (int id : List.of(403000211,403000212,403000214,403000217,403000218))
+      assertEquals(emu.lunarcore.game.quest.QuestState.Phase.FINISHED,
+          gameplay.getSubMissions().get(id).getPhase(), "Saved room progress should reconcile " + id);
+    assertEquals(emu.lunarcore.game.quest.QuestState.Phase.DOING,
+        gameplay.getSubMissions().get(403000219).getPhase());
+    assertFalse(run.getDefeatedRogueMonsters().contains("3:203:80001:80001002:29:200001"));
+  }
+
+  @Test void missionRecoveryRequiresTheCorrectSavedRoomAndActualEncounterReceipt() {
+    prepareBossMission();
+    var objective = GameplayDefinitions.subs.get(403000212);
+    assertTrue(RogueSecondStoryProgress.satisfied(player, objective));
+    var run = run();
+    String receipt = "2:202:80001:80001002:6:200001";
+    run.getDefeatedRogueMonsters().remove(receipt);
+    assertFalse(RogueSecondStoryProgress.satisfied(player, objective));
+    run.getDefeatedRogueMonsters().add(receipt);
+    run.getMonsterSelections().remove("2:202:80001:80001002:6");
+    assertFalse(RogueSecondStoryProgress.satisfied(player, objective));
+    objective.setParamInt2(999999);
+    assertFalse(RogueSecondStoryProgress.satisfied(player, objective));
+  }
+
+  @Test void firstTutorialVictoryCannotFinishSecondTutorialBeforeBossSettlement() {
+    prepareBossMission();
+    var gameplay = player.getGameplay();
+    gameplay.getRogueWins().put(100, 1); // The first tutorial also uses area 100.
+    gameplay.getSubMissions().get(403000219).advance(1, 1, 1);
+    player.getMissionManager().refresh();
+    assertEquals(emu.lunarcore.game.quest.QuestState.Phase.DOING,
+        gameplay.getSubMissions().get(403000220).getPhase());
+  }
+
+  @Test void secondTutorialBossVictorySettlesOnceAndPersistsItsOwnResult() {
+    prepareBossMission();
+    var run = run();
+    var actor = player.actual.getEntities(EntityMonster.class).stream()
+        .filter(m -> m.getGroupId() == 29).findFirst().orElseThrow();
+    var battle = new Battle(player, player.getCurrentLineup(), List.of(actor));
+    player.setBattle(battle);
+    assertNotNull(service.finishBattle(player, battle.getId(), 80021011,
+        BattleEndStatus.BATTLE_END_WIN, BattleStatistics.newInstance(), List.of()));
+    assertTrue(run.getDefeatedRogueMonsters().contains("3:203:80001:80001002:29:200001"));
+    assertTrue(run.getCleared().contains(3));
+    assertEquals(GameplayState.RogueRun.Phase.FINISHED, run.getPhase());
+    assertEquals(emu.lunarcore.game.quest.QuestState.Phase.FINISHED,
+        player.getGameplay().getSubMissions().get(403000219).getPhase());
+    assertEquals(emu.lunarcore.game.quest.QuestState.Phase.FINISHED,
+        player.getGameplay().getSubMissions().get(403000220).getPhase());
+    assertEquals(1, player.getGameplay().getRogueResults().size());
+    String id = run.getRunId();
+    roundTrip();
+    assertEquals(id, run().getRunId());
+    assertEquals(GameplayState.RogueRun.Phase.FINISHED, run().getPhase());
+    assertTrue(player.actual.getEntities(EntityMonster.class).isEmpty());
+    assertEquals(1, player.getGameplay().getRogueResults().size());
+  }
+
+  @Test void bossEncounterAndVictorySurviveH2Restarts(
+      @org.junit.jupiter.api.io.TempDir java.nio.file.Path directory) throws Exception {
+    prepareBossMission();
+    String runId = run().getRunId();
+    var gameplay = emu.lunarcore.game.player.Player.class.getDeclaredField("gameplay");
+    gameplay.setAccessible(true);
+    for (int cycle = 0; cycle < 3; cycle++) {
+      var mongo = new de.bwaldvogel.mongo.MongoServer(
+          new de.bwaldvogel.mongo.backend.h2.H2Backend(directory.resolve("boss.mv").toString()));
+      var address = mongo.bind();
+      try (var client = com.mongodb.client.MongoClients.create("mongodb://127.0.0.1:" + address.getPort())) {
+        var providers = org.bson.codecs.configuration.CodecRegistries.fromCodecs(
+            new emu.lunarcore.database.codecs.IntSetCodec(), new emu.lunarcore.database.codecs.IntListCodec(),
+            new emu.lunarcore.database.codecs.Int2IntMapCodec());
+        var options = dev.morphia.mapping.MapperOptions.builder().storeEmpties(true)
+            .storeNulls(false).codecProvider(providers).build();
+        var store = dev.morphia.Morphia.createDatastore(client, "second_tutorial_boss", options);
+        store.getMapper().mapPackage("org.hkrpg.server.gameplay");
+        store.getMapper().map(emu.lunarcore.game.player.Player.class,
+            emu.lunarcore.game.quest.QuestState.class, emu.lunarcore.util.Position.class);
+        var document = cycle == 0 ? new emu.lunarcore.game.player.Player()
+            : store.find(emu.lunarcore.game.player.Player.class).first();
+        assertNotNull(document);
+        if (cycle == 0) {
+          var uid = emu.lunarcore.game.player.Player.class.getDeclaredField("uid");
+          uid.setAccessible(true); uid.setInt(document, 19997832);
+          gameplay.set(document, player.getGameplay()); store.save(document);
+        }
+        gameplay.set(player, document.getGameplay());
+        var savedDocument = document;
+        player.persistence = () -> store.save(savedDocument);
+        reloadScene();
+        assertEquals(runId, run().getRunId());
+        if (cycle < 2) {
+          assertEquals(GameplayState.RogueRun.Phase.EXPLORING, run().getPhase());
+          var actor = player.actual.getEntities(EntityMonster.class).stream()
+              .filter(m -> m.getGroupId() == 29).findFirst().orElseThrow();
+          if (cycle == 1) {
+            var battle = new Battle(player, player.getCurrentLineup(), List.of(actor));
+            player.setBattle(battle);
+            assertNotNull(service.finishBattle(player, battle.getId(), 80021011,
+                BattleEndStatus.BATTLE_END_WIN, BattleStatistics.newInstance(), List.of()));
+          }
+        } else {
+          assertEquals(GameplayState.RogueRun.Phase.FINISHED, run().getPhase());
+          assertTrue(player.actual.getEntities(EntityMonster.class).isEmpty());
+          assertTrue(run().getDefeatedRogueMonsters().contains("3:203:80001:80001002:29:200001"));
+          assertEquals(emu.lunarcore.game.quest.QuestState.Phase.FINISHED,
+              player.getGameplay().getSubMissions().get(403000220).getPhase());
+          assertEquals(1, player.getGameplay().getRogueResults().size());
+        }
+        var loaded = store.find(emu.lunarcore.game.player.Player.class).first();
+        assertEquals(gson.toJsonTree(player.getGameplay()), gson.toJsonTree(loaded.getGameplay()));
+      } finally { player.persistence = () -> {}; mongo.shutdownNow(); }
+    }
   }
 
   @Test void actualFirstEncounterOffersBeforeRoomClearAndOpensOnlyItsBarrier() {
