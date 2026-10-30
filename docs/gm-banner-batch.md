@@ -19,3 +19,9 @@
 隔离 GameServer/H2 与真实 UDP/KCP 客户端探针确认：批量启用后新手池和4.6活动池进入原生查询，新活动池首次窗口为5天、UP正确；批量停止生效，完整服务器正常停止两次后重登与审计重放正常。Playwright/Chrome 的19项网页检查覆盖跨页勾选、筛选清空、取消不提交、真实批量启停、首次排期、保留既有排期、页面重载、补齐一项真实缺失配置及原行保留。失败提示保留勾选仅为明确标注的模拟响应检查。桌面1440×960和窄屏390×844无整页横向溢出，业务脚本/接口无错误；已有 `/favicon.ico` 404 单独记录，不算业务接口失败。
 
 网页证据在 `C:/Users/InvokerBot/.codex/visualizations/2026/10/30/gm-banner-batch/qa.json` 与同目录截图，构建/协议证据在 `build/gm-banner-batch-20261030/`。以上没有在生产账号抽卡或批量改动原有卡池。
+
+## 本地部署
+
+实现提交 `943c6dc` 已更新本地 Compose，运行 JAR SHA-256 为 `d6517a538090513adcf38054ad1f61b1bbec2fb11a7c0657fecec429a38549e9`。停服后备份数据库并核对摘要，Compose 健康检查通过。通过受保护的 GM `banner-complete` 操作补齐运行配置，从53项增加到280项，新增227项均停用。逐项核对原53行的全部配置字段保持不变，新增目录的角色/光锥资源均可用，版本排序正确。
+
+更新及补齐前后只读对比10001：角色、物品、普通编队、多命途、主/子任务、当前探索及 `gachaInfo` 保底数据完全一致；配置文件保持原样。生产GM在 `http://localhost:18080/gm` 只读网页复核：280项、新手池、4.6版本和6项勾选均正常，没有在生产页面执行批量启停。刷新已有GM页面即可使用。网页证据为项目外 `live-qa.json` / `live-catalog-desktop.png` / `live-batch-desktop.png`，配置与存档核对为 `build/gm-banner-batch-20261030/catalog-live.json` 和 `preservation-report.json`。
