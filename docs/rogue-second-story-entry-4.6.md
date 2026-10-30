@@ -39,3 +39,7 @@
 验证：40 项入口及生命周期专项通过；`scripts/build.ps1 -TestForks 8` 完整构建通过，632 类 / 15,709 项测试，无失败、错误或跳过。7 项来源检查核对原始脚本、四份试用行、命令号、字段号及 16 字节请求形状；线上只读预检确认任务、装置、资源、三个锚点及地图计划均有效。记录位于 `build/rogue-entry-20261030/{full-verification,source-checks,live-preflight}.json`。客户端实际入场仍等待部署后验收。
 
 代码提交 `c79f903` 已更新本地 Compose，运行 JAR SHA-256 为 `dc6139b7885dd25767d05a92373fecbf1cbcc87f6ced6d72fc1552a7a0e95d72`。数据库在停服后备份并核对 SHA，Compose 健康与默认只读检查通过。更新前后 10001 的 23 份角色、985 份物品、普通队伍、12 份多命途、主/子任务、探索和资料记录逐项相同，配置文件摘要不变；证据 `build/rogue-entry-20261030/{compose-after,preservation-report}.json`。本轮未修改客户端、没有重置存档或推送远程。
+
+## 2026-10-30 实机入口验收
+
+用户确认：在办公室入口按 F 后“已进入，继续对白”。同次服务端记录为 UID 10001、area 100、trials `[4000004, 4000001, 4000002]`、aeon 0、其他列表及未知字段为空，`shapeValid=true retcode=0`。因此本次参数误判、按 F 入场和教学对白继续已通过真实客户端验收。记录保存在 `build/rogue-entry-20261030/client-entry-accepted.log`。验收不扩展到原版试用队伍、动画细节、后续全部房间与首领奖励，功能总体仍为部分实现。
