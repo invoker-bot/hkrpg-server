@@ -228,6 +228,7 @@ public final class ProtocolBridge {
         body = StoryParty46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
         body = PresetLineup46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
         body = FormulaLearning46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
+        body = GachaDraw46.enrich(clientSchema, coreNames.get(frame.cmdId()), body, player);
         output.writeBytes(PacketCodec.encode(converted.cmdId(), frame.header(), body));
       }
       return output.toByteArray();

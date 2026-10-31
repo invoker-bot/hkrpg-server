@@ -66,6 +66,31 @@ class GachaInitial46Test {
     return "";
   }
 
+  @Test void beginnerSnapshotCarriesItsOwnDrawCountOnClientWire() throws Exception {
+    service.getGachaBanners().put(4001, new GachaBanner().createBanner(4001, GachaType.Newbie,
+        0, 0, new int[0], new int[0]));
+    for (int i = 0; i < 20; i++) history.recordNewbieDraw(false);
+    history.addCeilingNum(99);
+    var info = InitialData46Test.first(GachaInitial46.snapshot(protocol, player, service), "gacha_info_list");
+    var input = CodedInputStream.newInstance(info.toByteArray());
+    int count = -1;
+    for (int tag; (tag = input.readTag()) != 0;) {
+      if (tag == 15 << 3) count = input.readUInt32(); else input.skipField(tag);
+    }
+    assertEquals(20, count);
+  }
+
+  @Test void beginnerDrawResponseCarriesTheUpdatedCount() throws Exception {
+    service.replaceBanners(List.of(new GachaBanner().createBanner(4001, GachaType.Newbie,
+        0, 0, new int[0], new int[0])));
+    for (int i = 0; i < 20; i++) history.recordNewbieDraw(false);
+    var type = protocol.clientSchema().message("DoGachaScRsp");
+    var before = DynamicMessage.newBuilder(type).setField(type.findFieldByName("gacha_id"), 4001).build();
+    var encoded = GachaDraw46.enrich(protocol.clientSchema(), before.toByteArray(), player, service);
+    var response = DynamicMessage.parseFrom(type, encoded);
+    assertEquals(20, response.getField(type.findFieldByNumber(6)));
+  }
+
   GachaRarityResources resources;
   @BeforeEach void loadRarities() throws Exception { resources = new GachaRarityResources(); }
   @AfterEach void restoreResources() { resources.close(); }
@@ -164,7 +189,8 @@ class GachaInitial46Test {
           type, 0, 0, new int[0], new int[0]);
       service.getGachaBanners().put(banner.getId(), banner);
       var info = InitialData46Test.first(GachaInitial46.snapshot(protocol, player, service), "gacha_info_list");
-      var expected = List.of(23002, 1003, 1101, 1104, 23000, 23003);
+      var expected = type == GachaType.Newbie ? List.of(1003, 1101, 1104)
+          : List.of(23002, 1003, 1101, 1104, 23000, 23003);
       assertEquals(expected, wireIds(info, 5), type.toString());
       assertEquals(expected, wireIds(info, 10), type.toString());
       assertEquals(List.of(), wireIds(info, 7));

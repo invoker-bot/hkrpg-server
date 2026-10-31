@@ -111,8 +111,8 @@ class GachaDrawRarityTest {
               ? new GachaBanner().createBanner(2001, type, 0, Integer.MAX_VALUE, new int[]{1102}, new int[]{1002}, 100)
               : new GachaBanner().createBanner(3001, type, 0, Integer.MAX_VALUE, new int[]{23000}, new int[]{21000}, 100);
       service.getGachaBanners().put(banner.getId(), banner);
-      service.doPulls(player, banner.getId(), 1);
-      assertEquals(1, player.charged, "The test must actually perform the draw");
+      service.doPulls(player, banner.getId(), type == GachaType.Newbie ? 10 : 1);
+      assertEquals(type == GachaType.Newbie ? 8 : 1, player.charged, "The test must actually perform the draw");
       assertEquals(0, player.history.getCeilingNum(), type.toString());
     }
   }
@@ -150,7 +150,7 @@ class GachaDrawRarityTest {
 
   @Test void validEventFiveStarGuaranteeAndFourStarUpAwardTheCorrectTier() {
     for (int roll : new int[]{1,10000}) {
-      var service = new DrawService(); var player = new Resident(); service.roll = roll;
+      var service = new DrawService(); var player = new Resident(); service.roll = roll; service.eventRoll = 1;
       service.getGachaBanners().put(2001, new GachaBanner().createBanner(2001, GachaType.AvatarUp, 0, Integer.MAX_VALUE, new int[]{1102}, new int[]{1002}, 100));
       service.doPulls(player, 2001, 1); assertAward(player, roll == 1 ? 5 : 4);
       assertEquals(roll == 1 ? 1102 : 1002, player.awarded.getFirst());

@@ -86,6 +86,28 @@ class GmBannerBatchTest {
     assertTrue(service.getGachaBanners().get(latest).isDisabled());
   }
 
+  @Test void firstEnableCorrectsOldGeneratedWeaponDefaultButPreservesExplicitOtherRates() throws Exception {
+    store.completeCatalog(op("banner-complete", ""));
+    var weaponIds = store.history().stream().filter(r -> r.type().equals("WeaponUp"))
+        .map(BannerRow::id).filter(id -> service.getGachaBanners().get(id).isGmTemplatePending()).limit(4).toList();
+    assertEquals(4, weaponIds.size());
+    var rows = rows();
+    for (var element : rows) {
+      var row = element.getAsJsonObject(); int id = row.get("id").getAsInt();
+      if (id == weaponIds.get(0)) row.addProperty("eventChance", 50); // Old generator default.
+      if (id == weaponIds.get(1)) row.addProperty("eventChance", 37); // Operator override.
+      if (id == weaponIds.get(2)) { row.addProperty("gmTemplatePending", false); row.addProperty("beginTime",1); row.addProperty("endTime",2000000000); row.addProperty("eventChance",50); }
+      if (id == weaponIds.get(3)) { row.addProperty("eventChance",50); row.add("rateUpItems4",json.toJsonTree(List.of(21000))); }
+    }
+    save(rows.toString());
+    store.setEnabled(op("banner-batch-enable", ",\"bannerIds\":" + json.toJson(weaponIds)));
+    assertEquals(75, service.getGachaBanners().get(weaponIds.get(0)).getEventChance());
+    assertEquals(37, service.getGachaBanners().get(weaponIds.get(1)).getEventChance());
+    assertEquals(50, service.getGachaBanners().get(weaponIds.get(2)).getEventChance());
+    assertEquals(50, service.getGachaBanners().get(weaponIds.get(3)).getEventChance());
+    assertFalse(service.getGachaBanners().get(weaponIds.get(0)).isGmTemplatePending());
+  }
+
   @Test void missingOrExpiredTargetMakesEntireBatchLeaveDiskAndMemoryUntouched() throws Exception {
     var before=Files.readString(directory.resolve("Banners.json"));
     assertEquals(409,assertThrows(GmError.class,()->store.setEnabled(op("banner-batch-stop",",\"bannerIds\":[1001,987654]"))).status);

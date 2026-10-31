@@ -3,16 +3,21 @@ package org.hkrpg.server.gameplay;
 import com.google.gson.*;
 import emu.lunarcore.LunarCore;
 import emu.lunarcore.data.GameData;
+import emu.lunarcore.game.gacha.GachaService;
+import emu.lunarcore.game.gacha.GachaType;
+import emu.lunarcore.game.enums.ItemRarity;
 import emu.lunarcore.game.player.Player;
 import java.nio.file.*;
 import java.time.Instant;
 import java.util.*;
 
-/** Actual activity membership and declared modules; historical resources never open a window. */
+/** Resource-checked trial memberships and windows associated with active character banners. */
 public final class TrialActivityCatalog {
   private record Activity(int panel, Set<Integer> modules, Set<Integer> stages) {}
 
-  private record Catalog(Map<Integer, Activity> activities) {}
+  private record Catalog(Map<Integer, Activity> activities, Map<Integer, Set<Integer>> stageModules,
+      Set<Integer> normalStages) {}
+  private record Binding(Activity activity, Set<Integer> stages, Set<Integer> modules, long begin, long end) {}
 
   private static int positive(JsonObject row, String field) {
     var value = row.get(field);
@@ -48,7 +53,15 @@ public final class TrialActivityCatalog {
       }
       var activities = new HashMap<Integer, Activity>();
       var related = new HashSet<Integer>();
-      for (var row : rows(root, "ActivityConfig")) {
+      var activityRows = rows(root, "ActivityConfig");
+      var residentModules = new HashSet<Integer>();
+      for (var row : activityRows) {
+        if (row.has("ResidentModuleList") && row.get("ResidentModuleList").isJsonArray())
+          for (var module : row.getAsJsonArray("ResidentModuleList")) {
+            var wrapper = new JsonObject(); wrapper.add("module", module);
+            try { residentModules.add(positive(wrapper, "module")); }
+            catch (IllegalArgumentException invalid) { /* Ignore malformed historical module. */ }
+          }
         int id = positive(row, "ActivityID");
         if (!panels.containsKey(id)) continue;
         if (!related.add(id))
@@ -70,7 +83,22 @@ public final class TrialActivityCatalog {
       }
       if (!related.equals(panels.keySet()))
         throw new IllegalArgumentException("Missing trial activity relation");
-      return new Catalog(Map.copyOf(activities));
+      var stageModules = new HashMap<Integer, Set<Integer>>();
+      var normalCounts = new HashMap<Integer, Integer>();
+      if (Files.isRegularFile(root.resolve("ActivityModuleDemo.json")))
+        for (var row : rows(root, "ActivityModuleDemo")) {
+          try {
+            int stage = positive(row, "AvatarDemoStageID"), module = positive(row, "ActivityModuleID");
+            stageModules.computeIfAbsent(stage, ignored -> new HashSet<>()).add(module);
+            if (row.has("AvatarDemoType") && "Normal".equals(row.get("AvatarDemoType").getAsString())
+                && residentModules.contains(module)) normalCounts.merge(stage, 1, Integer::sum);
+          } catch (IllegalArgumentException invalid) {
+            // An invalid historical row cannot establish a safe module mapping.
+          }
+        }
+      var normalStages = new HashSet<Integer>();
+      normalCounts.forEach((stage, count) -> { if (count == 1) normalStages.add(stage); });
+      return new Catalog(Map.copyOf(activities), Map.copyOf(stageModules), Set.copyOf(normalStages));
     } catch (java.io.IOException | RuntimeException invalid) {
       return null;
     }
@@ -91,16 +119,118 @@ public final class TrialActivityCatalog {
         && catalog.activities().values().stream().anyMatch(a -> matches(a, window));
   }
 
+  static List<GameplayDefinitions.Window> validWindows(List<GameplayDefinitions.Window> windows) {
+    Catalog catalog = null;
+    boolean loaded = false;
+    var valid = new ArrayList<GameplayDefinitions.Window>();
+    for (var window : windows) {
+      var panel = GameData.getActivityPanelExcelMap().get(window.panelId());
+      if (panel == null) continue;
+      if (!"UI/Quest/Widget/RoleTrialPanel.prefab".equals(panel.getUIPrefab())) { valid.add(window); continue; }
+      if (!loaded) { catalog = read(); loaded = true; }
+      if (catalog != null && catalog.activities().values().stream().anyMatch(a -> matches(a, window))) valid.add(window);
+    }
+    return List.copyOf(valid);
+  }
+
+  private static GachaService service(Player player) {
+    if (player == null) return null;
+    try {
+      var server = player.getServer();
+      return server == null ? null : server.getGachaService();
+    } catch (NullPointerException noSession) { return null; }
+  }
+
+  private static List<Binding> bindings(Player player, Instant time, Catalog catalog) {
+    var service = service(player);
+    if (service == null) return List.of();
+    var result = new ArrayList<Binding>();
+      for (var banner : service.getBannerSnapshot()) {
+        if (banner.getGachaType() != GachaType.AvatarUp || !banner.isActive(time.getEpochSecond())) continue;
+        var pool = service.getPool(banner);
+        if (!pool.canPull() || pool.up5().isEmpty()) continue;
+        var matches = catalog.activities().values().stream().filter(activity -> {
+          var panel = GameData.getActivityPanelExcelMap().get(activity.panel());
+          if (panel == null || !"UI/Quest/Widget/RoleTrialPanel.prefab".equals(panel.getUIPrefab())) return false;
+          var five = new HashSet<Integer>();
+          var four = new HashSet<Integer>();
+          for (int stage : activity.stages()) {
+            var demo = GameData.getAvatarDemoExcelMap().get(stage);
+            var item = demo == null ? null : GameData.getItemExcelMap().get(demo.getAvatarID());
+            if (item == null || item.getRarity() == null) return false;
+            if (item.getRarity() == ItemRarity.SuperRare) {
+              if (!five.add(demo.getAvatarID())) return false;
+            } else if (item.getRarity() == ItemRarity.VeryRare) {
+              if (!four.add(demo.getAvatarID())) return false;
+            } else return false;
+          }
+          // Concurrent character banners may share one activity with both five-stars.
+          return five.containsAll(pool.up5()) && four.equals(new HashSet<>(pool.up4()))
+              && !modulesFor(activity, catalog, activity.stages()).isEmpty();
+        }).toList();
+        // Do not guess when the matching resource set is absent or ambiguous.
+        if (matches.size() == 1) {
+          var activity = matches.getFirst();
+          var featured = new HashSet<Integer>(pool.up5()); featured.addAll(pool.up4());
+          var stages = new HashSet<Integer>();
+          for (int stage : activity.stages())
+            if (featured.contains(GameData.getAvatarDemoExcelMap().get(stage).getAvatarID())) stages.add(stage);
+          var modules = modulesFor(activity, catalog, stages);
+          if (!modules.isEmpty()) result.add(new Binding(activity, Set.copyOf(stages), modules,
+              banner.getBeginTime(), banner.getEndTime()));
+        }
+      }
+    return List.copyOf(result);
+  }
+
+  static List<GameplayDefinitions.Window> bannerWindows(Player player, Instant time) {
+    var catalog = read();
+    if (catalog == null) return List.of();
+    var result = new ArrayList<GameplayDefinitions.Window>();
+    for (var binding : bindings(player, time, catalog))
+      for (int module : binding.modules())
+        result.add(new GameplayDefinitions.Window(binding.activity().panel(), module, binding.begin(), binding.end()));
+    return List.copyOf(result);
+  }
+
+  private static Set<Integer> modulesFor(Activity activity, Catalog catalog, Set<Integer> stages) {
+    if (stages.isEmpty()) return Set.of();
+    // The earliest client activities reused one module even where later rows now point elsewhere.
+    if (activity.modules().size() == 1) return activity.modules();
+    var result = new HashSet<Integer>();
+    for (int stage : stages) {
+      var matches = catalog.stageModules().getOrDefault(stage, Set.of()).stream()
+          .filter(activity.modules()::contains).toList();
+      if (matches.size() != 1) return Set.of();
+      result.add(matches.getFirst());
+    }
+    return result;
+  }
+
   public static boolean available(Player player, int stage, Instant time) {
     if (stage <= 0) return false;
     var catalog = read();
     if (catalog == null) return false;
+    // Pinned 4.6 RoleTrialUtils enumerates AvatarDemoType.Normal resident modules
+    // for the permanent banner's own trial page, independently of event windows.
+    var service = service(player);
+    if (catalog.normalStages().contains(stage) && GameData.getAvatarDemoExcelMap().containsKey(stage)
+        && service != null && service.getBannerSnapshot().stream().anyMatch(b ->
+            b.getGachaType() == GachaType.Normal && b.isActive(time.getEpochSecond()) && service.getPool(b).canPull()))
+      return true;
+    // Explicit operator windows preserve their original resource-defined activity membership.
     for (var window : GameplayDefinitions.windows)
-      if (window.beginTime() <= time.getEpochSecond()
-          && time.getEpochSecond() < window.endTime()
+      if (window.beginTime() <= time.getEpochSecond() && time.getEpochSecond() < window.endTime()
           && ActivityAccess.unlocked(player, window.panelId()))
         for (var activity : catalog.activities().values())
           if (matches(activity, window) && activity.stages().contains(stage)) return true;
+    for (var binding : bindings(player, time, catalog)) {
+      if (!binding.stages().contains(stage) || !ActivityAccess.unlocked(player, binding.activity().panel())) continue;
+      for (int module : modulesFor(binding.activity(), catalog, Set.of(stage))) {
+        if (binding.modules().contains(module) && GameplayDefinitions.windows.stream().noneMatch(w ->
+            w.panelId() == binding.activity().panel() && w.moduleId() == module)) return true;
+      }
+    }
     return false;
   }
 

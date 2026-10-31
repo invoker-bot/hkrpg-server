@@ -7,6 +7,10 @@ public class PlayerGachaBannerInfo {
     private int pity5 = 0;
     private int pity4 = 0;
     private int failedFeaturedItemPulls = 0;
+    private int failedFeatured4Pulls = 0;
+
+    public int getFailedFeatured4Pulls() { return failedFeatured4Pulls; }
+    public void setFailedFeatured4Pulls(int count) { this.failedFeatured4Pulls = count; }
 
     public int getPity5() {
         return pity5;

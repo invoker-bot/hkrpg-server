@@ -135,7 +135,13 @@ public final class NativeGmPlayerProbe {
         if (!id.equals(lastPullId)) {
           int count = requested.get("count").getAsInt();
           if (count != 1 && count != 10) throw new IllegalArgumentException("Invalid smoke pull count");
-          var result = call("DoGachaCsReq", Map.of("gacha_id",1001,"gacha_num",count));
+          int banner = requested.has("gachaId") ? requested.get("gachaId").getAsInt() : 1001;
+          if (banner != 1001 && banner != 4001) throw new IllegalArgumentException("Invalid owned smoke banner");
+          boolean success = !requested.has("success") || requested.get("success").getAsBoolean();
+          var request = DynamicMessage.newBuilder(protocol.clientSchema().message("DoGachaCsReq"));
+          request.setField(request.getDescriptorForType().findFieldByName("gacha_id"), banner);
+          request.setField(request.getDescriptorForType().findFieldByName("gacha_num"), count);
+          var result = callWire("DoGachaCsReq", request.build().toByteArray(), success);
           lastPull = Map.of("requestId",id,"count",count,"response",project(result));
           lastPullId = id;
         }
@@ -153,6 +159,7 @@ public final class NativeGmPlayerProbe {
               "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
               "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
               "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
+              "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
               "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
@@ -165,7 +172,13 @@ public final class NativeGmPlayerProbe {
             encoded.writeUInt32(1, packetId);
             encoded.checkNoSpaceLeft();
           }
-          var result = callWire(command, Base64.getDecoder().decode(requested.get("wire").getAsString()),
+          byte[] payload;
+          if (requested.has("stageId")) {
+            var request = DynamicMessage.newBuilder(protocol.clientSchema().message(command));
+            request.setField(request.getDescriptorForType().findFieldByName("stage_id"), requested.get("stageId").getAsInt());
+            payload = request.build().toByteArray();
+          } else payload = Base64.getDecoder().decode(requested.get("wire").getAsString());
+          var result = callWire(command, payload,
               requested.get("success").getAsBoolean(), header);
           lastEquipment = Map.of("requestId", id, "response", project(result), "syncs", List.copyOf(equipmentSyncs),
               "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader));

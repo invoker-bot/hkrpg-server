@@ -45,6 +45,11 @@ final class GachaInitial46 {
           // Fixed client's native SyncGachaPoolData consumes detail/history at wire 6/12.
           set(info, "detail_url", GachaWebRoutes.detailUrl(banner.getId()));
           set(info, "history_url", GachaWebRoutes.historyUrl(banner.getId()));
+          if (banner.getGachaType() == GachaType.Newbie) {
+            // Pinned client's SyncGachaPoolData reads wire 15 as CurrentGachaTime.
+            info.setField(info.getDescriptorForType().findFieldByNumber(15),
+                player.getGachaInfo().getNewbieDrawCount());
+          }
           if (banner.getGachaType() != GachaType.Normal) {
             set(info, "begin_time", (long) banner.getBeginTime());
             set(info, "end_time", (long) banner.getEndTime());

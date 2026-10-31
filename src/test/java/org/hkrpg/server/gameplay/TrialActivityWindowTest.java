@@ -92,6 +92,111 @@ class TrialActivityWindowTest {
     return fixture.code(session);
   }
 
+  TrialActivityLifecycleTest.Director playerWith(emu.lunarcore.game.gacha.GachaService service) throws Exception {
+    var field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+    field.setAccessible(true);
+    var unsafe = (sun.misc.Unsafe) field.get(null);
+    var game = (emu.lunarcore.server.game.GameServer) unsafe.allocateInstance(emu.lunarcore.server.game.GameServer.class);
+    var serviceField = emu.lunarcore.server.game.GameServer.class.getDeclaredField("gachaService");
+    serviceField.setAccessible(true); serviceField.set(game, service);
+    return new TrialActivityLifecycleTest.Director() {
+      @Override public emu.lunarcore.server.game.GameServer getServer() { return game; }
+    };
+  }
+
+  @Test
+  void normalBannerAllowsOnlyResidentNormalTrialStages() throws Exception {
+    try (var rarity = new org.hkrpg.server.gacha.GachaRarityResources()) {
+      int normalStage = TrialActivityLifecycleTest.STAGE + 1, module = MODULE + 1;
+      GameData.getAvatarDemoExcelMap().add(fixture.gson.fromJson(
+          "{\"StageID\":" + normalStage + ",\"AvatarID\":1003}", AvatarDemoExcel.class));
+      try {
+        var dir = root.resolve("ExcelOutput");
+        Files.writeString(dir.resolve("ActivityConfig.json"), "[{\"ActivityID\":" + PANEL + ",\"ActivityPanelID\":" + PANEL
+            + ",\"ActivityModuleIDList\":[" + MODULE + "]},{\"ActivityID\":10000,\"ResidentModuleList\":[" + module + "],\"ActivityModuleIDList\":[]}]");
+        Files.writeString(dir.resolve("ActivityModuleDemo.json"), "[{\"AvatarDemoStageID\":" + normalStage
+            + ",\"ActivityModuleID\":" + module + ",\"AvatarDemoType\":\"Normal\"}]");
+        var service = new emu.lunarcore.game.gacha.GachaService(null) { @Override public void watch() {} };
+        service.replaceBanners(List.of(new emu.lunarcore.game.gacha.GachaBanner().createBanner(1001,
+            emu.lunarcore.game.gacha.GachaType.Normal, 0, 0, new int[0], new int[0])));
+        var player = playerWith(service);
+        assertTrue(TrialActivityCatalog.available(player, normalStage, Instant.now()));
+        assertFalse(TrialActivityCatalog.available(player, TrialActivityLifecycleTest.STAGE, Instant.now()));
+        service.replaceBanners(List.of());
+        assertFalse(TrialActivityCatalog.available(player, normalStage, Instant.now()));
+      } finally { GameData.getAvatarDemoExcelMap().keySet().remove(normalStage); }
+    }
+  }
+
+  @Test
+  void sharedActivityCanContainAnotherFiveStarAndSeparateModules() throws Exception {
+    try (var rarity = new org.hkrpg.server.gacha.GachaRarityResources()) {
+      int first = TrialActivityLifecycleTest.STAGE, second = first + 1, third = first + 2;
+      var avatarField = AvatarDemoExcel.class.getDeclaredField("AvatarID"); avatarField.setAccessible(true);
+      avatarField.setInt(GameData.getAvatarDemoExcelMap().get(first), 1102);
+      try {
+        GameData.getAvatarDemoExcelMap().add(fixture.gson.fromJson("{\"StageID\":" + second + ",\"AvatarID\":1003}", AvatarDemoExcel.class));
+        GameData.getAvatarDemoExcelMap().add(fixture.gson.fromJson("{\"StageID\":" + third + ",\"AvatarID\":1002}", AvatarDemoExcel.class));
+        var dir = root.resolve("ExcelOutput");
+        Files.writeString(dir.resolve("ActivityAvatarDemo.json"), "[{\"ActivityID\":" + PANEL + ",\"TypeParam\":[" + first + "," + second + "," + third + "]}]");
+        Files.writeString(dir.resolve("ActivityConfig.json"), "[{\"ActivityID\":" + PANEL + ",\"ActivityPanelID\":" + PANEL
+            + ",\"ActivityModuleIDList\":[" + MODULE + "," + (MODULE+1) + "," + (MODULE+2) + "]}]");
+        Files.writeString(dir.resolve("ActivityModuleDemo.json"), "[{\"AvatarDemoStageID\":" + first + ",\"ActivityModuleID\":" + MODULE
+            + "},{\"AvatarDemoStageID\":" + second + ",\"ActivityModuleID\":" + (MODULE+1)
+            + "},{\"AvatarDemoStageID\":" + third + ",\"ActivityModuleID\":" + (MODULE+2) + "}]");
+        var service = new emu.lunarcore.game.gacha.GachaService(null) { @Override public void watch() {} };
+        long now = Instant.now().getEpochSecond();
+        service.replaceBanners(List.of(new emu.lunarcore.game.gacha.GachaBanner().createBanner(2001,
+            emu.lunarcore.game.gacha.GachaType.AvatarUp, (int)(now-5), (int)(now+300), new int[]{1102}, new int[]{1002})));
+        var player = playerWith(service);
+        assertEquals(Set.of(MODULE, MODULE+2), ActivityAccess.active(player, Instant.ofEpochSecond(now))
+            .stream().map(GameplayDefinitions.Window::moduleId).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(TrialActivityCatalog.available(player, first, Instant.ofEpochSecond(now)));
+        assertTrue(TrialActivityCatalog.available(player, third, Instant.ofEpochSecond(now)));
+        assertFalse(TrialActivityCatalog.available(player, second, Instant.ofEpochSecond(now)), "An inactive five-star banner cannot grant its trial");
+      } finally {
+        GameData.getAvatarDemoExcelMap().keySet().remove(second);
+        GameData.getAvatarDemoExcelMap().keySet().remove(third);
+      }
+    }
+  }
+
+  @Test
+  void anActiveMatchingBannerOpensOnlyItsActualTrialActivity() throws Exception {
+    try (var rarity = new org.hkrpg.server.gacha.GachaRarityResources()) {
+      var avatarField = AvatarDemoExcel.class.getDeclaredField("AvatarID");
+      avatarField.setAccessible(true);
+      avatarField.setInt(GameData.getAvatarDemoExcelMap().get(TrialActivityLifecycleTest.STAGE), 1102);
+      var service = new emu.lunarcore.game.gacha.GachaService(null) { @Override public void watch() {} };
+      long now = Instant.now().getEpochSecond();
+      service.replaceBanners(List.of(new emu.lunarcore.game.gacha.GachaBanner().createBanner(
+          2001, emu.lunarcore.game.gacha.GachaType.AvatarUp, (int)(now - 5), (int)(now + 300),
+          new int[]{1102}, new int[0])));
+      var player = playerWith(service);
+      assertEquals(1, ActivityAccess.active(player, Instant.ofEpochSecond(now)).size());
+      assertTrue(TrialActivityCatalog.available(player, TrialActivityLifecycleTest.STAGE, Instant.ofEpochSecond(now)));
+      window(MODULE, 0, now);
+      assertFalse(TrialActivityCatalog.available(player, TrialActivityLifecycleTest.STAGE, Instant.ofEpochSecond(now)),
+          "An explicitly expired operator window cannot be bypassed by a derived one");
+      GameplayDefinitions.windows.clear();
+      panel("[PlayerLevel:80]");
+      assertTrue(ActivityAccess.active(player, Instant.ofEpochSecond(now)).isEmpty());
+      assertFalse(TrialActivityCatalog.available(player, TrialActivityLifecycleTest.STAGE, Instant.ofEpochSecond(now)));
+      panel("");
+      service.replaceBanners(List.of(new emu.lunarcore.game.gacha.GachaBanner().createBanner(
+          2001, emu.lunarcore.game.gacha.GachaType.AvatarUp, (int)(now - 5), (int)(now + 300),
+          new int[]{1102}, new int[]{1002})));
+      assertTrue(ActivityAccess.active(player, Instant.ofEpochSecond(now)).isEmpty(), "A partial roster must not open a historical trial");
+      service.replaceBanners(List.of(new emu.lunarcore.game.gacha.GachaBanner().createBanner(
+          2001, emu.lunarcore.game.gacha.GachaType.AvatarUp, (int)(now - 10), (int) now,
+          new int[]{1102}, new int[0])));
+      assertTrue(ActivityAccess.active(player, Instant.ofEpochSecond(now)).isEmpty(), "Expired banners must not open trials");
+      service.replaceBanners(List.of());
+      assertTrue(ActivityAccess.active(player, Instant.ofEpochSecond(now)).isEmpty());
+      assertFalse(TrialActivityCatalog.available(player, TrialActivityLifecycleTest.STAGE, Instant.ofEpochSecond(now)));
+    }
+  }
+
   @Test
   void closedTrialPanelCannotInstallActorsOrEnterItsResourceStage() throws Exception {
     var player = new TrialActivityLifecycleTest.Director();

@@ -111,7 +111,7 @@ final class GmBanners {
     var targets = operation.action().startsWith("banner-batch-") ? operation.bannerIds() : List.of(operation.bannerId());
     return update(operation, rows -> {
       long now = clock.instant().getEpochSecond();
-      int changed = 0, scheduled = 0;
+      int changed = 0, scheduled = 0, corrected = 0;
       for (int id : targets) {
         var row = rows.asList().stream().map(JsonElement::getAsJsonObject)
             .filter(r -> r.get("id").getAsInt() == id).findFirst()
@@ -123,6 +123,12 @@ final class GmBanners {
           long end = now + days * 86400L;
           if (now < 0 || end > Integer.MAX_VALUE) throw new GmError(400, "开放时间超出协议范围。");
           row.addProperty("beginTime", now); row.addProperty("endTime", end);
+          // Old generated weapon templates erroneously defaulted to 50. Correct only
+          // unchanged archive templates the operator explicitly enables for the first time.
+          if (legacyGeneratedWeaponDefault(banner)) {
+            row.addProperty("eventChance", 75);
+            corrected++;
+          }
           row.addProperty("gmTemplatePending", false); scheduled++;
         } else if (enable && !permanent(banner) && banner.getEndTime() <= now)
           throw new GmError(409, "卡池 #" + id + " 原开放时间已到期，请重新复刻；本批次未修改。");
@@ -132,9 +138,18 @@ final class GmBanners {
       }
       return new Result("completed", List.of((enable ? "已启用 " : "已停止 ") + changed + " 个卡池，"
           + (targets.size()-changed) + " 个已处于目标状态。",
-          scheduled > 0 ? scheduled + " 个新配置已设置首次开放时间，已有排期保持原样。" : "原配置与开放时间保留。",
+          (scheduled > 0 ? scheduled + " 个新配置已设置首次开放时间，已有排期保持原样。" : "原配置与开放时间保留。")
+              + (corrected > 0 ? "已修正 " + corrected + " 个旧光锥模板的默认 UP 概率为 75%。" : ""),
           "全服配置已加载，玩家保底记录保留；请重新打开游戏内跃迁页面。"));
     });
+  }
+
+  private static boolean legacyGeneratedWeaponDefault(GachaBanner banner) {
+    if (banner.getGachaType() != GachaType.WeaponUp || banner.getEventChance() != 50) return false;
+    return ARCHIVE.stream().anyMatch(template -> template.id() == banner.getId()
+        && template.type() == GachaType.WeaponUp
+        && Arrays.equals(ids(template.up5()), banner.getRateUpItems5())
+        && Arrays.equals(ids(template.up4()), banner.getRateUpItems4()));
   }
 
   Result completeCatalog(Operation operation) {
@@ -156,7 +171,7 @@ final class GmBanners {
       for (var template : ARCHIVE) if (ids.add(template.id())) {
         var row = new JsonObject(); row.addProperty("id",template.id()); row.addProperty("gachaType",template.type().name());
         row.addProperty("beginTime",0); row.addProperty("endTime",0); row.addProperty("disabled",true);
-        row.addProperty("gmTemplatePending",true); row.addProperty("eventChance",50);
+        row.addProperty("gmTemplatePending",true); row.addProperty("eventChance",template.type() == GachaType.WeaponUp ? 75 : 50);
         row.add("rateUpItems5",JSON.toJsonTree(ids(template.up5()))); row.add("rateUpItems4",JSON.toJsonTree(ids(template.up4())));
         rows.add(row); added++;
       }
@@ -181,7 +196,7 @@ final class GmBanners {
       replacement.addProperty("endTime", end);
       replacement.add("rateUpItems5", JSON.toJsonTree(ids(template.up5())));
       replacement.add("rateUpItems4", JSON.toJsonTree(ids(template.up4())));
-      replacement.addProperty("eventChance", 50);
+      replacement.addProperty("eventChance", template.type() == GachaType.WeaponUp ? 75 : 50);
       replacement.addProperty("disabled", false);
       replacement.addProperty("gmTemplatePending", false);
       boolean found = false;

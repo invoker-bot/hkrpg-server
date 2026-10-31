@@ -52,7 +52,7 @@ class GachaPoolTest {
     for (var type : List.of(GachaType.Normal, GachaType.Newbie)) {
       var pool = service.getPool(banner(type, new int[]{1001,1003,21000}, new int[]{23002,1001}));
       assertTrue(pool.canPull(), pool.issues().toString());
-      assertEquals(List.of(1003,23002), pool.fiveStars());
+      assertEquals(type == GachaType.Newbie ? List.of(1003) : List.of(1003,23002), pool.fiveStars());
       assertEquals(List.of(1001,21000), pool.fourStars()); tiers(pool);
     }
   }

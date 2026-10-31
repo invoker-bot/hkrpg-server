@@ -82,4 +82,39 @@ class GachaWebRoutesTest {
     config.useSSL = false;
     assertEquals("http://127.0.0.1:18080/gacha/details?gacha_id=1001", GachaWebRoutes.detailUrl(1001));
   }
+
+  @Test void detailWithoutAGameServiceExplainsWhyDataIsUnavailable() throws Exception {
+    server = new HttpServer(LunarCore.ServerType.DISPATCH);
+    server.getApp().start("127.0.0.1", 0);
+    var response = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:"
+        + server.getApp().port() + "/gacha/details?gacha_id=2001")).GET().build(),
+        HttpResponse.BodyHandlers.ofString());
+    assertTrue(response.body().contains("卡池数据暂不可用"));
+    assertFalse(response.body().contains("本服暂未提供网页形式的跃迁详情"));
+  }
+
+  @Test void detailsDescribeTheActivePoolsActualRatesAndItems() throws Exception {
+    try (var resources = new org.hkrpg.server.gacha.GachaRarityResources()) {
+      var gacha = new emu.lunarcore.game.gacha.GachaService(null) { @Override public void watch() {} };
+      gacha.replaceBanners(java.util.List.of(new emu.lunarcore.game.gacha.GachaBanner().createBanner(
+          3001, emu.lunarcore.game.gacha.GachaType.WeaponUp, 0, Integer.MAX_VALUE,
+          new int[]{23000}, new int[]{21000})));
+      var app = io.javalin.Javalin.create();
+      try {
+        GachaWebRoutes.register(app, () -> gacha);
+        app.start("127.0.0.1", 0);
+        var url = URI.create("http://127.0.0.1:" + app.port()
+            + "/gacha/details?gacha_id=3001&authkey=private-test-token");
+        var response = client.send(HttpRequest.newBuilder(url).GET().build(), HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("光锥活动跃迁"));
+        assertTrue(response.body().contains("0.800%"));
+        assertTrue(response.body().contains("6.600%"));
+        assertTrue(response.body().contains("75%"));
+        assertTrue(response.body().contains("对象清单"));
+        assertTrue(response.body().contains("物品 #23000"));
+        assertFalse(response.body().contains("private-test-token"));
+      } finally { app.stop(); }
+    }
+  }
 }

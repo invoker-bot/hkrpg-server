@@ -32,15 +32,18 @@ public record GachaPool(List<Integer> base5, List<Integer> base4, List<Integer> 
                 if (drawable(id) && (rarity == 4 || rarity == 5)) valid.add(id);
                 else issues.add("条目 #" + id + " 缺少可用的四星或五星角色/光锥资源。");
             }
-            five = valid.stream().filter(id -> rarity(id) == 5).toList();
+            five = valid.stream().filter(id -> rarity(id) == 5)
+                    .filter(id -> banner.getGachaType() != GachaType.Newbie
+                            || GameData.getItemExcelMap().get(id).getItemMainType() == ItemMainType.AvatarCard).toList();
             four = valid.stream().filter(id -> rarity(id) == 4).toList();
-            if (five.isEmpty()) five = defaults(service.getYellowAvatars(), service.getYellowWeapons(), 5, banner.getGachaType(), issues);
-            if (four.isEmpty()) four = defaults(service.getPurpleAvatars(), service.getPurpleWeapons(), 4, banner.getGachaType(), issues);
+            if (five.isEmpty()) five = defaults(service.getYellowAvatars(), service.getYellowWeapons(), 5,
+                    banner.getGachaType() == GachaType.Newbie ? GachaType.AvatarUp : GachaType.Normal, issues);
+            if (four.isEmpty()) four = defaults(service.getPurpleAvatars(), service.getPurpleWeapons(), 4, GachaType.Normal, issues);
         } else {
             up5 = checked(box(banner.getRateUpItems5()), 5, banner.getGachaType(), "五星 UP", issues);
             up4 = checked(box(banner.getRateUpItems4()), 4, banner.getGachaType(), "四星 UP", issues);
             five = defaults(service.getYellowAvatars(), service.getYellowWeapons(), 5, banner.getGachaType(), issues);
-            four = defaults(service.getPurpleAvatars(), service.getPurpleWeapons(), 4, banner.getGachaType(), issues);
+            four = defaults(service.getPurpleAvatars(), service.getPurpleWeapons(), 4, GachaType.Normal, issues);
         }
         var three = checked(box(service.getBlueWeapons()), 3, GachaType.WeaponUp, "三星基础池", issues);
         return new GachaPool(five, four, three, up5, up4, issues, permanent);

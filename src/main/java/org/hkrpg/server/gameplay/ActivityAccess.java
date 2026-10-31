@@ -7,16 +7,22 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Actual operator windows plus resource unlock conditions. No historical activity is auto-opened.
+ * Operator windows and resource-matched active banner trials, subject to unlock conditions.
  */
 public final class ActivityAccess {
   public static List<GameplayDefinitions.Window> active(Player p, Instant time) {
-    return GameplayDefinitions.windows.stream()
+    var windows = new ArrayList<>(GameplayDefinitions.windows);
+    for (var derived : TrialActivityCatalog.bannerWindows(p, time)) {
+      if (windows.stream().noneMatch(w -> w.panelId() == derived.panelId() && w.moduleId() == derived.moduleId()))
+        windows.add(derived);
+    }
+    var candidates = windows.stream()
         .filter(w -> w.beginTime() <= time.getEpochSecond() && time.getEpochSecond() < w.endTime())
         .filter(w -> unlocked(p, w.panelId()))
-        .filter(TrialActivityCatalog::validWindow)
-        .sorted(Comparator.comparingInt(GameplayDefinitions.Window::panelId))
+        .sorted(Comparator.comparingInt(GameplayDefinitions.Window::panelId)
+            .thenComparingInt(GameplayDefinitions.Window::moduleId))
         .toList();
+    return TrialActivityCatalog.validWindows(candidates);
   }
 
   public static boolean unlocked(Player p, int panel) {

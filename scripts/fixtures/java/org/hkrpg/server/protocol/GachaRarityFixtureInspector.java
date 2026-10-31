@@ -31,6 +31,13 @@ public final class GachaRarityFixtureInspector {
       if (args[0].equals("seed")) {
         players.updateOne(filter, Updates.combine(Updates.set("gachaInfo.standardBanner.pity5",89),
             Updates.set("gachaInfo.standardBanner.pity4",9), Updates.set("gachaInfo.standardBanner.failedFeaturedItemPulls",1)));
+      } else if (args[0].equals("seedTrial")) {
+        // This gate belongs only to the owned test H2; no operator account is touched.
+        players.updateOne(filter, Updates.combine(
+            Updates.set("gameplay.mainMissions.1000510",
+                new org.bson.Document("questId", 1000510).append("progress", 1)
+                    .append("finishTime", 123L).append("phase", "CLOSED")),
+            Updates.unset("gameplay.missionTrials.party")));
       } else require(args[0].equals("inspect"), "Unknown fixture action");
       var codecs = org.bson.codecs.configuration.CodecRegistries.fromCodecs(
           new emu.lunarcore.database.codecs.IntSetCodec(),new emu.lunarcore.database.codecs.IntListCodec(),new emu.lunarcore.database.codecs.Int2IntMapCodec());
@@ -42,9 +49,17 @@ public final class GachaRarityFixtureInspector {
       require(first != null && second != null && first != second && gson.toJson(first.getGachaInfo()).equals(gson.toJson(second.getGachaInfo())), "Independent Player restorations disagree");
       var history = first.getGachaInfo(); var standard = history.getStandardBanner();
       var ticket = db.getCollection("items").find(Filters.and(Filters.eq("ownerUid",uid),Filters.eq("itemId",101))).first();
-      System.out.println("RARITY_FIXTURE="+gson.toJson(Map.of("passed",true,"uid",uid,"actualPlayerReads",2,
-          "pity5",standard.getPity5(),"pity4",standard.getPity4(),"failedFeatured",standard.getFailedFeaturedItemPulls(),
-          "ceiling",history.getCeilingNum(),"tickets",ticket == null ? 0 : ticket.getInteger("count"))));
+      var result = new LinkedHashMap<String,Object>();
+      result.put("passed",true); result.put("uid",uid); result.put("actualPlayerReads",2);
+      result.put("pity5",standard.getPity5()); result.put("pity4",standard.getPity4());
+      result.put("failedFeatured",standard.getFailedFeaturedItemPulls()); result.put("ceiling",history.getCeilingNum());
+      result.put("tickets",ticket == null ? 0 : ticket.getInteger("count"));
+      result.put("newbieDraws", history.getNewbieDrawCount()); result.put("newbieFive", history.isNewbieFiveStarObtained());
+      result.put("missionTrialInside", first.getGameplay().getMissionTrials().getParty() != null);
+      result.put("currentMissionRaid", first.getGameplay().getCurrentMissionRaid());
+      result.put("storyId", first.getGameplay().getStoryLines().getCurrentId());
+      result.put("storyTransition", first.getGameplay().getStoryLines().isTransitionPending());
+      System.out.println("RARITY_FIXTURE="+gson.toJson(result));
     } finally { server.shutdownNow(); }
   }
 }

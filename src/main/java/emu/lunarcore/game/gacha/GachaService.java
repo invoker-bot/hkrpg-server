@@ -36,6 +36,8 @@ import lombok.Getter;
 @Getter
 public class GachaService extends BaseGameService {
     private final Int2ObjectMap<GachaBanner> gachaBanners;
+    // Readers holding a player lock must never take the service lock in reverse order.
+    private volatile List<GachaBanner> bannerSnapshot = List.of();
     private WatchService watchService;
     private Thread watchThread;
 
@@ -155,6 +157,7 @@ public class GachaService extends BaseGameService {
         for (var banner : banners) candidate.put(banner.getId(), banner);
         getGachaBanners().clear();
         getGachaBanners().putAll(candidate);
+        bannerSnapshot = List.copyOf(banners);
     }
 
     public static void validateBanners(List<GachaBanner> banners) {
@@ -176,11 +179,24 @@ public class GachaService extends BaseGameService {
 
     public synchronized void doPulls(Player player, int gachaId, int times) {
         // Sanity checks
-        if (times != 10 && times != 1) return;
+        if (times != 10 && times != 1) {
+            player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_NUM_INVALID));
+            return;
+        }
 
         GachaBanner banner = this.getGachaBanners().get(gachaId);
         if (banner == null || !banner.isActive(System.currentTimeMillis() / 1000L)) {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_ID_NOT_EXIST));
+            return;
+        }
+
+        boolean beginner = banner.getGachaType() == GachaType.Newbie;
+        if (beginner && times != 10) {
+            player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_NUM_INVALID));
+            return;
+        }
+        if (beginner && player.getGachaInfo().getNewbieDrawCount() + times > 50) {
+            player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_NEWBIE_CLOSE));
             return;
         }
 
@@ -199,14 +215,15 @@ public class GachaService extends BaseGameService {
         // Get banner
 
         // Spend currency
+        int cost = beginner ? 8 : times;
         if (banner.getGachaType().getCostItem() > 0) {
             GameItem costItem = player.getInventory().getMaterialByItemId(banner.getGachaType().getCostItem());
-            if (costItem == null || costItem.getCount() < times) {
+            if (costItem == null || costItem.getCount() < cost) {
                 player.sendPacket(new PacketDoGachaScRsp(Retcode.FAIL));
                 return;
             }
 
-            if (!player.getInventory().removeItem(costItem, times)) {
+            if (!player.getInventory().removeItem(costItem, cost)) {
                 player.sendPacket(new PacketDoGachaScRsp(Retcode.FAIL));
                 return;
             }
@@ -215,7 +232,6 @@ public class GachaService extends BaseGameService {
         // Add gacha ceiling
         if (banner.getGachaType() == GachaType.Normal) {
             player.getGachaInfo().addCeilingNum(times);
-            player.save();
         }
 
         // Roll
@@ -226,11 +242,20 @@ public class GachaService extends BaseGameService {
             int random = this.randomRange(1, 10000);
             int itemId = 0;
 
-            int bonusYellowChance = gachaInfo.getPity5() >= 74 ? 100 * (gachaInfo.getPity5() - 73): 0;
-            int yellowChance = 60 + (int) Math.floor(100f * (gachaInfo.getPity5() / 73f)) + bonusYellowChance;
-            int purpleChance = 10000 - (510 + (int) Math.floor(790f * (gachaInfo.getPity4() / 8f)));
+            boolean weapon = banner.getGachaType() == GachaType.WeaponUp;
+            // Official base rates and hard limits are public. The intermediate soft-pity
+            // curve is a compatible server approximation, not a published official curve.
+            int yellowChance = beginner ? 60 : weapon
+                    ? Math.min(10000, 80 + Math.max(0, gachaInfo.getPity5() - 64) * 700)
+                    : Math.min(10000, 60 + Math.max(0, gachaInfo.getPity5() - 72) * 600);
+            int purpleChance = weapon && gachaInfo.getPity4() == 7 ? 5000
+                    : (weapon ? 660 : 510) * (gachaInfo.getPity4() >= 8 ? 11 : 1);
+            boolean forceNewbieFive = beginner && player.getGachaInfo().getNewbieDrawCount() == 49
+                    && !player.getGachaInfo().isNewbieFiveStarObtained();
+            boolean fiveStar = random <= yellowChance || forceNewbieFive
+                    || !beginner && gachaInfo.getPity5() >= (weapon ? 79 : 89);
 
-            if (random <= yellowChance || gachaInfo.getPity5() >= 89) {
+            if (fiveStar) {
                 if (!pool.up5().isEmpty()) {
                     int eventChance = this.randomRange(1, 100);
 
@@ -246,22 +271,27 @@ public class GachaService extends BaseGameService {
                 if (itemId == 0) {
                     itemId = pickBase(pool.base5());
                 }
+                if (pool.up5().contains(itemId)) gachaInfo.setFailedFeaturedItemPulls(0);
 
                 // Pity
                 gachaInfo.addPity4(1);
                 gachaInfo.setPity5(0);
-            } else if (random >= purpleChance || gachaInfo.getPity4() >= 9) {
+            } else if (random > 10000 - purpleChance || gachaInfo.getPity4() >= 9) {
                 if (!pool.up4().isEmpty()) {
                     int eventChance = this.randomRange(1, 100);
 
-                    if (eventChance >= 50) {
+                    if (eventChance <= (weapon ? 75 : 50) || gachaInfo.getFailedFeatured4Pulls() > 0) {
                         itemId = pick(pool.up4());
+                        gachaInfo.setFailedFeatured4Pulls(0);
+                    } else {
+                        gachaInfo.setFailedFeatured4Pulls(1);
                     }
                 }
 
                 if (itemId == 0) {
                     itemId = pickBase(pool.base4());
                 }
+                if (pool.up4().contains(itemId)) gachaInfo.setFailedFeatured4Pulls(0);
 
                 // Pity
                 gachaInfo.addPity5(1);
@@ -273,6 +303,8 @@ public class GachaService extends BaseGameService {
                 gachaInfo.addPity4(1);
                 gachaInfo.addPity5(1);
             }
+
+            if (beginner) player.getGachaInfo().recordNewbieDraw(fiveStar);
 
             // Add winning item
             wonItems.add(itemId);
@@ -368,6 +400,7 @@ public class GachaService extends BaseGameService {
         }
 
         // Packets
+        player.save();
         player.sendPacket(new PacketDoGachaScRsp(player, banner, times, list));
     }
 

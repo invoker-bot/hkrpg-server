@@ -13,7 +13,8 @@ public class GachaBanner {
     private int endTime;
     private int[] rateUpItems5;
     private int[] rateUpItems4;
-    private int eventChance = 50;
+    // Missing values use the type's standard rate; explicit operator values remain intact.
+    private Integer eventChance;
     private boolean disabled;
     // Bundled but not scheduled yet; first explicit GM enable assigns its opening window.
     private boolean gmTemplatePending;
@@ -24,7 +25,12 @@ public class GachaBanner {
     }
 
     public GachaBanner createBanner(int id, GachaType gachaType, int beginTime, int endTime, int[] rateUpItems5, int[] rateUpItems4) {
-        return createBanner(id, gachaType, beginTime, endTime, rateUpItems5, rateUpItems4, 50);
+        return createBanner(id, gachaType, beginTime, endTime, rateUpItems5, rateUpItems4,
+                gachaType == GachaType.WeaponUp ? 75 : 50);
+    }
+
+    public int getEventChance() {
+        return eventChance != null ? eventChance : gachaType == GachaType.WeaponUp ? 75 : 50;
     }
 
     public GachaBanner createBanner(int id, GachaType gachaType, int beginTime, int endTime, int[] rateUpItems5, int[] rateUpItems4, int eventChance) {

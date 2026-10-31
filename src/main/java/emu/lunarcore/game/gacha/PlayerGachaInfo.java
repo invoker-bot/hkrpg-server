@@ -13,14 +13,18 @@ import lombok.Setter;
 public class PlayerGachaInfo {
     public static final String CEILING_REWARD_KEY = "gacha:standard-ceiling";
     private PlayerGachaBannerInfo standardBanner;
+    private PlayerGachaBannerInfo newbieBanner;
     private PlayerGachaBannerInfo eventCharacterBanner;
     private PlayerGachaBannerInfo eventWeaponBanner;
+    private int newbieDrawCount;
+    private boolean newbieFiveStarObtained;
 
     private int ceilingNum;
     @Setter private boolean ceilingClaimed;
 
     public PlayerGachaInfo() {
         this.standardBanner = new PlayerGachaBannerInfo();
+        this.newbieBanner = new PlayerGachaBannerInfo();
         this.eventCharacterBanner = new PlayerGachaBannerInfo();
         this.eventWeaponBanner = new PlayerGachaBannerInfo();
     }
@@ -30,13 +34,22 @@ public class PlayerGachaInfo {
     }
 
     public PlayerGachaBannerInfo getBannerInfo(GachaType type) {
-        if (type == GachaType.AvatarUp) {
+        if (type == GachaType.Newbie) {
+            // Documents created before this field existed have no independent beginner pity.
+            if (this.newbieBanner == null) this.newbieBanner = new PlayerGachaBannerInfo();
+            return this.newbieBanner;
+        } else if (type == GachaType.AvatarUp) {
             return this.eventCharacterBanner;
         } else if (type == GachaType.WeaponUp) {
             return this.eventWeaponBanner;
         }
 
         return this.standardBanner;
+    }
+
+    public void recordNewbieDraw(boolean fiveStar) {
+        this.newbieDrawCount++;
+        this.newbieFiveStarObtained |= fiveStar;
     }
 
     public GachaCeiling toGachaCeiling(Player player) {
