@@ -1167,6 +1167,36 @@ public final class NativeOpeningStageWinProbe {
         "teleportVerified", true, "restored", restored);
   }
 
+  private Map<String, Object> baseAnchorBox(boolean restored) throws Exception {
+    var unlocked = (List<?>) field(call("GetUnlockTeleportCsReq", Map.of("entry_id_list", List.of(2000101)), true),
+        "unlocked_teleport_list");
+    require(unlocked.contains(2000102) == restored, "Box anchor state must survive reconnect/restart");
+    var anchor = groupEntities(18).stream().filter(e -> (Integer) field(e, "inst_id") == 300002).findFirst().orElseThrow();
+    if (!restored) {
+      require((Integer) field((DynamicMessage) field(anchor, "prop"), "prop_state") == 7,
+          "Box anchor must begin disabled");
+      var scene = (DynamicMessage) field(call("GetCurSceneInfoCsReq"), "scene");
+      var originalMotion = (DynamicMessage) field(anchor, "motion");
+      var originalPos = (DynamicMessage) field(originalMotion, "pos");
+      var posType = originalPos.getDescriptorForType();
+      var position = originalPos.toBuilder().setField(posType.findFieldByName("x"), 21576)
+          .setField(posType.findFieldByName("y"), 146).setField(posType.findFieldByName("z"), 224180).build();
+      var motion = originalMotion.toBuilder().setField(originalMotion.getDescriptorForType().findFieldByName("pos"), position).build();
+      var type = protocol.clientSchema().message("SceneEntityMoveCsReq").findFieldByName("entity_motion_list").getMessageType();
+      var movement = DynamicMessage.newBuilder(type).setField(type.findFieldByName("entity_id"), field(scene, "leader_entity_id"))
+          .setField(type.findFieldByName("motion"), motion).build();
+      call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(movement)), true);
+      call("SceneEntityMoveCsReq", Map.of("entity_motion_list", List.of(movement)), true);
+    }
+    unlocked = (List<?>) field(call("GetUnlockTeleportCsReq", Map.of("entry_id_list", List.of(2000101)), true),
+        "unlocked_teleport_list");
+    require(unlocked.contains(2000102), "Box anchor absent from teleport list after movement");
+    anchor = groupEntities(18).stream().filter(e -> (Integer) field(e, "inst_id") == 300002).findFirst().orElseThrow();
+    require((Integer) field((DynamicMessage) field(anchor, "prop"), "prop_state") == 8,
+        "Box anchor scene state was not activated/restored");
+    return Map.of("mapping", 2000102, "restored", restored, "activated", true);
+  }
+
   private void formalParty(List<Integer> expected, int leader, Set<Integer> owned) throws Exception {
     var current = (DynamicMessage) field(call("GetCurLineupDataCsReq"), "lineup");
     var roster = ((List<?>) field(current, "avatar_list")).stream().map(DynamicMessage.class::cast)
@@ -1716,6 +1746,9 @@ public final class NativeOpeningStageWinProbe {
     result.put("characterChoiceVerified", verifyScriptedUnlock && verifyStellaron && verifyCharacter);
     result.put("openingTransferVerified", verifyTransfer && phase.equals("barriers-restart") && !interruptedTransfer);
     result.put("openingTransferPending", verifyTransfer && phase.equals("barriers-restart") && interruptedTransfer);
+    if (control.has("baseAnchorBox") && control.get("baseAnchorBox").getAsBoolean())
+      result.put("baseAnchorBox", baseAnchorBox(!first));
+    result.put("requests", requests);
     return result;
   }
 

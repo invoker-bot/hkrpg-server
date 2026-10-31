@@ -36,7 +36,7 @@ public class PropInfo extends ObjectInfo {
     @Setter private transient PropTrigger trigger;
     @Setter private transient boolean isCommonConsole;
     // Runtime-only: adding trigger geometry must not invalidate existing prop source fingerprints.
-    @Setter private transient org.hkrpg.server.gameplay.SceneAnchors.Sphere springActivation;
+    @Setter private transient org.hkrpg.server.gameplay.SceneAnchors.Volume springActivation;
 
     @Override
     public Position getRot() {

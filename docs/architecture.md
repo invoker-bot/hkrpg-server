@@ -2,7 +2,7 @@
 
 `StoryParties` 用来源绑定的发放意图、预留角色文档 ID 与编队变更记录连接任务、角色、头像和队伍保存。`MissionRewards` 将正式角色与普通物品账本分开防重；`StoryActions` 仅恢复有来源证明的编队动作。登录补发保留已完成任务及玩家后续手动编队，兼容规则和验证边界见[剧情正式队伍说明](story-formal-party-4.6.md)。
 
-`SceneAnchors` 绑定原始球形服务器触发范围，在移动入口持久化单个实际锚点的激活，再刷新场景；地图查询和传送共读来源绑定状态。触发缓存不改变旧物件指纹，适用范围见[锚点激活说明](space-anchor-activation-4.6.md)。
+`SceneAnchors` 绑定原始球形或长方体服务器触发范围，在移动入口持久化单个实际锚点的激活，再刷新场景；地图查询和传送共读来源绑定状态。触发缓存不改变旧物件指纹，适用范围见[锚点激活说明](space-anchor-activation-4.6.md)。
 
 `AvatarExperience` 在扣费/结算前验证全部跨级曲线，供材料升级和普通战斗共享。`BattleAvatarExperience` 从实际 NPC 入战时冻结原始世界等级经验，只给冻结参战集合中的正式持有角色；在胜利剧情回调前保存同步。4.6 升级材料字段由 `ProtocolBridge` 显式匹配，来源和验证边界见[角色经验说明](avatar-progression-4.6.md)。
 

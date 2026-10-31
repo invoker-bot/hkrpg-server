@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--awakening-battle', action='store_true', help='继续校验女主真实出战编号结算、失败重试、防重复奖励、后续两场战斗与对白接取、生命能量及H2恢复；战报为合成数据')
     parser.add_argument('--avatar-progression', action='store_true', help='继续校验两场战斗经验、三本实际材料升级、扣费与角色同步及H2重启保存')
     parser.add_argument('--space-anchors', action='store_true', help='继续校验收容舱段锚点靠近激活、地图查询、实际传送和H2重启；移动为合成请求')
+    parser.add_argument('--base-anchor-box', action='store_true', help='校验基座舱段原始盒形锚点移动激活、地图状态及重连/H2重启；移动为合成请求')
     parser.add_argument('--story-party', action='store_true', help='继续校验三月七获得、丹恒奖励入队、原始三人编队、手动编辑和H2重启；对白为合成回执')
     parser.add_argument('--preset-lineup', action='store_true', help='继续校验备用队伍编辑、切换及重连/H2重启；包含剧情队伍测试')
     parser.add_argument('--key-console', action='store_true', help='继续到使用密钥目标，校验前置战斗与对白门槛、控制台和绑定门、后续对白、同进程重连和H2重启')
@@ -110,6 +111,11 @@ def main():
     if args.space_anchors:
         guarded += ['Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json',
                     'Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json']
+    if args.base_anchor_box:
+        fixture = json.loads((ROOT / 'src/test/resources/fixtures/base-zone-anchor-box-4.6.json').read_text(encoding='utf-8'))
+        original = ROOT / fixture['sourcePath']
+        assert hashlib.sha256(original.read_bytes()).hexdigest() == fixture['sha256']
+        guarded.append(str(original.relative_to(source)))
     if args.story_party:
         guarded += ['ExcelOutput/AvatarConfig.json', 'ExcelOutput/ItemConfigAvatar.json', 'ExcelOutput/RewardData.json']
         guarded += [str(path.relative_to(source)) for path in (source / 'Config/Level/Mission/1000204').glob('*.json')]
@@ -219,6 +225,7 @@ def main():
                                    'awakeningBattle': args.awakening_battle,
                                    'avatarProgression': args.avatar_progression,
                                    'spaceAnchors': args.space_anchors,
+                                   'baseAnchorBox': args.base_anchor_box,
                                    'storyParty': args.story_party,
                                    'presetLineup': args.preset_lineup,
                                    'keyConsole': args.key_console,
@@ -315,6 +322,8 @@ def main():
                         time.sleep(1)
                         continue
                     assert snapshot['passed'] and snapshot['openingBattleFinished'] and snapshot['nextObjectiveAccepted']
+                    if args.base_anchor_box:
+                        assert snapshot['baseAnchorBox'] == {'mapping': 2000102, 'restored': phase != 'first', 'activated': True}
                     assert snapshot['openingKafkaVerified'] and snapshot['tutorialProgressVerified']
                     assert snapshot['openingSceneGatesVerified']
                     assert snapshot['recoveryPropsVerified']

@@ -15,15 +15,34 @@ import java.util.*;
 
 /** Individual anchor progress never changes shared floor definitions. */
 public final class SceneAnchors {
-  /** The supported authored spherical server trigger, in metres and prop-local coordinates. */
-  public record Sphere(double radius, double x, double y, double z) {
-    boolean contains(PropInfo prop, Position position) {
+  /** Supported authored server volumes, in metres and prop-local coordinates. */
+  public sealed interface Volume permits Sphere, Box {
+    boolean contains(PropInfo prop, Position position);
+  }
+
+  public record Sphere(double radius, double x, double y, double z) implements Volume {
+    public boolean contains(PropInfo prop, Position position) {
       if (position == null || prop.getRotX() != 0 || prop.getRotZ() != 0) return false;
       double angle = Math.toRadians(prop.getRotY());
       double dx = position.getX() / 1000.0 - prop.getPosX() - (x * Math.cos(angle) + z * Math.sin(angle));
       double dy = position.getY() / 1000.0 - prop.getPosY() - y;
       double dz = position.getZ() / 1000.0 - prop.getPosZ() - (z * Math.cos(angle) - x * Math.sin(angle));
       return dx * dx + dy * dy + dz * dz <= radius * radius;
+    }
+  }
+
+  public record Box(double width, double height, double depth, double x, double y, double z)
+      implements Volume {
+    public boolean contains(PropInfo prop, Position position) {
+      if (position == null || prop.getRotX() != 0 || prop.getRotZ() != 0) return false;
+      double angle = Math.toRadians(prop.getRotY());
+      double dx = position.getX() / 1000.0 - prop.getPosX();
+      double dy = position.getY() / 1000.0 - prop.getPosY();
+      double dz = position.getZ() / 1000.0 - prop.getPosZ();
+      double localX = dx * Math.cos(angle) - dz * Math.sin(angle) - x;
+      double localZ = dx * Math.sin(angle) + dz * Math.cos(angle) - z;
+      return Math.abs(localX) <= width / 2 && Math.abs(dy - y) <= height / 2
+          && Math.abs(localZ) <= depth / 2;
     }
   }
 
@@ -41,17 +60,29 @@ public final class SceneAnchors {
         var map = row.getAsJsonObject("CustomTriggerMap");
         if (!map.has("CustomTrigger_Spring")) continue;
         var trigger = map.getAsJsonObject("CustomTrigger_Spring");
-        if (!Set.of("Radius", "Offset", "PointList", "Server", "Shape").containsAll(trigger.keySet())
+        String shape = trigger.has("Shape") ? trigger.get("Shape").getAsString() : "Sphere";
+        var allowed = switch (shape) {
+          case "Sphere" -> Set.of("Radius", "Offset", "PointList", "Server", "Shape");
+          case "Box" -> Set.of("Radius", "DimX", "DimY", "DimZ", "Offset", "PointList", "Server", "Shape");
+          default -> Set.<String>of();
+        };
+        if (!allowed.containsAll(trigger.keySet())
             || !trigger.has("Server") || !trigger.get("Server").isJsonPrimitive()
             || !trigger.getAsJsonPrimitive("Server").isBoolean() || !trigger.get("Server").getAsBoolean()
-            || trigger.has("Shape") && !"Sphere".equals(trigger.get("Shape").getAsString())
             || trigger.has("PointList") && (!trigger.get("PointList").isJsonArray()
                 || !trigger.getAsJsonArray("PointList").isEmpty())) continue;
-        double radius = number(trigger, "Radius");
         var offset = trigger.getAsJsonObject("Offset");
-        if (radius <= 0 || offset == null || !Set.of("X", "Y", "Z").containsAll(offset.keySet())) continue;
+        if (offset == null || !Set.of("X", "Y", "Z").containsAll(offset.keySet())) continue;
         double x = number(offset, "X"), y = number(offset, "Y"), z = number(offset, "Z");
-        matches.getFirst().setSpringActivation(new Sphere(radius, x, y, z));
+        if (shape.equals("Sphere")) {
+          double radius = number(trigger, "Radius");
+          if (radius > 0) matches.getFirst().setSpringActivation(new Sphere(radius, x, y, z));
+        } else if (shape.equals("Box")) {
+          double width = number(trigger, "DimX"), height = number(trigger, "DimY"), depth = number(trigger, "DimZ");
+          if (trigger.has("Radius") && number(trigger, "Radius") <= 0) continue;
+          if (width > 0 && height > 0 && depth > 0)
+            matches.getFirst().setSpringActivation(new Box(width, height, depth, x, y, z));
+        }
       } catch (RuntimeException unsupported) {
         // Invalid/missing geometry is not permission to unlock a waypoint.
       }
