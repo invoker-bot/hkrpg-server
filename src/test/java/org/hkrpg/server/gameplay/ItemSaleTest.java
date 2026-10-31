@@ -36,6 +36,8 @@ class ItemSaleTest {
   List<GameplayDefinitions.DailyPool> oldPool;
   int deliveryLimit = Integer.MAX_VALUE;
   String interruptPhase;
+  final List<BasePacket> packets = new ArrayList<>();
+  GameSession transport;
   final Player player =
       new Player() {
         final Inventory actual =
@@ -61,7 +63,10 @@ class ItemSaleTest {
             throw new IllegalStateException("Isolated decomposition save interruption");
         }
 
-        public void sendPacket(BasePacket packet) {}
+        public void sendPacket(BasePacket packet) {
+          packets.add(packet);
+          if (transport != null) transport.send(packet);
+        }
       };
   final InventoryService service = new InventoryService(null);
 
@@ -463,6 +468,125 @@ class ItemSaleTest {
     assertEquals(0, session.code());
     assertEquals(Map.of(221, 1), session.returned());
     assertNull(player.getInventory().getItemByUid(value.getInternalUid()));
+  }
+
+  @Test
+  void nativeFiveHundredLightConesSendOneDeletionUpdateAndReturnAllMaterials() throws Exception {
+    var inputs = new ArrayList<GameItem>();
+    for (int i = 0; i < 500; i++) inputs.add(item(20000, 1));
+    var body = wire(out -> {
+      out.writeByteArray(2, wire(cost -> {
+        for (var value : inputs) cost.writeByteArray(2, nativeCost(2, value.getInternalUid()));
+      }));
+      out.writeBool(12, true);
+    });
+    var session = new NativeSession();
+    session.sell(body);
+    assertEquals(0, session.code());
+    assertEquals(Map.of(221, 500), session.returned());
+    assertEquals(500, stock(221));
+    assertTrue(inputs.stream().allMatch(value -> player.getInventory().getItemByUid(value.getInternalUid()) == null));
+    var deletionUpdates = packets.stream()
+        .map(BasePacket::getData)
+        .filter(emu.lunarcore.proto.PlayerSyncScNotifyOuterClass.PlayerSyncScNotify.class::isInstance)
+        .map(emu.lunarcore.proto.PlayerSyncScNotifyOuterClass.PlayerSyncScNotify.class::cast)
+        .filter(update -> update.getDelEquipmentList().length() > 0).toList();
+    assertEquals(1, deletionUpdates.size(), "One batch must not queue 500 individual sync packets");
+    assertEquals(500, deletionUpdates.getFirst().getDelEquipmentList().length());
+  }
+
+  @Test
+  void nativeInterruptedSaleAlwaysReturnsAnErrorWithoutDebitingTheItems() throws Exception {
+    var value = item(20000, 1);
+    interruptPhase = "RESERVED";
+    var session = new NativeSession();
+    session.sell(nativeRequest(nativeCost(2, value.getInternalUid()), true));
+    assertNotEquals(0, session.code());
+    intact(value);
+    assertEquals(0, stock(221));
+    assertEquals("RESERVED", player.getGameplay().getItemSale().getLastAttempt().getPhase());
+  }
+
+  @Test
+  void failedMiddleDeletionPublishesOnlyConfirmedRemovalsAndKeepsThePlanPending() throws Exception {
+    var first = item(20000, 1);
+    var failed = new GameItem(GameData.getItemExcelMap().get(20000), 1) {
+      public void save() { if (getCount() == 0) throw new IllegalStateException("Isolated delete failure"); }
+    };
+    failed.setOwner(player);
+    player.getInventory().getItems().put(failed.getInternalUid(), failed);
+    player.getInventory().getTabByItemType(failed.getItemMainType()).onAddItem(failed);
+    var last = item(20000, 1);
+    var body = wire(out -> out.writeByteArray(2, wire(cost -> {
+      for (var value : List.of(first, failed, last))
+        cost.writeByteArray(2, nativeCost(2, value.getInternalUid()));
+    })));
+    var session = new NativeSession();
+    session.sell(body);
+    assertNotEquals(0, session.code());
+    assertEquals(0, stock(221));
+    assertEquals("RESERVED", player.getGameplay().getItemSale().getLastAttempt().getPhase());
+    intact(last);
+    var deletionUpdates = packets.stream().map(BasePacket::getData)
+        .filter(emu.lunarcore.proto.PlayerSyncScNotifyOuterClass.PlayerSyncScNotify.class::isInstance)
+        .map(emu.lunarcore.proto.PlayerSyncScNotifyOuterClass.PlayerSyncScNotify.class::cast)
+        .filter(update -> update.getDelEquipmentList().length() > 0).toList();
+    assertEquals(1, deletionUpdates.size());
+    assertEquals(1, deletionUpdates.getFirst().getDelEquipmentList().length());
+    assertEquals(first.getInternalUid(), deletionUpdates.getFirst().getDelEquipmentList().get(0));
+    session.sell(nativeRequest(nativeCost(2, last.getInternalUid()), true));
+    assertNotEquals(0, session.code());
+    intact(last);
+  }
+
+  class FramedSession extends GameSession {
+    final ProtocolBridge bridge = ProtocolBridge.forVersion("4.6.0");
+    final List<emu.lunarcore.server.packet.PacketCodec.Frame> frames = new ArrayList<>();
+
+    FramedSession() { super(null); setState(SessionState.ACTIVE); }
+    public Player getPlayer() { return player; }
+    public ProtocolBridge getProtocol() { return bridge; }
+    protected void writeTransport(byte[] bytes) {
+      var input = io.netty.buffer.Unpooled.wrappedBuffer(bytes);
+      try {
+        while (input.isReadable()) frames.add(emu.lunarcore.server.packet.PacketCodec.decodeNext(input));
+      } finally { input.release(); }
+    }
+    void receive(byte[] body) throws Exception {
+      var header = wire(out -> out.writeUInt32(1, 73451));
+      var bytes = io.netty.buffer.Unpooled.wrappedBuffer(
+          emu.lunarcore.server.packet.PacketCodec.encode(511, header, body));
+      try { onMessage(bytes); } finally { bytes.release(); }
+    }
+  }
+
+  @Test
+  void fiveHundredDeletionsAndReplyKeepNativePacketCorrelation() throws Exception {
+    var inputs = new ArrayList<GameItem>();
+    for (int i = 0; i < 500; i++) inputs.add(item(20000, 1));
+    var body = wire(out -> {
+      out.writeByteArray(2, wire(cost -> {
+        for (var value : inputs) cost.writeByteArray(2, nativeCost(2, value.getInternalUid()));
+      }));
+      out.writeBool(12, true);
+    });
+    var session = new FramedSession();
+    transport = session;
+    session.receive(body);
+    var sync = session.frames.stream().filter(p -> p.cmdId() == session.bridge.clientCommand("PlayerSyncScNotify"))
+        .map(p -> {
+          try { return session.bridge.clientSchema().parse("PlayerSyncScNotify", p.body()); }
+          catch (IOException invalid) { throw new AssertionError(invalid); }
+        }).filter(m -> ((List<?>) m.getField(m.getDescriptorForType().findFieldByName("del_equipment_list"))).size() > 0)
+        .toList();
+    assertEquals(1, sync.size());
+    assertEquals(500, ((List<?>) sync.getFirst().getField(sync.getFirst().getDescriptorForType()
+        .findFieldByName("del_equipment_list"))).size());
+    var replies = session.frames.stream().filter(p -> p.cmdId() == 517).toList();
+    assertEquals(1, replies.size());
+    assertArrayEquals(wire(out -> out.writeUInt32(1, 73451)), replies.getFirst().header());
+    var reply = session.bridge.clientSchema().parse("SellItemScRsp", replies.getFirst().body());
+    assertEquals(0, reply.getField(reply.getDescriptorForType().findFieldByName("retcode")));
   }
 
   @ParameterizedTest

@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "item-sale-batch-sync",
+      "name": "光锥与遗器批量分解同步",
+      "status": "partial",
+      "evidence": "docs/item-sale-4.6.md",
+      "gap": "最多500件的唯一物品分解按一批通知库存删除，保留原有归属、锁定、容量及领取校验；中断时返回错误并保留待对账记录。500件原生回包、单条删除通知、到账、重连及H2重启经隔离验证；强化/叠影返还、断电自动对账和真实客户端UI仍待完成。"
+    },
+    {
       "id": "first-story-rogue-entry",
       "name": "模拟宇宙始发测试入口恢复",
       "status": "partial",

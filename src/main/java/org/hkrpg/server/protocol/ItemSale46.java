@@ -26,26 +26,35 @@ public final class ItemSale46 {
       var request = decode(bytes);
       List<GameItem> received = null;
       var code = Retcode.REQ_PARA_INVALID;
-      if (request != null) {
-        boolean typed =
-            request.types().entrySet().stream()
-                .allMatch(
-                    e -> {
-                      var item = player.getInventory().getItemByUid(e.getKey());
-                      return item != null
-                          && item.getExcel() != null
-                          && item.getItemMainType() == e.getValue();
-                    });
-        var use = player.getGameplay().getLastItemUse();
-        if (!player.getGameplay().getItemSale().available()
-            || player.getGameplay().getCompositionLimits().pending()
-            || use != null && use.pending()) code = Retcode.SYSTEM_BUSY;
-        else if (typed) {
-          received = ItemSale.sell(player, request.materials(), request.costs());
-          if (received != null) code = Retcode.SUCC;
-          else if (!player.getGameplay().getItemSale().available())
-            code = Retcode.PLAYER_DATA_ERROR;
+      try {
+        if (request != null) {
+          boolean typed =
+              request.types().entrySet().stream()
+                  .allMatch(
+                      e -> {
+                        var item = player.getInventory().getItemByUid(e.getKey());
+                        return item != null
+                            && item.getExcel() != null
+                            && item.getItemMainType() == e.getValue();
+                      });
+          var use = player.getGameplay().getLastItemUse();
+          if (!player.getGameplay().getItemSale().available()
+              || player.getGameplay().getCompositionLimits().pending()
+              || use != null && use.pending()) code = Retcode.SYSTEM_BUSY;
+          else if (typed) {
+            received = ItemSale.sell(player, request.materials(), request.costs());
+            if (received != null) code = Retcode.SUCC;
+            else if (!player.getGameplay().getItemSale().available())
+              code = Retcode.PLAYER_DATA_ERROR;
+          }
         }
+      } catch (RuntimeException failure) {
+        // The sale ledger preserves an interrupted transaction for reconciliation. Do not
+        // acknowledge success or retry any debit, but always answer the client's request.
+        emu.lunarcore.LunarCore.getLogger().warn("Item sale interrupted for player {} ({})",
+            player.getUid(), failure.getClass().getSimpleName());
+        received = null;
+        code = Retcode.SYSTEM_BUSY;
       }
       var response = Gameplay46.builder(session, "SellItemScRsp");
       Gameplay46.set(response, "retcode", code.getVal());

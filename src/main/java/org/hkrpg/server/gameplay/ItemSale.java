@@ -32,9 +32,11 @@ public final class ItemSale {
       var attempt = ledger.reserve(materials, plan.inputs(), expected, plan.before());
       player.save();
       var inventory = player.getInventory();
+      // A single sale is one inventory operation: batch the deletion notification and
+      // mission observation rather than queueing one frame per unique item.
+      inventory.removeItems(plan.inputs());
       for (var item : plan.inputs()) {
-        if (!inventory.removeItem(item, 1)
-            || item.getCount() != 0
+        if (item.getCount() != 0
             || inventory.getItemByUid(item.getInternalUid()) != null
             || contains(inventory.getTabByItemType(item.getItemMainType()), item)) return null;
       }

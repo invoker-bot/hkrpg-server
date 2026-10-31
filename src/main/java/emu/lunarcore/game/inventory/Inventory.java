@@ -523,20 +523,23 @@ public class Inventory extends BasePlayerManager {
       // Init results and remove items from inventory
       List<GameItem> results = new ArrayList<GameItem>(items.size());
 
-      for (GameItem item : items) {
-        int before = item.getCount();
-        GameItem result = deleteItem(item, item.getCount());
-        if (result != null) {
-          results.add(result);
-          consumed.merge(item.getItemId(), before - item.getCount(), Math::addExact);
+      try {
+        for (GameItem item : items) {
+          int before = item.getCount();
+          GameItem result = deleteItem(item, item.getCount());
+          if (result != null) {
+            results.add(result);
+            consumed.merge(item.getItemId(), before - item.getCount(), Math::addExact);
+          }
+        }
+      } finally {
+        // Earlier deletions may already be durable even if a later one fails.
+        // Only acknowledge the removals whose save returned successfully.
+        if (!results.isEmpty()) {
+          getPlayer().sendPacket(new PacketPlayerSyncScNotify(results));
+          getPlayer().getMissionManager().onItemsConsumed(consumed);
         }
       }
-
-      // Send packet (update)
-      if (results.size() > 0) {
-        getPlayer().sendPacket(new PacketPlayerSyncScNotify(results));
-      }
-      getPlayer().getMissionManager().onItemsConsumed(consumed);
     }
   }
 
