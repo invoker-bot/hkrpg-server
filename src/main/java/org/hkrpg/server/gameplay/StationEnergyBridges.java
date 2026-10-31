@@ -1,6 +1,8 @@
 package org.hkrpg.server.gameplay;
 
 import emu.lunarcore.data.GameData;
+import emu.lunarcore.data.config.FloorInfo;
+import emu.lunarcore.data.config.GroupInfo;
 import emu.lunarcore.data.config.PropInfo;
 import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.scene.Scene;
@@ -8,19 +10,37 @@ import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
-/** The two original station consoles select mutually exclusive orange/blue repulsion bridges. */
+/** Source-bound station consoles select mutually exclusive orange/blue repulsion bridges. */
 public final class StationEnergyBridges {
   private static final String ROOT = "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_";
   private static final String GRAPH = ROOT + "Console02_EnergyBridge_01.json";
   private static final Set<Integer> CONTROLS = Set.of(300002,300015);
   private static final Set<Integer> PARTS = Set.of(300002,300015,300003,300004);
+  private static final String STORAGE_GRAPH = ROOT + "Console02_EnergyBridge_06.json";
+  private static final Set<Integer> STORAGE_CONTROLS = Set.of(300012,300015,300016);
+  private static final Set<Integer> STORAGE_ORANGE = Set.of(300010,300013);
+  private static final Set<Integer> STORAGE_BLUE = Set.of(300011,300014);
+  private static final Set<Integer> STORAGE_PARTS = Set.of(300010,300011,300012,300013,300014,300015,300016);
 
   public static boolean controller(PropInfo info) {
     return info != null && info.getPropID() == 100014 && GRAPH.equals(info.getInitLevelGraph());
   }
 
+  public static boolean retainsSource(FloorInfo floor, GroupInfo group, PropInfo info) {
+    return controller(info) || floor != null && group != null && info != null
+        && floor.getFloorID() == 20002001 && group.getId() == 6
+        && STORAGE_CONTROLS.contains(info.getID()) && info.getPropID() == 100014
+        && STORAGE_GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean storage(EntityProp prop) {
+    return prop != null && prop.getScene().getPlaneId() == 20002
+        && prop.getScene().getFloorId() == 20002001 && prop.getGroupId() == 6
+        && STORAGE_PARTS.contains(prop.getInstId());
+  }
+
   static boolean applies(EntityProp prop) {
-    return prop != null && prop.getScene().getPlaneId() == 20003
+    return storage(prop) || prop != null && prop.getScene().getPlaneId() == 20003
         && prop.getScene().getFloorId() == 20003001 && prop.getGroupId() == 4 && PARTS.contains(prop.getInstId());
   }
 
@@ -60,17 +80,75 @@ public final class StationEnergyBridges {
     return result;
   }
 
+  private static boolean storageBindings(PropInfo info, int id) {
+    if (info.getPropID()!=100014 || !STORAGE_GRAPH.equals(info.getInitLevelGraph())
+        || info.getState()!=PropState.Closed || info.getValueSource()==null
+        || info.getValueSource().getValues()==null || info.getValueSource().getValues().size()!=8)
+      return false;
+    try {
+      if (info.getValueSource().getValues().stream().anyMatch(v -> v==null || !v.has("$type")
+          || !"RPG.GameCore.SharedString".equals(v.get("$type").getAsString()))) return false;
+    } catch (IllegalArgumentException | IllegalStateException | UnsupportedOperationException invalid) {
+      return false;
+    }
+    int camera=id==300012?2:id==300015?3:4;
+    int other2=id==300012?300015:300012;
+    int other3=id==300016?300015:300016;
+    return binding(info,"FlipBridge01","6,300010") && binding(info,"FlipBridge02","6,300011")
+        && binding(info,"FlipBridge03","6,300013") && binding(info,"FlipBridge04","6,300014")
+        && binding(info,"MainController","6,"+id) && binding(info,"Controller02","6,"+other2)
+        && binding(info,"Controller03","6,"+other3)
+        && binding(info,"Vcam01","Chap00_MAZ_N202_LevelArea,LookToBridge_Cam_0"+camera);
+  }
+
+  private static Map<Integer,EntityProp> storageActors(Scene scene) {
+    var group=scene.getResourceGroups().get(6);
+    if (group==null || group.getPropList()==null || !scene.getLoadedGroups().contains(6)) return Map.of();
+    var result=new HashMap<Integer,EntityProp>();
+    for (int id:STORAGE_PARTS) {
+      var definitions=group.getPropList().stream().filter(p->p!=null && p.getID()==id).toList();
+      var entities=scene.getEntitiesByGroup(EntityProp.class,6).stream().filter(p->p.getInstId()==id).toList();
+      if (definitions.size()!=1 || entities.size()!=1) return Map.of();
+      var info=definitions.getFirst(); var entity=entities.getFirst();
+      if (info.isIsDelete() || info.isIsClientOnly() || !info.isLoadOnInitial()
+          || entity.getScene()!=scene || entity.getPropInfo()!=info || entity.getPropId()!=info.getPropID()) return Map.of();
+      if (STORAGE_CONTROLS.contains(id)) {
+        if (!storageBindings(info,id)) return Map.of();
+      } else {
+        boolean orange=STORAGE_ORANGE.contains(id);
+        if (info.getPropID()!=(orange?100011:100012)
+            || !(ROOT+"EnergyBridge_01.json").equals(info.getInitLevelGraph())
+            || info.getState()!=(orange?PropState.Open:PropState.Closed)) return Map.of();
+      }
+      if (entity.getExcel()==null
+          || !entity.getExcel().getPropStateList().containsAll(List.of(PropState.Open,PropState.Closed))) return Map.of();
+      result.put(id,entity);
+    }
+    return result;
+  }
+
   static Retcode validate(EntityProp prop,int interaction) {
     if (!applies(prop)) return Retcode.SUCC;
-    if (!CONTROLS.contains(prop.getInstId()) || interaction!=1010 && interaction!=1100)
+    boolean storage=storage(prop);
+    if (!(storage?STORAGE_CONTROLS:CONTROLS).contains(prop.getInstId()) || interaction!=1010 && interaction!=1100)
       return Retcode.INTERACT_TYPE_INVALID;
-    if (!StoryDoors.world(prop.getScene()) || actors(prop.getScene()).size()!=4)
+    if (!StoryDoors.world(prop.getScene())
+        || (storage?storageActors(prop.getScene()).size()!=7:actors(prop.getScene()).size()!=4))
       return Retcode.MISSION_SCENE_NOT_MATCH;
     return Retcode.SUCC;
   }
 
   static void transitions(EntityProp prop,int interaction,Map<EntityProp,PropState> targets) {
     if (!applies(prop)) return;
+    if (storage(prop)) {
+      var actors=storageActors(prop.getScene());
+      if (actors.size()!=7) throw new IllegalStateException("Storage repulsion bridge binding changed");
+      var state=GameData.getInteractExcelMap().get(interaction).getTargetState();
+      for (int id:STORAGE_CONTROLS) targets.put(actors.get(id),state);
+      for (int id:STORAGE_ORANGE) targets.put(actors.get(id),state==PropState.Open?PropState.Closed:PropState.Open);
+      for (int id:STORAGE_BLUE) targets.put(actors.get(id),state);
+      return;
+    }
     var actors=actors(prop.getScene());
     if (actors.size()!=4) throw new IllegalStateException("Repulsion bridge binding changed");
     var state=GameData.getInteractExcelMap().get(interaction).getTargetState();
