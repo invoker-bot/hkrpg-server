@@ -31,11 +31,18 @@ public final class SceneInteractions {
 
   public static Retcode validateNative(Player player, int config, int entity) {
     var result = validate(player, config, entity);
-    if (result != Retcode.SUCC) return result;
+    if (result != Retcode.SUCC) {
+      if (result == Retcode.UNSUPPORTED_PROP_STATE && player.getScene() != null
+          && player.getScene().getEntityById(entity) instanceof EntityProp repeated
+          && PadPuzzleBridges.repeatedOpen(repeated, config)) return Retcode.SUCC;
+      return result;
+    }
     var prop = (EntityProp) player.getScene().getEntityById(entity);
     if (StationEnergyBridges.applies(prop)) return StationEnergyBridges.validate(prop,config);
     if (BookPickups.applies(prop)) return BookPickups.validate(player, config, prop);
     if (CompatibleMechanisms.controller(prop)) return CompatibleMechanisms.validateControl(player, config, prop);
+    var padPuzzle = PadPuzzleBridges.validate(prop, config);
+    if (padPuzzle != Retcode.SUCC) return padPuzzle;
     if (WorldMechanisms.controller(prop))
       return WorldMechanisms.validateControl(player, config, prop);
     var doors = StoryDoors.validate(prop, config);

@@ -221,7 +221,7 @@ final class CompatibleMechanismSources {
     try {
       var expected = ResourceLoader.getGson().fromJson(read(groupPath(f, id)), GroupInfo.class);
       expected.setId(id);
-      var floor = new FloorInfo();
+      var floor = new FloorInfo(scene.getFloorId());
       floor.getGroups().put(id, expected);
       floor.onLoad();
       var actual = scene.getResourceGroups().get(id);

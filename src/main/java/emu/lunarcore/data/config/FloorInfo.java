@@ -47,6 +47,12 @@ public class FloorInfo {
         this.unlockedCheckpoints = new ArrayList<>();
     }
 
+    /** Preserve floor-specific normalization when comparing a single source group. */
+    public FloorInfo(int floorId) {
+        this();
+        this.FloorID = floorId;
+    }
+
     public GroupInfo getGroupInfoByIndex(int groupIndex) {
         var simpleGroup = SimpleGroupList.get(groupIndex);
         return indexedGroups.isEmpty() ? this.getGroups().get(simpleGroup.getID()) : indexedGroups.get(groupIndex);
@@ -235,6 +241,7 @@ public class FloorInfo {
                     if(!org.hkrpg.server.gameplay.GoldenSpears.keepsSourceValues(group)
                         && !org.hkrpg.server.gameplay.StoryDoors.controller(prop)
                         && !org.hkrpg.server.gameplay.StationEnergyBridges.retainsSource(this, group, prop)
+                        && !org.hkrpg.server.gameplay.PadPuzzleBridges.retainsSource(this, group, prop)
                         && !org.hkrpg.server.gameplay.RogueTutorialCombat.retainsBarrierSource(this, group, prop)) prop.setValueSource(null);
                 }
             }

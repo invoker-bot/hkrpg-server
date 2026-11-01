@@ -338,7 +338,7 @@ final class WorldChestRules {
     if (expected == null) {
       var location =
           locations.values().stream().filter(l -> l.path().equals(path)).findFirst().orElse(null);
-      if (location != null) expected = MapChestSources.group(root, path, location.group());
+      if (location != null) expected = MapChestSources.group(root, path, location.floor(), location.group());
     }
     var source = GameData.getFloorInfo(plane, floor);
     if (expected == null

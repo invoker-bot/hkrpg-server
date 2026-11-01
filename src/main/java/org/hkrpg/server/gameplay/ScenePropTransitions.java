@@ -82,7 +82,8 @@ public final class ScenePropTransitions {
   private static boolean matches(ScenePropState.Snapshot record, PropInfo info, Scope scope) {
     return record != null
         && record.getProp() == info.getPropID()
-        && (record.getSource().equals(PropTimelines.source(info)) || StoryDoors.legacySource(record, info))
+        && (record.getSource().equals(PropTimelines.source(info)) || StoryDoors.legacySource(record, info)
+            || PadPuzzleBridges.legacySource(record, info))
         && (scope.main() == null
             ? record.getAcceptance().isEmpty()
             : Objects.equals(record.getAcceptance(), scope.main().getObservationKey()));
@@ -130,6 +131,7 @@ public final class ScenePropTransitions {
           || scene.getStoryLineId() != player.getGameplay().getStoryLines().getCurrentId()
           || player.getGameplay().getStoryLines().isTransitionPending())
         return new Result(Retcode.MISSION_SCENE_NOT_MATCH, null);
+      if (PadPuzzleBridges.repeatedOpen(prop, config)) return new Result(Retcode.SUCC, prop);
       var scope = scope(scene, false);
       if (scope == null) return new Result(Retcode.MISSION_SCENE_NOT_MATCH, null);
       if (!scope.state().valid()) return new Result(Retcode.PLAYER_DATA_ERROR, null);
@@ -137,6 +139,7 @@ public final class ScenePropTransitions {
       var targets = WorldMechanisms.transitions(player, config, prop);
       StoryDoors.transitions(prop, targets);
       StationEnergyBridges.transitions(prop,config,targets);
+      PadPuzzleBridges.transitions(prop, config, targets);
       var changed = new LinkedHashMap<EntityProp, PropState>();
       targets.keySet().forEach(candidate -> changed.put(candidate, candidate.getState()));
       if (!WorldMechanisms.controller(prop)

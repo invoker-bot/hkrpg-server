@@ -33,6 +33,17 @@ class RemainingWorldMechanism46Test {
   @BeforeEach
   void load() throws Exception {
     fixture.root = root;
+    // These three source controllers also bind a bridge in the common group.
+    // The original chest-only fixture did not include that group or its prop type.
+    var pads = JsonParser.parseReader(new InputStreamReader(
+        getClass().getResourceAsStream("/fixtures/pad-puzzle-bridges-4.6.json"),
+        StandardCharsets.UTF_8)).getAsJsonObject().getAsJsonObject("records");
+    var bridgePath = "Config/LevelOutput/SharedRuntimeGroup/Groups_P20003_F20003001/LevelGroup_P20003_F20003001_G1.json";
+    fixture.map.fixture.source.getAsJsonObject("groups").add(bridgePath, pads.get(bridgePath));
+    var props = fixture.map.fixture.source.getAsJsonObject("records").getAsJsonArray("ExcelOutput/MazeProp.json");
+    pads.getAsJsonArray("ExcelOutput/MazeProp.json").asList().stream()
+        .filter(row -> row.getAsJsonObject().get("ID").getAsInt() == 300004)
+        .findFirst().ifPresent(props::add);
     fixture.load();
     previousSubs = new HashMap<>(GameplayDefinitions.subs);
     var raw =
@@ -119,12 +130,22 @@ class RemainingWorldMechanism46Test {
     }
     map().enter(chest);
     assertNotEquals(Retcode.SUCC, map().open(chest));
+    if (group == 41 || group == 42 || group == 43)
+      assertEquals(PropState.Closed, actor(1, 300025).getState());
+    assertEquals(Retcode.SUCC, PadPuzzleBridges.validate(actor(group, instance), 1010), "Bridge validation");
+    if (WorldMechanisms.controller(actor(group, instance)))
+      assertEquals(Retcode.SUCC,
+          WorldMechanisms.validateControl(map().fixture.player, 1010, actor(group, instance)), "Chest validation");
     assertEquals(
         Retcode.SUCC,
         ScenePropTransitions.interact(
                 map().fixture.player, 1010, actor(group, instance).getEntityId())
             .retcode());
+    if (group == 41 || group == 42 || group == 43)
+      assertEquals(PropState.Open, actor(1, 300025).getState());
     claim(chest);
+    if (group == 41 || group == 42 || group == 43)
+      assertEquals(PropState.Open, actor(1, 300025).getState());
   }
 
   @ParameterizedTest

@@ -19,7 +19,7 @@ final class MapChestSources {
   static final Map<String, String> ROWS = strings("rows");
   static final Map<String, String> FILES = strings("files");
 
-  private record Cached(String bytes, GroupInfo group) {}
+  private record Cached(String bytes, int floor, GroupInfo group) {}
 
   private static final Map<Path, Cached> GROUPS = new LinkedHashMap<>(32, 0.75f, true);
 
@@ -72,7 +72,7 @@ final class MapChestSources {
   }
 
   /** Read bytes on every validation; equal mtime or size must not conceal a changed source. */
-  static synchronized GroupInfo group(Path root, String relative, int id) {
+  static synchronized GroupInfo group(Path root, String relative, int floorId, int id) {
     try {
       String pin = FILES.get(relative);
       var file = root.resolve(relative).normalize();
@@ -84,17 +84,17 @@ final class MapChestSources {
       var bytes = Files.readAllBytes(file);
       String digest = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
       var cached = GROUPS.get(file);
-      if (cached != null && cached.bytes().equals(digest) && cached.group().getId() == id)
+      if (cached != null && cached.bytes().equals(digest) && cached.floor() == floorId && cached.group().getId() == id)
         return cached.group();
       var raw = JsonParser.parseString(new String(bytes, StandardCharsets.UTF_8));
       if (!pin.equals(TimelineActivityRules.fingerprint(raw))) return null;
       var group = ResourceLoader.getGson().fromJson(raw, GroupInfo.class);
       group.setId(id);
-      var floor = new FloorInfo();
+      var floor = new FloorInfo(floorId);
       floor.getGroups().put(id, group);
       floor.onLoad();
       if (GROUPS.size() >= 256) GROUPS.remove(GROUPS.keySet().iterator().next());
-      GROUPS.put(file, new Cached(digest, group));
+      GROUPS.put(file, new Cached(digest, floorId, group));
       return group;
     } catch (Exception invalid) {
       return null;

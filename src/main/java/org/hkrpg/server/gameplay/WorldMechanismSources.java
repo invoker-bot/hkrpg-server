@@ -212,7 +212,7 @@ final class WorldMechanismSources {
         if (actual == null || !gson.toJsonTree(expected).equals(gson.toJsonTree(actual)))
           return null;
       }
-      var expected = MapChestSources.group(root, loc.path(), loc.group());
+      var expected = MapChestSources.group(root, loc.path(), loc.floor(), loc.group());
       var actual = scene.getResourceGroups().get(loc.group());
       return expected != null
               && actual != null
@@ -233,7 +233,7 @@ final class WorldMechanismSources {
       var expected =
           ResourceLoader.getGson().fromJson(read(root, rule.controllerPath()), GroupInfo.class);
       expected.setId(rule.controllerGroup());
-      var floor = new emu.lunarcore.data.config.FloorInfo();
+      var floor = new emu.lunarcore.data.config.FloorInfo(scene.getFloorId());
       floor.getGroups().put(expected.getId(), expected);
       floor.onLoad();
       var actual = scene.getResourceGroups().get(rule.controllerGroup());

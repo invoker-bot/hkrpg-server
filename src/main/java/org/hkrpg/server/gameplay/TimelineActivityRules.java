@@ -207,7 +207,7 @@ final class TimelineActivityRules {
       if (!definition.source().equals(fingerprint(json))) return null;
       var original = ResourceLoader.getGson().fromJson(json, GroupInfo.class);
       original.setId(group);
-      var floor = new FloorInfo();
+      var floor = new FloorInfo(floorId);
       floor.getGroups().put(group, original);
       floor.onLoad();
       var found = original.getPropList().stream().filter(p -> p.getID() == instance).toList();

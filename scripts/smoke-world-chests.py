@@ -38,10 +38,12 @@ def main():
     parser.add_argument('--mechanisms', action='store_true', help='Verify guard/puzzle unlock, loot and H2 restart')
     parser.add_argument('--dynamic', action='store_true', help='Verify staged boards, tramcar replacements and spear variants')
     parser.add_argument('--remaining', action='store_true', help='Verify cross-group, mission and time-lock completion receipts')
+    parser.add_argument('--remaining-case', type=int, choices=REMAINING_IDS, help='Verify one --remaining chest in isolation')
     parser.add_argument('--final-bindings', action='store_true', help='Verify compass guards, cargo NPC and QTE reward with H2 restarts')
     parser.add_argument('--final-case', type=int, choices=FINAL_IDS, help='Diagnose one --final-bindings chest in isolation')
     args = parser.parse_args()
     assert args.final_case is None or args.final_bindings, '--final-case requires --final-bindings'
+    assert args.remaining_case is None or args.remaining, '--remaining-case requires --remaining'
     assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
     if args.dynamic or args.remaining or args.final_bindings:
         args.mechanisms = True
@@ -95,9 +97,11 @@ def main():
         selected = FINAL_IDS if args.final_bindings else REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
         if args.final_case is not None:
             selected = (args.final_case,)
+        if args.remaining_case is not None:
+            selected = (args.remaining_case,)
         chests = sorted((row for row in chests if row['id'] in selected), key=lambda row: selected.index(row['id']))
     expected_chests = len(FINAL_IDS) if args.final_bindings else len(REMAINING_IDS) if args.remaining else len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
-    if args.final_case is not None:
+    if args.final_case is not None or args.remaining_case is not None:
         expected_chests = 1
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
@@ -360,6 +364,9 @@ def main():
             prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec.get('actorGroup', mechanism_spec['group'])}:"
             for instance, state in mechanism_spec.get('persistedStates', mechanism_spec.get('states', {})).items():
                 prop_progress[prefix + instance] = state
+            if args.remaining and mechanism_spec['id'] == 20003658 and mechanism_spec['op'] == 'finish':
+                # The original pad-puzzle completion also opens this cross-group bridge.
+                prop_progress['20003:20003001:0:0:1:300025'] = 1
             if mechanism_spec['op'] == 'property':
                 value_progress[f"floor:{stage['floor']}:{mechanism_spec['floorValue']}"] = 1
                 value_progress[f"group:{stage['floor']}:{mechanism_spec['actorGroup']}:{mechanism_spec['property']}"] = 1
@@ -405,7 +412,8 @@ def main():
         finalBindings=args.final_bindings, selectedFinalCase=args.final_case,
         mascotProgress=mascot_progress, combatPayout=combat_payout,
         sourceMissionRewards=final_mission_rewards,
-        remainingMechanisms=args.remaining, valueProgress=value_progress, missionProgress=mission_progress,
+        remainingMechanisms=args.remaining, selectedRemainingCase=args.remaining_case,
+        valueProgress=value_progress, missionProgress=mission_progress,
         guardBattleLootBalancesRebased=args.mechanisms and not args.dynamic and not args.remaining and not args.final_bindings,
         rejectedRepeatedOpenings=sum(row.get('rejectedRepeatedOpenings', 0) for row in snapshots),
         normalStops=stops, sameUIDNormalH2ProcessRestarts=stops - 1, completedOriginalActivityQuests=claimed,
