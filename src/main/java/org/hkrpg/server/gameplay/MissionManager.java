@@ -249,6 +249,7 @@ public final class MissionManager {
       WorldMechanisms.missionRewards(player);
       CompatibleMechanisms.reconcile(player);
       StoryDoors.reconcile(player.getScene());
+      RogueOfficeHandbook.reconcile(player.getScene());
       var newSfx = new MusicComposition(player).unlockedSfxSongs();
       newSfx.removeAll(oldSfx);
       org.hkrpg.server.protocol.Music46.syncSfx(player, newSfx);

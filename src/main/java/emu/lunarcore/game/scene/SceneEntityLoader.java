@@ -138,6 +138,7 @@ public class SceneEntityLoader {
         org.hkrpg.server.gameplay.CompatibleMechanisms.restore(prop);
         org.hkrpg.server.gameplay.StoryDoors.restore(prop);
         org.hkrpg.server.gameplay.PadPuzzleBridges.restore(prop);
+        org.hkrpg.server.gameplay.RogueOfficeHandbook.restore(prop);
         org.hkrpg.server.gameplay.BookPickups.restore(prop);
         return prop;
     }
