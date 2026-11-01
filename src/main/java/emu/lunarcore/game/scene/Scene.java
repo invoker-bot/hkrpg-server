@@ -202,6 +202,7 @@ public class Scene implements Tickable {
 
     public void loadGroup(GroupInfo group) {
         if (group == null || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)
+            || !org.hkrpg.server.gameplay.DebugGroupConditions.allowed(group, this)
             || !org.hkrpg.server.gameplay.CompatibleMechanisms.shouldLoad(this, group)) return;
         if (org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this)
             && (SceneEntityLoader.isExcludedGroup(this, group)
@@ -335,7 +336,8 @@ public class Scene implements Tickable {
             boolean deferred = org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, this);
             boolean ordinary = org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this);
             boolean compatible = org.hkrpg.server.gameplay.CompatibleMechanisms.tracksGroup(group, this);
-            if ((!atmosphere && !deferred && !ordinary && !compatible && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
+            boolean debug = org.hkrpg.server.gameplay.DebugGroupConditions.tracks(group, this);
+            if ((!atmosphere && !deferred && !ordinary && !compatible && !debug && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
             if (atmosphere && (getPlaneType() == PlaneType.Rogue || getPlaneType() == PlaneType.Challenge || getPlaneType() == PlaneType.TrialActivity)) continue;
             if (getPlayer().getMissionManager().shouldLoadGroup(group, this)) toLoad.add(group);
             else if (loadedGroups.remove(group.getId())) {

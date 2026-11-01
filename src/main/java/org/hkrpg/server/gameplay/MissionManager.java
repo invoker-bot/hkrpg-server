@@ -1432,6 +1432,7 @@ public final class MissionManager {
 
   public boolean shouldLoadGroup(
       emu.lunarcore.data.config.GroupInfo group, emu.lunarcore.game.scene.Scene scene) {
+    if (!DebugGroupConditions.allowed(group, scene)) return false;
     if (!CompatibleMechanisms.shouldLoad(scene, group)) return false;
     if (group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Atmosphere)
       return AtmosphereGroups.allowed(player, group, scene);

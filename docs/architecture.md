@@ -34,7 +34,7 @@
 
 `WorldChests` 的来源目录增加基座舱段六个普通探索宝箱；复用原有投递回执和恢复流程，世界和活动计数按原始 `MazeChest.WorldID` 隔离，交互再次验证剧情门槛，详见[宝箱领取说明](base-zone-chests-4.6.md)。
 
-普通世界地图中，Normal/省略分类的组也须经 `MissionGroupConditions` 和 `MissionManager` 校验原始加载/卸载条件；构造、显式加载和任务刷新保持一致。开场凝滞虚影提前生成的原因与验证范围见[场景加载说明](opening-scene-groups-4.6.md)。
+普通世界地图中，Normal/省略分类的组也须经 `MissionGroupConditions` 和 `MissionManager` 校验原始加载/卸载条件；构造、显式加载和任务刷新保持一致。开场凝滞虚影提前生成的原因与验证范围见[场景加载说明](opening-scene-groups-4.6.md)。引用 `Utility_IsDebug` 的普通组另由 `DebugGroupConditions` 按当前维度的原始声明与保存值判断，并在条件关闭后卸载整组；其他楼层条件的覆盖不扩大，见[列车调试组加载说明](train-debug-scene-loading-4.6.md)。
 
 新号开场在首个场景构造前，经原主任务接取初始化卡芙卡试用队伍；来源和数值保存在 `MissionTrialState`，正式角色/编队保留。教程状态由 `TutorialProgress` 按玩家回执保存，查询不再把资源目录当完成记录。银狼与卡芙卡退场、旧存档保留及客户端验收边界见[新号初始化说明](opening-player-initialization-4.6.md)。
 
