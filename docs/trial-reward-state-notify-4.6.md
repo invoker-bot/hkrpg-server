@@ -25,4 +25,12 @@
 
 专项五类 48 项测试通过，新增状态回归 7 项均通过。隔离网络验证实际完成 24 项显式请求检查及三次正常停服，收到一条通关未领奖、一条成功已领奖通知；未在胜利后主动重查通关列表。准确增加星琼 20、212 × 3、113001 × 5，重复结算/领取拒绝，正常 H2 重启后历史、实际钱包和物品保留。报告为 `build/trial-reward-notify-native.json`，JAR SHA256 为 `2fb27659174710e33fdc428a6becac01d5d95a0e82c612c7d34c148d0777bd3a`。
 
-`scripts/build.ps1 -TestForks 8` 完整执行测试及打包通过：642 类 / 15,846 项，失败、错误和跳过均为 0，耗时 12 分 19 秒。汇总及日志在 `build/trial-reward-notify-full-tests.json` 和 `build/trial-reward-notify-full-build.log`。全量、网络与待部署产物摘要一致。
+`scripts/build.ps1 -TestForks 8` 完整执行测试及打包通过：642 类 / 15,846 项，失败、错误和跳过均为 0，耗时 12 分 19 秒。汇总及日志在 `build/trial-reward-notify-full-tests.json` 和 `build/trial-reward-notify-full-build.log`。全量、网络与实际部署产物摘要一致。
+
+## 本地部署与待验收
+
+同一产物已部署到 `hkrpg-local-server-1`，实际运行 JAR SHA256 为 `2fb27659174710e33fdc428a6becac01d5d95a0e82c612c7d34c148d0777bd3a`。镜像构建核对全部资源文件数及逐文件摘要；用户退出后正常停服，备份整个运行目录并核对全部已复制文件，保留旧 JAR、原清单及旧镜像。备份、日志和报告在 `build/trial-reward-notify-deploy-20261101/`。
+
+默认只读 Compose 验证、HTTP/Dispatch、网关、UDP/KCP 心跳和容器健康均通过。经正式服务内部 Mongo 端口只读核对，更新前后的全部试用通关、领奖收据、星琼、相关材料及物品文档数一致，312040 仍已通关未领取，311020 仍已领取；12 份运营配置/记录摘要保持不变。本次没有对正式账号执行通关或领奖。证据为该目录的 `compose-final.json`、`preservation.json`、`affected-stop.json` 和 `affected-after.json`。
+
+真实游戏界面的可领取状态、领取提示及实际到账仍须用户操作验收。重新进入游戏后可直接领取已保存的 312040 奖励，无需再次试用；今后的新通关通过本次状态通知同步。
