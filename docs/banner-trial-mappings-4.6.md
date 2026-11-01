@@ -43,3 +43,11 @@
 首轮进退探针使用了旧协议枚举名称作断言，记录在 `build/banner-trial-mappings-native-first.log`；改为固定 4.6 的真实枚举名后，预验证与最终产物均重新完整执行通过，未把探针断言错误算成映射修复证据。前述 139 项回归使用内置卡池名册；本次 28 项 UP 名单已与当前运营文件逐项核对一致。运营池 2002 的自定义四星名单与内置默认不同，保持原值，比较记录在 `build/banner-trial-mappings-operator-comparison.json`。
 
 `scripts/build.ps1 -TestForks 8` 全量测试及打包通过：643 类 / 15,992 项，失败、错误和跳过均为 0，耗时 13 分 27 秒。新增映射类 146 项全部通过，含 139 份内置卡池及七项负向保护；原目录、试用生命周期、恢复和奖励检查同样通过。汇总及日志在 `build/banner-trial-mappings-full-tests.json` 和 `build/banner-trial-mappings-full-build.log`。镜像构建核对全部资源文件数及逐文件摘要，候选 JAR 与两份最终网络验证一致。
+
+## 本地部署
+
+用户退出游戏后，已将同一验证产物部署到 `hkrpg-local-server-1`。实现提交为 `8160541`，实际运行 JAR SHA256 为 `82cde3e195ff2270d2a3db7981d79e60988be4c3ca6c37b8d8a33aec9a1ec024`。验证包和镜像另行固定保存，未把同时进行的其他工作区修改带入本次部署。
+
+正常停服后备份整个运行目录，核对全部复制文件；旧 JAR、原清单及旧镜像均保留。备份和验证记录位于 `build/banner-trial-mappings-deploy-20261101/`。上线后默认只读 Compose 验证、HTTP/Dispatch、网关、UDP/KCP 心跳和容器健康通过；运行镜像、JAR、两份最终网络报告和全量打包摘要一致。
+
+通过正式服务内部 Mongo 端口只读比对，UID 10001 的试用运行状态、全部通关和领奖收据、星琼、相关材料及物品文档数保持一致；12 份运营配置/记录摘要不变，没有在正式账号新建通关或领奖。证据为部署目录的 `backup.json`、`preservation.json`、`affected-stop.json`、`affected-after.json` 与 `compose-final.json`。真实游戏界面和新卡池的画面操作仍由用户验证；相应卡池按原配置在 GM 启用后，对应试用才会开放。
