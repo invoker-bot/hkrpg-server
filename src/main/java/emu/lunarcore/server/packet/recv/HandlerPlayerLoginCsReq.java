@@ -22,6 +22,7 @@ public class HandlerPlayerLoginCsReq extends PacketHandler {
         session.send(new PacketPlayerLoginScRsp(session));
         if (session.getProtocol().experimental()) {
             org.hkrpg.server.protocol.ContentPackage46.send(session, "ContentPackageSyncDataScNotify");
+            org.hkrpg.server.protocol.TrialActivity46.sync(session);
             org.hkrpg.server.protocol.Raid46.sync(session);
             org.hkrpg.server.protocol.StoryLine46.sync(session);
             org.hkrpg.server.protocol.CompositionLimit46.sync(session);

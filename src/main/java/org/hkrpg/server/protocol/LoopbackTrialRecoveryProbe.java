@@ -18,6 +18,7 @@ public final class LoopbackTrialRecoveryProbe {
   private final Map<String, Object> result = new LinkedHashMap<>();
   private JsonObject input;
   private int step;
+  private boolean activeTrialNotification;
   private static final int STAGE = 310010;
 
   private static Object field(DynamicMessage m, String name) {
@@ -74,9 +75,21 @@ public final class LoopbackTrialRecoveryProbe {
     while (bytes.isReadable()) {
       var frame = PacketCodec.decodeNext(bytes);
       require(frame != null, "Truncated trial recovery frame");
-      require(
-          frame.cmdId() != protocol.clientCommand("CurTrialActivityScNotify"),
-          "Manual trial recovery fabricated completion");
+      if (frame.cmdId() == protocol.clientCommand("CurTrialActivityScNotify")) {
+        var message = protocol.clientSchema().parse("CurTrialActivityScNotify", frame.body());
+        var type = message.getDescriptorForType();
+        require(
+            ((com.google.protobuf.Descriptors.EnumValueDescriptor)
+                message.getField(type.findFieldByNumber(10))).getNumber() == 0,
+            "Manual trial recovery fabricated completion");
+        require((Integer) message.getField(type.findFieldByNumber(1)) == STAGE,
+            "Restored trial notification used the wrong stage");
+        require(input.has("resume") && input.get("resume").getAsBoolean(),
+            "Fresh login fabricated an active trial");
+        activeTrialNotification = true;
+        result.put("activeTrialNotification", true);
+        continue;
+      }
       String name =
           List.of(
                   "PlayerGetTokenScRsp",
@@ -104,6 +117,8 @@ public final class LoopbackTrialRecoveryProbe {
         case "PlayerLoginScRsp" -> send(c, "PlayerLoginFinishCsReq");
         case "PlayerLoginFinishScRsp" -> {
           if (input.has("resume") && input.get("resume").getAsBoolean()) {
+            require(activeTrialNotification,
+                "Restored login did not initialize the native RoleTrialInstance");
             step = 4;
             send(c, "GetTrialActivityDataCsReq");
           } else {

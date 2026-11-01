@@ -28,6 +28,10 @@ class TrialRunRecoveryTest {
     int plane = 20001, floor = 20001001, entry = 2000101;
     Position pos = new Position(1, 2, 3), rot = new Position(0, 70, 0);
 
+    public String getName() {
+      return "trial-recovery-fixture";
+    }
+
     public int getPlaneId() {
       return plane;
     }
@@ -137,6 +141,99 @@ class TrialRunRecoveryTest {
     return p;
   }
 
+  static class LoginSession extends emu.lunarcore.server.game.GameSession {
+    final Origin player;
+    final List<com.google.protobuf.DynamicMessage> trialNotifications = new ArrayList<>();
+    final List<Integer> commands = new ArrayList<>();
+
+    LoginSession(Origin player) {
+      super(null);
+      this.player = player;
+      player.setSession(this);
+      setState(emu.lunarcore.server.packet.SessionState.WAITING_FOR_LOGIN);
+    }
+
+    public Player getPlayer() { return player; }
+
+    public org.hkrpg.server.protocol.ProtocolBridge getProtocol() {
+      return org.hkrpg.server.protocol.ProtocolBridge.forVersion("4.6.0");
+    }
+
+    public void send(emu.lunarcore.server.packet.BasePacket packet) {
+      commands.add(getProtocol().outbound(packet.getCmdId(), packet.getData() == null
+          ? new byte[0] : packet.getData().toByteArray()).cmdId());
+    }
+
+    public void sendClientPacket(String name, byte[] bytes) {
+      commands.add(getProtocol().clientCommand(name));
+      if (name.equals("CurTrialActivityScNotify")) {
+        try {
+          trialNotifications.add(getProtocol().clientSchema().parse(name, bytes));
+        } catch (java.io.IOException error) {
+          throw new AssertionError(error);
+        }
+      }
+    }
+  }
+
+  LoginSession login(Origin player) throws Exception {
+    var session = new LoginSession(player);
+    new emu.lunarcore.server.packet.recv.HandlerPlayerLoginCsReq().handle(session, new byte[0]);
+    return session;
+  }
+
+  void assertActiveTrialNotification(LoginSession session) {
+    assertEquals(1, session.trialNotifications.size(),
+        "A restored trial must initialize the native RoleTrialInstance before its scene UI opens");
+    var message = session.trialNotifications.getFirst();
+    var type = message.getDescriptorForType();
+    assertEquals(STAGE, message.getField(type.findFieldByNumber(1)));
+    assertEquals(0, ((com.google.protobuf.Descriptors.EnumValueDescriptor)
+        message.getField(type.findFieldByNumber(10))).getNumber(),
+        "Restoring an active trial must not report a victory");
+    assertTrue(message.getUnknownFields().asMap().isEmpty());
+    assertEquals(session.getProtocol().clientCommand("PlayerLoginScRsp"), session.commands.getFirst());
+    assertTrue(session.commands.indexOf(2646) > 0);
+  }
+
+  @Test
+  void restoredTrialLoginPublishesItsStageWithoutCompletingOrChangingTheRun() throws Exception {
+    var original = started();
+    original.getAvatarById(SPECIAL).setCurrentHp(original.trial, 2300);
+    original.save();
+    var restored = reload(original.getGameplay());
+    assertTrue(restored.getTrialManager().restoreOnLogin());
+    var instance = restored.getInstance();
+    var before = gson.toJson(restored.getGameplay());
+    int saves = restored.saves;
+    assertActiveTrialNotification(login(restored));
+    assertEquals(before, gson.toJson(restored.getGameplay()));
+    assertEquals(saves, restored.saves);
+    assertSame(instance, restored.getInstance());
+    assertEquals(2300, restored.getAvatarById(SPECIAL).getCurrentHp(restored.trial));
+    assertTrue(restored.getGameplay().getTrialCompletions().isEmpty());
+  }
+
+  @Test
+  void interruptedTrialEntryAlsoInitializesTheClientAfterSuccessfulRecovery() throws Exception {
+    var json = gson.toJsonTree(started().getGameplay()).getAsJsonObject();
+    json.getAsJsonObject("trialRun").addProperty("phase", "ENTERING");
+    json.getAsJsonObject("trialRun").remove("location");
+    var restored = reload(gson.fromJson(json, GameplayState.class));
+    assertTrue(restored.getTrialManager().restoreOnLogin());
+    assertActiveTrialNotification(login(restored));
+    assertEquals(1, restored.entryAttempts);
+    assertTrue(restored.getGameplay().getTrialCompletions().isEmpty());
+  }
+
+  @Test
+  void anUnrestoredSavedIntentCannotPublishAnActiveTrialToTheClient() throws Exception {
+    var restored = reload(started().getGameplay());
+    assertNull(restored.getInstance());
+    assertTrue(login(restored).trialNotifications.isEmpty());
+    assertNotNull(restored.getGameplay().getTrialRun());
+  }
+
   @Test
   void activeTrialRestoresFrozenActorsVitalsSecretPointsLocationAndExactHome() throws Exception {
     var original = started();
@@ -198,6 +295,7 @@ class TrialRunRecoveryTest {
     assertNull(restored.getInstance());
     assertTrue(restored.getGameplay().getTrialCompletions().isEmpty());
     assertTrue(restored.getAvatars().getTempAvatars().isEmpty());
+    assertTrue(login(restored).trialNotifications.isEmpty());
   }
 
   @Test
@@ -218,6 +316,7 @@ class TrialRunRecoveryTest {
     assertNull(restored.getGameplay().getTrialRun());
     assertEquals(Set.of(STAGE), restored.getGameplay().getTrialCompletions().keySet());
     assertTrue(restored.getAvatars().getTempAvatars().isEmpty());
+    assertTrue(login(restored).trialNotifications.isEmpty());
   }
 
   @Test

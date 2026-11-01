@@ -7,6 +7,7 @@ import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
+import org.hkrpg.server.gameplay.TrialRun;
 
 /** Native trial entry, confirmed completion query and frozen one-time rewards. */
 public final class TrialActivity46 {
@@ -101,15 +102,34 @@ public final class TrialActivity46 {
     }
   }
 
+  /** Restore the native RoleTrialInstance before the saved trial scene opens its detail page. */
+  public static void sync(GameSession session) {
+    if (!session.getProtocol().experimental() || session.getState() != SessionState.ACTIVE) return;
+    var player = session.getPlayer();
+    synchronized (player) {
+      var trial = player.getInstance(TrialInstance.class);
+      var run = player.getGameplay().getTrialRun();
+      if (trial == null || trial.isFinished() || run == null || trial.getRun() != run
+          || run.getPhase() != TrialRun.Phase.ACTIVE) return;
+      // GetTrialActivityDataScRsp only populates reward history in the pinned client. Its
+      // current stage field does not construct RoleTrialInstance; status NONE on 2646 does.
+      notifyStatus(session, trial.getStageId(), 0);
+    }
+  }
+
   public static void finished(GameSession session, int stage) {
+    notifyStatus(session, stage, 1);
+  }
+
+  private static void notifyStatus(GameSession session, int stage, int state) {
     if (!session.getProtocol().experimental() || stage <= 0)
-      throw new ProtocolException("Invalid native trial completion");
+      throw new ProtocolException("Invalid native trial status");
     var type = session.getProtocol().clientSchema().message("CurTrialActivityScNotify");
     var status = type.findFieldByNumber(10);
     var body =
         DynamicMessage.newBuilder(type)
             .setField(type.findFieldByNumber(1), stage)
-            .setField(status, status.getEnumType().findValueByNumber(1))
+            .setField(status, status.getEnumType().findValueByNumber(state))
             .build();
     session.sendClientPacket("CurTrialActivityScNotify", body.toByteArray());
   }
