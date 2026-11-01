@@ -426,18 +426,7 @@ public class BattleService extends BaseGameService {
             List<org.hkrpg.server.gameplay.RogueResonance.Energy> energies) {
         synchronized (player) {
             var active = player.getBattle();
-            if (active == null || active.getId() != battleId || active.getStage().getId() != stageId
-                    || result != BattleEndStatus.BATTLE_END_WIN && result != BattleEndStatus.BATTLE_END_LOSE && result != BattleEndStatus.BATTLE_END_QUIT
-                    || stats == null || !validStats(active, stats) || !org.hkrpg.server.gameplay.StoryChallengeReports.valid(active, result, stats) || monsters == null || monsters.size() > 1024
-                    || active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend && !legend.accepts(stats)
-                    || active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing && !boxing.accepts(result, stats)
-                    || active instanceof org.hkrpg.server.gameplay.BoxingClubResonanceBattle resonance && !resonance.accepts(result, stats)
-                    || monsters.stream().anyMatch(java.util.Objects::isNull)
-                    || !org.hkrpg.server.gameplay.RogueResonance.validReport(active, energies)
-                    || active.getRaidDifficultyScope() != null && !active.getRaidDifficultyScope().matches(player)
-                    || active instanceof org.hkrpg.server.gameplay.StageEventDifficultyBattle adjusted && !adjusted.matches(player)
-                    || result == BattleEndStatus.BATTLE_END_WIN && player.getStamina() < active.getStaminaCost()
-                    || active.isSettling()) return null;
+            if (rejectionReason(player, battleId, stageId, result, stats, monsters, energies) != null) return null;
             var chess = player.getUniverseManager().chess();
             if (chess.owns(active)) return chess.finishReport(active, result, stats);
             var experience = result == BattleEndStatus.BATTLE_END_WIN
@@ -458,18 +447,48 @@ public class BattleService extends BaseGameService {
         }
     }
 
-    private static boolean validStats(Battle battle, BattleStatistics stats) {
-        if (battle.isAmbiguousParticipants() || stats.getRoundCnt() < 0 || !org.hkrpg.server.gameplay.MissionBattleCustomValues.validStatistics(stats)) return false;
+    /** Read-only classification shared by settlement and bounded rejection diagnostics. */
+    public String rejectionReason(Player player, int battleId, int stageId, BattleEndStatus result,
+            BattleStatistics stats, List<org.hkrpg.server.gameplay.MissionBattleKills.Monster> monsters,
+            List<org.hkrpg.server.gameplay.RogueResonance.Energy> energies) {
+        synchronized (player) {
+            var active = player.getBattle();
+            if (active == null) return "no-active-battle";
+            if (active.getId() != battleId || active.getStage().getId() != stageId) return "battle-identity";
+            if (result != BattleEndStatus.BATTLE_END_WIN && result != BattleEndStatus.BATTLE_END_LOSE
+                    && result != BattleEndStatus.BATTLE_END_QUIT) return "battle-result";
+            if (stats == null) return "statistics-missing";
+            var invalidStats = invalidStatsReason(active, stats);
+            if (invalidStats != null) return invalidStats;
+            if (!org.hkrpg.server.gameplay.StoryChallengeReports.valid(active, result, stats)) return "story-challenge";
+            if (monsters == null || monsters.size() > 1024) return "monster-count";
+            if (active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend && !legend.accepts(stats)) return "local-legend";
+            if (active instanceof org.hkrpg.server.gameplay.BoxingClubBattle boxing && !boxing.accepts(result, stats)) return "boxing";
+            if (active instanceof org.hkrpg.server.gameplay.BoxingClubResonanceBattle resonance && !resonance.accepts(result, stats)) return "boxing-resonance";
+            if (monsters.stream().anyMatch(java.util.Objects::isNull)) return "monster-missing";
+            if (!org.hkrpg.server.gameplay.RogueResonance.validReport(active, energies)) return "battle-event-energy";
+            if (active.getRaidDifficultyScope() != null && !active.getRaidDifficultyScope().matches(player)) return "raid-scope";
+            if (active instanceof org.hkrpg.server.gameplay.StageEventDifficultyBattle adjusted && !adjusted.matches(player)) return "event-scope";
+            if (result == BattleEndStatus.BATTLE_END_WIN && player.getStamina() < active.getStaminaCost()) return "stamina";
+            if (active.isSettling()) return "already-settling";
+            return null;
+        }
+    }
+
+    private static String invalidStatsReason(Battle battle, BattleStatistics stats) {
+        if (battle.isAmbiguousParticipants()) return "ambiguous-participants";
+        if (stats.getRoundCnt() < 0) return "round-count";
+        if (!org.hkrpg.server.gameplay.MissionBattleCustomValues.validStatistics(stats)) return "custom-values";
         Set<Integer> seen = new HashSet<>();
         for (var row : stats.getBattleAvatarList()) {
-            if (!battle.getParticipantIds().contains(row.getId()) || !seen.add(row.getId())) return false;
+            if (!battle.getParticipantIds().contains(row.getId()) || !seen.add(row.getId())) return "avatar-identity";
             var value = row.getAvatarStatus();
-            if (!Double.isFinite(value.getMaxHp()) || value.getMaxHp() <= 0
-                    || !Double.isFinite(value.getLeftHp()) || value.getLeftHp() < 0 || value.getLeftHp() > value.getMaxHp()
-                    || !Double.isFinite(value.getMaxSp()) || value.getMaxSp() < 0
-                    || !Double.isFinite(value.getLeftSp()) || value.getLeftSp() < 0 || value.getLeftSp() > value.getMaxSp()) return false;
+            if (!Double.isFinite(value.getMaxHp()) || value.getMaxHp() <= 0) return "avatar-health-max";
+            if (!Double.isFinite(value.getLeftHp()) || value.getLeftHp() < 0 || value.getLeftHp() > value.getMaxHp()) return "avatar-health-range";
+            if (!Double.isFinite(value.getMaxSp()) || value.getMaxSp() < 0) return "avatar-energy-max";
+            if (!Double.isFinite(value.getLeftSp()) || value.getLeftSp() < 0 || value.getLeftSp() > value.getMaxSp()) return "avatar-energy-range";
         }
-        return true;
+        return null;
     }
 
     protected void grantDrops(Battle battle) { getServer().getDropService().calculateDrops(battle); }

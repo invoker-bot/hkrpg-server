@@ -51,10 +51,23 @@ final class BattleResult46 {
           if (ids.size() == 8) break;
           ids.add(avatar.getId());
         }
-        var active = player.getBattle();
-        String reason = active == null ? "no-active-battle"
-            : active.getId() != core.getBattleId() || active.getStage().getId() != core.getStageId()
-                ? "battle-identity" : "settlement-constraints";
+        String reason = session.getServer().getBattleService().rejectionReason(
+            player, core.getBattleId(), core.getStageId(), core.getEndStatus(), core.getStt(), monsters, energies);
+        if (reason == null) reason = "post-validation";
+        if (reason.startsWith("avatar-health") || reason.startsWith("avatar-energy")) {
+          var readings = new ArrayList<String>();
+          for (var avatar : core.getStt().getBattleAvatarList()) {
+            if (readings.size() == 8) break;
+            var value = avatar.getAvatarStatus();
+            readings.add(avatar.getId() + ":" + value.getLeftHp() + "/" + value.getMaxHp()
+                + ":" + value.getLeftSp() + "/" + value.getMaxSp());
+          }
+          reason += " vitals=" + readings;
+        } else if (reason.equals("battle-event-energy")) {
+          var active = player.getBattle();
+          reason += " events=" + energies.stream().limit(8).toList()
+              + " allowed=" + (active == null ? List.of() : active.getBattleEvents());
+        }
         SceneActionDiagnostics46.battleRejected(session, reason, core.getBattleId(), core.getStageId(), ids);
       }
       session.send(

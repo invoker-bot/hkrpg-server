@@ -62,6 +62,44 @@ class BattleSettlementTest {
   }
 
   @Test
+  void rejectedNativeReportsIdentifyTheActualFailedGuardWithoutSettling() throws Exception {
+    var player = new TestPlayer();
+    var lineup = new PlayerLineup(player, 0);
+    lineup.getAvatars().add(2000091);
+    BattleStage stage = new BattleStage() {
+      public int getId() { return 312040; }
+      public StageType getStageType() { return StageType.Trial; }
+      public List<IntList> getMonsterWaves() { return List.of(); }
+    };
+    var battle = new Battle(player, lineup, stage);
+    player.setBattle(battle);
+    var service = new Service();
+    var method = BattleService.class.getMethod("rejectionReason", Player.class, int.class, int.class,
+        BattleEndStatus.class, BattleStatistics.class, List.class, List.class);
+    var good = emu.lunarcore.proto.AvatarPropertyOuterClass.AvatarProperty.newInstance()
+        .setMaxHp(1000).setLeftHp(500).setMaxSp(100).setLeftSp(50);
+    var actor = emu.lunarcore.proto.AvatarBattleInfoOuterClass.AvatarBattleInfo.newInstance()
+        .setId(2000091).setAvatarStatus(good);
+    var stats = BattleStatistics.newInstance().addBattleAvatarList(actor);
+    assertNull(method.invoke(service, player, battle.getId(), 312040, BattleEndStatus.BATTLE_END_WIN,
+        stats, List.of(), List.of()));
+    assertEquals("battle-identity", method.invoke(service, player, battle.getId() + 1, 312040,
+        BattleEndStatus.BATTLE_END_WIN, stats, List.of(), List.of()));
+    actor.setAvatarStatus(emu.lunarcore.proto.AvatarPropertyOuterClass.AvatarProperty.newInstance()
+        .setMaxHp(0).setLeftHp(0).setMaxSp(100).setLeftSp(0));
+    var invalidHealth = BattleStatistics.newInstance().addBattleAvatarList(actor);
+    assertEquals("avatar-health-max", method.invoke(service, player, battle.getId(), 312040,
+        BattleEndStatus.BATTLE_END_WIN, invalidHealth, List.of(), List.of()));
+    actor.setAvatarStatus(emu.lunarcore.proto.AvatarPropertyOuterClass.AvatarProperty.newInstance()
+        .setMaxHp(1000).setLeftHp(500).setMaxSp(100).setLeftSp(101));
+    var invalidEnergy = BattleStatistics.newInstance().addBattleAvatarList(actor);
+    assertEquals("avatar-energy-range", method.invoke(service, player, battle.getId(), 312040,
+        BattleEndStatus.BATTLE_END_WIN, invalidEnergy, List.of(), List.of()));
+    assertSame(battle, player.getBattle());
+    assertEquals(0, service.grants);
+  }
+
+  @Test
   void validatedLossAndQuitAdvanceOnlyTheirStageAndCannotReplay() {
     var gson = new com.google.gson.Gson();
     var main =
