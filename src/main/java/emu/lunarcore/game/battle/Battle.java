@@ -32,6 +32,7 @@ public class Battle {
     // Freeze membership before victory callbacks can replace the story party.
     private final java.util.Set<Integer> participantIds;
     private final java.util.Map<Integer, GameAvatar> participants;
+    private final java.util.Set<Integer> actorBattleEvents;
     private final boolean ambiguousParticipants;
     private final List<EntityMonster> npcMonsters;
     @Getter(lombok.AccessLevel.NONE)
@@ -105,6 +106,7 @@ public class Battle {
         }
         this.participantIds = java.util.Set.copyOf(ids);
         this.participants = java.util.Map.copyOf(actors);
+        this.actorBattleEvents = org.hkrpg.server.gameplay.AvatarBattleEvents.capture(player, this.participants.values());
         this.ambiguousParticipants = ambiguous;
         this.npcMonsters = new ArrayList<>();
         this.buffs = new Int2ObjectLinkedOpenHashMap<>();

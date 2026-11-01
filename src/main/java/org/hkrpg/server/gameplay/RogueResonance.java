@@ -406,7 +406,8 @@ public final class RogueResonance {
                 row != null
                     && row.valid()
                     && seen.add(row.eventId())
-                    && battle.getBattleEvents().contains(row.eventId()));
+                    && (battle.getBattleEvents().contains(row.eventId())
+                        || battle.getActorBattleEvents().contains(row.eventId())));
   }
 
   /** Called once, after all battle identity/statistics checks and the settlement guard. */

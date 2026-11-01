@@ -66,7 +66,8 @@ final class BattleResult46 {
         } else if (reason.equals("battle-event-energy")) {
           var active = player.getBattle();
           reason += " events=" + energies.stream().limit(8).toList()
-              + " allowed=" + (active == null ? List.of() : active.getBattleEvents());
+              + " allowed=" + (active == null ? List.of() : active.getBattleEvents())
+              + " actorEvents=" + (active == null ? Set.of() : active.getActorBattleEvents());
         }
         SceneActionDiagnostics46.battleRejected(session, reason, core.getBattleId(), core.getStageId(), ids);
       }

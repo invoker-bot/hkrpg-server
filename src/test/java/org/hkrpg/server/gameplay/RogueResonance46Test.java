@@ -449,6 +449,29 @@ class RogueResonance46Test {
   }
 
   @Test
+  void jingYuanEventCoexistsWithEarnedResonanceWithoutReplacingItsSavedEnergy() {
+    var p = battlePlayer(1, 2500);
+    var prepared = battle(p);
+    var actor = new emu.lunarcore.game.avatar.GameAvatar(gson.fromJson(
+        "{\"AvatarID\":1204}", emu.lunarcore.data.excel.AvatarExcel.class));
+    actor.setOwner(p);
+    p.getAvatars().getAvatars().put(1204, actor);
+    var lineup = new emu.lunarcore.game.player.lineup.PlayerLineup(p, 0);
+    lineup.getAvatars().add(1204);
+    var active = new emu.lunarcore.game.battle.Battle(p, lineup, prepared.getStage(), false);
+    assertEquals(41001, active.getRogueResonance().eventId());
+    assertTrue(RogueResonance.validReport(active, List.of(new RogueResonance.Energy(11203, 0, 1000))));
+    RogueResonance.saveReport(active, List.of(new RogueResonance.Energy(11203, 0, 1000)));
+    assertEquals(2500, p.getGameplay().getRogue().getResonanceSp());
+    var mixed = List.of(new RogueResonance.Energy(11203, 0, 1000),
+        new RogueResonance.Energy(41001, 75, 100));
+    assertTrue(RogueResonance.validReport(active, mixed));
+    RogueResonance.saveReport(active, mixed);
+    assertEquals(7500, p.getGameplay().getRogue().getResonanceSp());
+    assertFalse(RogueResonance.validReport(active, List.of(new RogueResonance.Energy(41002, 0, 100))));
+  }
+
+  @Test
   void absentEnergyReportKeepsTheReservedValue() {
     var p = battlePlayer(1, 2500);
     var first = battle(p);

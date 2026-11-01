@@ -21,6 +21,7 @@ public final class NativeGmPlayerProbe {
   private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
   private final Map<String, Object> basic = new LinkedHashMap<>();
   private final List<Map<String, Object>> equipmentSyncs = new ArrayList<>();
+  private final List<Map<String, Object>> trialNotifications = new ArrayList<>();
   private Ukcp channel;
   private int requests;
   private byte[] lastReplyHeader = new byte[0];
@@ -79,6 +80,8 @@ public final class NativeGmPlayerProbe {
       if (failure.get() != null) throw new IllegalStateException("KCP failure", failure.get());
       var frame = inbox.poll(1, TimeUnit.SECONDS);
       if (frame == null) continue;
+      if (frame.command() == protocol.clientCommand("CurTrialActivityScNotify"))
+        trialNotifications.add(project(protocol.clientSchema().parse("CurTrialActivityScNotify", frame.body())));
       if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
         if (header.length > 0 && frame.header().length > 0)
           throw new IllegalStateException("Notification inherited a request packet ID");
@@ -160,6 +163,8 @@ public final class NativeGmPlayerProbe {
               "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
               "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
               "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
+              "TakeTrialActivityRewardCsReq", "GetCurSceneInfoCsReq", "GetCurLineupDataCsReq",
+              "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "PVEBattleResultCsReq", "QuitBattleCsReq",
               "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
             throw new IllegalArgumentException("Unsupported owned equipment smoke request");
           equipmentSyncs.clear();
@@ -196,6 +201,7 @@ public final class NativeGmPlayerProbe {
       snapshot.put("gachaWire", Base64.getEncoder().encodeToString(gacha.toByteArray()));
       snapshot.put("basic", Map.copyOf(basic));
       snapshot.put("requests", requests);
+      snapshot.put("trialNotifications", List.copyOf(trialNotifications));
       if (lastPull != null) snapshot.put("gachaPull",lastPull);
       if (lastEquipment != null) snapshot.put("equipmentReply", lastEquipment);
       Path temporary = directory.resolve("snapshot.tmp");
