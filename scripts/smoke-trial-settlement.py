@@ -124,6 +124,8 @@ def main():
         key = uuid.uuid4().hex
         control = {'requestId': key, 'command': name, 'success': success,
                    'wire': base64.b64encode(message.SerializeToString()).decode()}
+        if name == 'TakeTrialActivityRewardCsReq' and success:
+            control['packetId'] = 41
         target = directory / 'equipment-request.json'
         temporary = target.with_suffix('.tmp')
         temporary.write_text(json.dumps(control), encoding='utf-8')
@@ -198,7 +200,10 @@ def main():
         call('TakeTrialActivityRewardCsReq', {'stage_id': stage}, False)
         won = call('PVEBattleResultCsReq', report)
         assert won['battle_id'] == battle['battle_id']
-        completion(False)
+        changes = snapshot()['trialStateChanges']
+        assert len(changes) == 1 and changes[0]['trial_activity_info']['stage_id'] == stage
+        assert not changes[0]['trial_activity_info'].get('taken_reward', False)
+        # The native passed-stage cache can now enable claiming without another history query.
         call('PVEBattleResultCsReq', report, False)
         restored = call('GetCurSceneInfoCsReq')['scene']
         assert all(restored[k] == home[k] for k in ('entry_id', 'floor_id', 'plane_id'))
@@ -209,6 +214,9 @@ def main():
         assert notifications[0]['status'] == status.enum_type.values_by_number[1].name
         before_reward = wallet(snapshot())
         reward = call('TakeTrialActivityRewardCsReq', {'stage_id': stage})
+        changes = snapshot()['trialStateChanges']
+        assert len(changes) == 2 and changes[1]['trial_activity_info']['stage_id'] == stage
+        assert changes[1]['trial_activity_info']['taken_reward']
         items = {r['item_id']: r['num'] for r in reward['reward']['item_list']}
         assert items == {1: 20, 212: 3, 113001: 5}
         completion(True)
@@ -218,12 +226,14 @@ def main():
             assert claimed['materials'].get(item, 0) == before_reward['materials'].get(item, 0) + amount
         call('TakeTrialActivityRewardCsReq', {'stage_id': stage}, False)
         assert wallet(snapshot()) == claimed
+        assert len(snapshot()['trialStateChanges']) == 2
         stop()
         restarted = start(2)
         assert restarted['uid'] == uid and wallet(restarted) == claimed
         completion(True)
         call('TakeTrialActivityRewardCsReq', {'stage_id': stage}, False)
         assert wallet(snapshot()) == claimed and not snapshot()['trialNotifications']
+        assert not snapshot()['trialStateChanges']
         stop()
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
         for name, expected in source_hashes.items():
@@ -231,12 +241,14 @@ def main():
         result = {'passed': True, 'jarSHA256': digest, 'stageId': stage, 'eventId': 11203,
                   'uid': uid, 'normalStops': stops, 'sameUidAfterRestart': True,
                   'finishNotifications': 1, 'rewardItems': items, 'rewardsPersisted': True,
+                  'completionAvailableWithoutRefresh': True, 'stateChangeNotifications': 2,
+                  'claimPacketIdPreserved': True,
                   'duplicateVictoryRejected': True, 'duplicateRewardsRejected': True,
                   'requestChecks': commands, 'isolatedH2': True,
                   'fixtureMainMission': 1000510, 'fixtureTrialWindow': [20003, 2000401],
                   'operatorDataModified': False, 'clientGameplayVerified': False,
                   'sourceSHA256': source_hashes, 'runtimeDirectory': str(directory)}
-        output = ROOT / 'build/trial-event-energy-native.json'
+        output = ROOT / 'build/trial-reward-notify-native.json'
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps({'passed': True, 'normalStops': stops, 'requestChecks': len(commands),
                           'stageId': stage, 'rewardItems': items, 'report': str(output)}))

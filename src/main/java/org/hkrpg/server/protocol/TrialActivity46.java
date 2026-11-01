@@ -86,19 +86,37 @@ public final class TrialActivity46 {
         for (int stage :
             new java.util.TreeSet<>(player.getGameplay().getTrialCompletions().keySet())) {
           if (stage <= 0) continue;
-          var info = Gameplay46.builder(session, "TrialActivityInfo");
-          Gameplay46.set(info, "stage_id", stage);
-          Gameplay46.set(
-              info,
-              "taken_reward",
-              player.getRewardLedger().granted(org.hkrpg.server.gameplay.TrialRewards.key(stage)));
-          Gameplay46.add(response, "trial_activity_info_list", info.build());
+          Gameplay46.add(response, "trial_activity_info_list", activityInfo(session, player, stage));
         }
       }
       Gameplay46.set(response, "retcode", code.getVal());
       session.sendClientPacket(
           claim ? "TakeTrialActivityRewardScRsp" : "GetTrialActivityDataScRsp",
           response.build().toByteArray());
+    }
+  }
+
+  private static DynamicMessage activityInfo(GameSession session, Player player, int stage) {
+    var info = Gameplay46.builder(session, "TrialActivityInfo");
+    Gameplay46.set(info, "stage_id", stage);
+    Gameplay46.set(
+        info,
+        "taken_reward",
+        player.getRewardLedger().granted(org.hkrpg.server.gameplay.TrialRewards.key(stage)));
+    return info.build();
+  }
+
+  /** The native module updates its passed-stage cache from 2676, before its detail page refreshes. */
+  public static void changed(Player player, int stage) {
+    var session = player.getSession();
+    if (session == null
+        || !session.getProtocol().experimental()
+        || session.getState() != SessionState.ACTIVE) return;
+    synchronized (player) {
+      if (stage <= 0 || player.getGameplay().getTrialCompletions().get(stage) == null) return;
+      var notification = Gameplay46.builder(session, "TrialActivityDataChangeScNotify");
+      Gameplay46.set(notification, "trial_activity_info", activityInfo(session, player, stage));
+      session.sendClientPacket("TrialActivityDataChangeScNotify", notification.build().toByteArray());
     }
   }
 

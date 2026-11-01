@@ -22,6 +22,7 @@ public final class NativeGmPlayerProbe {
   private final Map<String, Object> basic = new LinkedHashMap<>();
   private final List<Map<String, Object>> equipmentSyncs = new ArrayList<>();
   private final List<Map<String, Object>> trialNotifications = new ArrayList<>();
+  private final List<Map<String, Object>> trialStateChanges = new ArrayList<>();
   private Ukcp channel;
   private int requests;
   private byte[] lastReplyHeader = new byte[0];
@@ -82,6 +83,11 @@ public final class NativeGmPlayerProbe {
       if (frame == null) continue;
       if (frame.command() == protocol.clientCommand("CurTrialActivityScNotify"))
         trialNotifications.add(project(protocol.clientSchema().parse("CurTrialActivityScNotify", frame.body())));
+      if (frame.command() == protocol.clientCommand("TrialActivityDataChangeScNotify")) {
+        if (header.length > 0 && frame.header().length > 0)
+          throw new IllegalStateException("Trial notification inherited a request packet ID");
+        trialStateChanges.add(project(protocol.clientSchema().parse("TrialActivityDataChangeScNotify", frame.body())));
+      }
       if (frame.command() == protocol.clientCommand("PlayerSyncScNotify")) {
         if (header.length > 0 && frame.header().length > 0)
           throw new IllegalStateException("Notification inherited a request packet ID");
@@ -202,6 +208,7 @@ public final class NativeGmPlayerProbe {
       snapshot.put("basic", Map.copyOf(basic));
       snapshot.put("requests", requests);
       snapshot.put("trialNotifications", List.copyOf(trialNotifications));
+      snapshot.put("trialStateChanges", List.copyOf(trialStateChanges));
       if (lastPull != null) snapshot.put("gachaPull",lastPull);
       if (lastEquipment != null) snapshot.put("equipmentReply", lastEquipment);
       Path temporary = directory.resolve("snapshot.tmp");

@@ -80,6 +80,7 @@ class TrialActivityLifecycleTest {
     com.google.protobuf.DynamicMessage response;
     String responseName;
     int replies;
+    int finishedNotifications;
 
     Session(Player player) {
       super(null);
@@ -97,6 +98,7 @@ class TrialActivityLifecycleTest {
 
     public void sendClientPacket(String name, byte[] bytes) {
       replies++;
+      if (name.equals("CurTrialActivityScNotify")) finishedNotifications++;
       responseName = name;
       try {
         response = getProtocol().clientSchema().parse(name, bytes);
@@ -402,7 +404,8 @@ class TrialActivityLifecycleTest {
     assertEquals(1, player.returnAttempts);
     assertTrue(player.getAvatars().getTempAvatars().isEmpty());
     assertEquals("CurTrialActivityScNotify", session.responseName);
-    assertEquals(1, session.replies);
+    assertEquals(2, session.replies);
+    assertEquals(1, session.finishedNotifications);
     assertEquals(
         STAGE,
         session.response.getField(session.response.getDescriptorForType().findFieldByNumber(1)));
@@ -416,7 +419,8 @@ class TrialActivityLifecycleTest {
         battle,
         emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus.BATTLE_END_WIN,
         emu.lunarcore.proto.BattleStatisticsOuterClass.BattleStatistics.newInstance());
-    assertEquals(1, session.replies);
+    assertEquals(2, session.replies);
+    assertEquals(1, session.finishedNotifications);
     assertEquals(1, player.returnAttempts);
   }
 

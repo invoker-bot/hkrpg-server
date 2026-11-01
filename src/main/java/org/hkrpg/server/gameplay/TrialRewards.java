@@ -28,8 +28,10 @@ public final class TrialRewards {
 
   public static void complete(Player player, int stage, GameplayState.TrialCompletion plan) {
     synchronized (player) {
-      if (player.getGameplay().getTrialCompletions().putIfAbsent(stage, plan) == null)
+      if (player.getGameplay().getTrialCompletions().putIfAbsent(stage, plan) == null) {
         player.save();
+        org.hkrpg.server.protocol.TrialActivity46.changed(player, stage);
+      }
     }
   }
 
@@ -58,6 +60,8 @@ public final class TrialRewards {
         plan.received(result.items());
         player.save();
       }
+      if (result.retcode() == Retcode.SUCC)
+        org.hkrpg.server.protocol.TrialActivity46.changed(player, stage);
       return result;
     }
   }
