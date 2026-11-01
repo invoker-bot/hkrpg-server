@@ -9,6 +9,8 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  // Absent in old saves: the inherited currentBgm remains the initial selection until first save.
+  @lombok.Setter private JukeboxState jukebox;
   private ShopPurchaseState shopPurchases = new ShopPurchaseState();
   public ShopPurchaseState getShopPurchases() {
     if (shopPurchases == null) shopPurchases = new ShopPurchaseState();

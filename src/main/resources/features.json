@@ -397,10 +397,10 @@
     },
     {
       "id": "jukebox",
-      "name": "音乐目录与当前选曲",
+      "name": "留声机背景音乐与环境音保存",
       "status": "partial",
-      "evidence": "src/main/java/org/hkrpg/server/protocol/ProtocolBridge.java",
-      "gap": "登录查询保留继承目录、分组、标记和当前选曲，并提供4.6必需播放容器；完整音乐解锁、播放操作、列表持久化及客户端验收待完成，见docs/login-followup-queries-4.6.md。"
+      "evidence": "src/main/java/org/hkrpg/server/protocol/Jukebox46.java",
+      "gap": "4.6原生保存和查询共用完整播放容器，保存歌曲、独立暂停标志、最多五层环境音及0至100音量；失败保存恢复旧选择，旧存档只读回退原选曲。真实Morphia恢复与验证边界见docs/jukebox-save-4.6.md。目录沿用继承的全列出策略，原始音乐取得与解锁进度、实际客户端声音和按钮验收仍待完成。"
     },
     {
       "id": "text-join",

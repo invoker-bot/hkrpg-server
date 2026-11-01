@@ -43,6 +43,7 @@ public final class VersionedPacketHandler {
     if (AllRecommendation46.handle(session, command, bytes)) return true;
     if (HeartDial46.handle(session, command, bytes)) return true;
     if (Cocoon46.handle(session, command, bytes)) return true;
+    if (Jukebox46.handle(session, command, bytes)) return true;
     if (Music46.handle(session, command, bytes)) return true;
     if (ClockPark46.handle(session, command, bytes)) return true;
     if (AetherDivide46.handle(session, command, bytes)) return true;

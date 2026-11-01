@@ -337,11 +337,9 @@ public class Player implements Tickable, Syncable {
     }
 
     public int getCurrentBgm() {
-        if (this.currentBgm == 0) {
-            this.currentBgm = 210000;
-            this.save();
-        }
-        return this.currentBgm;
+        // Old player documents can omit this field. Reading the default must not save a player,
+        // especially while a malformed jukebox request is being rejected.
+        return this.currentBgm == 0 ? 210000 : this.currentBgm;
     }
 
     public void setCurrentBgm(int musicId) {

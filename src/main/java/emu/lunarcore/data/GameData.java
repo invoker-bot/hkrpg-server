@@ -59,6 +59,7 @@ public class GameData {
     @Getter private static ExcelMap<PlayerIconExcel> playerIconExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<ItemComposeExcel> itemComposeExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<BackGroundMusicExcel> backGroundMusicExcelMap = new ExcelMap<>();
+    @Getter private static ExcelMap<BackGroundMusicGroupExcel> backGroundMusicGroupExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<QuestExcel> questExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<AchievementExcel> achievementExcelMap = new ExcelMap<>();
     @Getter private static ExcelMap<FinishWayExcel> finishWayExcelMap = new ExcelMap<>();
