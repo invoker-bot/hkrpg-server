@@ -263,6 +263,15 @@ public final class Universe46 {
   static DynamicMessage snapshot(GameSession session, GameplayDefinitions.RogueSeason season) {
     var player = session.getPlayer();
     var run = player.getGameplay().getRogue();
+    var currentArea = GameplayDefinitions.areas.get(run.getAreaId());
+    // 4.6 indexes the world picker from progress 1. A returned terminal tutorial has
+    // progress 0, so advertising it as a selectable/default area gives Lua a nil index.
+    // Keep the saved run and settlement history; active/paused tutorials still resume.
+    boolean outsideTerminalTutorial = currentArea != null && currentArea.AreaProgress() == 0
+        && !run.isInside() && switch (run.getPhase()) {
+          case FINISHED, FAILED, ABANDONED -> true;
+          default -> false;
+        };
     var game = builder(session, "AGEHGBKOBEF");
     var basic = builder(session, "EDOIEMCFFCA");
     var seasonInfo = builder(session, "CGNNMPIKBBB");
@@ -277,6 +286,7 @@ public final class Universe46 {
       for (int id : new TreeSet<>(season.RogueAreaIDList())) {
         var definition = GameplayDefinitions.areas.get(id);
         if (definition == null) continue;
+        if (outsideTerminalTutorial && id == run.getAreaId()) continue;
         var area = builder(session, "CAJEBOPPMCJ");
         set(area, "area_id", id);
         int map = definition.mapId();
@@ -315,7 +325,7 @@ public final class Universe46 {
     set(currencies, "PDGBEJHNHHE", RogueCurrencies.balance(player, 34));
     set(basic, "NIKDPODBIEF", currencies.build());
     set(game, "LFLCDNGALME", basic.build());
-    if (run.isDismissed()
+    if (outsideTerminalTutorial || run.isDismissed()
         || run.getPhase() == GameplayState.RogueRun.Phase.IDLE
         || run.getPhase() == GameplayState.RogueRun.Phase.ABANDONED) return game.build();
     var current = builder(session, "HNKAOFDGLIE");

@@ -1,0 +1,125 @@
+{
+  "sourceVersion": "4.6.0",
+  "sources": {
+    "ExcelOutput/RogueAreaConfig.json": "70645444c7d08c1911c57f50af8ed7084a975c0c252f0617ab6e945c11ee6932",
+    "ExcelOutput/RogueUnlockConfig.json": "5560954d0052d343bc7793349676cc4a6ed28dfa256617c138d881e2cb93b66e",
+    "ExcelOutput/FinishWayRogue.json": "661b4cffcc70eb961a81499af5c825e2ab8df5ba5d3720b453c8deac1fb6f1e9"
+  },
+  "records": {
+    "RogueAreaConfig": [
+      {
+        "RogueAreaID": 100,
+        "Difficulty": 1,
+        "AreaEnvironment": [],
+        "RecommendLevel": 5,
+        "RecommendNature": [
+          "Ice"
+        ],
+        "AreaNameID": {
+          "Hash": 10117035598078858438
+        },
+        "AreaIcon": "SpriteOutput/Rogue/World/PicRogueN2.png",
+        "AreaFigure": "UI/Rogue/World/PicRogueN2.png",
+        "DisplayMonsterMap": {
+          "8003020": 8
+        },
+        "DisplayMonsterMap2": {},
+        "MapDisplayItemList": [],
+        "ChestDisplayItemList": [],
+        "ScoreMap": {},
+        "AreaTipsIcon": "SpriteOutput/Rogue/Planet/IconRoguePlanetM1.png"
+      },
+      {
+        "RogueAreaID": 110,
+        "AreaProgress": 1,
+        "Difficulty": 1,
+        "AreaEnvironment": [],
+        "RecommendLevel": 14,
+        "RecommendNature": [
+          "Quantum",
+          "Physical",
+          "Wind"
+        ],
+        "AreaNameID": {
+          "Hash": 12615533921307137761
+        },
+        "AreaIcon": "SpriteOutput/Rogue/World/PicRogueN2.png",
+        "AreaFigure": "UI/Rogue/World/PicRogueN2.png",
+        "DisplayMonsterMap": {
+          "8003010": 14,
+          "8003020": 14
+        },
+        "DisplayMonsterMap2": {
+          "8013010": 11
+        },
+        "FirstReward": 105101,
+        "UnlockID": 12001,
+        "MapDisplayItemList": [],
+        "ChestDisplayItemList": [],
+        "MonsterEliteDropDisplayID": 101,
+        "ScoreMap": {
+          "1": 260,
+          "2": 780,
+          "3": 780,
+          "4": 1300,
+          "5": 1560,
+          "6": 1560,
+          "7": 2600
+        },
+        "AreaTipsIcon": "SpriteOutput/Rogue/Planet/IconRoguePlanetM1.png"
+      }
+    ],
+    "RogueUnlockConfig": [
+      {
+        "RogueUnlockID": 11,
+        "UnlockFinishWay": 10201
+      },
+      {
+        "RogueUnlockID": 11007,
+        "UnlockFinishWay": 13001
+      },
+      {
+        "RogueUnlockID": 12001,
+        "UnlockFinishWay": 13101
+      }
+    ],
+    "FinishWayRogue": [
+      {
+        "ID": 10201,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          4030001,
+          4030002
+        ],
+        "ParamItemList": [],
+        "Progress": 2
+      },
+      {
+        "ID": 13001,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          1010403
+        ],
+        "ParamItemList": [],
+        "Progress": 1
+      },
+      {
+        "ID": 13101,
+        "FinishType": "RogueFinishUnlock",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          11,
+          11007
+        ],
+        "ParamItemList": [],
+        "Progress": 2,
+        "IsBackTrack": true
+      }
+    ]
+  }
+}

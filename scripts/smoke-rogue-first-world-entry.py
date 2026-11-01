@@ -25,15 +25,14 @@ def free_port(kind=socket.SOCK_STREAM):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resources', type=Path, default=ROOT / 'resources/4.6')
+    parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
     args = parser.parse_args()
     source = args.resources.resolve()
-    jar = ROOT / 'build/libs/hkrpg-server.jar'
+    jar = args.jar.resolve()
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'), None)
     if java is None and os.environ.get('JAVA_HOME'):
         java = Path(os.environ['JAVA_HOME']) / 'bin/java.exe'
-    classes = ROOT / 'build/classes/java/test'
     assert java and java.is_file() and jar.is_file()
-    assert (classes / 'org/hkrpg/server/gameplay/RogueFirstWorldEntryFixtureInspector.class').is_file()
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
@@ -127,8 +126,10 @@ def main():
     probe_classes = directory / 'probe-classes'
     probe_classes.mkdir()
     probe_source = ROOT / 'scripts/fixtures/java/org/hkrpg/server/protocol/NativeRogueFirstWorldEntryProbe.java'
+    inspector_source = ROOT / 'src/test/java/org/hkrpg/server/gameplay/RogueFirstWorldEntryFixtureInspector.java'
     compilation = subprocess.run([str(java.with_name('javac.exe')), '-encoding', 'UTF-8', '-cp', str(jar),
-                                  '-d', str(probe_classes), str(probe_source)], capture_output=True, creationflags=flags)
+                                  '-d', str(probe_classes), str(probe_source), str(inspector_source)],
+                                 capture_output=True, creationflags=flags)
     (directory / 'javac.log').write_bytes(compilation.stdout + compilation.stderr)
     assert compilation.returncode == 0, directory / 'javac.log'
     fallback = '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback')
@@ -199,7 +200,7 @@ def main():
                         raise
                     finally:
                         process.stdin.close()
-        child = subprocess.run([str(java), *encoding, fallback, '-cp', str(classes) + os.pathsep + str(jar),
+        child = subprocess.run([str(java), *encoding, fallback, '-cp', str(probe_classes) + os.pathsep + str(jar),
             'org.hkrpg.server.gameplay.RogueFirstWorldEntryFixtureInspector', str(directory),
             str(snapshots[0]['uid']), 'pending' if iteration == 0 else 'active'], cwd=ROOT,
             text=True, encoding='utf-8', capture_output=True, timeout=45, creationflags=flags)
