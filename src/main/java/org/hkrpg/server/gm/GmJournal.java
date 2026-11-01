@@ -158,7 +158,7 @@ final class GmJournal {
 
   private static String summary(Operation op) {
     return switch (op.action()) {
-      case "grant" ->
+      case "grant", "shortcut-grant" ->
           "发放 #" + op.itemId() + " × " + op.amount() + " · Lv." + op.level() + " · 阶 " + op.rank();
       case "mail" -> "邮件：" + op.title();
       case "shop-list", "shop-unlist" -> (op.action().equals("shop-list") ? "上架商品 " : "下架商品 ")

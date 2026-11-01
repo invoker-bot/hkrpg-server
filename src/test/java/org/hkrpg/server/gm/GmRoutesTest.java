@@ -80,6 +80,13 @@ class GmRoutesTest {
                     List.of(new ShopPrice(253,"未熄的余烬",90)),5,"MONTH",false,false));
           }
 
+          public List<ItemShortcut> itemShortcuts() {
+            return List.of(new ItemShortcut(new CatalogItem(221002,"列车主题","item",4,0,0),"theme",
+                List.of("hidden","collectible"),List.of("PhoneThemeConfig：解锁后显示"),true,"每次1件",1),
+                new ItemShortcut(new CatalogItem(254001,"限定手机壳","item",4,0,0),"case",
+                    List.of("limited","collectible"),List.of("活动排期"),false,"仅供查询",1));
+          }
+
           public Result execute(Operation op) {
             executions.incrementAndGet();
             return Result.completed("已执行 " + op.action());
@@ -108,6 +115,29 @@ class GmRoutesTest {
   void stop() {
     client.close();
     app.stop();
+  }
+
+  @Test
+  void itemShortcutsRequireSessionAndValidateFilters() throws Exception {
+    assertEquals(401,request("GET","/gm/api/item-shortcuts",null,false).statusCode());
+    openSession();
+    var response=request("GET","/gm/api/item-shortcuts?limit=1",null,true);
+    assertEquals(200,response.statusCode(),response.body());
+    assertTrue(json(response).getAsJsonObject("data").has("types"));
+    assertEquals(400,request("GET","/gm/api/item-shortcuts?tag=unknown",null,true).statusCode());
+    assertEquals(400,request("GET","/gm/api/item-shortcuts?type=unknown",null,true).statusCode());
+    assertEquals(200,request("GET","/gm/shortcuts.js",null,false).statusCode());
+    var data=json(request("GET","/gm/api/item-shortcuts?type=theme&tag=hidden&q=列车",null,true)).getAsJsonObject("data");
+    assertEquals(1,data.get("total").getAsInt());
+    assertEquals(221002,data.getAsJsonArray("items").get(0).getAsJsonObject().getAsJsonObject("item").get("id").getAsInt());
+    assertEquals(1,json(request("GET","/gm/api/item-shortcuts?q=活动排期",null,true)).getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(0,json(request("GET","/gm/api/item-shortcuts?type=theme&offset=1",null,true)).getAsJsonObject("data").getAsJsonArray("items").size());
+    assertEquals(400,request("GET","/gm/api/item-shortcuts?limit=101",null,true).statusCode());
+    var body="{\"requestId\":\""+UUID.randomUUID()+"\",\"action\":\"shortcut-grant\",\"uid\":10001,\"itemId\":221002,\"amount\":1}";
+    assertEquals(401,request("POST","/gm/api/operate",body,false).statusCode());
+    assertEquals(200,request("POST","/gm/api/operate",body,true).statusCode());
+    assertEquals(200,request("POST","/gm/api/operate",body,true).statusCode());
+    assertEquals(1,executions.get());
   }
 
   @Test

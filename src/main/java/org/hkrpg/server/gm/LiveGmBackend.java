@@ -21,6 +21,7 @@ final class LiveGmBackend implements GmBackend {
   private static final Set<String> DANGEROUS =
       Set.of("account", "clear", "permission", "giveall", "reload", "kick");
   private volatile List<CatalogItem> catalog;
+  private volatile List<ItemShortcut> shortcuts;
   private Map<Integer, String> shopNames = Map.of();
   private final java.util.function.IntFunction<GameAvatar> avatarFactory;
 
@@ -187,6 +188,9 @@ final class LiveGmBackend implements GmBackend {
         player ->
             switch (operation.action()) {
               case "grant" -> grant(player, operation);
+              case "shortcut-grant" -> grantShortcut(player,operation,itemShortcuts().stream()
+                  .filter(i -> i.item().id()==operation.itemId()).findFirst()
+                  .orElseThrow(() -> new GmError(400,"该物品不在当前快捷清单中，请刷新后重试。")));
               case "mail" -> mail(player, operation);
               case "heal", "refill" -> legacy(operation.action() + " @" + player.getUid());
               case "unstuck" -> unstuck(player);
@@ -202,6 +206,31 @@ final class LiveGmBackend implements GmBackend {
   }
 
   public List<BannerRow> bannerHistory() { return banners().history(); }
+
+  public List<ItemShortcut> itemShortcuts() {
+    if (shortcuts==null) synchronized(this) {
+      if (shortcuts==null) try {
+        shortcuts=GmItemShortcuts.load(Path.of(LunarCore.getConfig().getResourceDir()),catalog());
+      } catch (java.io.IOException | RuntimeException e) {
+        LunarCore.getLogger().warn("GM item shortcut sources could not be loaded",e);
+        throw new GmError(503,"快捷清单来源暂时不可读取，请检查资源后重启服务。");
+      }
+    }
+    return shortcuts;
+  }
+
+  Result grantShortcut(Player player, Operation operation, ItemShortcut shortcut) {
+    var item=GameData.getItemExcelMap().get(operation.itemId());
+    if (shortcut.item().id()!=operation.itemId() || !shortcut.grantable() || !GmItemShortcuts.grantable(item))
+      throw new GmError(400,"当前物品不支持快捷发放。");
+    GmValidation.range(operation.amount(),1,GmItemShortcuts.maxAmount(item),"快捷发放数量");
+    if (item.getItemSubType()==emu.lunarcore.game.enums.ItemSubType.PlayerOutfit
+        && player.getUnlocks().getPlayerOutfits().contains(item.getId()))
+      throw new GmError(409,"玩家已拥有该装扮，未重复发放。");
+    if (!emu.lunarcore.game.shop.ShopService.canDeliver(player,Map.of(item.getId(),operation.amount())))
+      throw new GmError(409,"玩家已拥有该收藏品，或背包容量/堆叠上限不足，未执行发放。");
+    return grant(player,operation);
+  }
 
   public List<ShopGoodsRow> shopGoods() {
     var names = new HashMap<Integer, String>();
@@ -323,6 +352,7 @@ final class LiveGmBackend implements GmBackend {
         && (long) before + op.amount() > Integer.MAX_VALUE)
       throw new GmError(409, "经验将超出存储上限，未执行发放。");
     var delivered = player.getInventory().addItems(items, true);
+    if (op.action().equals("shortcut-grant")) org.hkrpg.server.protocol.ShopCosmetics46.purchased(player,delivered);
     int amount =
         before >= 0
             ? (int) Math.max(0L, (long) virtualBalance(player, excel) - before)

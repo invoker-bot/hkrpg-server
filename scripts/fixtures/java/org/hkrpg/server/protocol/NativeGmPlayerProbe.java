@@ -171,7 +171,7 @@ public final class NativeGmPlayerProbe {
             if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
                 "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
                 "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
-                "GetShopListCsReq", "GetPlayerBoardDataCsReq", "SetPersonalCardCsReq",
+                "GetShopListCsReq", "GetPlayerBoardDataCsReq", "GetPhoneDataCsReq", "SetPersonalCardCsReq",
                 "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
                 "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
                 "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",

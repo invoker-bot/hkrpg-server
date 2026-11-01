@@ -41,6 +41,7 @@ public final class GmRoutes {
             "resources.js",
             "banners.js",
             "shops.js",
+            "shortcuts.js",
             "mail.js",
             "terminal.js",
             "audit.js",
@@ -116,6 +117,21 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/item-shortcuts", safe(ctx -> {
+      auth.require(ctx,false);
+      String q=query(ctx,"q"),type=query(ctx,"type"),tag=query(ctx,"tag");
+      if (!type.isEmpty()&&!GmItemShortcuts.TYPES.containsKey(type)) throw new GmError(400,"物品类型不正确。");
+      if (!tag.isEmpty()&&!GmItemShortcuts.TAGS.contains(tag)) throw new GmError(400,"物品标签不正确。");
+      int offset=integer(ctx,"offset",0,0,1_000_000),limit=integer(ctx,"limit",30,1,100);
+      var all=backend.itemShortcuts();
+      var filtered=all.stream().filter(i -> type.isEmpty()||type.equals(i.type()))
+          .filter(i -> tag.isEmpty()||i.tags().contains(tag))
+          .filter(i -> q.isEmpty()||(i.item().id()+" "+i.item().name()+" "+String.join(" ",i.sources()))
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx,Map.of("types",GmItemShortcuts.TYPES.entrySet().stream().sorted(Map.Entry.comparingByKey())
+          .map(e -> Map.of("id",e.getKey(),"name",e.getValue(),"count",all.stream().filter(i -> i.type().equals(e.getKey())).count())).toList(),
+          "total",filtered.size(),"items",filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get("/gm/api/shops", safe(ctx -> {
       auth.require(ctx, false);
       String q = query(ctx, "q"), state = query(ctx, "state");

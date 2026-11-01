@@ -26,6 +26,9 @@ public final class GmModels {
   public record CatalogItem(
       int id, String name, String category, int rarity, int maxLevel, int maxRank) {}
 
+  public record ItemShortcut(CatalogItem item, String type, List<String> tags,
+      List<String> sources, boolean grantable, String note, int maxAmount) {}
+
   public record CommandRow(
       String label, String description, boolean requireTarget, boolean dangerous) {}
 

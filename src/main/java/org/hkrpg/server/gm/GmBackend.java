@@ -18,5 +18,7 @@ public interface GmBackend {
 
   default List<ShopGoodsRow> shopGoods() { return List.of(); }
 
+  default List<ItemShortcut> itemShortcuts() { return List.of(); }
+
   Result execute(Operation operation);
 }

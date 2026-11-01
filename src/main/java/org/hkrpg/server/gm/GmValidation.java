@@ -15,7 +15,7 @@ final class GmValidation {
       fail("请求编号格式不正确。");
     }
     if (op.action() == null
-        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete", "shop-list", "shop-unlist").contains(op.action()))
+        || !Set.of("heal", "refill", "unstuck", "grant", "shortcut-grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete", "shop-list", "shop-unlist").contains(op.action()))
       fail("未知操作。");
     if (op.uid() < 0 || !op.action().startsWith("banner-") && !op.action().startsWith("shop-") && !op.action().equals("command") && op.uid() == 0)
       fail("请选择目标玩家。");
@@ -54,7 +54,7 @@ final class GmValidation {
           fail("请选择历史卡池。");
         range(op.durationDays() == null ? 30 : op.durationDays(), 1, 365, "复刻天数");
       }
-      case "grant" -> {
+      case "grant", "shortcut-grant" -> {
         range(op.itemId(), 1, Integer.MAX_VALUE, "物品 ID");
         range(op.amount(), 1, 1_000_000, "数量");
         range(op.level(), 0, 80, "等级");

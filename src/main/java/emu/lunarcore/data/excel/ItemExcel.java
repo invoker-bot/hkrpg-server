@@ -27,6 +27,7 @@ public class ItemExcel extends GameResource {
     private ItemRarity Rarity;
     private int PileLimit;
     private int PurposeType;
+    private Boolean isVisible;
 
     private int UseDataID;
     private ItemUseMethod UseMethod;
