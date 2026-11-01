@@ -65,9 +65,15 @@ final class LoginBootstrap46 {
 
   private static byte[] trainPartyProfile(GameSession session) {
     // TrainPartyGameInstance.Sync -> TrainPartyBuildManager.Sync dereferences this profile.
-    // The optional gameplay state remains absent; no area, passenger or funds are invented.
+    // Area 12 is the sole original TrainPartyAreaConfig root (no RequireAreaID).
+    // An empty area list resets every area to locked and hides the initial room's model block.
+    // Publish only this initial room reference; construction, furniture, funds and rewards stay zero.
+    var room = Gameplay46.builder(session, "TrainPartyArea");
+    Gameplay46.set(room, "area_id", 12);
+    var build = Gameplay46.builder(session, "TrainPartyInfo");
+    Gameplay46.add(build, "area_list", room.build());
     var data = Gameplay46.builder(session, "TrainPartyData");
-    Gameplay46.set(data, "train_party_info", Gameplay46.builder(session, "TrainPartyInfo").build());
+    Gameplay46.set(data, "train_party_info", build.build());
     // Native MKDPFLPICJB.MergeFrom maps wire 6 to +0x30, which Sync passes to
     // _SetCurTurnID. The descriptor's historical name is misleading: zero has no
     // TrainPartyProgress row and throws in _CheckIsTurnLocked. Row 1 is the initial turn.

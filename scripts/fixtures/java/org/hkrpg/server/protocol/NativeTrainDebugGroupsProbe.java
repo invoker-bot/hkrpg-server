@@ -112,6 +112,12 @@ public final class NativeTrainDebugGroupsProbe {
     int uid = number(call("PlayerGetTokenCsReq", token), "uid");
     call("PlayerLoginCsReq"); loggedIn = true;
     call("PlayerLoginFinishCsReq");
+    var profile = child(child(call("TrainPartyGetDataCsReq"), "train_party_data"), "train_party_info");
+    var rooms = (List<?>) field(profile, "area_list");
+    require(rooms.size() == 1, "Missing original initial room reference");
+    var room = (DynamicMessage) rooms.getFirst();
+    require(room.getAllFields().size() == 1 && number(room, "area_id") == 12,
+        "Initial room must contain only its original area ID at zero progress");
     if (!control.get("mode").getAsString().equals("exercise"))
       checkScene(child(call("GetCurSceneInfoCsReq"), "scene"));
     for (int entry : new int[] {100000301, 100000302}) {
@@ -126,6 +132,7 @@ public final class NativeTrainDebugGroupsProbe {
     result.put("checkedScenes", checkedScenes); result.put("ordinaryGroups", checkedGroups);
     result.put("debugGroupsAbsent", List.of(2, 25, 28, 44, 79));
     result.put("entry", 100000302); result.put("floor", 10000003);
+    result.put("initialRoomId", 12); result.put("constructionProgress", 0);
     result.put("clientGameplayVerified", false);
     return result;
   }

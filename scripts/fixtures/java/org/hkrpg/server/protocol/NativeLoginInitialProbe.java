@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -544,6 +545,17 @@ public final class NativeLoginInitialProbe implements KcpListener {
 
   private static void requireEmptyProgress(DynamicMessage message) {
     for (var entry : message.getAllFields().entrySet()) {
+      if (entry.getKey().isRepeated()
+          && message.getDescriptorForType().getName().equals("TrainPartyInfo")
+          && entry.getKey().getName().equals("area_list")) {
+        var rooms = (List<?>) entry.getValue();
+        require(rooms.size() == 1, "Missing original initial room reference");
+        var room = (DynamicMessage) rooms.getFirst();
+        require(room.getAllFields().size() == 1
+            && room.getField(room.getDescriptorForType().findFieldByName("area_id")).equals(12),
+            "Initial room reference must retain zero construction progress");
+        continue;
+      }
       require(!entry.getKey().isRepeated(), "Initial profile invents unlocked records");
       if (entry.getValue() instanceof DynamicMessage nested) requireEmptyProgress(nested);
       else {

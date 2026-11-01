@@ -1,3 +1,5 @@
+`LoginBootstrap46` 为派对车厢提供原始无前置房间 12 的零进度显示引用，保留建设、资金、奖励及玩家保存状态。客户端区域可见性链路和验收边界见[初始房间说明](party-carriage-initial-room-4.6.md)。
+
 `RogueSecondStoryProgress` 按原始房间、进入顺序、怪物摆放和持久化胜利恢复漫游测试目标；`RogueBossEncounters` 对缺失的首领组使用限定兼容映射。首次测试和二次测试的结算分开核对，见[首领与任务恢复](rogue-second-story-boss-4.6.md)。
 
 `StoryParties` 用来源绑定的发放意图、预留角色文档 ID 与编队变更记录连接任务、角色、头像和队伍保存。`MissionRewards` 将正式角色与普通物品账本分开防重；`StoryActions` 仅恢复有来源证明的编队动作。登录补发保留已完成任务及玩家后续手动编队，兼容规则和验证边界见[剧情正式队伍说明](story-formal-party-4.6.md)。
