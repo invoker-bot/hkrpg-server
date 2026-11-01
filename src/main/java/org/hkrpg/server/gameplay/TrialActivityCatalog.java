@@ -168,17 +168,22 @@ public final class TrialActivityCatalog {
           return five.containsAll(pool.up5()) && four.equals(new HashSet<>(pool.up4()))
               && !modulesFor(activity, catalog, activity.stages()).isEmpty();
         }).toList();
-        // Do not guess when the matching resource set is absent or ambiguous.
-        if (matches.size() == 1) {
-          var activity = matches.getFirst();
-          var featured = new HashSet<Integer>(pool.up5()); featured.addAll(pool.up4());
+        var featured = new HashSet<Integer>(pool.up5()); featured.addAll(pool.up4());
+        var candidates = new ArrayList<Binding>();
+        for (var activity : matches) {
           var stages = new HashSet<Integer>();
           for (int stage : activity.stages())
             if (featured.contains(GameData.getAvatarDemoExcelMap().get(stage).getAvatarID())) stages.add(stage);
           var modules = modulesFor(activity, catalog, stages);
-          if (!modules.isEmpty()) result.add(new Binding(activity, Set.copyOf(stages), modules,
+          if (!modules.isEmpty()) candidates.add(new Binding(activity, Set.copyOf(stages), modules,
               banner.getBeginTime(), banner.getEndTime()));
         }
+        // A shared new character can occur in both original phase panels. Preserve both actual
+        // locations only when they grant exactly the same stage identities for this UP roster.
+        // Different trial variants remain ambiguous; do not pick one by panel/order/actor ID.
+        if (!candidates.isEmpty()
+            && candidates.stream().allMatch(c -> c.stages().equals(candidates.getFirst().stages())))
+          result.addAll(candidates);
       }
     return List.copyOf(result);
   }
@@ -187,16 +192,35 @@ public final class TrialActivityCatalog {
     var catalog = read();
     if (catalog == null) return List.of();
     var result = new ArrayList<GameplayDefinitions.Window>();
-    for (var binding : bindings(player, time, catalog))
+    for (var binding : bindings(player, time, catalog)) {
+      boolean grouped = binding.activity().stages().stream().anyMatch(stage ->
+          Collections.disjoint(catalog.stageModules().getOrDefault(stage, Set.of()),
+              binding.activity().modules()));
+      // A group is one resource-defined unit. An operator override must not leave sibling
+      // derived windows advertising a group whose missing members no longer have a safe window.
+      if (grouped && binding.modules().stream().anyMatch(module -> GameplayDefinitions.windows.stream()
+          .anyMatch(w -> w.panelId() == binding.activity().panel() && w.moduleId() == module))) continue;
       for (int module : binding.modules())
         result.add(new GameplayDefinitions.Window(binding.activity().panel(), module, binding.begin(), binding.end()));
+    }
     return List.copyOf(result);
   }
 
   private static Set<Integer> modulesFor(Activity activity, Catalog catalog, Set<Integer> stages) {
-    if (stages.isEmpty()) return Set.of();
+    if (stages.isEmpty() || !activity.stages().containsAll(stages)) return Set.of();
     // The earliest client activities reused one module even where later rows now point elsewhere.
     if (activity.modules().size() == 1) return activity.modules();
+    boolean grouped = false;
+    for (int stage : activity.stages()) {
+      long count = catalog.stageModules().getOrDefault(stage, Set.of()).stream()
+          .filter(activity.modules()::contains).count();
+      if (count > 1) return Set.of();
+      if (count == 0) grouped = true;
+    }
+    // Current composite activities declare their complete stage list separately from their
+    // module group. The old per-character table cannot assign every group member individually.
+    // Keep that original group intact instead of guessing a module for the missing members.
+    if (grouped) return activity.modules();
     var result = new HashSet<Integer>();
     for (int stage : stages) {
       var matches = catalog.stageModules().getOrDefault(stage, Set.of()).stream()
@@ -226,10 +250,10 @@ public final class TrialActivityCatalog {
           if (matches(activity, window) && activity.stages().contains(stage)) return true;
     for (var binding : bindings(player, time, catalog)) {
       if (!binding.stages().contains(stage) || !ActivityAccess.unlocked(player, binding.activity().panel())) continue;
-      for (int module : modulesFor(binding.activity(), catalog, Set.of(stage))) {
-        if (binding.modules().contains(module) && GameplayDefinitions.windows.stream().noneMatch(w ->
-            w.panelId() == binding.activity().panel() && w.moduleId() == module)) return true;
-      }
+      var required = modulesFor(binding.activity(), catalog, Set.of(stage));
+      if (!required.isEmpty() && binding.modules().containsAll(required)
+          && required.stream().allMatch(module -> GameplayDefinitions.windows.stream().noneMatch(w ->
+              w.panelId() == binding.activity().panel() && w.moduleId() == module))) return true;
     }
     return false;
   }

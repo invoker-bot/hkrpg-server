@@ -160,38 +160,50 @@ public final class NativeGmPlayerProbe {
         var requested = JsonParser.parseString(Files.readString(equipmentRequest)).getAsJsonObject();
         String id = requested.get("requestId").getAsString();
         if (!id.equals(lastEquipmentId)) {
-          String command = requested.get("command").getAsString();
-          if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
-              "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
-              "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
-              "GetShopListCsReq", "GetPlayerBoardDataCsReq", "SetPersonalCardCsReq",
-              "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
-              "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
-              "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
-              "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
-              "TakeTrialActivityRewardCsReq", "GetCurSceneInfoCsReq", "GetCurLineupDataCsReq",
-              "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "PVEBattleResultCsReq", "QuitBattleCsReq",
-              "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
-            throw new IllegalArgumentException("Unsupported owned equipment smoke request");
-          equipmentSyncs.clear();
-          byte[] header = new byte[0];
-          if (requested.has("packetId")) {
-            int packetId = requested.get("packetId").getAsInt();
-            if (packetId <= 0) throw new IllegalArgumentException("Invalid smoke packet ID");
-            header = new byte[CodedOutputStream.computeUInt32Size(1, packetId)];
-            var encoded = CodedOutputStream.newInstance(header);
-            encoded.writeUInt32(1, packetId);
-            encoded.checkNoSpaceLeft();
+          var sequence = requested.has("commands")
+              ? requested.getAsJsonArray("commands").asList() : List.<JsonElement>of(requested);
+          if (sequence.isEmpty() || sequence.size() > 64)
+            throw new IllegalArgumentException("Invalid owned smoke sequence length");
+          var replies = new ArrayList<Map<String, Object>>();
+          for (var value : sequence) {
+            var step = value.getAsJsonObject();
+            String command = step.get("command").getAsString();
+            if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
+                "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
+                "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
+                "GetShopListCsReq", "GetPlayerBoardDataCsReq", "SetPersonalCardCsReq",
+                "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
+                "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
+                "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
+                "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
+                "TakeTrialActivityRewardCsReq", "GetCurSceneInfoCsReq", "GetCurLineupDataCsReq",
+                "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "PVEBattleResultCsReq", "QuitBattleCsReq",
+                "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
+              throw new IllegalArgumentException("Unsupported owned equipment smoke request");
+            equipmentSyncs.clear();
+            byte[] header = new byte[0];
+            if (step.has("packetId")) {
+              int packetId = step.get("packetId").getAsInt();
+              if (packetId <= 0) throw new IllegalArgumentException("Invalid smoke packet ID");
+              header = new byte[CodedOutputStream.computeUInt32Size(1, packetId)];
+              var encoded = CodedOutputStream.newInstance(header);
+              encoded.writeUInt32(1, packetId);
+              encoded.checkNoSpaceLeft();
+            }
+            byte[] payload;
+            if (step.has("stageId")) {
+              var request = DynamicMessage.newBuilder(protocol.clientSchema().message(command));
+              request.setField(request.getDescriptorForType().findFieldByName("stage_id"), step.get("stageId").getAsInt());
+              payload = request.build().toByteArray();
+            } else payload = Base64.getDecoder().decode(step.get("wire").getAsString());
+            var result = callWire(command, payload,
+                step.get("success").getAsBoolean(), header);
+            replies.add(Map.of("command", command, "response", project(result), "syncs", List.copyOf(equipmentSyncs),
+                "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader)));
           }
-          byte[] payload;
-          if (requested.has("stageId")) {
-            var request = DynamicMessage.newBuilder(protocol.clientSchema().message(command));
-            request.setField(request.getDescriptorForType().findFieldByName("stage_id"), requested.get("stageId").getAsInt());
-            payload = request.build().toByteArray();
-          } else payload = Base64.getDecoder().decode(requested.get("wire").getAsString());
-          var result = callWire(command, payload,
-              requested.get("success").getAsBoolean(), header);
-          lastEquipment = Map.of("requestId", id, "response", project(result), "syncs", List.copyOf(equipmentSyncs),
+          lastEquipment = requested.has("commands")
+              ? Map.of("requestId", id, "responses", List.copyOf(replies))
+              : Map.of("requestId", id, "response", replies.getFirst().get("response"), "syncs", replies.getFirst().get("syncs"),
               "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader));
           lastEquipmentId = id;
         }

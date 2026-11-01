@@ -1,5 +1,6 @@
 """隔离景元试用 KCP/H2：神君报告、一次胜利、实际领奖、防重和正常重启。"""
 import base64
+import argparse
 import copy
 import hashlib
 import importlib.util
@@ -25,7 +26,7 @@ from google.protobuf.json_format import ParseDict
 from google.protobuf.message_factory import GetMessageClass
 
 
-def main():
+def main(output):
     jar = ROOT / 'build/libs/hkrpg-server.jar'
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     source_names = ['BattleEventConfig', 'BattleEventData', 'AvatarConfig', 'SpecialAvatar',
@@ -248,7 +249,6 @@ def main():
                   'fixtureMainMission': 1000510, 'fixtureTrialWindow': [20003, 2000401],
                   'operatorDataModified': False, 'clientGameplayVerified': False,
                   'sourceSHA256': source_hashes, 'runtimeDirectory': str(directory)}
-        output = ROOT / 'build/trial-reward-notify-native.json'
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps({'passed': True, 'normalStops': stops, 'requestChecks': len(commands),
                           'stageId': stage, 'rewardItems': items, 'report': str(output)}))
@@ -264,4 +264,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=ROOT / 'build/trial-reward-notify-native.json')
+    main(parser.parse_args().output)

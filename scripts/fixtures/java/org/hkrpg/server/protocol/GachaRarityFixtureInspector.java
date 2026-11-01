@@ -56,6 +56,12 @@ public final class GachaRarityFixtureInspector {
       result.put("tickets",ticket == null ? 0 : ticket.getInteger("count"));
       result.put("newbieDraws", history.getNewbieDrawCount()); result.put("newbieFive", history.isNewbieFiveStarObtained());
       result.put("missionTrialInside", first.getGameplay().getMissionTrials().getParty() != null);
+      result.put("gender", first.getGender().name());
+      result.put("worldLevel", first.getWorldLevel());
+      result.put("trialInside", first.getGameplay().getTrialRun() != null);
+      result.put("trialCompletions", first.getGameplay().getTrialCompletions());
+      result.put("trialReceipts", first.getGameplay().getRewards().keySet().stream()
+          .filter(key -> key.startsWith("trial:")).sorted().toList());
       result.put("currentMissionRaid", first.getGameplay().getCurrentMissionRaid());
       result.put("storyId", first.getGameplay().getStoryLines().getCurrentId());
       result.put("storyTransition", first.getGameplay().getStoryLines().isTransitionPending());
