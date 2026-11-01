@@ -1021,3 +1021,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 `ShopPurchase46` 处理 4.6 商品购买的 1505/1575 请求与回复，复用 `ShopService` 扣费和实际到账检查，避免内部未分配的回复命令导致星琼补票等待。来源、正常重启验证和未覆盖的商店机制见[跃迁星琼补票](gacha-ticket-exchange-4.6.md)。
 
 `ShopService` 统一游戏内货币购买、自选奖励展开、唯一物品与容量校验。`ShopPurchaseState` 保存累计购买次数和未完成付款记录，`ShopCosmetics46` 提供已购名片及帕姆服装的查询和选择；现有多文档存储不提供跨崩溃原子性，异常记录不自动重复扣款。全目录检查和客户端边界见[商店购买说明](shop-purchases-4.6.md)。
+
+`ShopAvailability` 用独立文件保存全服下架商品对，整批验证、备份与原子发布后生效；购买读锁与修改写锁防止下架确认后继续准入付款。GM 商品投影、旧/4.6 查询与购买入口共读该状态，不改资源或玩家限购。范围与验证见[GM 商店管理](gm-shops.md)。

@@ -14,6 +14,19 @@ class GmValidationTest {
   }
 
   @Test
+  void shopOperationsRejectEmptyDuplicateInvalidAndOversizedTargets() {
+    for (var fields : List.of(
+        "\"shopGoods\":[]", "\"shopGoods\":[null]", "\"shopGoods\":[{}]",
+        "\"shopGoods\":[{\"shopId\":101,\"goodsId\":-1}]",
+        "\"shopGoods\":[{\"shopId\":101,\"goodsId\":1},{\"shopId\":101,\"goodsId\":1}]",
+        "\"shopGoods\":[" + String.join(",", Collections.nCopies(501,"{\"shopId\":101,\"goodsId\":1}")) + "]"))
+      assertThrows(GmError.class, () -> GmValidation.validate(parse("\"action\":\"shop-unlist\"," + fields)));
+    assertThrows(GmError.class, () -> GmValidation.validate(parse("\"action\":\"shop-list\"")));
+    assertDoesNotThrow(() -> GmValidation.validate(parse(
+        "\"action\":\"shop-list\",\"shopGoods\":[{\"shopId\":101,\"goodsId\":1},{\"shopId\":102,\"goodsId\":1}]")));
+  }
+
+  @Test
   void rejectsMissingTargetsAmountsAndCommandTargetAmbiguity() {
     for (var fields :
         List.of(

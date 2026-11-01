@@ -21,6 +21,7 @@ final class LiveGmBackend implements GmBackend {
   private static final Set<String> DANGEROUS =
       Set.of("account", "clear", "permission", "giveall", "reload", "kick");
   private volatile List<CatalogItem> catalog;
+  private Map<Integer, String> shopNames = Map.of();
   private final java.util.function.IntFunction<GameAvatar> avatarFactory;
 
   LiveGmBackend() {
@@ -76,6 +77,7 @@ final class LiveGmBackend implements GmBackend {
   private List<CatalogItem> loadCatalog() {
     var hashes = new HashSet<Long>();
     GameData.getItemExcelMap().values().forEach(item -> hashes.add(item.getItemName()));
+    GameData.getShopExcelMap().values().forEach(shop -> hashes.add(shop.getShopName()));
     var names = new HashMap<Long, String>();
     Path root = Path.of(LunarCore.getConfig().getResourceDir()).resolve("TextMap");
     String language = LunarCore.getConfig().getServerOptions().language;
@@ -103,6 +105,10 @@ final class LiveGmBackend implements GmBackend {
         LunarCore.getLogger().warn("GM catalog: could not read TextMap{}", candidate);
       }
     }
+    var resolvedShops = new HashMap<Integer, String>();
+    for (var shop : GameData.getShopExcelMap().values())
+      resolvedShops.put(shop.getId(), cleanName(names.getOrDefault(shop.getShopName(), "商店 #" + shop.getId())));
+    shopNames = Map.copyOf(resolvedShops);
     return GameData.getItemExcelMap().values().stream()
         .filter(LiveGmBackend::catalogSupported)
         .map(
@@ -171,6 +177,7 @@ final class LiveGmBackend implements GmBackend {
 
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
+    if (operation.action().startsWith("shop-")) return setShopListed(operation);
     if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
     if (Set.of("banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable").contains(operation.action())) return banners().setEnabled(operation);
     if (operation.action().equals("banner-complete")) return banners().completeCatalog(operation);
@@ -195,6 +202,48 @@ final class LiveGmBackend implements GmBackend {
   }
 
   public List<BannerRow> bannerHistory() { return banners().history(); }
+
+  public List<ShopGoodsRow> shopGoods() {
+    var names = new HashMap<Integer, String>();
+    for (var item : catalog()) names.put(item.id(), item.name());
+    var server = LunarCore.getGameServer();
+    if (server == null) throw new GmError(503, "游戏服务不可用。");
+    var disabled = server.getShopService().getAvailability().snapshot();
+    var now = java.time.Instant.now();
+    var rows = new ArrayList<ShopGoodsRow>();
+    for (var shop : GameData.getShopExcelMap().values()) {
+      for (var goods : shop.getGoods().values()) {
+        int itemId = goods.itemAt(now);
+        var costs = goods.getCostList() == null ? List.<ShopPrice>of() : goods.getCostList().stream()
+            .map(c -> new ShopPrice(c.getId(), names.getOrDefault(c.getId(), "物品 #" + c.getId()), c.getCount())).toList();
+        rows.add(new ShopGoodsRow(shop.getId(), shop.getShopType(), shopNames.getOrDefault(shop.getId(), "商店 #" + shop.getId()),
+            goods.getGoodsID(), itemId, names.getOrDefault(itemId, "物品 #" + itemId), goods.getItemCount(), costs,
+            goods.getLimitTimes(), Objects.toString(goods.getRefreshType(), ""),
+            !disabled.contains(new emu.lunarcore.game.shop.ShopAvailability.GoodsKey(shop.getId(), goods.getGoodsID())),
+            goods.getItemGroupID() > 0));
+      }
+    }
+    return rows.stream().sorted(Comparator.comparingInt(ShopGoodsRow::shopId)
+        .thenComparingInt(ShopGoodsRow::goodsId)).toList();
+  }
+
+  private Result setShopListed(Operation operation) {
+    var server = LunarCore.getGameServer();
+    if (server == null) throw new GmError(503, "游戏服务不可用。");
+    boolean listed = operation.action().equals("shop-list");
+    var targets = operation.shopGoods().stream().map(g ->
+        new emu.lunarcore.game.shop.ShopAvailability.GoodsKey(g.shopId(), g.goodsId())).toList();
+    try {
+      int changed = server.getShopService().getAvailability().setListed(targets, listed, operation.requestId());
+      return new Result("completed", List.of((listed ? "已上架 " : "已下架 ") + changed + " 个商品，"
+          + (targets.size() - changed) + " 个已处于目标状态。",
+          "全服生效，价格、数量和玩家限购记录保留。请重新打开游戏内商店。"));
+    } catch (IllegalArgumentException e) { throw new GmError(409, e.getMessage()); }
+    catch (java.io.IOException e) {
+      LunarCore.getLogger().warn("GM shop availability could not be saved", e);
+      throw new GmError(503, "商品上下架配置保存失败，本次变更未生效，请检查数据目录。");
+    }
+  }
 
   public List<CurrentBannerRow> currentBanners() {
     var names = new HashMap<Integer, String>();

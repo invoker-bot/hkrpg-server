@@ -15,7 +15,19 @@ import java.util.*;
 
 /** Validate the entire exchange before payment; persist its receipt before any grants. */
 public class ShopService extends BaseGameService {
-  public ShopService(GameServer server) { super(server); }
+  private final ShopAvailability availability;
+
+  public ShopService(GameServer server) {
+    this(server, server == null ? new ShopAvailability() : new ShopAvailability(
+        java.nio.file.Path.of(emu.lunarcore.LunarCore.getConfig().getDataDir())));
+  }
+
+  public ShopService(GameServer server, ShopAvailability availability) {
+    super(server);
+    this.availability = Objects.requireNonNull(availability);
+  }
+
+  public ShopAvailability getAvailability() { return availability; }
 
   public record Purchase(Retcode code, List<GameItem> items, int bought) {}
   private static Purchase fail(Retcode code) { return new Purchase(code, List.of(), 0); }
@@ -28,76 +40,82 @@ public class ShopService extends BaseGameService {
   public Purchase buy(Player p, int shopId, int goodsId, int count, int requestedItem,
       List<Integer> choices, Instant now) {
     synchronized (p) {
-      var state = p.getGameplay().getShopPurchases();
-      if (state.getPending() != null) return fail(Retcode.SYSTEM_BUSY);
-      var shop = GameData.getShopExcelMap().get(shopId);
-      var goods = shop == null ? null : shop.getGoods().get(goodsId);
-      if (count <= 0 || goods == null || choices == null || choices.size() > 32)
-        return fail(Retcode.REQ_PARA_INVALID);
-      int itemId = goods.itemAt(now);
-      if (requestedItem != 0 && requestedItem != itemId) return fail(Retcode.REQ_PARA_INVALID);
-      var item = GameData.getItemExcelMap().get(itemId);
-      if (item == null || goods.getCostList() == null) return fail(Retcode.ITEM_CONFIG_NOT_EXIST);
-      int previous = bought(p, goods, now);
-      if ((long) previous + count > Integer.MAX_VALUE
-          || goods.getLimitTimes() > 0 && (long) previous + count > goods.getLimitTimes())
-        return fail(Retcode.ITEM_EXCEED_LIMIT);
-
-      Map<Integer, Integer> costs = new TreeMap<>(), rewards;
-      try {
-        for (var cost : goods.getCostList()) {
-          if (cost.getId() <= 0 || cost.getCount() < 0) return fail(Retcode.ITEM_CONFIG_NOT_EXIST);
-          int amount = Math.multiplyExact(cost.getCount(), count);
-          if (amount > 0) costs.merge(cost.getId(), amount, Math::addExact);
-        }
-        rewards = rewards(goods, itemId, count, choices);
-        if (!convertAvatars(p, rewards)) return fail(Retcode.AVATAR_RANK_REACH_MAX);
-        // Costumes include the portrait specified by the same resource row.
-        for (int id : List.copyOf(rewards.keySet())) {
-          var skin = GameData.getAvatarSkinExcelMap().get(id);
-          if (skin != null && skin.getPlayerCardID() > 0
-              && !p.getUnlocks().getHeadIcons().contains(skin.getPlayerCardID()))
-            rewards.putIfAbsent(skin.getPlayerCardID(), 1);
-        }
-      } catch (ArithmeticException | IllegalArgumentException invalid) {
-        return fail(Retcode.REQ_PARA_INVALID);
-      }
-      if (!canDeliver(p, rewards)) return fail(Retcode.ITEM_REWARD_EXCEED_LIMIT);
-      List<ItemParam> payment = costs.entrySet().stream()
-          .map(e -> new ItemParam(e.getKey(), e.getValue())).toList();
-      if (!p.getInventory().hasItems(payment)) return fail(Retcode.ITEM_COST_NOT_ENOUGH);
-
-      var key = periodKey(goods, now);
-      state.reserve(key, count, costs, rewards);
-      p.save(); // If storage fails, no payment or reward has happened.
-      p.getInventory().removeItemsByParams(payment);
-      p.save();
-      var parameters = new ItemParamMap();
-      rewards.forEach((id, amount) -> parameters.put(id.intValue(), amount.intValue()));
-      var proposed = parameters.toItemList();
-      for (var reward : proposed) {
-        if (reward.getItemId() == itemId && reward.getExcel().isEquippable()) {
-          if (goods.getLevel() > 0) reward.setLevel(goods.getLevel());
-          if (goods.getRank() > 0) reward.setRank(goods.getRank());
-        }
-      }
-      var received = p.getInventory().addItems(proposed);
-      var actual = new TreeMap<Integer, Integer>();
-      received.forEach(i -> actual.merge(i.getItemId(), i.getCount(), Math::addExact));
-      if (!actual.equals(rewards)) return fail(Retcode.SYSTEM_BUSY);
-      var receipt = state.getPending();
-      int oldCount = state.getCounts().getOrDefault(key, 0);
-      state.complete();
-      try { p.save(); }
-      catch (RuntimeException failed) {
-        state.getCounts().put(key, oldCount);
-        state.reserve(key, count, receipt.getCosts(), receipt.getRewards());
-        throw failed;
-      }
-      p.getMissionManager().onShopPurchase(goodsId);
-      org.hkrpg.server.protocol.ShopCosmetics46.purchased(p, received);
-      return new Purchase(Retcode.SUCC, List.copyOf(received), bought(p, goods, now));
+      return availability.read(() -> buyListed(p, shopId, goodsId, count, requestedItem, choices, now));
     }
+  }
+
+  private Purchase buyListed(Player p, int shopId, int goodsId, int count, int requestedItem,
+      List<Integer> choices, Instant now) {
+    if (!availability.isListed(shopId, goodsId)) return fail(Retcode.REQ_PARA_INVALID);
+    var state = p.getGameplay().getShopPurchases();
+    if (state.getPending() != null) return fail(Retcode.SYSTEM_BUSY);
+    var shop = GameData.getShopExcelMap().get(shopId);
+    var goods = shop == null ? null : shop.getGoods().get(goodsId);
+    if (count <= 0 || goods == null || choices == null || choices.size() > 32)
+      return fail(Retcode.REQ_PARA_INVALID);
+    int itemId = goods.itemAt(now);
+    if (requestedItem != 0 && requestedItem != itemId) return fail(Retcode.REQ_PARA_INVALID);
+    var item = GameData.getItemExcelMap().get(itemId);
+    if (item == null || goods.getCostList() == null) return fail(Retcode.ITEM_CONFIG_NOT_EXIST);
+    int previous = bought(p, goods, now);
+    if ((long) previous + count > Integer.MAX_VALUE
+        || goods.getLimitTimes() > 0 && (long) previous + count > goods.getLimitTimes())
+      return fail(Retcode.ITEM_EXCEED_LIMIT);
+
+    Map<Integer, Integer> costs = new TreeMap<>(), rewards;
+    try {
+      for (var cost : goods.getCostList()) {
+        if (cost.getId() <= 0 || cost.getCount() < 0) return fail(Retcode.ITEM_CONFIG_NOT_EXIST);
+        int amount = Math.multiplyExact(cost.getCount(), count);
+        if (amount > 0) costs.merge(cost.getId(), amount, Math::addExact);
+      }
+      rewards = rewards(goods, itemId, count, choices);
+      if (!convertAvatars(p, rewards)) return fail(Retcode.AVATAR_RANK_REACH_MAX);
+      // Costumes include the portrait specified by the same resource row.
+      for (int id : List.copyOf(rewards.keySet())) {
+        var skin = GameData.getAvatarSkinExcelMap().get(id);
+        if (skin != null && skin.getPlayerCardID() > 0
+            && !p.getUnlocks().getHeadIcons().contains(skin.getPlayerCardID()))
+          rewards.putIfAbsent(skin.getPlayerCardID(), 1);
+      }
+    } catch (ArithmeticException | IllegalArgumentException invalid) {
+      return fail(Retcode.REQ_PARA_INVALID);
+    }
+    if (!canDeliver(p, rewards)) return fail(Retcode.ITEM_REWARD_EXCEED_LIMIT);
+    List<ItemParam> payment = costs.entrySet().stream()
+        .map(e -> new ItemParam(e.getKey(), e.getValue())).toList();
+    if (!p.getInventory().hasItems(payment)) return fail(Retcode.ITEM_COST_NOT_ENOUGH);
+
+    var key = periodKey(goods, now);
+    state.reserve(key, count, costs, rewards);
+    p.save(); // If storage fails, no payment or reward has happened.
+    p.getInventory().removeItemsByParams(payment);
+    p.save();
+    var parameters = new ItemParamMap();
+    rewards.forEach((id, amount) -> parameters.put(id.intValue(), amount.intValue()));
+    var proposed = parameters.toItemList();
+    for (var reward : proposed) {
+      if (reward.getItemId() == itemId && reward.getExcel().isEquippable()) {
+        if (goods.getLevel() > 0) reward.setLevel(goods.getLevel());
+        if (goods.getRank() > 0) reward.setRank(goods.getRank());
+      }
+    }
+    var received = p.getInventory().addItems(proposed);
+    var actual = new TreeMap<Integer, Integer>();
+    received.forEach(i -> actual.merge(i.getItemId(), i.getCount(), Math::addExact));
+    if (!actual.equals(rewards)) return fail(Retcode.SYSTEM_BUSY);
+    var receipt = state.getPending();
+    int oldCount = state.getCounts().getOrDefault(key, 0);
+    state.complete();
+    try { p.save(); }
+    catch (RuntimeException failed) {
+      state.getCounts().put(key, oldCount);
+      state.reserve(key, count, receipt.getCosts(), receipt.getRewards());
+      throw failed;
+    }
+    p.getMissionManager().onShopPurchase(goodsId);
+    org.hkrpg.server.protocol.ShopCosmetics46.purchased(p, received);
+    return new Purchase(Retcode.SUCC, List.copyOf(received), bought(p, goods, now));
   }
 
   /** Optional reward IDs are matched to the ordered resource groups, never trusted as item IDs. */

@@ -6,12 +6,14 @@ import {mountMail} from './mail.js';
 import {mountTerminal} from './terminal.js';
 import {mountAudit} from './audit.js';
 import {mountBanners} from './banners.js';
+import {mountShops} from './shops.js';
 
 const pages={
   players:{label:'玩家管理',description:'选择在线玩家，执行常用管理操作。',icon:'user',mount:mountPlayers},
   resources:{label:'资源发放',description:'搜索物品与角色，核对参数后发放给目标玩家。',icon:'box',mount:mountResources},
   mail:{label:'邮件发送',description:'编辑系统邮件与附件，发送到目标玩家的邮箱。',icon:'mail',mount:mountMail},
   banners:{label:'卡池管理',description:'查看当前卡池、管理启停，或按版本复刻历史 UP。',icon:'refresh',mount:mountBanners},
+  shops:{label:'商店管理',description:'查看商店商品、价格和限购，管理全服商品上下架。',icon:'box',mount:mountShops},
   terminal:{label:'指令终端',description:'执行现有 GM 指令，并查看本次调用的回显。',icon:'terminal',mount:mountTerminal},
   audit:{label:'操作记录',description:'核对执行结果、目标 UID 与请求编号。',icon:'log',mount:mountAudit},
 };
@@ -64,7 +66,7 @@ function navigate(page){
   }
   statusStrip=el('dl',{class:'status-strip'});
   const content=el('div',{class:'page-content'});
-  const footerText=page==='banners'?'卡池配置全服生效，启停与复刻结果记入操作记录。':page==='terminal'?'目标 UID 以当前指令的支持范围为准。':page==='audit'?'最近 1000 项操作，按时间倒序显示。':'仅对当前在线玩家执行操作。';
+  const footerText=page==='banners'?'卡池配置全服生效，启停与复刻结果记入操作记录。':page==='shops'?'商品上下架全服生效，价格与玩家限购记录保留。':page==='terminal'?'目标 UID 以当前指令的支持范围为准。':page==='audit'?'最近 1000 项操作，按时间倒序显示。':'仅对当前在线玩家执行操作。';
   footer=el('footer',{class:'main-footer'},el('span',{},icon('info'),el('span',{text:footerText})),el('time',{text:state.lastRefreshed?`上次刷新 ${state.lastRefreshed}`:'等待刷新'}),el('span',{text:'连接到当前游戏服务'}));
   main.replaceChildren(el('div',{class:'page-heading'},el('h1',{text:pages[page].label}),el('p',{text:pages[page].description})),statusStrip,content,footer);
   inspector.replaceChildren();

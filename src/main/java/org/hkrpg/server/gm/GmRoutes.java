@@ -40,6 +40,7 @@ public final class GmRoutes {
             "players.js",
             "resources.js",
             "banners.js",
+            "shops.js",
             "mail.js",
             "terminal.js",
             "audit.js",
@@ -115,6 +116,23 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/shops", safe(ctx -> {
+      auth.require(ctx, false);
+      String q = query(ctx, "q"), state = query(ctx, "state");
+      if (!state.isEmpty() && !Set.of("listed", "unlisted").contains(state))
+        throw new GmError(400, "商品状态不正确。");
+      int shopId = integer(ctx, "shopId", 0, 0, Integer.MAX_VALUE);
+      int offset = integer(ctx, "offset", 0, 0, 1_000_000), limit = integer(ctx, "limit", 30, 1, 100);
+      var goods = backend.shopGoods();
+      var shops = goods.stream().map(g -> new ShopRow(g.shopId(), g.shopType(), g.shopName()))
+          .distinct().sorted(Comparator.comparingInt(ShopRow::id)).toList();
+      var filtered = goods.stream().filter(g -> shopId == 0 || g.shopId() == shopId)
+          .filter(g -> state.isEmpty() || g.listed() == state.equals("listed"))
+          .filter(g -> q.isEmpty() || (g.goodsId() + " " + g.itemId() + " " + g.name() + " " + g.shopName())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx, Map.of("shops", shops, "total", filtered.size(),
+          "items", filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get("/gm/api/banners/current", safe(ctx -> {
       auth.require(ctx, false);
       String q = query(ctx, "q"), type = query(ctx, "type"), state = query(ctx, "state"), version = query(ctx, "version");

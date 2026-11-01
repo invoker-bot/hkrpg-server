@@ -10,8 +10,12 @@ import emu.lunarcore.data.common.ItemParam;
 import emu.lunarcore.game.shop.ShopService;
 import java.util.*;
 import org.junit.jupiter.api.*;
+import java.nio.file.Path;
+import org.junit.jupiter.api.io.TempDir;
+import emu.lunarcore.game.shop.ShopAvailability;
 
 class ShopPurchasesTest {
+  @TempDir Path directory;
   final Gson gson = new Gson();
   final Map<Integer, ItemExcel> previous = new HashMap<>();
   final int shopId = 199871;
@@ -46,6 +50,55 @@ class ShopPurchasesTest {
   @Test void skinItemDefinitionsMustBeLoadedAlongsideTheCatalog() {
     assertTrue(List.of(ItemExcel.class.getAnnotation(ResourceType.class).name())
         .contains("ItemConfigAvatarSkin.json"));
+  }
+
+  @Test void unlistedGoodsRejectStalePurchasesBeforePaymentAndRelistingKeepsLimits() throws Exception {
+    item(1,"Virtual","Virtual",99999999);item(199871004,"Material","Material",99);
+    player.addHCoin(4000);goods(199871004,1,100,2);
+    var availability = new ShopAvailability(directory);
+    var managed = new ShopService(null,availability);
+    var target = List.of(new ShopAvailability.GoodsKey(shopId,199871001));
+    var now = java.time.Instant.parse("2026-11-01T12:00:00Z");
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,managed.buy(player,shopId,199871001,1,0,List.of(),now).code());
+    availability.setListed(target,false,UUID.randomUUID().toString());
+    assertNull(managed.buyGoods(player,shopId,199871001,1));
+    assertEquals(3900,player.getHcoin());
+    assertEquals(1,player.inventory.getMaterialByItemId(199871004).getCount());
+    assertNull(player.getGameplay().getShopPurchases().getPending());
+    var restarted = new ShopAvailability(directory);
+    managed = new ShopService(null,restarted);
+    assertNull(managed.buyGoods(player,shopId,199871001,1));
+    restarted.setListed(target,true,UUID.randomUUID().toString());
+    var result = managed.buy(player,shopId,199871001,1,0,List.of(),now);
+    assertEquals(emu.lunarcore.server.packet.Retcode.SUCC,result.code());assertEquals(2,result.bought());
+    assertNull(managed.buyGoods(player,shopId,199871001,1));assertEquals(3800,player.getHcoin());
+  }
+
+  @Test void unlistingAcknowledgementWaitsForAnAlreadyAdmittedPurchase() throws Exception {
+    item(1,"Virtual","Virtual",99999999);item(199871004,"Material","Material",99);goods(199871004,1,100,2);
+    var entered = new java.util.concurrent.CountDownLatch(1);
+    var release = new java.util.concurrent.CountDownLatch(1);
+    var p = new InventoryGrantDeltaTest.Resident() {
+      public String getName() { return "Concurrent shop regression"; }
+      public void save() {
+        entered.countDown();
+        try { if (!release.await(5,java.util.concurrent.TimeUnit.SECONDS)) throw new IllegalStateException("Timed out"); }
+        catch (InterruptedException e) { Thread.currentThread().interrupt();throw new IllegalStateException(e); }
+      }
+    };
+    p.addHCoin(4000);
+    var availability = new ShopAvailability(directory);var managed = new ShopService(null,availability);
+    try (var executor = java.util.concurrent.Executors.newFixedThreadPool(2)) {
+      try {
+        var purchase = executor.submit(()->managed.buyGoods(p,shopId,199871001,1));
+        assertTrue(entered.await(5,java.util.concurrent.TimeUnit.SECONDS));
+        var unlist = executor.submit(()->availability.setListed(List.of(new ShopAvailability.GoodsKey(shopId,199871001)),false,UUID.randomUUID().toString()));
+        assertThrows(java.util.concurrent.TimeoutException.class,()->unlist.get(200,java.util.concurrent.TimeUnit.MILLISECONDS));
+        release.countDown();assertNotNull(purchase.get(5,java.util.concurrent.TimeUnit.SECONDS));
+        assertEquals(1,unlist.get(5,java.util.concurrent.TimeUnit.SECONDS));
+        assertNull(managed.buyGoods(p,shopId,199871001,1));assertEquals(3900,p.getHcoin());
+      } finally { release.countDown(); }
+    }
   }
 
   @Test void premiumCurrencyIsSpendableAndActuallyDebited() {

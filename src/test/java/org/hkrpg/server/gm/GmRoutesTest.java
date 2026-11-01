@@ -72,6 +72,14 @@ class GmRoutesTest {
                     List.of(new BannerItem(1006,"银狼")),List.of(),"stopped","已停止",1,2000000000,false,true,false,true));
           }
 
+          public List<ShopGoodsRow> shopGoods() {
+            return List.of(
+                new ShopGoodsRow(101,1,"星芒兑换",101001,101,"星轨通票",1,
+                    List.of(new ShopPrice(252,"未熄的星芒",20)),0,"",true,false),
+                new ShopGoodsRow(102,1,"余烬兑换",102001,101,"星轨通票",1,
+                    List.of(new ShopPrice(253,"未熄的余烬",90)),5,"MONTH",false,false));
+          }
+
           public Result execute(Operation op) {
             executions.incrementAndGet();
             return Result.completed("已执行 " + op.action());
@@ -100,6 +108,51 @@ class GmRoutesTest {
   void stop() {
     client.close();
     app.stop();
+  }
+
+  @Test
+  void shopCatalogRequiresSessionAndServesItsModule() throws Exception {
+    assertEquals(401, request("GET", "/gm/api/shops", null, false).statusCode());
+    openSession();
+    var response = request("GET", "/gm/api/shops?limit=1", null, true);
+    assertEquals(200, response.statusCode(), response.body());
+    assertTrue(json(response).getAsJsonObject("data").has("shops"));
+    assertEquals(200, request("GET", "/gm/shops.js", null, false).statusCode());
+    assertEquals(400, request("GET", "/gm/api/shops?state=unknown", null, true).statusCode());
+    assertEquals(400, request("GET", "/gm/api/shops?shopId=-1", null, true).statusCode());
+    assertEquals(400, request("GET", "/gm/api/shops?limit=101", null, true).statusCode());
+    var listed = json(request("GET", "/gm/api/shops?state=listed&q=星轨", null, true)).getAsJsonObject("data");
+    assertEquals(1, listed.get("total").getAsInt());
+    assertEquals(101, listed.getAsJsonArray("items").get(0).getAsJsonObject().get("shopId").getAsInt());
+    var shop = json(request("GET", "/gm/api/shops?shopId=102&state=unlisted", null, true)).getAsJsonObject("data");
+    assertEquals(1, shop.get("total").getAsInt());
+    assertEquals(2, shop.getAsJsonArray("shops").size());
+    assertTrue(request("GET", "/gm/api/shops?q=102001", null, true).body().contains("未熄的余烬"));
+    var page = json(request("GET", "/gm/api/shops?offset=1&limit=1", null, true)).getAsJsonObject("data");
+    assertEquals(2, page.get("total").getAsInt());
+    assertEquals(102001, page.getAsJsonArray("items").get(0).getAsJsonObject().get("goodsId").getAsInt());
+    assertEquals(0, json(request("GET", "/gm/api/shops?shopId=999", null, true)).getAsJsonObject("data").get("total").getAsInt());
+  }
+
+  @Test
+  void shopListingOperationsAreGlobalCsrfProtectedAndDeduplicated() throws Exception {
+    openSession();
+    for (String action : List.of("shop-list", "shop-unlist")) {
+      String body = "{\"requestId\":\"" + UUID.randomUUID() + "\",\"action\":\"" + action
+          + "\",\"shopGoods\":[{\"shopId\":101,\"goodsId\":101001}]}";
+      assertEquals(401, request("POST", "/gm/api/operate", body, false).statusCode());
+      var missingCsrf = HttpRequest.newBuilder(URI.create(base + "/gm/api/operate"))
+          .header("Cookie", cookie).header("Origin", base).header("Content-Type", "application/json")
+          .POST(HttpRequest.BodyPublishers.ofString(body)).build();
+      assertEquals(403, client.send(missingCsrf, HttpResponse.BodyHandlers.ofString()).statusCode());
+      int before = executions.get();
+      var result = request("POST", "/gm/api/operate", body, true);
+      assertEquals(200, result.statusCode(), result.body());
+      assertEquals(result.body(), request("POST", "/gm/api/operate", body, true).body());
+      assertEquals(before + 1, executions.get());
+      assertEquals(400, request("POST", "/gm/api/operate", body.replace("101001}]", "101001}],\"uid\":10001"), true).statusCode());
+    }
+    assertTrue(request("GET", "/gm/api/audit", null, true).body().contains("101001"));
   }
 
   @Test

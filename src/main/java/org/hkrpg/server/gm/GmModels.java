@@ -48,7 +48,15 @@ public final class GmModels {
       String bannerKey,
       Integer durationDays,
       Integer bannerId,
-      List<Integer> bannerIds) {
+      List<Integer> bannerIds,
+      List<ShopTarget> shopGoods) {
+    public Operation(String requestId, String action, int uid, int itemId, int amount,
+        int level, int rank, String title, String sender, String content,
+        List<Attachment> attachments, String command, String confirm, String bannerKey,
+        Integer durationDays, Integer bannerId, List<Integer> bannerIds) {
+      this(requestId, action, uid, itemId, amount, level, rank, title, sender, content,
+          attachments, command, confirm, bannerKey, durationDays, bannerId, bannerIds, null);
+    }
     public Operation(String requestId, String action, int uid, int itemId, int amount,
         int level, int rank, String title, String sender, String content,
         List<Attachment> attachments, String command, String confirm, String bannerKey,
@@ -63,6 +71,16 @@ public final class GmModels {
           attachments, command, confirm, null, null, null);
     }
   }
+
+  public record ShopTarget(int shopId, int goodsId) {}
+
+  public record ShopRow(int id, int type, String name) {}
+
+  public record ShopPrice(int itemId, String name, int amount) {}
+
+  public record ShopGoodsRow(int shopId, int shopType, String shopName, int goodsId,
+      int itemId, String name, int itemCount, List<ShopPrice> costs, int limitTimes,
+      String refreshType, boolean listed, boolean rotating) {}
 
   public record CurrentBannerRow(int id, String type, String name, String historyKey,
       String version, String phase, List<BannerItem> up5, List<BannerItem> up4,

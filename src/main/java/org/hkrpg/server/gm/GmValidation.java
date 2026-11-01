@@ -15,11 +15,21 @@ final class GmValidation {
       fail("请求编号格式不正确。");
     }
     if (op.action() == null
-        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete").contains(op.action()))
+        || !Set.of("heal", "refill", "unstuck", "grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete", "shop-list", "shop-unlist").contains(op.action()))
       fail("未知操作。");
-    if (op.uid() < 0 || !op.action().startsWith("banner-") && !op.action().equals("command") && op.uid() == 0)
+    if (op.uid() < 0 || !op.action().startsWith("banner-") && !op.action().startsWith("shop-") && !op.action().equals("command") && op.uid() == 0)
       fail("请选择目标玩家。");
     switch (op.action()) {
+      case "shop-list", "shop-unlist" -> {
+        if (op.uid() != 0) fail("商品上下架是全服操作，无需指定玩家。");
+        if (op.shopGoods() == null || op.shopGoods().isEmpty() || op.shopGoods().size() > 500)
+          fail("请选择 1–500 个商品。");
+        var targets = new java.util.HashSet<ShopTarget>();
+        for (var target : op.shopGoods()) {
+          if (target == null || target.shopId() <= 0 || target.goodsId() <= 0 || !targets.add(target))
+            fail("商品列表包含无效或重复的商店/商品编号。");
+        }
+      }
       case "banner-batch-stop", "banner-batch-enable" -> {
         if (op.uid() != 0) fail("卡池启停是全服操作，无需指定玩家。");
         if (op.bannerId() != null || op.bannerIds() == null || op.bannerIds().isEmpty()
