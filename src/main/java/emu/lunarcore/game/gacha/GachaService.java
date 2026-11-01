@@ -195,7 +195,7 @@ public class GachaService extends BaseGameService {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_NUM_INVALID));
             return;
         }
-        if (beginner && player.getGachaInfo().getNewbieDrawCount() + times > 50) {
+        if (beginner && player.getGachaInfo().getNewbieDrawCount() > PlayerGachaInfo.NEWBIE_DRAW_LIMIT - times) {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_NEWBIE_CLOSE));
             return;
         }
@@ -250,7 +250,7 @@ public class GachaService extends BaseGameService {
                     : Math.min(10000, 60 + Math.max(0, gachaInfo.getPity5() - 72) * 600);
             int purpleChance = weapon && gachaInfo.getPity4() == 7 ? 5000
                     : (weapon ? 660 : 510) * (gachaInfo.getPity4() >= 8 ? 11 : 1);
-            boolean forceNewbieFive = beginner && player.getGachaInfo().getNewbieDrawCount() == 49
+            boolean forceNewbieFive = beginner && player.getGachaInfo().getNewbieDrawCount() == PlayerGachaInfo.NEWBIE_DRAW_LIMIT - 1
                     && !player.getGachaInfo().isNewbieFiveStarObtained();
             boolean fiveStar = random <= yellowChance || forceNewbieFive
                     || !beginner && gachaInfo.getPity5() >= (weapon ? 79 : 89);
@@ -444,6 +444,7 @@ public class GachaService extends BaseGameService {
 
         for (GachaBanner banner : getGachaBanners().values()) {
             if (!banner.isActive(System.currentTimeMillis() / 1000L)) continue;
+            if (banner.getGachaType() == GachaType.Newbie && player.getGachaInfo().isNewbieClosed()) continue;
             if (!getPool(banner).canPull()) continue;
             proto.addGachaInfoList(banner.toProto(this, player));
         }

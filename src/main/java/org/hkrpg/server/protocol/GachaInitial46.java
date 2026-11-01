@@ -38,6 +38,7 @@ final class GachaInitial46 {
       synchronized (player) {
         for (var banner : new TreeMap<>(service.getGachaBanners()).values()) {
           if (!banner.isActive(now)) continue;
+          if (banner.getGachaType() == GachaType.Newbie && player.getGachaInfo().isNewbieClosed()) continue;
           var pool = service.getPool(banner);
           if (!pool.canPull()) continue;
           var info = DynamicMessage.newBuilder(schema.message("GachaInfo"));
@@ -46,8 +47,9 @@ final class GachaInitial46 {
           set(info, "detail_url", GachaWebRoutes.detailUrl(banner.getId()));
           set(info, "history_url", GachaWebRoutes.historyUrl(banner.getId()));
           if (banner.getGachaType() == GachaType.Newbie) {
-            // Pinned client's SyncGachaPoolData reads wire 15 as CurrentGachaTime.
-            info.setField(info.getDescriptorForType().findFieldByNumber(15),
+            // Native NewbieGachaPoolData.DoGachaTime: wire 8 -> +0x54 -> +0x90.
+            // Wire 15 is the ordinary pool's CurrentGachaTime, not the beginner counter.
+            info.setField(info.getDescriptorForType().findFieldByNumber(8),
                 player.getGachaInfo().getNewbieDrawCount());
           }
           if (banner.getGachaType() != GachaType.Normal) {

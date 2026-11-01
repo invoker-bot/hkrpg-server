@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter @Entity(useDiscriminator = false)
 public class PlayerGachaInfo {
     public static final String CEILING_REWARD_KEY = "gacha:standard-ceiling";
+    public static final int NEWBIE_DRAW_LIMIT = 50;
     private PlayerGachaBannerInfo standardBanner;
     private PlayerGachaBannerInfo newbieBanner;
     private PlayerGachaBannerInfo eventCharacterBanner;
@@ -50,6 +51,10 @@ public class PlayerGachaInfo {
     public void recordNewbieDraw(boolean fiveStar) {
         this.newbieDrawCount++;
         this.newbieFiveStarObtained |= fiveStar;
+    }
+
+    public boolean isNewbieClosed() {
+        return this.newbieDrawCount >= NEWBIE_DRAW_LIMIT;
     }
 
     public GachaCeiling toGachaCeiling(Player player) {

@@ -1,6 +1,7 @@
 """隔离 4.6 KCP/H2：新手池折扣、五十次上限、保底及两次正常重启。"""
 import hashlib
 import argparse
+import base64
 import http.cookiejar
 import importlib.util
 import json
@@ -16,13 +17,19 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('gm_smoke', ROOT / 'scripts/smoke-gm-console.py')
 gm = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gm)
+wire_spec = importlib.util.spec_from_file_location('gacha_wire', ROOT / 'scripts/smoke-gacha-banner-display.py')
+gacha_wire = importlib.util.module_from_spec(wire_spec)
+wire_spec.loader.exec_module(gacha_wire)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--browser-qa', action='store_true', help='在隔离 HTTP 服务上验证详情页')
+    parser.add_argument('--gacha-only', action='store_true', help='仅验证新手抽卡，不进入角色试用')
+    parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
+    parser.add_argument('--output', type=Path, default=ROOT / 'build/gacha-beginner-native.json')
     args = parser.parse_args()
-    jar = ROOT / 'build/libs/hkrpg-server.jar'
+    jar = args.jar.resolve(strict=True)
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     runs = ROOT / 'build/smoke'
@@ -56,6 +63,7 @@ def main():
     logs = []
     uid = None
     won = []
+    remaining = [50]
     account_name = 'beginner_' + uuid.uuid4().hex + '@example.invalid'
 
     def request(route, body=None):
@@ -71,8 +79,15 @@ def main():
         return next((r['num'] for r in s['bag'].get('material_list', []) if r['tid'] == 101), 0)
 
     def count(s):
-        row = next(r for r in s['gacha']['gacha_info_list'] if r['gacha_id'] == 4001)
-        return row.get('NHBBHEMPJJM', 0)
+        # Independently read the actual client wire, not misleading imported names.
+        catalog = gacha_wire.wire_fields(base64.b64decode(s['gachaWire']))
+        rows = [gacha_wire.wire_fields(row) for row in catalog.get(13, [])]
+        beginner = [row for row in rows if row.get(4) == [4001]]
+        if not beginner:
+            return None
+        assert len(beginner) == 1
+        assert 15 not in beginner[0], 'Beginner count leaked into the ordinary pool counter'
+        return beginner[0].get(8, [0])[0]
 
     def stop():
         nonlocal probe, server
@@ -105,12 +120,15 @@ def main():
         response = result['gachaPull']['response']
         if success:
             assert response['gacha_id'] == 4001 and response['gacha_num'] == 10
-            assert response.get('NHBBHEMPJJM', 0) == expected_count
+            # Native DoGachaScRsp wire 4 -> NewbieGachaPoolData.DoGachaTime.
+            assert response.get('GLLJFPENLHD', 0) == expected_count
+            assert not response.get('NHBBHEMPJJM', 0)
             rows = response['gacha_item_list']; assert len(rows) == 10
             won.extend(row['gacha_item']['item_id'] for row in rows)
+            remaining.append(50 - expected_count)
         else:
             assert response.get('retcode') == 3006
-        assert count(result) == expected_count
+        assert count(result) == (expected_count if expected_count < 50 else None)
         return result
 
     def trial_request(command, stage=None):
@@ -166,6 +184,7 @@ def main():
             assert initial['uid'] == uid
             (directory / 'rarity-fixture.json').write_text(json.dumps({'testFixture': True, 'uid': uid}), encoding='utf-8')
             if iteration == 0:
+                assert count(initial) == 0
                 operation = request('/gm/api/operate', {'requestId': str(uuid.uuid4()), 'uid': uid, 'action': 'grant',
                     'itemId': 101, 'amount': 40, 'level': 0, 'rank': 0})['data']
                 assert operation['state'] == 'completed'
@@ -174,28 +193,29 @@ def main():
                 assert stock(pull(20)) == 24
             elif iteration == 1:
                 assert count(initial) == 20 and stock(initial) == 24
-                schedules = trial_request('GetActivityScheduleConfigCsReq')['schedule_data']
-                # The bundled 2002 lineup matches the other resource-backed rerun (20004).
-                for panel, module in ((20001, 2000101), (20003, 2000401),
-                                      (20005, 2000501), (20020, 2002002)):
-                    assert any(row['panel_id'] == panel and row['activity_id'] == module for row in schedules)
-                trial_request('GetTrialActivityDataCsReq')
-                for stage in (310030, 311020, 312040, 310060, 313020):
-                    assert trial_request('StartTrialActivityCsReq', stage).get('stage_id') == stage
-                    assert trial_request('LeaveTrialActivityCsReq', stage).get('stage_id') == stage
+                if not args.gacha_only:
+                    schedules = trial_request('GetActivityScheduleConfigCsReq')['schedule_data']
+                    # The bundled 2002 lineup matches the other resource-backed rerun (20004).
+                    for panel, module in ((20001, 2000101), (20003, 2000401),
+                                          (20005, 2000501), (20020, 2002002)):
+                        assert any(row['panel_id'] == panel and row['activity_id'] == module for row in schedules)
+                    trial_request('GetTrialActivityDataCsReq')
+                    for stage in (310030, 311020, 312040, 310060, 313020):
+                        assert trial_request('StartTrialActivityCsReq', stage).get('stage_id') == stage
+                        assert trial_request('LeaveTrialActivityCsReq', stage).get('stage_id') == stage
                 for n in (30, 40, 50):
                     assert stock(pull(n)) == 40 - n * 8 // 10
                 after = pull(50, False)
                 assert stock(after) == 0
             else:
-                assert count(initial) == 50 and stock(initial) == 0
+                assert count(initial) is None and stock(initial) == 0
                 assert stock(pull(50, False)) == 0
             stop()
             stored = inspect()
             assert stored['newbieDraws'] == (20 if iteration == 0 else 50)
             assert stored['ceiling'] == 0 and stored['tickets'] == (24 if iteration == 0 else 0)
             if iteration: assert stored['newbieFive']
-            if iteration == 0: inspect('seedTrial')
+            if iteration == 0 and not args.gacha_only: inspect('seedTrial')
             assert banner_path.read_bytes() == original_banners
         rarity = {}
         for name in ('ItemConfigAvatar.json', 'ItemConfigEquipment.json'):
@@ -203,13 +223,17 @@ def main():
             rows = rows if isinstance(rows, list) else rows.values()
             rarity.update({row['ID']: row['Rarity'] for row in rows})
         assert len(won) == 50 and any(rarity[item] == 'SuperRare' and item < 20000 for item in won)
+        assert remaining == [50, 40, 30, 20, 10, 0]
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
-        report = {'passed': True, 'jarSHA256': digest, 'uid': uid, 'draws': len(won), 'ticketsSpent': 40,
+        report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory),
+                  'uid': uid, 'draws': len(won), 'ticketsSpent': 40,
                   'normalStops': 3, 'sameUidAfterRestarts': True, 'limitRetcode': 3006,
-                  'trialSchedules': [2000101, 2000401, 2000501, 2002002],
-                  'trialStagesStartedAndLeft': [310030, 311020, 312040, 310060, 313020],
+                  'remainingSequence': remaining, 'hiddenAtFifty': True, 'hiddenAfterRestart': True,
+                  'trialSchedules': [] if args.gacha_only else [2000101, 2000401, 2000501, 2002002],
+                  'trialStagesStartedAndLeft': [] if args.gacha_only else [310030, 311020, 312040, 310060, 313020],
                   'isolatedH2': True, 'operatorDataModified': False, 'clientGameplayVerified': False}
-        output = ROOT / 'build/gacha-beginner-native.json'
+        output = args.output
+        output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps(report, ensure_ascii=False))
     finally:

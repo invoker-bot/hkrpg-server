@@ -75,9 +75,12 @@ class GachaInitial46Test {
     var input = CodedInputStream.newInstance(info.toByteArray());
     int count = -1;
     for (int tag; (tag = input.readTag()) != 0;) {
-      if (tag == 15 << 3) count = input.readUInt32(); else input.skipField(tag);
+      // Native NewbieGachaPoolData.DoGachaTime is populated from wire 8, not
+      // BaseGachaPoolData.CurrentGachaTime (wire 15).
+      if (tag == 8 << 3) count = input.readUInt32(); else input.skipField(tag);
     }
     assertEquals(20, count);
+    assertEquals(0, info.getField(info.getDescriptorForType().findFieldByNumber(15)));
   }
 
   @Test void beginnerDrawResponseCarriesTheUpdatedCount() throws Exception {
@@ -88,7 +91,58 @@ class GachaInitial46Test {
     var before = DynamicMessage.newBuilder(type).setField(type.findFieldByName("gacha_id"), 4001).build();
     var encoded = GachaDraw46.enrich(protocol.clientSchema(), before.toByteArray(), player, service);
     var response = DynamicMessage.parseFrom(type, encoded);
-    assertEquals(20, response.getField(type.findFieldByNumber(6)));
+    assertEquals(20, response.getField(type.findFieldByNumber(4)));
+    assertEquals(0, response.getField(type.findFieldByNumber(6)));
+  }
+
+  @Test void exhaustedBeginnerIsHiddenForBothProtocolsAndSurvivesHistoryReload() {
+    service.replaceBanners(List.of(
+        new GachaBanner().createBanner(4001, GachaType.Newbie, 0, 0, new int[0], new int[0]),
+        new GachaBanner().createBanner(1002, GachaType.Normal, 0, 0, new int[0], new int[0])));
+    for (int i = 0; i < 50; i++) history.recordNewbieDraw(false);
+    var restored = new Gson().fromJson(new Gson().toJson(history), PlayerGachaInfo.class);
+    var reloaded = new Player() {
+      @Override public PlayerGachaInfo getGachaInfo() { return restored; }
+      @Override public emu.lunarcore.game.avatar.GameAvatar getAvatarById(int id) { return null; }
+      @Override public void save() { fail("A query must not change the saved draw count"); }
+    };
+    for (var resident : List.of(player, reloaded)) {
+      var rows = (List<?>) InitialData46Test.field(
+          GachaInitial46.snapshot(protocol, resident, service), "gacha_info_list");
+      assertEquals(List.of(1002), rows.stream().map(row -> InitialData46Test.field((DynamicMessage) row, "gacha_id")).toList());
+      var legacy = service.toProto(resident).getGachaInfoList();
+      assertEquals(1, legacy.length());
+      assertEquals(1002, legacy.get(0).getGachaId());
+      assertEquals(50, resident.getGachaInfo().getNewbieDrawCount());
+    }
+  }
+
+  @Test void fortyDrawsAndAnEarlyFiveStarKeepTheBeginnerPoolVisible() {
+    service.replaceBanners(List.of(new GachaBanner().createBanner(
+        4001, GachaType.Newbie, 0, 0, new int[0], new int[0])));
+    for (int i = 0; i < 40; i++) history.recordNewbieDraw(i == 0);
+    var info = InitialData46Test.first(GachaInitial46.snapshot(protocol, player, service), "gacha_info_list");
+    assertEquals(4001, InitialData46Test.field(info, "gacha_id"));
+    assertEquals(40, info.getField(info.getDescriptorForType().findFieldByNumber(8)));
+    assertEquals(1, service.toProto(player).getGachaInfoList().length());
+  }
+
+  @Test void exhaustedHistoryHidesEveryBeginnerBannerOnlyForThatPlayer() {
+    service.replaceBanners(List.of(
+        new GachaBanner().createBanner(4001, GachaType.Newbie, 0, 0, new int[0], new int[0]),
+        new GachaBanner().createBanner(4999, GachaType.Newbie, 0, 0, new int[0], new int[0])));
+    for (int i = 0; i < 60; i++) history.recordNewbieDraw(false);
+    var before = new Gson().toJson(service.getBannerSnapshot());
+    assertEquals(List.of(), InitialData46Test.field(
+        GachaInitial46.snapshot(protocol, player, service), "gacha_info_list"));
+    assertEquals(0, service.toProto(player).getGachaInfoList().length());
+    var fresh = new Player() {
+      @Override public PlayerGachaInfo getGachaInfo() { return new PlayerGachaInfo(); }
+    };
+    assertEquals(2, ((List<?>) InitialData46Test.field(
+        GachaInitial46.snapshot(protocol, fresh, service), "gacha_info_list")).size());
+    assertEquals(2, service.toProto(fresh).getGachaInfoList().length());
+    assertEquals(before, new Gson().toJson(service.getBannerSnapshot()));
   }
 
   GachaRarityResources resources;
