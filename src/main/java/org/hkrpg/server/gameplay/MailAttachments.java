@@ -2,6 +2,8 @@ package org.hkrpg.server.gameplay;
 
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.game.enums.ItemMainType;
+import emu.lunarcore.game.enums.ItemRarity;
+import emu.lunarcore.game.enums.ItemSubType;
 import emu.lunarcore.game.inventory.*;
 import emu.lunarcore.game.inventory.tabs.InventoryTabType;
 import emu.lunarcore.game.mail.Mail;
@@ -85,8 +87,13 @@ public final class MailAttachments {
             }
           }
         } else if (excel.getItemMainType() == ItemMainType.AvatarCard) {
-          var avatar = player.getAvatarById(id);
-          amount = avatar != null && avatar.getOwnerUid() == player.getUid() ? 1 : 0;
+          var avatar = player.getAvatars().getAvatars().get(id);
+          amount =
+              avatar != null
+                      && avatar.getOwnerUid() == player.getUid()
+                      && avatar.getExcel() == GameData.getAvatarExcelMap().get(id)
+                  ? 1
+                  : 0;
         } else {
           int current = balance(player, id);
           amount = current < 0 ? -1 : (long) current - plan.before().get(id);
@@ -117,10 +124,12 @@ public final class MailAttachments {
     var before = new TreeMap<Integer, Integer>();
     var items = new ArrayList<GameItem>();
     var identities = Collections.newSetFromMap(new IdentityHashMap<GameItem, Boolean>());
+    var avatarIds = new HashSet<Integer>();
     var tabs = new EnumMap<InventoryTabType, Integer>(InventoryTabType.class);
     int allocations = 0;
     if (mail.getId() == null || mail.getAttachments().size() > 500) return null;
-    for (var item : mail.getAttachments()) {
+    for (var attachment : mail.getAttachments()) {
+      var item = attachment;
       if (item == null
           || !identities.add(item)
           || item.getCount() <= 0
@@ -132,6 +141,19 @@ public final class MailAttachments {
           || excel.getItemMainType() == null
           || excel.getPileLimit() <= 0
           || item.getExcel() != null && item.getExcel() != excel) return null;
+      if (excel.getItemMainType() == ItemMainType.AvatarCard) {
+        int id = item.getItemId();
+        var path = GameData.getMultiplePathAvatarExcelMap().get(id);
+        if (item.getCount() != 1
+            || !avatarIds.add(id)
+            || GameData.getAvatarExcelMap().get(id) == null
+            || path != null && !path.isDefault()) return null;
+        if (player.getAvatars().hasAvatar(id)) {
+          item = duplicateAvatar(player, mail, id);
+          if (item == null) return null;
+          excel = item.getExcel();
+        }
+      }
       int id = item.getItemId(), amount = item.getCount();
       try {
         expected.merge(id, amount, Math::addExact);
@@ -176,6 +198,51 @@ public final class MailAttachments {
     if (allocations > 0 && !inventory.hasItemIdCapacity(allocations)) return null;
     return new Plan(
         List.copyOf(items), expected, before, Set.copyOf(inventory.getItems().keySet()));
+  }
+
+  /** Reuse the server's eidolon/overflow policy without applying gacha-only bonus currency. */
+  private static GameItem duplicateAvatar(Player player, Mail mail, int id) {
+    var avatar = player.getAvatars().getAvatars().get(id);
+    var source = GameData.getAvatarExcelMap().get(id);
+    var card = GameData.getItemExcelMap().get(id);
+    // Temporary story/trial characters and path aliases are not owned duplicate rewards.
+    if (avatar == null
+        || avatar.getOwnerUid() != player.getUid()
+        || avatar.getAvatarId() != id
+        || source.getMaxRank() != 6
+        || card.getRarity() != ItemRarity.VeryRare && card.getRarity() != ItemRarity.SuperRare)
+      return null;
+    var sourcePath = player.getAvatars().getMultiPathById(id);
+    if (sourcePath != null
+        ? sourcePath.getOwnerUid() != player.getUid()
+            || sourcePath.getExcel() != source
+            || sourcePath.getData() == null
+        : avatar.getExcel() != source || avatar.getData() == null) return null;
+    int currentRank = sourcePath == null ? avatar.getRank() : sourcePath.getRank();
+    if (currentRank < 0 || currentRank > 6) return null;
+    int rankId = source.getRankUpItemId();
+    var rank = GameData.getItemExcelMap().get(rankId);
+    if (rank == null
+        || rank.getItemMainType() != ItemMainType.Material
+        || rank.getItemSubType() != ItemSubType.Eidolon
+        || rank.getRarity() != card.getRarity()
+        || rank.getPileLimit() <= 0) return null;
+    int held = balance(player, rankId);
+    if (held < 0) return null;
+    // Count explicitly attached eidolons too, irrespective of attachment order.
+    long incoming =
+        mail.getAttachments().stream()
+            .filter(Objects::nonNull)
+            .filter(item -> item.getItemId() == rankId)
+            .mapToLong(GameItem::getCount)
+            .sum();
+    if ((long) currentRank + held + incoming < 6) return new GameItem(rank, 1);
+    var currency = GameData.getItemExcelMap().get(252);
+    int amount = card.getRarity() == ItemRarity.SuperRare ? 100 : 20;
+    if (currency == null
+        || currency.getItemMainType() != ItemMainType.Material
+        || currency.getPileLimit() < amount) return null;
+    return new GameItem(currency, amount);
   }
 
   private static int balance(Player player, int id) {

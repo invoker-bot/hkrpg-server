@@ -72,6 +72,23 @@ class MailAttachmentClaimTest {
       return actualMailbox;
     }
 
+    public emu.lunarcore.game.player.PlayerUnlockData getUnlocks() {
+      return unlocks;
+    }
+
+    final emu.lunarcore.game.player.PlayerUnlockData unlocks =
+        new emu.lunarcore.game.player.PlayerUnlockData(this) {
+          public void save() {}
+        };
+
+    public boolean addAvatar(emu.lunarcore.game.avatar.GameAvatar avatar) {
+      // Exercise AvatarStorage ownership and insertion without a live database in unit tests.
+      return getAvatars().addAvatar(
+          new emu.lunarcore.game.avatar.GameAvatar(avatar.getExcel(), new ObjectId()) {
+            public void save() {}
+          });
+    }
+
     public void save() {
       document = new Gson().toJson(this, Player.class);
     }
