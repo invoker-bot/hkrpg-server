@@ -20,6 +20,19 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
 class GmRoutesTest {
+  @Test void historicalActivitiesHaveVersionPhaseSearchAndRerunOperations() throws Exception {
+    assertEquals(401,request("GET","/gm/api/activities/history",null,false).statusCode());
+    openSession();
+    var response=request("GET","/gm/api/activities/history?version=1.1&limit=1",null,true);
+    assertEquals(200,response.statusCode(),response.body());
+    assertTrue(json(response).getAsJsonObject("data").has("versions"));
+    assertEquals(400,request("GET","/gm/api/activities/history?version=4.7",null,true).statusCode());
+    assertEquals(400,request("GET","/gm/api/activities/history?phase=invalid",null,true).statusCode());
+    String body="{\"requestId\":\""+UUID.randomUUID()+"\",\"action\":\"activity-rerun\",\"activityKey\":\"1.1-gift-of-odyssey\",\"durationDays\":7}";
+    assertEquals(200,request("POST","/gm/api/operate",body,true).statusCode());
+    assertEquals(200,request("POST","/gm/api/operate",body,true).statusCode());
+    assertEquals(1,executions.get());
+  }
   @TempDir Path directory;
   Javalin app;
   HttpClient client;

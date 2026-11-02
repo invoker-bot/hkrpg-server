@@ -55,7 +55,15 @@ public final class GmModels {
       List<ShopTarget> shopGoods,
       Integer activityId,
       Long beginTime,
-      Long endTime) {
+      Long endTime,
+      String activityKey) {
+    public Operation(String requestId,String action,int uid,int itemId,int amount,int level,int rank,
+        String title,String sender,String content,List<Attachment> attachments,String command,String confirm,
+        String bannerKey,Integer durationDays,Integer bannerId,List<Integer> bannerIds,List<ShopTarget> shopGoods,
+        Integer activityId,Long beginTime,Long endTime){
+      this(requestId,action,uid,itemId,amount,level,rank,title,sender,content,attachments,command,confirm,
+          bannerKey,durationDays,bannerId,bannerIds,shopGoods,activityId,beginTime,endTime,null);
+    }
     public Operation(String requestId, String action, int uid, int itemId, int amount,
         int level, int rank, String title, String sender, String content,
         List<Attachment> attachments, String command, String confirm, String bannerKey,
@@ -93,6 +101,11 @@ public final class GmModels {
   public record ActivityRow(int id, int panelId, String name, String type,
       List<ActivityModuleRow> modules, String state, String status, long beginTime, long endTime,
       boolean canManage, boolean canEnable, boolean canStop, String note, String unlockConditions) {}
+
+  public record HistoricalActivityRow(String key,String version,String phase,int phaseIndex,String name,
+      List<String> categories,List<String> tags,int activityId,int panelId,List<Integer> modules,String family,String resourceStatus,
+      String historicalStart,String historicalEnd,String sourceUrl,String state,String status,long beginTime,
+      long endTime,String replayId,boolean canReplay,boolean canStop,boolean canEnable,String note) {}
 
   public record ShopRow(int id, int type, String name) {}
 

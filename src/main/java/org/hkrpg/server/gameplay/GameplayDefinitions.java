@@ -18,7 +18,10 @@ public final class GameplayDefinitions {
 
   public record LoginActivity(int ID, List<Integer> RewardList, int ActivityModuleID) {}
 
-  public record Window(int panelId, int moduleId, long beginTime, long endTime) {}
+  public record Window(int panelId, int moduleId, long beginTime, long endTime,
+      String replayId, String replayKey) {
+    public Window(int panelId,int moduleId,long beginTime,long endTime){this(panelId,moduleId,beginTime,endTime,null,null);}
+  }
 
   public record World(int ID) {}
 

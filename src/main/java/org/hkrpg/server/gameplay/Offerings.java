@@ -3,6 +3,7 @@ package org.hkrpg.server.gameplay;
 import emu.lunarcore.GameConstants;
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.game.enums.ItemMainType;
+import emu.lunarcore.game.enums.ItemSubType;
 import emu.lunarcore.game.inventory.*;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.server.packet.Retcode;
@@ -19,8 +20,8 @@ public final class Offerings {
 
   public static boolean valid(GameplayState.Offering state) {
     if (state == null) return true;
-    if (state.getId() != 12
-        || state.getItem() != 264999
+    if ((state.getId() != 5 && state.getId() != 12)
+        || state.getItem() != (state.getId() == 5 ? 270003 : 264999)
         || state.getCosts() == null
         || state.getCosts().isEmpty()
         || state.getCosts().size() > 100
@@ -30,6 +31,11 @@ public final class Offerings {
         || state.getRewardIds().stream().anyMatch(r -> r == null || r <= 0)
         || state.getSubmissions() == null
         || state.getClaims() == null) return false;
+    if (state.getId() == 5) {
+      if (state.getCosts().size() != 16) return false;
+      for (int i = 0; i < 16; i++)
+        if (state.getCosts().get(i) != 3 || state.getRewardIds().get(i) != 260001 + i) return false;
+    }
     long cap = state.getCosts().stream().mapToLong(Integer::longValue).sum();
     if (cap > Integer.MAX_VALUE || state.getTotalExp() < 0 || state.getTotalExp() > cap)
       return false;
@@ -67,6 +73,7 @@ public final class Offerings {
                           || e.getValue() <= 0)
           || claim.getAvatars() == null
           || claim.getDice() == null) return false;
+      if (state.getId() == 5 && (!claim.getAvatars().isEmpty() || !claim.getDice().isEmpty())) return false;
       for (var entry : claim.getAvatars().entrySet()) {
         var avatar = entry.getValue();
         if (entry.getKey() == null
@@ -101,9 +108,15 @@ public final class Offerings {
   }
 
   public static boolean valid(Player player) {
-    var state = player.getGameplay().getOfferings().get(12);
-    if (!valid(state)) return false;
+    return valid(player, 12);
+  }
+
+  public static boolean valid(Player player, int id) {
+    if (id != 5 && id != 12) return false;
+    var state = player.getGameplay().getOfferings().get(id);
+    if (!valid(state) || state != null && state.getId() != id) return false;
     if (state == null) return true;
+    if (id == 5) return true;
     var owned = player.getGameplay().getDiceCombat();
     for (var claim : state.getClaims()) {
       if (!claim.isGranted()) continue;
@@ -132,15 +145,22 @@ public final class Offerings {
   }
 
   private static Retcode preflight(Player player, OfferingCatalog catalog, int id, int entity) {
-    if (id != 12 || entity != 0) return Retcode.REQ_PARA_INVALID;
-    if (catalog == null) return Retcode.REWARD_CONFIG_NOT_EXIST;
-    var dice = DiceCombatCatalog.read();
-    if (dice == null) return Retcode.REWARD_CONFIG_NOT_EXIST;
-    if (!dice.available(player, Instant.now())) return Retcode.SHOP_NOT_OPEN;
+    if ((id != 5 && id != 12) || entity != 0) return Retcode.REQ_PARA_INVALID;
+    if (catalog == null || catalog.id() != id) return Retcode.REWARD_CONFIG_NOT_EXIST;
+    if (id == 5) {
+      var source = OfferingQueryCatalog.read();
+      if (source == null) return Retcode.REWARD_CONFIG_NOT_EXIST;
+      if (!source.unlocked(player, 5, Instant.now())) return Retcode.SHOP_NOT_OPEN;
+      if (player.getGameplay().getRhythm().getActiveLevel() != 0) return Retcode.SYSTEM_BUSY;
+    } else {
+      var dice = DiceCombatCatalog.read();
+      if (dice == null) return Retcode.REWARD_CONFIG_NOT_EXIST;
+      if (!dice.available(player, Instant.now())) return Retcode.SHOP_NOT_OPEN;
+    }
     if (player.getBattle() != null) return Retcode.SYSTEM_BUSY;
     var state = player.getGameplay().getOfferings().get(id);
-    if (!valid(player)) return Retcode.PLAYER_DATA_ERROR;
-    if (pending(state) || DiceProgression.pending(player) || DicePveMissionReports.pending(player))
+    if (!valid(player, id)) return Retcode.PLAYER_DATA_ERROR;
+    if (pending(state) || id == 12 && (DiceProgression.pending(player) || DicePveMissionReports.pending(player)))
       return Retcode.SYSTEM_BUSY;
     return Retcode.SUCC;
   }
@@ -150,7 +170,9 @@ public final class Offerings {
       var code = preflight(player, catalog, id, entity);
       if (code != Retcode.SUCC) return rejected(code);
       var saved = player.getGameplay().getOfferings().get(id);
-      var state = saved == null ? new GameplayState.Offering(catalog) : saved;
+      var gson = emu.lunarcore.data.ResourceLoader.getGson();
+      var state = saved == null ? new GameplayState.Offering(catalog)
+          : id == 5 ? gson.fromJson(gson.toJson(saved), GameplayState.Offering.class) : saved;
       int cap = Math.toIntExact(state.getCosts().stream().mapToLong(Integer::longValue).sum());
       if (state.getTotalExp() == cap) return rejected(Retcode.REQ_PARA_INVALID);
       var excel = GameData.getItemExcelMap().get(state.getItem());
@@ -163,8 +185,18 @@ public final class Offerings {
       var receipt = new GameplayState.OfferingSubmission(state.getTotalExp(), amount);
       state.getSubmissions().add(receipt);
       player.getGameplay().getOfferings().put(id, state);
-      player.save();
-      boolean consumed =
+      try {
+        player.save();
+      } catch (RuntimeException failed) {
+        if (id != 5) throw failed;
+        if (saved == null) player.getGameplay().getOfferings().remove(id);
+        else player.getGameplay().getOfferings().put(id, saved);
+        return rejected(Retcode.SYSTEM_BUSY);
+      }
+      var prepared = id == 5 ? gson.fromJson(gson.toJson(state), GameplayState.Offering.class) : null;
+      boolean consumed;
+      try {
+        consumed =
           player
               .getInventory()
               .consumeForUse(
@@ -174,6 +206,11 @@ public final class Offerings {
                     state.apply(receipt);
                     player.save();
                   });
+      } catch (RuntimeException interrupted) {
+        if (id != 5) throw interrupted;
+        player.getGameplay().getOfferings().put(id, prepared);
+        return rejected(Retcode.SYSTEM_BUSY);
+      }
       return rejected(consumed ? Retcode.SUCC : Retcode.PLAYER_DATA_ERROR);
     }
   }
@@ -213,18 +250,18 @@ public final class Offerings {
         rewards.put(2, (int) credits);
       }
       if (!capacity(player, rewards)) return rejected(Retcode.ITEM_REWARD_EXCEED_LIMIT);
-      var diceCatalog = DiceCombatCatalog.read();
-      if (!DiceCombatShop.valid(player, diceCatalog)) return rejected(Retcode.PLAYER_DATA_ERROR);
+      var diceCatalog = id == 12 ? DiceCombatCatalog.read() : null;
+      if (id == 12 && !DiceCombatShop.valid(player, diceCatalog)) return rejected(Retcode.PLAYER_DATA_ERROR);
       var owned = player.getGameplay().getDiceCombat();
       var avatars = new TreeMap<Integer, GameplayState.DiceAvatar>();
       var dice = new TreeMap<Integer, Long>();
       long time = Instant.now().getEpochSecond();
       for (var reward : rewards) {
         int item = reward.getIntKey();
-        var avatar = diceCatalog.avatars().get(item);
+        var avatar = diceCatalog == null ? null : diceCatalog.avatars().get(item);
         if (avatar != null && !owned.getAvatars().containsKey(item))
           avatars.put(item, new GameplayState.DiceAvatar(item, time, avatar.initialDice()));
-        else if (diceCatalog.dice().contains(item) && !owned.getDice().containsKey(item))
+        else if (diceCatalog != null && diceCatalog.dice().contains(item) && !owned.getDice().containsKey(item))
           dice.put(item, time);
       }
       var plan = new TreeMap<Integer, Integer>();
@@ -233,8 +270,23 @@ public final class Offerings {
           new GameplayState.OfferingClaim(
               new TreeSet<>(levels).stream().toList(), plan, avatars, dice);
       state.getClaims().add(receipt);
-      player.save();
-      var granted = player.getInventory().grantItems(rewards, true);
+      try {
+        player.save();
+      } catch (RuntimeException failed) {
+        if (id != 5) throw failed;
+        state.getClaims().remove(receipt);
+        return rejected(Retcode.SYSTEM_BUSY);
+      }
+      var gson = emu.lunarcore.data.ResourceLoader.getGson();
+      var prepared = id == 5 ? gson.fromJson(gson.toJson(state), GameplayState.Offering.class) : null;
+      emu.lunarcore.game.inventory.Inventory.GrantResult granted;
+      try {
+        granted = player.getInventory().grantItems(rewards, true);
+      } catch (RuntimeException interrupted) {
+        if (id != 5) throw interrupted;
+        return rejected(Retcode.SYSTEM_BUSY);
+      }
+      if (granted == null) return rejected(Retcode.PLAYER_DATA_ERROR);
       if (!granted.complete())
         return new Result(Retcode.PLAYER_DATA_ERROR, List.copyOf(granted.items()));
       receipt
@@ -249,7 +301,13 @@ public final class Offerings {
                               avatar.getId(), avatar.getTime(), avatar.getDice())));
       owned.getDice().putAll(receipt.getDice());
       receipt.complete();
-      player.save();
+      try {
+        player.save();
+      } catch (RuntimeException interrupted) {
+        if (id != 5) throw interrupted;
+        player.getGameplay().getOfferings().put(id, prepared);
+        return rejected(Retcode.SYSTEM_BUSY);
+      }
       return new Result(Retcode.SUCC, List.copyOf(granted.items()));
     }
   }
@@ -273,6 +331,8 @@ public final class Offerings {
               case 33, 34 -> RogueCurrencies.balance(player, id);
               default -> -1;
             };
+      else if (excel.getItemMainType() == ItemMainType.Usable
+          && excel.getItemSubType() == ItemSubType.ChatBubble && entry.getIntValue() == 1) continue;
       else if (Inventory.isStackType(excel)) {
         var item = player.getInventory().getMaterialByItemId(id);
         before = item == null ? 0 : item.getCount();

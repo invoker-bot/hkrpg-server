@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.*;
 import org.hkrpg.server.gameplay.*;
 
-/** Native CN 4.6 Offering tags and sends; currently the manual Dice menu entry (ID 12). */
+/** Native CN 4.6 manual Dice (12) and original music performance (5) offerings. */
 public final class Offering46 {
   public static boolean handle(GameSession s, int command, byte[] bytes) throws IOException {
     if (!s.getProtocol().experimental()) return false;
@@ -27,9 +27,11 @@ public final class Offering46 {
         req = s.getProtocol().clientSchema().parse(name, bytes);
         code = Retcode.SUCC;
       }
-      var catalog = OfferingCatalog.read();
+      int offering = req == null || name.equals("GetOfferingInfoCsReq") ? 12 : number(req, "offering_id");
+      if (code == Retcode.SUCC && offering != 5 && offering != 12) code = Retcode.REQ_PARA_INVALID;
+      var catalog = OfferingCatalog.read(offering);
       if (code == Retcode.SUCC && catalog == null) code = Retcode.REWARD_CONFIG_NOT_EXIST;
-      if (code == Retcode.SUCC && !Offerings.valid(s.getPlayer())) code = Retcode.PLAYER_DATA_ERROR;
+      if (code == Retcode.SUCC && !Offerings.valid(s.getPlayer(), offering)) code = Retcode.PLAYER_DATA_ERROR;
       if (name.equals("GetOfferingInfoCsReq")) {
         var out = builder(s, "GetOfferingInfoScRsp");
         if (code == Retcode.SUCC) {
@@ -94,10 +96,21 @@ public final class Offering46 {
   }
 
   static DynamicMessage snapshot(GameSession s, int id) {
+    boolean open;
+    if (id == 5) {
+      var source = OfferingQueryCatalog.read();
+      open = source != null && source.unlocked(s.getPlayer(), 5, Instant.now());
+    } else {
+      var dice = DiceCombatCatalog.read();
+      open = dice != null && dice.available(s.getPlayer(), Instant.now());
+    }
+    return snapshot(s, id, open);
+  }
+
+  static DynamicMessage snapshot(GameSession s, int id, boolean open) {
     var state = s.getPlayer().getGameplay().getOfferings().get(id);
     var b = builder(s, "OfferingInfo");
     set(b, "offering_id", id);
-    var dice = DiceCombatCatalog.read();
     set(
         b,
         "offering_state",
@@ -105,7 +118,7 @@ public final class Offering46 {
             .findFieldByName("offering_state")
             .getEnumType()
             .findValueByNumber(
-                dice != null && dice.available(s.getPlayer(), Instant.now()) ? 2 : 1));
+                open ? 2 : 1));
     if (state != null) {
       set(b, "offering_level", state.getLevel());
       set(b, "level_exp", state.getLevelExp());

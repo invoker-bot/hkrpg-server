@@ -55,11 +55,17 @@ public final class OfferingQuery46 {
         if (OfferingCatalog.read() == null) code = Retcode.REWARD_CONFIG_NOT_EXIST;
         else if (!Offerings.valid(session.getPlayer())) code = Retcode.PLAYER_DATA_ERROR;
       }
+      if (code == Retcode.SUCC && ids.contains(5)
+          && session.getPlayer().getGameplay().getOfferings().containsKey(5)) {
+        if (OfferingCatalog.read(5) == null) code = Retcode.REWARD_CONFIG_NOT_EXIST;
+        else if (!Offerings.valid(session.getPlayer(), 5)) code = Retcode.PLAYER_DATA_ERROR;
+      }
       if (code == Retcode.SUCC
           && ids.stream()
               .anyMatch(
                   id ->
-                      id != 6
+                      id != 5
+                          && id != 6
                           && id != 12
                           && session.getPlayer().getGameplay().getOfferings().containsKey(id)))
         code = Retcode.PLAYER_DATA_ERROR;
@@ -71,6 +77,7 @@ public final class OfferingQuery46 {
           else if (id == 10 && worldShop != null)
             info = KraterOffering46.snapshot(session, id, worldShop);
           else if (id == 12) info = Offering46.snapshot(session, id);
+          else if (id == 5) info = Offering46.snapshot(session, id, catalog.unlocked(session.getPlayer(), id, now));
           else {
             var row = builder(session, "OfferingInfo");
             set(row, "offering_id", id);

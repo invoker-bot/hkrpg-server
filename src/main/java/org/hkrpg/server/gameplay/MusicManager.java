@@ -111,8 +111,15 @@ public final class MusicManager {
           }
         rewards.add(plan);
       }
+      var gson = emu.lunarcore.data.ResourceLoader.getGson();
+      var previous = gson.fromJson(gson.toJson(player.getGameplay().getRhythm()), GameplayState.Rhythm.class);
       player.getGameplay().getRhythm().start(id, rewards);
-      player.save();
+      try {
+        player.save();
+      } catch (RuntimeException failed) {
+        player.getGameplay().rhythm(previous);
+        return Retcode.SYSTEM_BUSY;
+      }
       return Retcode.SUCC;
     }
   }

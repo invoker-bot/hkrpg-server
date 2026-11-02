@@ -7,7 +7,7 @@ import java.nio.file.*;
 import java.security.MessageDigest;
 import java.util.*;
 
-/** Exact complete 4.6 originals. Only the explicit Amphoreus group is currently implemented. */
+/** Complete retained 4.6 material orders, bound to their original panels and modules. */
 public final class MaterialSubmitDefinitions {
   public record Submitter(int id, int module, int mission, int reward, Map<Integer,Integer> costs,
       Map<Integer,Integer> rewards) {}
@@ -18,13 +18,17 @@ public final class MaterialSubmitDefinitions {
       "ActivityPanel","80a899976fbc5d61fe81483b9e5dd35679c96eed7eb3ef6285c008b475fbc1e4",
       "RewardData","f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
       "ItemConfig","1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048");
-  private static volatile MaterialSubmitDefinitions verified;
+  private static final Map<Integer,MaterialSubmitDefinitions> VERIFIED = new java.util.concurrent.ConcurrentHashMap<>();
+  private final int activityId,firstId;
   private final Map<Integer,Submitter> rows;
   private final Map<Integer,JsonObject> items;
   private final String fingerprint;
-  private MaterialSubmitDefinitions(Map<Integer,Submitter> rows,Map<Integer,JsonObject> items,String fingerprint) {
-    this.rows=Map.copyOf(rows);this.items=Map.copyOf(items);this.fingerprint=fingerprint;
+  private MaterialSubmitDefinitions(int activityId,int firstId,Map<Integer,Submitter> rows,Map<Integer,JsonObject> items,String fingerprint) {
+    this.activityId=activityId;this.firstId=firstId;this.rows=Map.copyOf(rows);this.items=Map.copyOf(items);this.fingerprint=fingerprint;
   }
+  public int activityId(){return activityId;}
+  public int firstId(){return firstId;}
+  public int lastId(){return firstId+6;}
   public Map<Integer,Submitter> rows(){return rows;}
   public String fingerprint(){return fingerprint;}
   private static int number(JsonObject row,String key) {
@@ -39,8 +43,13 @@ public final class MaterialSubmitDefinitions {
     if(result.size()!=1) throw new IllegalArgumentException(key+":"+id);return result.getFirst();
   }
   public static MaterialSubmitDefinitions load(Path root) {
+    return load(root,30014);
+  }
+  public static MaterialSubmitDefinitions load(Path root,int activityId) {
+    if(activityId!=30011 && activityId!=30014)return null;
+    int firstId=activityId==30011?201:301;
     try {
-      var rawTables=new TreeMap<String,byte[]>();var key=new StringBuilder("material-submit-30014-4.6-v1\n");
+      var rawTables=new TreeMap<String,byte[]>();var key=new StringBuilder("material-submit-"+activityId+"-4.6-v1\n");
       for(var input:new TreeMap<>(INPUTS).entrySet()) {
         String path="ExcelOutput/"+input.getKey()+".json";
         long size=Files.size(root.resolve(path));if(size<=0 || size>4*1024*1024) return null;
@@ -51,23 +60,27 @@ public final class MaterialSubmitDefinitions {
       }
       String fingerprint=HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
           .digest(key.toString().getBytes(StandardCharsets.UTF_8)));
-      var cached=verified;if(cached!=null && cached.fingerprint.equals(fingerprint)) return cached;
+      var cached=VERIFIED.get(activityId);if(cached!=null && cached.fingerprint.equals(fingerprint)) return cached;
       var tables=new HashMap<String,JsonArray>();rawTables.forEach((name,raw)->
           tables.put(name,JsonParser.parseString(new String(raw,StandardCharsets.UTF_8)).getAsJsonArray()));
       if(tables.get("MaterialSubmitter").size()!=28 || tables.get("MaterialSubmitterGroup").size()!=1
           || tables.get("ActivityConfig").size()!=525 || tables.get("ActivityPanel").size()!=270
           || tables.get("RewardData").size()!=9515 || tables.get("ItemConfig").size()!=2941) return null;
-      var group=unique(tables.get("MaterialSubmitterGroup"),"ActivityID",30014);
-      if(!group.get("Type").getAsString().equals("AmphoreusCurio")
-          || !group.getAsJsonArray("SubmitterIDList").equals(JsonParser.parseString("[301,302,303,304,305,306,307]"))) return null;
-      var activity=unique(tables.get("ActivityConfig"),"ActivityID",30014);
-      if(number(activity,"ActivityPanelID")!=30014
-          || !activity.getAsJsonArray("ActivityModuleIDList").equals(JsonParser.parseString("[3001401,3001402,3001403,3001404,3001405,3001406,3001407]"))) return null;
-      var panel=unique(tables.get("ActivityPanel"),"PanelID",30014);
+      if(activityId==30014){
+        var group=unique(tables.get("MaterialSubmitterGroup"),"ActivityID",30014);
+        if(!group.get("Type").getAsString().equals("AmphoreusCurio")
+            || !group.getAsJsonArray("SubmitterIDList").equals(JsonParser.parseString("[301,302,303,304,305,306,307]"))) return null;
+      }
+      var modules=new JsonArray();for(int offset=1;offset<=7;offset++)modules.add(activityId*100+offset);
+      var activity=unique(tables.get("ActivityConfig"),"ActivityID",activityId);
+      if(number(activity,"ActivityPanelID")!=activityId
+          || !activity.getAsJsonArray("ActivityModuleIDList").equals(modules)) return null;
+      var panel=unique(tables.get("ActivityPanel"),"PanelID",activityId);
       if(!panel.get("UnlockConditions").getAsString().equals("[PlayerLevel:21]")) return null;
       var rows=new TreeMap<Integer,Submitter>();var items=new TreeMap<Integer,JsonObject>();
-      for(int id=301;id<=307;id++) {
+      for(int id=firstId;id<firstId+7;id++) {
         var row=unique(tables.get("MaterialSubmitter"),"ID",id);var costs=new TreeMap<Integer,Integer>();
+        if(number(row,"ActivityModuleID")!=activityId*100+id-firstId+1)return null;
         for(var cost:row.getAsJsonArray("MaterialList")) {
           var value=cost.getAsJsonObject();
           if(costs.putIfAbsent(number(value,"ItemID"),number(value,"ItemNum"))!=null) return null;
@@ -83,7 +96,7 @@ public final class MaterialSubmitDefinitions {
         var ids=new HashSet<Integer>(costs.keySet());ids.addAll(rewards.keySet());
         for(int item:ids) items.put(item,unique(tables.get("ItemConfig"),"ID",item));
       }
-      var value=new MaterialSubmitDefinitions(rows,items,fingerprint);verified=value;return value;
+      var value=new MaterialSubmitDefinitions(activityId,firstId,rows,items,fingerprint);VERIFIED.put(activityId,value);return value;
     } catch(Exception invalid){return null;}
   }
   /** Loaded reward/item objects must agree with the independently frozen disk sources. */

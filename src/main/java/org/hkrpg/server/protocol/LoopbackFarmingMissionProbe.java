@@ -17,7 +17,7 @@ public final class LoopbackFarmingMissionProbe {
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final CompletableFuture<Map<String, Object>> completed = new CompletableFuture<>();
   private final Map<String, Object> result = new LinkedHashMap<>();
-  private boolean resume, categories;
+  private boolean resume, categories, nativeCount;
   private int step, battleId, stageId, initialStamina, currentStamina;
 
   private static Object field(DynamicMessage m, String name) {
@@ -66,7 +66,8 @@ public final class LoopbackFarmingMissionProbe {
     String name = waves == 1 ? "QuickStartCocoonStageCsReq" : "StartCocoonStageCsReq";
     var b = request(name);
     set(b, "cocoon_id", cocoon);
-    set(b, "wave", waves);
+    set(b, nativeCount ? "HECCOBFBJFI" : "wave", waves);
+    if (nativeCount && name.equals("StartCocoonStageCsReq")) set(b, "prop_entity_id", 33);
     send(c, name, b);
   }
 
@@ -86,13 +87,13 @@ public final class LoopbackFarmingMissionProbe {
       var row = (DynamicMessage) raw;
       rows.put((Integer) field(row, "id"), row);
     }
+    // Current native snapshots put completed children in field15, outside the active rows.
+    var finished = (List<?>) field(m, "OLKALABEDOA");
     require(
-        rows.containsKey(FIRST) && (Integer) field(rows.get(FIRST), "progress") == first,
+        progressMatches(rows, finished, FIRST, first),
         "First mission progress changed");
     require(
-        second < 0
-            ? !rows.containsKey(SECOND)
-            : rows.containsKey(SECOND) && (Integer) field(rows.get(SECOND), "progress") == second,
+        progressMatches(rows, finished, SECOND, second),
         "Second mission progress changed");
     require(
         ((List<?>) field(m, "finished_main_mission_id_list")).contains(MAIN)
@@ -106,12 +107,19 @@ public final class LoopbackFarmingMissionProbe {
               case 2 -> step == 19 || step == 20 || step == 22 ? 1 : 0;
               default -> step == 15 || step == 19 || step == 20 || step == 22 ? 1 : 0;
             };
-        var row = rows.get(199969232 + category);
         require(
-            row != null && (Integer) field(row, "progress") == expected,
+            progressMatches(rows, finished, 199969232 + category, expected),
             "Story category " + category + " changed at step " + step);
       }
     }
+  }
+
+  private boolean progressMatches(
+      Map<Integer, DynamicMessage> active, List<?> finished, int id, int expected) {
+    if (expected < 0) return !active.containsKey(id) && !finished.contains(id);
+    if (expected == 1) return finished.contains(id) && !active.containsKey(id);
+    return !finished.contains(id) && active.containsKey(id)
+        && (Integer) field(active.get(id), "progress") == expected;
   }
 
   private void queryQuests(Ukcp c, int next) {
@@ -139,6 +147,7 @@ public final class LoopbackFarmingMissionProbe {
 
   private void done() {
     result.put("stamina", currentStamina);
+    result.put("nativeChallengeCount", nativeCount);
     result.put("passed", true);
     result.put("clientGameplayVerified", false);
     completed.complete(result);
@@ -273,6 +282,10 @@ public final class LoopbackFarmingMissionProbe {
               "Actual cocoon start failed");
           int expected = step == 2 ? 3 : 1;
           require((Integer) field(m, "wave") == expected, "Requested native waves were ignored");
+          if (nativeCount && name.equals("StartCocoonStageScRsp")) {
+            require((Integer) field(m, "challenge_cnt") == expected, "Native challenge count echo changed");
+            require((Integer) field(m, "prop_entity_id") == 33, "Cocoon prop echo changed");
+          }
           var battle = (DynamicMessage) field(m, "battle_info");
           battleId = (Integer) field(battle, "battle_id");
           stageId = (Integer) field(battle, "stage_id");
@@ -386,6 +399,8 @@ public final class LoopbackFarmingMissionProbe {
       probe.resume = credentials.has("resume") && credentials.get("resume").getAsBoolean();
       probe.categories =
           credentials.has("categories") && credentials.get("categories").getAsBoolean();
+      probe.nativeCount =
+          credentials.has("nativeCount") && credentials.get("nativeCount").getAsBoolean();
       var token = probe.request("PlayerGetTokenCsReq");
       set(token, "account_uid", credentials.get("accountUid").getAsString());
       set(token, "token", credentials.get("comboToken").getAsString());

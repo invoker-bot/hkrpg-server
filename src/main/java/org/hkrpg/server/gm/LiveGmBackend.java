@@ -179,6 +179,7 @@ final class LiveGmBackend implements GmBackend {
 
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
+    if(operation.action().equals("activity-rerun"))return GmActivityHistory.rerun(activityManager(),operation,activityCatalog);
     if(operation.action().startsWith("activity-"))return activityManager().update(operation);
     if (operation.action().startsWith("shop-")) return setShopListed(operation);
     if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
@@ -222,6 +223,8 @@ final class LiveGmBackend implements GmBackend {
   }
 
   public List<ActivityRow> activities(){return activityManager().current();}
+
+  public List<HistoricalActivityRow> activityHistory(){return GmActivityHistory.current(activityManager());}
 
   public List<ItemShortcut> itemShortcuts() {
     if (shortcuts==null) synchronized(this) {

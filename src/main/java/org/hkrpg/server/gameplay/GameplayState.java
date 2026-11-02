@@ -12,6 +12,11 @@ public class GameplayState {
   private TrainCakeCatchState trainCakeCatch = new TrainCakeCatchState();
   public TrainCakeCatchState getTrainCakeCatch() { return trainCakeCatch; }
   void trainCakeCatch(TrainCakeCatchState value) { trainCakeCatch = Objects.requireNonNull(value); }
+  private ActivityReplayState activityReplays = new ActivityReplayState();
+  public ActivityReplayState getActivityReplays() {
+    if(activityReplays==null)activityReplays=new ActivityReplayState();
+    return activityReplays;
+  }
   // Absent in old saves: the inherited currentBgm remains the initial selection until first save.
   @lombok.Setter private JukeboxState jukebox;
   private ShopPurchaseState shopPurchases = new ShopPurchaseState();
@@ -111,8 +116,25 @@ public class GameplayState {
 
   void aetherDivide(AetherDivideState value) { aetherDivide = Objects.requireNonNull(value); }
   private MaterialSubmitState materialSubmission = new MaterialSubmitState();
-  public MaterialSubmitState getMaterialSubmission() { return materialSubmission; }
-  void materialSubmission(MaterialSubmitState state) { materialSubmission = Objects.requireNonNull(state); }
+  public MaterialSubmitState getMaterialSubmission() {
+    return getMaterialSubmission(30014);
+  }
+  public MaterialSubmitState getMaterialSubmission(int panel) {
+    if(panel!=30011&&panel!=30014)throw new IllegalArgumentException("Material activity panel");
+    var window=ActivityReplayScope.current(this,panel);
+    if(window!=null&&window.replayId()!=null)return getActivityReplays().material(window);
+    return panel==30014?materialSubmission:getActivityReplays().legacyMaterial(panel);
+  }
+  void materialSubmission(MaterialSubmitState state) {
+    materialSubmission(30014,state);
+  }
+  void materialSubmission(int panel,MaterialSubmitState state) {
+    if(panel!=30011&&panel!=30014)throw new IllegalArgumentException("Material activity panel");
+    var window=ActivityReplayScope.current(this,panel);
+    if(window!=null&&window.replayId()!=null)getActivityReplays().material(window,state);
+    else if(panel==30014)materialSubmission=Objects.requireNonNull(state);
+    else getActivityReplays().legacyMaterial(panel,state);
+  }
 
   private ChessRogueState chessRogue = new ChessRogueState();
 
@@ -291,6 +313,7 @@ public class GameplayState {
   private Set<Integer> cancelledMissions = new HashSet<>();
   private Set<Integer> cancelledSubs = new HashSet<>();
   private Rhythm rhythm = new Rhythm();
+  void rhythm(Rhythm value) { rhythm = java.util.Objects.requireNonNull(value); }
   private ClockParkState clockPark = new ClockParkState();
 
   void clockPark(ClockParkState value) {

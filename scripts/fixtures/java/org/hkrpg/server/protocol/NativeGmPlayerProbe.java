@@ -177,6 +177,8 @@ public final class NativeGmPlayerProbe {
                 "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
                 "GetLevelRewardCsReq", "GetLevelRewardTakenListCsReq",
                 "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
+                "GetLoginActivityCsReq", "TakeLoginActivityRewardCsReq",
+                "GetMaterialSubmitActivityDataCsReq", "SubmitMaterialSubmitActivityMaterialCsReq", "TakeMaterialSubmitActivityRewardCsReq",
                 "TakeTrialActivityRewardCsReq", "GetCurSceneInfoCsReq", "GetCurLineupDataCsReq",
                 "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "PVEBattleResultCsReq", "QuitBattleCsReq",
                 "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
@@ -226,8 +228,16 @@ public final class NativeGmPlayerProbe {
       if (lastEquipment != null) snapshot.put("equipmentReply", lastEquipment);
       Path temporary = directory.resolve("snapshot.tmp");
       Files.writeString(temporary, new Gson().toJson(snapshot));
-      Files.move(
-          temporary, directory.resolve("snapshot.json"), StandardCopyOption.REPLACE_EXISTING);
+      for(int attempt=0;;attempt++){
+        try{
+          Files.move(temporary,directory.resolve("snapshot.json"),StandardCopyOption.REPLACE_EXISTING);
+          break;
+        }catch(java.nio.file.FileSystemException busy){
+          // Windows readers may briefly hold the old snapshot without FILE_SHARE_DELETE.
+          if(attempt>=9)throw busy;
+          Thread.sleep(25L*(attempt+1));
+        }
+      }
       Thread.sleep(1500);
     }
   }

@@ -50,9 +50,9 @@ class CocoonEntry46Test {
   }
 
   @Test
-  void quickEntryRejectsUnimplementedOptionsWithAnActualNativeFailureResponse() throws Exception {
+  void quickEntryRejectsACountWithoutACocoonWithAnActualNativeFailureResponse() throws Exception {
     var session = new Session();
-    // Native option HECCOBFBJFI field6 is not interpreted by the current farming core.
+    // Native challenge count field6 does not supply the required cocoon identity.
     assertTrue(VersionedPacketHandler.handle(session, 1360, new byte[] {48, 1}));
     assertEquals("QuickStartCocoonStageScRsp", session.responseName);
     assertNotEquals(0, Gameplay46.number(session.response, "retcode"));
@@ -76,7 +76,7 @@ class CocoonEntry46Test {
       {32, 1, 32, 2}, // Repeated scalar wave.
       {(byte) 128}, // Truncated tag.
       {56, (byte) 233, 7, 32, (byte) 129, (byte) 128, (byte) 128, (byte) 128, 16}, // 2^32+1 waves.
-      {56, (byte) 233, 7, 32, 1, 80, 1}, // Unsupported option field10.
+      {56, (byte) 233, 7, 32, 1, 80, 1}, // Ambiguous old wave plus native count.
       {56, (byte) 233, 7, 32, 1, 122, 0}, // Unsupported lineup/context field15.
       {56, (byte) 233, 7, 32, 1, 112, 1}, // Unknown field14.
       {56, (byte) 233, 7, 32, 1, 64, (byte) 255, (byte) 255, (byte) 255, (byte) 255, 15}

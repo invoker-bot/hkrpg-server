@@ -1,3 +1,7 @@
+`GmActivityHistory` 区分固定历史期次与当前排期，独立复刻 UUID 进入玩家的 `ActivityReplayState`；签到和两类材料活动各自保存进度、以周期前缀防重复领奖。材料请求冻结 `ActivityReplayScope`，原生会话用最近查看周期拒绝旧窗口操作。完整历史范围仍待接通，见[复刻说明](gm-activity-history.md)。
+
+`Cocoon46` 按实机请求与本机写出器，将普通字段10/快速字段6作为挑战次数交给原战斗工厂，成功时回显普通挑战次数及物件编号；原波数请求继续兼容，混合两种非零次数及未知上下文拒绝，体力与结算沿用原逻辑。来源与验证边界见[花萼挑战说明](cocoon-challenge-count-4.6.md)。
+
 好友页继续使用内部好友领域与原始资料构造器，由 `ProtocolBridge` 将列表/申请内的玩家资料及共享字段按已核对的语义转换到4.6；列表缓存与真实UID保留，未知字段拒绝策略不放宽。原因及验证边界见[好友页说明](friend-page-loading-4.6.md)。
 
 `TrainCakeCatch46` 处理原生开盒、领取和本地房主资料查询；`TrainCakeCatchState` 与 Player 一次保存实际批次、数量和本周记录。原始等级/任务门槛保留，查询不创建进度，重复领取不增加数量，保存失败回滚。正式抽取池缺失时采用有来源的有限兼容批次，范围见[猫猫糕箱说明](train-cake-box-4.6.md)。
@@ -642,7 +646,7 @@ BattleService在身份和统计校验、beginSettlement通过后，仅WIN分支�
 
 ## 2026-10-02 花萼普通与快速原生入口
 
-`Cocoon46` 接管已冻结的普通1432/1484与快速原生命令，调用原有真实 `BattleService.startCocoon`，返回实际花萼ID、挑战波数及转换后的 `SceneBattleInfo`。旧4.2普通响应命令为-1，`GameSession.send(BasePacket)`会丢弃；新增入口不修改CmdId、生成协议或VERSION。波次桥接4条回归含3条先失败，原生入口5条回归含2条先失败；认证门槛、重复/截断/宽整数/未知与附加字段拒绝及4.2旁路通过。波数要求正数且不超过资源MaxChallengeCnt；HECCOBFBJFI/CBJCKEIGGNL非默认请求拒绝，普通prop_entity_id尚未关联场景物件身份，其他助战/强化/体力变体及游戏UI待完成/验收。
+`Cocoon46` 接管已冻结的普通1432/1484与快速原生命令，调用原有真实 `BattleService.startCocoon`，返回实际花萼ID、挑战波数及转换后的 `SceneBattleInfo`。旧4.2普通响应命令为-1，`GameSession.send(BasePacket)`会丢弃；新增入口不修改CmdId、生成协议或VERSION。波次桥接4条回归含3条先失败，原生入口5条回归含2条先失败；认证门槛、重复/截断/宽整数/未知与附加字段拒绝及4.2旁路通过。初版仅接受正数且不超过资源MaxChallengeCnt的波数，曾拒绝HECCOBFBJFI/CBJCKEIGGNL非默认请求；2026-11-02已按实机请求接通HECCOBFBJFI挑战次数，嵌套CBJCKEIGGNL仍拒绝，见[花萼挑战说明](cocoon-challenge-count-4.6.md)，普通prop_entity_id尚未关联场景物件身份，其他助战/强化/体力变体及游戏UI待完成/验收。
 
 `scripts/smoke-farming-mission.py` 在隔离目录使用真实4.6花萼1001/世界等级0及本项目两步CocoonFinish任务19996923；普通入口三波、快速入口再一波共扣40体力，第一胜不消耗新解锁第二目标，错误战斗ID与重复结果拒绝。同账号重新登录及H2服务进程重启恢复完成目标与余额260，原始MainMission资源校验不变。此次运行 `build/smoke/farming-mission-vkw0uyhg` 五项通过；任务目录仅含这个合成任务，其他资源连接只读源目录。这不是官方主线/战斗演出，也不是游戏客户端验收；clientGameplayVerified=false。H2重启等待延迟落盘，不证明写入中断事务恢复。
 

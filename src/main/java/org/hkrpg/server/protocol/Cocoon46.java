@@ -27,24 +27,29 @@ public final class Cocoon46 {
       int cocoon = request == null ? 0 : number(request, "cocoon_id");
       int world = request == null ? -1 : number(request, "world_level");
       int wave = request == null ? 0 : number(request, "wave");
+      // CN4.6 FarmModule sends challenge count in field10 (ordinary) / field6 (quick).
+      // The local native writers and the observed 38e90740215001 click agree; wave is absent.
+      int count = request == null ? 0 : number(request, "HECCOBFBJFI");
+      boolean countValid = (count > 0 && wave == 0) || (count == 0 && wave > 0);
+      int challenges = count > 0 ? count : wave;
       boolean ordinary = name.equals("StartCocoonStageCsReq");
       boolean valid =
           request != null
               && (ordinary
-                  ? only(request, "cocoon_id", "world_level", "wave", "prop_entity_id")
-                  : only(request, "cocoon_id", "world_level", "wave"))
+                  ? only(request, "cocoon_id", "world_level", "wave", "prop_entity_id", "HECCOBFBJFI")
+                  : only(request, "cocoon_id", "world_level", "wave", "HECCOBFBJFI"))
               && cocoon > 0
               && world >= 0
-              && wave > 0
+              && countValid
               && (!ordinary || number(request, "prop_entity_id") >= 0);
       var resource = valid ? GameData.getCocoonExcelMap().get(cocoon, world) : null;
-      valid = resource != null && wave <= resource.getMaxChallengeCnt();
+      valid = resource != null && challenges <= resource.getMaxChallengeCnt();
       var battle =
           valid
               ? session
                   .getServer()
                   .getBattleService()
-                  .startCocoon(session.getPlayer(), cocoon, world, wave)
+                  .startCocoon(session.getPlayer(), cocoon, world, challenges)
               : null;
       var response = builder(session, name.replace("CsReq", "ScRsp"));
       set(response, "retcode", battle == null ? Retcode.REQ_PARA_INVALID.getVal() : 0);
@@ -52,6 +57,10 @@ public final class Cocoon46 {
         // Honey fe00bdb echoes the requested cocoon ID, not the mapping/teleport ID.
         set(response, "cocoon_id", battle.getCocoonId());
         set(response, "wave", battle.getCocoonWave());
+        if (ordinary) {
+          set(response, "challenge_cnt", battle.getCocoonWave());
+          set(response, "prop_entity_id", number(request, "prop_entity_id"));
+        }
         set(
             response,
             "battle_info",

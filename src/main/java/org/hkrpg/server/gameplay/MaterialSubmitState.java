@@ -33,7 +33,7 @@ public final class MaterialSubmitState {
         || !(receipts.isEmpty()&&fingerprint.isEmpty() || fingerprint.equals(definitions.fingerprint()))) return false;
     for(var entry:receipts.entrySet()) {
       if(entry.getKey()==null || entry.getValue()==null || !entry.getValue().valid(definitions.rows().get(entry.getKey()))) return false;
-      if(entry.getKey()>301) {var previous=receipts.get(entry.getKey()-1);if(previous==null || !previous.submitted())return false;}
+      if(entry.getKey()>definitions.firstId()) {var previous=receipts.get(entry.getKey()-1);if(previous==null || !previous.submitted())return false;}
     }
     return true;
   }
