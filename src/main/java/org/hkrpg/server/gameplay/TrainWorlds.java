@@ -35,7 +35,10 @@ public final class TrainWorlds {
       var scene = player.getScene();
       if (scene == null
           || scene.getPlayer() != player
-          || scene.getPlaneType() != PlaneType.Train
+          // The map selects the train world before sending EnterScene from an ordinary map.
+          || (scene.getPlaneType() != PlaneType.Train
+              && scene.getPlaneType() != PlaneType.Town
+              && scene.getPlaneType() != PlaneType.Maze)
           || context == 0
           || scene.getRuntimeId() != context
           || scene.getPlaneId() != player.getPlaneId()

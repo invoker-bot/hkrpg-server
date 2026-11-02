@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import org.hkrpg.server.gameplay.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class TrainWorld46Test {
   static final int WORLD = 199967501, OTHER = WORLD + 1;
@@ -183,6 +185,55 @@ class TrainWorld46Test {
     assertEquals(1, notifications.size());
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"Town", "Maze"})
+  void mapNavigationSelectsTheTrainWorldBeforeLeavingTheCurrentOrdinaryScene(String type)
+      throws Exception {
+    scene(type);
+    var source = fixture.current;
+    long runtime = context();
+    int ordinaryWorld = fixture.actor.getWorldId();
+    fixture.actor.getGameplay().getSubMissions().put(405000502,
+        new emu.lunarcore.game.quest.QuestState(405000502));
+
+    assertEquals(Retcode.SUCC.getVal(), call(request(runtime, OTHER)));
+    assertEquals(OTHER, Gameplay46.number(response, "CFDCEEMIOCO"));
+    assertSame(source, fixture.actor.getScene());
+    assertEquals(runtime, source.getRuntimeId());
+    assertEquals(ordinaryWorld, fixture.actor.getWorldId());
+    assertEquals(100, source.toProto().getWorldId());
+    assertEquals(1, saved.size());
+    assertEquals(OTHER, saved.getFirst().getStoryValues().get(TrainWorlds.KEY));
+    assertEquals(emu.lunarcore.game.quest.QuestState.Phase.DOING,
+        saved.getFirst().getSubMissions().get(405000502).getPhase());
+    assertEquals(0, saved.getFirst().getSubMissions().get(405000502).getProgress());
+    assertEquals(List.of("TrainWorldIdChangeScNotify"), notifications);
+
+    assertEquals(Retcode.SUCC.getVal(), call(request(runtime, OTHER)));
+    assertEquals(1, saved.size());
+    assertEquals(1, notifications.size());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"Town", "Maze"})
+  void ordinaryMapSelectionStillRejectsForeignRuntimesAndUnvisitedWorlds(String type)
+      throws Exception {
+    scene(type);
+    long previous = context();
+    assertEquals(Retcode.SCENE_ENTITY_NOT_EXIST.getVal(),
+        call(request(previous ^ (1L << 32), OTHER)));
+    scene(type);
+    assertEquals(Retcode.SCENE_ENTITY_NOT_EXIST.getVal(), call(request(previous, OTHER)));
+    long current = context();
+    fixture.actor.getGameplay().getStoryValues().remove("train:visited:" + OTHER);
+    String before = gson.toJson(fixture.actor.getGameplay());
+    assertEquals(Retcode.REQ_PARA_INVALID.getVal(), call(request(current, OTHER)));
+    assertEquals(Retcode.REQ_PARA_INVALID.getVal(), call(request(current, OTHER + 1)));
+    assertEquals(before, gson.toJson(fixture.actor.getGameplay()));
+    assertTrue(saved.isEmpty());
+    assertTrue(notifications.isEmpty());
+  }
+
   @Test
   void unvisitedUnknownAndMismatchedWorldsCannotBeSelectedOrEchoedAsSuccess() throws Exception {
     fixture.actor.getGameplay().getStoryValues().remove("train:visited:" + OTHER);
@@ -257,8 +308,11 @@ class TrainWorld46Test {
     assertEquals(WORLD, fixture.actor.getGameplay().getStoryValues().get("train:world"));
   }
 
-  @Test
-  void savedRaidOwnershipBlocksTrainSelectionEvenIfTheSceneContextLooksValid() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"Train", "Town", "Maze"})
+  void savedRaidOwnershipBlocksTrainSelectionEvenIfTheSceneContextLooksValid(String type)
+      throws Exception {
+    scene(type);
     long context = context();
     fixture
         .actor
@@ -274,8 +328,10 @@ class TrainWorld46Test {
     assertEquals(1, notifications.size());
   }
 
-  @Test
-  void pendingStoryTrialUniverseVenueAndReservedActionsBlockSelection() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"Train", "Town", "Maze"})
+  void pendingStoryTrialUniverseVenueAndReservedActionsBlockSelection(String type) throws Exception {
+    scene(type);
     var p = fixture.actor;
     long context = context();
     p.getGameplay().getStoryLines().begin(1, null, null);
