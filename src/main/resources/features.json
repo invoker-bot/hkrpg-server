@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "friend-page-wire",
+      "name": "好友页面资料与4.6协议转换",
+      "status": "partial",
+      "evidence": "docs/friend-page-loading-4.6.md",
+      "gap": "修复非空好友列表与申请列表的资料字段、聊天气泡、最近活跃时间和展示角色转换；保留原UID、备注、标记及旧版编码。生产控制台好友包、普通资料、未知字段拒绝和隔离KCP重复查询/心跳/重连/H2重启的验证边界见证据文档。推荐、关系增删、处理申请、聊天、黑名单、助战及真实客户端页面仍待单独验收。"
+    },
+    {
       "id": "player-level-rewards",
       "name": "开拓等级奖励领取",
       "status": "partial",
