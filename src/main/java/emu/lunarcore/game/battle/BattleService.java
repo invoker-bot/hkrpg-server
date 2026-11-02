@@ -340,10 +340,21 @@ public class BattleService extends BaseGameService {
         synchronized (player) { return startCocoonLocked(player,cocoonId,worldLevel,wave); }
     }
     private Battle startCocoonLocked(Player player,int cocoonId,int worldLevel,int wave) {
+        return startCocoonLocked(player, cocoonId, worldLevel, wave, false).battle();
+    }
+
+    public record CocoonStartResult(Battle battle, Retcode retcode) {}
+
+    /** Only verified native farming entry opts into the saved stamina recovery preference. */
+    public CocoonStartResult startCocoonWithStaminaRecovery(Player player, int cocoonId, int worldLevel, int wave) {
+        synchronized (player) { return startCocoonLocked(player, cocoonId, worldLevel, wave, true); }
+    }
+
+    private CocoonStartResult startCocoonLocked(Player player,int cocoonId,int worldLevel,int wave,boolean recovery) {
         // Sanity check to make sure player isnt in a battle
         if (player.isInBattle() || activityBlocksBattle(player)
                 || org.hkrpg.server.gameplay.StoryChallengeScope.isNativeStory(player)) {
-            return null;
+            return new CocoonStartResult(null, Retcode.REQ_PARA_INVALID);
         }
 
         // Get cocoon data
@@ -353,7 +364,7 @@ public class BattleService extends BaseGameService {
                 || cocoonExcel.getMappingInfoID() <= 0 || cocoonExcel.getStaminaCost() < 0
                 || cocoonExcel.getMaxChallengeCnt() <= 0 || cocoonExcel.getMaxChallengeCnt() > 24
                 || cocoonExcel.getStageIDList() == null || cocoonExcel.getStageIDList().isEmpty()) {
-            return null;
+            return new CocoonStartResult(null, Retcode.REQ_PARA_INVALID);
         }
 
         // Get waves
@@ -361,9 +372,11 @@ public class BattleService extends BaseGameService {
 
         // Sanity check stamina
         long requestedCost = (long) cocoonExcel.getStaminaCost() * wave;
-        if (requestedCost > Integer.MAX_VALUE || player.getStamina() < requestedCost) {
-            return null;
-        }
+        if (requestedCost > Integer.MAX_VALUE) return new CocoonStartResult(null, Retcode.REQ_PARA_INVALID);
+        long missing = Math.max(0L, requestedCost - player.getStamina());
+        if (missing > 0 && (!recovery || !player.isQuickStaminaRecovery()
+                || !Double.isFinite(player.getStaminaReserve()) || player.getStaminaReserve() < missing))
+            return new CocoonStartResult(null, Retcode.LACK_STAMINA);
         int cost = (int) requestedCost;
 
         // Validate the whole resource pool before randomness; a missing choice must not shorten
@@ -374,7 +387,7 @@ public class BattleService extends BaseGameService {
                     || candidate.getStageType() != StageType.Cocoon || candidate.getMonsterWaves() == null
                     || candidate.getMonsterWaves().isEmpty()
                     || candidate.getMonsterWaves().stream().anyMatch(monsters -> monsters == null || monsters.isEmpty()))
-                return null;
+                return new CocoonStartResult(null, Retcode.REQ_PARA_INVALID);
         }
 
         // Get stages from cocoon
@@ -384,13 +397,14 @@ public class BattleService extends BaseGameService {
             StageExcel stage = GameData.getStageExcelMap().get(cocoonExcel.getRandomStage());
 
             if (stage == null || !cocoonExcel.getStageIDList().contains(stage.getId())
-                    || stage.getStageType() != StageType.Cocoon) return null;
+                    || stage.getStageType() != StageType.Cocoon)
+                return new CocoonStartResult(null, Retcode.REQ_PARA_INVALID);
             stages.add(stage);
         }
 
         // Sanity
         if (stages.size() != wave) {
-            return null;
+            return new CocoonStartResult(null, Retcode.REQ_PARA_INVALID);
         }
 
         // Build battle from cocoon data
@@ -401,9 +415,14 @@ public class BattleService extends BaseGameService {
         battle.setWorldLevel(worldLevel);
         battle.setStaminaCost(cost);
 
+        // All resources and the battle are ready before converting any real reserve.
+        if (recovery && missing > 0) {
+            var recovered = player.recoverCocoonStamina(cost);
+            if (recovered != Retcode.SUCC) return new CocoonStartResult(null, recovered);
+        }
         player.setBattle(battle);
 
-        return battle;
+        return new CocoonStartResult(battle, Retcode.SUCC);
     }
 
     public Battle finishBattle(Player player, BattleEndStatus result, BattleStatistics stats) {

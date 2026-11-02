@@ -110,7 +110,7 @@ public class Player implements Tickable, Syncable {
     private int stamina;
     private double staminaReserve;
     private long nextStaminaRecover;
-    // CN4.6 preference only; an actual reserve exchange remains a separate request.
+    // CN4.6 farming preference; native cocoon entry may recover its actual shortfall.
     private boolean quickStaminaRecovery;
 
     private transient Battle battle;
@@ -698,6 +698,30 @@ public class Player implements Tickable, Syncable {
                 quickStaminaRecovery = previous;
                 return Retcode.SERVER_INTERNAL_ERROR;
             }
+            return Retcode.SUCC;
+        }
+    }
+
+    /** Persist a native farming refill before entry; a failed save never announces new balances. */
+    public Retcode recoverCocoonStamina(int required) {
+        synchronized (this) {
+            if (required < 0 || stamina < 0) return Retcode.REQ_PARA_INVALID;
+            if (stamina >= required) return Retcode.SUCC;
+            int missing = required - stamina;
+            if (!quickStaminaRecovery || !Double.isFinite(staminaReserve) || staminaReserve < missing)
+                return Retcode.LACK_STAMINA;
+            int previousStamina = stamina;
+            double previousReserve = staminaReserve;
+            stamina = required;
+            staminaReserve -= missing;
+            try {
+                save();
+            } catch (RuntimeException failed) {
+                stamina = previousStamina;
+                staminaReserve = previousReserve;
+                return Retcode.SERVER_INTERNAL_ERROR;
+            }
+            sendPacket(new PacketStaminaInfoScNotify(this));
             return Retcode.SUCC;
         }
     }

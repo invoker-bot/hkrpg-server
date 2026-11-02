@@ -1,4 +1,4 @@
-拟造花萼点击挑战报「消息错误」已按实机请求修正挑战次数解析，普通挑战已获用户确认；快捷补充开关的保存、回包与验证边界见[快捷补充说明](docs/quick-stamina-settings-4.6.md)，原挑战说明见[花萼挑战](docs/cocoon-challenge-count-4.6.md)。
+拟造花萼普通挑战已获用户确认；结算页「再来一次」的快捷储备补充与错误码修复见[重试说明](docs/cocoon-retry-stamina-4.6.md)。开关保存和回包见[快捷补充说明](docs/quick-stamina-settings-4.6.md)，次数解析见[花萼挑战](docs/cocoon-challenge-count-4.6.md)。
 
 好友页面持续加载的好友资料协议转换已修复；原因与验证边界见[好友页加载说明](docs/friend-page-loading-4.6.md)。
 

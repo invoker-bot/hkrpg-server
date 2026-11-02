@@ -44,15 +44,16 @@ public final class Cocoon46 {
               && (!ordinary || number(request, "prop_entity_id") >= 0);
       var resource = valid ? GameData.getCocoonExcelMap().get(cocoon, world) : null;
       valid = resource != null && challenges <= resource.getMaxChallengeCnt();
-      var battle =
+      var result =
           valid
               ? session
                   .getServer()
                   .getBattleService()
-                  .startCocoon(session.getPlayer(), cocoon, world, challenges)
+                  .startCocoonWithStaminaRecovery(session.getPlayer(), cocoon, world, challenges)
               : null;
+      var battle = result == null ? null : result.battle();
       var response = builder(session, name.replace("CsReq", "ScRsp"));
-      set(response, "retcode", battle == null ? Retcode.REQ_PARA_INVALID.getVal() : 0);
+      set(response, "retcode", result == null ? Retcode.REQ_PARA_INVALID.getVal() : result.retcode().getVal());
       if (battle != null) {
         // Honey fe00bdb echoes the requested cocoon ID, not the mapping/teleport ID.
         set(response, "cocoon_id", battle.getCocoonId());
