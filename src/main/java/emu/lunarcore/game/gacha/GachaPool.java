@@ -43,7 +43,10 @@ public record GachaPool(List<Integer> base5, List<Integer> base4, List<Integer> 
             up5 = checked(box(banner.getRateUpItems5()), 5, banner.getGachaType(), "五星 UP", issues);
             up4 = checked(box(banner.getRateUpItems4()), 4, banner.getGachaType(), "四星 UP", issues);
             five = defaults(service.getYellowAvatars(), service.getYellowWeapons(), 5, banner.getGachaType(), issues);
-            four = defaults(service.getPurpleAvatars(), service.getPurpleWeapons(), 4, GachaType.Normal, issues);
+            // Four-star UP uses an exact 50%/75% share, unlike the five-star
+            // two-stage rule. A missed UP roll must select a non-featured item.
+            four = new ArrayList<>(defaults(service.getPurpleAvatars(), service.getPurpleWeapons(), 4, GachaType.Normal, issues));
+            four.removeAll(up4);
         }
         var three = checked(box(service.getBlueWeapons()), 3, GachaType.WeaponUp, "三星基础池", issues);
         return new GachaPool(five, four, three, up5, up4, issues, permanent);

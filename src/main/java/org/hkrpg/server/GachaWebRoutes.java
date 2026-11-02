@@ -74,9 +74,18 @@ public final class GachaWebRoutes {
         .append("</strong>。每 10 次至少获得一个四星或以上对象。</p>");
     if (beginner) text.append("<p>每次限十连，消耗 8 张星轨通票；最多跃迁 50 次，期间至少获得一名五星角色。新手池保底独立计算。</p>");
     else text.append("<p>最多 ").append(weapon ? 80 : 90).append(" 次获得五星。同类型活动池共享保底，其他类型分别计算。</p>");
-    if (event) text.append("<p>五星 UP 基础占比 ").append(banner.getEventChance())
-        .append("%，四星 UP 基础占比 ").append(weapon ? 75 : 50)
-        .append("%；未获得当期 UP 时，下次对应星级必定获得当期 UP。若 UP 同时在基础池内，实际占比会增加。</p>");
+    if (event) {
+      if (!pool.up5().isEmpty()) {
+        double actualChance = banner.getEventChance()
+            + (100.0 - banner.getEventChance()) * pool.up5().size() / pool.fiveStars().size();
+        text.append("<p>获得五星且没有 UP 大保底时，先以 ").append(banner.getEventChance())
+            .append("% 的概率获得五星 UP，其余概率从全部五星对象（含 UP）中均等抽取；实际 UP 概率为 ")
+            .append(String.format(Locale.ROOT, "%.3f", actualChance)).append("%。</p>");
+      }
+      if (!pool.up4().isEmpty()) text.append("<p>获得四星且没有 UP 大保底时，四星 UP 概率为 ")
+          .append(weapon ? 75 : 50).append("%；未命中 UP 时仅从非 UP 四星对象中抽取。</p>");
+      text.append("<p>未获得当期 UP 时，下次对应星级必定获得当期 UP。四星和五星的 UP 大保底分别计算。</p>");
+    }
     text.append("<p class=\"note\">保底递增曲线为本服兼容实现，官方未公布每次跃迁的完整曲线；上述基础概率、硬保底及 UP 规则以本服代码和配置为准。</p></section>");
     var names = names();
     text.append("<section id=\"objects\"><h2>对象清单</h2>");

@@ -111,6 +111,10 @@ class GachaWebRoutesTest {
         assertTrue(response.body().contains("0.800%"));
         assertTrue(response.body().contains("6.600%"));
         assertTrue(response.body().contains("75%"));
+        // This custom UP is already in the seven-item base catalogue: 75% + 25% / 7.
+        assertTrue(response.body().contains("78.571%"));
+        assertTrue(response.body().contains("全部五星对象（含 UP）"));
+        assertTrue(response.body().contains("仅从非 UP 四星对象中抽取"));
         assertTrue(response.body().contains("对象清单"));
         assertTrue(response.body().contains("物品 #23000"));
         assertFalse(response.body().contains("private-test-token"));

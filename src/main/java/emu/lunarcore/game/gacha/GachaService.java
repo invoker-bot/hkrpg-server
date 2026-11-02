@@ -269,7 +269,9 @@ public class GachaService extends BaseGameService {
                 }
 
                 if (itemId == 0) {
-                    itemId = pickBase(pool.base5());
+                    // The remaining 50%/25% selects uniformly from every obtainable
+                    // five-star, including UP. Standard/newbie keep their type split.
+                    itemId = pool.permanent() ? pickBase(pool.base5()) : pick(pool.fiveStars());
                 }
                 if (pool.up5().contains(itemId)) gachaInfo.setFailedFeaturedItemPulls(0);
 

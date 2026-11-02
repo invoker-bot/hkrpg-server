@@ -149,7 +149,7 @@ class GachaEconomyRegressionTest {
         }
     }
 
-    @Test void obtainingAFeaturedItemFromTheBasePoolClearsItsGuarantee() {
+    @Test void fiveStarFallbackCanAwardUpButFourStarFallbackMustArmItsGuarantee() {
         var service = new GachaDrawRarityTest.DrawService();
         service.eventRoll = 100;
         var banner = new GachaBanner().createBanner(2001, GachaType.AvatarUp, 0, Integer.MAX_VALUE,
@@ -159,9 +159,14 @@ class GachaEconomyRegressionTest {
             service.roll = roll;
             var player = new GachaDrawRarityTest.Resident();
             service.doPulls(player, 2001, 1);
-            assertEquals(roll == 1 ? 1003 : 1001, player.awarded.getFirst());
             var history = player.history.getBannerInfo(GachaType.AvatarUp);
-            assertEquals(0, roll == 1 ? history.getFailedFeaturedItemPulls() : history.getFailedFeatured4Pulls());
+            if (roll == 1) {
+                assertEquals(1003, player.awarded.getFirst());
+                assertEquals(0, history.getFailedFeaturedItemPulls());
+            } else {
+                assertNotEquals(1001, player.awarded.getFirst());
+                assertEquals(1, history.getFailedFeatured4Pulls());
+            }
         }
     }
 }
