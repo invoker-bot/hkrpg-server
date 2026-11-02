@@ -82,6 +82,33 @@ class GmItemShortcutsTest {
     }
   }
 
+  @Test void fixedShopGoodsAreSearchableByShopNameWithoutAcquisitionTextOrNewRarityClaims() throws Exception {
+    int shopId=108;var old=GameData.getShopExcelMap().get(shopId);
+    try{
+      item(199868006,"Usable","PlayerOutfit",",\"isVisible\":true");
+      item(199868007,"Usable","PersonalCard",",\"isVisible\":true");
+      item(199868008,"Material","Material",",\"isVisible\":true");
+      var shop=new Gson().fromJson("{\"ShopID\":108,\"ShopName\":-2}",emu.lunarcore.data.excel.ShopExcel.class);
+      GameData.getShopExcelMap().add(shop);
+      for(int n=0;n<3;n++){
+        var goods=new Gson().fromJson("{\"GoodsID\":"+(108001+n)+",\"ItemID\":"+(199868006+n)
+            +",\"ItemCount\":1,\"ShopID\":108}",emu.lunarcore.data.excel.ShopGoodsExcel.class);
+        goods.onLoad();
+      }
+      source("TextMap/TextMapCHS.json","{\"18446744073709551614\":\"星尘之礼\"}");
+      var rows=GmItemShortcuts.load(directory,catalog);
+      assertEquals(2,rows.size());
+      for(var row:rows){
+        assertEquals(List.of("collectible"),row.tags());
+        assertTrue(row.sources().stream().anyMatch(s->s.contains("星尘之礼")&&s.contains("#108")),row.sources().toString());
+        assertTrue(GmItemShortcuts.matches(row,"星尘之礼"));
+      }
+      assertEquals(rows,GmItemShortcuts.load(directory,catalog));
+    }finally{
+      GameData.getShopExcelMap().keySet().remove(shopId);if(old!=null)GameData.getShopExcelMap().add(old);
+    }
+  }
+
   @Test void anUnknownResourceSubtypeStaysQueryOnlyWithoutBreakingTheCatalog() throws Exception {
     item(199868004,"Usable","FutureUnknownType",",\"isVisible\":false");
     var rows=GmItemShortcuts.load(directory,catalog);

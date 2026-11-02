@@ -33,6 +33,7 @@ final class GmItemShortcuts {
     var origins = rows(resources.resolve("ExcelOutput/ItemComeFrom.json"));
     var hashes = new HashSet<String>();
     for (var row : origins) hashes.add(hash(row.getAsJsonObject().get("Desc")));
+    GameData.getShopExcelMap().values().forEach(shop -> hashes.add(Long.toUnsignedString(shop.getShopName())));
     var descriptions = texts(resources.resolve("TextMap/TextMapCHS.json"),hashes);
     for (var row : origins) {
       var source = row.getAsJsonObject();
@@ -44,6 +45,14 @@ final class GmItemShortcuts {
       if (List.of("限时","限定","联动","无名勋礼","无名客").stream().anyMatch(description::contains))
         hint.tags().add("limited");
     }
+    // A shop listing is acquisition provenance, not a claim of limited or currently listed stock.
+    GameData.getShopExcelMap().values().stream().sorted(Comparator.comparingInt(shop -> shop.getId())).forEach(shop -> {
+      String name=clean(descriptions.getOrDefault(Long.toUnsignedString(shop.getShopName()),"商店"));
+      shop.getGoods().values().stream().filter(goods -> goods.getItemID()>0)
+          .sorted(Comparator.comparingInt(goods -> goods.getId())).forEach(goods ->
+              hints.computeIfAbsent(goods.getItemID(),id -> new Hint()).sources()
+                  .add("商店目录："+name+" #"+shop.getId()+" · 商品 #"+goods.getId()));
+    });
     for (var table : Map.of("ChatBubbleConfig","ID","PhoneThemeConfig","ID",
         "PhoneCaseConfig","CaseID","PlayerPersonalCard","CardID").entrySet()) {
       for (var row : rows(resources.resolve("ExcelOutput/"+table.getKey()+".json"))) {
