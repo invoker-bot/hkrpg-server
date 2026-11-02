@@ -127,6 +127,44 @@ class TrainCakeCatch46Test {
 
   static List<?> list(DynamicMessage row, String field) { return (List<?>) field(row, field); }
 
+  static void assertNativeParkContainer(DynamicMessage response) {
+    // ParkPetDiyController receives rsp.field7.field14, without a null guard.
+    // An absent message differs from a present message with an empty area list.
+    var root = response.getDescriptorForType().findFieldByNumber(7);
+    assertTrue(response.hasField(root), "Native social root must be present on the wire");
+    var social = (DynamicMessage) response.getField(root);
+    var park = social.getDescriptorForType().findFieldByNumber(14);
+    assertTrue(social.hasField(park), "Native park sync must receive an empty container, not null");
+    var areas = (DynamicMessage) social.getField(park);
+    assertTrue(((List<?>) areas.getField(areas.getDescriptorForType().findFieldByNumber(1))).isEmpty(),
+        "An unimplemented park must not invent unlocked areas or placed pets");
+  }
+
+  @Test
+  void lockedSocialQueryIncludesTheNativeParkContainerWithoutCreatingProgress() throws Exception {
+    var s = room(false); s.actor.level = 9;
+    var before = gson.toJson(s.actor.getGameplay());
+    var rsp = request(s, "SocialPlayGetDataCsReq", new byte[0], "SocialPlayGetDataScRsp");
+    assertEquals(0, field(rsp, "retcode"));
+    // Round-trip the actual reply so default message instances cannot hide an absent field.
+    assertNativeParkContainer(DynamicMessage.parseFrom(rsp.getDescriptorForType(), rsp.toByteArray()));
+    assertEquals(before, gson.toJson(s.actor.getGameplay()));
+    assertEquals(0, s.actor.saves);
+    assertEquals(9, s.actor.level);
+  }
+
+  @Test
+  void capturedCatSocialQueryStillIncludesTheEmptyNativeParkContainer() throws Exception {
+    var s = room(true); open(s); search(s, 10);
+    var before = gson.toJson(s.actor.getGameplay());
+    var rsp = request(s, "SocialPlayGetDataCsReq", new byte[0], "SocialPlayGetDataScRsp");
+    assertEquals(0, field(rsp, "retcode"));
+    assertNativeParkContainer(DynamicMessage.parseFrom(rsp.getDescriptorForType(), rsp.toByteArray()));
+    assertEquals(before, gson.toJson(s.actor.getGameplay()));
+    assertEquals(2, s.actor.saves);
+    assertEquals(Map.of(10, 1), s.actor.getGameplay().getTrainCakeCatch().getCounts());
+  }
+
   @Test
   void originalGateRejectsLevelNineAndAnUnfinishedIntroductionWithoutChangingProgress() throws Exception {
     var s = room(false); s.actor.level = 9;

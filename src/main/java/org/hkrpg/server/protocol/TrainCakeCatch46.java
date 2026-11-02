@@ -48,7 +48,11 @@ final class TrainCakeCatch46 {
         // SyncTrainRoomGateData dereferences the profile even for an unplayed module.
         set(response, "ELDIONMAAHO", profile(session,
             code == Retcode.SUCC ? state : new TrainCakeCatchState()));
-        set(response, "NDDJFLPBHBL", builder(session, "HAIFIDAHGJG").build());
+        // ParkPetDiyController also consumes this reply: an absent field 14 is null,
+        // whereas a present empty HHCNMGNAIBG clears unimplemented area placements.
+        var social = builder(session, "HAIFIDAHGJG");
+        set(social, "JIPPNPILKDJ", builder(session, "HHCNMGNAIBG").build());
+        set(response, "NDDJFLPBHBL", social.build());
       } else if (code == Retcode.SUCC) {
         if (command == 10157) {
           set(response, "CMHKFNFKGOI", state.getRefreshAt());

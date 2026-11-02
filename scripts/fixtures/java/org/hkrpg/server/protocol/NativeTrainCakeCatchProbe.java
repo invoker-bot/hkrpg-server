@@ -137,6 +137,15 @@ public final class NativeTrainCakeCatchProbe {
     }
     require(((List<?>)field(profile,"KBEGMPBAJIL")).isEmpty(),"Invented performance completions");
   }
+  private DynamicMessage socialProfile() throws Exception {
+    var response = call("SocialPlayGetDataCsReq");
+    // Native KOLNCFIJCKH passes field7.field14 directly to ParkPetDiyController.
+    // An empty outer message still leaves that argument null in the real client.
+    var park = child(child(response, "NDDJFLPBHBL"), "JIPPNPILKDJ");
+    require(((List<?>) field(park, "DANNIDIPFAL")).isEmpty(),
+        "Read-only social query invented park areas or pet placements");
+    return child(response, "ELDIONMAAHO");
+  }
   private DynamicMessage search(int cat) throws Exception {
     var req=builder("TrainCakeCatchSearchCsReq");set(req,"PCPDHEIEJFO",cat);
     var rsp=call("TrainCakeCatchSearchCsReq",req);
@@ -158,7 +167,7 @@ public final class NativeTrainCakeCatchProbe {
     var captured=new TreeSet<Integer>();
     if(mode.equals("locked")) {
       callExpected("TrainCakeCatchOpenBoxCsReq",builder("TrainCakeCatchOpenBoxCsReq"),1215);
-      var empty=child(call("SocialPlayGetDataCsReq"),"ELDIONMAAHO");
+      var empty=socialProfile();
       require(((List<?>)field(empty,"BJPHDKEBOBK")).isEmpty(),"Locked profile invented a batch");
       require(((List<?>)field(empty,"NIELDCLPOLA")).isEmpty(),"Locked profile granted captures");
       require((Long)field(empty,"CMHKFNFKGOI")==0L,"Locked profile changed refresh time");
@@ -166,10 +175,10 @@ public final class NativeTrainCakeCatchProbe {
       if(mode.equals("open")) {
         var first=call("TrainCakeCatchOpenBoxCsReq");checkBox(first);
         require(first.equals(call("TrainCakeCatchOpenBoxCsReq")),"Repeated open rerolled batch");
-        checkProfile(child(call("SocialPlayGetDataCsReq"),"ELDIONMAAHO"),uid,Set.of());
+        checkProfile(socialProfile(),uid,Set.of());
       } else {
         captured.add(10);if(mode.equals("restart"))captured.add(21);
-        checkProfile(child(call("SocialPlayGetDataCsReq"),"ELDIONMAAHO"),uid,captured);
+        checkProfile(socialProfile(),uid,captured);
         checkBox(call("TrainCakeCatchOpenBoxCsReq"));
       }
       int cat=mode.equals("open")?10:mode.equals("verify")?21:26;
@@ -177,12 +186,13 @@ public final class NativeTrainCakeCatchProbe {
       captured.add(cat);
       var invalid=builder("TrainCakeCatchSearchCsReq");set(invalid,"PCPDHEIEJFO",4);
       callExpected("TrainCakeCatchSearchCsReq",invalid,5);
-      checkProfile(child(call("SocialPlayGetDataCsReq"),"ELDIONMAAHO"),uid,captured);
+      checkProfile(socialProfile(),uid,captured);
     }
     var result=new LinkedHashMap<String,Object>();
     result.put("passed",true);result.put("playerUid",uid);result.put("mode",mode);
     result.put("capturedCats",captured);result.put("checkedScenes",checkedScenes);
     result.put("originalLevelAndIntroductionGatesRetained",true);
+    result.put("emptyNativeParkContainerVerified",true);
     result.put("clientGameplayVerified",false);return result;
   }
   private void logout() throws InterruptedException {
