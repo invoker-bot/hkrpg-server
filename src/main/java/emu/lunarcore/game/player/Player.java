@@ -110,6 +110,8 @@ public class Player implements Tickable, Syncable {
     private int stamina;
     private double staminaReserve;
     private long nextStaminaRecover;
+    // CN4.6 preference only; an actual reserve exchange remains a separate request.
+    private boolean quickStaminaRecovery;
 
     private transient Battle battle;
     private transient Scene scene;
@@ -683,6 +685,21 @@ public class Player implements Tickable, Syncable {
     public void addStamina(int amount) {
         this.stamina = Utils.safeAdd(this.stamina, amount);
         this.sendPacket(new PacketStaminaInfoScNotify(this));
+    }
+
+    public Retcode setQuickStaminaRecovery(boolean enabled) {
+        synchronized (this) {
+            if (quickStaminaRecovery == enabled) return Retcode.SUCC;
+            boolean previous = quickStaminaRecovery;
+            quickStaminaRecovery = enabled;
+            try {
+                save();
+            } catch (RuntimeException failed) {
+                quickStaminaRecovery = previous;
+                return Retcode.SERVER_INTERNAL_ERROR;
+            }
+            return Retcode.SUCC;
+        }
     }
 
     public void spendStamina(int amount) {

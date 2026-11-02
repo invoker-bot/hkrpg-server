@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "quick-stamina-preference",
+      "name": "快捷补充开拓力开关与原生回包",
+      "status": "partial",
+      "evidence": "docs/quick-stamina-settings-4.6.md",
+      "gap": "接通已核实的原生设置更新45/18及字段380，保存玩家偏好并从基础资料字段711恢复；保留关闭的false oneof、重复点击及保存失败回退，其他设置明确拒绝。实际储备兑换仍按原28入口处理。回归、隔离KCP、正常重启与发布边界见文档；完整自动补充时机、物品/付费变体和修复后的真实客户端体验仍待单独验收。"
+    },
+    {
       "id": "music-reward-entry-gates",
       "name": "音游地图入口门槛与演出报酬",
       "status": "partial",

@@ -9,15 +9,29 @@ import emu.lunarcore.server.packet.*;
 import emu.lunarcore.server.packet.send.PacketGetBasicInfoScRsp;
 import java.io.IOException;
 
-/** Initial nickname confirmation and explicit character selection are separate client steps. */
+/** Native profile queries, verified stamina preference, and separate nickname/character steps. */
 public final class Profile46 {
   private record Choice(String nickname, int gender, boolean modify) {}
 
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
-    if (!session.getProtocol().experimental() || command != 41 && command != 80) return false;
+    if (!session.getProtocol().experimental() || command != 41 && command != 80 && command != 45)
+      return false;
     if (session.getState() != SessionState.ACTIVE) return true;
     var player = session.getPlayer();
     synchronized (player) {
+      if (command == 45) {
+        var response = builder(session, "UpdatePlayerSettingScRsp");
+        var setting = builder(session, "UpdatePlayerSetting");
+        Boolean enabled = readQuickStaminaSetting(bytes);
+        var result = enabled == null ? Retcode.REQ_PARA_INVALID
+            : player.setQuickStaminaRecovery(enabled);
+        // False is a selected oneof value. On save failure echo the actual rolled-back state.
+        if (enabled != null) set(setting, "HGPFFGKNPFB", player.isQuickStaminaRecovery());
+        set(response, "player_setting", setting.build());
+        set(response, "retcode", result.getVal());
+        session.sendClientPacket("UpdatePlayerSettingScRsp", response.build().toByteArray());
+        return true;
+      }
       if (command == 80) {
         var response = builder(session, "GetBasicInfoScRsp");
         if (bytes.length == 0) {
@@ -35,6 +49,8 @@ public final class Profile46 {
           var settings = DynamicMessage.newBuilder(settingsField.getMessageType());
           var nested = settings.getDescriptorForType().findFieldByName("OJPAODIHAJE");
           settings.setField(nested, DynamicMessage.getDefaultInstance(nested.getMessageType()));
+          // Native IsFarmStageAutoAddStamina: update oneof380, login PlayerSettingInfo field711.
+          set(settings, "HGPFFGKNPFB", player.isQuickStaminaRecovery());
           response.setField(settingsField, settings.build());
           set(response, "is_gender_set", player.hasCreatedCharacter());
         } else set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
@@ -57,6 +73,20 @@ public final class Profile46 {
       if (path != null) response.setField(type, path);
       session.sendClientPacket("SetPlayerInfoScRsp", response.build().toByteArray());
       return true;
+    }
+  }
+
+  private static Boolean readQuickStaminaSetting(byte[] bytes) {
+    if (bytes.length > 32) return null;
+    try {
+      var outer = CodedInputStream.newInstance(bytes);
+      if (outer.readTag() != 10) return null; // UpdatePlayerSettingCsReq.player_setting field1.
+      var setting = CodedInputStream.newInstance(outer.readByteArray());
+      if (!outer.isAtEnd() || setting.readTag() != (380 << 3)) return null;
+      long value = setting.readUInt64();
+      return setting.isAtEnd() && (value == 0 || value == 1) ? value == 1 : null;
+    } catch (IOException invalid) {
+      return null;
     }
   }
 
