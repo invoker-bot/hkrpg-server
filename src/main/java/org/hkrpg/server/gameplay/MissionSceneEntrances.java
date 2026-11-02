@@ -110,7 +110,8 @@ public final class MissionSceneEntrances {
         new AuditedTransfer(100030204, 1000302, 10001, 10001001, 100030203, 2000301, 0, 0, true),
         new AuditedTransfer(100040113, 1000400, 20003, 20003001, 100040112, 1000101, 12, 1, true),
         new AuditedTransfer(100050102, 1000501, 20003, 20003001, 100050101, 1000001, 4, 2, true),
-        new AuditedTransfer(101000205, 1010002, 10000, 10000000, 101000204, 2010101, 2, 1, false));
+        new AuditedTransfer(101000205, 1010002, 10000, 10000000, 101000204, 2010101, 2, 1, false),
+        new AuditedTransfer(101010114, 1010101, 20101, 20101001, 101010113, 1010101, 45, 2, false));
     private static final long GRACE_MILLIS = 15_000;
     private static final long RECEIPT_NANOS = 30_000_000_000L;
 

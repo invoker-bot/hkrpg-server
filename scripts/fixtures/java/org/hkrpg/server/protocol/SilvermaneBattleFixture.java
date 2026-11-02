@@ -42,9 +42,20 @@ public class SilvermaneBattleFixture {
       var g=player.getGameplay();var state=g.getSubMissions().get(101010110);
       require(g.getScenePropStates().valid(),"Invalid prop record");
       if(mode.equals("seed"))require(state.getPhase()==QuestState.Phase.DOING&&!g.getSubMissions().containsKey(101010113),"Seed prewrote victory");
-      else require(state.getPhase()==QuestState.Phase.FINISHED&&g.getSubMissions().get(101010113).getPhase()==QuestState.Phase.DOING,"Victory did not persist");
+      else if(args.length==5&&args[3].equals("city")) {
+        require(state.getPhase()==QuestState.Phase.FINISHED
+            &&g.getSubMissions().get(101010113).getPhase()==QuestState.Phase.FINISHED
+            &&g.getSubMissions().get(101010114).getPhase()==QuestState.Phase.FINISHED
+            &&g.getSubMissions().get(101020101).getPhase()==QuestState.Phase.DOING,"City progress did not persist");
+        require(player.getPlaneId()==10101&&player.getFloorId()==10101001&&player.getEntryId()==1010101,"City position lost");
+        var source=Path.of(args[4]).resolve("Config/LevelOutput/SharedRuntimeGroup/Groups_P10101_F10101001/LevelGroup_P10101_F10101001_G45.json");
+        var group=emu.lunarcore.data.ResourceLoader.getGson().fromJson(Files.readString(source),emu.lunarcore.data.config.GroupInfo.class);
+        var anchor=group.getAnchorList().stream().filter(a->a.ID==2).findFirst().orElseThrow();
+        require(player.getPos().equals(anchor.getPos()),"Authored city anchor lost or replaced by generic entrance");
+      } else require(state.getPhase()==QuestState.Phase.FINISHED&&g.getSubMissions().get(101010113).getPhase()==QuestState.Phase.DOING,"Victory did not persist");
       System.out.println("SILVERMANE_INSPECT="+new Gson().toJson(Map.of("passed",true,"uid",uid,"mode",mode,
-          "actualPlayerRestored",true,"victoryPhase",state.getPhase(),"followingGoalAccepted",g.getSubMissions().containsKey(101010113))));
+          "actualPlayerRestored",true,"victoryPhase",state.getPhase(),"followingGoalAccepted",g.getSubMissions().containsKey(101010113),
+          "credits",player.getScoin(),"floor",player.getFloorId(),"position",player.getPos())));
     } finally {server.shutdownNow();}
   }
 }

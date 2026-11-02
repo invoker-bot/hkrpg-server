@@ -1,3 +1,5 @@
+`MissionSceneEntrances.LiveRecovery` 的逐项来源目录包含雪原战后进入行政区的 `101010114`；仅在原演出 `101010113` 完成、目标仍在原雪原场景接取且原始单步脚本及 G45/A2 落点匹配时允许延迟恢复。范围和实机边界见[剧情切图说明](live-story-transfer-4.6.md)。
+
 `Battle` 分别保存入战事件与实际关卡，`PacketPVEBattleResultScRsp` 回传原生事件编号，供客户端剧情胜利判断；来源、两场推进和验收边界见[银鬃铁卫战斗循环](silvermane-battle-loop-4.6.md)。
 
 `StoryDoors` 为原始城郊雪原雪堆复用自身状态交互，在完整 `101010108` 启用脚本、任务目标与世界身份匹配后恢复可调查状态；`ScenePropTransitions` 继续承担保存、同步和目标事件。独立镜头提示不阻塞启用序列，来源与验证边界见[雪堆调查说明](snowdrift-investigation-4.6.md)。

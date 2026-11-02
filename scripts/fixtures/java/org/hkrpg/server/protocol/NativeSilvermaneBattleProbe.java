@@ -58,6 +58,39 @@ public class NativeSilvermaneBattleProbe {
     }
     require(next==completed,"Wrong following performance objective");
   }
+  void cityGoals() throws Exception {
+    var data=call("GetMissionDataCsReq",Map.of(),true);
+    var finished=(List<?>)field(data,"OLKALABEDOA");
+    require(finished.containsAll(List.of(101010110,101010113,101010114)),"City arrival did not finish");
+    boolean next=false;
+    for(var raw:(List<?>)field(data,"mission_list"))
+      if(number((DynamicMessage)raw,"id")==101020101)next=true;
+    require(next&&!finished.contains(101020101),"The city dialogue must remain pending");
+  }
+  void cityScene() throws Exception {
+    var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq",Map.of(),true),"scene");
+    require(number(scene,"plane_id")==10101&&number(scene,"floor_id")==10101001,"City scene missing");
+  }
+  void awaitCityTransfer() throws Exception {
+    long started=System.nanoTime(),deadline=started+TimeUnit.SECONDS.toNanos(23);
+    int synchronizedScenes=0;
+    while(System.nanoTime()<deadline) {
+      if(failure.get()!=null)throw new IllegalStateException("KCP failure",failure.get());
+      var frame=inbox.poll(1,TimeUnit.SECONDS);
+      if(frame==null)continue;
+      if(frame.command()==protocol.clientCommand("SyncServerSceneChangeNotify"))synchronizedScenes++;
+      if(frame.command()==protocol.clientCommand("EnterSceneByServerScNotify")) {
+        var notice=protocol.clientSchema().parse("EnterSceneByServerScNotify",frame.body());
+        require(notice.getUnknownFields().asMap().isEmpty(),"Unknown city transition fields");
+        var scene=(DynamicMessage)field(notice,"scene");
+        require(number(scene,"plane_id")==10101&&number(scene,"floor_id")==10101001,"Wrong transfer destination");
+        require(synchronizedScenes==1,"Expected one scene synchronization before transfer");
+        require(System.nanoTime()-started>=TimeUnit.SECONDS.toNanos(13),"Client grace period was skipped");
+        return;
+      }
+    }
+    throw new TimeoutException("Same-session snow-to-city transition");
+  }
   Map<String,Object> result(DynamicMessage battle,String end) {
     var type=protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status").getEnumType();
     return Map.of("battle_id",number(battle,"battle_id"),"stage_id",number(battle,"stage_id"),"end_status",type.findValueByName(end));
@@ -69,6 +102,11 @@ public class NativeSilvermaneBattleProbe {
     call("PlayerLoginCsReq",Map.of(),true);call("PlayerLoginFinishCsReq",Map.of(),true);
     String mode=control.get("mode").getAsString();
     if(mode.equals("bootstrap")) return Map.of("passed",true,"uid",uid,"requests",requests);
+    boolean city=control.has("cityTransfer")&&control.get("cityTransfer").getAsBoolean();
+    if(city&&mode.equals("restored")) {
+      cityScene();cityGoals();
+      return Map.of("passed",true,"uid",uid,"requests",requests,"cityArrivalRestored",true);
+    }
     scene();
     if(mode.equals("restored")) {
       goal(true);
@@ -90,9 +128,17 @@ public class NativeSilvermaneBattleProbe {
       var duplicate=call("PVEBattleResultCsReq",report,false);
       require(number(duplicate,"event_id")==0,"Repeated result replayed event");goal(event==20101012);
     }
-    return Map.of("passed",true,"uid",uid,"mode",mode,"requests",requests,
+    if(city) {
+      call("FinishTalkMissionCsReq",Map.of("sub_mission_id",101010113,"talk_str","Mission_101010113"),true);
+      awaitCityTransfer();cityScene();cityGoals();
+      call("EnterSceneCsReq",Map.of("entry_id",1010101,"teleport_id",0),true);
+      cityScene();cityGoals();
+    }
+    var summary=new LinkedHashMap<String,Object>(Map.of("passed",true,"uid",uid,"mode",mode,"requests",requests,
         "bothEventRepliesVerified",true,"firstVictoryDidNotSkipSecond",true,"secondVictoryAcceptedNext",true,
-        "invalidAndRepeatedResultsRejected",true,"clientGameplayVerified",false);
+        "invalidAndRepeatedResultsRejected",true,"clientGameplayVerified",false));
+    summary.put("sameSessionCityTransfer",city);
+    return summary;
   }
   public static void main(String[] args) {
     var probe=new NativeSilvermaneBattleProbe();var client=new KcpClient();int exit=1;
