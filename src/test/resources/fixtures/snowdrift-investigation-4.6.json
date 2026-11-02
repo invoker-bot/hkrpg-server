@@ -1,0 +1,1998 @@
+{
+  "repository": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sources": [
+    {
+      "path": "Config/LevelOutput/RuntimeFloor/P20101_F20101001.json",
+      "sha256": "57e2e83c017ef0ea29347f1f0271a05379ecfc6acfa0ee86297bfa219ebf0385"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G23.json",
+      "sha256": "6c66c23f9a13723aec80c6c381d992403af6664b3bbf0eb8f9df9fc954a2fa8c"
+    },
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G25.json",
+      "sha256": "2b266a8c547f39a053f7091f491be093bc45a25a1defaa8419f3d896334ec285"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/MissionInfo_1010101.json",
+      "sha256": "4492e0bf1f514619202dee502e0e1fe9e2c0676b404170a75c8e703a4c84cf57"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/MissionInfo_1010101.partial.json",
+      "sha256": "45c41cbc17f022eb6ed5f19a6495de2161c3ebdad65bebac03af3621ee146733"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010108.json",
+      "sha256": "af2e8fc5b411435c4a219f8e2066994e1f4191fffd1ed6ff069fa619362159eb"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Prop/Prop_NormalInteract_SnowBall.json",
+      "sha256": "759628d2b78c1d987d0dbeaa3c88ad7589bf3f061b5c160d89b2718d4eb254aa"
+    },
+    {
+      "path": "ExcelOutput/MazeProp.json",
+      "sha256": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418"
+    },
+    {
+      "path": "ExcelOutput/MazePlane.json",
+      "sha256": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de"
+    },
+    {
+      "path": "ExcelOutput/MainMission.json",
+      "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a"
+    },
+    {
+      "path": "ExcelOutput/InteractConfig.json",
+      "sha256": "3a1e0f178b95a482fa2c03975f3a8f2a4ffa1e609c4819aeee5108dc9ef29de9"
+    }
+  ],
+  "records": {
+    "Config/LevelOutput/RuntimeFloor/P20101_F20101001.json": {
+      "FloorID": 20101001,
+      "StartAnchorID": 2,
+      "StageData": "Stages/Outputs/Chapter01/Stages/Chap01_ADV_Area_Snowfield_01_StageData/Chap01_ADV_Area_Snowfield_01_StageData.stage",
+      "CameraType": "Maze",
+      "LayerToAreaMask": [
+        1
+      ],
+      "NavmapConfigPath": "Config/LevelOutput/Map/MapInfo_P20101_F20101001.json",
+      "GroupInstanceList": [
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G2.json",
+          "Name": "DefaultData",
+          "ID": 2
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G17.json",
+          "Name": "Checkpoint",
+          "ID": 17
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G17_D1001.json",
+          "Name": "Checkpoint",
+          "ID": 17
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G17_D1002.json",
+          "Name": "Checkpoint",
+          "ID": 17
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G14.json",
+          "Name": "DefaultProp",
+          "ID": 14
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G16.json",
+          "Name": "DefaultEndline",
+          "ID": 16
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G18.json",
+          "Name": "DefaultChest",
+          "ID": 18
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G27.json",
+          "Name": "MainMissionMonster",
+          "ID": 27
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G61.json",
+          "Name": "MainMissionMonster",
+          "ID": 61
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G15.json",
+          "Name": "ExploreMonster",
+          "ID": 15
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G29.json",
+          "Name": "MonsterFlock_Before",
+          "ID": 29
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G4.json",
+          "Name": "ExploreMonster_After",
+          "ID": 4
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G32.json",
+          "Name": "MonsterFlock_After",
+          "ID": 32
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G19.json",
+          "Name": "DefaultCocoon01",
+          "ID": 19
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G56.json",
+          "Name": "DefaultCocoon02",
+          "ID": 56
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G7.json",
+          "Name": "DefaultChallenge",
+          "ID": 7
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G13.json",
+          "Name": "DailyCollect",
+          "ID": 13
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G21.json",
+          "Name": "DailyCollect",
+          "ID": 21
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G22.json",
+          "Name": "DailyCollect",
+          "ID": 22
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G23.json",
+          "Name": "MainMission_Trigger",
+          "ID": 23
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G24.json",
+          "Name": "MainMission_Prop",
+          "ID": 24
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G25.json",
+          "Name": "MainMission_Prop",
+          "ID": 25
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G26.json",
+          "Name": "MainMission1010101_",
+          "ID": 26
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G10.json",
+          "Name": "MainMission2011401_",
+          "ID": 10
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G11.json",
+          "Name": "MainMission2011401_",
+          "ID": 11
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G12.json",
+          "Name": "MainMission2011401_",
+          "ID": 12
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G20.json",
+          "Name": "MainMission2011401_",
+          "ID": 20
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G31.json",
+          "Name": "MainMission2011401_",
+          "ID": 31
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G1.json",
+          "Name": "SubMission_201140128",
+          "ID": 1
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G34.json",
+          "Name": "Monster_ChestMonster",
+          "ID": 34
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G5.json",
+          "Name": "Sound",
+          "ID": 5
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G35.json",
+          "Name": "MainMission2011401_",
+          "ID": 35
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G41.json",
+          "Name": "MainMission2011401_",
+          "ID": 41
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G55.json",
+          "Name": "Main101010120",
+          "ID": 55
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G67.json",
+          "Name": "MainMission8000182_Mission",
+          "ID": 67
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G69.json",
+          "Name": "MainMission2010201_07",
+          "ID": 69
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G70.json",
+          "Name": "NatashaBroTomb",
+          "ID": 70
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G70_D1001.json",
+          "Name": "NatashaBroTomb",
+          "ID": 70
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G70_D1002.json",
+          "Name": "NatashaBroTomb",
+          "ID": 70
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G71.json",
+          "Name": "New Group",
+          "ID": 71
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G73.json",
+          "Name": "MainMission8001219_PZ",
+          "ID": 73
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G78.json",
+          "Name": "NormalNPC_Linke",
+          "ID": 78
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G79.json",
+          "Name": "MainMission2010201_07",
+          "ID": 79
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G80.json",
+          "Name": "MainMission2010203_32",
+          "ID": 80
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G81.json",
+          "Name": "New Group",
+          "ID": 81
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G82.json",
+          "Name": "New Group",
+          "ID": 82
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G83.json",
+          "Name": "MainMission8014128_LinkBattle_Before",
+          "ID": 83
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G84.json",
+          "Name": "MainMission8014128_LinkBattle_After",
+          "ID": 84
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G85.json",
+          "Name": "IceBear",
+          "ID": 85
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G88.json",
+          "Name": "MainMission8024203_01",
+          "ID": 88
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G89.json",
+          "Name": "MainMission8024203_02",
+          "ID": 89
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G90.json",
+          "Name": "MainMission8024203_02",
+          "ID": 90
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G91.json",
+          "Name": "MainMission8024203_01",
+          "ID": 91
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G92.json",
+          "Name": "MainMission8024203_01",
+          "ID": 92
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G93.json",
+          "Name": "MainMission8024203_01",
+          "ID": 93
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G97.json",
+          "Name": "MainMission8026115_02",
+          "ID": 97
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G98.json",
+          "Name": "MainMission8026115_03",
+          "ID": 98
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G99.json",
+          "Name": "MainMission8026115_04",
+          "ID": 99
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G100.json",
+          "Name": "MainMission8026115_05",
+          "ID": 100
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G101.json",
+          "Name": "MainMission8026115_06",
+          "ID": 101
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G102.json",
+          "Name": "MainMission8026115_Puman",
+          "ID": 102
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G103.json",
+          "Name": "MainMission8026115_01",
+          "ID": 103
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G104.json",
+          "Name": "MusicRhythm_TrotterPhoto",
+          "ID": 104
+        },
+        {
+          "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G109.json",
+          "Name": "SceneCapture",
+          "ID": 109
+        }
+      ],
+      "DimensionList": [
+        {
+          "DefaultEnviroProfile": "Stages/Outputs/Chapter01/EnviroProfile/Chap01_CloseView_ADV_Area_Snowfield_01_Foggy.enviroProfile.asset",
+          "CameraType": "Maze",
+          "BattleAreaList": [],
+          "SavedValues": [
+            {
+              "ID": 4,
+              "Name": "IceBear",
+              "AllowedValues": [],
+              "MaxValue": 1
+            },
+            {
+              "ID": 5,
+              "Name": "MusicRhythm",
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            },
+            {
+              "ID": 6,
+              "Name": "SceneStateByMainMission",
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            },
+            {
+              "ID": 7,
+              "Name": "WorldStateByMainMission",
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            }
+          ],
+          "IsExclusiveSaveMapSection": true,
+          "GroupIndexList": [
+            0,
+            1,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63
+          ],
+          "ExclusiveSavedGroupIDList": [],
+          "StartAnchorID": 2
+        },
+        {
+          "ID": 1002,
+          "Category": "ActivityEarlyAccess",
+          "DefaultEnviroProfile": "Stages/Outputs/Chapter01/EnviroProfile/Chap01_CloseView_ADV_Area_Snowfield_01_Foggy.enviroProfile.asset",
+          "BattleAreaList": [],
+          "SavedValues": [
+            {
+              "ID": 4,
+              "Name": "IceBear",
+              "AllowedValues": [],
+              "MaxValue": 1
+            },
+            {
+              "ID": 5,
+              "Name": "MusicRhythm",
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            },
+            {
+              "ID": 6,
+              "Name": "SceneStateByMainMission",
+              "DefaultValue": 1,
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            },
+            {
+              "ID": 7,
+              "Name": "WorldStateByMainMission",
+              "DefaultValue": 1,
+              "AllowedValues": [
+                0,
+                1
+              ],
+              "MaxValue": 1
+            }
+          ],
+          "SavedValueConfigDict": {
+            "SceneStateByMainMission": {
+              "IsExclusiveSaved": true
+            },
+            "WorldStateByMainMission": {
+              "IsExclusiveSaved": true
+            },
+            "MusicRhythm": {
+              "IsExclusiveSaved": true,
+              "IsNeedMergeBack": true
+            }
+          },
+          "TagContainer": {
+            "List": [
+              {
+                "Tag": "Group.Activity.260MusicSchool",
+                "TagHash": 1428080347
+              }
+            ]
+          },
+          "IsExclusiveSaveMapSection": true,
+          "UnlockAllMapSectionOnInitial": true,
+          "GroupIndexList": [
+            0,
+            3,
+            4,
+            5,
+            9,
+            10,
+            11,
+            12,
+            30,
+            38,
+            41,
+            48,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63
+          ],
+          "ExclusiveSavedGroupIDList": [
+            17,
+            70
+          ],
+          "StartAnchorID": 2
+        }
+      ],
+      "GroupInstanceCommonMap": {
+        "2": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true
+        },
+        "17": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true,
+          "GroupRefreshID": 1
+        },
+        "14": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1002
+        },
+        "16": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1
+        },
+        "18": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1
+        },
+        "27": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 101010113
+              }
+            ]
+          }
+        },
+        "61": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 101010120
+              }
+            ]
+          }
+        },
+        "15": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1001
+        },
+        "29": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1001
+        },
+        "4": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1001
+        },
+        "32": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server",
+          "GroupRefreshID": 1001
+        },
+        "19": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server"
+        },
+        "56": {
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "LoadOnInitial": true
+        },
+        "7": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "13": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 301010202
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Cancel",
+                "ID": 301010202
+              }
+            ]
+          }
+        },
+        "21": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 301010204
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Cancel",
+                "ID": 301010204
+              }
+            ]
+          }
+        },
+        "22": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 301010205
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Cancel",
+                "ID": 301010205
+              }
+            ]
+          }
+        },
+        "23": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 1010101
+              }
+            ]
+          }
+        },
+        "24": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 101010106
+              }
+            ]
+          }
+        },
+        "25": {
+          "Category": "Mission",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 101010110
+              }
+            ]
+          }
+        },
+        "26": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 101010113
+              }
+            ]
+          }
+        },
+        "10": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140109
+              }
+            ]
+          }
+        },
+        "11": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140108
+              }
+            ]
+          }
+        },
+        "12": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140112
+              },
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140113
+              }
+            ],
+            "Operation": "Or",
+            "DelayToLevelReload": true
+          }
+        },
+        "20": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140115
+              }
+            ]
+          }
+        },
+        "31": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140116
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "1": {
+          "SaveType": "Reset"
+        },
+        "34": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "5": {
+          "SaveType": "Reset",
+          "LoadOnInitial": true
+        },
+        "35": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140117
+              }
+            ]
+          }
+        },
+        "41": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140112
+              },
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201140113
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "55": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 101010120
+              }
+            ]
+          }
+        },
+        "67": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Finish",
+                "ID": 8000182
+              }
+            ]
+          },
+          "ForceUnloadCondition": {
+            "Conditions": [
+              {
+                "Phase": "Cancel",
+                "ID": 8000182
+              }
+            ]
+          }
+        },
+        "69": {
+          "Category": "Mission",
+          "SaveType": "Permanent",
+          "LoadSide": "Server",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201020107
+              }
+            ]
+          }
+        },
+        "70": {
+          "SaveType": "Reset"
+        },
+        "71": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 800120102
+              }
+            ],
+            "DelayToLevelReload": true
+          }
+        },
+        "73": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 800121902
+              }
+            ]
+          }
+        },
+        "78": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset",
+          "LoadSide": "Server"
+        },
+        "79": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201020107
+              }
+            ]
+          }
+        },
+        "80": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "UnloadCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "Phase": "Finish",
+                "ID": 201020332
+              }
+            ]
+          },
+          "SystemUnlockCondition": {}
+        },
+        "81": {
+          "Category": "Mission",
+          "SaveType": "Reset"
+        },
+        "82": {
+          "Category": "Mission",
+          "SaveType": "Reset"
+        },
+        "83": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "84": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "85": {
+          "Category": "Atmosphere",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true,
+          "LoadOnInitial": true
+        },
+        "88": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "89": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "90": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "91": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "92": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "93": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "97": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "98": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "99": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "100": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "101": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "102": {
+          "SaveType": "Permanent",
+          "IsHoyoGroup": true,
+          "LoadSide": "Server"
+        },
+        "103": {
+          "Category": "Mission",
+          "SaveType": "Reset",
+          "IsHoyoGroup": true
+        },
+        "104": {
+          "SaveType": "Reset",
+          "IsHoyoGroup": true,
+          "LoadOnInitial": true
+        },
+        "109": {
+          "SaveType": "Reset",
+          "IsHoyoGroup": true,
+          "LoadOnInitial": true
+        }
+      },
+      "ValidSubmapList": [],
+      "EnableGroupStreaming": false,
+      "EnableGroupSpaceConflict": false,
+      "EnableGroupRegionStreaming": false
+    },
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G23.json": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission1010101_",
+      "Category": "Mission",
+      "AreaAnchorName": "LevelArea_P20101_F20101001_G23",
+      "SaveType": "Reset",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "ID": 101010102
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101010107
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101010110
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101010108
+          }
+        ],
+        "Operation": "Or"
+      },
+      "UnloadCondition": {
+        "Conditions": [
+          {
+            "Phase": "Finish",
+            "ID": 1010101
+          }
+        ]
+      },
+      "OwnerMainMissionID": 1010101,
+      "ConflictIDList": [],
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "RotY": 270,
+          "ID": 1,
+          "PosX": 93.46,
+          "PosY": 3.603013,
+          "PosZ": -35.6
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 3,
+            "DimY": 6,
+            "DimZ": 20,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop1",
+          "ID": 300001,
+          "PosX": 86.2,
+          "PosY": 3.680206,
+          "PosZ": -34.49
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 6,
+            "DimY": 6,
+            "DimZ": 25,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "RotY": 285.5212,
+          "ID": 300002,
+          "PosX": 31.6,
+          "PosY": 6.7,
+          "PosZ": -56.4
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 8,
+            "DimY": 6,
+            "DimZ": 8,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "RotY": 292.7572,
+          "ID": 300003,
+          "PosX": 19.74,
+          "PosY": 0.98,
+          "PosZ": -94.76
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 25,
+            "DimY": 6,
+            "DimZ": 25,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop4",
+          "RotY": 29.94369,
+          "ID": 300004,
+          "PosX": -3.28,
+          "PosY": 19.01366,
+          "PosZ": 0.43
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 25,
+            "DimY": 30,
+            "DimZ": 10,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop5",
+          "RotY": 20.75282,
+          "ID": 300005,
+          "PosX": 33.29,
+          "PosY": 7.8,
+          "PosZ": -54.38
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 1,
+            "DimX": 20,
+            "DimY": 20,
+            "DimZ": 30,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop6",
+          "RotY": 285,
+          "ID": 300006,
+          "PosX": 31.5,
+          "PosY": 5.9,
+          "PosZ": -64.2
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Radius": 10,
+            "DimX": 15,
+            "DimY": 20,
+            "DimZ": 15,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop7",
+          "RotY": 14.98545,
+          "ID": 300007,
+          "PosX": 22.42,
+          "PosY": -0.639168,
+          "PosZ": -96.45
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20101_F20101001/LevelGroup_P20101_F20101001_G25.json": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission1010101_",
+      "Category": "Mission",
+      "ConfigPrefabPath": "Level/Mission/1010101/1010101_Temp.prefab",
+      "AreaAnchorName": "LevelArea_P20101_F20101001_G25",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "ID": 101010107
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101010108
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101010109
+          }
+        ],
+        "Operation": "Or"
+      },
+      "UnloadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "ID": 101010110
+          }
+        ]
+      },
+      "LoadSide": "Server",
+      "OwnerMainMissionID": 1010101,
+      "ConflictIDList": [],
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "ID": 1,
+          "PosX": 14.6,
+          "PosY": 13.23639,
+          "PosZ": -36.7
+        },
+        {
+          "Name": "Anchor2",
+          "ID": 2,
+          "PosX": 22.71,
+          "PosY": -0.240829,
+          "PosZ": -97.59
+        },
+        {
+          "Name": "Anchor3",
+          "RotY": 180.2223,
+          "ID": 3,
+          "PosX": 23.18,
+          "PosY": 0.521807,
+          "PosZ": -77.36
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 301000,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Mission/1010101/Prop/Prop_NormalInteract_SnowBall.json",
+          "Trigger": {
+            "Radius": 2.5,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "State": "Locked",
+          "OverrideHintRange": 15,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "SnowBall",
+          "RotY": 356.4,
+          "ID": 300001,
+          "PosX": 22.56,
+          "PosY": -1.34,
+          "PosZ": -97.91
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "Config/Level/Mission/1010101/MissionInfo_1010101.json": {
+      "MainMissionID": 1010101,
+      "StartSubMissionList": [
+        101010120,
+        101010102
+      ],
+      "FinishSubMissionList": [
+        101020101
+      ],
+      "IsLegacyAssistWayPoint": true
+    },
+    "Config/Level/Mission/1010101/MissionInfo_1010101.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 101010102,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010102.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "Auto",
+          "TakeParamIntList": [
+            1010101
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101010102",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "IsShowStartHint": "Update",
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010106,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010106.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010102
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101010106",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010107,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010107.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010120
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101010107",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010108,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010108.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010120
+          ],
+          "MazePlaneID": 20101,
+          "MazeFloorID": 20101001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 25,
+          "ParamInt2": 300001,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20101001,
+          "WayPointGroupID": 25,
+          "WayPointEntityID": 2
+        },
+        {
+          "ID": 101010109,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010109.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "AudioEmotionState": "State_Esilence",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010108
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101010109",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010110,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010110.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "AudioEmotionState": "State_Esilence",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010109
+          ],
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20101012,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "NPC",
+          "WayPointFloorID": 20101001,
+          "WayPointGroupID": 26,
+          "WayPointEntityID": 400001
+        },
+        {
+          "ID": 101010111,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010111.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "AudioEmotionState": "State_Esilence",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010109
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101010111",
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010112,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010112.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "AudioEmotionState": "State_Esilence",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010109
+          ],
+          "FinishType": "SubMissionFinishCnt",
+          "ParamType": "ListContain",
+          "ParamIntList": [
+            101010110
+          ],
+          "Progress": 1,
+          "IsShow": false,
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010113,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010113.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010110
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101010113",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointFloorID": 20101001
+        },
+        {
+          "ID": 101010114,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010114.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010113
+          ],
+          "FinishType": "EnterFloor",
+          "ParamType": "Equal",
+          "ParamInt1": 10101,
+          "ParamInt2": 10101001,
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "FinishActionList": [
+            {
+              "FinishActionType": "Recover",
+              "FinishActionPara": []
+            },
+            {
+              "FinishActionType": "SetFloorSavedValue",
+              "FinishActionPara": [],
+              "FinishActionParaString": [
+                "20101",
+                "20101001",
+                "SceneStateByMainMission",
+                "1"
+              ]
+            }
+          ],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "GroupIDList": [],
+          "RequiredNPCSeriesIDList": [],
+          "GotoParam": [],
+          "WayPointFloorID": 20101001,
+          "StoryLineIDList": [],
+          "IgnoreVerseParamList": []
+        },
+        {
+          "ID": 101010120,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010120.json",
+          "LevelPlaneID": 20101,
+          "LevelFloorID": 20101001,
+          "TakeType": "Auto",
+          "TakeParamIntList": [
+            1010101
+          ],
+          "FinishType": "MessagePerformSectionFinish",
+          "ParamType": "Equal",
+          "ParamInt1": 5000600,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Anchor",
+          "WayPointFloorID": 20101001,
+          "WayPointGroupID": 25,
+          "WayPointEntityID": 2
+        },
+        {
+          "ID": 101020101,
+          "MainMissionID": 1010101,
+          "MissionJsonPath": "Config/Level/Mission/1010201/Mission_101020101.json",
+          "LevelPlaneID": 10101,
+          "LevelFloorID": 10101001,
+          "AudioEmotionState": "State_Relaxing",
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101010114
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101020101",
+          "ParamIntList": [],
+          "ParamItemList": [],
+          "FinishActionList": [],
+          "Progress": 1,
+          "CustomValueList": [],
+          "CustomValueReward": [],
+          "GroupIDList": [],
+          "RequiredNPCSeriesIDList": [],
+          "IsShowFinishEffect": 2,
+          "GotoParam": [],
+          "WayPointFloorID": 10101001,
+          "StoryLineIDList": [],
+          "IgnoreVerseParamList": []
+        }
+      ]
+    },
+    "Config/Level/Mission/1010101/Mission_101010108.json": {
+      "OnInitSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.CreateLevelAreas",
+              "AssetPath": {
+                "Value": "Level/Mission/1010101/MainMission_LookatArea.prefab"
+              }
+            }
+          ]
+        }
+      ],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupTrigger",
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 23
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300006
+                    }
+                  }
+                }
+              },
+              "IsSingle": true,
+              "TargetEntityType": "LocalPlayer",
+              "TargetGroupID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetID": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0
+                }
+              },
+              "TargetTypes": [],
+              "ColliderRelativePath": "Trigger",
+              "DestroyAfterTriggered": true,
+              "OnTriggerEnter": [
+                {
+                  "$type": "RPG.GameCore.AdventureCameraLookAt",
+                  "LookAtTargetAreaName": {
+                    "Value": "MainMission_LookatArea"
+                  },
+                  "LookAtTargetAnchorName": {
+                    "Value": "LookatPoint"
+                  },
+                  "AxisOffset": {
+                    "X": 0.6,
+                    "Y": 0.6
+                  },
+                  "LookAtTransitionDuration": 3,
+                  "LookAtTransitionCurvePath": "Camera/BlendCurve/Blend_N1CameraTest.asset",
+                  "LockCameraInput": true,
+                  "LookAtDuration": 4,
+                  "MaxAngle": 60,
+                  "ExtraFreelook3rdConfig": {
+                    "ExportToJson": true,
+                    "BaseChangeParam": {
+                      "ExportToJson": true,
+                      "ZoomRatio": 0.2,
+                      "CenterPos": {
+                        "X": 0.45,
+                        "Y": 0.5
+                      },
+                      "Time": 1,
+                      "ChangeCurvePath": "Camera/BlendCurve/Blend_N1CameraTest.asset",
+                      "RecoveryTime": 3,
+                      "RecoveryCurvePath": "Camera/BlendCurve/Blend_N1CameraTest.asset"
+                    }
+                  }
+                }
+              ],
+              "OnTriggerExit": []
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.ChangePropState"
+            }
+          ]
+        }
+      ],
+      "ValueSource": {},
+      "Type": "Mission"
+    },
+    "Config/Level/Mission/1010101/Prop/Prop_NormalInteract_SnowBall.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "ButtonText": {
+                "Hash": 16304550243505668348
+              },
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.PropReqInteract",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "InteractID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 1010
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "ExcelOutput/MazeProp.json": [
+      {
+        "ID": 100,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [
+          4
+        ],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "D"
+      },
+      {
+        "ID": 301000,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13807036322937251451
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/CheckIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_Snowdrift_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap01/Prop_Chap01_Snowdrift_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "D",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      }
+    ],
+    "ExcelOutput/MazePlane.json": [
+      {
+        "PlaneID": 20101,
+        "PlaneType": "Maze",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 201,
+        "PlaneName": {
+          "Hash": 15362683837739460100
+        },
+        "StartFloorID": 20101001,
+        "FloorIDList": [
+          20101001
+        ]
+      }
+    ],
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1010101,
+        "Type": "Main",
+        "WorldID": 201,
+        "DisplayPriority": 1010101,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 12825115888672447815
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010002
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1010201,
+        "TrackWeight": 100,
+        "RewardID": 11010101,
+        "DisplayRewardID": 11010101,
+        "ChapterID": 101001,
+        "SubRewardList": []
+      }
+    ],
+    "ExcelOutput/InteractConfig.json": [
+      {
+        "InteractID": 1010,
+        "TargetState": "Open",
+        "ItemCostList": []
+      },
+      {
+        "InteractID": 1100,
+        "SrcState": "Open",
+        "ItemCostList": []
+      },
+      {
+        "InteractID": 1200,
+        "SrcState": "Locked",
+        "ItemCostList": []
+      }
+    ]
+  }
+}

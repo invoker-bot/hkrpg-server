@@ -1,3 +1,5 @@
+城郊雪原雪堆「调查」无反应的任务解锁遗漏已修复，原始资源、保存恢复和客户端验收边界见[雪堆调查说明](docs/snowdrift-investigation-4.6.md)。
+
 手动使用星琼兑换开拓力的回包、费用与每日次数见[兑换说明](docs/jade-stamina-exchange-4.6.md)。拟造花萼普通挑战已获用户确认，结算页「再来一次」见[重试说明](docs/cocoon-retry-stamina-4.6.md)，开关保存见[快捷补充说明](docs/quick-stamina-settings-4.6.md)，次数解析见[花萼挑战](docs/cocoon-challenge-count-4.6.md)。
 
 好友页面持续加载的好友资料协议转换已修复；原因与验证边界见[好友页加载说明](docs/friend-page-loading-4.6.md)。

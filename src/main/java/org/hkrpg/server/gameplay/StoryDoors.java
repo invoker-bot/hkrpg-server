@@ -11,7 +11,8 @@ import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
 /**
- * Ordinary-world consoles and door pairs. Readiness follows accepted, source-bound objectives.
+ * Ordinary-world consoles, door pairs and the authored snowdrift investigation.
+ * Readiness follows accepted, source-bound objectives.
  */
 public final class StoryDoors {
   private static final String GRAPH =
@@ -19,6 +20,8 @@ public final class StoryDoors {
   // This authored variant only changes its own state. Its unused shared values are not door links.
   private static final String STANDALONE_GRAPH =
       "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json";
+  private static final String SNOWDRIFT_GRAPH =
+      "Config/Level/Mission/1010101/Prop/Prop_NormalInteract_SnowBall.json";
   private static final String DOOR_KEY = "Maze_Prop_Chap01_Door";
   private static final String ROOT = "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_";
   private static final String KEY_DOOR = ROOT + "Console01_OpenDoor_02.json";
@@ -101,7 +104,12 @@ public final class StoryDoors {
   }
 
   private static boolean standalone(PropInfo info) {
-    return info != null && info.getPropID() == 100000 && STANDALONE_GRAPH.equals(info.getInitLevelGraph());
+    return snowdrift(info)
+        || info != null && info.getPropID() == 100000 && STANDALONE_GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean snowdrift(PropInfo info) {
+    return info != null && info.getPropID() == 301000 && SNOWDRIFT_GRAPH.equals(info.getInitLevelGraph());
   }
 
   static boolean world(Scene scene) {
@@ -164,6 +172,15 @@ public final class StoryDoors {
     if (!observes(scene, group, info, c) || c.getTask() == null) return false;
     try {
       var script = JsonParser.parseString(c.getTask().getSourceDefinition());
+      if (snowdrift(info))
+        return info.getState() == PropState.Locked && group == 25 && info.getID() == 300001
+            && c.getId() == 101010108 && c.getMainMissionID() == 1010101
+            && "Config/Level/Mission/1010101/Mission_101010108.json".equals(c.getMissionJsonPath())
+            && "AnySequence".equals(c.getTakeType())
+            && Arrays.equals(c.getTakeParamIntList(), new Integer[] {101010120})
+            && c.getParamStr1().isEmpty() && c.getParamIntList().length == 0
+            && c.getParamItemList().isEmpty()
+            && StoryConsoleTasks.enablesSnowdrift(scene, script);
       return ENABLE_TASK.equals(script)
           || standalone(info) && enableWithDialogue(script)
           || !keyDoor(info) && !keyLift(info) && (StoryConsoleTasks.enables(scene, script)
@@ -544,7 +561,7 @@ public final class StoryDoors {
           && receipt(scene, c.getParamInt1(), info, PropState.Closed);
     return controller(info)
         && (objective(scene, c.getParamInt1(), info, c)
-            || c.getTask() == null && "".equals(c.getMissionJsonPath())
+            || !snowdrift(info) && c.getTask() == null && "".equals(c.getMissionJsonPath())
                 && observes(scene, c.getParamInt1(), info, c) && doing(scene, c))
         && (standalone(info) || repeatable(info)
             ? doing(scene, c) && receipt(scene, c.getParamInt1(), info)

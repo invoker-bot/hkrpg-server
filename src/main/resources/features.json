@@ -14,6 +14,14 @@
   },
   "features": [
     {
+      "id": "snowdrift-investigation",
+      "name": "城郊雪原雪堆调查解锁",
+      "status": "partial",
+      "evidence": "src/main/java/org/hkrpg/server/gameplay/StoryDoors.java",
+      "note": "原始主任务1010101的目标101010108已接取时，按完整原始启用脚本将G25/300001雪堆从Locked恢复为Closed；调查1010复用正式状态保存、任务事件与4.6回包，保留后续101010109演出。12项新增回归先失败后通过，包含重登、保存失败和中断恢复。完整构建、运行包及客户端边界见docs/snowdrift-investigation-4.6.md。",
+      "gap": "这里只接通该雪堆调查的解锁、保存和目标推进；原始镜头、完整桑博演出与真实客户端点击效果仍待验收。"
+    },
+    {
       "id": "jade-stamina-exchange",
       "name": "手动星琼兑换开拓力与每日次数",
       "status": "partial",

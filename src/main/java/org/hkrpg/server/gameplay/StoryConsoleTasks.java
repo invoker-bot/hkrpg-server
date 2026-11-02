@@ -8,6 +8,40 @@ import java.util.Set;
 final class StoryConsoleTasks {
   private static final String TYPE = "RPG.GameCore.";
   private static final JsonElement ENABLE = JsonParser.parseString("{\"$type\":\"RPG.GameCore.ChangePropState\"}");
+  // The parallel camera hint never gates the independent enable sequence. Match the whole
+  // original task: an arbitrary ChangePropState prefix must not unlock other story props.
+  private static final JsonElement SNOWDRIFT_ENABLE = JsonParser.parseString("""
+      {"OnInitSequece":[{"TaskList":[{"$type":"RPG.GameCore.CreateLevelAreas",
+        "AssetPath":{"Value":"Level/Mission/1010101/MainMission_LookatArea.prefab"}}]}],
+       "OnStartSequece":[{"TaskList":[{"$type":"RPG.GameCore.PropSetupTrigger",
+        "TargetType":{"$type":"RPG.GameCore.TargetFetchAdvPropEx","FetchType":"SinglePropByPropID",
+          "SinglePropID":{"GroupID":{"IsDynamic":false,"FixedValue":{"Value":23}},
+                          "ID":{"IsDynamic":false,"FixedValue":{"Value":300006}}}},
+        "IsSingle":true,"TargetEntityType":"LocalPlayer",
+        "TargetGroupID":{"IsDynamic":false,"FixedValue":{"Value":0}},
+        "TargetID":{"IsDynamic":false,"FixedValue":{"Value":0}},"TargetTypes":[],
+        "ColliderRelativePath":"Trigger","DestroyAfterTriggered":true,
+        "OnTriggerEnter":[{"$type":"RPG.GameCore.AdventureCameraLookAt",
+          "LookAtTargetAreaName":{"Value":"MainMission_LookatArea"},
+          "LookAtTargetAnchorName":{"Value":"LookatPoint"},"AxisOffset":{"X":0.6,"Y":0.6},
+          "LookAtTransitionDuration":3,"LookAtTransitionCurvePath":"Camera/BlendCurve/Blend_N1CameraTest.asset",
+          "LockCameraInput":true,"LookAtDuration":4,"MaxAngle":60,
+          "ExtraFreelook3rdConfig":{"ExportToJson":true,"BaseChangeParam":{"ExportToJson":true,
+            "ZoomRatio":0.2,"CenterPos":{"X":0.45,"Y":0.5},"Time":1,
+            "ChangeCurvePath":"Camera/BlendCurve/Blend_N1CameraTest.asset","RecoveryTime":3,
+            "RecoveryCurvePath":"Camera/BlendCurve/Blend_N1CameraTest.asset"}}}],"OnTriggerExit":[]}]},
+        {"TaskList":[{"$type":"RPG.GameCore.ChangePropState"}]}],"ValueSource":{},"Type":"Mission"}
+      """);
+
+  static boolean enablesSnowdrift(Scene scene, JsonElement script) {
+    if (scene.getPlaneId() != 20101 || scene.getFloorId() != 20101001
+        || !SNOWDRIFT_ENABLE.equals(script)) return false;
+    var group = scene.getResourceGroups().get(23);
+    if (group == null || group.getPropList() == null) return false;
+    var matches = group.getPropList().stream().filter(p -> p != null && p.getID() == 300006).toList();
+    return matches.size() == 1 && matches.getFirst().getPropID() == 100
+        && !matches.getFirst().isIsDelete() && matches.getFirst().isLoadOnInitial();
+  }
 
   static boolean enables(Scene scene, JsonElement script) {
     try {
