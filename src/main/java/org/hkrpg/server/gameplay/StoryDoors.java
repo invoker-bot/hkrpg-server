@@ -11,7 +11,7 @@ import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
 /**
- * Ordinary-world consoles, door pairs and the authored snowdrift investigation.
+ * Ordinary-world consoles, door pairs and source-bound story interactions.
  * Readiness follows accepted, source-bound objectives.
  */
 public final class StoryDoors {
@@ -22,6 +22,14 @@ public final class StoryDoors {
       "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_Console01_OpenDoor_03.json";
   private static final String SNOWDRIFT_GRAPH =
       "Config/Level/Mission/1010101/Prop/Prop_NormalInteract_SnowBall.json";
+  private static final String REPAIR_GRAPH =
+      "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_CablePuzzle_03.json";
+  private static final JsonElement REPAIR_BINDINGS = JsonParser.parseString("""
+      {"Values":[
+        {"$type":"RPG.GameCore.SharedString","Value":"Chap01_ADV_MachineHouse_LevelArea,CablePuzzleCam_01","Key":"Vcam"},
+        {"$type":"RPG.GameCore.SharedString","Value":"Props/Outputs/Chap01/Chap01_Prop_CablePuzzle_01/Chap01_Prop_CablePuzzle_01.prefab","Key":"BoardFilePath"},
+        {"$type":"RPG.GameCore.SharedString","Value":"12,300002","Key":"Target"}]}
+      """);
   private static final String DOOR_KEY = "Maze_Prop_Chap01_Door";
   private static final String ROOT = "Config/Level/Props/Chap00/InitLevelGraph_Prop_Chap00_";
   private static final String KEY_DOOR = ROOT + "Console01_OpenDoor_02.json";
@@ -104,12 +112,16 @@ public final class StoryDoors {
   }
 
   private static boolean standalone(PropInfo info) {
-    return snowdrift(info)
+    return snowdrift(info) || repairMachine(info)
         || info != null && info.getPropID() == 100000 && STANDALONE_GRAPH.equals(info.getInitLevelGraph());
   }
 
   private static boolean snowdrift(PropInfo info) {
     return info != null && info.getPropID() == 301000 && SNOWDRIFT_GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean repairMachine(PropInfo info) {
+    return info != null && info.getPropID() == 301058 && REPAIR_GRAPH.equals(info.getInitLevelGraph());
   }
 
   static boolean world(Scene scene) {
@@ -181,6 +193,18 @@ public final class StoryDoors {
             && c.getParamStr1().isEmpty() && c.getParamIntList().length == 0
             && c.getParamItemList().isEmpty()
             && StoryConsoleTasks.enablesSnowdrift(scene, script);
+      // This client-owned circuit puzzle reports 1010 only after its finish callback.
+      // Enable its authored board; accepting the objective must never solve it.
+      if (repairMachine(info))
+        return scene.getPlaneId() == 10101 && scene.getFloorId() == 10101007
+            && info.getState() == PropState.Locked && group == 12 && info.getID() == 300002
+            && c.getId() == 101020109 && c.getMainMissionID() == 1010206
+            && "Config/Level/Mission/1010201/Mission_101020109.json".equals(c.getMissionJsonPath())
+            && "AnySequence".equals(c.getTakeType())
+            && Arrays.equals(c.getTakeParamIntList(), new Integer[] {101020108})
+            && c.getParamStr1().isEmpty() && c.getParamIntList().length == 0
+            && c.getParamItemList().isEmpty() && ENABLE_TASK.equals(script)
+            && REPAIR_BINDINGS.equals(ResourceLoader.getGson().toJsonTree(info.getValueSource()));
       return ENABLE_TASK.equals(script)
           || standalone(info) && enableWithDialogue(script)
           || !keyDoor(info) && !keyLift(info) && (StoryConsoleTasks.enables(scene, script)
@@ -561,7 +585,8 @@ public final class StoryDoors {
           && receipt(scene, c.getParamInt1(), info, PropState.Closed);
     return controller(info)
         && (objective(scene, c.getParamInt1(), info, c)
-            || !snowdrift(info) && c.getTask() == null && "".equals(c.getMissionJsonPath())
+            || !snowdrift(info) && !repairMachine(info)
+                && c.getTask() == null && "".equals(c.getMissionJsonPath())
                 && observes(scene, c.getParamInt1(), info, c) && doing(scene, c))
         && (standalone(info) || repeatable(info)
             ? doing(scene, c) && receipt(scene, c.getParamInt1(), info)

@@ -1,3 +1,5 @@
+`StoryDoors` 为机械屋原始 `CablePuzzle_03` 加入限定的自身状态交互，按 `1010206/101020109` 完整启用脚本和准确绑定恢复 Closed；`FloorInfo` 的现有控制器分支保留原始镜头、拼图板与目标共享值。完成上报继续走状态事务和原任务事件，完整客户端拼图及演出边界见[维修机器说明](serval-repair-machine-4.6.md)。
+
 `MissionSceneEntrances.LiveRecovery` 的固定来源目录扩大为 38 处同主线单前置、单步 EnterMap，补齐进入和离开克里珀堡等 31 处遗漏；沿用来源、脚本、落点及稳定等待校验。356 份主线图与 11 组跨地图未启用气氛组的盘点、延后项和实际客户端边界见[后续场景检查](story-scene-loading-audit-4.6.md)。
 
 `AtmosphereGroupSourceAdapter` 为没有加载/卸载/气氛条件、未初始启用且省略 LoadSide 的原始 RtLevelGroupInfo 气氛组保留 Client 归属；显式加载与气氛任务准入同步拒绝客户端组，现有条件控制和初始启用的互动准入及显式 Server 组保持。行政区缺失脚本及范围见[加载说明](city-loading-atmosphere-4.6.md)。
