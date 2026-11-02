@@ -313,6 +313,7 @@ public class GameplayState {
   private Set<Integer> cancelledMissions = new HashSet<>();
   private Set<Integer> cancelledSubs = new HashSet<>();
   private Rhythm rhythm = new Rhythm();
+  void rhythm(Rhythm value) { rhythm = java.util.Objects.requireNonNull(value); }
   private ClockParkState clockPark = new ClockParkState();
 
   void clockPark(ClockParkState value) {

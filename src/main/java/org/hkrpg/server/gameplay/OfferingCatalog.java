@@ -6,24 +6,30 @@ import java.nio.file.*;
 import java.util.*;
 
 /**
- * Source-defined manual Dice offering. Other offerings require their own entry/unlock contracts.
+ * Source-defined manual Dice and music offerings, each with its own entry/unlock contract.
  */
 public record OfferingCatalog(int id, int item, List<Integer> costs, List<Integer> rewards) {
   public static OfferingCatalog read() {
+    return read(12);
+  }
+
+  public static OfferingCatalog read(int id) {
+    if (id != 5 && id != 12) return null;
     try {
       var root = Path.of(LunarCore.getConfig().getResourceDir(), "ExcelOutput");
       var types =
-          rows(root, "OfferingTypeConfig").stream().filter(r -> number(r, "ID") == 12).toList();
+          rows(root, "OfferingTypeConfig").stream().filter(r -> number(r, "ID") == id).toList();
       if (types.size() != 1) return null;
       var type = types.getFirst();
       int item = number(type, "ItemID"), max = number(type, "MaxLevel");
-      if (item != 264999
+      if (item != (id == 5 ? 270003 : 264999)
           || max > 100
-          || type.has("UnlockID") && number(type, "UnlockID") != 0
+          || (id == 5 ? max != 16 || !type.has("UnlockID") || number(type, "UnlockID") != 105301
+              : type.has("UnlockID") && number(type, "UnlockID") != 0)
           || type.has("IsAutoOffer") && type.get("IsAutoOffer").getAsBoolean()) return null;
       var levels = new TreeMap<Integer, JsonObject>();
       for (var row : rows(root, "OfferingLevelConfig")) {
-        if (number(row, "TypeID") != 12) continue;
+        if (number(row, "TypeID") != id) continue;
         int level = number(row, "Level");
         if (level < 1 || level > max || levels.putIfAbsent(level, row) != null) return null;
       }
@@ -35,10 +41,11 @@ public record OfferingCatalog(int id, int item, List<Integer> costs, List<Intege
         int cost = number(levels.get(level), "ItemCost"),
             reward = number(levels.get(level), "RewardID");
         if (cost < 1 || reward < 1 || (total += cost) > Integer.MAX_VALUE) return null;
+        if (id == 5 && (cost != 3 || reward != 260000 + level)) return null;
         costs.add(cost);
         rewards.add(reward);
       }
-      return new OfferingCatalog(12, item, List.copyOf(costs), List.copyOf(rewards));
+      return new OfferingCatalog(id, item, List.copyOf(costs), List.copyOf(rewards));
     } catch (java.io.IOException | RuntimeException invalid) {
       return null;
     }
