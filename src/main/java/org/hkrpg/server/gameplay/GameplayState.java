@@ -9,6 +9,9 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  private TrainCakeCatchState trainCakeCatch = new TrainCakeCatchState();
+  public TrainCakeCatchState getTrainCakeCatch() { return trainCakeCatch; }
+  void trainCakeCatch(TrainCakeCatchState value) { trainCakeCatch = Objects.requireNonNull(value); }
   // Absent in old saves: the inherited currentBgm remains the initial selection until first save.
   @lombok.Setter private JukeboxState jukebox;
   private ShopPurchaseState shopPurchases = new ShopPurchaseState();

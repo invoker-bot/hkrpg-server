@@ -37,6 +37,10 @@ def run(jar, output):
     guarded = {name: sha(resources / name) for name in fixture['sourceFiles']}
     if guarded != fixture['sourceFiles']:
         raise ValueError('来源资源与回归夹具不一致')
+    initial = json.loads((ROOT / 'src/test/resources/fixtures/train-party-initial-area-4.6.json').read_text('utf-8'))
+    guarded[initial['sourceFile']] = sha(resources / initial['sourceFile'])
+    if guarded[initial['sourceFile']] != initial['sourceSHA256']:
+        raise ValueError('初始房间来源资源与回归夹具不一致')
     runs = ROOT / 'build/smoke'
     runs.mkdir(parents=True, exist_ok=True)
     directory = Path(tempfile.mkdtemp(prefix='train-debug-', dir=runs))
