@@ -296,7 +296,11 @@ public final class GameplayDefinitions {
   public static final List<DailyLevel> dailyLevels = new ArrayList<>();
   public static final List<DailyPool> dailyPool = new ArrayList<>();
   public static final Map<Integer, LoginActivity> activities = new HashMap<>();
-  public static final List<Window> windows = new ArrayList<>();
+  public static volatile List<Window> windows = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+  public static void replaceActivityWindows(List<Window> value) {
+    windows=new java.util.concurrent.CopyOnWriteArrayList<>(List.copyOf(value));
+  }
   public static final Map<Integer, Area> areas = new HashMap<>();
   public static final Map<Integer, List<Site>> maps = new HashMap<>();
   public static final Map<Integer, Room> rooms = new HashMap<>();
@@ -434,15 +438,8 @@ public final class GameplayDefinitions {
     rows(root, "MessageItemConfig", MessageItem.class, v -> messageItems.put(v.ID(), v));
     // Operator configuration is optional: never advertise every historical activity as active.
     Path settings = Path.of(LunarCore.getConfig().getDataDir(), "Gameplay46.json");
-    if (Files.isRegularFile(settings))
-      try (var reader = Files.newBufferedReader(settings)) {
-        var config = JsonParser.parseReader(reader).getAsJsonObject();
-        if (config.has("activities"))
-          for (var row : config.getAsJsonArray("activities"))
-            windows.add(ResourceLoader.getGson().fromJson(row, Window.class));
-      } catch (Exception e) {
-        throw new IllegalStateException("Invalid Gameplay46.json", e);
-      }
+    try { ActivitySchedules.load(settings); }
+    catch (java.io.IOException e) { throw new IllegalStateException("Invalid Gameplay46.json",e); }
     Path pool = Path.of(LunarCore.getConfig().getDataDir(), "RogueMapGen.json");
     if (Files.isRegularFile(pool))
       try (var reader = Files.newBufferedReader(pool)) {

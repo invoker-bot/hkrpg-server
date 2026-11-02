@@ -1,7 +1,7 @@
 import {api} from './api.js';
 import {el,button,searchInput,empty,table,renderSummary} from './ui.js';
-const labels={grant:'资源发放','shortcut-grant':'快捷发放',mail:'邮件发送',command:'指令',heal:'恢复生命',refill:'补满秘技点',unstuck:'解除卡死','banner-rerun':'卡池复刻','banner-stop':'停止卡池','banner-enable':'启用卡池','shop-list':'上架商品','shop-unlist':'下架商品'};
-const globalAction=action=>action.startsWith('banner-')||action.startsWith('shop-');
+const labels={grant:'资源发放','activity-open':'开放活动','activity-stop':'关闭活动','activity-enable':'恢复活动','shortcut-grant':'快捷发放',mail:'邮件发送',command:'指令',heal:'恢复生命',refill:'补满秘技点',unstuck:'解除卡死','banner-rerun':'卡池复刻','banner-stop':'停止卡池','banner-enable':'启用卡池','shop-list':'上架商品','shop-unlist':'下架商品'};
+const globalAction=action=>action.startsWith('banner-')||action.startsWith('shop-')||action.startsWith('activity-');
 const states={completed:'已完成',returned:'已返回',partial:'部分完成',failed:'失败',uncertain:'待核对',pending:'结果未确认'};
 export function mountAudit(main,inspector,state) {
   let entries=[],query='',selected=null;

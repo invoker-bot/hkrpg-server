@@ -22,6 +22,7 @@ final class LiveGmBackend implements GmBackend {
       Set.of("account", "clear", "permission", "giveall", "reload", "kick");
   private volatile List<CatalogItem> catalog;
   private volatile List<ItemShortcut> shortcuts;
+  private volatile List<GmActivityCatalog.Template> activityCatalog;
   private Map<Integer, String> shopNames = Map.of();
   private final java.util.function.IntFunction<GameAvatar> avatarFactory;
 
@@ -178,6 +179,7 @@ final class LiveGmBackend implements GmBackend {
 
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
+    if(operation.action().startsWith("activity-"))return activityManager().update(operation);
     if (operation.action().startsWith("shop-")) return setShopListed(operation);
     if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
     if (Set.of("banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable").contains(operation.action())) return banners().setEnabled(operation);
@@ -206,6 +208,20 @@ final class LiveGmBackend implements GmBackend {
   }
 
   public List<BannerRow> bannerHistory() { return banners().history(); }
+
+  private GmActivities activityManager(){
+    if(!LunarCore.isReady()||LunarCore.getGameServer()==null)throw new GmError(503,"游戏服务尚未就绪。");
+    if(activityCatalog==null)synchronized(this){
+      if(activityCatalog==null)try{activityCatalog=GmActivityCatalog.load(Path.of(LunarCore.getConfig().getResourceDir()));}
+      catch(java.io.IOException|RuntimeException e){
+        LunarCore.getLogger().warn("GM activity catalog could not be loaded",e);
+        throw new GmError(503,"活动资源目录不可读取，请检查资源后重启服务。");
+      }
+    }
+    return new GmActivities(Path.of(LunarCore.getConfig().getDataDir()),activityCatalog,java.time.Clock.systemUTC());
+  }
+
+  public List<ActivityRow> activities(){return activityManager().current();}
 
   public List<ItemShortcut> itemShortcuts() {
     if (shortcuts==null) synchronized(this) {

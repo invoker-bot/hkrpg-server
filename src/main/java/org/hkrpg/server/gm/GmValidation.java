@@ -15,11 +15,22 @@ final class GmValidation {
       fail("请求编号格式不正确。");
     }
     if (op.action() == null
-        || !Set.of("heal", "refill", "unstuck", "grant", "shortcut-grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete", "shop-list", "shop-unlist").contains(op.action()))
+        || !Set.of("heal", "refill", "unstuck", "grant", "shortcut-grant", "mail", "command", "banner-rerun", "banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable", "banner-complete", "shop-list", "shop-unlist", "activity-open", "activity-stop", "activity-enable").contains(op.action()))
       fail("未知操作。");
-    if (op.uid() < 0 || !op.action().startsWith("banner-") && !op.action().startsWith("shop-") && !op.action().equals("command") && op.uid() == 0)
+    if (op.uid() < 0 || !op.action().startsWith("banner-") && !op.action().startsWith("shop-") && !op.action().startsWith("activity-") && !op.action().equals("command") && op.uid() == 0)
       fail("请选择目标玩家。");
     switch (op.action()) {
+      case "activity-open", "activity-stop", "activity-enable" -> {
+        if(op.uid()!=0)fail("活动排期是全服操作，无需指定玩家。");
+        if(op.activityId()==null||op.activityId()<=0)fail("请选择活动。");
+        if(op.action().equals("activity-open")){
+          if(op.beginTime()!=null||op.endTime()!=null){
+            if(op.beginTime()==null||op.endTime()==null||op.durationDays()!=null||op.beginTime()<0
+                ||op.endTime()<=op.beginTime()||op.endTime()>0xffff_ffffL||op.endTime()-op.beginTime()>365L*86400)
+              fail("请填写完整的开始与结束时间，时长不超过 365 天；或仅填写开放天数。");
+          }else range(op.durationDays()==null?30:op.durationDays(),1,365,"开放天数");
+        }
+      }
       case "shop-list", "shop-unlist" -> {
         if (op.uid() != 0) fail("商品上下架是全服操作，无需指定玩家。");
         if (op.shopGoods() == null || op.shopGoods().isEmpty() || op.shopGoods().size() > 500)

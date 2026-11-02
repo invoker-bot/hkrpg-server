@@ -42,6 +42,7 @@ public final class GmRoutes {
             "banners.js",
             "shops.js",
             "shortcuts.js",
+            "activities.js",
             "mail.js",
             "terminal.js",
             "audit.js",
@@ -117,6 +118,18 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/activities",safe(ctx->{
+      auth.require(ctx,false);
+      String q=query(ctx,"q"),type=query(ctx,"type"),state=query(ctx,"state");
+      if(!type.isEmpty()&&!Set.of("event","resident","trial","unmapped").contains(type))throw new GmError(400,"活动类型不正确。");
+      if(!state.isEmpty()&&!Set.of("unconfigured","active","scheduled","stopped","expired","mixed").contains(state))throw new GmError(400,"活动状态不正确。");
+      int offset=integer(ctx,"offset",0,0,1_000_000),limit=integer(ctx,"limit",30,1,100);
+      var filtered=backend.activities().stream().filter(a->type.isEmpty()||a.type().equals(type))
+          .filter(a->state.isEmpty()||a.state().equals(state))
+          .filter(a->q.isEmpty()||(a.id()+" "+a.panelId()+" "+a.name()+" "+a.modules().stream().map(ActivityModuleRow::id).toList())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx,Map.of("total",filtered.size(),"items",filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get("/gm/api/item-shortcuts", safe(ctx -> {
       auth.require(ctx,false);
       String q=query(ctx,"q"),type=query(ctx,"type"),tag=query(ctx,"tag");

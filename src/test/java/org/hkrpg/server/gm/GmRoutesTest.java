@@ -87,6 +87,12 @@ class GmRoutesTest {
                     List.of("limited","collectible"),List.of("活动排期"),false,"仅供查询",1));
           }
 
+          public List<ActivityRow> activities() {
+            return List.of(
+                new ActivityRow(30013,30013,"往期活动", "event",List.of(new ActivityModuleRow(3001301,false,true,false,"active",1,2)),"active","正在开放",1,2,true,false,true,"保留进度",""),
+                new ActivityRow(30014,30014,"常驻活动", "resident",List.of(),"stopped","已关闭",1,2,true,true,false,"保留进度",""));
+          }
+
           public Result execute(Operation op) {
             executions.incrementAndGet();
             return Result.completed("已执行 " + op.action());
@@ -115,6 +121,30 @@ class GmRoutesTest {
   void stop() {
     client.close();
     app.stop();
+  }
+
+  @Test
+  void activityCatalogRequiresSessionAndSupportsGlobalScheduleOperations() throws Exception {
+    assertEquals(401,request("GET","/gm/api/activities",null,false).statusCode());
+    openSession();
+    assertEquals(200,request("GET","/gm/api/activities?limit=1",null,true).statusCode());
+    for(var query:List.of("q=3001301","q=往期","type=event&state=active","q=30013")){
+      var page=json(request("GET","/gm/api/activities?"+query,null,true)).getAsJsonObject("data");
+      assertEquals(1,page.get("total").getAsInt());assertEquals(30013,page.getAsJsonArray("items").get(0).getAsJsonObject().get("id").getAsInt());
+    }
+    assertEquals(0,json(request("GET","/gm/api/activities?offset=2",null,true)).getAsJsonObject("data").getAsJsonArray("items").size());
+    assertEquals(400,request("GET","/gm/api/activities?state=bad",null,true).statusCode());
+    assertEquals(400,request("GET","/gm/api/activities?type=bad",null,true).statusCode());
+    assertEquals(400,request("GET","/gm/api/activities?limit=101",null,true).statusCode());
+    assertEquals(200,request("GET","/gm/activities.js",null,false).statusCode());
+    String body="{\"requestId\":\""+UUID.randomUUID()+"\",\"action\":\"activity-open\",\"activityId\":30013,\"durationDays\":7}";
+    assertEquals(401,request("POST","/gm/api/operate",body,false).statusCode());
+    var first=request("POST","/gm/api/operate",body,true);
+    assertEquals(200,first.statusCode(),first.body());
+    assertEquals(first.body(),request("POST","/gm/api/operate",body,true).body());
+    assertEquals(1,executions.get());
+    assertEquals(400,request("POST","/gm/api/operate",body.replace("\"durationDays\":7","\"durationDays\":0"),true).statusCode());
+    assertEquals(400,request("POST","/gm/api/operate",body.replace("\"durationDays\":7","\"uid\":10001"),true).statusCode());
   }
 
   @Test
