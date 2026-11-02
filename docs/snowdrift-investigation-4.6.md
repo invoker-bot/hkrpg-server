@@ -26,6 +26,12 @@
 
 本轮证据位于 `build/snow-investigation-20261102/`：`red.xml`、`full-summary.json`、`release-tests.json`、`native.json`、`jar-diff.json` 和 `image.json`。候选 JAR SHA256 为 `41943c7c8e49476b71559f47f4ecacd9c235c655d48e71a4edf089387626deb8`。
 
-首次发布检查检测到正式玩家正在战斗，在停服及正式文件写入前退出；服务更新等待战斗结束。
+首次发布检查检测到正式玩家正在战斗，在停服及正式文件写入前退出。用户随后明确允许立即重启、中断当前战斗，才继续更新。
+
+## 本地服务更新
+
+2026-11-02 已将上述同 SHA256 候选包更新到正式本地 Compose 服务。正常停服后备份 53 份运行文件和配套凭据，备份位于 `.local/backups/snowdrift-20261102-100311/`；15 份配置及保护文件摘要不变，其他运行容器未改变。服务重建后健康检查、镜像/JAR 身份和只读 Compose 复核通过。
+
+正式数据库的部署前后只读投影确认 UID、地图/入口、相关主/子任务及既有物件交互记录完全一致，101010108 仍为 `DOING`，没有代替玩家完成调查。重新登录时会依据已接取目标恢复可调查状态。证据为 `deployment.json`、`after-compose-readonly.json` 和 `progress-preservation.json`。
 
 本轮不使用 computer use。真实客户端重新加载地图后的「调查」点击、镜头及桑博完整演出尚未验收；服务端回归通过不代表这些画面已通过。
