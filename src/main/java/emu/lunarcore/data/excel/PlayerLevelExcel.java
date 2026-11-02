@@ -10,6 +10,7 @@ import lombok.Getter;
 public class PlayerLevelExcel extends GameResource {
     private int Level;
     private int PlayerExp;
+    private int LevelRewardID;
 
     @Override
     public int getId() {

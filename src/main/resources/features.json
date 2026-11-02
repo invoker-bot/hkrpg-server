@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "player-level-rewards",
+      "name": "开拓等级奖励领取",
+      "status": "partial",
+      "evidence": "docs/player-level-rewards-4.6.md",
+      "gap": "4.6 原生领取及已领取列表接通；按原始2至70级配置校验资格、容量和实际到账，收据防重复，保存中断保留待处理记录。服务端回归、资源审计、隔离KCP与正常H2恢复的验证边界见说明；断电跨文档原子性、自动对账和本轮真实游戏UI仍待完成。"
+    },
+    {
       "id": "train-cake-box",
       "name": "列车猫猫糕箱开盒与领取",
       "status": "partial",
