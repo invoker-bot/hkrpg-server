@@ -40,6 +40,9 @@ public final class GmRoutes {
             "players.js",
             "resources.js",
             "banners.js",
+            "shops.js",
+            "shortcuts.js",
+            "activities.js",
             "mail.js",
             "terminal.js",
             "audit.js",
@@ -115,6 +118,50 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/activities",safe(ctx->{
+      auth.require(ctx,false);
+      String q=query(ctx,"q"),type=query(ctx,"type"),state=query(ctx,"state");
+      if(!type.isEmpty()&&!Set.of("event","resident","trial","unmapped").contains(type))throw new GmError(400,"活动类型不正确。");
+      if(!state.isEmpty()&&!Set.of("unconfigured","active","scheduled","stopped","expired","mixed").contains(state))throw new GmError(400,"活动状态不正确。");
+      int offset=integer(ctx,"offset",0,0,1_000_000),limit=integer(ctx,"limit",30,1,100);
+      var filtered=backend.activities().stream().filter(a->type.isEmpty()||a.type().equals(type))
+          .filter(a->state.isEmpty()||a.state().equals(state))
+          .filter(a->q.isEmpty()||(a.id()+" "+a.panelId()+" "+a.name()+" "+a.modules().stream().map(ActivityModuleRow::id).toList())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx,Map.of("total",filtered.size(),"items",filtered.stream().skip(offset).limit(limit).toList()));
+    }));
+    app.get("/gm/api/item-shortcuts", safe(ctx -> {
+      auth.require(ctx,false);
+      String q=query(ctx,"q"),type=query(ctx,"type"),tag=query(ctx,"tag");
+      if (!type.isEmpty()&&!GmItemShortcuts.TYPES.containsKey(type)) throw new GmError(400,"物品类型不正确。");
+      if (!tag.isEmpty()&&!GmItemShortcuts.TAGS.contains(tag)) throw new GmError(400,"物品标签不正确。");
+      int offset=integer(ctx,"offset",0,0,1_000_000),limit=integer(ctx,"limit",30,1,100);
+      var all=backend.itemShortcuts();
+      var filtered=all.stream().filter(i -> type.isEmpty()||type.equals(i.type()))
+          .filter(i -> tag.isEmpty()||i.tags().contains(tag))
+          .filter(i -> q.isEmpty()||(i.item().id()+" "+i.item().name()+" "+String.join(" ",i.sources()))
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx,Map.of("types",GmItemShortcuts.TYPES.entrySet().stream().sorted(Map.Entry.comparingByKey())
+          .map(e -> Map.of("id",e.getKey(),"name",e.getValue(),"count",all.stream().filter(i -> i.type().equals(e.getKey())).count())).toList(),
+          "total",filtered.size(),"items",filtered.stream().skip(offset).limit(limit).toList()));
+    }));
+    app.get("/gm/api/shops", safe(ctx -> {
+      auth.require(ctx, false);
+      String q = query(ctx, "q"), state = query(ctx, "state");
+      if (!state.isEmpty() && !Set.of("listed", "unlisted").contains(state))
+        throw new GmError(400, "商品状态不正确。");
+      int shopId = integer(ctx, "shopId", 0, 0, Integer.MAX_VALUE);
+      int offset = integer(ctx, "offset", 0, 0, 1_000_000), limit = integer(ctx, "limit", 30, 1, 100);
+      var goods = backend.shopGoods();
+      var shops = goods.stream().map(g -> new ShopRow(g.shopId(), g.shopType(), g.shopName()))
+          .distinct().sorted(Comparator.comparingInt(ShopRow::id)).toList();
+      var filtered = goods.stream().filter(g -> shopId == 0 || g.shopId() == shopId)
+          .filter(g -> state.isEmpty() || g.listed() == state.equals("listed"))
+          .filter(g -> q.isEmpty() || (g.goodsId() + " " + g.itemId() + " " + g.name() + " " + g.shopName())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx, Map.of("shops", shops, "total", filtered.size(),
+          "items", filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get("/gm/api/banners/current", safe(ctx -> {
       auth.require(ctx, false);
       String q = query(ctx, "q"), type = query(ctx, "type"), state = query(ctx, "state"), version = query(ctx, "version");

@@ -11,7 +11,7 @@ public class HandlerGetActivityScheduleConfigCsReq extends PacketHandler {
 
     @Override
     public void handle(GameSession session, byte[] data) throws Exception {
-        session.send(new PacketGetActivityScheduleConfigScRsp());
+        session.send(new PacketGetActivityScheduleConfigScRsp(session.getPlayer()));
     }
 
 }

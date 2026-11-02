@@ -158,9 +158,15 @@ final class GmJournal {
 
   private static String summary(Operation op) {
     return switch (op.action()) {
-      case "grant" ->
+      case "activity-open" -> "开放活动 #"+op.activityId()+" · "+(op.beginTime()==null?(op.durationDays()==null?30:op.durationDays())+" 天":op.beginTime()+" 至 "+op.endTime())+" · 全服";
+      case "activity-stop" -> "关闭活动 #"+op.activityId()+" · 全服";
+      case "activity-enable" -> "恢复活动 #"+op.activityId()+" · 原排期 · 全服";
+      case "grant", "shortcut-grant" ->
           "发放 #" + op.itemId() + " × " + op.amount() + " · Lv." + op.level() + " · 阶 " + op.rank();
       case "mail" -> "邮件：" + op.title();
+      case "shop-list", "shop-unlist" -> (op.action().equals("shop-list") ? "上架商品 " : "下架商品 ")
+          + op.shopGoods().stream().map(g -> g.shopId() + "/" + g.goodsId())
+              .collect(java.util.stream.Collectors.joining("、")) + " · 全服";
       case "banner-rerun" -> "复刻 " + op.bannerKey() + " · "
           + (op.durationDays() == null ? 30 : op.durationDays()) + " 天 · 全服";
       case "banner-stop" -> "停止卡池 #" + op.bannerId() + " · 全服";

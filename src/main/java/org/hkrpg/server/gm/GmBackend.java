@@ -16,5 +16,11 @@ public interface GmBackend {
 
   default List<CurrentBannerRow> currentBanners() { return List.of(); }
 
+  default List<ShopGoodsRow> shopGoods() { return List.of(); }
+
+  default List<ItemShortcut> itemShortcuts() { return List.of(); }
+
+  default List<ActivityRow> activities() { return List.of(); }
+
   Result execute(Operation operation);
 }

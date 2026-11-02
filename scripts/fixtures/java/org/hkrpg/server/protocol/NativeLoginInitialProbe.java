@@ -41,12 +41,12 @@ public final class NativeLoginInitialProbe implements KcpListener {
     1238, 8136, 1925, 8914, 8580, 4147, 9548, 9776, 8982, 10016, 9866, 9496, 1456, 63,
     4, 1249, 2725, 8376, 2947, 3375, 5523, 4439, 6625, 6936, 7206, 7599, 4173, 9266,
     6592, 2612, 341, 3915, 1725, 2214, 2625, 2623, 3125, 4225, 3875, 5125, 8196, 8906,
-    2202, 825, 2116, 1525, 9996, 2325
+    2202, 825, 2116, 1525, 9996, 2325, 9638
   }).boxed().collect(Collectors.toUnmodifiableSet());
   private static final Map<Integer, Integer> INACTIVE_RETCODES = Map.ofEntries(
       Map.entry(5653, 15), Map.entry(7173, 6), Map.entry(8025, 11),
       Map.entry(8116, 7), Map.entry(47, 8), Map.entry(9776, 4), Map.entry(8982, 14),
-      Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9), Map.entry(4, 9),
+      Map.entry(10016, 12), Map.entry(9866, 13), Map.entry(9496, 9),
       Map.entry(549, 1), Map.entry(2949, 6), Map.entry(3475, 8),
       Map.entry(5725, 4), Map.entry(5825, 10), Map.entry(8580, 9),
       Map.entry(8914, 13), Map.entry(9548, 8), Map.entry(6017, 2), Map.entry(9996, 9));
@@ -96,6 +96,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
   private boolean missionStatusBatchVerified;
   private boolean archiveSnapshotVerified;
   private boolean heartbeatAfterArchiveVerified;
+  private boolean initialActivityScheduleVerified;
+  private boolean initialSocialParkProfileVerified;
   private boolean laterStoryVideoKeysVerified;
   private final java.util.List<String> gachaBrowserUrls = new java.util.ArrayList<>();
   private int rejectedResponseCommand;
@@ -195,6 +197,31 @@ public final class NativeLoginInitialProbe implements KcpListener {
               && prefs.getField(prefs.getDescriptorForType().findFieldByNumber(9)).equals(0)
               && prefs.getRepeatedFieldCount(prefs.getDescriptorForType().findFieldByNumber(11)) == 0,
               "Fresh account preferences must succeed without invented seen markers");
+        }
+        if (frame.cmdId() == 4) {
+          // Activity scheduling now uses its typed reply (retcode field 10), rather
+          // than the old inactive placeholder (field 9). This fresh fixture has
+          // no operator windows or completed unlock prerequisites.
+          var schedules = protocol.clientSchema().parse("GetActivityScheduleConfigScRsp", frame.body());
+          require(schedules.getUnknownFields().asMap().isEmpty()
+              && schedules.getField(schedules.getDescriptorForType().findFieldByName("retcode")).equals(0)
+              && schedules.getRepeatedFieldCount(schedules.getDescriptorForType().findFieldByName("schedule_data")) == 0,
+              "Fresh activity schedule must use its native schema without invented windows");
+          initialActivityScheduleVerified = true;
+        }
+        if (frame.cmdId() == 9638) {
+          var social = protocol.clientSchema().parse("SocialPlayGetDataScRsp", frame.body());
+          require(social.getUnknownFields().asMap().isEmpty()
+              && social.getField(social.getDescriptorForType().findFieldByName("retcode")).equals(0),
+              "Initial social profile query failed");
+          var park = child(child(social, "NDDJFLPBHBL"), "JIPPNPILKDJ");
+          require(park.getRepeatedFieldCount(park.getDescriptorForType().findFieldByNumber(1)) == 0,
+              "Initial social profile invented park placements");
+          var cats = child(social, "ELDIONMAAHO");
+          require(cats.getRepeatedFieldCount(cats.getDescriptorForType().findFieldByName("BJPHDKEBOBK")) == 0
+              && cats.getRepeatedFieldCount(cats.getDescriptorForType().findFieldByName("NIELDCLPOLA")) == 0,
+              "Initial social query opened a box or granted a capture");
+          initialSocialParkProfileVerified = true;
         }
         if (INACTIVE_RETCODES.containsKey(frame.cmdId())) {
           var input = CodedInputStream.newInstance(frame.body());
@@ -591,6 +618,8 @@ public final class NativeLoginInitialProbe implements KcpListener {
           Map.entry("initialRequests", QUERIES.length),
           Map.entry("initialResponses", EXPECTED_RESPONSES.size()),
           Map.entry("b51InactiveInitialProfileVerified", probe.received.contains(9996)),
+          Map.entry("initialActivityScheduleVerified", probe.initialActivityScheduleVerified),
+          Map.entry("initialSocialParkProfileVerified", probe.initialSocialParkProfileVerified),
           Map.entry("requiredNestedProfiles", true),
           Map.entry("requiredBasicSettings", true),
           Map.entry("openingVideoBootstrapContract", true),

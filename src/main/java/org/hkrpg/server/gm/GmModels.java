@@ -26,6 +26,9 @@ public final class GmModels {
   public record CatalogItem(
       int id, String name, String category, int rarity, int maxLevel, int maxRank) {}
 
+  public record ItemShortcut(CatalogItem item, String type, List<String> tags,
+      List<String> sources, boolean grantable, String note, int maxAmount) {}
+
   public record CommandRow(
       String label, String description, boolean requireTarget, boolean dangerous) {}
 
@@ -48,7 +51,25 @@ public final class GmModels {
       String bannerKey,
       Integer durationDays,
       Integer bannerId,
-      List<Integer> bannerIds) {
+      List<Integer> bannerIds,
+      List<ShopTarget> shopGoods,
+      Integer activityId,
+      Long beginTime,
+      Long endTime) {
+    public Operation(String requestId, String action, int uid, int itemId, int amount,
+        int level, int rank, String title, String sender, String content,
+        List<Attachment> attachments, String command, String confirm, String bannerKey,
+        Integer durationDays, Integer bannerId, List<Integer> bannerIds, List<ShopTarget> shopGoods) {
+      this(requestId,action,uid,itemId,amount,level,rank,title,sender,content,attachments,command,
+          confirm,bannerKey,durationDays,bannerId,bannerIds,shopGoods,null,null,null);
+    }
+    public Operation(String requestId, String action, int uid, int itemId, int amount,
+        int level, int rank, String title, String sender, String content,
+        List<Attachment> attachments, String command, String confirm, String bannerKey,
+        Integer durationDays, Integer bannerId, List<Integer> bannerIds) {
+      this(requestId, action, uid, itemId, amount, level, rank, title, sender, content,
+          attachments, command, confirm, bannerKey, durationDays, bannerId, bannerIds, null);
+    }
     public Operation(String requestId, String action, int uid, int itemId, int amount,
         int level, int rank, String title, String sender, String content,
         List<Attachment> attachments, String command, String confirm, String bannerKey,
@@ -63,6 +84,23 @@ public final class GmModels {
           attachments, command, confirm, null, null, null);
     }
   }
+
+  public record ShopTarget(int shopId, int goodsId) {}
+
+  public record ActivityModuleRow(int id, boolean resident, boolean configured, boolean disabled,
+      String state, long beginTime, long endTime) {}
+
+  public record ActivityRow(int id, int panelId, String name, String type,
+      List<ActivityModuleRow> modules, String state, String status, long beginTime, long endTime,
+      boolean canManage, boolean canEnable, boolean canStop, String note, String unlockConditions) {}
+
+  public record ShopRow(int id, int type, String name) {}
+
+  public record ShopPrice(int itemId, String name, int amount) {}
+
+  public record ShopGoodsRow(int shopId, int shopType, String shopName, int goodsId,
+      int itemId, String name, int itemCount, List<ShopPrice> costs, int limitTimes,
+      String refreshType, boolean listed, boolean rotating) {}
 
   public record CurrentBannerRow(int id, String type, String name, String historyKey,
       String version, String phase, List<BannerItem> up5, List<BannerItem> up4,

@@ -187,6 +187,8 @@ def run(jar, output):
                     summaries.append(json.loads(next(line for line in probe.stdout.splitlines()
                                                      if line.startswith('{"'))))
                     assert summaries[-1]['passed']
+                    assert summaries[-1]['initialActivityScheduleVerified'] is True
+                    assert summaries[-1]['initialSocialParkProfileVerified'] is True
                     assert summaries[-1]['rogueInfoRetcodeZero'] is True
                     assert summaries[-1]['chessRogueInitialProfile']['verified'] is True
                     assert summaries[-1]['gachaBrowserUrlsVerified'] > 0

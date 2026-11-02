@@ -21,7 +21,7 @@ class LoginBootstrap46Test {
         Arguments.of(8110, 8116, 7), Arguments.of(96, 47, 8),
         Arguments.of(9804, 9776, 4), Arguments.of(8991, 8982, 14),
         Arguments.of(10010, 10016, 12), Arguments.of(9894, 9866, 13),
-        Arguments.of(9490, 9496, 9), Arguments.of(78, 4, 9),
+        Arguments.of(9490, 9496, 9),
         Arguments.of(9, 27, 5), Arguments.of(522, 549, 1),
         Arguments.of(2922, 2949, 6), Arguments.of(3405, 3475, 8),
         Arguments.of(5734, 5725, 4), Arguments.of(5834, 5825, 10),
@@ -95,12 +95,15 @@ class LoginBootstrap46Test {
     var input = io.netty.buffer.Unpooled.buffer();
     queries().forEach(args -> input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(
         (Integer) args.get()[0], new byte[0], new byte[0])));
+    // The former empty bootstrap placeholder now reads actual level-reward receipts.
+    input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(78, new byte[0], new byte[0]));
     input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(6134, new byte[0], new byte[0]));
     input.writeBytes(emu.lunarcore.server.packet.PacketCodec.encode(
         session.bridge.clientCommand("ContentPackageGetDataCsReq"), new byte[0], new byte[0]));
     try { session.onMessage(input); } finally { input.release(); }
     assertFalse(session.closed);
-    assertEquals(23, session.nativePackets.size());
+    assertEquals(22, session.nativePackets.size());
+    assertTrue(session.clientBodies.containsKey("GetLevelRewardTakenListScRsp"));
     assertTrue(session.clientBodies.containsKey("GetAllServerPrefsDataScRsp"));
     assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));
     assertEquals(SessionState.ACTIVE, session.getState());

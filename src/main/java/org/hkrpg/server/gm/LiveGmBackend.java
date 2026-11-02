@@ -21,6 +21,9 @@ final class LiveGmBackend implements GmBackend {
   private static final Set<String> DANGEROUS =
       Set.of("account", "clear", "permission", "giveall", "reload", "kick");
   private volatile List<CatalogItem> catalog;
+  private volatile List<ItemShortcut> shortcuts;
+  private volatile List<GmActivityCatalog.Template> activityCatalog;
+  private Map<Integer, String> shopNames = Map.of();
   private final java.util.function.IntFunction<GameAvatar> avatarFactory;
 
   LiveGmBackend() {
@@ -76,6 +79,7 @@ final class LiveGmBackend implements GmBackend {
   private List<CatalogItem> loadCatalog() {
     var hashes = new HashSet<Long>();
     GameData.getItemExcelMap().values().forEach(item -> hashes.add(item.getItemName()));
+    GameData.getShopExcelMap().values().forEach(shop -> hashes.add(shop.getShopName()));
     var names = new HashMap<Long, String>();
     Path root = Path.of(LunarCore.getConfig().getResourceDir()).resolve("TextMap");
     String language = LunarCore.getConfig().getServerOptions().language;
@@ -103,6 +107,10 @@ final class LiveGmBackend implements GmBackend {
         LunarCore.getLogger().warn("GM catalog: could not read TextMap{}", candidate);
       }
     }
+    var resolvedShops = new HashMap<Integer, String>();
+    for (var shop : GameData.getShopExcelMap().values())
+      resolvedShops.put(shop.getId(), cleanName(names.getOrDefault(shop.getShopName(), "商店 #" + shop.getId())));
+    shopNames = Map.copyOf(resolvedShops);
     return GameData.getItemExcelMap().values().stream()
         .filter(LiveGmBackend::catalogSupported)
         .map(
@@ -171,6 +179,8 @@ final class LiveGmBackend implements GmBackend {
 
   public Result execute(Operation operation) {
     GmValidation.validate(operation);
+    if(operation.action().startsWith("activity-"))return activityManager().update(operation);
+    if (operation.action().startsWith("shop-")) return setShopListed(operation);
     if (operation.action().equals("banner-rerun")) return banners().rerun(operation);
     if (Set.of("banner-stop", "banner-enable", "banner-batch-stop", "banner-batch-enable").contains(operation.action())) return banners().setEnabled(operation);
     if (operation.action().equals("banner-complete")) return banners().completeCatalog(operation);
@@ -180,6 +190,9 @@ final class LiveGmBackend implements GmBackend {
         player ->
             switch (operation.action()) {
               case "grant" -> grant(player, operation);
+              case "shortcut-grant" -> grantShortcut(player,operation,itemShortcuts().stream()
+                  .filter(i -> i.item().id()==operation.itemId()).findFirst()
+                  .orElseThrow(() -> new GmError(400,"该物品不在当前快捷清单中，请刷新后重试。")));
               case "mail" -> mail(player, operation);
               case "heal", "refill" -> legacy(operation.action() + " @" + player.getUid());
               case "unstuck" -> unstuck(player);
@@ -195,6 +208,87 @@ final class LiveGmBackend implements GmBackend {
   }
 
   public List<BannerRow> bannerHistory() { return banners().history(); }
+
+  private GmActivities activityManager(){
+    if(!LunarCore.isReady()||LunarCore.getGameServer()==null)throw new GmError(503,"游戏服务尚未就绪。");
+    if(activityCatalog==null)synchronized(this){
+      if(activityCatalog==null)try{activityCatalog=GmActivityCatalog.load(Path.of(LunarCore.getConfig().getResourceDir()));}
+      catch(java.io.IOException|RuntimeException e){
+        LunarCore.getLogger().warn("GM activity catalog could not be loaded",e);
+        throw new GmError(503,"活动资源目录不可读取，请检查资源后重启服务。");
+      }
+    }
+    return new GmActivities(Path.of(LunarCore.getConfig().getDataDir()),activityCatalog,java.time.Clock.systemUTC());
+  }
+
+  public List<ActivityRow> activities(){return activityManager().current();}
+
+  public List<ItemShortcut> itemShortcuts() {
+    if (shortcuts==null) synchronized(this) {
+      if (shortcuts==null) try {
+        shortcuts=GmItemShortcuts.load(Path.of(LunarCore.getConfig().getResourceDir()),catalog());
+      } catch (java.io.IOException | RuntimeException e) {
+        LunarCore.getLogger().warn("GM item shortcut sources could not be loaded",e);
+        throw new GmError(503,"快捷清单来源暂时不可读取，请检查资源后重启服务。");
+      }
+    }
+    return shortcuts;
+  }
+
+  Result grantShortcut(Player player, Operation operation, ItemShortcut shortcut) {
+    var item=GameData.getItemExcelMap().get(operation.itemId());
+    if (shortcut.item().id()!=operation.itemId() || !shortcut.grantable() || !GmItemShortcuts.grantable(item))
+      throw new GmError(400,"当前物品不支持快捷发放。");
+    GmValidation.range(operation.amount(),1,GmItemShortcuts.maxAmount(item),"快捷发放数量");
+    if (item.getItemSubType()==emu.lunarcore.game.enums.ItemSubType.PlayerOutfit
+        && player.getUnlocks().getPlayerOutfits().contains(item.getId()))
+      throw new GmError(409,"玩家已拥有该装扮，未重复发放。");
+    if (!emu.lunarcore.game.shop.ShopService.canDeliver(player,Map.of(item.getId(),operation.amount())))
+      throw new GmError(409,"玩家已拥有该收藏品，或背包容量/堆叠上限不足，未执行发放。");
+    return grant(player,operation);
+  }
+
+  public List<ShopGoodsRow> shopGoods() {
+    var names = new HashMap<Integer, String>();
+    for (var item : catalog()) names.put(item.id(), item.name());
+    var server = LunarCore.getGameServer();
+    if (server == null) throw new GmError(503, "游戏服务不可用。");
+    var disabled = server.getShopService().getAvailability().snapshot();
+    var now = java.time.Instant.now();
+    var rows = new ArrayList<ShopGoodsRow>();
+    for (var shop : GameData.getShopExcelMap().values()) {
+      for (var goods : shop.getGoods().values()) {
+        int itemId = goods.itemAt(now);
+        var costs = goods.getCostList() == null ? List.<ShopPrice>of() : goods.getCostList().stream()
+            .map(c -> new ShopPrice(c.getId(), names.getOrDefault(c.getId(), "物品 #" + c.getId()), c.getCount())).toList();
+        rows.add(new ShopGoodsRow(shop.getId(), shop.getShopType(), shopNames.getOrDefault(shop.getId(), "商店 #" + shop.getId()),
+            goods.getGoodsID(), itemId, names.getOrDefault(itemId, "物品 #" + itemId), goods.getItemCount(), costs,
+            goods.getLimitTimes(), Objects.toString(goods.getRefreshType(), ""),
+            !disabled.contains(new emu.lunarcore.game.shop.ShopAvailability.GoodsKey(shop.getId(), goods.getGoodsID())),
+            goods.getItemGroupID() > 0));
+      }
+    }
+    return rows.stream().sorted(Comparator.comparingInt(ShopGoodsRow::shopId)
+        .thenComparingInt(ShopGoodsRow::goodsId)).toList();
+  }
+
+  private Result setShopListed(Operation operation) {
+    var server = LunarCore.getGameServer();
+    if (server == null) throw new GmError(503, "游戏服务不可用。");
+    boolean listed = operation.action().equals("shop-list");
+    var targets = operation.shopGoods().stream().map(g ->
+        new emu.lunarcore.game.shop.ShopAvailability.GoodsKey(g.shopId(), g.goodsId())).toList();
+    try {
+      int changed = server.getShopService().getAvailability().setListed(targets, listed, operation.requestId());
+      return new Result("completed", List.of((listed ? "已上架 " : "已下架 ") + changed + " 个商品，"
+          + (targets.size() - changed) + " 个已处于目标状态。",
+          "全服生效，价格、数量和玩家限购记录保留。请重新打开游戏内商店。"));
+    } catch (IllegalArgumentException e) { throw new GmError(409, e.getMessage()); }
+    catch (java.io.IOException e) {
+      LunarCore.getLogger().warn("GM shop availability could not be saved", e);
+      throw new GmError(503, "商品上下架配置保存失败，本次变更未生效，请检查数据目录。");
+    }
+  }
 
   public List<CurrentBannerRow> currentBanners() {
     var names = new HashMap<Integer, String>();
@@ -274,6 +368,7 @@ final class LiveGmBackend implements GmBackend {
         && (long) before + op.amount() > Integer.MAX_VALUE)
       throw new GmError(409, "经验将超出存储上限，未执行发放。");
     var delivered = player.getInventory().addItems(items, true);
+    if (op.action().equals("shortcut-grant")) org.hkrpg.server.protocol.ShopCosmetics46.purchased(player,delivered);
     int amount =
         before >= 0
             ? (int) Math.max(0L, (long) virtualBalance(player, excel) - before)

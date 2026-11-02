@@ -10,6 +10,10 @@ import emu.lunarcore.data.excel.ShopGoodsExcel;
 import emu.lunarcore.server.packet.send.PacketGetShopListScRsp;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Path;
+import java.util.UUID;
+import emu.lunarcore.game.shop.ShopAvailability;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,6 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /** Shop IDs in a reply must come from the selected catalog, including the legacy wire path. */
 class ShopCatalogResponseTest {
+  @TempDir Path directory;
   List<ShopExcel> original;
 
   @BeforeEach
@@ -29,6 +34,24 @@ class ShopCatalogResponseTest {
   void restoreCatalog() {
     GameData.getShopExcelMap().values().clear();
     original.forEach(GameData.getShopExcelMap()::add);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"4.2.0", "4.6.0"})
+  void unlistedGoodsAndEmptyShopsAreHiddenOnBothProtocolsWithoutMutatingResources(String version) throws Exception {
+    shop(101, 1, 10001);shop(102, 1, 10002);shop(201, 2, 20001);
+    var availability = new ShopAvailability(directory);
+    availability.setListed(List.of(new ShopAvailability.GoodsKey(101,10001)),false,UUID.randomUUID().toString());
+    var packet = new PacketGetShopListScRsp(null,1,availability);
+    var bridge = ProtocolBridge.forVersion(version);
+    var wire = bridge.outbound(packet.getCmdId(),packet.getData().toByteArray());
+    var rows = shops(bridge.clientSchema().parse("GetShopListScRsp",wire.body()));
+    assertEquals(List.of(102),rows.stream().map(s -> field(s,"shop_id")).toList());
+    assertEquals(1,GameData.getShopExcelMap().get(101).getGoods().size());
+    availability.setListed(List.of(new ShopAvailability.GoodsKey(101,10001)),true,UUID.randomUUID().toString());
+    packet = new PacketGetShopListScRsp(null,1,availability);
+    wire = bridge.outbound(packet.getCmdId(),packet.getData().toByteArray());
+    assertEquals(2,shops(bridge.clientSchema().parse("GetShopListScRsp",wire.body())).size());
   }
 
   @ParameterizedTest

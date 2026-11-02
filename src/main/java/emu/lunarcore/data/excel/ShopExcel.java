@@ -11,6 +11,7 @@ import lombok.Getter;
 public class ShopExcel extends GameResource {
     private int ShopID;
     private int ShopType;
+    private long ShopName;
 
     private transient Int2ObjectMap<ShopGoodsExcel> goods;
 
