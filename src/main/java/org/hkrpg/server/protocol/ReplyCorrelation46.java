@@ -13,6 +13,31 @@ import java.io.IOException;
  */
 public final class ReplyCorrelation46 {
   private final ThreadLocal<Context> current = new ThreadLocal<>();
+  // Explicitly used by paid requests; never evict a receipt and permit an old charge to repeat.
+  private final java.util.Map<String, byte[]> responseBodies = new java.util.HashMap<>();
+
+  private String responseKey() {
+    var context = current.get();
+    return context == null || context.response == 0 || context.header.length == 0 ? null
+        : context.response + ":" + java.util.HexFormat.of().formatHex(context.header);
+  }
+
+  public boolean hasRequestIdentity() { return responseKey() != null; }
+
+  public synchronized byte[] cachedResponseBody() {
+    var body = responseBodies.get(responseKey());
+    return body == null ? null : body.clone();
+  }
+
+  public synchronized boolean canCacheResponseBody() {
+    String key = responseKey();
+    return key != null && (responseBodies.containsKey(key) || responseBodies.size() < 256);
+  }
+
+  public synchronized void cacheResponseBody(byte[] body) {
+    if (!canCacheResponseBody()) throw new IllegalStateException("Reply receipt capacity reached");
+    responseBodies.putIfAbsent(responseKey(), body.clone());
+  }
 
   public interface Scope extends AutoCloseable {
     @Override

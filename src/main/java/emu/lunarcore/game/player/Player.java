@@ -112,6 +112,8 @@ public class Player implements Tickable, Syncable {
     private long nextStaminaRecover;
     // CN4.6 farming preference; native cocoon entry may recover its actual shortfall.
     private boolean quickStaminaRecovery;
+    private long staminaPurchaseDay;
+    private int staminaPurchaseTimes;
 
     private transient Battle battle;
     private transient Scene scene;
@@ -723,6 +725,42 @@ public class Player implements Tickable, Syncable {
             }
             sendPacket(new PacketStaminaInfoScNotify(this));
             return Retcode.SUCC;
+        }
+    }
+
+    public int getTodayStaminaPurchases() {
+        synchronized (this) {
+            long today = DailyManager.day(getDailyManager().currentInstant());
+            return today > staminaPurchaseDay ? 0 : Math.max(0, staminaPurchaseTimes);
+        }
+    }
+
+    /** Save currency, power and quota together; the caller records its receipt before notifying. */
+    public StaminaPurchases.Result purchaseStamina() {
+        synchronized (this) {
+            long today = DailyManager.day(getDailyManager().currentInstant());
+            int count = today > staminaPurchaseDay ? 0 : staminaPurchaseTimes;
+            if (count < 0) return StaminaPurchases.failure(Retcode.SERVER_INTERNAL_ERROR, 0);
+            if (count >= StaminaPurchases.DAILY_LIMIT)
+                return StaminaPurchases.failure(Retcode.LACK_EXCHANGE_STAMINA_TIMES, count);
+            var offer = StaminaPurchases.offer(count + 1);
+            if (offer == null) return StaminaPurchases.failure(Retcode.SERVER_INTERNAL_ERROR, count);
+            if (hcoin < offer.price()) return StaminaPurchases.failure(Retcode.ITEM_NOT_ENOUGH, count);
+            long nextStamina = (long) stamina + offer.stamina();
+            if (stamina < 0 || nextStamina > offer.storageLimit())
+                return StaminaPurchases.failure(Retcode.STAMINA_FULL, count);
+            int previousJade = hcoin, previousStamina = stamina, previousTimes = staminaPurchaseTimes;
+            long previousDay = staminaPurchaseDay;
+            hcoin -= offer.price(); stamina = (int) nextStamina;
+            staminaPurchaseDay = Math.max(today, staminaPurchaseDay); staminaPurchaseTimes = count + 1;
+            try {
+                save();
+            } catch (RuntimeException failed) {
+                hcoin = previousJade; stamina = previousStamina;
+                staminaPurchaseDay = previousDay; staminaPurchaseTimes = previousTimes;
+                return StaminaPurchases.failure(Retcode.SERVER_INTERNAL_ERROR, count);
+            }
+            return new StaminaPurchases.Result(Retcode.SUCC, offer.stamina(), offer.price(), count + 1);
         }
     }
 

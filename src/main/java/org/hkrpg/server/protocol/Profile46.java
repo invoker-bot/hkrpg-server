@@ -7,18 +7,57 @@ import com.google.protobuf.DynamicMessage;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
 import emu.lunarcore.server.packet.send.PacketGetBasicInfoScRsp;
+import emu.lunarcore.server.packet.send.PacketPlayerSyncScNotify;
+import emu.lunarcore.server.packet.send.PacketStaminaInfoScNotify;
 import java.io.IOException;
+import org.hkrpg.server.gameplay.StaminaPurchases;
 
 /** Native profile queries, verified stamina preference, and separate nickname/character steps. */
 public final class Profile46 {
   private record Choice(String nickname, int gender, boolean modify) {}
 
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
-    if (!session.getProtocol().experimental() || command != 41 && command != 80 && command != 45)
+    if (!session.getProtocol().experimental() || command != 41 && command != 80 && command != 45 && command != 8)
       return false;
     if (session.getState() != SessionState.ACTIVE) return true;
     var player = session.getPlayer();
     synchronized (player) {
+      if (command == 8) {
+        var receipts = session.getReplyCorrelation();
+        boolean identified = bytes.length == 0 && receipts.hasRequestIdentity();
+        byte[] cached = identified ? receipts.cachedResponseBody() : null;
+        if (cached != null) {
+          session.sendClientPacket("ExchangeStaminaScRsp", cached);
+          return true;
+        }
+        boolean remember = identified && receipts.canCacheResponseBody();
+        var result = !identified ? StaminaPurchases.failure(Retcode.REQ_PARA_INVALID, player.getTodayStaminaPurchases())
+            : !remember ? StaminaPurchases.failure(Retcode.SYSTEM_BUSY, player.getTodayStaminaPurchases())
+            : player.purchaseStamina();
+        var response = builder(session, "ExchangeStaminaScRsp");
+        set(response, "retcode", result.retcode().getVal());
+        set(response, "exchange_times", result.times());
+        if (result.retcode() == Retcode.SUCC) {
+          set(response, "stamina_add", result.added());
+          set(response, "last_recover_time", Math.max(0L, player.getNextStaminaRecover() / 1000
+              - emu.lunarcore.LunarCore.getConfig().getServerOptions().getStaminaRecoveryRate()));
+          var cost = builder(session, "ItemCost");
+          var pile = builder(session, "PileItem");
+          set(pile, "item_id", 1); set(pile, "item_num", result.price());
+          set(cost, "pile_item", pile.build()); add(response, "item_cost_list", cost.build());
+        }
+        byte[] body = response.build().toByteArray();
+        if (remember) receipts.cacheResponseBody(body);
+        try {
+          if (result.retcode() == Retcode.SUCC) {
+            player.sendPacket(new PacketPlayerSyncScNotify(player));
+            player.sendPacket(new PacketStaminaInfoScNotify(player));
+          }
+        } finally {
+          session.sendClientPacket("ExchangeStaminaScRsp", body);
+        }
+        return true;
+      }
       if (command == 45) {
         var response = builder(session, "UpdatePlayerSettingScRsp");
         var setting = builder(session, "UpdatePlayerSetting");
@@ -52,6 +91,7 @@ public final class Profile46 {
           // Native IsFarmStageAutoAddStamina: update oneof380, login PlayerSettingInfo field711.
           set(settings, "HGPFFGKNPFB", player.isQuickStaminaRecovery());
           response.setField(settingsField, settings.build());
+          set(response, "exchange_times", player.getTodayStaminaPurchases());
           set(response, "is_gender_set", player.hasCreatedCharacter());
         } else set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());
         session.sendClientPacket("GetBasicInfoScRsp", response.build().toByteArray());

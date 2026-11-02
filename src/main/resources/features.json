@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "jade-stamina-exchange",
+      "name": "手动星琼兑换开拓力与每日次数",
+      "status": "partial",
+      "evidence": "docs/jade-stamina-exchange-4.6.md",
+      "gap": "接通原生8/68，按原8档费用与每次60点同时保存星琼、开拓力和当日次数；同会话身份回执防重复扣费，保存失败回退，基础资料恢复次数。专项、隔离KCP/H2及发布边界见文档；4.2、燃料/自动付费、跨进程模糊提交对账及真实客户端和跨日显示仍待验收。"
+    },
+    {
       "id": "cocoon-retry-stamina",
       "name": "花萼结算页重试与快捷储备补充",
       "status": "partial",
