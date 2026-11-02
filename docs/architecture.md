@@ -1,3 +1,5 @@
+`TrainCakeCatch46` 处理原生开盒、领取和本地房主资料查询；`TrainCakeCatchState` 与 Player 一次保存实际批次、数量和本周记录。原始等级/任务门槛保留，查询不创建进度，重复领取不增加数量，保存失败回滚。正式抽取池缺失时采用有来源的有限兼容批次，范围见[猫猫糕箱说明](train-cake-box-4.6.md)。
+
 `LoginBootstrap46` 为派对车厢提供原始无前置房间 12 的零进度显示引用，保留建设、资金、奖励及玩家保存状态。客户端区域可见性链路和验收边界见[初始房间说明](party-carriage-initial-room-4.6.md)。
 
 `RogueSecondStoryProgress` 按原始房间、进入顺序、怪物摆放和持久化胜利恢复漫游测试目标；`RogueBossEncounters` 对缺失的首领组使用限定兼容映射。首次测试和二次测试的结算分开核对，见[首领与任务恢复](rogue-second-story-boss-4.6.md)。
