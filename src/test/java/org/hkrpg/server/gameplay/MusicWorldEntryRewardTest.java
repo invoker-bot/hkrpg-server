@@ -35,6 +35,7 @@ class MusicWorldEntryRewardTest {
     GameplayState restored;
     int badges, saves, level = 10;
     boolean failSave;
+    Runnable afterSave;
     final PlayerLineup team = new PlayerLineup(this, 0);
     final Inventory stock = new Inventory(this) {
       @Override public GrantResult grantItems(ItemParamMap map, boolean hint) {
@@ -52,7 +53,7 @@ class MusicWorldEntryRewardTest {
     public Scene getScene() { return scene; }
     public Inventory getInventory() { return stock; }
     public void sendPacket(BasePacket packet) {}
-    public void save() { if (failSave) throw new IllegalStateException("injected save failure"); saves++; }
+    public void save() { if (failSave) throw new IllegalStateException("injected save failure"); saves++; if(afterSave!=null)afterSave.run(); }
   }
 
   @BeforeEach void setup() throws Exception {

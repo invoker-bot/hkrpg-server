@@ -70,6 +70,9 @@ public final class MusicComposition {
   }
 
   public Retcode save(int songId, int preset, List<Integer> grid, List<Integer> effects) {
+    return ActivityReplayScope.in(player.getGameplay(),50022,()->saveCurrent(songId,preset,grid,effects));
+  }
+  private Retcode saveCurrent(int songId, int preset, List<Integer> grid, List<Integer> effects) {
     synchronized (player) {
       var song = GameplayDefinitions.musicSongs.get(songId);
       int gate =

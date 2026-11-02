@@ -313,7 +313,15 @@ public class GameplayState {
   private Set<Integer> cancelledMissions = new HashSet<>();
   private Set<Integer> cancelledSubs = new HashSet<>();
   private Rhythm rhythm = new Rhythm();
-  void rhythm(Rhythm value) { rhythm = java.util.Objects.requireNonNull(value); }
+  public Rhythm getRhythm(){
+    var window=ActivityReplayScope.current(this,50022);
+    return window==null||window.replayId()==null?rhythm:getActivityReplays().music(window);
+  }
+  void rhythm(Rhythm value) {
+    var window=ActivityReplayScope.current(this,50022);
+    if(window==null||window.replayId()==null)rhythm=Objects.requireNonNull(value);
+    else getActivityReplays().music(window,value);
+  }
   private ClockParkState clockPark = new ClockParkState();
 
   void clockPark(ClockParkState value) {
@@ -335,6 +343,9 @@ public class GameplayState {
 
   public Map<Integer, Offering> getOfferings() {
     if (offerings == null) offerings = new HashMap<>();
+    var window=ActivityReplayScope.current(this,50022);
+    if(window!=null&&window.replayId()!=null)
+      return new ActivityReplayMap<>(offerings,getRhythm().getActivityOfferings(),Set.of(5));
     return offerings;
   }
 
@@ -1513,6 +1524,8 @@ public class GameplayState {
   @Entity(useDiscriminator = false)
   @Getter
   public static class Rhythm {
+    private Map<Integer,QuestState> activityQuests=new TreeMap<>();
+    private Map<Integer,Offering> activityOfferings=new HashMap<>();
     private int activeLevel;
     private String transaction = "";
     private Map<Integer, Map<Integer, Integer>> starRewards = new HashMap<>();

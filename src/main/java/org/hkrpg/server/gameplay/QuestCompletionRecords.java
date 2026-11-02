@@ -29,6 +29,7 @@ public final class QuestCompletionRecords {
             && definition.getQuestType() != 4
             && !(definition.getQuestType() == 3
                 && (BoxingClubActivityQuests.belongs(definition)
+                    || MusicActivityQuests.belongs(definition)
                     || TimelineActivityQuests.belongs(definition)
                     || ActivityKillQuests.belongs(definition)
                     || ActivityFirstTalkQuests.belongs(definition)
@@ -50,6 +51,7 @@ public final class QuestCompletionRecords {
     if (DiceRollQuests.belongs(definition)) return DiceRollQuests.state(player, id);
     if (BoxingClubActivityQuests.belongs(definition))
       return BoxingClubActivityQuests.completionState(player, id);
+    if (MusicActivityQuests.belongs(definition))return MusicActivityQuests.completionState(player,id);
     if (TimelineActivityQuests.belongs(definition))
       return TimelineActivityQuests.completionState(player, id);
     if (ActivityKillQuests.belongs(definition))

@@ -35,7 +35,14 @@ public final class Music46 {
   }
 
   static void handle(GameSession s, String name, DynamicMessage req) {
+    ActivityReplayScope.in(s.getPlayer().getGameplay(),50022,()->{handleCurrent(s,name,req);return null;});
+  }
+  private static void handleCurrent(GameSession s, String name, DynamicMessage req) {
     var p = s.getPlayer();
+    String cycle=ActivityReplayScope.identity(p.getGameplay(),50022);
+    if(!name.equals("MusicRhythmDataCsReq")&&!s.getActivityReplayLeases().accepts(50022,cycle)){
+      send(s,name.replace("CsReq","ScRsp"),Map.of("retcode",Retcode.REQ_PARA_INVALID.getVal()));return;
+    }
     var manager = new MusicManager(p);
     var state = p.getGameplay().getRhythm();
     var composition = new MusicComposition(p);
@@ -92,6 +99,7 @@ public final class Music46 {
               .sorted()
               .forEach(id -> add(b, "unlock_track_list", id));
         }
+        s.getActivityReplayLeases().viewed(50022,cycle);
         s.sendClientPacket("MusicRhythmDataScRsp", b.build().toByteArray());
       }
       case "MusicRhythmSaveSongConfigDataCsReq" -> {

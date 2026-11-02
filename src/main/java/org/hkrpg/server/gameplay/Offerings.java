@@ -148,6 +148,10 @@ public final class Offerings {
     if ((id != 5 && id != 12) || entity != 0) return Retcode.REQ_PARA_INVALID;
     if (catalog == null || catalog.id() != id) return Retcode.REWARD_CONFIG_NOT_EXIST;
     if (id == 5) {
+      var replay=ActivityReplayScope.current(player.getGameplay(),50022);
+      long now=Instant.now().getEpochSecond();
+      if(replay!=null&&replay.replayId()!=null&&(now<replay.beginTime()||now>=replay.endTime()
+          ||!ActivityAccess.unlocked(player,50022)))return Retcode.SHOP_NOT_OPEN;
       var source = OfferingQueryCatalog.read();
       if (source == null) return Retcode.REWARD_CONFIG_NOT_EXIST;
       if (!source.unlocked(player, 5, Instant.now())) return Retcode.SHOP_NOT_OPEN;
@@ -166,6 +170,10 @@ public final class Offerings {
   }
 
   public static Result submit(Player player, OfferingCatalog catalog, int id, int entity) {
+    return id==5?ActivityReplayScope.in(player.getGameplay(),50022,()->submitCurrent(player,catalog,id,entity))
+        :submitCurrent(player,catalog,id,entity);
+  }
+  private static Result submitCurrent(Player player, OfferingCatalog catalog, int id, int entity) {
     synchronized (player) {
       var code = preflight(player, catalog, id, entity);
       if (code != Retcode.SUCC) return rejected(code);
@@ -211,12 +219,17 @@ public final class Offerings {
         player.getGameplay().getOfferings().put(id, prepared);
         return rejected(Retcode.SYSTEM_BUSY);
       }
+      if(id==5&&consumed)player.getQuestManager().onMusicProgress();
       return rejected(consumed ? Retcode.SUCC : Retcode.PLAYER_DATA_ERROR);
     }
   }
 
   public static Result claim(
       Player player, OfferingCatalog catalog, int id, int entity, List<Integer> levels) {
+    return id==5?ActivityReplayScope.in(player.getGameplay(),50022,()->claimCurrent(player,catalog,id,entity,levels))
+        :claimCurrent(player,catalog,id,entity,levels);
+  }
+  private static Result claimCurrent(Player player, OfferingCatalog catalog, int id, int entity, List<Integer> levels) {
     synchronized (player) {
       var code = preflight(player, catalog, id, entity);
       if (code != Retcode.SUCC) return rejected(code);

@@ -1,4 +1,4 @@
-`GmActivityHistory` 区分固定历史期次与当前排期，独立复刻 UUID 进入玩家的 `ActivityReplayState`；签到和两类材料活动各自保存进度、以周期前缀防重复领奖。材料请求冻结 `ActivityReplayScope`，原生会话用最近查看周期拒绝旧窗口操作。完整历史范围仍待接通，见[复刻说明](gm-activity-history.md)。
+`GmActivityHistory` 区分固定历史期次与当前排期，独立复刻 UUID 进入玩家的 `ActivityReplayState`；签到、两类材料活动和音乐各自保存进度及领奖记录。请求冻结 `ActivityReplayScope`，原生会话用最近查看周期拒绝旧窗口操作。音乐的评级、编曲、供奉 5 和 20 个限时目标保存在每轮 `Rhythm`，原始剧情存档保留；批量目标领奖独立保存每项结果、仅发一个最终任务快照。完整历史范围仍待接通，见[复刻说明](gm-activity-history.md)。
 
 `Cocoon46` 按实机请求与本机写出器，将普通字段10/快速字段6作为挑战次数交给原战斗工厂，成功时回显普通挑战次数及物件编号；原波数请求继续兼容，混合两种非零次数及未知上下文拒绝，体力与结算沿用原逻辑。来源与验证边界见[花萼挑战说明](cocoon-challenge-count-4.6.md)。
 

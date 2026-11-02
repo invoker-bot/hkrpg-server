@@ -13,7 +13,7 @@ final class GmActivityHistory {
       String sourceUrl,int activityId,int panelId,List<Integer> modules,String family,String resourceStatus,String mappingEvidence) {}
   private static final List<Entry> ENTRIES=read();
   static List<Entry> entries(){return ENTRIES;}
-  static boolean supportedFamily(String family){return Set.of("login","material-submit").contains(family);}
+  static boolean supportedFamily(String family){return Set.of("login","material-submit","music").contains(family);}
   static Entry entry(String key){return ENTRIES.stream().filter(e->e.key().equals(key)).findFirst()
       .orElseThrow(()->new GmError(400,"历史活动不在 1.0–4.6 档案中。"));}
   static List<String> versions(){return ENTRIES.stream().map(Entry::version).distinct().sorted(Comparator
@@ -25,7 +25,8 @@ final class GmActivityHistory {
     var instances=manager.instances();long now=manager.now();
     return ENTRIES.stream().map(e->{
       var live=current.get(e.activityId());
-      boolean ready=supportedFamily(e.family())&&live!=null&&emu.lunarcore.data.GameData.getActivityPanelExcelMap().containsKey(e.panelId())&&e.panelId()==live.panelId()
+      boolean ready=supportedFamily(e.family())&&(!e.family().equals("music")||org.hkrpg.server.gameplay.MusicReplayRules.available())
+          &&live!=null&&emu.lunarcore.data.GameData.getActivityPanelExcelMap().containsKey(e.panelId())&&e.panelId()==live.panelId()
           &&e.modules().equals(live.modules().stream().map(ActivityModuleRow::id).toList());
       var identities=e.modules().stream().map(id->instances.get(e.panelId()+":"+id)).distinct().toList();
       var instance=identities.size()==1?identities.getFirst():null;
@@ -45,6 +46,8 @@ final class GmActivityHistory {
   static Result rerun(GmActivities manager,Operation operation,List<GmActivityCatalog.Template> catalog){
     GmValidation.validate(operation);var event=entry(operation.activityKey());
     if(!supportedFamily(event.family()))throw new GmError(409,"该活动尚未通过实际进入、完成和独立周期校验。");
+    if(event.family().equals("music")&&!org.hkrpg.server.gameplay.MusicReplayRules.available())
+      throw new GmError(409,"当前音律关卡、目标或奖励与核对过的 4.6 原始配置不符。");
     var target=catalog.stream().filter(t->t.id()==event.activityId()).findFirst()
         .orElseThrow(()->new GmError(409,"当前资源缺少此历史活动。"));
     if(target.panelId()!=event.panelId()||!target.modules().equals(event.modules()))

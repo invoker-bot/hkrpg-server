@@ -1,0 +1,2202 @@
+{
+  "schemaVersion": 1,
+  "sourceRepository": "DimbreathBot/TurnBasedGameData",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "scope": "原始27关、9组、3阶段、20个限时目标、演出报酬5的16档及其原始费用/奖励；剧情和地图前置不改写。",
+  "sources": {
+    "ExcelOutput/ActivityConfig.json": {
+      "sha256": "a94d11500502e07789cc38a28211fb3f6cef69400de1be988cc6b8d9634afd3e",
+      "rowCount": 525
+    },
+    "ExcelOutput/ActivityPanel.json": {
+      "sha256": "80a899976fbc5d61fe81483b9e5dd35679c96eed7eb3ef6285c008b475fbc1e4",
+      "rowCount": 270
+    },
+    "ExcelOutput/QuestData.json": {
+      "sha256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+      "rowCount": 5783
+    },
+    "ExcelOutput/FinishWay.json": {
+      "sha256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+      "rowCount": 5798
+    },
+    "ExcelOutput/MusicRhythmGroup.json": {
+      "sha256": "e62de3302c00f747483144a7bdc5efab08b88c8930063f362a82d4580590db34",
+      "rowCount": 9
+    },
+    "ExcelOutput/MusicRhythmLevel.json": {
+      "sha256": "b55d5c635325578d38c3d7e16911e25aacab5d36e3d6d549af2fd43a3d49fe28",
+      "rowCount": 27
+    },
+    "ExcelOutput/MusicRhythmPhase.json": {
+      "sha256": "4b1a9bdabcee9158417ac6240337d2c5a1903390ef925baac9671dc87b03458e",
+      "rowCount": 3
+    },
+    "ExcelOutput/MusicRhythmSong.json": {
+      "sha256": "99065b192b8fe6be1a8d6844df26321caecc71298a56606af11fc9244b704333",
+      "rowCount": 4
+    },
+    "ExcelOutput/MusicRhythmTrack.json": {
+      "sha256": "0f4f1bf0117d896d0ca471ba7da8aa513ad91c98b3b2c40534dfcc7db97addc4",
+      "rowCount": 12
+    },
+    "ExcelOutput/MusicRhythmPresetSong.json": {
+      "sha256": "88c387cd2e3b8a165fe1094ee8aae35dfda970948ccd104e27e5b6e3430553c1",
+      "rowCount": 8
+    },
+    "ExcelOutput/MusicRhythmConstValueCommon.json": {
+      "sha256": "15e98356015e9575e344e8965b1c00bd86175adaf8d20dad2e7bb4f08ef0b2d1",
+      "rowCount": 9
+    },
+    "ExcelOutput/OfferingTypeConfig.json": {
+      "sha256": "50ad6733a9480bdc1ebbece3002e140a1adbab780e19192af4505225b8e46a5a",
+      "rowCount": 15
+    },
+    "ExcelOutput/OfferingLevelConfig.json": {
+      "sha256": "b2b2ce770be1e03fc5b3008bbe021690ac60ef90e2f345b5a566e76681e4be6e",
+      "rowCount": 584
+    },
+    "ExcelOutput/RewardData.json": {
+      "sha256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+      "rowCount": 9515
+    },
+    "ExcelOutput/ItemConfig.json": {
+      "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+      "rowCount": 2941
+    },
+    "ExcelOutput/MainMission.json": {
+      "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+      "rowCount": 2184
+    }
+  },
+  "records": {
+    "ActivityConfig": [
+      {
+        "ActivityID": 50022,
+        "ActivityPanelID": 50022,
+        "ResidentModuleList": [
+          5002202
+        ],
+        "ActivityModuleIDList": [
+          5002201
+        ]
+      }
+    ],
+    "ActivityPanel": [
+      {
+        "PanelID": 50022,
+        "UIPrefab": "UI/Quest/Widget/QuestMusicRhythm.prefab",
+        "UnlockConditions": "[PlayerLevel:21]",
+        "FinishConditions": "[QuestClose:6029201],[QuestClose:6029202],[QuestClose:6029203],[QuestClose:6029204],[QuestClose:6029205],[QuestClose:6029210],[QuestClose:6029211],[QuestClose:6029212],[QuestClose:6029213],[QuestClose:6029214],[QuestClose:6029215],[QuestClose:6029221],[QuestClose:6029222],[QuestClose:6029223],[QuestClose:6029231],[QuestClose:6029232],[QuestClose:6029233],[QuestClose:6029234],[QuestClose:6029235],[QuestClose:6029236]"
+      }
+    ],
+    "QuestData": [
+      {
+        "QuestID": 6029201,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126016,
+        "FinishWayID": 6029201
+      },
+      {
+        "QuestID": 6029202,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126017,
+        "FinishWayID": 6029202
+      },
+      {
+        "QuestID": 6029203,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126018,
+        "FinishWayID": 6029203
+      },
+      {
+        "QuestID": 6029204,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126019,
+        "FinishWayID": 6029204
+      },
+      {
+        "QuestID": 6029205,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126020,
+        "FinishWayID": 6029205
+      },
+      {
+        "QuestID": 6029210,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126001,
+        "FinishWayID": 6029210
+      },
+      {
+        "QuestID": 6029211,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126002,
+        "FinishWayID": 6029211
+      },
+      {
+        "QuestID": 6029212,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126003,
+        "FinishWayID": 6029212
+      },
+      {
+        "QuestID": 6029213,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126004,
+        "FinishWayID": 6029213
+      },
+      {
+        "QuestID": 6029214,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126005,
+        "FinishWayID": 6029214
+      },
+      {
+        "QuestID": 6029215,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126006,
+        "FinishWayID": 6029215
+      },
+      {
+        "QuestID": 6029221,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126007,
+        "FinishWayID": 6029221
+      },
+      {
+        "QuestID": 6029222,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126008,
+        "FinishWayID": 6029222
+      },
+      {
+        "QuestID": 6029223,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126009,
+        "FinishWayID": 6029223
+      },
+      {
+        "QuestID": 6029231,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126010,
+        "FinishWayID": 6029231
+      },
+      {
+        "QuestID": 6029232,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126011,
+        "FinishWayID": 6029232
+      },
+      {
+        "QuestID": 6029233,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126012,
+        "FinishWayID": 6029233
+      },
+      {
+        "QuestID": 6029234,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126013,
+        "FinishWayID": 6029234
+      },
+      {
+        "QuestID": 6029235,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126014,
+        "FinishWayID": 6029235
+      },
+      {
+        "QuestID": 6029236,
+        "QuestType": 3,
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 3126015,
+        "FinishWayID": 6029236
+      }
+    ],
+    "FinishWay": [
+      {
+        "ID": 6029201,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          8026102
+        ],
+        "ParamItemList": [],
+        "Progress": 1
+      },
+      {
+        "ID": 6029202,
+        "FinishType": "MusicRhythmUnlockTrackCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 4
+      },
+      {
+        "ID": 6029203,
+        "FinishType": "MusicRhythmUnlockTrackCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 6
+      },
+      {
+        "ID": 6029204,
+        "FinishType": "MusicRhythmUnlockTrackCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 7
+      },
+      {
+        "ID": 6029205,
+        "FinishType": "MusicRhythmUnlockTrackCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 9
+      },
+      {
+        "ID": 6029210,
+        "FinishType": "FinishQuest",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          6029211,
+          6029212,
+          6029213,
+          6029214,
+          6029215,
+          6029221,
+          6029222,
+          6029223,
+          6029231,
+          6029232,
+          6029233,
+          6029234,
+          6029235,
+          6029236
+        ],
+        "ParamItemList": [],
+        "Progress": 14
+      },
+      {
+        "ID": 6029211,
+        "FinishType": "OfferingLevel",
+        "ParamType": "GreaterEqual",
+        "ParamInt1": 5,
+        "ParamInt2": 3,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029212,
+        "FinishType": "OfferingLevel",
+        "ParamType": "GreaterEqual",
+        "ParamInt1": 5,
+        "ParamInt2": 6,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029213,
+        "FinishType": "OfferingLevel",
+        "ParamType": "GreaterEqual",
+        "ParamInt1": 5,
+        "ParamInt2": 9,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029214,
+        "FinishType": "OfferingLevel",
+        "ParamType": "GreaterEqual",
+        "ParamInt1": 5,
+        "ParamInt2": 12,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029215,
+        "FinishType": "OfferingLevel",
+        "ParamType": "GreaterEqual",
+        "ParamInt1": 5,
+        "ParamInt2": 15,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029221,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          8026102
+        ],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029222,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          8026103
+        ],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029223,
+        "FinishType": "FinishMission",
+        "ParamType": "ListContain",
+        "ParamStr1": "",
+        "ParamIntList": [
+          8026104
+        ],
+        "ParamItemList": [],
+        "Progress": 1,
+        "IsBackTrack": true
+      },
+      {
+        "ID": 6029231,
+        "FinishType": "MusicRhythmLevelStarCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 5
+      },
+      {
+        "ID": 6029232,
+        "FinishType": "MusicRhythmLevelStarCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 15
+      },
+      {
+        "ID": 6029233,
+        "FinishType": "MusicRhythmLevelStarCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 20
+      },
+      {
+        "ID": 6029234,
+        "FinishType": "MusicRhythmLevelStarCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 30
+      },
+      {
+        "ID": 6029235,
+        "FinishType": "MusicRhythmLevelStarCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 35
+      },
+      {
+        "ID": 6029236,
+        "FinishType": "MusicRhythmLevelStarCnt",
+        "ParamType": "NoPara",
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 45
+      }
+    ],
+    "MusicRhythmGroup": [
+      {
+        "ID": 1,
+        "Phase": 1,
+        "UnlockSubMissionID": 802611006,
+        "RewardTrackIDList": [
+          12
+        ]
+      },
+      {
+        "ID": 2,
+        "Phase": 1,
+        "UnlockSubMissionID": 802610224,
+        "RewardTrackIDList": [
+          11
+        ]
+      },
+      {
+        "ID": 3,
+        "Phase": 1,
+        "UnlockSubMissionID": 802611006,
+        "RewardTrackIDList": [
+          13
+        ]
+      },
+      {
+        "ID": 4,
+        "Phase": 2,
+        "UnlockSubMissionID": 802610307,
+        "RewardTrackIDList": [
+          23
+        ]
+      },
+      {
+        "ID": 5,
+        "Phase": 2,
+        "UnlockSubMissionID": 802610307,
+        "RewardTrackIDList": [
+          21
+        ]
+      },
+      {
+        "ID": 6,
+        "Phase": 2,
+        "UnlockSubMissionID": 802610307,
+        "RewardTrackIDList": [
+          22
+        ]
+      },
+      {
+        "ID": 7,
+        "Phase": 3,
+        "UnlockSubMissionID": 802610403,
+        "RewardTrackIDList": [
+          31
+        ]
+      },
+      {
+        "ID": 8,
+        "Phase": 3,
+        "UnlockSubMissionID": 802610403,
+        "RewardTrackIDList": [
+          32
+        ]
+      },
+      {
+        "ID": 9,
+        "Phase": 3,
+        "UnlockSubMissionID": 802610403,
+        "RewardTrackIDList": [
+          33
+        ]
+      }
+    ],
+    "MusicRhythmLevel": [
+      {
+        "ID": 101,
+        "Group": 1,
+        "Difficulty": 1,
+        "StarScoreList": [
+          800,
+          1600,
+          2400
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 102,
+        "Group": 1,
+        "Difficulty": 2,
+        "StarScoreList": [
+          800,
+          1600,
+          2400
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 103,
+        "Group": 1,
+        "Difficulty": 3,
+        "StarScoreList": [
+          800,
+          1600,
+          2400
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 201,
+        "Group": 2,
+        "Difficulty": 1,
+        "StarScoreList": [
+          575,
+          1150,
+          1725
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 202,
+        "Group": 2,
+        "Difficulty": 2,
+        "StarScoreList": [
+          600,
+          1200,
+          1800
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 203,
+        "Group": 2,
+        "Difficulty": 3,
+        "StarScoreList": [
+          600,
+          1200,
+          1800
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 301,
+        "Group": 3,
+        "Difficulty": 1,
+        "StarScoreList": [
+          325,
+          650,
+          975
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 302,
+        "Group": 3,
+        "Difficulty": 2,
+        "StarScoreList": [
+          375,
+          750,
+          1125
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 303,
+        "Group": 3,
+        "Difficulty": 3,
+        "StarScoreList": [
+          350,
+          700,
+          1050
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 401,
+        "Group": 4,
+        "Difficulty": 1,
+        "StarScoreList": [
+          240,
+          480,
+          720
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 402,
+        "Group": 4,
+        "Difficulty": 2,
+        "StarScoreList": [
+          240,
+          480,
+          720
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 403,
+        "Group": 4,
+        "Difficulty": 3,
+        "StarScoreList": [
+          240,
+          480,
+          720
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 501,
+        "Group": 5,
+        "Difficulty": 1,
+        "StarScoreList": [
+          350,
+          700,
+          1050
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 502,
+        "Group": 5,
+        "Difficulty": 2,
+        "StarScoreList": [
+          500,
+          1000,
+          1500
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 503,
+        "Group": 5,
+        "Difficulty": 3,
+        "StarScoreList": [
+          350,
+          700,
+          1050
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 601,
+        "Group": 6,
+        "Difficulty": 1,
+        "StarScoreList": [
+          560,
+          1120,
+          1680
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 602,
+        "Group": 6,
+        "Difficulty": 2,
+        "StarScoreList": [
+          620,
+          1240,
+          1860
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 603,
+        "Group": 6,
+        "Difficulty": 3,
+        "StarScoreList": [
+          620,
+          1240,
+          1860
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 701,
+        "Group": 7,
+        "Difficulty": 1,
+        "StarScoreList": [
+          600,
+          1200,
+          1800
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 702,
+        "Group": 7,
+        "Difficulty": 2,
+        "StarScoreList": [
+          700,
+          1400,
+          2100
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 703,
+        "Group": 7,
+        "Difficulty": 3,
+        "StarScoreList": [
+          700,
+          1400,
+          2100
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 801,
+        "Group": 8,
+        "Difficulty": 1,
+        "StarScoreList": [
+          400,
+          800,
+          1200
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 802,
+        "Group": 8,
+        "Difficulty": 2,
+        "StarScoreList": [
+          440,
+          880,
+          1320
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 803,
+        "Group": 8,
+        "Difficulty": 3,
+        "StarScoreList": [
+          440,
+          880,
+          1320
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "ID": 901,
+        "Group": 9,
+        "Difficulty": 1,
+        "StarScoreList": [
+          600,
+          1200,
+          1800
+        ],
+        "StarRewardIDList": [
+          261001,
+          261002,
+          261003
+        ]
+      },
+      {
+        "ID": 902,
+        "Group": 9,
+        "Difficulty": 2,
+        "StarScoreList": [
+          700,
+          1400,
+          2100
+        ],
+        "StarRewardIDList": [
+          261004,
+          261005,
+          261006
+        ]
+      },
+      {
+        "ID": 903,
+        "Group": 9,
+        "Difficulty": 3,
+        "StarScoreList": [
+          600,
+          1200,
+          1800
+        ],
+        "StarRewardIDList": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "MusicRhythmPhase": [
+      {
+        "Phase": 1,
+        "SongID": 1,
+        "TrackIDList": [
+          11,
+          12,
+          13
+        ],
+        "FinishMissionID": 8026102
+      },
+      {
+        "Phase": 2,
+        "SongID": 2,
+        "TrackIDList": [
+          21,
+          22,
+          23
+        ],
+        "FinishMissionID": 8026103
+      },
+      {
+        "Phase": 3,
+        "SongID": 3,
+        "TrackIDList": [
+          31,
+          32,
+          33
+        ],
+        "FinishMissionID": 8026104
+      }
+    ],
+    "MusicRhythmSong": [
+      {
+        "ID": 1,
+        "UnlockType": 3,
+        "UnlockTypeParam": 802610216,
+        "GridNumList": [
+          2,
+          3,
+          3,
+          4,
+          4,
+          2,
+          2,
+          4,
+          2,
+          2,
+          2,
+          3
+        ],
+        "TrackIDList": [
+          11,
+          12,
+          13
+        ],
+        "PresetIDList": [
+          1,
+          2
+        ],
+        "SoundEffectUnlockSubMission": 802610423,
+        "SoundEffectIDList": [
+          11,
+          12,
+          13,
+          14
+        ]
+      },
+      {
+        "ID": 2,
+        "UnlockType": 3,
+        "UnlockTypeParam": 802610315,
+        "GridNumList": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          5
+        ],
+        "TrackIDList": [
+          21,
+          22,
+          23
+        ],
+        "PresetIDList": [
+          4,
+          5
+        ],
+        "SoundEffectUnlockSubMission": 802610423,
+        "SoundEffectIDList": [
+          21,
+          22,
+          23,
+          24
+        ]
+      },
+      {
+        "ID": 3,
+        "UnlockType": 3,
+        "UnlockTypeParam": 802610414,
+        "GridNumList": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          2,
+          4,
+          5
+        ],
+        "TrackIDList": [
+          31,
+          32,
+          33
+        ],
+        "PresetIDList": [
+          7,
+          8
+        ],
+        "SoundEffectUnlockSubMission": 802610423,
+        "SoundEffectIDList": [
+          31,
+          32,
+          33,
+          34
+        ]
+      },
+      {
+        "ID": 4,
+        "UnlockType": 2,
+        "UnlockTypeParam": 1,
+        "GridNumList": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3
+        ],
+        "TrackIDList": [
+          41,
+          42,
+          43
+        ],
+        "PresetIDList": [
+          9,
+          10
+        ],
+        "SoundEffectUnlockSubMission": 802610423,
+        "SoundEffectIDList": [
+          41,
+          42,
+          43,
+          44
+        ]
+      }
+    ],
+    "MusicRhythmTrack": [
+      {
+        "ID": 11,
+        "UnlockSubMissionID": 802611005,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 12,
+        "UnlockSubMissionID": 802611109,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 13,
+        "UnlockSubMissionID": 802611208,
+        "EmptyGridList": [
+          1
+        ]
+      },
+      {
+        "ID": 21,
+        "UnlockSubMissionID": 802611403,
+        "EmptyGridList": [
+          1,
+          2
+        ]
+      },
+      {
+        "ID": 22,
+        "UnlockSubMissionID": 802611506,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 23,
+        "UnlockSubMissionID": 802611305,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 31,
+        "UnlockSubMissionID": 802611604,
+        "EmptyGridList": [
+          1
+        ]
+      },
+      {
+        "ID": 32,
+        "UnlockSubMissionID": 802611703,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 33,
+        "UnlockSubMissionID": 802611803,
+        "EmptyGridList": [
+          1
+        ]
+      },
+      {
+        "ID": 41,
+        "UnlockSubMissionID": 802611803,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 42,
+        "UnlockSubMissionID": 802611803,
+        "EmptyGridList": []
+      },
+      {
+        "ID": 43,
+        "UnlockSubMissionID": 802611803,
+        "EmptyGridList": []
+      }
+    ],
+    "MusicRhythmPresetSong": [
+      {
+        "ID": 1,
+        "PresetGridConfig": [
+          3767,
+          4095,
+          2015
+        ]
+      },
+      {
+        "ID": 2,
+        "PresetGridConfig": [
+          3704,
+          3959,
+          4039
+        ]
+      },
+      {
+        "ID": 4,
+        "PresetGridConfig": [
+          511,
+          511,
+          511
+        ]
+      },
+      {
+        "ID": 5,
+        "PresetGridConfig": [
+          167,
+          248,
+          495
+        ]
+      },
+      {
+        "ID": 7,
+        "PresetGridConfig": [
+          255,
+          255,
+          231
+        ]
+      },
+      {
+        "ID": 8,
+        "PresetGridConfig": [
+          225,
+          255,
+          249
+        ]
+      },
+      {
+        "ID": 9,
+        "PresetGridConfig": [
+          960,
+          156,
+          236
+        ]
+      },
+      {
+        "ID": 10,
+        "PresetGridConfig": [
+          1023,
+          1008,
+          252
+        ]
+      }
+    ],
+    "MusicRhythmConstValueCommon": [
+      {
+        "ConstValueName": "Activity_MusicRhythm_MusicComposeUnlockMission",
+        "Value": {
+          "IntValue": 8026102
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_Level_Max_Difficulty",
+        "Value": {
+          "IntValue": 3
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_Level_Max_Star",
+        "Value": {
+          "IntValue": 3
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_Max_Difficulty_Levels_Unlock_Mission",
+        "Value": {
+          "IntValue": 8026120
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_Max_Difficulty_Levels_Unlock_Star",
+        "Value": {
+          "IntValue": 3
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_OpticalReward_Unlock_SubMission",
+        "Value": {
+          "IntValue": 802610224
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_TransferGotoID",
+        "Value": {
+          "IntValue": 32001
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_QuickEntrance_Unlock_SubMission",
+        "Value": {
+          "IntValue": 802610223
+        }
+      },
+      {
+        "ConstValueName": "Activity_MusicRhythm_Composition_FSVKey",
+        "Value": {
+          "StringValue": "FSV_EnableMusicVisual"
+        }
+      }
+    ],
+    "OfferingTypeConfig": [
+      {
+        "ID": 5,
+        "ItemID": 270003,
+        "MaxLevel": 16,
+        "UnlockID": 105301
+      }
+    ],
+    "OfferingLevelConfig": [
+      {
+        "TypeID": 5,
+        "Level": 1,
+        "RewardID": 260001,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 2,
+        "RewardID": 260002,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 3,
+        "RewardID": 260003,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 4,
+        "RewardID": 260004,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 5,
+        "RewardID": 260005,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 6,
+        "RewardID": 260006,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 7,
+        "RewardID": 260007,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 8,
+        "RewardID": 260008,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 9,
+        "RewardID": 260009,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 10,
+        "RewardID": 260010,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 11,
+        "RewardID": 260011,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 12,
+        "RewardID": 260012,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 13,
+        "RewardID": 260013,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 14,
+        "RewardID": 260014,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 15,
+        "RewardID": 260015,
+        "ItemCost": 3
+      },
+      {
+        "TypeID": 5,
+        "Level": 16,
+        "RewardID": 260016,
+        "ItemCost": 3
+      }
+    ],
+    "RewardData": [
+      {
+        "RewardID": 261001,
+        "ItemID_1": 270003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 261002,
+        "ItemID_1": 270003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 261003,
+        "ItemID_1": 270003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 261004,
+        "ItemID_1": 270003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 261005,
+        "ItemID_1": 270003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 261006,
+        "ItemID_1": 270003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 260001,
+        "Hcoin": 60,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000
+      },
+      {
+        "RewardID": 260002,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 223,
+        "Count_3": 4
+      },
+      {
+        "RewardID": 260003,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 233,
+        "Count_3": 3
+      },
+      {
+        "RewardID": 260004,
+        "Hcoin": 60,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000
+      },
+      {
+        "RewardID": 260005,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 223,
+        "Count_3": 4
+      },
+      {
+        "RewardID": 260006,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 233,
+        "Count_3": 3
+      },
+      {
+        "RewardID": 260007,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 213,
+        "Count_3": 4
+      },
+      {
+        "RewardID": 260008,
+        "IsSpecial": true,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 220007,
+        "Count_3": 1
+      },
+      {
+        "RewardID": 260009,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 233,
+        "Count_3": 3
+      },
+      {
+        "RewardID": 260010,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 213,
+        "Count_3": 4
+      },
+      {
+        "RewardID": 260011,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 233,
+        "Count_3": 3
+      },
+      {
+        "RewardID": 260012,
+        "Hcoin": 60,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000
+      },
+      {
+        "RewardID": 260013,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 223,
+        "Count_3": 4
+      },
+      {
+        "RewardID": 260014,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 233,
+        "Count_3": 3
+      },
+      {
+        "RewardID": 260015,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 213,
+        "Count_3": 4
+      },
+      {
+        "RewardID": 260016,
+        "IsSpecial": true,
+        "ItemID_1": 22,
+        "Count_1": 100,
+        "ItemID_2": 2,
+        "Count_2": 10000,
+        "ItemID_3": 241,
+        "Count_3": 1
+      },
+      {
+        "RewardID": 3126001,
+        "ItemID_1": 236,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 3126002,
+        "Hcoin": 80,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 213,
+        "Count_2": 8
+      },
+      {
+        "RewardID": 3126003,
+        "Hcoin": 80,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 223,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126004,
+        "Hcoin": 80,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 233,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126005,
+        "Hcoin": 80,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 213,
+        "Count_2": 8
+      },
+      {
+        "RewardID": 3126006,
+        "Hcoin": 80,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 223,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126007,
+        "Hcoin": 100,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 233,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126008,
+        "Hcoin": 100,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 213,
+        "Count_2": 8
+      },
+      {
+        "RewardID": 3126009,
+        "IsSpecial": true,
+        "Hcoin": 120,
+        "ItemID_1": 2,
+        "Count_1": 100000,
+        "ItemID_2": 241,
+        "Count_2": 1
+      },
+      {
+        "RewardID": 3126010,
+        "Hcoin": 80,
+        "ItemID_1": 213,
+        "Count_1": 8,
+        "ItemID_2": 110202,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126011,
+        "Hcoin": 80,
+        "ItemID_1": 223,
+        "Count_1": 10,
+        "ItemID_2": 110202,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126012,
+        "Hcoin": 80,
+        "ItemID_1": 233,
+        "Count_1": 10,
+        "ItemID_2": 110202,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126013,
+        "Hcoin": 80,
+        "ItemID_1": 213,
+        "Count_1": 8,
+        "ItemID_2": 110202,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126014,
+        "Hcoin": 80,
+        "ItemID_1": 223,
+        "Count_1": 10,
+        "ItemID_2": 110202,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126015,
+        "Hcoin": 80,
+        "ItemID_1": 233,
+        "Count_1": 10,
+        "ItemID_2": 110202,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3126016,
+        "ItemID_1": 22003,
+        "Count_1": 1,
+        "Level_1": 1,
+        "Rank_1": 1
+      },
+      {
+        "RewardID": 3126017,
+        "ItemID_1": 121003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 3126018,
+        "ItemID_1": 121003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 3126019,
+        "ItemID_1": 121003,
+        "Count_1": 1
+      },
+      {
+        "RewardID": 3126020,
+        "ItemID_1": 121003,
+        "Count_1": 1
+      }
+    ],
+    "ItemConfig": [
+      {
+        "ID": 1,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "PurposeType": 12,
+        "ItemName": {
+          "Hash": 7739077644877555281
+        },
+        "ItemBGDesc": {
+          "Hash": 4559313086410327619
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/900001.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/900001.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/1.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 2,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 11,
+        "ItemName": {
+          "Hash": 8760829406395316734
+        },
+        "ItemDesc": {
+          "Hash": 11786974837413392672
+        },
+        "ItemBGDesc": {
+          "Hash": 11264535423382425308
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/2.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/2.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/2.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 22,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "ItemName": {
+          "Hash": 7499768036889103255
+        },
+        "ItemDesc": {
+          "Hash": 3810096677573298701
+        },
+        "ItemBGDesc": {
+          "Hash": 6266443399168857502
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/22.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/22.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/22.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 213,
+        "ItemMainType": "Material",
+        "ItemSubType": "AvatarExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "PurposeType": 1,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 2665706826576415766
+        },
+        "ItemDesc": {
+          "Hash": 6202121707060447280
+        },
+        "ItemBGDesc": {
+          "Hash": 4494275774374680318
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/213.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/213.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/213.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1010,
+        "SellType": "Destroy"
+      },
+      {
+        "ID": 223,
+        "ItemMainType": "Material",
+        "ItemSubType": "EquipmentExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "PurposeType": 5,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 15230073150782918155
+        },
+        "ItemDesc": {
+          "Hash": 4532852645191934465
+        },
+        "ItemBGDesc": {
+          "Hash": 9599334365243187856
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/223.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/223.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/223.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1020,
+        "SellType": "Destroy"
+      },
+      {
+        "ID": 233,
+        "ItemMainType": "Material",
+        "ItemSubType": "RelicExp",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "PurposeType": 6,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 13841296995264637795
+        },
+        "ItemDesc": {
+          "Hash": 2226847294951731815
+        },
+        "ItemBGDesc": {
+          "Hash": 1275444624238625148
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/233.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/233.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/233.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1030,
+        "SellType": "Destroy"
+      },
+      {
+        "ID": 236,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "SuperRare",
+        "PurposeType": 10,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 3925293019421899629
+        },
+        "ItemDesc": {
+          "Hash": 2866774250440950010
+        },
+        "ItemBGDesc": {
+          "Hash": 9777774002238833177
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/236.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/236.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/236.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 241,
+        "ItemMainType": "Material",
+        "ItemSubType": "WeeklyMonsterDrop",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "PurposeType": 4,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 3853940451341152202
+        },
+        "ItemDesc": {
+          "Hash": 10518692984967867907
+        },
+        "ItemBGDesc": {
+          "Hash": 16422128851951404808
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/241.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/241.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/241.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1300
+      },
+      {
+        "ID": 110202,
+        "ItemMainType": "Material",
+        "ItemSubType": "TracePath",
+        "InventoryDisplayTag": 1,
+        "Rarity": "Rare",
+        "PurposeType": 3,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 10777827585093058445
+        },
+        "ItemDesc": {
+          "Hash": 8368547630902489179
+        },
+        "ItemBGDesc": {
+          "Hash": 18280462391413335984
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/110202.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/110202.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/110202.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1213,
+        "SellType": "Destroy"
+      },
+      {
+        "ID": 121003,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "VeryRare",
+        "PurposeType": 18,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 16676003512443723802
+        },
+        "ItemDesc": {
+          "Hash": 16454103911699672026
+        },
+        "ItemBGDesc": {
+          "Hash": 6895883522486674886
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/121003.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/121003.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/121003.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 220007,
+        "ItemMainType": "Usable",
+        "ItemSubType": "ChatBubble",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 18267568104260176466
+        },
+        "ItemDesc": {
+          "Hash": 12815557833082266973
+        },
+        "ItemBGDesc": {
+          "Hash": 16285614093611567406
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/ChatBubble/220007.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/ChatBubble/220007.png",
+        "ItemCurrencyIconPath": "",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999,
+        "UseMethod": "AutoConversionItem",
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 270003,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 2,
+        "Rarity": "VeryRare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 2829199069003206020
+        },
+        "ItemDesc": {
+          "Hash": 18108966230454382415
+        },
+        "ItemBGDesc": {
+          "Hash": 16806097841310787166
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/270003.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/270003.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/270003.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      }
+    ],
+    "MainMission": [
+      {
+        "MainMissionID": 8026101,
+        "Type": "Branch",
+        "SubType": "Activity",
+        "WorldID": 401,
+        "DisplayPriority": 8026101,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 10753213651094122711
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1034210
+          },
+          {
+            "Type": "MultiSequence",
+            "Value": 2001001
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 8026102,
+        "TrackWeight": 10,
+        "RewardID": 18026101,
+        "DisplayRewardID": 18026101,
+        "ChapterID": 802601,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 8026102,
+        "Type": "Branch",
+        "SubType": "Activity",
+        "WorldID": 401,
+        "DisplayPriority": 8026102,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 6254132271284253130
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 8026101
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 8026103,
+        "TrackWeight": 10,
+        "RewardID": 18026102,
+        "DisplayRewardID": 18026102,
+        "ChapterID": 802601,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 8026103,
+        "Type": "Branch",
+        "SubType": "Activity",
+        "WorldID": 401,
+        "DisplayPriority": 8026103,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 6843064951617501723
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 8026102
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 8026104,
+        "TrackWeight": 10,
+        "RewardID": 18026103,
+        "DisplayRewardID": 18026103,
+        "ChapterID": 802601,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 8026104,
+        "Type": "Branch",
+        "SubType": "Activity",
+        "WorldID": 401,
+        "DisplayPriority": 8026104,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 2510438879824915005
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 8026103
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 8026105,
+        "TrackWeight": 10,
+        "RewardID": 18026104,
+        "DisplayRewardID": 18026104,
+        "ChapterID": 802601,
+        "SubRewardList": []
+      },
+      {
+        "MainMissionID": 8026120,
+        "Type": "Branch",
+        "SubType": "Activity",
+        "WorldID": 401,
+        "DisplayPriority": 8026120,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 12217569248837925940
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 8026105
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "TrackWeight": 10,
+        "RewardID": 18026120,
+        "DisplayRewardID": 18026120,
+        "ChapterID": 802601,
+        "SubRewardList": []
+      }
+    ]
+  }
+}

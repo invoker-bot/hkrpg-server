@@ -6,5 +6,8 @@ import java.util.*;
 public final class ActivityReplayLeases {
   private final Map<Integer,String> viewed=new HashMap<>();
   public void viewed(int panel,String cycle){viewed.put(panel,cycle);}
-  public boolean accepts(int panel,String cycle){return cycle==null||viewed.containsKey(panel)&&Objects.equals(viewed.get(panel),cycle);}
+  public boolean accepts(int panel,String cycle){
+    return cycle==null?!viewed.containsKey(panel)||viewed.get(panel)==null
+        :viewed.containsKey(panel)&&Objects.equals(viewed.get(panel),cycle);
+  }
 }

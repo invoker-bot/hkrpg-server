@@ -27,6 +27,10 @@ public final class OfferingQuery46 {
     // contracts.
     if (ids.stream().allMatch(id -> id == 6 || id == 12)) return false;
     if (session.getState() != SessionState.ACTIVE) return true;
+    final var parsed=request;
+    return ActivityReplayScope.in(session.getPlayer().getGameplay(),50022,()->handleCurrent(session,parsed,ids,bytes));
+  }
+  private static boolean handleCurrent(GameSession session,DynamicMessage request,List<Integer> ids,byte[] bytes){
     synchronized (session.getPlayer()) {
       var code = Retcode.SUCC;
       var output = builder(session, "GetOfferingInfoScRsp");
@@ -94,6 +98,8 @@ public final class OfferingQuery46 {
         }
       }
       set(output, "retcode", code.getVal());
+      if(code==Retcode.SUCC&&ids.contains(5))session.getActivityReplayLeases().viewed(50022,
+          ActivityReplayScope.identity(session.getPlayer().getGameplay(),50022));
       session.sendClientPacket("GetOfferingInfoScRsp", output.build().toByteArray());
     }
     return true;

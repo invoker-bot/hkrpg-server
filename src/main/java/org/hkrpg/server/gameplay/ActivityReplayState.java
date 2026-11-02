@@ -10,6 +10,25 @@ public final class ActivityReplayState {
   private Map<String, LoginRun> loginRuns = new HashMap<>();
   private Map<String, MaterialRun> materialRuns = new HashMap<>();
   private Map<Integer,MaterialSubmitState> legacyMaterials = new HashMap<>();
+  private Map<String,MusicRun> musicRuns = new HashMap<>();
+
+  @Entity(useDiscriminator=false)
+  public static final class MusicRun {
+    private String replayId,replayKey;
+    private GameplayState.Rhythm state=new GameplayState.Rhythm();
+    protected MusicRun(){}
+    MusicRun(GameplayDefinitions.Window w){replayId=w.replayId();replayKey=w.replayKey();}
+    boolean matches(GameplayDefinitions.Window w){return Objects.equals(replayId,w.replayId())&&Objects.equals(replayKey,w.replayKey())&&state!=null;}
+  }
+  GameplayState.Rhythm music(GameplayDefinitions.Window window){return musicRun(window).state;}
+  void music(GameplayDefinitions.Window window,GameplayState.Rhythm state){musicRun(window).state=Objects.requireNonNull(state);}
+  private MusicRun musicRun(GameplayDefinitions.Window window){
+    if(version!=1||musicRuns==null||window.replayId()==null)throw new IllegalStateException("Damaged music replay state");
+    if(!musicRuns.containsKey(window.replayId()))musicRuns.put(window.replayId(),new MusicRun(window));
+    var run=musicRuns.get(window.replayId());
+    if(run==null||!run.matches(window))throw new IllegalStateException("Music replay identity changed");
+    return run;
+  }
 
   MaterialSubmitState legacyMaterial(int panel){
     if(version!=1||legacyMaterials==null)return null;
