@@ -1,3 +1,5 @@
+好友页面持续加载的好友资料协议转换已修复；原因与验证边界见[好友页加载说明](docs/friend-page-loading-4.6.md)。
+
 派对车厢初始房间的零进度显示引用已补入，完整建设玩法与实机显示边界见[初始房间说明](docs/party-carriage-initial-room-4.6.md)。
 
 原缺少映射的 28 个角色活动卡池已接入原始组合试用模块，进入、退出及原队伍恢复的验证边界见[卡池试用映射](docs/banner-trial-mappings-4.6.md)。

@@ -131,6 +131,15 @@ public final class ProtocolBridge {
           Map.entry("GetPamSkinDataScRsp.unlocked_pam_skins", "unlock_skin_list"),
           // Named CN4.6 GetFriendLoginInfoScRsp wire 3 retains the friend UID snapshot.
           Map.entry("GetFriendLoginInfoScRsp.friend_uid_list", "_friend_uid_list"),
+          // Named CN4.6 CmdFriendType/Common: FriendSimpleInfo player 4, applicant player 6;
+          // shared profile activity/chat/assists are fields 8/12/13.
+          // Keep the populated console friend and actual player profiles through conversion.
+          Map.entry("FriendListInfo.simple_info", "player_info"),
+          Map.entry("FriendApplyInfo.simple_info", "player_info"),
+          Map.entry("GetFriendApplyListInfoScRsp.friend_apply_list", "receive_apply_list"),
+          Map.entry("PlayerSimpleInfo.logout_time", "last_active_time"),
+          Map.entry("PlayerSimpleInfo.chat_bubble", "chat_bubble_id"),
+          Map.entry("PlayerSimpleInfo.assist_info_list", "assist_simple_info_list"),
           // CN4.6 TalkModule consumes list field 2 and FirstNpcTalkInfo id 1 / is_meet 3.
           // The core has no completed-meeting flag; preserve its default false, never invent one.
           Map.entry("GetFirstTalkNpcScRsp.npc_talk_info_list", "npc_meet_status_list"),

@@ -1,3 +1,5 @@
+好友页继续使用内部好友领域与原始资料构造器，由 `ProtocolBridge` 将列表/申请内的玩家资料及共享字段按已核对的语义转换到4.6；列表缓存与真实UID保留，未知字段拒绝策略不放宽。原因及验证边界见[好友页说明](friend-page-loading-4.6.md)。
+
 `LoginBootstrap46` 为派对车厢提供原始无前置房间 12 的零进度显示引用，保留建设、资金、奖励及玩家保存状态。客户端区域可见性链路和验收边界见[初始房间说明](party-carriage-initial-room-4.6.md)。
 
 `RogueSecondStoryProgress` 按原始房间、进入顺序、怪物摆放和持久化胜利恢复漫游测试目标；`RogueBossEncounters` 对缺失的首领组使用限定兼容映射。首次测试和二次测试的结算分开核对，见[首领与任务恢复](rogue-second-story-boss-4.6.md)。
