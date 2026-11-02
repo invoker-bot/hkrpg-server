@@ -175,6 +175,7 @@ public final class NativeGmPlayerProbe {
                 "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
                 "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
                 "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
+                "GetLevelRewardCsReq", "GetLevelRewardTakenListCsReq",
                 "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
                 "TakeTrialActivityRewardCsReq", "GetCurSceneInfoCsReq", "GetCurLineupDataCsReq",
                 "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "PVEBattleResultCsReq", "QuitBattleCsReq",

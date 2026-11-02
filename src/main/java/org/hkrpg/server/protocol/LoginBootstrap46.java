@@ -21,7 +21,7 @@ final class LoginBootstrap46 {
     int response = switch (command) {
       case 5697 -> 5653; case 31 -> 91; case 7172 -> 7173; case 8034 -> 8025;
       case 8110 -> 8116; case 96 -> 47; case 9804 -> 9776; case 8991 -> 8982;
-      case 10010 -> 10016; case 9894 -> 9866; case 9490 -> 9496; case 78 -> 4;
+      case 10010 -> 10016; case 9894 -> 9866; case 9490 -> 9496;
       case 9 -> 27; case 522 -> 549; case 2922 -> 2949; case 3405 -> 3475;
       case 5734 -> 5725; case 5834 -> 5825; case 8680 -> 8580;
       case 8948 -> 8914; case 9504 -> 9548;
@@ -41,7 +41,7 @@ final class LoginBootstrap46 {
     int retcodeField = switch (command) {
       case 5697 -> 15; case 96 -> 8; case 7172 -> 6; case 8034 -> 11;
       case 8110 -> 7; case 9804 -> 4; case 8991 -> 14; case 10010 -> 12;
-      case 9894 -> 13; case 9490, 78, 9990 -> 9;
+      case 9894 -> 13; case 9490, 9990 -> 9;
       case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
       case 5734 -> 4; case 5834 -> 10; case 8680 -> 9; case 8948 -> 13;
       case 6029 -> 2;
@@ -54,7 +54,7 @@ final class LoginBootstrap46 {
     if (command == 8680) output.writeByteArray(11, gridFightProfile(session));
     if (command == 6029) output.writeByteArray(1, rogueTournamentProfile(session));
     output.flush();
-    // There is no active profile, purchase, level-claim ledger or negotiated security key in
+    // There is no active profile, purchase or negotiated security key in
     // these unimplemented modules. Do not fabricate records, secret_rsp, unlocks or entitlements.
     // B51's native GetDataAsync waits for 9996 for 30 seconds (154d0634). Its converter
     // (154d2330) accepts absent car/cycle and creates an empty challenge locally. Keep

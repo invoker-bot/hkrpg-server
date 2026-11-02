@@ -26,10 +26,11 @@ def request(base, route, body=None):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--java")
+    parser.add_argument("--jar", type=Path, default=ROOT / "build/libs/hkrpg-server.jar")
     args = parser.parse_args()
     local_java = next((ROOT / ".tools").glob("jdk-21*/bin/java.exe"), None)
     java = args.java or (str(local_java) if local_java else "java")
-    artifact = ROOT / "build/libs/hkrpg-server.jar"
+    artifact = args.jar.resolve()
     if not artifact.is_file(): raise RuntimeError("Build the server first")
     runs = ROOT / "build/smoke"
     runs.mkdir(parents=True, exist_ok=True)
