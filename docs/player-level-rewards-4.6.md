@@ -17,3 +17,9 @@
 本轮固定源码副本位于 `build/level-rewards-source/`，由基线 `d366279` 加本次修改构成，未纳入共享目录中同时进行的活动复刻、好友页等其他功能。该副本的产物 SHA256 为 `3985357131f8815d79fbf81a78de16e3cf8df40932d7b0f25942b7ad5810d2bb`；原生证据在 `build/level-rewards-source/build/player-level-rewards-native.json`，资源审计在同目录的 `player-level-rewards-resources.json`。额外两轮 Dispatch 冒烟及账号正常重启恢复通过，完整游戏客户端验收仍待用户确认。
 
 Windows 完整门禁 `gradlew.bat test shadowJar -PtestForks=2 --no-daemon` 通过 655 类 / 16,127 项，失败、错误、跳过均为 0。JVM 使用既有 TCP loopback 回退及 `-XX:ActiveProcessorCount=2`；首次 8 路尝试发生系统原生内存分配失败，降低本轮并行度后完成全部回归。3,045 个冻结编译/资源输入的摘要前后一致，JAR 摘要与原生探针一致。完整结果见 `build/evidence/level-rewards/full-final.json`，日志为 `build/level-rewards-final-full.log`；不将其他对话的未提交修改或中途终止的容器尝试计入本轮完整通过范围。
+
+发布前检测到正式服务已被另一轮部署更新为猫箱修复产物 `3053ee27…b2a8`，原候选包因版本保护被拦下，没有覆盖服务。主分支随后以 `21add6c` 合并已部署的 `3081e07`，保留等级奖励、猫箱、初始列车房间及主分支已有 GM 功能；好友页等未提交修改继续留在工作区，没有打入本次包。
+
+最终组合产物 SHA256 为 `70e1eaf13b65020bcdfd7cd1050d29eb14a273de7b60355988bb3cf26239c1af`。组合后另跑 7 类 / 129 项定向回归，零失败、错误或跳过；同一产物再通过等级奖励 81 次原生请求、猫箱 45 次原生请求及各两次正常 H2 停服恢复。组合证据位于 `build/evidence/level-rewards/integration-final.json` 与 `build/level-rewards-integrated-source/build/`；上述 16,127 项全量结果对应合并前的领奖修复产物，未将其写成组合包再次全量通过。
+
+本地服务已正常备份并更新，运行 JAR 摘要与组合产物一致，31 份现有配置及凭据摘要保持不变；部署清单同步为当前产物，旧清单一同备份。回退与备份记录见 `build/evidence/level-rewards/deployment-final.json`，只读 Compose 复查见 `compose-after-metadata.json`，未在正式账号上代领任何奖励。用户需要重新登录、重新打开等级奖励页面验收真实领取画面。
