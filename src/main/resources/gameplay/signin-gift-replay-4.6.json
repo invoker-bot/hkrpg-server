@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "editions": {
+    "10048": "2.0-95d1415393e4",
+    "10051": "2.1-cd17f3c9983e",
+    "10072": "2.5-919e37caa35e",
+    "10085": "3.0-33c227a68a73",
+    "10095": "3.2-27e53cab5355",
+    "10131": "4.0-a417ca4e57ba",
+    "10148": "4.2-0fb1603f11e8"
+  },
+  "sources": {
+    "ExcelOutput/ActivityConfig.json": {
+      "sha256": "a94d11500502e07789cc38a28211fb3f6cef69400de1be988cc6b8d9634afd3e",
+      "rowCount": 525
+    },
+    "ExcelOutput/ActivityPanel.json": {
+      "sha256": "80a899976fbc5d61fe81483b9e5dd35679c96eed7eb3ef6285c008b475fbc1e4",
+      "rowCount": 270
+    },
+    "ExcelOutput/ActivityLoginConfig.json": {
+      "sha256": "33561fc7f6947c860c8f93cb7b7dd5082098daf8474fad8744830bc27c2e9e55",
+      "rowCount": 27
+    },
+    "ExcelOutput/RewardData.json": {
+      "sha256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+      "rowCount": 9515
+    },
+    "ExcelOutput/ItemConfig.json": {
+      "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+      "rowCount": 2941
+    }
+  },
+  "records": {
+    "ActivityConfig": [
+      {
+        "ActivityID": 10048,
+        "ActivityPanelID": 10048,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1004801
+        ]
+      },
+      {
+        "ActivityID": 10051,
+        "ActivityPanelID": 10051,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1005101
+        ]
+      },
+      {
+        "ActivityID": 10072,
+        "ActivityPanelID": 10072,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1007201
+        ]
+      },
+      {
+        "ActivityID": 10085,
+        "ActivityPanelID": 10085,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1008501
+        ]
+      },
+      {
+        "ActivityID": 10095,
+        "ActivityPanelID": 10095,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1009501
+        ]
+      },
+      {
+        "ActivityID": 10131,
+        "ActivityPanelID": 10131,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1013101
+        ]
+      },
+      {
+        "ActivityID": 10148,
+        "ActivityPanelID": 10148,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1014801
+        ]
+      }
+    ],
+    "ActivityPanel": [
+      {
+        "PanelID": 10048,
+        "UIPrefab": "UI/Quest/SingleTimeReward/SingleTimeRewardPanelVersion0200.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7800,
+        "TabName": {
+          "Hash": 17851071100772844173
+        },
+        "TitleName": {
+          "Hash": 17967390329652948718
+        },
+        "PanelDesc": {
+          "Hash": 7170773374340417806
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/SignInRewardTabIcon/BtnSingleTimeRewardVersion0200.png",
+        "TagDesc": {
+          "Hash": 11912046546417956069
+        },
+        "IntroDesc": {
+          "Hash": 14467921903264967833
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10051,
+        "UIPrefab": "UI/Quest/Widget/AnniversarySevenDayRewardPanelVersion0210.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7999,
+        "TabName": {
+          "Hash": 13997804752625869041
+        },
+        "TitleName": {
+          "Hash": 288477884976181506
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnAnniversarySevenDayVersion0210.png",
+        "TagDesc": {
+          "Hash": 7563294005214732259
+        },
+        "IntroDesc": {
+          "Hash": 5490301275320278739
+        },
+        "DisplayItemList": [],
+        "ActivityThemeID": 1001,
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10072,
+        "UIPrefab": "UI/Quest/SingleTimeReward/SingleTimeRewardPanelVersion0250.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7999,
+        "TabName": {
+          "Hash": 14772952968835094697
+        },
+        "TitleName": {
+          "Hash": 7908060704622700654
+        },
+        "PanelDesc": {
+          "Hash": 15430311315409694367
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/SignInRewardTabIcon/BtnSingleTimeRewardVersion0250.png",
+        "TagDesc": {
+          "Hash": 17097635880400565139
+        },
+        "IntroDesc": {
+          "Hash": 12676989638376695920
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10085,
+        "UIPrefab": "UI/Quest/SingleTimeReward/SingleTimeRewardPanelVersion0300.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7999,
+        "TabName": {
+          "Hash": 959921074997115660
+        },
+        "TitleName": {
+          "Hash": 3134256640663619071
+        },
+        "PanelDesc": {
+          "Hash": 17969698949422025970
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/SignInRewardTabIcon/BtnSingleTimeRewardVersion0300.png",
+        "TagDesc": {
+          "Hash": 5139643639029613935
+        },
+        "IntroDesc": {
+          "Hash": 1501641024419665835
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10095,
+        "UIPrefab": "UI/Quest/Anniversary2NDCollection/QuestPanel/QuestSevenDayRewardPanel.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7999,
+        "TabName": {
+          "Hash": 13264593171432874069
+        },
+        "TitleName": {
+          "Hash": 14140627338368261355
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnAnniversarySevenDayVersion0210.png",
+        "TagDesc": {
+          "Hash": 2519158929693415828
+        },
+        "IntroDesc": {
+          "Hash": 11870462090918965283
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10131,
+        "UIPrefab": "UI/Quest/SingleTimeReward/SingleTimeRewardPanelVersion0400.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7999,
+        "TabName": {
+          "Hash": 11446745891434351547
+        },
+        "TitleName": {
+          "Hash": 16054926136651009045
+        },
+        "PanelDesc": {
+          "Hash": 3478741386703410044
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/SignInRewardTabIcon/BtnSingleTimeRewardVersion0400.png",
+        "TagDesc": {
+          "Hash": 15042014314859628036
+        },
+        "IntroDesc": {
+          "Hash": 18096921456436847371
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10148,
+        "UIPrefab": "UI/Quest/Anniversary3RDCollection/QuestPanel/QuestSevenDayReward420Panel.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7999,
+        "TabName": {
+          "Hash": 9189289036134941501
+        },
+        "TitleName": {
+          "Hash": 7874515242988166400
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnAnniversarySevenDayVersion0210.png",
+        "TagDesc": {
+          "Hash": 17712113289236751258
+        },
+        "IntroDesc": {
+          "Hash": 11257699517489476273
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      }
+    ],
+    "ActivityLoginConfig": [
+      {
+        "ID": 10048,
+        "RewardList": [
+          3000301
+        ],
+        "ActivityModuleID": 1004801
+      },
+      {
+        "ID": 10051,
+        "RewardList": [
+          3000401,
+          3000402,
+          3000403,
+          3000404,
+          3000405,
+          3000406,
+          3000407
+        ],
+        "ActivityModuleID": 1005101
+      },
+      {
+        "ID": 10072,
+        "RewardList": [
+          3000501
+        ],
+        "ActivityModuleID": 1007201
+      },
+      {
+        "ID": 10085,
+        "RewardList": [
+          3000601
+        ],
+        "ActivityModuleID": 1008501
+      },
+      {
+        "ID": 10095,
+        "RewardList": [
+          3000701,
+          3000702,
+          3000703,
+          3000704,
+          3000705,
+          3000706,
+          3000707
+        ],
+        "ActivityModuleID": 1009501
+      },
+      {
+        "ID": 10131,
+        "RewardList": [
+          3000801
+        ],
+        "ActivityModuleID": 1013101
+      },
+      {
+        "ID": 10148,
+        "RewardList": [
+          3000901,
+          3000902,
+          3000903,
+          3000904,
+          3000905,
+          3000906,
+          3000907
+        ],
+        "ActivityModuleID": 1014801
+      }
+    ],
+    "RewardData": [
+      {
+        "RewardID": 3000301,
+        "ItemID_1": 102,
+        "Count_1": 10
+      },
+      {
+        "RewardID": 3000401,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000402,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000403,
+        "IsSpecial": true,
+        "ItemID_1": 102,
+        "Count_1": 4
+      },
+      {
+        "RewardID": 3000404,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000405,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000406,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000407,
+        "IsSpecial": true,
+        "ItemID_1": 102,
+        "Count_1": 6
+      },
+      {
+        "RewardID": 3000501,
+        "Hcoin": 1000,
+        "ItemID_1": 201,
+        "Count_1": 10,
+        "ItemID_2": 110101,
+        "Count_2": 150
+      },
+      {
+        "RewardID": 3000601,
+        "ItemID_1": 238,
+        "Count_1": 1,
+        "ItemID_2": 102,
+        "Count_2": 10
+      },
+      {
+        "RewardID": 3000701,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000702,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000703,
+        "IsSpecial": true,
+        "ItemID_1": 102,
+        "Count_1": 4
+      },
+      {
+        "RewardID": 3000704,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000705,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000706,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000707,
+        "IsSpecial": true,
+        "ItemID_1": 102,
+        "Count_1": 6
+      },
+      {
+        "RewardID": 3000801,
+        "ItemID_1": 102,
+        "Count_1": 10,
+        "ItemID_2": 263,
+        "Count_2": 600,
+        "ItemID_3": 236,
+        "Count_3": 3
+      },
+      {
+        "RewardID": 3000901,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000902,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000903,
+        "IsSpecial": true,
+        "ItemID_1": 102,
+        "Count_1": 4
+      },
+      {
+        "RewardID": 3000904,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000905,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000906,
+        "ItemID_1": 102,
+        "Count_1": 2
+      },
+      {
+        "RewardID": 3000907,
+        "IsSpecial": true,
+        "ItemID_1": 102,
+        "Count_1": 6
+      }
+    ],
+    "ItemConfig": [
+      {
+        "ID": 1,
+        "ItemMainType": "Virtual",
+        "ItemSubType": "Virtual",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "PurposeType": 12,
+        "ItemName": {
+          "Hash": 7739077644877555281
+        },
+        "ItemBGDesc": {
+          "Hash": 4559313086410327619
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/900001.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/900001.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/1.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 102,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "SuperRare",
+        "PurposeType": 9,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 2231636893016050880
+        },
+        "ItemBGDesc": {
+          "Hash": 6148048598364189656
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/102.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/102.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/102.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 201,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "VeryRare",
+        "PurposeType": 10,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 7385353999612252862
+        },
+        "ItemDesc": {
+          "Hash": 4964409581385277793
+        },
+        "ItemBGDesc": {
+          "Hash": 13248272006274574339
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/201.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/201.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/201.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "UseMethod": "FixedRewardGift",
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 236,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "SuperRare",
+        "PurposeType": 10,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 3925293019421899629
+        },
+        "ItemDesc": {
+          "Hash": 2866774250440950010
+        },
+        "ItemBGDesc": {
+          "Hash": 9777774002238833177
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/236.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/236.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/236.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 238,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "SuperRare",
+        "PurposeType": 10,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 2058053853601392534
+        },
+        "ItemDesc": {
+          "Hash": 15085446229064232490
+        },
+        "ItemBGDesc": {
+          "Hash": 1980262509849615374
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/238.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/238.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/238.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 263,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "SuperRare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 8487885343922177428
+        },
+        "ItemDesc": {
+          "Hash": 124457916625662772
+        },
+        "ItemBGDesc": {
+          "Hash": 1072614289762661683
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/263.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/263.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/263.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 999999,
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      },
+      {
+        "ID": 110101,
+        "ItemMainType": "Material",
+        "ItemSubType": "TracePath",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "PurposeType": 3,
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 9317226724964556864
+        },
+        "ItemDesc": {
+          "Hash": 16068480989851995971
+        },
+        "ItemBGDesc": {
+          "Hash": 1397572345366800695
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/110101.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/110101.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/110101.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1200
+      }
+    ]
+  }
+}

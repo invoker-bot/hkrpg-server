@@ -15,6 +15,19 @@ public final class ActivityReplayFixtureCommand implements CommandHandler {
   @Override public void execute(CommandArgs args){
     if(!Files.isRegularFile(Path.of("activity-replay-owned-fixture"))||args.getTarget()==null
         ||GameData.getMainMissionExcelMap().get(1000510)==null)throw new IllegalStateException("Not an owned history fixture");
+    if(args.getList().size()==2&&args.get(0).equals("signin-day")){
+      var marker=Path.of("signin-gift-replay-fixture.json");
+      try{
+        var owner=com.google.gson.JsonParser.parseString(Files.readString(marker)).getAsJsonObject();
+        int day=Integer.parseInt(args.get(1));
+        if(!owner.get("testFixture").getAsBoolean()||owner.get("uid").getAsInt()!=args.getTarget().getUid()||day<0||day>6)
+          throw new IllegalStateException("Wrong owned signin fixture");
+        var time=Instant.ofEpochSecond(owner.get("epoch").getAsLong()+day*86400L);
+        args.getTarget().getLoginActivityManager().setClock(java.time.Clock.fixed(time,java.time.ZoneOffset.UTC));
+        args.getTarget().getLoginActivityManager().recordLogin();args.getTarget().save();
+        args.sendMessage("Owned fixture login registration at controlled day "+day);return;
+      }catch(java.io.IOException invalid){throw new IllegalStateException("Missing owned signin clock fixture",invalid);}
+    }
     if(!args.getList().isEmpty()&&!args.getList().equals(List.of("music")))throw new IllegalArgumentException("Unknown fixture prerequisites");
     var player=args.getTarget();player.setLevel(21);
     var prerequisite=new QuestState(1000510);prerequisite.advance(1,1,Instant.now().getEpochSecond());
