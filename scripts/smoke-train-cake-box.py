@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import socket
 import subprocess
 import tempfile
@@ -31,7 +32,7 @@ def port(kind=socket.SOCK_STREAM):
             return value
 
 
-def run(jar, output):
+def run(jar, output, legacy_database=None):
     jar, output = jar.resolve(strict=True), output.resolve()
     if not jar.is_relative_to(ROOT / 'build') or not output.is_relative_to(ROOT / 'build') or output.exists():
         raise ValueError('仅使用 build 内冻结产物；报告不得已经存在')
@@ -44,6 +45,16 @@ def run(jar, output):
         raise ValueError('原始来源资源与夹具不一致')
     (ROOT / 'build/smoke').mkdir(parents=True, exist_ok=True)
     directory = Path(tempfile.mkdtemp(prefix='train-cat-box-', dir=ROOT / 'build/smoke'))
+    legacy_seed = None
+    if legacy_database is not None:
+        legacy_database = legacy_database.resolve(strict=True)
+        if (not legacy_database.is_relative_to(ROOT / 'build/smoke')
+            or legacy_database.name != 'database.mv' or legacy_database.parent.name != 'data'
+            or not legacy_database.parent.parent.name.startswith('train-cat-box-')):
+            raise ValueError('旧存档只能来自已正常停止的隔离开盒目录')
+        legacy_seed = {'sourceSHA256': sha(legacy_database), 'sourcePreserved': False}
+        (directory / 'data').mkdir()
+        shutil.copy2(legacy_database, directory / 'data/database.mv')
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     http, mongo, game = port(), port(), port(socket.SOCK_DGRAM)
@@ -97,6 +108,8 @@ def run(jar, output):
         independentPlayerReads=[], boundaries=[], normalStops=0, databaseFiles=[],
         clientGameplayVerified=False, credentialsOmitted=True, officialGachaWeightsVerified=False,
         syntheticGateFixture='Only the isolated player is prepared at level 21 with original prerequisite 402080005 finished')
+    if legacy_seed is not None:
+        report['legacyDatabaseSeed'] = legacy_seed
     accounts = []
     try:
         compiled = subprocess.run([str(java.with_name('javac.exe')), '-encoding', 'UTF-8', '-cp', str(jar),
@@ -173,6 +186,10 @@ def run(jar, output):
             raise RuntimeError('冻结输入变化')
         if guarded != {name: sha(resources / name) for name in guarded}:
             raise RuntimeError('来源资源变化')
+        if legacy_seed is not None:
+            if sha(legacy_database) != legacy_seed['sourceSHA256']:
+                raise RuntimeError('旧隔离存档被修改')
+            legacy_seed['sourcePreserved'] = True
         report.update(passed=True, nativeRequests=sum(s['nativeRequests'] for s in report['snapshots']),
             resourceFilesUnchanged=len(guarded), normalLogouts=len(report['snapshots']))
     finally:
@@ -185,7 +202,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--legacy-database', type=Path,
+                        help='复制正常停止的旧隔离 H2，验证已有玩家缺少新状态字段时的升级')
     args = parser.parse_args()
-    result = run(args.jar, args.output)
+    result = run(args.jar, args.output, args.legacy_database)
     print(json.dumps({'passed': result['passed'], 'nativeRequests': result['nativeRequests'],
                       'normalStops': result['normalStops'], 'clientGameplayVerified': False}))
