@@ -1,3 +1,5 @@
+城郊雪原银鬃铁卫战斗反复回到开场对白的结算事件编号已补齐；原始两场衔接与验证边界见[战斗循环说明](docs/silvermane-battle-loop-4.6.md)。
+
 花萼战后「消息获取失败」的空闲欢愉计数校验与未开图直接挑战的现有边界见[花萼结算说明](docs/cocoon-elation-settlement-4.6.md)。
 
 城郊雪原雪堆「调查」无反应的任务解锁遗漏已修复，原始资源、保存恢复和客户端验收边界见[雪堆调查说明](docs/snowdrift-investigation-4.6.md)。

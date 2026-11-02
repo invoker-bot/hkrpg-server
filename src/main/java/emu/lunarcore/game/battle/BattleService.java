@@ -282,6 +282,7 @@ public class BattleService extends BaseGameService {
     }
     public Battle startEventBattle(Player player, int eventId) {
         synchronized (player) {
+            int requestedEvent = eventId;
             eventId = org.hkrpg.server.gameplay.StoryBattleEvents.canonicalEvent(player, eventId);
             if (eventId <= 0) return null;
             if (player.isInBattle() || activityBlocksBattle(player)
@@ -290,13 +291,16 @@ public class BattleService extends BaseGameService {
                 var plan = org.hkrpg.server.gameplay.StageEventDifficultySettings.plan(player, eventId);
                 if (plan == null) return null;
                 Battle battle = new org.hkrpg.server.gameplay.StageEventDifficultyBattle(player, plan);
+                battle.setEventId(requestedEvent);
                 player.setBattle(battle);
                 battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
                 battle.setMissionBattleKills(org.hkrpg.server.gameplay.MissionBattleKills.capture(player, battle, eventId, plan.world()));
                 battle.setMissionBattleCustomValues(org.hkrpg.server.gameplay.MissionBattleCustomValues.capture(player, battle, eventId, plan.world()));
                 return battle;
             }
-            return startBattleLocked(player,eventId,org.hkrpg.server.gameplay.RaidDifficultySettings.world(player),true);
+            var battle = startBattleLocked(player,eventId,org.hkrpg.server.gameplay.RaidDifficultySettings.world(player),true);
+            if (battle != null) battle.setEventId(requestedEvent);
+            return battle;
         }
     }
     private Battle startBattleLocked(Player player,int stageId,int worldLevel) {
@@ -322,6 +326,8 @@ public class BattleService extends BaseGameService {
 
         // Create new battle for player
         Battle battle = new Battle(player, player.getCurrentLineup(), stage);
+        if (eventOnly || GameData.getPlaneEventExcelMap().get(stageId, worldLevel) != null)
+            battle.setEventId(stageId);
         player.setBattle(battle);
         battle.setActivityKillQuests(org.hkrpg.server.gameplay.ActivityKillQuests.capture(player, battle));
         battle.setMissionBattleKills(org.hkrpg.server.gameplay.MissionBattleKills.capture(player, battle, stageId, worldLevel));

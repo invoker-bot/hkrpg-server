@@ -59,6 +59,8 @@ public class Battle {
     }
 
     private BattleStage stage; // Main battle stage
+    // Freeze the admitted event separately: stages can be shared or difficulty-adjusted.
+    @Setter(lombok.AccessLevel.PACKAGE) private int eventId;
     private IntList battleEvents; // TODO maybe turn it into a map?
     private Int2ObjectMap<BattleTargetList> battleTargets; // TODO use custom battle target object as value type in case we need to save battles to the db
 

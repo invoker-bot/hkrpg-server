@@ -37,6 +37,8 @@ public class PacketPVEBattleResultScRsp extends BasePacket {
                 .setEndStatus(battle.getResult())
                 .setCheckIdentical(true);
 
+        if (battle.getEventId() > 0) data.setEventId(battle.getEventId());
+
         // Set these
         if (battle.getPlayer().getSession() == null || !battle.getPlayer().getSession().getProtocol().experimental()) {
             data.setResVersion(Integer.toString(req.getClientResVersion())).setBinVersion("");

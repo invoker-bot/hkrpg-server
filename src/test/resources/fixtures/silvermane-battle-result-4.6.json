@@ -1,0 +1,1622 @@
+{
+  "repository": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sources": [
+    {
+      "path": "Config/Level/Mission/1010101/CS101010112.json",
+      "sha256": "6fd16ae7f67bd1ddd8c98ddf3433c48a8b2d50d75f61d956f926816eb68fcdbe"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010101.json",
+      "sha256": "26c51c12b249efcd6deee5929af91aaac2a1b8cc2580e5875684eb4cf80010fc"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010102.json",
+      "sha256": "c8a4a2c966e9ec66659cb124963b446a0d46aa12113a85d03cb9ad7634f51039"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010106.json",
+      "sha256": "d2627a35b09024205f28eea135b817964f128b387473e9c728da449ed7e019ab"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010107.json",
+      "sha256": "cda588e87b3991a6813f09370db8e22446aa55d2fb627679dd099533bd350111"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010108.json",
+      "sha256": "af2e8fc5b411435c4a219f8e2066994e1f4191fffd1ed6ff069fa619362159eb"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010109.json",
+      "sha256": "54cf3b5aa476b82ae528cfc8833a6f7da0aecc79332f8487d2f0305af7d56ebd"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010110.json",
+      "sha256": "8370c7b7f9d7e572e122abc294c5a6fe1f5e9dbab331c75a18d3d9e12156f81e"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010111.json",
+      "sha256": "236455072f529922844415a9362e14b5ed5ae737fe3e6256b27e859fe39c5ff0"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010112.json",
+      "sha256": "333aa3ffe50ab6965ef9bc9f11d68700fc1fccbc91fd1db87084f24be9f4f749"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010113.json",
+      "sha256": "fe6bdfdeeba643bfce72b9ca138ddefd80e39430f790f0d141da43617efcf63c"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010114.json",
+      "sha256": "a01bafc3b164ae2d31e08cc786da91d158eae35877332e8e23310801440807fc"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_101010120.json",
+      "sha256": "867be53740126846f5cfdfb76476e459e5e8c177c220f81f51d7dcc58161dc49"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/Mission_NULL.json",
+      "sha256": "adb244ada42e7c2ee1798afc23ee5f6e3da9515cf462238f69837618fd773a4f"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/MissionInfo_1010101.json",
+      "sha256": "4492e0bf1f514619202dee502e0e1fe9e2c0676b404170a75c8e703a4c84cf57"
+    },
+    {
+      "path": "Config/Level/Mission/1010101/MissionInfo_1010101.partial.json",
+      "sha256": "45c41cbc17f022eb6ed5f19a6495de2161c3ebdad65bebac03af3621ee146733"
+    },
+    {
+      "path": "ExcelOutput/MainMission.json",
+      "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a"
+    },
+    {
+      "path": "ExcelOutput/PlaneEvent.json",
+      "sha256": "5dfc9c2509bbf1455f0286a77c26a903d33a9c39442b523e006d33d8ac803922"
+    },
+    {
+      "path": "ExcelOutput/StageConfig.json",
+      "sha256": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2"
+    }
+  ],
+  "records": [
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/CS101010112.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.LevelPerformanceInitialize",
+                "PerformanceType": "A",
+                "CreateCharacterList": [],
+                "EntityVisiableList": [],
+                "HideProp": true,
+                "UseNewStreamingSourceType": false
+              },
+              {
+                "$type": "RPG.GameCore.PlayTimeline",
+                "TimelineName": "CS_Chap01_Act030",
+                "Type": "Cutscene",
+                "Parameters": []
+              },
+              {
+                "$type": "RPG.GameCore.EndPerformance"
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitPerformanceEnd"
+              },
+              {
+                "$type": "RPG.GameCore.FinishLevelGraph"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010101.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.SwitchCharacterAnchor",
+                "IsLocalPlayer": true,
+                "CharacterUniqueName": "LocalPlayer",
+                "AreaName": {
+                  "Value": "LevelArea_P20101_F20101001_G2"
+                },
+                "AnchorName": {
+                  "Value": "Anchor1"
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "C",
+                "PerformanceID": 101010101,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010101"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010102.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Hold"
+                },
+                "WaitOwnerOnly": true
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 23
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300001
+                      }
+                    }
+                  }
+                },
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetTypes": [],
+                "ColliderRelativePath": "Trigger",
+                "DestroyAfterTriggered": true,
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.PlayMissionTalk",
+                    "SimpleTalkList": [
+                      {
+                        "TextSpeed": 30,
+                        "TalkSentenceID": 201010601,
+                        "ProtectTime": 0.3
+                      },
+                      {
+                        "TalkSentenceID": 201010602,
+                        "ProtectTime": 0.3
+                      }
+                    ]
+                  },
+                  {
+                    "$type": "RPG.GameCore.FinishPerformanceMission",
+                    "Key": "Mission_101010102"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010106.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Talk_101010106"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010106"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010107.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 23
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300002
+                      }
+                    }
+                  }
+                },
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "MT_101010107"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MT_101010107"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.PlayMissionTalk",
+                "SimpleTalkList": [
+                  {
+                    "TalkSentenceID": 201010609,
+                    "ProtectTime": 2
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.WaitMissionTalkFinish"
+              },
+              {
+                "$type": "RPG.GameCore.TriggerSound",
+                "SoundName": {
+                  "Value": "Ev_sfx_belobog_snowland_tips"
+                },
+                "EmitterType": "LocalPlayer"
+              },
+              {
+                "$type": "RPG.GameCore.PlayMissionTalk",
+                "SimpleTalkList": [
+                  {
+                    "TalkSentenceID": 201010610,
+                    "ProtectTime": 2
+                  },
+                  {
+                    "TalkSentenceID": 201010611,
+                    "ProtectTime": 2
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010107"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010108.json",
+      "row": {
+        "OnInitSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CreateLevelAreas",
+                "AssetPath": {
+                  "Value": "Level/Mission/1010101/MainMission_LookatArea.prefab"
+                }
+              }
+            ]
+          }
+        ],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 23
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300006
+                      }
+                    }
+                  }
+                },
+                "IsSingle": true,
+                "TargetEntityType": "LocalPlayer",
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetTypes": [],
+                "ColliderRelativePath": "Trigger",
+                "DestroyAfterTriggered": true,
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.AdventureCameraLookAt",
+                    "LookAtTargetAreaName": {
+                      "Value": "MainMission_LookatArea"
+                    },
+                    "LookAtTargetAnchorName": {
+                      "Value": "LookatPoint"
+                    },
+                    "AxisOffset": {
+                      "X": 0.6,
+                      "Y": 0.6
+                    },
+                    "LookAtTransitionDuration": 3,
+                    "LookAtTransitionCurvePath": "Camera/BlendCurve/Blend_N1CameraTest.asset",
+                    "LockCameraInput": true,
+                    "LookAtDuration": 4,
+                    "MaxAngle": 60,
+                    "ExtraFreelook3rdConfig": {
+                      "ExportToJson": true,
+                      "BaseChangeParam": {
+                        "ExportToJson": true,
+                        "ZoomRatio": 0.2,
+                        "CenterPos": {
+                          "X": 0.45,
+                          "Y": 0.5
+                        },
+                        "Time": 1,
+                        "ChangeCurvePath": "Camera/BlendCurve/Blend_N1CameraTest.asset",
+                        "RecoveryTime": 3,
+                        "RecoveryCurvePath": "Camera/BlendCurve/Blend_N1CameraTest.asset"
+                      }
+                    }
+                  }
+                ],
+                "OnTriggerExit": []
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.ChangePropState"
+              }
+            ]
+          }
+        ],
+        "ValueSource": {},
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010109.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "C",
+                "PerformanceID": 101010102,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.PropSetVisibility",
+                "SpecifiedRelativePaths": [],
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 25
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300001
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "C",
+                "PerformanceID": 101010103,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010109"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010110.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Battle_20101011"
+                },
+                "GoNextImmediately": true
+              },
+              {
+                "$type": "RPG.GameCore.TriggerBattle",
+                "EventID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 20101012
+                  }
+                },
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 2
+                  }
+                },
+                "BattleAreaID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Battle_20101012"
+                },
+                "GoNextImmediately": true
+              },
+              {
+                "$type": "RPG.GameCore.TriggerBattle",
+                "EventID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 20101012
+                  }
+                },
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 2
+                  }
+                },
+                "BattleAreaID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010111.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PlayScreenTransfer",
+                "Mode": "SwitchOut"
+              },
+              {
+                "$type": "RPG.GameCore.CaptureNPCToCharacter",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 26
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400001
+                  }
+                },
+                "CharacterUniqueName": {
+                  "Value": "Sampo_101010110"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.SwitchCharacterAnchor",
+                "IsLocalPlayer": true,
+                "CharacterUniqueName": "LocalPlayer",
+                "AreaName": {
+                  "Value": "LevelArea_P20101_F20101001_G26"
+                },
+                "AnchorName": {
+                  "Value": "Anchor1"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.SwitchCharacterAnchor",
+                "CharacterUniqueName": "Sampo_101010110",
+                "AreaName": {
+                  "Value": "LevelArea_P20101_F20101001_G26"
+                },
+                "AnchorName": {
+                  "Value": "Anchor2"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.WaitSecond",
+                "WaitTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              },
+              {
+                "$type": "RPG.GameCore.PlayScreenTransfer",
+                "CustomTime": 0.5
+              },
+              {
+                "$type": "RPG.GameCore.PlayMissionTalk",
+                "SimpleTalkList": [
+                  {
+                    "TalkSentenceID": 201010612,
+                    "ProtectTime": 2
+                  },
+                  {
+                    "TalkSentenceID": 201010613,
+                    "ProtectTime": 2
+                  },
+                  {
+                    "TalkSentenceID": 201010614,
+                    "ProtectTime": 2
+                  }
+                ]
+              },
+              {
+                "$type": "RPG.GameCore.SetNpcWaypath",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvNpcEx",
+                  "FetchType": "SingleNpcByNpcID",
+                  "SingleNpcID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 26
+                      }
+                    },
+                    "GroupNpcID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 400001
+                      }
+                    }
+                  }
+                },
+                "UsageType": "TaskFollow"
+              },
+              {
+                "$type": "RPG.GameCore.SetNpcStatus",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvNpcEx",
+                  "FetchType": "SingleNpcByNpcID",
+                  "SingleNpcID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 26
+                      }
+                    },
+                    "GroupNpcID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 400001
+                      }
+                    }
+                  }
+                },
+                "Status": "FollowByPlayer"
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 23
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300004
+                      }
+                    }
+                  }
+                },
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetTypes": [],
+                "ColliderRelativePath": "Trigger",
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.FinishPerformanceMission",
+                    "Key": "Mission_101010111"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "EnterStory_101010104"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010111"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010112.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PredicateTaskList",
+                "Predicate": {
+                  "$type": "RPG.GameCore.ByCompareMissionBattleWin",
+                  "EventID": 20101011
+                },
+                "SuccessTaskList": [
+                  {
+                    "$type": "RPG.GameCore.PlayScreenTransfer",
+                    "Mode": "SwitchOut"
+                  },
+                  {
+                    "$type": "RPG.GameCore.TriggerPerformance",
+                    "PerformanceType": "A",
+                    "PerformanceID": 101010115,
+                    "ValueSource": {}
+                  },
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "Battle_20101012"
+                    }
+                  }
+                ],
+                "FailedTaskList": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "Battle20101011_Lose"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Order": 1,
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Battle20101011_Lose"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 23
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300004
+                      }
+                    }
+                  }
+                },
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetTypes": [],
+                "ColliderRelativePath": "Trigger",
+                "DestroyAfterTriggered": true,
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "EnterStory_101010104"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "EnterStory_101010104"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "C",
+                "PerformanceID": 101010104,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.TriggerCustomString",
+                "CustomString": {
+                  "Value": "Battle_20101011"
+                }
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010113.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "C",
+                "PerformanceID": 101010105,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "C",
+                "PerformanceID": 101010106,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010113"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010114.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.EnterMap",
+                "EntranceID": 1010101,
+                "GroupID": 45,
+                "AnchorID": 2
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_101010120.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 55
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300001
+                      }
+                    }
+                  }
+                },
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetTypes": [],
+                "DestroyAfterTriggered": true,
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "101010120P"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "101010120P"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "D",
+                "PerformanceID": 101010120
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_101010120"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/Mission_NULL.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "Hold"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/MissionInfo_1010101.json",
+      "row": {
+        "MainMissionID": 1010101,
+        "StartSubMissionList": [
+          101010120,
+          101010102
+        ],
+        "FinishSubMissionList": [
+          101020101
+        ],
+        "IsLegacyAssistWayPoint": true
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/1010101/MissionInfo_1010101.partial.json",
+      "row": {
+        "SubMissionList": [
+          {
+            "ID": 101010102,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010102.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1010101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101010102",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "IsShowStartHint": "Update",
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010106,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010106.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010102
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101010106",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010107,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010107.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010120
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101010107",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010108,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010108.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010120
+            ],
+            "MazePlaneID": 20101,
+            "MazeFloorID": 20101001,
+            "FinishType": "PropState",
+            "ParamType": "Equal",
+            "ParamInt1": 25,
+            "ParamInt2": 300001,
+            "ParamInt3": 1,
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Anchor",
+            "WayPointFloorID": 20101001,
+            "WayPointGroupID": 25,
+            "WayPointEntityID": 2
+          },
+          {
+            "ID": 101010109,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010109.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "AudioEmotionState": "State_Esilence",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010108
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101010109",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010110,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010110.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "AudioEmotionState": "State_Esilence",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010109
+            ],
+            "FinishType": "StageWin",
+            "ParamType": "Equal",
+            "ParamInt1": 20101012,
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20101001,
+            "WayPointGroupID": 26,
+            "WayPointEntityID": 400001
+          },
+          {
+            "ID": 101010111,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010111.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "AudioEmotionState": "State_Esilence",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010109
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101010111",
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010112,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010112.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "AudioEmotionState": "State_Esilence",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010109
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              101010110
+            ],
+            "Progress": 1,
+            "IsShow": false,
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010113,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010113.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010110
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101010113",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointFloorID": 20101001
+          },
+          {
+            "ID": 101010114,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010114.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010113
+            ],
+            "FinishType": "EnterFloor",
+            "ParamType": "Equal",
+            "ParamInt1": 10101,
+            "ParamInt2": 10101001,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [
+              {
+                "FinishActionType": "Recover",
+                "FinishActionPara": []
+              },
+              {
+                "FinishActionType": "SetFloorSavedValue",
+                "FinishActionPara": [],
+                "FinishActionParaString": [
+                  "20101",
+                  "20101001",
+                  "SceneStateByMainMission",
+                  "1"
+                ]
+              }
+            ],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "GotoParam": [],
+            "WayPointFloorID": 20101001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          },
+          {
+            "ID": 101010120,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010101/Mission_101010120.json",
+            "LevelPlaneID": 20101,
+            "LevelFloorID": 20101001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              1010101
+            ],
+            "FinishType": "MessagePerformSectionFinish",
+            "ParamType": "Equal",
+            "ParamInt1": 5000600,
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Anchor",
+            "WayPointFloorID": 20101001,
+            "WayPointGroupID": 25,
+            "WayPointEntityID": 2
+          },
+          {
+            "ID": 101020101,
+            "MainMissionID": 1010101,
+            "MissionJsonPath": "Config/Level/Mission/1010201/Mission_101020101.json",
+            "LevelPlaneID": 10101,
+            "LevelFloorID": 10101001,
+            "AudioEmotionState": "State_Relaxing",
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              101010114
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_101020101",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "GroupIDList": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShowFinishEffect": 2,
+            "GotoParam": [],
+            "WayPointFloorID": 10101001,
+            "StoryLineIDList": [],
+            "IgnoreVerseParamList": []
+          }
+        ]
+      }
+    },
+    {
+      "kind": "MainMission",
+      "source": "ExcelOutput/MainMission.json",
+      "row": {
+        "MainMissionID": 1010101,
+        "Type": "Main",
+        "WorldID": 201,
+        "DisplayPriority": 1010101,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 12825115888672447815
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010002
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1010201,
+        "TrackWeight": 100,
+        "RewardID": 11010101,
+        "DisplayRewardID": 11010101,
+        "ChapterID": 101001,
+        "SubRewardList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20101011,
+        "StageID": 201010110,
+        "DropList": [],
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20101011,
+        "WorldLevel": 1,
+        "StageID": 201010111,
+        "DropList": [],
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20101012,
+        "StageID": 201010120,
+        "DropList": [],
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20101012,
+        "WorldLevel": 1,
+        "StageID": 201010121,
+        "DropList": [],
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 201010110,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 3103099071630854495
+        },
+        "HardLevelGroup": 1,
+        "Level": 10,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [
+          {
+            "BFLIFKBEOPJ": "_DefaultSubStage",
+            "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20101011.json",
+            "EOAHMJFOLHD": "",
+            "MEDEFCIKNLA": "",
+            "APNFMFEMPNI": "",
+            "LGNKFIIEICM": "",
+            "BIEJJCIFBGA": ""
+          }
+        ],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "2"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 1002040,
+            "Monster1": 1002050
+          },
+          {
+            "Monster0": 1002040,
+            "Monster1": 1002050,
+            "Monster2": 1002040
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 201010111,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 3103099071630854495
+        },
+        "HardLevelGroup": 1,
+        "Level": 29,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [
+          {
+            "BFLIFKBEOPJ": "_DefaultSubStage",
+            "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20101011.json",
+            "EOAHMJFOLHD": "",
+            "MEDEFCIKNLA": "",
+            "APNFMFEMPNI": "",
+            "LGNKFIIEICM": "",
+            "BIEJJCIFBGA": ""
+          }
+        ],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "2"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 1002040,
+            "Monster1": 1002050
+          },
+          {
+            "Monster0": 1002040,
+            "Monster1": 1002050,
+            "Monster2": 1002040
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 201010120,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 3103099071630854495
+        },
+        "HardLevelGroup": 1,
+        "Level": 10,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [
+          {
+            "BFLIFKBEOPJ": "_DefaultSubStage",
+            "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20101012.json",
+            "EOAHMJFOLHD": "",
+            "MEDEFCIKNLA": "",
+            "APNFMFEMPNI": "",
+            "LGNKFIIEICM": "",
+            "BIEJJCIFBGA": ""
+          }
+        ],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 1002040,
+            "Monster1": 1004021
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [
+          "[CDT_MonsterHurt:100302001:0.2]",
+          "[CDT_WaitCustomString:Level_SpecialWin]"
+        ],
+        "ForbidAutoBattle": true,
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "ResetBattleSpeed": true,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 201010121,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 3103099071630854495
+        },
+        "HardLevelGroup": 1,
+        "Level": 29,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [
+          {
+            "BFLIFKBEOPJ": "_DefaultSubStage",
+            "KACPIAGHKMN": "Config/Level/SubLevelGraph/StageBgTalk_20101012.json",
+            "EOAHMJFOLHD": "",
+            "MEDEFCIKNLA": "",
+            "APNFMFEMPNI": "",
+            "LGNKFIIEICM": "",
+            "BIEJJCIFBGA": ""
+          }
+        ],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 1002040,
+            "Monster1": 1004021
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [
+          "[CDT_MonsterHurt:100302001:0.2]",
+          "[CDT_WaitCustomString:Level_SpecialWin]"
+        ],
+        "ForbidAutoBattle": true,
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "ResetBattleSpeed": true,
+        "TrialAvatarList": []
+      }
+    }
+  ]
+}
