@@ -1,0 +1,216 @@
+{
+  "sources": {
+    "CocoonConfig.json": "a3d2e55d27508224cc6337e289705c8950e90d449851a341aa38412884855aba",
+    "StageConfig.json": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "BattleEventConfig.json": "716526e325e5f3552e58d75bc2ee7ea258d6751d68563985fdee331dcbcc01f6",
+    "FarmStageUnlockConfig.json": "fd87a883e1821faa28c4afc0e5067feb8d944b383259115c91e22a1e4b33f7ea"
+  },
+  "observed": {
+    "floor": 20101001,
+    "battleId": 20505386,
+    "stageId": 1024810,
+    "eventId": 70001,
+    "current": 0,
+    "maximum": 100000,
+    "participants": [
+      1003,
+      1101,
+      1102,
+      1211
+    ]
+  },
+  "cocoon": {
+    "ID": 1029,
+    "PropID": 808,
+    "CocoonType": "TYPE_NORMAL",
+    "MappingInfoID": 1029,
+    "StageIDList": [
+      1024810,
+      1024820,
+      1024830
+    ],
+    "ParamList": [],
+    "DropList": [
+      1000849,
+      1000339,
+      1001064,
+      1001080,
+      730009,
+      730009,
+      730009,
+      431011,
+      430431
+    ],
+    "StaminaCost": 10,
+    "MaxChallengeCnt": 24,
+    "OpenDate": [],
+    "AutoObtainDamageType": true,
+    "DamageType": [],
+    "FarmType": "COCOON_EQUIPMENT_EXP"
+  },
+  "stages": [
+    {
+      "StageID": 1024810,
+      "StageType": "Cocoon",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 16,
+      "EliteGroup": 29,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 5012051,
+          "Monster1": 5012020,
+          "Monster2": 5012020,
+          "Monster3": 5012051
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 1024820,
+      "StageType": "Cocoon",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 16,
+      "EliteGroup": 29,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 5012020,
+          "Monster1": 5012061,
+          "Monster2": 5012020,
+          "Monster3": 5012061
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    },
+    {
+      "StageID": 1024830,
+      "StageType": "Cocoon",
+      "StageName": {
+        "Hash": 3103099071630854495
+      },
+      "HardLevelGroup": 1,
+      "Level": 16,
+      "EliteGroup": 29,
+      "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+      "StageAbilityConfig": [],
+      "SubLevelGraphs": [],
+      "StageConfigData": [
+        {
+          "BFLIFKBEOPJ": "_Wave",
+          "MNDFOPKBHKP": "1"
+        },
+        {
+          "BFLIFKBEOPJ": "_IsEliteBattle",
+          "MNDFOPKBHKP": "0"
+        }
+      ],
+      "MonsterList": [
+        {
+          "Monster0": 5012051,
+          "Monster1": 5012061,
+          "Monster2": 5012020,
+          "Monster3": 5012061,
+          "Monster4": 5012051
+        }
+      ],
+      "LevelLoseCondition": [],
+      "LevelWinCondition": [],
+      "Release": true,
+      "ForbidExitBattle": true,
+      "MonsterWarningRatio": 1,
+      "TrialAvatarList": []
+    }
+  ],
+  "event": {
+    "BattleEventID": 70001,
+    "Team": "TeamNeutral",
+    "EventSubType": "Elation",
+    "BattleEventName": "BattleEventName_70001",
+    "HeadIcon": "SpriteOutput/BattleEventIcon/HoshinoKami_007.png",
+    "AbilityList": [],
+    "OverrideProperty": [
+      {
+        "PropertyType": "BaseHP",
+        "Value": {
+          "Value": 10000
+        }
+      },
+      {
+        "PropertyType": "BaseAttack",
+        "Value": {
+          "Value": 100
+        }
+      }
+    ],
+    "HardLevel": true,
+    "DescrptionText": "",
+    "ParamList": [
+      {
+        "Value": 0.02
+      },
+      {
+        "Value": 3
+      },
+      {
+        "Value": 0.5
+      },
+      {
+        "Value": 0.5
+      },
+      {
+        "Value": 1
+      }
+    ],
+    "AssetPackName": "0"
+  },
+  "farmUnlock": {
+    "ID": 1029,
+    "FarmType": "COCOON_EQUIPMENT_EXP",
+    "FarmGachaIDList": [],
+    "UnlockWorldLevelEnd": 4,
+    "UIEnterBattleArea": 2050301,
+    "UIEntranceBgPath": "UI/UI3D/UI3DFarmStage/_dependencies/Materials/UI3DFarmStageBackground_1029.mat",
+    "UIEnviromentConfig": ""
+  }
+}

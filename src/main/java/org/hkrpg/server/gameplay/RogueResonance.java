@@ -407,7 +407,8 @@ public final class RogueResonance {
                     && row.valid()
                     && seen.add(row.eventId())
                     && (battle.getBattleEvents().contains(row.eventId())
-                        || battle.getActorBattleEvents().contains(row.eventId())));
+                        || battle.getActorBattleEvents().contains(row.eventId())
+                        || CocoonBattleEvents.acceptsDormantElation(battle, row)));
   }
 
   /** Called once, after all battle identity/statistics checks and the settlement guard. */
