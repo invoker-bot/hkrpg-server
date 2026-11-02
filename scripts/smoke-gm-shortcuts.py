@@ -10,6 +10,7 @@ from pathlib import Path
 import socket
 import subprocess
 import tempfile
+import urllib.parse
 import urllib.request
 import uuid
 
@@ -82,7 +83,7 @@ def main():
             codes.append(server.returncode==(1000 if os.name=='nt' else 232));server.stdin.close();server=None
         if strict:assert all(codes),codes;stops+=1
 
-    catalog=[];selected={};saved=None
+    catalog=[];selected={};saved=None;clothing_search={}
     try:
         for cycle in range(2):
             log=(directory/f'server-{cycle}.log').open('w',encoding='utf-8');logs.append(log)
@@ -104,6 +105,23 @@ def main():
                 for kind in ['music','mission']:
                     selected[kind]=next(i for i in catalog if i['type']==kind and i['grantable'])
                 assert request('/gm/api/item-shortcuts?type=theme&tag=hidden&q=221002')['data']['total']==1
+                clothing={i['item']['id'] for i in catalog if i['type'] in {'skin','outfit','pam'}}
+                for word in ['服饰','服装','衣服']:
+                    found=request('/gm/api/item-shortcuts?'+urllib.parse.urlencode({'q':word,'limit':100}))['data']
+                    assert {i['item']['id'] for i in found['items']}==clothing,found
+                    assert found['total']==len(clothing)
+                    clothing_search[word]=found['total']
+                skins={i['item']['id'] for i in catalog if i['type'] in {'skin','pam'}}
+                found=request('/gm/api/item-shortcuts?'+urllib.parse.urlencode({'q':'皮肤','limit':100}))['data']
+                assert {i['item']['id'] for i in found['items']}==skins,found
+                clothing_search['皮肤']=found['total']
+                for kind in ['skin','outfit','pam']:
+                    found=request('/gm/api/item-shortcuts?'+urllib.parse.urlencode({'q':'服饰','type':kind,'limit':100}))['data']
+                    assert {i['item']['id'] for i in found['items']}=={i['item']['id'] for i in catalog if i['type']==kind}
+                found=request('/gm/api/item-shortcuts?'+urllib.parse.urlencode({'q':'三月七','type':'skin'}))['data']
+                assert found['total']==1 and found['items'][0]['item']['id']==1100101,found
+                assert '对应角色：三月七 #1001' in found['items'][0]['sources']
+                clothing_search['三月七']=found['total']
                 (directory/'catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2),encoding='utf-8')
             account=request('/hkrpg_cn/mdk/shield/api/login',{'account':account_name,'password':'disposable-shortcut'})['data']['account']
             combo=request('/hkrpg_cn/combo/granter/login/v2/login',{'data':json.dumps({'uid':account['uid'],'token':account['token']})})
@@ -143,7 +161,7 @@ def main():
         report={'passed':True,'jarSHA256':digest,'runtimeDirectory':str(directory),'catalogEntries':len(catalog),
                 'grantableEntries':sum(i['grantable'] for i in catalog),'typesTested':list(selected),'normalStops':stops,
                 'sameUidRestart':True,'uid':uid,'operations':len(operations),'nativeRequests':len(native),'productionModified':False,
-                'clientAccepted':False,'native':native,'snapshots':snapshots}
+                'clothingSearch':clothing_search,'clientAccepted':False,'native':native,'snapshots':snapshots}
         args.output.parent.mkdir(exist_ok=True,parents=True);args.output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
         print(json.dumps({k:v for k,v in report.items() if k not in ['native','snapshots']}))
     finally:

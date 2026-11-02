@@ -16,7 +16,7 @@ export function mountShortcuts(main,inspector,state){
   typeSelect.addEventListener('change',filter);tagSelect.addEventListener('change',filter);
   main.append(el('p',{class:'shortcut-note',text:'按资源可见性、活动与跃迁来源整理。收录依据可在详情中查看；“限定来源”不等于已核实绝版。'}),
     el('div',{class:'shop-filters'},field('按类型分类',typeSelect),field('收录依据',tagSelect)),
-    el('div',{class:'toolbar'},searchInput('搜索快捷物品名称、ID 或来源',value=>{query=value;offset=0;selected=null;load();}),button('刷新清单',load,'refresh')),
+    el('div',{class:'toolbar'},searchInput('搜索名称、角色、类型、ID 或来源',value=>{query=value;offset=0;selected=null;load();}),button('刷新清单',load,'refresh')),
     count,list,el('div',{class:'pagination'},previous,next));
 
   function choose(row){

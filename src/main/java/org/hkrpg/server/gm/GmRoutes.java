@@ -156,8 +156,7 @@ public final class GmRoutes {
       var all=backend.itemShortcuts();
       var filtered=all.stream().filter(i -> type.isEmpty()||type.equals(i.type()))
           .filter(i -> tag.isEmpty()||i.tags().contains(tag))
-          .filter(i -> q.isEmpty()||(i.item().id()+" "+i.item().name()+" "+String.join(" ",i.sources()))
-              .toLowerCase(Locale.ROOT).contains(q)).toList();
+          .filter(i -> GmItemShortcuts.matches(i,q)).toList();
       ok(ctx,Map.of("types",GmItemShortcuts.TYPES.entrySet().stream().sorted(Map.Entry.comparingByKey())
           .map(e -> Map.of("id",e.getKey(),"name",e.getValue(),"count",all.stream().filter(i -> i.type().equals(e.getKey())).count())).toList(),
           "total",filtered.size(),"items",filtered.stream().skip(offset).limit(limit).toList()));

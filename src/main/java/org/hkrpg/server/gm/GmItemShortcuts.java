@@ -22,6 +22,8 @@ final class GmItemShortcuts {
       Map.entry("music","唱片"),Map.entry("medal","勋章"),Map.entry("mission","任务物品"),
       Map.entry("material","材料"),Map.entry("consumable","消耗品"),Map.entry("other","其他物品"));
   static final Set<String> TAGS = Set.of("hidden","limited","activity","collectible","event-warp");
+  private static final Map<String,String> SEARCH_ALIASES = Map.of(
+      "skin","服饰 服装 衣服 皮肤","outfit","服饰 服装 衣服","pam","服饰 服装 衣服 皮肤");
   private record Hint(Set<String> tags, Set<String> sources) {
     Hint() { this(new LinkedHashSet<>(),new LinkedHashSet<>()); }
   }
@@ -56,6 +58,8 @@ final class GmItemShortcuts {
       }
     }
     addBannerHints(hints);
+    var names = new HashMap<Integer,String>();
+    catalog.forEach(entry -> names.put(entry.id(),entry.name()));
     var result = new ArrayList<ItemShortcut>();
     for (var entry : catalog) {
       var item = GameData.getItemExcelMap().get(entry.id());
@@ -65,6 +69,10 @@ final class GmItemShortcuts {
       if (item.getItemSubType()!=null && ShopItems.unique(item)) {
         hint.tags().add("collectible");
         hint.sources().add("收藏类型："+TYPES.getOrDefault(type,type));
+      }
+      if (type.equals("skin")) {
+        var skin = GameData.getAvatarSkinExcelMap().get(entry.id());
+        if (skin!=null) hint.sources().add("对应角色："+names.getOrDefault(skin.getAvatarID(),"角色")+" #"+skin.getAvatarID());
       }
       // Avatar cards and virtual balances omit visibility by design; do not label them hidden.
       if (!Boolean.TRUE.equals(item.getIsVisible())
@@ -81,6 +89,12 @@ final class GmItemShortcuts {
                   ? "头像框尚未接通 4.6 解锁同步，仅供查询。" : "当前类型或配套资源尚不支持发放，仅供查询。",maxAmount(item)));
     }
     return List.copyOf(result);
+  }
+
+  static boolean matches(ItemShortcut row, String query) {
+    return query.isEmpty() || (row.item().id()+" "+row.item().name()+" "+TYPES.getOrDefault(row.type(),row.type())
+        +" "+SEARCH_ALIASES.getOrDefault(row.type(),"")+" "+String.join(" ",row.sources()))
+        .toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT));
   }
 
   static boolean grantable(ItemExcel item) {

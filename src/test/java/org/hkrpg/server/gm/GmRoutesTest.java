@@ -41,6 +41,7 @@ class GmRoutesTest {
   String csrf;
   AtomicInteger executions = new AtomicInteger();
   AtomicLong now = new AtomicLong(System.currentTimeMillis());
+  List<ItemShortcut> additionalShortcuts = List.of();
   static final String KEY = "a".repeat(43);
 
   @BeforeEach
@@ -94,10 +95,12 @@ class GmRoutesTest {
           }
 
           public List<ItemShortcut> itemShortcuts() {
-            return List.of(new ItemShortcut(new CatalogItem(221002,"列车主题","item",4,0,0),"theme",
+            var rows = new java.util.ArrayList<>(List.of(new ItemShortcut(new CatalogItem(221002,"列车主题","item",4,0,0),"theme",
                 List.of("hidden","collectible"),List.of("PhoneThemeConfig：解锁后显示"),true,"每次1件",1),
                 new ItemShortcut(new CatalogItem(254001,"限定手机壳","item",4,0,0),"case",
-                    List.of("limited","collectible"),List.of("活动排期"),false,"仅供查询",1));
+                    List.of("limited","collectible"),List.of("活动排期"),false,"仅供查询",1)));
+            rows.addAll(additionalShortcuts);
+            return List.copyOf(rows);
           }
 
           public List<ActivityRow> activities() {
@@ -158,6 +161,25 @@ class GmRoutesTest {
     assertEquals(1,executions.get());
     assertEquals(400,request("POST","/gm/api/operate",body.replace("\"durationDays\":7","\"durationDays\":0"),true).statusCode());
     assertEquals(400,request("POST","/gm/api/operate",body.replace("\"durationDays\":7","\"uid\":10001"),true).statusCode());
+  }
+
+  @Test
+  void clothingCanBeFoundByCommonWordsAndTypeNamesWithoutChangingOtherFilters() throws Exception {
+    additionalShortcuts=List.of(
+        new ItemShortcut(new CatalogItem(1100101,"冬去煦至","item",5,0,0),"skin",
+            List.of("limited","collectible"),List.of("原始物品"),true,"每次1件",1),
+        new ItemShortcut(new CatalogItem(227001,"救世主的桂冠","item",4,0,0),"outfit",
+            List.of("collectible"),List.of("原始物品"),true,"每次1件",1),
+        new ItemShortcut(new CatalogItem(252003,"开拓岁月","item",4,0,0),"pam",
+            List.of("collectible"),List.of("原始物品"),true,"每次1件",1));
+    openSession();
+    for(String word:List.of("服饰","服装","衣服"))
+      assertEquals(3,json(request("GET","/gm/api/item-shortcuts?q="+word,null,true)).getAsJsonObject("data").get("total").getAsInt(),word);
+    assertEquals(2,json(request("GET","/gm/api/item-shortcuts?q=皮肤",null,true)).getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(1,json(request("GET","/gm/api/item-shortcuts?q=开拓者装扮",null,true)).getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(1,json(request("GET","/gm/api/item-shortcuts?type=skin&tag=limited&q=服饰",null,true)).getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(0,json(request("GET","/gm/api/item-shortcuts?type=theme&q=服饰",null,true)).getAsJsonObject("data").get("total").getAsInt());
+    assertEquals(0,executions.get());
   }
 
   @Test

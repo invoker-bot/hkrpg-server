@@ -66,6 +66,22 @@ class GmItemShortcutsTest {
     assertThrows(java.io.IOException.class,()->GmItemShortcuts.load(directory,catalog));
   }
 
+  @Test void characterClothingShowsTheOriginalOwningAvatar() throws Exception {
+    int id=199868005;var old=GameData.getAvatarSkinExcelMap().get(id);
+    try{
+      item(id,"Usable","AvatarSkin",",\"isVisible\":true");
+      item(1001,"AvatarCard","AvatarCard",",\"isVisible\":true");
+      catalog.set(catalog.size()-1,new CatalogItem(1001,"三月七","avatar",4,80,6));
+      GameData.getAvatarSkinExcelMap().add(new Gson().fromJson("{\"ID\":"+id+",\"AvatarID\":1001}",emu.lunarcore.data.excel.AvatarSkinExcel.class));
+      var rows=GmItemShortcuts.load(directory,catalog);
+      var skin=rows.stream().filter(r->r.item().id()==id).findFirst().orElseThrow();
+      assertEquals("skin",skin.type());assertTrue(skin.grantable());
+      assertTrue(skin.sources().contains("对应角色：三月七 #1001"),skin.sources().toString());
+    }finally{
+      GameData.getAvatarSkinExcelMap().keySet().remove(id);if(old!=null)GameData.getAvatarSkinExcelMap().add(old);
+    }
+  }
+
   @Test void anUnknownResourceSubtypeStaysQueryOnlyWithoutBreakingTheCatalog() throws Exception {
     item(199868004,"Usable","FutureUnknownType",",\"isVisible\":false");
     var rows=GmItemShortcuts.load(directory,catalog);
