@@ -15,6 +15,18 @@ class LoginBootstrapNested46Test {
 
   static void noInventedProgress(DynamicMessage value) {
     for (var entry : value.getAllFields().entrySet()) {
+      if (entry.getKey().isRepeated()
+          && value.getDescriptorForType().getName().equals("TrainPartyInfo")
+          && entry.getKey().getName().equals("area_list")) {
+        // The original root room is a required display reference, with no earned progress.
+        var rooms = (java.util.List<?>) entry.getValue();
+        assertEquals(1, rooms.size());
+        var room = (DynamicMessage) rooms.getFirst();
+        assertEquals(1, room.getAllFields().size());
+        assertEquals(12, InitialData46Test.field(room, "area_id"));
+        assertEquals(0, InitialData46Test.field(room, "progress"));
+        continue;
+      }
       assertFalse(entry.getKey().isRepeated(), "No unlocked records or claimed rewards in an inactive profile");
       if (entry.getValue() instanceof DynamicMessage nested) noInventedProgress(nested);
       else {
