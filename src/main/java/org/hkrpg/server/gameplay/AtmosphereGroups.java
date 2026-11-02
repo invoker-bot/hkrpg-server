@@ -169,6 +169,7 @@ public final class AtmosphereGroups {
   }
 
   public static boolean allowed(Player player, GroupInfo group, Scene scene) {
+    if (group.getLoadSide() != GroupInfo.GroupLoadSide.Server) return false;
     var raw = group.getAtmosphereCondition();
     if (raw == null) return true;
     if (!raw.isJsonObject()) return false;

@@ -1,3 +1,5 @@
+`AtmosphereGroupSourceAdapter` 为没有加载/卸载/气氛条件、未初始启用且省略 LoadSide 的原始 RtLevelGroupInfo 气氛组保留 Client 归属；显式加载与气氛任务准入同步拒绝客户端组，现有条件控制和初始启用的互动准入及显式 Server 组保持。行政区缺失脚本及范围见[加载说明](city-loading-atmosphere-4.6.md)。
+
 `MissionSceneEntrances.LiveRecovery` 的逐项来源目录包含雪原战后进入行政区的 `101010114`；仅在原演出 `101010113` 完成、目标仍在原雪原场景接取且原始单步脚本及 G45/A2 落点匹配时允许延迟恢复。范围和实机边界见[剧情切图说明](live-story-transfer-4.6.md)。
 
 `Battle` 分别保存入战事件与实际关卡，`PacketPVEBattleResultScRsp` 回传原生事件编号，供客户端剧情胜利判断；来源、两场推进和验收边界见[银鬃铁卫战斗循环](silvermane-battle-loop-4.6.md)。

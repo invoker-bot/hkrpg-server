@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "city-atmosphere-load-side",
+      "name": "行政区气氛组加载归属",
+      "status": "partial",
+      "evidence": "docs/city-loading-atmosphere-4.6.md",
+      "gap": "没有加载/卸载/气氛条件、未初始启用且省略 LoadSide 的原始 RtLevelGroupInfo 气氛组按已核对的 Client 缺省解析，首次、显式加载与气氛任务准入保持一致；行政区九个缺失 BubbleChat 引用不再作为服务端实体下发。NPC 商店、调查物件、条件控制和初始启用的现有气氛互动保留，其他分类及旧数据缺省行为未扩大。完整城市气氛系统和客户端画面仍待验收。"
+    },
+    {
       "id": "cocoon-dormant-elation-report",
       "name": "花萼空闲欢愉计数结算",
       "status": "partial",

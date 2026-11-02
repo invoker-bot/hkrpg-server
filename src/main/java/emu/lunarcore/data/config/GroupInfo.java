@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.gson.JsonElement;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *  Original name: LevelGroupInfo
@@ -13,7 +14,7 @@ import lombok.Getter;
 public class GroupInfo {
     private String GroupName;
     private transient int id;
-    private GroupLoadSide LoadSide = GroupLoadSide.Server;
+    @Setter private GroupLoadSide LoadSide = GroupLoadSide.Server;
     private GroupCategory Category;
     private boolean LoadOnInitial = true;
     private int OwnerMainMissionID;

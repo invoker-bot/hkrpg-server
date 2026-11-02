@@ -35,6 +35,7 @@ public class ResourceLoader {
     @Getter private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(double.class, new LunarCoreDoubleDeserializer())
             .registerTypeAdapter(long.class, new LunarCoreHashDeserializer())
+            .registerTypeAdapterFactory(new org.hkrpg.server.gameplay.AtmosphereGroupSourceAdapter())
             .create();
 
     // Load all resources

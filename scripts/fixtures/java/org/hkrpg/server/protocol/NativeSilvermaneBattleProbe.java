@@ -70,6 +70,13 @@ public class NativeSilvermaneBattleProbe {
   void cityScene() throws Exception {
     var scene=(DynamicMessage)field(call("GetCurSceneInfoCsReq",Map.of(),true),"scene");
     require(number(scene,"plane_id")==10101&&number(scene,"floor_id")==10101001,"City scene missing");
+    boolean shop=false,investigation=false;
+    for(var raw:(List<?>)field(scene,"entity_group_list")) {
+      int group=number((DynamicMessage)raw,"group_id");
+      require(group!=120,"Dormant client-owned atmosphere group leaked into server scene");
+      shop|=group==2;investigation|=group==13;
+    }
+    require(shop&&investigation,"Original server shop NPCs and investigation props must remain");
   }
   void awaitCityTransfer() throws Exception {
     long started=System.nanoTime(),deadline=started+TimeUnit.SECONDS.toNanos(23);

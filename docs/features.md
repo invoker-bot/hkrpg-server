@@ -8,6 +8,7 @@
 
 | 功能 | 当前状态 | 证据/参考 | 已知缺口 |
 |---|---|---|---|
+| 行政区气氛组加载归属 | 部分实现 | [docs/city-loading-atmosphere-4.6.md](../docs/city-loading-atmosphere-4.6.md) | 没有加载/卸载/气氛条件、未初始启用且省略 LoadSide 的原始 RtLevelGroupInfo 气氛组按已核对的 Client 缺省解析，首次、显式加载与气氛任务准入保持一致；行政区九个缺失 BubbleChat 引用不再作为服务端实体下发。NPC 商店、调查物件、条件控制和初始启用的现有气氛互动保留，其他分类及旧数据缺省行为未扩大。完整城市气氛系统和客户端画面仍待验收。 |
 | 花萼空闲欢愉计数结算 | 部分实现 | [docs/cocoon-elation-settlement-4.6.md](../docs/cocoon-elation-settlement-4.6.md) | 按实机70001/0/100000报告限定兼容真实4.6花萼结算，保留身份、资源、波次、费用与重复校验；不生成额外事件、不修改地图解锁或回响能量。单次/24次、非法后重试及原生保存恢复的验证边界见文档；非空闲欢愉、其他模式、完整入口解锁和真实客户端复测仍待完成。 |
 | 城郊雪原雪堆调查解锁 | 部分实现 | [src/main/java/org/hkrpg/server/gameplay/StoryDoors.java](../src/main/java/org/hkrpg/server/gameplay/StoryDoors.java) | 这里只接通该雪堆调查的解锁、保存和目标推进；原始镜头、完整桑博演出与真实客户端点击效果仍待验收。 |
 | 手动星琼兑换开拓力与每日次数 | 部分实现 | [docs/jade-stamina-exchange-4.6.md](../docs/jade-stamina-exchange-4.6.md) | 接通原生8/68，按原8档费用与每次60点同时保存星琼、开拓力和当日次数；同会话身份回执防重复扣费，保存失败回退，基础资料恢复次数。专项、隔离KCP/H2及发布边界见文档；4.2、燃料/自动付费、跨进程模糊提交对账及真实客户端和跨日显示仍待验收。 |
