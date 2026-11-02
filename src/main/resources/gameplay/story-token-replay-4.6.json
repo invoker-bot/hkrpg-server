@@ -1,0 +1,915 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "editions": {
+    "10093": "3.2-832ca91ea2ff",
+    "10125": "3.7-0296b910ede6",
+    "10141": "4.2-8a434e481901"
+  },
+  "sources": {
+    "ExcelOutput/ActivityConfig.json": {
+      "sha256": "a94d11500502e07789cc38a28211fb3f6cef69400de1be988cc6b8d9634afd3e",
+      "rowCount": 525
+    },
+    "ExcelOutput/ActivityPanel.json": {
+      "sha256": "80a899976fbc5d61fe81483b9e5dd35679c96eed7eb3ef6285c008b475fbc1e4",
+      "rowCount": 270
+    },
+    "ExcelOutput/ActivityLoginConfig.json": {
+      "sha256": "33561fc7f6947c860c8f93cb7b7dd5082098daf8474fad8744830bc27c2e9e55",
+      "rowCount": 27
+    },
+    "ExcelOutput/RewardData.json": {
+      "sha256": "f09132dbc709ce90de0703aedc6cc816dd5f00f9d79cf433dc7d38f20e6a1619",
+      "rowCount": 9515
+    },
+    "ExcelOutput/ItemConfig.json": {
+      "sha256": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+      "rowCount": 2941
+    },
+    "ExcelOutput/ShopConfig.json": {
+      "sha256": "4b7b95c76dd13bc7271b16a97558252d29f8ae13af3bcf9c7f67ad3175833efe",
+      "rowCount": 106
+    },
+    "ExcelOutput/ShopGoodsConfig.json": {
+      "sha256": "50deb9eacb28c9d167c1e92b55008b024964869f50f419d217adec012b77c224",
+      "rowCount": 900
+    },
+    "ExcelOutput/ItemConfigAvatar.json": {
+      "sha256": "168ae3325ec7dcbecdf9a9e28cb8aaec67fd681b26247f3345ae2ebcea7fd326",
+      "rowCount": 99
+    }
+  },
+  "records": {
+    "ActivityConfig": [
+      {
+        "ActivityID": 10093,
+        "ActivityPanelID": 10093,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1009301
+        ]
+      },
+      {
+        "ActivityID": 10125,
+        "ActivityPanelID": 10125,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1012501
+        ]
+      },
+      {
+        "ActivityID": 10141,
+        "ActivityPanelID": 10141,
+        "ResidentModuleList": [],
+        "ActivityModuleIDList": [
+          1014101
+        ]
+      }
+    ],
+    "ActivityPanel": [
+      {
+        "PanelID": 10093,
+        "UIPrefab": "UI/Quest/Widget/QuestStoryTokensPanel.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7920,
+        "TabName": {
+          "Hash": 639753171442086975
+        },
+        "TitleName": {
+          "Hash": 14620494719930173922
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnStoryTokensPhonto.png",
+        "TagDesc": {
+          "Hash": 16908255138510851140
+        },
+        "IntroDesc": {
+          "Hash": 14101593191151074890
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10125,
+        "UIPrefab": "UI/Quest/Widget/QuestStoryTokensPanel.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7920,
+        "TabName": {
+          "Hash": 12257403551534831965
+        },
+        "TitleName": {
+          "Hash": 13269758536307090256
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnQuestStoryTokensTopa.png",
+        "TagDesc": {
+          "Hash": 3678509732869929330
+        },
+        "IntroDesc": {
+          "Hash": 1851037616702332536
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      },
+      {
+        "PanelID": 10141,
+        "UIPrefab": "UI/Quest/Widget/QuestStoryTokensPanel.prefab",
+        "UnlockConditions": "[FinishMainMission:1000510]",
+        "SortWeight": 7920,
+        "TabName": {
+          "Hash": 16763196043730394856
+        },
+        "TitleName": {
+          "Hash": 12734259068715655292
+        },
+        "ActivityTagList": [],
+        "TabIcon": "SpriteOutput/Quest/TabIcon/BtnQuestStoryTokens.png",
+        "TagDesc": {
+          "Hash": 914794025986167256
+        },
+        "IntroDesc": {
+          "Hash": 1760301202099060078
+        },
+        "DisplayItemList": [],
+        "FinishConditions": ""
+      }
+    ],
+    "ActivityLoginConfig": [
+      {
+        "ID": 10093,
+        "RewardList": [
+          1201
+        ],
+        "ActivityModuleID": 1009301
+      },
+      {
+        "ID": 10125,
+        "RewardList": [
+          1201
+        ],
+        "ActivityModuleID": 1012501
+      },
+      {
+        "ID": 10141,
+        "RewardList": [
+          1201
+        ],
+        "ActivityModuleID": 1014101
+      }
+    ],
+    "RewardData": [
+      {
+        "RewardID": 1201,
+        "ItemID_1": 281,
+        "Count_1": 1
+      }
+    ],
+    "ItemConfig": [
+      {
+        "ID": 281,
+        "ItemMainType": "Material",
+        "ItemSubType": "Material",
+        "InventoryDisplayTag": 3,
+        "Rarity": "SuperRare",
+        "isVisible": true,
+        "ItemName": {
+          "Hash": 11030516298870772991
+        },
+        "ItemDesc": {
+          "Hash": 6668044230986423578
+        },
+        "ItemBGDesc": {
+          "Hash": 4343222008383496859
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/281.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/281.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/281.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 99999,
+        "UseMethod": "ClientGoto",
+        "CustomDataList": [],
+        "ReturnItemIDList": []
+      }
+    ],
+    "ShopConfig": [
+      {
+        "ShopID": 104,
+        "ShopGroupID": 2,
+        "ShopMainType": "Main",
+        "ShopType": 1,
+        "ShopName": {
+          "Hash": 10517548501196740255
+        },
+        "ShopDesc": {
+          "Hash": 6266482439044596138
+        },
+        "ShopIconPath": "SpriteOutput/TabIcon/Shop/ShopDrawcardIcon02.png",
+        "ShopBar": "Shop104Page",
+        "ShopSortID": 3,
+        "LimitType1": "Level",
+        "LimitValue1List": [
+          1
+        ],
+        "LimitValue2List": [],
+        "IsOpen": true,
+        "ScheduleDataID": 300104,
+        "HideRemainTime": true
+      }
+    ],
+    "ShopGoodsConfig": [
+      {
+        "GoodsID": 104001,
+        "ItemID": 1203,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 99,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104001
+      },
+      {
+        "GoodsID": 104002,
+        "ItemID": 1303,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 98,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104002
+      },
+      {
+        "GoodsID": 104003,
+        "ItemID": 1112,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 97,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104003
+      },
+      {
+        "GoodsID": 104004,
+        "ItemID": 1217,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 96,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104004,
+        "IsNew": true
+      },
+      {
+        "GoodsID": 104005,
+        "ItemID": 1309,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 95,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104005,
+        "IsNew": true
+      },
+      {
+        "GoodsID": 104101,
+        "ItemID": 1003,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 101,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104101
+      },
+      {
+        "GoodsID": 104102,
+        "ItemID": 1107,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 102,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104102
+      },
+      {
+        "GoodsID": 104103,
+        "ItemID": 1101,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 103,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104103
+      },
+      {
+        "GoodsID": 104104,
+        "ItemID": 1004,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 104,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104104
+      },
+      {
+        "GoodsID": 104105,
+        "ItemID": 1104,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 105,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104105
+      },
+      {
+        "GoodsID": 104106,
+        "ItemID": 1209,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 106,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104106
+      },
+      {
+        "GoodsID": 104107,
+        "ItemID": 1211,
+        "ItemCount": 1,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 107,
+        "LimitType1": "AvatarNum",
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104107
+      },
+      {
+        "GoodsID": 104201,
+        "ItemID": 238,
+        "ItemCount": 2,
+        "CurrencyList": [
+          281
+        ],
+        "CurrencyCostList": [
+          1
+        ],
+        "GoodsSortID": 999,
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfValue1List": [],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104201
+      },
+      {
+        "GoodsID": 104202,
+        "ItemID": 281,
+        "ItemCount": 1,
+        "CurrencyList": [
+          282
+        ],
+        "CurrencyCostList": [
+          2
+        ],
+        "GoodsSortID": 998,
+        "LimitValue1List": [],
+        "LimitValue2List": [],
+        "OnShelfType1": "FinishQuest",
+        "OnShelfValue1List": [
+          2200502
+        ],
+        "OnShelfValue2List": [],
+        "ShopID": 104,
+        "ScheduleDataID": 10104202,
+        "IsNew": true
+      }
+    ]
+  },
+  "historicalEditions": [
+    {
+      "version": "3.2",
+      "activityId": 10093,
+      "commit": "102a288d91a67afe16a84832ffd2f728a07e1ee3",
+      "commitMessage": "OSPRODWin3.2.0_D9888087_A9887814_L9888182",
+      "files": {
+        "ActivityConfig": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/102a288d91a67afe16a84832ffd2f728a07e1ee3/ExcelOutput/ActivityConfig.json",
+          "sha256": "ab515429316a6603461f62e6e31a8e1f215fd0fab87d742db06a59778a3775c0",
+          "rowCount": 250,
+          "row": {
+            "ActivityID": 10093,
+            "ActivityPanelID": 10093,
+            "ResidentModuleList": [],
+            "ActivityModuleIDList": [
+              1009301
+            ]
+          }
+        },
+        "ActivityPanel": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/102a288d91a67afe16a84832ffd2f728a07e1ee3/ExcelOutput/ActivityPanel.json",
+          "sha256": "b8c1be34e27ce35dd82f53c24c5e288e30b284bc7288f0b85123594367e48970",
+          "rowCount": 161,
+          "row": {
+            "PanelID": 10093,
+            "UIPrefab": "UI/Quest/Widget/QuestStoryTokensPanel.prefab",
+            "UnlockConditions": "[FinishMainMission:1000510]",
+            "SortWeight": 7940,
+            "TabName": {
+              "Hash": 639753171442086975
+            },
+            "TitleName": {
+              "Hash": 14620494719930173922
+            },
+            "TabIcon": "SpriteOutput/Quest/TabIcon/BtnStoryTokensPhonto.png",
+            "TagDesc": {
+              "Hash": 16908255138510851140
+            },
+            "IntroDesc": {
+              "Hash": 14101593191151074890
+            },
+            "DisplayItemList": [],
+            "FinishConditions": ""
+          }
+        },
+        "ActivityLoginConfig": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/102a288d91a67afe16a84832ffd2f728a07e1ee3/ExcelOutput/ActivityLoginConfig.json",
+          "sha256": "6f1437305a934a43a14bec3b8eb5bccaa80a93e4b84307d227bd131e2e774a7d",
+          "rowCount": 21,
+          "row": {
+            "ID": 10093,
+            "RewardList": [
+              1201
+            ],
+            "ActivityModuleID": 1009301
+          }
+        },
+        "RewardData": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/102a288d91a67afe16a84832ffd2f728a07e1ee3/ExcelOutput/RewardData.json",
+          "sha256": "6d035d42ca07b84d261cbda6bf0409dd6cb6b07b894862a5208e26588bea68d0",
+          "rowCount": 6176,
+          "row": {
+            "RewardID": 1201,
+            "ItemID_1": 281,
+            "Count_1": 1
+          }
+        }
+      }
+    },
+    {
+      "version": "3.7",
+      "activityId": 10125,
+      "commit": "e6c196e760dfd4fe20c62432e36e632e67838ef8",
+      "commitMessage": "OSPRODWin3.7.0_D12611473_A12610978_L12576450",
+      "files": {
+        "ActivityConfig": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/e6c196e760dfd4fe20c62432e36e632e67838ef8/ExcelOutput/ActivityConfig.json",
+          "sha256": "cb3cbf1f2321946f612a3f1e4fb18dde4bad147a739d491ad500403d4c356119",
+          "rowCount": 342,
+          "row": {
+            "ActivityID": 10125,
+            "ActivityPanelID": 10125,
+            "ResidentModuleList": [],
+            "ActivityModuleIDList": [
+              1012501
+            ]
+          }
+        },
+        "ActivityPanel": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/e6c196e760dfd4fe20c62432e36e632e67838ef8/ExcelOutput/ActivityPanel.json",
+          "sha256": "d9a36c8e6015ef29560b7ee535bdeef63046290ad4c7361240282d1a4d98ee40",
+          "rowCount": 203,
+          "row": {
+            "PanelID": 10125,
+            "UIPrefab": "UI/Quest/Widget/QuestStoryTokensPanel.prefab",
+            "UnlockConditions": "[FinishMainMission:1000510]",
+            "SortWeight": 7920,
+            "TabName": {
+              "Hash": 12257403551534831965
+            },
+            "TitleName": {
+              "Hash": 13269758536307090256
+            },
+            "ActivityTagList": [],
+            "TabIcon": "SpriteOutput/Quest/TabIcon/BtnQuestStoryTokensTopa.png",
+            "TagDesc": {
+              "Hash": 3678509732869929330
+            },
+            "IntroDesc": {
+              "Hash": 1851037616702332536
+            },
+            "DisplayItemList": [],
+            "FinishConditions": ""
+          }
+        },
+        "ActivityLoginConfig": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/e6c196e760dfd4fe20c62432e36e632e67838ef8/ExcelOutput/ActivityLoginConfig.json",
+          "sha256": "bfb4e0c59ca5c3c92ca029d9c8df9acbaaced579f63d41a6a16710b3a2c262ba",
+          "rowCount": 22,
+          "row": {
+            "ID": 10125,
+            "RewardList": [
+              1201
+            ],
+            "ActivityModuleID": 1012501
+          }
+        },
+        "RewardData": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/e6c196e760dfd4fe20c62432e36e632e67838ef8/ExcelOutput/RewardData.json",
+          "sha256": "cb421a1f04ba63ef69fd0955b4c42cb2d7bba0da9a628cf02018e945d2b16a5b",
+          "rowCount": 7485,
+          "row": {
+            "RewardID": 1201,
+            "ItemID_1": 281,
+            "Count_1": 1
+          }
+        }
+      }
+    },
+    {
+      "version": "4.2",
+      "activityId": 10141,
+      "commit": "02b00aadbf73627920ce07e3254f939008f5fb8e",
+      "commitMessage": "OSPRODWin4.2.0_D14809204_A14793379_L14798030",
+      "files": {
+        "ActivityConfig": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/02b00aadbf73627920ce07e3254f939008f5fb8e/ExcelOutput/ActivityConfig.json",
+          "sha256": "ddc69059f18d64560c610bacce31d4294808b97d8711b6db5d8b952d265cbc83",
+          "rowCount": 447,
+          "row": {
+            "ActivityID": 10141,
+            "ResidentModuleList": [],
+            "ActivityModuleIDList": [
+              1014101
+            ]
+          }
+        },
+        "ActivityPanel": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/02b00aadbf73627920ce07e3254f939008f5fb8e/ExcelOutput/ActivityPanel.json",
+          "sha256": "5efd279751315612f7e73eeb3bf17b8649fefb123e250c98e82409e0119230d8",
+          "rowCount": 238,
+          "row": null
+        },
+        "ActivityLoginConfig": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/02b00aadbf73627920ce07e3254f939008f5fb8e/ExcelOutput/ActivityLoginConfig.json",
+          "sha256": "a7d745e3dbc9f5caf8be624d1b955f290e84ba298da6830208c7fe6607b44da2",
+          "rowCount": 25,
+          "row": {
+            "ID": 10141,
+            "RewardList": [
+              1201
+            ],
+            "ActivityModuleID": 1014101
+          }
+        },
+        "RewardData": {
+          "url": "https://raw.githubusercontent.com/DimbreathBot/TurnBasedGameData/02b00aadbf73627920ce07e3254f939008f5fb8e/ExcelOutput/RewardData.json",
+          "sha256": "043a759942b2ef0ec3eb721c8142fb24cb582c87d0acdda32bd0b9052a5b8f50",
+          "rowCount": 8968,
+          "row": {
+            "RewardID": 1201,
+            "ItemID_1": 281,
+            "Count_1": 1
+          }
+        }
+      }
+    }
+  ],
+  "avatarGoods": [
+    {
+      "GoodsID": 104001,
+      "ItemID": 1203,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 99,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104001
+    },
+    {
+      "GoodsID": 104002,
+      "ItemID": 1303,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 98,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104002
+    },
+    {
+      "GoodsID": 104003,
+      "ItemID": 1112,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 97,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104003
+    },
+    {
+      "GoodsID": 104004,
+      "ItemID": 1217,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 96,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104004,
+      "IsNew": true
+    },
+    {
+      "GoodsID": 104005,
+      "ItemID": 1309,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 95,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104005,
+      "IsNew": true
+    },
+    {
+      "GoodsID": 104101,
+      "ItemID": 1003,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 101,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104101
+    },
+    {
+      "GoodsID": 104102,
+      "ItemID": 1107,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 102,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104102
+    },
+    {
+      "GoodsID": 104103,
+      "ItemID": 1101,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 103,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104103
+    },
+    {
+      "GoodsID": 104104,
+      "ItemID": 1004,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 104,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104104
+    },
+    {
+      "GoodsID": 104105,
+      "ItemID": 1104,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 105,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104105
+    },
+    {
+      "GoodsID": 104106,
+      "ItemID": 1209,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 106,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104106
+    },
+    {
+      "GoodsID": 104107,
+      "ItemID": 1211,
+      "ItemCount": 1,
+      "CurrencyList": [
+        281
+      ],
+      "CurrencyCostList": [
+        1
+      ],
+      "GoodsSortID": 107,
+      "LimitType1": "AvatarNum",
+      "LimitValue1List": [],
+      "LimitValue2List": [],
+      "OnShelfValue1List": [],
+      "OnShelfValue2List": [],
+      "ShopID": 104,
+      "ScheduleDataID": 10104107
+    }
+  ],
+  "scope": "各期独立领取281信物；原始104商店实际扣费兑换，角色及星魂上限和商店原有收据保留。"
+}

@@ -10,17 +10,17 @@ EDITIONS = {10048: '2.0-95d1415393e4', 10051: '2.1-cd17f3c9983e',
             10095: '3.2-27e53cab5355', 10131: '4.0-a417ca4e57ba', 10148: '4.2-0fb1603f11e8'}
 
 
-def generate():
+def generate(editions=EDITIONS):
     sources = {}
     def read(name):
         path = ROOT / 'resources/4.6/ExcelOutput' / (name + '.json')
         raw = path.read_bytes(); rows = json.loads(raw)
         sources['ExcelOutput/' + path.name] = {'sha256': hashlib.sha256(raw).hexdigest(), 'rowCount': len(rows)}
         return rows
-    activities = [r for r in read('ActivityConfig') if r['ActivityID'] in EDITIONS]
-    panels = [r for r in read('ActivityPanel') if r['PanelID'] in EDITIONS]
-    login = [r for r in read('ActivityLoginConfig') if r['ID'] in EDITIONS]
-    assert len(activities) == len(panels) == len(login) == 7
+    activities = [r for r in read('ActivityConfig') if r['ActivityID'] in editions]
+    panels = [r for r in read('ActivityPanel') if r['PanelID'] in editions]
+    login = [r for r in read('ActivityLoginConfig') if r['ID'] in editions]
+    assert len(activities) == len(panels) == len(login) == len(editions)
     for a in activities:
         assert a['ActivityPanelID'] == a['ActivityID'] and not a['ResidentModuleList']
         row = next(r for r in login if r['ID'] == a['ActivityID'])
@@ -32,7 +32,7 @@ def generate():
         for name, item in [('Hcoin', 1), ('Scoin', 2), ('Exp', 22), ('Mcoin', 3)]:
             if r.get(name): items.add(item)
     return {'schemaVersion': 1, 'sourceCommit': '724b139d8c9c32d12552eb95745a4fee72bfe48b',
-            'editions': {str(k): v for k, v in EDITIONS.items()}, 'sources': sources,
+            'editions': {str(k): v for k, v in editions.items()}, 'sources': sources,
             'records': {'ActivityConfig': activities, 'ActivityPanel': panels,
                         'ActivityLoginConfig': login, 'RewardData': rewards,
                         'ItemConfig': [r for r in read('ItemConfig') if r['ID'] in items]}}

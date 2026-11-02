@@ -22,6 +22,7 @@ class SigninGiftReplayTest {
   final Gson gson=ResourceLoader.getGson();
   final List<Runnable> cleanup=new ArrayList<>();
   JsonObject records,editions;
+  String profileResource(){return "/gameplay/signin-gift-replay-4.6.json";}
   static final class Actor extends Player {
     final Map<Integer,Integer> delivered=new TreeMap<>();
     final Inventory inventory=new Inventory(this){
@@ -33,7 +34,7 @@ class SigninGiftReplayTest {
     @Override public void save(){}
   }
   @BeforeEach void prepare()throws Exception{
-    try(var reader=new InputStreamReader(getClass().getResourceAsStream("/gameplay/signin-gift-replay-4.6.json"),StandardCharsets.UTF_8)){
+    try(var reader=new InputStreamReader(getClass().getResourceAsStream(profileResource()),StandardCharsets.UTF_8)){
       var source=JsonParser.parseReader(reader).getAsJsonObject();records=source.getAsJsonObject("records");editions=source.getAsJsonObject("editions");
     }
     replace("ActivityPanel",ActivityPanelExcel.class,GameData.getActivityPanelExcelMap());

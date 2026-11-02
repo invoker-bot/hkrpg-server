@@ -1,4 +1,4 @@
-"""隔离GM/KCP/H2：七期签到赠礼的原版和两次复刻、75项实际到账、独立周期及重启。"""
+"""隔离GM/KCP/H2：七期签到赠礼；--story-tokens 验证三期千星旅伴及实际角色兑换。"""
 import argparse
 import base64
 import hashlib
@@ -36,9 +36,11 @@ def schema():
 
 
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--browser-pause',action='store_true');args=parser.parse_args()
- types=schema();profile=json.loads((ROOT/'src/main/resources/gameplay/signin-gift-replay-4.6.json').read_text('utf8'))
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--browser-pause',action='store_true');parser.add_argument('--story-tokens',action='store_true');args=parser.parse_args()
+ types=schema();profile=json.loads((ROOT/'src/main/resources/gameplay'/('story-token-replay-4.6.json' if args.story_tokens else 'signin-gift-replay-4.6.json')).read_text('utf8'))
  records=profile['records'];login_rows=sorted(records['ActivityLoginConfig'],key=lambda r:r['ID']);ids=[r['ID'] for r in login_rows]
+ max_days=max(len(r['RewardList']) for r in login_rows);claims_per_round=sum(len(r['RewardList']) for r in login_rows)
+ report_name='gm-story-token-replay' if args.story_tokens else 'gm-signin-gifts'
  rewards={r['RewardID']:r for r in records['RewardData']};jar=ROOT/'build/libs/hkrpg-server.jar';digest=hashlib.sha256(jar.read_bytes()).hexdigest()
  java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'));flags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
  runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True);directory=Path(tempfile.mkdtemp(prefix='gm-signin-gifts-',dir=runs));helpers=directory/'helpers';helpers.mkdir()
@@ -125,7 +127,10 @@ def main():
  def signin():
   data=send('GetLoginActivityCsReq');return {r['id']:r for r in data.get('login_activity_list',[]) if r['id'] in ids}
  def claim(row,day,success=True):return step('TakeLoginActivityRewardCsReq',{'id':row['ID'],'take_days':day},success)
- def register_day(day):operate('command',uid=uid,command='activityreplayfixture signin-day '+str(day))
+ def register_day(day):
+  if args.story_tokens:
+   assert day==0;stop_probe();login()
+  else:operate('command',uid=uid,command='activityreplayfixture signin-day '+str(day))
  expected={1:0}
  for row in login_rows:
   for reward_id in row['RewardList']:
@@ -136,16 +141,28 @@ def main():
  def amount(row,item):return row['hcoin'] if item==1 else row['materials'][str(item)]
  def complete(label,before):
   (directory/'signin-gift-replay-fixture.json').write_text(json.dumps({'testFixture':True,'uid':uid,'epoch':int(time.time())}),'utf8')
-  for day in range(1,8):
+  for day in range(1,max_days+1):
    register_day(day-1);data=signin();assert set(data)==set(ids),data
    for row in login_rows:assert data[row['ID']]['login_days']==min(day,len(row['RewardList'])),(row,data)
    eligible=[r for r in login_rows if day<=len(r['RewardList'])]
    send_steps([claim(r,day) for r in eligible]);send_steps([claim(r,day,False) for r in eligible])
-   if day<7:send_steps([claim(r,day+1,False) for r in eligible if day<len(r['RewardList'])])
+   if day<max_days:send_steps([claim(r,day+1,False) for r in eligible if day<len(r['RewardList'])])
   data=signin()
   for row in login_rows:assert data[row['ID']]['MOIAHCMHNEO']==list(range(1,len(row['RewardList'])+1)),data
   after=inspect(label)
   for item,delta in expected.items():assert amount(after,item)-amount(before,item)==delta,(item,delta,before,after)
+  if args.story_tokens:
+   shops=send('GetShopListCsReq',{'shop_type':1});assert any(r['shop_id']==104 for r in shops['shop_list']),shops
+   choices=sorted(profile['avatarGoods'],key=lambda r:r['GoodsID']);selected=choices[len(cycles)*len(ids):(len(cycles)+1)*len(ids)]
+   def buy(row,success=True):
+    values={1:104,3:1,9:row['GoodsID'],13:row['ItemID']};fields=types['BuyGoodsCsReq'].DESCRIPTOR.fields_by_number
+    return step('BuyGoodsCsReq',{fields[n].name:v for n,v in values.items()},success)
+   assert not set(after['avatars'])&{r['ItemID'] for r in selected}
+   send_steps([buy(row) for row in selected]);send_steps([buy(choices[-1],False)])
+   exchanged=inspect(label+'-exchanged')
+   assert exchanged['materials']['281']==after['materials']['281']-len(selected)==0
+   assert set(exchanged['avatars'])-set(after['avatars'])=={r['ItemID'] for r in selected}
+   after=exchanged
   cycles.append(label);print(json.dumps({'cycleCompleted':label,'nativeRequests':len(native)}),flush=True);return after
  try:
   start_server();events=[request('/gm/api/activities/history?q='+str(id))['data']['items'] for id in ids]
@@ -155,12 +172,14 @@ def main():
   login();operate('command',uid=uid,command='activityreplayfixture');stop_probe();login()
   before=inspect('original-before');original=complete('original-complete',before)
   first=[operate('activity-rerun',activityKey=e['key'],durationDays=30) for e in events]
-  (directory/'signin-gift-replay-fixture.json').write_text(json.dumps({'testFixture':True,'uid':uid,'epoch':int(time.time())}),'utf8');register_day(0)
+  if not args.story_tokens:
+   (directory/'signin-gift-replay-fixture.json').write_text(json.dumps({'testFixture':True,'uid':uid,'epoch':int(time.time())}),'utf8');register_day(0)
   send_steps([claim(r,1,False) for r in login_rows]);first_before=inspect('first-before');first_done=complete('first-complete',first_before)
   future=operate('activity-rerun',activityKey=events[0]['key'],beginTime=int(time.time())+3600,endTime=int(time.time())+86400)
   assert ids[0] not in signin();send_steps([claim(login_rows[0],1,False)])
   second=[operate('activity-rerun',activityKey=e['key'],durationDays=30) for e in events]
-  (directory/'signin-gift-replay-fixture.json').write_text(json.dumps({'testFixture':True,'uid':uid,'epoch':int(time.time())}),'utf8');register_day(0)
+  if not args.story_tokens:
+   (directory/'signin-gift-replay-fixture.json').write_text(json.dumps({'testFixture':True,'uid':uid,'epoch':int(time.time())}),'utf8');register_day(0)
   send_steps([claim(r,1,False) for r in login_rows]);second_before=inspect('second-before');second_done=complete('second-complete',second_before)
   assert second_done['legacyDays']==original['legacyDays'] and second_done['legacyRewards']==original['legacyRewards']
   for operation in first:assert second_done['loginRuns'][operation['requestId']]==first_done['loginRuns'][operation['requestId']]
@@ -169,19 +188,20 @@ def main():
   for operation,e in zip(second,events):assert next(w for w in live['activities'] if w['panelId']==e['panelId'])['replayId']==operation['requestId']
   if args.browser_pause:
    ready={'base':base,'runtimeDirectory':str(directory),'uid':uid,'jarSHA256':digest,'keys':[e['key'] for e in events]}
-   (ROOT/'build/gm-signin-gifts-browser-ready.json').write_text(json.dumps(ready,indent=2),'utf8');print(json.dumps({'browserReady':True,**ready}),flush=True)
+   (ROOT/'build'/(report_name+'-browser-ready.json')).write_text(json.dumps(ready,indent=2),'utf8');print(json.dumps({'browserReady':True,**ready}),flush=True)
    gm.wait_for(lambda:(directory/'continue').exists(),2400)
   stop();start_server();login();data=signin()
   assert all(data[r['ID']]['MOIAHCMHNEO']==list(range(1,len(r['RewardList'])+1)) for r in login_rows)
   send_steps([claim(r,1,False) for r in login_rows]);restored=inspect('after-same-uid-restart')
-  for key in ('hcoin','materials','legacyDays','legacyRewards','loginRuns'):assert restored[key]==second_done[key],key
+  for key in ('hcoin','materials','avatars','legacyDays','legacyRewards','loginRuns'):assert restored[key]==second_done[key],key
   stop();assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
   report={'passed':True,'jarSHA256':digest,'runtimeDirectory':str(directory),'nativeRequests':len(native),'editions':len(events),
-   'rewardClaims':75,'completeRounds':cycles,'replayInstancesCompleted':14,'controlledCalendarDays':21,
+   'rewardClaims':claims_per_round*3,'completeRounds':cycles,'replayInstancesCompleted':len(ids)*2,
+   'controlledCalendarDays':0 if args.story_tokens else max_days*3,'avatarsRedeemed':9 if args.story_tokens else 0,
    'sameUidRestarts':1,'normalStops':normal_stops,'expectedPerRound':expected,'sourceResourcesModified':False,
-   'productionModified':False,'clientAccepted':False,'calendarBoundary':'seven configured login dates per round are driven by an owned test-only clock and the real registration method; no wall-clock week or full game client was tested',
+   'productionModified':False,'clientAccepted':False,'calendarBoundary':'actual KCP logins for each one-day token edition' if args.story_tokens else 'seven configured login dates per round are driven by an owned test-only clock and the real registration method; no wall-clock week or full game client was tested',
    'native':native,'playerReads':reads}
-  (ROOT/'build/gm-signin-gifts-native.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),'utf8');print(json.dumps({k:v for k,v in report.items() if k not in ('native','playerReads')}))
+  (ROOT/'build'/(report_name+'-native.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2),'utf8');print(json.dumps({k:v for k,v in report.items() if k not in ('native','playerReads')}))
  finally:
   stop(False)
   for log in logs:log.close()

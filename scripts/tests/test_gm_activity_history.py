@@ -63,5 +63,12 @@ class HistoricalActivities(unittest.TestCase):
         # A game with a login bonus is still a game; its bonus cannot stand in for its stages.
         self.assertEqual('unverified',events['4.6-9dce2cb75dc5']['family'])
 
+    def test_three_story_token_editions_keep_their_own_original_panel(self):
+        events={e['key']:e for e in module.generate()['events']}
+        for key,activity in {'3.2-832ca91ea2ff':10093,'3.7-0296b910ede6':10125,'4.2-8a434e481901':10141}.items():
+            with self.subTest(key=key):
+                self.assertEqual((activity,activity,'login'),
+                                 tuple(events[key][f] for f in ('activityId','panelId','family')))
+
 
 if __name__=='__main__':unittest.main()

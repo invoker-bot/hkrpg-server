@@ -29,13 +29,15 @@ public final class ActivityReplaySigninInspector {
       if(db.getCollection("players").countDocuments()!=1||db.getCollection("accounts").countDocuments()!=1)throw new IllegalArgumentException("Not disposable data");
       var player=db.getCollection("players").find(new Document("_id",uid)).first();if(player==null)throw new IllegalArgumentException("Player missing");
       var root=player.get("gameplay",Document.class);var replays=root.get("activityReplays",Document.class);
-      var materials=new Document();for(int id:List.of(102,201,236,238,263,110101)){
+      var materials=new Document();for(int id:List.of(102,201,236,238,263,281,110101)){
         var item=db.getCollection("items").find(new Document("ownerUid",uid).append("itemId",id)).first();
         materials.put(Integer.toString(id),item==null?0:item.getInteger("count"));
       }
       var legacyRewards=new Document();var rewards=root.get("rewards",Document.class);
       if(rewards!=null)rewards.forEach((key,value)->{if(!key.startsWith("activity-replay:"))legacyRewards.put(key,value);});
       System.out.println(new Document("uid",uid).append("hcoin",player.get("hcoin")).append("materials",materials)
+          .append("avatars",db.getCollection("avatars").find(new Document("ownerUid",uid))
+              .into(new ArrayList<>()).stream().map(a->a.getInteger("avatarId")).sorted().toList())
           .append("legacyDays",root.get("activityDays")).append("legacyRewards",legacyRewards)
           .append("loginRuns",replays==null?null:replays.get("loginRuns")).toJson());
     }
