@@ -1,3 +1,5 @@
+`LiteralSceneTransfer` 为初始化与开始序列提供完整单步 EnterMap 解析；普通请求、登录恢复和同会话恢复共读，按实际接取与来源筛选唯一候选，并为正常剧情切图保留短期回执。原始 Auto/多前置、等待重置和验证边界见[共用场景接续](literal-scene-transfers-4.6.md)。
+
 `StoryDoors` 为机械屋原始 `CablePuzzle_03` 加入限定的自身状态交互，按 `1010206/101020109` 完整启用脚本和准确绑定恢复 Closed；`FloorInfo` 的现有控制器分支保留原始镜头、拼图板与目标共享值。完成上报继续走状态事务和原任务事件，完整客户端拼图及演出边界见[维修机器说明](serval-repair-machine-4.6.md)。
 
 `MissionSceneEntrances.LiveRecovery` 的固定来源目录扩大为 38 处同主线单前置、单步 EnterMap，补齐进入和离开克里珀堡等 31 处遗漏；沿用来源、脚本、落点及稳定等待校验。356 份主线图与 11 组跨地图未启用气氛组的盘点、延后项和实际客户端边界见[后续场景检查](story-scene-loading-audit-4.6.md)。

@@ -1,6 +1,5 @@
 package org.hkrpg.server.gameplay;
 
-import com.google.gson.JsonParser;
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.data.excel.MapEntranceExcel;
@@ -85,7 +84,7 @@ public final class MissionSceneEntrances {
     }
   }
 
-  /** A bounded acknowledgement of the same connection's already applied scene transition. */
+  /** A bounded acknowledgement of the same connection's already applied scripted transition. */
   public static boolean acknowledgesRecovery(GameSession session, MapEntranceExcel entry, int teleport) {
     var player = session.getPlayer();
     synchronized (player) {
@@ -96,58 +95,20 @@ public final class MissionSceneEntrances {
   }
 
   /**
-   * Bounded same-session recovery for source-audited, single-step chapter transfers.
+   * Bounded same-session recovery for complete, single-step literal mission transfers.
    * The client has the first opportunity to run the original EnterMap. If it does not, wait for
    * the exact accepted goal and source scene to remain unchanged before sending the ordinary
    * server scene transition. Connection-local state is never persisted as mission progress.
    */
   public static final class LiveRecovery {
-    private record AuditedTransfer(int id, int main, int plane, int floor, int predecessor,
-        int entry, int group, int anchor, boolean ordered) {}
-    private static final List<AuditedTransfer> AUDITED_TRANSFERS = List.of(
-        new AuditedTransfer(100010121, 1000101, 20001, 20001001, 100010120, 2000201, 0, 0, false),
-        new AuditedTransfer(100020118, 1000203, 20002, 20002001, 100020117, 1000101, 0, 0, true),
-        new AuditedTransfer(100030204, 1000302, 10001, 10001001, 100030203, 2000301, 0, 0, true),
-        new AuditedTransfer(100040113, 1000400, 20003, 20003001, 100040112, 1000101, 12, 1, true),
-        new AuditedTransfer(100050102, 1000501, 20003, 20003001, 100050101, 1000001, 4, 2, true),
-        new AuditedTransfer(101000205, 1010002, 10000, 10000000, 101000204, 2010101, 2, 1, false),
-        new AuditedTransfer(101010114, 1010101, 20101, 20101001, 101010113, 1010101, 45, 2, false),
-        new AuditedTransfer(101020103, 1010201, 10101, 10101001, 101020102, 1010102, 0, 0, false),
-        new AuditedTransfer(101020105, 1010201, 10101, 10101002, 101020104, 101010102, 0, 0, false),
-        new AuditedTransfer(101020207, 1010205, 10101, 10101004, 101020205, 101010104, 0, 0, false),
-        new AuditedTransfer(101020209, 1010204, 10101, 10101001, 101020208, 201110102, 0, 0, false),
-        new AuditedTransfer(101090101, 1010901, 10102, 10102001, 101080103, 2012301, 2, 1, true),
-        new AuditedTransfer(101090214, 1010902, 20122, 20122001, 101090213, 2012301, 5, 1, true),
-        new AuditedTransfer(101090226, 1010902, 20123, 20123001, 101090210, 2012201, 2, 1, true),
-        new AuditedTransfer(101100102, 1011001, 10102, 10102001, 101100113, 1010202, 0, 0, false),
-        new AuditedTransfer(101100104, 1011001, 10102, 10102002, 101100111, 2012201, 0, 0, false),
-        new AuditedTransfer(101100106, 1011001, 20122, 20122001, 101100105, 1010202, 11, 1, false),
-        new AuditedTransfer(101100109, 1011003, 10102, 10102001, 101100112, 1010102, 0, 0, false),
-        new AuditedTransfer(101100202, 1011002, 10101, 10101002, 101100201, 1010101, 16, 1, false),
-        new AuditedTransfer(101100204, 1011002, 10101, 10101001, 101100208, 1010107, 0, 0, false),
-        new AuditedTransfer(101120104, 1011201, 20131, 20131001, 101120103, 1000001, 2, 1, false),
-        new AuditedTransfer(101150122, 1011502, 10102, 10102001, 101150121, 1010101, 94, 1, false),
-        new AuditedTransfer(101150203, 1011502, 10101, 10101001, 101150224, 1010102, 0, 0, false),
-        new AuditedTransfer(101150216, 1011503, 10101, 10101007, 101150213, 1010101, 100, 1, false),
-        new AuditedTransfer(101150217, 1011503, 10101, 10101006, 101150214, 2012201, 85, 1, false),
-        new AuditedTransfer(101150219, 1011503, 20122, 20122001, 101150218, 1010106, 4, 1, false),
-        new AuditedTransfer(101150222, 1011503, 10101, 10101001, 101150221, 1000001, 0, 0, false),
-        new AuditedTransfer(102010115, 1020101, 10000, 10000000, 102010114, 1000002, 5, 1, false),
-        new AuditedTransfer(102020110, 1020201, 20211, 20211001, 102020126, 1020101, 3, 2, false),
-        new AuditedTransfer(102030104, 1020301, 10201, 10201001, 102030102, 1020102, 7, 1, false),
-        new AuditedTransfer(102030118, 1020301, 10202, 10202003, 102030116, 102010102, 1, 2, false),
-        new AuditedTransfer(102050110, 1020501, 10201, 10201001, 102050122, 2021201, 1, 1, false),
-        new AuditedTransfer(102060111, 1020601, 20212, 20212001, 102060110, 1020201, 0, 0, false),
-        new AuditedTransfer(103040110, 1030401, 10301, 10301001, 103040109, 2031301, 76, 1, false),
-        new AuditedTransfer(103060129, 1030601, 10305, 10305001, 103060102, 2031101, 110, 1, false),
-        new AuditedTransfer(103080106, 1030801, 20311, 20311001, 103080104, 1030101, 1, 1, false),
-        new AuditedTransfer(103080108, 1030801, 10301, 10301001, 103080107, 2031101, 265, 1, false),
-        new AuditedTransfer(103090111, 1030901, 20311, 20311001, 103090104, 1030101, 1, 1, false));
     private static final long GRACE_MILLIS = 15_000;
     private static final long RECEIPT_NANOS = 30_000_000_000L;
 
     private Scene source;
     private QuestState acceptance;
+    private QuestState mainAcceptance;
+    private MissionInfo.SubMissionInfo definition;
+    private String script;
     private int subId;
     private long observedAt;
     private Scene recoveredScene;
@@ -165,13 +126,13 @@ public final class MissionSceneEntrances {
         }
         MissionInfo.SubMissionInfo selected = null;
         MapEntranceExcel destination = null;
-        for (var audit : AUDITED_TRANSFERS) {
-          int id = audit.id();
+        for (int id : player.getGameplay().getSubMissions().keySet()) {
           var sub = GameplayDefinitions.subs.get(id);
           if (sub == null || !MissionStateRecords.doing(
               player.getGameplay().getSubMissions().get(id), id, 1)) continue;
-          var entry = GameData.getMapEntranceExcelMap().get(literalEntry(sub));
-          if (entry == null || !authorizes(player, sub, entry) || !matchesAudit(sub, entry, audit))
+          var literal = DailyMissionTravelRules.transfer(sub);
+          var entry = literal == null ? null : GameData.getMapEntranceExcelMap().get(literal.entry());
+          if (entry == null || literal == null || literal.loop() || !authorizes(player, sub, entry))
             continue;
           if (selected != null) {
             clearObservation(); // Never choose between two accepted starts.
@@ -185,10 +146,16 @@ public final class MissionSceneEntrances {
           return;
         }
         var state = player.getGameplay().getSubMissions().get(selected.getId());
+        var main = player.getGameplay().getMainMissions().get(selected.getMainMissionID());
+        var original = selected.getTask().getSourceDefinition();
         if (source != player.getScene() || acceptance != state || subId != selected.getId()
+            || mainAcceptance != main || definition != selected || !Objects.equals(script, original)
             || timestamp < observedAt) {
           source = player.getScene();
           acceptance = state;
+          mainAcceptance = main;
+          definition = selected;
+          script = original;
           subId = selected.getId();
           observedAt = timestamp;
           return;
@@ -197,10 +164,6 @@ public final class MissionSceneEntrances {
         // Reset the observation even when persistence fails, so the next tick cannot busy-loop.
         clearObservation();
         if (transfer(player, selected, destination, true)) {
-          recoveredScene = player.getScene();
-          recoveredPosition = new Position(player.getPos());
-          recoveredEntry = destination.getId();
-          recoveredAt = System.nanoTime();
           emu.lunarcore.LunarCore.getLogger().warn(
               "[UID: {}] Recovered stalled story transfer {} to entry {}",
               player.getUid(), selected.getId(), recoveredEntry);
@@ -208,22 +171,11 @@ public final class MissionSceneEntrances {
       }
     }
 
-    private boolean matchesAudit(MissionInfo.SubMissionInfo sub, MapEntranceExcel entry,
-        AuditedTransfer audit) {
-      if (sub.getMainMissionID() != audit.main() || sub.getLevelPlaneID() != audit.plane()
-          || sub.getLevelFloorID() != audit.floor() || entry.getId() != audit.entry()
-          || !"AnySequence".equals(sub.getTakeType()) || sub.getTakeParamIntList() == null
-          || sub.getTakeParamIntList().length != 1
-          || !Objects.equals(sub.getTakeParamIntList()[0], audit.predecessor())) return false;
-      // authorizes already validated the complete literal script and all source/destination gates.
-      var sequence = JsonParser.parseString(sub.getTask().getSourceDefinition()).getAsJsonObject()
-          .getAsJsonArray("OnStartSequece").get(0).getAsJsonObject();
-      if (sequence.has("IsLoop") || sequence.has("Order") != audit.ordered()) return false;
-      var task = literalTask(sub);
-      return audit.group() == 0 ? !task.has("GroupID") && !task.has("AnchorID")
-          : task.has("GroupID") && task.has("AnchorID")
-              && task.get("GroupID").getAsInt() == audit.group()
-              && task.get("AnchorID").getAsInt() == audit.anchor();
+    private void remember(Player player, int entry) {
+      recoveredScene = player.getScene();
+      recoveredPosition = new Position(player.getPos());
+      recoveredEntry = entry;
+      recoveredAt = System.nanoTime();
     }
 
     private boolean isLateRequest(Player player, int entry, int teleport) {
@@ -241,6 +193,9 @@ public final class MissionSceneEntrances {
     private void clearObservation() {
       source = null;
       acceptance = null;
+      mainAcceptance = null;
+      definition = null;
+      script = null;
       subId = 0;
       observedAt = 0;
     }
@@ -248,12 +203,15 @@ public final class MissionSceneEntrances {
 
   private static boolean transfer(Player player, MissionInfo.SubMissionInfo sub,
       MapEntranceExcel entry, boolean sendPacket) {
-    var task = literalTask(sub);
+    var task = DailyMissionTravelRules.transfer(sub);
+    if (task == null) return false;
     // Anchor identifiers come only from the completely validated original script, never the request.
-    return task.has("GroupID")
-        ? player.enterSceneAtAnchor(entry.getId(), task.get("GroupID").getAsInt(),
-            task.get("AnchorID").getAsInt(), sendPacket)
+    boolean applied = task.group() > 0
+        ? player.enterSceneAtAnchor(entry.getId(), task.group(), task.anchor(), sendPacket)
         : player.enterScene(entry.getId(), 0, sendPacket);
+    if (applied && sendPacket && player.isOnline())
+      player.getSession().getMissionSceneRecovery().remember(player, entry.getId());
+    return applied;
   }
 
   public static boolean allows(Player player, MapEntranceExcel entry, int teleport) {
@@ -320,7 +278,10 @@ public final class MissionSceneEntrances {
     var ids = sub.getTakeParamIntList();
     if (ids == null || sub.getTakeParamStrList() == null || sub.getTakeParamStrList().length != 0)
       return false;
-    if ("Auto".equals(sub.getTakeType())) return ids.length == 0;
+    if ("Auto".equals(sub.getTakeType())) {
+      var graph = GameData.getMissionInfos().get(sub.getMainMissionID());
+      return graph != null && DailyMissionTravelRules.auto(graph, sub);
+    }
     if (!Set.of("AnySequence", "MultiSequence").contains(Objects.toString(sub.getTakeType(), ""))
         || ids.length == 0
         || new HashSet<>(Arrays.asList(ids)).size() != ids.length
@@ -338,19 +299,8 @@ public final class MissionSceneEntrances {
   }
 
   private static int literalEntry(MissionInfo.SubMissionInfo sub) {
-    if (!DailyMissionTravelRules.enterFloor(sub)) return 0;
-    return literalTask(sub).get("EntranceID").getAsInt();
-  }
-
-  private static com.google.gson.JsonObject literalTask(MissionInfo.SubMissionInfo sub) {
-    return JsonParser.parseString(sub.getTask().getSourceDefinition())
-            .getAsJsonObject()
-            .getAsJsonArray("OnStartSequece")
-            .get(0)
-            .getAsJsonObject()
-            .getAsJsonArray("TaskList")
-            .get(0)
-            .getAsJsonObject();
+    var transfer = DailyMissionTravelRules.transfer(sub);
+    return transfer == null ? 0 : transfer.entry();
   }
 
   private MissionSceneEntrances() {}

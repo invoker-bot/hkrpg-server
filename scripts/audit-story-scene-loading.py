@@ -44,9 +44,11 @@ def audit(resources, fixture, client=None):
             else:
                 raw = load(script)
                 sources[source] = hashlib.sha256(script.read_bytes()).hexdigest()
-                sequences = raw.get('OnStartSequece', [])
+                init = raw.get('OnInitSequece', [])
+                start = raw.get('OnStartSequece', [])
+                sequences = init + start
                 if (set(raw) != {'Type', 'OnInitSequece', 'OnStartSequece'} or raw['Type'] != 'Mission'
-                        or raw['OnInitSequece'] or len(sequences) != 1):
+                        or len(sequences) != 1):
                     reason = 'complex-root-or-sequences'
                 else:
                     sequence = sequences[0]
@@ -68,13 +70,18 @@ def audit(resources, fixture, client=None):
                 excluded.append({'sub': sub['ID'], 'main': main, 'reason': reason, 'script': source})
                 continue
             previous = sub.get('TakeParamIntList', [])
-            eligible = (sub.get('TakeType') == 'AnySequence' and len(previous) == 1
-                        and previous[0] in definitions)
+            take = sub.get('TakeType')
+            starts = load(resources / f'Config/Level/Mission/{main}/MissionInfo_{main}.json').get('StartSubMissionList', [])
+            eligible = ((take == 'Auto' and (not previous or previous == [main] and starts == [sub['ID']]))
+                        or take in ('AnySequence', 'MultiSequence') and bool(previous)
+                        and len(set(previous)) == len(previous) and sub['ID'] not in previous
+                        and all(id in definitions for id in previous))
             candidates.append(dict(sub=sub['ID'], main=main, plane=sub.get('LevelPlaneID'),
                 floor=sub.get('LevelFloorID'), entry=entry['ID'], targetFloor=entry['FloorID'],
                 group=task.get('GroupID', 0), anchor=task.get('AnchorID', 0),
                 previous=previous, eligible=eligible, covered=sub['ID'] in covered,
-                reason=None if eligible else 'auto-start-or-multiple-predecessors', script=source))
+                sequence='init' if init else 'start', takeType=take,
+                reason=None if eligible else 'unsupported-predecessors', script=source))
     dormant, controlled = [], 0
     for path in sorted((resources / 'Config/LevelOutput/SharedRuntimeGroup').glob('*/*.json')):
         group = load(path)

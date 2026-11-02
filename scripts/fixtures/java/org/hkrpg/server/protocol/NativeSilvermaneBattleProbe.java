@@ -177,7 +177,10 @@ public class NativeSilvermaneBattleProbe {
     return summary;
   }
   public static void main(String[] args) {
-    var probe=new NativeSilvermaneBattleProbe();var client=new KcpClient();int exit=1;
+    run(new NativeSilvermaneBattleProbe(), args);
+  }
+  static void run(NativeSilvermaneBattleProbe probe, String[] args) {
+    var client=new KcpClient();int exit=1;
     try {
       int port=Integer.parseInt(args[0]);require(port!=23311,"Production port forbidden");
       var control=JsonParser.parseString(new String(System.in.readAllBytes(),StandardCharsets.UTF_8)).getAsJsonObject();
