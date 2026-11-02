@@ -31,3 +31,7 @@
 候选已更新到 `hkrpg-local-server-1`，正常停止旧服务后备份 53 个运行文件至 `.local/backups/train-world-20261102-152520/`，15 份受保护配置及资源校验文件、其他容器保持一致，更新后的只读 Compose 检查通过。独立数据库投影确认当前地图和入口、124 条主任务、579 条子任务及其余玩法字段保持；更新后采集到用户普通移动，位置变化单独记录，不作为位置完全不变的结论。
 
 `full-summary.json`、`release-tests.json`、`native.json`、`deployment.json`、`after-update-readonly.json` 和 `progress-preservation.json` 为最终证据。更新后重新连接的临时采集记录位于同目录 `client-scene-packets.jsonl`，只保留指定场景及列车命令正文，不保存认证正文；客户端实际点击结果仍待用户确认。
+
+## 后续客户端反馈
+
+用户随后反馈「附近没有可用的锚点」，并提供没有锚点图标的观景车厢任务地图。此前直接发送进图请求的网络检查没有验证客户端寻找锚点这一步，不能视为完整「前往」成功。远处地图缺少锚点场景组的独立问题及后续验证见[锚点组说明](train-map-anchor-groups-4.6.md)；世界选择和原任务门槛继续保留。

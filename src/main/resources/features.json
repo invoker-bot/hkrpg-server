@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "scene-map-anchor-groups",
+      "name": "任务地图的远处锚点场景组",
+      "status": "partial",
+      "evidence": "docs/train-map-anchor-groups-4.6.md",
+      "gap": "地图查询返回当前已加载的无属性组，并为远处地图补入原始初始启用、无任务或保存值门槛的普通锚点组；解锁编号、物件状态与可定位组一致，保留已保存的禁用状态。查询不创建场景或更改队伍、位置、任务。条件组的完整远程求值、真实客户端前往及后续任务演出仍待分别验收。"
+    },
+    {
       "id": "serval-repair-machine",
       "name": "永冬城之夜维修机器交互解锁",
       "status": "partial",

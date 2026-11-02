@@ -163,26 +163,21 @@ public final class SceneMap46 {
                     });
             for (var value : values.entrySet())
               putMap(map, "floor_saved_value_map", value.getKey(), value.getValue());
-            var scene = player.getScene();
-            if (scene != null
-                && scene.getPlaneId() == entry.getPlaneID()
-                && scene.getFloorId() == floor) {
-              for (var group :
-                  scene.getGroups().values().stream()
-                      .sorted(Comparator.comparingInt(g -> g.getId()))
-                      .toList()) {
-                var info = Gameplay46.builder(session, "MazeGroup");
-                Gameplay46.set(info, "group_id", group.getId());
-                for (var property : group.getProperties().object2IntEntrySet())
-                  putMap(info, "property_map", property.getKey(), property.getIntValue());
-                Gameplay46.add(map, "maze_group_list", info.build());
-              }
+            var groups = mapGroups(player, entry);
+            for (var group : groups.entrySet()) {
+              var info = Gameplay46.builder(session, "MazeGroup");
+              Gameplay46.set(info, "group_id", group.getKey());
+              for (var property : group.getValue().entrySet())
+                putMap(info, "property_map", property.getKey(), property.getValue());
+              Gameplay46.add(map, "maze_group_list", info.build());
             }
             for (var prop :
                 config.getCachedTeleports().values().stream()
                     .sorted(Comparator.comparingInt(p -> p.getID()))
                     .toList()) {
-              if (SceneAnchors.find(entry.getId(), prop.getGroup().getId(), prop.getID()) == null)
+              if (!groups.containsKey(prop.getGroup().getId())
+                  || !prop.isLoadOnInitial()
+                  || SceneAnchors.find(entry.getId(), prop.getGroup().getId(), prop.getID()) != prop)
                 continue;
               var state = SceneAnchors.state(player, entry, prop);
               if (SceneAnchors.unlocked(player, entry, prop))
@@ -204,6 +199,68 @@ public final class SceneMap46 {
       }
     }
     return true;
+  }
+
+  /** Map availability is metadata, not permission to create a second live scene. */
+  private static SortedMap<Integer, SortedMap<String, Integer>> mapGroups(
+      emu.lunarcore.game.player.Player player, emu.lunarcore.data.excel.MapEntranceExcel entry) {
+    var result = new TreeMap<Integer, SortedMap<String, Integer>>();
+    var scene = player.getScene();
+    if (scene != null && scene.getPlaneId() == entry.getPlaneID()
+        && scene.getFloorId() == entry.getFloorID()) {
+      // Scene.groups contains property/state records, not every loaded group. In particular,
+      // the train's original G2 anchor has no properties and is absent from that map.
+      for (int id : scene.getLoadedGroups()) {
+        var properties = new TreeMap<String, Integer>();
+        var group = scene.getGroups().get(id);
+        if (group != null) group.getProperties().object2IntEntrySet().forEach(
+            p -> properties.put(p.getKey(), p.getIntValue()));
+        result.put(id, properties);
+      }
+      return result;
+    }
+    var floor = GameData.getFloorInfo(entry.getPlaneID(), entry.getFloorID());
+    for (var prop : floor.getCachedTeleports().values()) {
+      var group = prop.getGroup();
+      if (!prop.isLoadOnInitial()
+          || SceneAnchors.find(entry.getId(), group.getId(), prop.getID()) != prop
+          || floor.getGroups(0).get(group.getId()) != group
+          || !floor.isGroupInDimension(group.getId(), 0)
+          || !unconditionalAnchorGroup(group)
+          || entry.getPlaneID() == 20501 && group.getId() >= 360) continue;
+      // Only initial ordinary anchor groups with no gameplay gates can be established from
+      // remote metadata. Mission/atmosphere/scripted groups still require their live loader.
+      var properties = new TreeMap<String, Integer>();
+      if (group.getGroupPropertyMap() != null)
+        for (var property : group.getGroupPropertyMap().values())
+          properties.put(property.getName(), player.getGameplay().getStoryValues().getOrDefault(
+              "group:" + entry.getFloorID() + ":" + group.getId() + ":" + property.getName(),
+              property.getDefaultValue()));
+      result.put(group.getId(), properties);
+    }
+    return result;
+  }
+
+  private static boolean unconditionalAnchorGroup(emu.lunarcore.data.config.GroupInfo group) {
+    return group.getLoadSide() == emu.lunarcore.data.config.GroupInfo.GroupLoadSide.Server
+        && (group.getCategory() == null
+            || group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Normal)
+        && group.isLoadOnInitial() && group.getOwnerMainMissionID() == 0
+        && emptyCondition(group.getLoadCondition()) && emptyCondition(group.getUnloadCondition())
+        && emptyObject(group.getAtmosphereCondition()) && emptyObject(group.getSavedValueCondition())
+        && emptyObject(group.getValueSource())
+        && !group.getGroupName().contains("Bug") && !group.getGroupName().contains("Book")
+        && !group.getGroupName().contains("AngryBlock") && !group.getGroupName().contains("ShelfDoor");
+  }
+
+  private static boolean emptyCondition(emu.lunarcore.data.config.LoadConditionInfo condition) {
+    return condition == null || "And".equals(condition.getOperation())
+        && condition.getConditions() != null && condition.getConditions().length == 0
+        && !condition.isDelayToLevelReload();
+  }
+
+  private static boolean emptyObject(com.google.gson.JsonElement value) {
+    return value == null || value.isJsonNull() || value.isJsonObject() && value.getAsJsonObject().isEmpty();
   }
 
   /** Same-floor section notification; it cannot teleport, unlock a gate, or finish a mission. */
