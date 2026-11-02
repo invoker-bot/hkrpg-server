@@ -1,3 +1,5 @@
+猫猫糕箱的开盒与领取入口、原始解锁门槛及有限兼容批次见[开盒说明](docs/train-cake-box-4.6.md)。
+
 好友页面持续加载的好友资料协议转换已修复；原因与验证边界见[好友页加载说明](docs/friend-page-loading-4.6.md)。
 
 派对车厢初始房间的零进度显示引用已补入，完整建设玩法与实机显示边界见[初始房间说明](docs/party-carriage-initial-room-4.6.md)。
