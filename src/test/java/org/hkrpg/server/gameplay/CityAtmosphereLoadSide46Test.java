@@ -89,6 +89,22 @@ class CityAtmosphereLoadSide46Test {
         "Active legacy atmosphere admission remains outside this dormant-group correction");
     assertEquals(GroupInfo.GroupLoadSide.Server,groups.get(2).getLoadSide());
   }
+
+  @Test void originalDormantAtmosphereAcrossLaterMapsKeepsItsNativeClientRole() throws Exception {
+    try(var reader=new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(
+        "/fixtures/city-atmosphere-load-side-4.6.json")),StandardCharsets.UTF_8)) {
+      var rows=JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("crossMapDormantGroups");
+      assertEquals(11,rows.size());
+      for(var value:rows) {
+        var row=value.getAsJsonObject();var raw=row.getAsJsonObject("record");
+        var group=gson.fromJson(raw,GroupInfo.class);
+        assertEquals(GroupInfo.GroupLoadSide.Client,group.getLoadSide(),row.get("path").getAsString());
+        assertFalse(player.getMissionManager().shouldLoadGroup(group));
+        assertEquals(raw.getAsJsonArray("PropList").size(),group.getPropList().size());
+        assertEquals(raw.getAsJsonArray("NPCList").size(),group.getNPCList().size());
+      }
+    }
+  }
   @Test void initialSceneDoesNotSendTheNineMissingBubbleChatGraphs() {
     var scene=scene();noCrowdChat(scene);
     assertEquals(9,groups.get(120).getPropList().size());

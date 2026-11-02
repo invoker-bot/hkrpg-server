@@ -18,7 +18,9 @@ parser.add_argument('--jar',type=Path,required=True)
 parser.add_argument('--resources',type=Path,default=ROOT/'resources/4.6')
 parser.add_argument('--output',type=Path,default=ROOT/'build/silvermane-loop-20261102/native.json')
 parser.add_argument('--city-transfer',action='store_true',help='After synthetic victories, report the performance and wait for the original city transfer')
+parser.add_argument('--belobog-round-trip',action='store_true',help='Also report the authored city talks and verify both Qlipoth Fort transfers in the same session')
 args=parser.parse_args()
+if args.belobog_round_trip: args.city_transfer=True
 args.output=args.output.resolve();args.output.parent.mkdir(parents=True,exist_ok=True)
 OUT = args.output.parent
 FIXTURES=ROOT/'scripts/fixtures/java/org/hkrpg/server/protocol'
@@ -58,6 +60,10 @@ if args.city_transfer:
     for name in transfers['snowToCityProvenance']['paths']+['ExcelOutput/MapEntrance.json','ExcelOutput/MazePlane.json']:
         hashes[name]=sha(resource/name)
         assert hashes[name]==transfers['sourceSHA256'][name]
+    if args.belobog_round_trip:
+        for name in transfers['subsequentScenesProvenance']['paths']:
+            hashes[name]=sha(resource/name)
+            assert hashes[name]==transfers['sourceSHA256'][name]
 config=dict(protocol=dict(wireVersion='4.6.0'),resourceDir=str(resource),
     httpServer=dict(bindAddress='127.0.0.1',bindPort=http),gameServer=dict(bindAddress='127.0.0.1',bindPort=game),
     internalMongoServer=dict(address='127.0.0.1',port=mongo,filePath='./data/database.mv'))
@@ -98,21 +104,21 @@ def stop():
 
 def probe(mode,credentials):
     run=subprocess.run([java,*options,'-cp',classpath,'NativeSilvermaneBattleProbe',str(game)],
-        input=json.dumps(dict(credentials,mode=mode,cityTransfer=args.city_transfer)).encode(),capture_output=True,timeout=80,creationflags=flags)
+        input=json.dumps(dict(credentials,mode=mode,cityTransfer=args.city_transfer,belobogRoundTrip=args.belobog_round_trip)).encode(),capture_output=True,timeout=125,creationflags=flags)
     (directory/f'probe-{mode}.log').write_bytes(run.stdout+run.stderr)
     assert run.returncode==0,directory/f'probe-{mode}.log'
     return json.loads(next(line.removeprefix('SILVERMANE_PROBE=') for line in run.stdout.decode('utf-8').splitlines() if line.startswith('SILVERMANE_PROBE=')))
 
 def inspect(mode,uid,index):
     assert process is None,'Database must be offline'
-    run=subprocess.run([java,*options,'-cp',classpath,'SilvermaneBattleFixture',str(directory),mode,str(uid)]+(['city',str(resource)] if args.city_transfer and mode=='inspect' else []),
+    run=subprocess.run([java,*options,'-cp',classpath,'SilvermaneBattleFixture',str(directory),mode,str(uid)]+([('round-trip' if args.belobog_round_trip else 'city'),str(resource)] if args.city_transfer and mode=='inspect' else []),
         cwd=ROOT,capture_output=True,timeout=60,creationflags=flags)
     (directory/f'inspect-{index}.log').write_bytes(run.stdout+run.stderr)
     assert run.returncode==0,directory/f'inspect-{index}.log'
     return json.loads(next(line.removeprefix('SILVERMANE_INSPECT=') for line in run.stdout.decode('utf-8').splitlines() if line.startswith('SILVERMANE_INSPECT=')))
 
 report=dict(passed=False,artifactSHA256=artifact,runtimeDirectory=str(directory),clientGameplayVerified=False,
-    seededParentAndPrecedingObjectives=True,productionDataModified=False,cityTransfer=args.city_transfer)
+    seededParentAndPrecedingObjectives=True,productionDataModified=False,cityTransfer=args.city_transfer,belobogRoundTrip=args.belobog_round_trip)
 try:
     start(0)
     account=request('/hkrpg_cn/mdk/shield/api/login',dict(account='silvermane-'+uuid.uuid4().hex,password='owned-silvermane-fixture'))['data']['account']

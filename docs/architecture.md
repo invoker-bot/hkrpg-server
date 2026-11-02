@@ -1,3 +1,5 @@
+`MissionSceneEntrances.LiveRecovery` 的固定来源目录扩大为 38 处同主线单前置、单步 EnterMap，补齐进入和离开克里珀堡等 31 处遗漏；沿用来源、脚本、落点及稳定等待校验。356 份主线图与 11 组跨地图未启用气氛组的盘点、延后项和实际客户端边界见[后续场景检查](story-scene-loading-audit-4.6.md)。
+
 `AtmosphereGroupSourceAdapter` 为没有加载/卸载/气氛条件、未初始启用且省略 LoadSide 的原始 RtLevelGroupInfo 气氛组保留 Client 归属；显式加载与气氛任务准入同步拒绝客户端组，现有条件控制和初始启用的互动准入及显式 Server 组保持。行政区缺失脚本及范围见[加载说明](city-loading-atmosphere-4.6.md)。
 
 `MissionSceneEntrances.LiveRecovery` 的逐项来源目录包含雪原战后进入行政区的 `101010114`；仅在原演出 `101010113` 完成、目标仍在原雪原场景接取且原始单步脚本及 G45/A2 落点匹配时允许延迟恢复。范围和实机边界见[剧情切图说明](live-story-transfer-4.6.md)。

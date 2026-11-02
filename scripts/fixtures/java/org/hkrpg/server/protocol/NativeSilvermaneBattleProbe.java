@@ -79,6 +79,9 @@ public class NativeSilvermaneBattleProbe {
     require(shop&&investigation,"Original server shop NPCs and investigation props must remain");
   }
   void awaitCityTransfer() throws Exception {
+    awaitTransfer(10101,10101001);
+  }
+  void awaitTransfer(int plane,int floor) throws Exception {
     long started=System.nanoTime(),deadline=started+TimeUnit.SECONDS.toNanos(23);
     int synchronizedScenes=0;
     while(System.nanoTime()<deadline) {
@@ -90,13 +93,34 @@ public class NativeSilvermaneBattleProbe {
         var notice=protocol.clientSchema().parse("EnterSceneByServerScNotify",frame.body());
         require(notice.getUnknownFields().asMap().isEmpty(),"Unknown city transition fields");
         var scene=(DynamicMessage)field(notice,"scene");
-        require(number(scene,"plane_id")==10101&&number(scene,"floor_id")==10101001,"Wrong transfer destination");
+        require(number(scene,"plane_id")==plane&&number(scene,"floor_id")==floor,"Wrong transfer destination");
         require(synchronizedScenes==1,"Expected one scene synchronization before transfer");
         require(System.nanoTime()-started>=TimeUnit.SECONDS.toNanos(13),"Client grace period was skipped");
         return;
       }
     }
-    throw new TimeoutException("Same-session snow-to-city transition");
+    throw new TimeoutException("Same-session story transition to "+floor);
+  }
+  void cityChapterGoals(List<Integer> completed,int pending) throws Exception {
+    var data=call("GetMissionDataCsReq",Map.of(),true);
+    var finished=(List<?>)field(data,"OLKALABEDOA");
+    require(finished.containsAll(completed)&&!finished.contains(pending),"Wrong city chapter completions");
+    require(((List<?>)field(data,"mission_list")).stream().anyMatch(raw->number((DynamicMessage)raw,"id")==pending),
+        "Following dialogue was skipped or not accepted");
+  }
+  void belobogRoundTrip() throws Exception {
+    call("FinishTalkMissionCsReq",Map.of("sub_mission_id",101020101,"talk_str","Mission_101020101"),true);
+    call("FinishTalkMissionCsReq",Map.of("sub_mission_id",101020102,"talk_str","Mission_101020102"),true);
+    call("FinishTalkMissionCsReq",Map.of("sub_mission_id",101020104,"talk_str","Mission_101020104"),false);
+    awaitTransfer(10101,10101002);
+    var fort=(DynamicMessage)field(call("GetCurSceneInfoCsReq",Map.of(),true),"scene");
+    require(number(fort,"floor_id")==10101002,"Qlipoth Fort did not load");
+    cityChapterGoals(List.of(101020101,101020102,101020103),101020104);
+    call("FinishTalkMissionCsReq",Map.of("sub_mission_id",101020104,"talk_str","Mission_101020104"),true);
+    awaitTransfer(10101,10101001);cityScene();
+    cityChapterGoals(List.of(101020101,101020102,101020103,101020104,101020105),101020106);
+    call("EnterSceneCsReq",Map.of("entry_id",101010102,"teleport_id",0),true);
+    cityScene();
   }
   Map<String,Object> result(DynamicMessage battle,String end) {
     var type=protocol.clientSchema().message("PVEBattleResultCsReq").findFieldByName("end_status").getEnumType();
@@ -110,8 +134,11 @@ public class NativeSilvermaneBattleProbe {
     String mode=control.get("mode").getAsString();
     if(mode.equals("bootstrap")) return Map.of("passed",true,"uid",uid,"requests",requests);
     boolean city=control.has("cityTransfer")&&control.get("cityTransfer").getAsBoolean();
+    boolean roundTrip=control.has("belobogRoundTrip")&&control.get("belobogRoundTrip").getAsBoolean();
     if(city&&mode.equals("restored")) {
-      cityScene();cityGoals();
+      cityScene();
+      if(roundTrip)cityChapterGoals(List.of(101020101,101020102,101020103,101020104,101020105),101020106);
+      else cityGoals();
       return Map.of("passed",true,"uid",uid,"requests",requests,"cityArrivalRestored",true);
     }
     scene();
@@ -140,11 +167,13 @@ public class NativeSilvermaneBattleProbe {
       awaitCityTransfer();cityScene();cityGoals();
       call("EnterSceneCsReq",Map.of("entry_id",1010101,"teleport_id",0),true);
       cityScene();cityGoals();
+      if(roundTrip)belobogRoundTrip();
     }
     var summary=new LinkedHashMap<String,Object>(Map.of("passed",true,"uid",uid,"mode",mode,"requests",requests,
         "bothEventRepliesVerified",true,"firstVictoryDidNotSkipSecond",true,"secondVictoryAcceptedNext",true,
         "invalidAndRepeatedResultsRejected",true,"clientGameplayVerified",false));
     summary.put("sameSessionCityTransfer",city);
+    summary.put("sameSessionBelobogRoundTrip",roundTrip);
     return summary;
   }
   public static void main(String[] args) {

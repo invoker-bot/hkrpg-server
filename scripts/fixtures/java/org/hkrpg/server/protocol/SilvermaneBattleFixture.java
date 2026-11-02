@@ -42,6 +42,20 @@ public class SilvermaneBattleFixture {
       var g=player.getGameplay();var state=g.getSubMissions().get(101010110);
       require(g.getScenePropStates().valid(),"Invalid prop record");
       if(mode.equals("seed"))require(state.getPhase()==QuestState.Phase.DOING&&!g.getSubMissions().containsKey(101010113),"Seed prewrote victory");
+      else if(args.length==5&&args[3].equals("round-trip")) {
+        for(int id:new int[]{101020101,101020102,101020103,101020104,101020105})
+          require(g.getSubMissions().get(id).getPhase()==QuestState.Phase.FINISHED,"City transfer was not persisted: "+id);
+        require(g.getSubMissions().get(101020106).getPhase()==QuestState.Phase.DOING,"Next dialogue was skipped");
+        require(player.getPlaneId()==10101&&player.getFloorId()==10101001&&player.getEntryId()==101010102,"Return entrance lost");
+        var json=com.google.gson.JsonParser.parseString(Files.readString(Path.of(args[4]).resolve("ExcelOutput/MapEntrance.json"))).getAsJsonArray();
+        var entry=json.asList().stream().map(com.google.gson.JsonElement::getAsJsonObject)
+            .filter(row->row.get("ID").getAsInt()==101010102).findFirst().orElseThrow();
+        int groupId=entry.get("StartGroupID").getAsInt(),anchorId=entry.get("StartAnchorID").getAsInt();
+        var source=Path.of(args[4]).resolve("Config/LevelOutput/SharedRuntimeGroup/Groups_P10101_F10101001/LevelGroup_P10101_F10101001_G"+groupId+".json");
+        var group=emu.lunarcore.data.ResourceLoader.getGson().fromJson(Files.readString(source),emu.lunarcore.data.config.GroupInfo.class);
+        var anchor=group.getAnchorList().stream().filter(a->a.ID==anchorId).findFirst().orElseThrow();
+        require(player.getPos().equals(anchor.getPos()),"Return anchor lost");
+      }
       else if(args.length==5&&args[3].equals("city")) {
         require(state.getPhase()==QuestState.Phase.FINISHED
             &&g.getSubMissions().get(101010113).getPhase()==QuestState.Phase.FINISHED
