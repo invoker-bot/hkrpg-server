@@ -127,7 +127,14 @@ public final class SceneMap46 {
                       e ->
                           e.getFloorID() == floor
                               && GameData.getFloorInfo(e.getPlaneID(), floor) != null)
-                  .sorted(Comparator.comparingInt(e -> e.getId()))
+                  // NavMapModule indexes by SceneIdentifier. A second row for the same floor
+                  // overwrites the first, potentially selecting an unrelated story entrance.
+                  .sorted(Comparator.<emu.lunarcore.data.excel.MapEntranceExcel>comparingInt(
+                          e -> e.getId() == player.getEntryId()
+                                  && e.getPlaneID() == player.getPlaneId()
+                                  && floor == player.getFloorId() ? 0 : 1)
+                      .thenComparingInt(e -> e.getId()))
+                  .limit(1)
                   .toList();
           if (entries.isEmpty()) {
             valid = false;
