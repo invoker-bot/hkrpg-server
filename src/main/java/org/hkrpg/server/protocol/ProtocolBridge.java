@@ -74,8 +74,8 @@ public final class ProtocolBridge {
           Map.entry("RelicArchive.relic_id", "set_id"),
           Map.entry("RelicArchive.slot", "type"),
           Map.entry("SceneEnterStageCsReq.stage_id", "event_id"),
-          // Honey fe00bdb consumes CN4.6 wave field4 as the challenge count; the 4.2 handler
-          // consumes wave_count, while the unused 4.2 wave field must retain its legacy encoding.
+            // Preserve the earlier wave-only/Honey fe00bdb compatibility path. The actual CN4.6
+            // count fields are handled by Cocoon46; the unused 4.2 wave encoding stays unchanged.
           Map.entry("StartCocoonStageCsReq.wave_count", "wave"),
           Map.entry("QuickStartCocoonStageCsReq.wave_count", "wave"),
           Map.entry("QuickStartCocoonStageScRsp.wave_count", "wave"),

@@ -30,6 +30,7 @@ def request(base, route, body=None):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--categories', action='store_true', help='同时验证花萼/隧洞/历战分类及成就和日常')
+    parser.add_argument('--native-count', action='store_true', help='使用本机4.6普通field10/快速field6挑战次数，并核对原生回显')
     args = parser.parse_args()
     java = next((ROOT / ".tools").glob("jdk-21*/bin/java.exe"), None)
     java = str(java) if java else "java"
@@ -152,10 +153,11 @@ def main():
                     combo = request(base, "/hkrpg_cn/combo/granter/login/v2/login", {"data": json.dumps({"uid": account["uid"], "token": account["token"]})})
                     assert combo["retcode"] == 0
                     credentials = {"accountUid": account["uid"], "comboToken": combo["data"]["combo_token"],
-                                   'categories': args.categories}
+                                   'categories': args.categories, 'nativeCount': args.native_count}
                     first = probe("farming-first.log", credentials)
                     assert first["threeWaveBattleAndStamina"] and first["acceptedMissionFinishedAfterTwoBattles"]
                     assert first["newObjectiveWaitsForAnotherBattle"] and first["repeatedBattleResultRejected"]
+                    assert first['nativeChallengeCount'] == args.native_count
                     if args.categories:
                         assert first['threeCategoriesStaySeparate'] and first['actualCategoryAchievementsAndDailies']
                     snapshots.append(first)
@@ -182,6 +184,8 @@ def main():
                    'real-4060201-4060301-4060401-achievement-counters',
                    'isolated-daily-category-counters-and-persistence']
     print(json.dumps({"passed": True, "runtimeDirectory": str(directory), "checks": checks,
+        "artifactSha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+        "nativeChallengeCount": args.native_count,
         "snapshots": snapshots, "fixture": {"onlyMission": 19996923, "cocoon": 1001,
         'categories': args.categories, 'sourceSha256': original_sha,
         "sourceResourcesModified": False, "officialStoryMissionVerified": False}, "clientGameplayVerified": False}, ensure_ascii=False))
