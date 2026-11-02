@@ -226,22 +226,31 @@ public final class Gameplay46 {
           session.sendClientPacket("TakeAllApRewardScRsp", response.build().toByteArray());
         }
         case "GetLoginActivityCsReq" -> {
+          synchronized(ActivitySchedules.class){
           var response = builder(session, "GetLoginActivityScRsp");
           for (int id : player.getLoginActivityManager().activeIds()) {
+            var window=player.getLoginActivityManager().window(id).orElseThrow();
+            session.getActivityReplayLeases().viewed(window.panelId(),window.replayId());
             var activity = builder(session, "LoginActivityData");
             set(activity, "id", id);
             set(
                 activity,
                 "panel_id",
-                player.getLoginActivityManager().window(id).orElseThrow().panelId());
+                window.panelId());
             set(activity, "login_days", player.getLoginActivityManager().days(id));
+            for(int day:player.getLoginActivityManager().claimedDays(id))
+              activity.addRepeatedField(activity.getDescriptorForType().findFieldByNumber(15),day);
             add(response, "login_activity_list", activity.build());
           }
           session.sendClientPacket("GetLoginActivityScRsp", response.build().toByteArray());
+          }
         }
         case "TakeLoginActivityRewardCsReq" -> {
+          synchronized(ActivitySchedules.class){
           int id = number(req, "id"), day = number(req, "take_days");
-          var result = player.getLoginActivityManager().claim(id, day);
+          var window=player.getLoginActivityManager().window(id).orElse(null);
+          var result = window!=null&&session.getActivityReplayLeases().accepts(window.panelId(),window.replayId())
+              ?player.getLoginActivityManager().claim(id, day):new RewardLedger.Claim(Retcode.REQ_PARA_INVALID,List.of());
           send(
               session,
               "TakeLoginActivityRewardScRsp",
@@ -260,6 +269,7 @@ public final class Gameplay46 {
                       .orElse(0),
                   "reward",
                   items(session, result.items())));
+          }
         }
         case "GetActivityScheduleConfigCsReq" -> {
           var response = builder(session, "GetActivityScheduleConfigScRsp");

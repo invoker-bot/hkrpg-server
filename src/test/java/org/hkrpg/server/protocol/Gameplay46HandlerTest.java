@@ -242,6 +242,9 @@ class Gameplay46HandlerTest {
       VersionedPacketHandler.handle(
           s, s.getProtocol().clientCommand("TakeLoginActivityRewardCsReq"), req.toByteArray());
       assertEquals(3301, InitialData46Test.field(s.response, "retcode"));
+      s.request("GetLoginActivityCsReq");
+      var login=InitialData46Test.first(s.response,"login_activity_list");
+      assertEquals(java.util.List.of(1),login.getField(login.getDescriptorForType().findFieldByNumber(15)));
     } finally {
       org.hkrpg.server.gameplay.GameplayDefinitions.activities.remove(id);
       org.hkrpg.server.gameplay.GameplayDefinitions.windows.remove(window);

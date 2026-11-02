@@ -11,6 +11,8 @@ public final class ActivitySchedules {
   public static List<GameplayDefinitions.Window> parse(JsonObject root) {
     var result=new ArrayList<GameplayDefinitions.Window>();
     var seen=new HashSet<String>();
+    var replays=new HashMap<String,String>();
+    var panels=new HashMap<Integer,String>();
     if (!root.has("activities")) return List.of();
     var rows=root.getAsJsonArray("activities");
     if (rows.size()>10_000) throw new IllegalArgumentException("Too many activity windows");
@@ -22,8 +24,20 @@ public final class ActivitySchedules {
         throw new IllegalArgumentException("Invalid or duplicate activity window");
       if (row.has("disabled") && (!row.get("disabled").isJsonPrimitive()
           || !row.getAsJsonPrimitive("disabled").isBoolean())) throw new IllegalArgumentException("Invalid activity disabled flag");
-      if (!row.has("disabled") || !row.get("disabled").getAsBoolean())
-        result.add(new GameplayDefinitions.Window(panel,module,begin,end));
+      String replayId=null,replayKey=null;
+      if(row.has("replayId")||row.has("replayKey")){
+        replayId=string(row,"replayId");replayKey=string(row,"replayKey");
+        if(!UUID.fromString(replayId).toString().equals(replayId)||!replayKey.matches("[1-4]\\.[0-9]-[a-z0-9][a-z0-9-]{0,95}"))
+          throw new IllegalArgumentException("Invalid activity replay identity");
+        var previous=replays.putIfAbsent(replayId,replayKey);
+        if(previous!=null&&!previous.equals(replayKey))throw new IllegalArgumentException("Conflicting activity replay identity");
+      }
+      if (!row.has("disabled") || !row.get("disabled").getAsBoolean()){
+        String identity=replayId==null?"legacy":replayId+":"+replayKey;
+        String previous=panels.putIfAbsent(panel,identity);
+        if(previous!=null&&!previous.equals(identity))throw new IllegalArgumentException("Mixed activity panel replay identity");
+        result.add(new GameplayDefinitions.Window(panel,module,begin,end,replayId,replayKey));
+      }
     }
     return List.copyOf(result);
   }
@@ -33,6 +47,13 @@ public final class ActivitySchedules {
     if (value==null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber())
       throw new IllegalArgumentException("Missing activity integer: "+field);
     return value.getAsBigDecimal().longValueExact();
+  }
+
+  private static String string(JsonObject row,String field){
+    var value=row.get(field);
+    if(value==null||!value.isJsonPrimitive()||!value.getAsJsonPrimitive().isString())
+      throw new IllegalArgumentException("Missing activity string: "+field);
+    return value.getAsString();
   }
 
   public static synchronized void load(Path path) throws IOException {

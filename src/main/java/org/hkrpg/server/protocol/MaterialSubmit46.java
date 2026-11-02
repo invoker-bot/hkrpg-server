@@ -17,20 +17,40 @@ public final class MaterialSubmit46 {
     String name=REQUESTS.stream().filter(n->session.getProtocol().clientCommand(n)==command).findFirst().orElse(null);
     if(name==null)return false;if(session.getState()!=SessionState.ACTIVE)return true;
     synchronized(session.getPlayer()) {
+      return ActivityReplayScope.in(session.getPlayer().getGameplay(),30014,()->ActivityReplayScope.in(session.getPlayer().getGameplay(),30011,()->{
       var type=session.getProtocol().clientSchema().message(name);
       var manager=new MaterialSubmitManager(session.getPlayer());
       var result=new MaterialSubmitManager.Result(Retcode.REQ_PARA_INVALID);int id=0;
       boolean query=name.equals("GetMaterialSubmitActivityDataCsReq");
       boolean submit=name.equals("SubmitMaterialSubmitActivityMaterialCsReq");
-      if(query) {if(bytes.length==0)result=manager.query();}
+      var queried=new TreeMap<Integer,MaterialSubmitState.Receipt>();
+      if(query) {
+        if(bytes.length==0){
+          result=manager.query();
+          if(result.code()==Retcode.SUCC){
+            queried.putAll(result.state().receipts());
+            if(ActivityReplayScope.current(session.getPlayer().getGameplay(),30011)!=null){
+              var belobog=new MaterialSubmitManager(session.getPlayer(),30011).query();
+              if(belobog.code()!=Retcode.SUCC)result=belobog;
+              else queried.putAll(belobog.state().receipts());
+            }
+            if(result.code()==Retcode.SUCC)for(int panel:List.of(30011,30014))
+              session.getActivityReplayLeases().viewed(panel,ActivityReplayScope.identity(session.getPlayer().getGameplay(),panel));
+          }
+        }
+      }
       else if(NativeUnsignedActionWire.valid(type,bytes,0)) {
         var request=session.getProtocol().clientSchema().parse(name,bytes);
         id=(Integer)request.getField(type.findFieldByNumber(submit?8:7));
-        if(id>0)result=submit?manager.submit(id):manager.take(id);
+        int panel=MaterialSubmitManager.activityForId(id);
+        if(panel!=0&&session.getActivityReplayLeases().accepts(panel,ActivityReplayScope.identity(session.getPlayer().getGameplay(),panel))){
+          manager=new MaterialSubmitManager(session.getPlayer(),panel);
+          result=submit?manager.submit(id):manager.take(id);
+        }
       }
       var response=builder(session,name.replace("CsReq","ScRsp"));set(response,"retcode",result.code().getVal());
       if(result.code()==Retcode.SUCC) {
-        if(query)for(var entry:new TreeMap<>(result.state().receipts()).entrySet())
+        if(query)for(var entry:queried.entrySet())
           response.addRepeatedField(response.getDescriptorForType().findFieldByNumber(8),state(session,entry.getKey(),entry.getValue()));
         else if(submit)response.setField(response.getDescriptorForType().findFieldByNumber(8),state(session,id,result.state().receipts().get(id)));
         else {
@@ -40,12 +60,13 @@ public final class MaterialSubmit46 {
         }
       }
       session.sendClientPacket(name.replace("CsReq","ScRsp"),response.build().toByteArray());return true;
+      }));
     }
   }
   private static DynamicMessage state(GameSession session,int id,MaterialSubmitState.Receipt receipt) {
     var row=builder(session,"KPMAKCHCDMH");row.setField(row.getDescriptorForType().findFieldByNumber(15),id);
     row.setField(row.getDescriptorForType().findFieldByNumber(8),receipt.submitted());
-    row.setField(row.getDescriptorForType().findFieldByNumber(13),session.getPlayer().getRewardLedger().granted(MaterialSubmitManager.rewardKey(id)));
+    row.setField(row.getDescriptorForType().findFieldByNumber(13),session.getPlayer().getRewardLedger().granted(new MaterialSubmitManager(session.getPlayer(),MaterialSubmitManager.activityForId(id)).replayRewardKey(id)));
     return row.build();
   }
   private MaterialSubmit46(){}

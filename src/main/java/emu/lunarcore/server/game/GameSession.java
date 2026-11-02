@@ -45,6 +45,9 @@ public class GameSession {
     private final ProtocolBridge protocol;
     private String rogueFinishSentRun = "";
     @Setter private String composeLimitPeriod = "";
+    private final org.hkrpg.server.protocol.ActivityReplayLeases activityReplayLeases =
+            new org.hkrpg.server.protocol.ActivityReplayLeases();
+    public org.hkrpg.server.protocol.ActivityReplayLeases getActivityReplayLeases(){return activityReplayLeases;}
     private final org.hkrpg.server.protocol.MissionNotifications46 missionNotifications =
             new org.hkrpg.server.protocol.MissionNotifications46();
     private final org.hkrpg.server.protocol.ReplyCorrelation46 replyCorrelation =

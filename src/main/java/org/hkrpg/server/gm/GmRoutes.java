@@ -43,6 +43,7 @@ public final class GmRoutes {
             "shops.js",
             "shortcuts.js",
             "activities.js",
+            "activity-history.js",
             "mail.js",
             "terminal.js",
             "audit.js",
@@ -118,6 +119,22 @@ public final class GmRoutes {
                       "items",
                       filtered.stream().skip(offset).limit(limit).toList()));
             }));
+    app.get("/gm/api/activities/history",safe(ctx->{
+      auth.require(ctx,false);
+      String q=query(ctx,"q"),version=query(ctx,"version"),phase=query(ctx,"phase");
+      if(!version.isEmpty()&&!GmActivityHistory.versions().contains(version))throw new GmError(400,"历史活动版本不正确。");
+      if(!phase.isEmpty()&&!Set.of("上半","下半","第1期","第2期","第3期").contains(phase))throw new GmError(400,"历史活动期次不正确。");
+      int offset=integer(ctx,"offset",0,0,1_000_000),limit=integer(ctx,"limit",30,1,100);
+      var all=backend.activityHistory();var filtered=all.stream()
+          .filter(a->version.isEmpty()||version.equals(a.version())).filter(a->phase.isEmpty()||phase.equals(a.phase()))
+          .filter(a->q.isEmpty()||(a.name()+" "+a.key()+" "+a.version()+" "+a.phase()+" "+a.activityId()+" "+a.panelId()+" "+a.modules()+" "+a.tags())
+              .toLowerCase(Locale.ROOT).contains(q)).toList();
+      ok(ctx,Map.of("versions",GmActivityHistory.versions(),"total",filtered.size(),"catalogTotal",all.size(),
+          "replayableTotal",all.stream().filter(HistoricalActivityRow::canReplay).count(),
+          "excludedTotal",all.stream().filter(a->a.family().equals("excluded")).count(),
+          "pendingTotal",all.stream().filter(a->!a.canReplay()&&!a.family().equals("excluded")).count(),
+          "items",filtered.stream().skip(offset).limit(limit).toList()));
+    }));
     app.get("/gm/api/activities",safe(ctx->{
       auth.require(ctx,false);
       String q=query(ctx,"q"),type=query(ctx,"type"),state=query(ctx,"state");

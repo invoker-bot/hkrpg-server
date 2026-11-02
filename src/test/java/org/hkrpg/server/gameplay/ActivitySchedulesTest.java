@@ -50,4 +50,21 @@ class ActivitySchedulesTest {
     assertThrows(java.io.IOException.class,()->ActivitySchedules.load(directory));
     assertSame(before,GameplayDefinitions.windows);
   }
+
+  @Test void onePanelCannotMixTwoReplayIdentitiesEvenWhenTheModulesDiffer(){
+    String first=UUID.randomUUID().toString(),second=UUID.randomUUID().toString();
+    assertThrows(IllegalArgumentException.class,()->ActivitySchedules.parse(root("["
+        +"{\"panelId\":1,\"moduleId\":1,\"beginTime\":0,\"endTime\":10,\"replayId\":\""+first+"\",\"replayKey\":\"1.1-example\"},"
+        +"{\"panelId\":1,\"moduleId\":2,\"beginTime\":0,\"endTime\":10,\"replayId\":\""+second+"\",\"replayKey\":\"1.1-example\"}]")));
+  }
+
+  @ParameterizedTest @ValueSource(strings={
+      "\"replayId\":\"not-a-guid\",\"replayKey\":\"1.1-example\"",
+      "\"replayId\":\"00000000-0000-0000-0000-000000000001\"",
+      "\"replayKey\":\"1.1-example\"",
+      "\"replayId\":\"00000000-0000-0000-0000-000000000001\",\"replayKey\":\"../outside\"",
+      "\"replayId\":null,\"replayKey\":\"1.1-example\""
+  }) void malformedReplayMetadataCannotBecomeALegacyWindow(String metadata){
+    assertThrows(RuntimeException.class,()->ActivitySchedules.parse(root("[{\"panelId\":1,\"moduleId\":1,\"beginTime\":0,\"endTime\":10,"+metadata+"}]")));
+  }
 }

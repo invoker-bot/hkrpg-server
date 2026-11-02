@@ -1,5 +1,6 @@
 import {api} from './api.js';
 import {el,button,field,numberInput,searchInput,empty,table} from './ui.js';
+import {mountActivityHistory} from './activity-history.js';
 
 const typeNames={event:'活动模块',resident:'常驻模块',trial:'角色试用',unmapped:'缺少面板关联'};
 const states={unconfigured:'未配置',active:'正在开放',scheduled:'尚未开放',stopped:'已关闭',expired:'已到期',mixed:'模块排期不同'};
@@ -7,6 +8,15 @@ function date(seconds){const d=new Date(seconds*1000);return Number.isFinite(d.g
 function local(seconds){const d=new Date(seconds*1000);return Number.isFinite(d.getTime())?new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,19):'';}
 
 export function mountActivities(main,inspector,state){
+  let update=()=>{};
+  const history=button('历史活动复刻',()=>mount('history'),'refresh'),current=button('原始资源排期',()=>mount('current'),'log');
+  const content=el('div');main.append(el('div',{class:'activity-view-tabs'},history,current),content);
+  function mount(view){content.replaceChildren();inspector.replaceChildren();history.classList.toggle('primary',view==='history');current.classList.toggle('primary',view==='current');
+    update=(view==='history'?mountActivityHistory:mountActivitySchedules)(content,inspector,state);}
+  mount('history');return()=>update();
+}
+
+function mountActivitySchedules(main,inspector,state){
   let query='',type='',status='',offset=0,sequence=0,selected=null,rows=[],loading=false;
   const types=el('select',{'aria-label':'活动类型'}),statuses=el('select',{'aria-label':'活动状态'});
   types.append(el('option',{value:'',text:'全部活动类型'}),...Object.entries(typeNames).map(([value,text])=>el('option',{value,text})));
@@ -103,7 +113,7 @@ export function mountActivities(main,inspector,state){
       if(selected)selected=rows.find(a=>a.id===selected.id)||null;
       previous.disabled=offset===0;next.disabled=offset+rows.length>=data.total;
     }catch(error){if(current===sequence&&main.isConnected){rows=[];selected=null;count.textContent=error.message;}}
-    finally{if(current===sequence){loading=false;list.removeAttribute('aria-busy');render();}}
+    finally{if(current===sequence&&main.isConnected){loading=false;list.removeAttribute('aria-busy');render();}}
   }
   load();return render;
 }

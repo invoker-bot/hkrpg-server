@@ -1,3 +1,5 @@
+`GmActivityHistory` 区分固定历史期次与当前排期，独立复刻 UUID 进入玩家的 `ActivityReplayState`；签到和两类材料活动各自保存进度、以周期前缀防重复领奖。材料请求冻结 `ActivityReplayScope`，原生会话用最近查看周期拒绝旧窗口操作。完整历史范围仍待接通，见[复刻说明](gm-activity-history.md)。
+
 好友页继续使用内部好友领域与原始资料构造器，由 `ProtocolBridge` 将列表/申请内的玩家资料及共享字段按已核对的语义转换到4.6；列表缓存与真实UID保留，未知字段拒绝策略不放宽。原因及验证边界见[好友页说明](friend-page-loading-4.6.md)。
 
 `TrainCakeCatch46` 处理原生开盒、领取和本地房主资料查询；`TrainCakeCatchState` 与 Player 一次保存实际批次、数量和本周记录。原始等级/任务门槛保留，查询不创建进度，重复领取不增加数量，保存失败回滚。正式抽取池缺失时采用有来源的有限兼容批次，范围见[猫猫糕箱说明](train-cake-box-4.6.md)。

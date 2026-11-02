@@ -22,5 +22,7 @@ public interface GmBackend {
 
   default List<ActivityRow> activities() { return List.of(); }
 
+  default List<HistoricalActivityRow> activityHistory() { return List.of(); }
+
   Result execute(Operation operation);
 }

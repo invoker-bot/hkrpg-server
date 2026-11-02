@@ -19,8 +19,21 @@ final class GmActivities {
   private final List<GmActivityCatalog.Template> catalog;
   private final Clock clock;
   private record Stored(JsonObject root,String original){}
+  record ReplayIdentity(String id,String key){}
 
   GmActivities(Path directory,List<GmActivityCatalog.Template> catalog,Clock clock){this.directory=directory;this.catalog=List.copyOf(catalog);this.clock=clock;}
+  long now(){return clock.instant().getEpochSecond();}
+
+  Map<String,ReplayIdentity> instances(){
+    synchronized(ActivitySchedules.class){
+      var result=new HashMap<String,ReplayIdentity>();
+      for(var entry:index(read().root()).entrySet()){
+        var row=entry.getValue();
+        if(row.has("replayId"))result.put(entry.getKey(),new ReplayIdentity(row.get("replayId").getAsString(),row.get("replayKey").getAsString()));
+      }
+      return Map.copyOf(result);
+    }
+  }
 
   List<ActivityRow> current(){
     synchronized(ActivitySchedules.class){
@@ -53,39 +66,79 @@ final class GmActivities {
       throw new GmError(400,"未知活动排期操作。");
     var template=catalog.stream().filter(t->t.id()==operation.activityId()).findFirst()
         .orElseThrow(()->new GmError(400,"活动不在当前资源目录中。"));
-    if (!template.manageable()||!GameData.getActivityPanelExcelMap().containsKey(template.panelId()))
+    boolean scoped=operation.activityKey()!=null&&Set.of("activity-stop","activity-enable").contains(operation.action());
+    if(scoped){
+      var entry=GmActivityHistory.entry(operation.activityKey());
+      if(!GmActivityHistory.supportedFamily(entry.family())||entry.activityId()!=template.id()||entry.panelId()!=template.panelId()||!entry.modules().equals(template.modules()))
+        throw new GmError(409,"历史期次与当前活动不匹配。");
+    }
+    if ((!template.manageable()&&!scoped)||!GameData.getActivityPanelExcelMap().containsKey(template.panelId()))
       throw new GmError(409,template.note());
+    return change(operation,template,false,null,template.name());
+  }
+
+  Result rerun(Operation operation,GmActivityCatalog.Template template,String key,String name){
+    GmValidation.validate(operation);
+    if(!operation.action().equals("activity-rerun")||!Objects.equals(key,operation.activityKey())||template.modules().isEmpty()
+        ||!GameData.getActivityPanelExcelMap().containsKey(template.panelId()))throw new GmError(409,"历史活动资源不可用。");
+    return change(operation,template,true,key,name);
+  }
+
+  private Result change(Operation operation,GmActivityCatalog.Template template,boolean rerun,String key,String name){
     synchronized(ActivitySchedules.class){
       var stored=read();var root=stored.root().deepCopy();
       if (!root.has("activities"))root.add("activities",new JsonArray());
       var rows=root.getAsJsonArray("activities");var existing=index(root);
+      if(!rerun&&operation.activityKey()!=null&&template.modules().stream().anyMatch(module->{
+        var row=existing.get(template.panelId()+":"+module);
+        return row==null||!row.has("replayKey")||!operation.activityKey().equals(row.get("replayKey").getAsString());
+      }))throw new GmError(409,"此入口已经切换到其他活动期次，请刷新后再操作。");
+      boolean open=rerun||operation.action().equals("activity-open");
       long now=clock.instant().getEpochSecond();
       long begin=operation.beginTime()==null?now:operation.beginTime();
       long end=operation.endTime()==null?now+(operation.durationDays()==null?30:operation.durationDays())*86400L:operation.endTime();
-      if (operation.action().equals("activity-open")&&(begin<0||end<=begin||end<=now||end>0xffff_ffffL||end-begin>365L*86400))
+      if (open&&(begin<0||end<=begin||end<=now||end>0xffff_ffffL||end-begin>365L*86400))
         throw new GmError(400,"开放窗口需在协议时间范围内，结束晚于现在，时长为 1 秒至 365 天。");
-      if (!operation.action().equals("activity-open")) {
+      if (!open) {
         if (operation.action().equals("activity-enable")&&template.modules().stream().anyMatch(id->{
           var row=existing.get(template.panelId()+":"+id);return row==null||row.get("endTime").getAsLong()<=now;}))
           throw new GmError(409,"原模块排期缺失或已到期，请设置新的开放时间。");
         if (template.modules().stream().noneMatch(id->existing.containsKey(template.panelId()+":"+id)))
           throw new GmError(409,"活动尚未配置开放窗口。");
       }
+      if(rerun){
+        if(!root.has("activityReplayRuns"))root.add("activityReplayRuns",new JsonArray());
+        if(!root.get("activityReplayRuns").isJsonArray()||root.getAsJsonArray("activityReplayRuns").size()>=10_000)
+          throw new GmError(503,"活动复刻档案无效或已达到本服保存上限。");
+        var archive=root.getAsJsonArray("activityReplayRuns");
+        for(var previous:archive)if(!previous.isJsonObject()||!previous.getAsJsonObject().has("id"))
+          throw new GmError(503,"活动复刻档案存在损坏记录。");
+        for(var previous:archive)if(operation.requestId().equals(previous.getAsJsonObject().get("id").getAsString()))
+          throw new GmError(409,"该复刻周期已存在，请核对原操作记录。");
+        for(var previous:existing.values())if(template.modules().contains(previous.get("moduleId").getAsInt()))previous.addProperty("disabled",true);
+        var instance=new JsonObject();instance.addProperty("id",operation.requestId());instance.addProperty("key",key);
+        instance.addProperty("name",name);instance.addProperty("activityId",template.id());instance.addProperty("panelId",template.panelId());
+        instance.addProperty("beginTime",begin);instance.addProperty("endTime",end);archive.add(instance);
+      }
+      if(operation.action().equals("activity-enable")&&operation.activityKey()!=null)
+        for(var previous:existing.values())if(template.modules().contains(previous.get("moduleId").getAsInt())
+            &&previous.get("panelId").getAsInt()!=template.panelId())previous.addProperty("disabled",true);
       for (int module:template.modules()) {
         var row=existing.get(template.panelId()+":"+module);
         if (row==null) {
-          if (!operation.action().equals("activity-open"))continue;
+          if (!open)continue;
           row=new JsonObject();row.addProperty("panelId",template.panelId());row.addProperty("moduleId",module);rows.add(row);
         }
-        if (operation.action().equals("activity-open")){row.addProperty("beginTime",begin);row.addProperty("endTime",end);}
+        if (open){row.addProperty("beginTime",begin);row.addProperty("endTime",end);}
+        if(rerun){row.addProperty("replayId",operation.requestId());row.addProperty("replayKey",key);}
         if (operation.action().equals("activity-stop"))row.addProperty("disabled",true);else row.remove("disabled");
       }
       var candidate=parse(root);
       if (!root.equals(stored.root()))save(root,stored.original(),operation.requestId());
       GameplayDefinitions.replaceActivityWindows(candidate);
       return new Result("completed",List.of((operation.action().equals("activity-stop")?"已关闭 ":operation.action().equals("activity-enable")?"已恢复启用 ":"已设置开放窗口 ")
-          +template.name()+" #"+template.id()+"，共 "+template.modules().size()+" 个模块，全服生效。",
-          "玩家进度、已领奖记录和其他活动排期保留。请重新打开游戏活动页面。"));
+          +name+" #"+template.id()+"，共 "+template.modules().size()+" 个模块，全服生效。",
+          rerun?"本轮采用独立进度与领奖记录；原存档保留。周期 "+operation.requestId():"玩家进度、已领奖记录和其他活动排期保留。请重新打开游戏活动页面。"));
     }
   }
 

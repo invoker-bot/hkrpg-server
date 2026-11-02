@@ -69,7 +69,7 @@ class MaterialSubmitActivity46Test {
     final List<BasePacket> notices = new ArrayList<>();
     final Inventory stock = new Inventory(this) {
       @Override public GrantResult grantItems(ItemParamMap items, boolean hint) {
-        assertTrue(durable.contains("material-submit:30014:"), "Payout before persistent reservation");
+        assertTrue((durable.contains("material-submit:30014:") || durable.contains("material-submit:30011:")), "Payout before persistent reservation");
         grants++;
         var copy = new TreeMap<Integer, Integer>();
         for (var i : items.int2IntEntrySet()) copy.put(i.getIntKey(), i.getIntValue());

@@ -158,6 +158,7 @@ final class GmJournal {
 
   private static String summary(Operation op) {
     return switch (op.action()) {
+      case "activity-rerun" -> "复刻历史活动 "+op.activityKey()+" · "+(op.beginTime()==null?(op.durationDays()==null?30:op.durationDays())+" 天":op.beginTime()+" 至 "+op.endTime())+" · 独立进度/领奖周期 · 全服";
       case "activity-open" -> "开放活动 #"+op.activityId()+" · "+(op.beginTime()==null?(op.durationDays()==null?30:op.durationDays())+" 天":op.beginTime()+" 至 "+op.endTime())+" · 全服";
       case "activity-stop" -> "关闭活动 #"+op.activityId()+" · 全服";
       case "activity-enable" -> "恢复活动 #"+op.activityId()+" · 原排期 · 全服";
