@@ -36,6 +36,18 @@ python scripts/smoke-pet-followers.py
 
 共享工作区的首次完整构建同时读入另一批尚未提交的 `WorldDestructible46Test`，出现非宠物失败后终止，原日志保留在 `build/pet-full-build.log`。正式门禁使用 `b18e77954d1d192d731dd902ebdca8b98ba15ed9` 加本轮 14 个文件的独立快照，未排除该基线的任何测试。其他并行改动保留在原工作区，不计入本次提交。
 
-本轮没有更新常驻 Compose 服务。已验证的独立产物位于 `build/pet-followers-release/hkrpg-server.jar`，摘要与门禁和通信记录一起保存在 `build/pet-followers-verification.json`。
+首次源码验证后尚未更新常驻 Compose 服务，后续实际补发见下节。该次独立产物位于 `build/pet-followers-release/hkrpg-server.jar`，摘要与门禁和通信记录一起保存在 `build/pet-followers-verification.json`。
 
 最终独立门禁：682 个测试类、16,697 项测试，失败、错误和跳过均为 0，Java 21 JAR 构建通过。候选 JAR SHA-256 为 8a9c3ef7fd9548cc89ee58c72bd9ebb3522eac0f622398349a48b9d1b2d38172，两轮 Dispatch 冒烟和 140 次原生请求均核对同一产物。
+
+## 2026-11-03 常驻服务补发
+
+用户反馈仍然转圈后，实际容器日志确认召唤命令 `7616` 仍为未处理；容器及宿主发布目录的 JAR 摘要同为 `e906158f13aeacd4ed4451a57c26345518277ca9f07a97c43ed29e65cf158882`，其中没有 `Pet46.class`。此前只完成了源码修复和独立验证，没有将该修复加入正在运行的服务。同一旧 JAR 在独立账号/H2 探针中也复现了召唤等待超时，记录为 `build/pet-live-release-20261103/baseline-red.log`。
+
+本次以实际运行 JAR 为基础，仅替换 `ProtocolBridge`、`VersionedPacketHandler`，加入 `Pet46`、`PetSelection`，并向原功能目录追加宠物条目。替换前两个旧类与 `b18e779` 原始源码独立编译结果逐字节一致；其余既有 ZIP 条目、其他功能目录项和已经发布的地图掉落修复逐项保持一致。实际发布包 SHA-256 为 `83f635ae46b9ff784ce0b5e21549fa726a83bfe243f1aa2968bd78cb229b0374`，对应 `build/pet-live-release-20261103/server.jar`。
+
+将测试运行时的主类路径换为这个合成发布包，宠物、初始外观、普通掉落、金矛和回复物合计 **2,421 项专项全部通过**，失败、错误和跳过均为 0；同一发布包的 **140 次原生请求、18 次宠物操作、三次正常停服和两次同 UID H2 进程重启**再次通过。上节 16,697 项全量结果对应独立源码快照，没有将其冒称为这个合成包的完整测试结果。
+
+本地 Compose 已正常停服、备份并更新到该包，容器中程序摘要一致，健康、CN/OS 派发、网关与只读原生心跳检查通过。镜像为 `sha256:dc3a3edb5ad4e0e3686de3c7bf3326750a48194018c73c25d3ae2d836b4ab4d8`。正常停服后逐文件验证备份，路径为 `.local/backups/pet-followers-20261103-050830-83f635a/`。对备份数据库的隔离副本读取与新进程的存档比较确认，玩家、宠物解锁、角色、物品和其他非区域文档完全一致；区域文档仅有正常启动的 `up=false` 到 `true` 变化。配置和 87,472 份资源的既有清单不变，没有恢复覆盖数据库或代替用户选择宠物。
+
+补发后需要退出游戏重新登录，清除旧会话已经失去回复的等待状态，再召唤宠物。真实客户端模型及跟随画面仍待用户验收；本轮没有启动或操作客户端，没有使用 computer use。发布核验见忽略目录 `build/pet-live-release-20261103/` 的 `composition.json`、`packaged-summary.json`、`native-report.json`、`deployment.json`、`backup-proof.json`、`data-preservation.json` 和 `compose-verification.json`。
