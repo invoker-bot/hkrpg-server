@@ -1,3 +1,5 @@
+`Pet46` 处理普通跟随宠物的原生请求与状态 union，`PetSelection` 在玩家锁内验证解锁、保存选择并回退失败；通知在保存成功后发布。沿用 Player 和独立解锁文档，重登查询由 `ProtocolBridge` 映射已选状态。来源与验证边界见[宠物说明](pet-followers-4.6.md)。
+
 `BackwaterStoryConsole` 核对 101030104 的完整原始 UI/启用脚本，供 `StoryDoors` 为 G21/300007 恢复 Closed；演出完成后的 105 仍由原始物件拼图回执完成。摄像机、拼图板与目标门保持原绑定，保存事务继续复用现有场景状态流程。来源与验证边界见[剧情控制台说明](backwater-story-console-4.6.md)。
 
 `StoryDoors` 识别原始 `101001/BaseConsole_01A_Control_SimpleDoor` 与 `101004/IronGate_06` 的双向绑定，`FloorInfo` 保留两端共享值，交互复用 `ScenePropTransitions` 同存并同步控制台和铁门；后续 Locked 机关不被提前启用。来源与验证边界见[铁门联动说明](backwater-gates-4.6.md)。

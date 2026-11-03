@@ -378,11 +378,15 @@ public final class ProtocolBridge {
     }
     for (var entry : input.getAllFields().entrySet()) {
       var sourceField = entry.getKey();
-      // The core explicitly writes zero even when no pet is selected. CN4.6 represents that
-      // absence by omitting its current-pet union, not by reusing the old scalar field number.
-      // A nonzero selection still requires a verified union mapping and remains rejected.
-      if (outbound && sourceField.getFullName().equals("legacy.GetPetDataScRsp.cur_pet_id")
-          && entry.getValue().equals(0)) continue;
+      // CN4.6 PetModule._SyncSummonState consumes type 1 and uint32 oneof field 13.
+      if (outbound && sourceField.getFullName().equals("legacy.GetPetDataScRsp.cur_pet_id")) {
+        int id = (Integer)entry.getValue();
+        if (id != 0) {
+          var selected = target.findFieldByNumber(11);
+          result.setField(selected,Pet46.selection(selected.getMessageType(),id));
+        }
+        continue;
+      }
       if (outbound && sourceField.getFullName().equals("legacy.GetJukeboxDataScRsp.playing_id")) {
         // CN4.6 replaces the flat selection with response 12 -> player 1 -> music id 1.
         // Native PlayingMusicItemsInfo.SyncServerData requires the player container.

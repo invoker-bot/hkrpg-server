@@ -24,9 +24,11 @@ class InitialCosmetics46Test {
         .outbound(CmdId.GetPetDataScRsp, core.toByteArray()).body());
   }
 
-  @Test void anUnmappedSelectedPetIsNeverSilentlyCleared() {
+  @Test void aSelectedNormalPetUsesTheNativeSelectionUnion() throws Exception {
     var core = GetPetDataScRsp.newInstance().setCurPetId(1001);
-    assertThrows(ProtocolException.class, () -> protocol.outbound(CmdId.GetPetDataScRsp, core.toByteArray()));
+    var packet = protocol.outbound(CmdId.GetPetDataScRsp,core.toByteArray());
+    var wire = protocol.clientSchema().parse("GetPetDataScRsp",packet.body());
+    Pet46Test.selected(wire,11,1001);
   }
 
   @Test void pamSkinQueryPreservesCurrentAndUnlockedValues() throws Exception {

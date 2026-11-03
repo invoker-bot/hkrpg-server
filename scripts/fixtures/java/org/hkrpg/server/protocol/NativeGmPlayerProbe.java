@@ -23,6 +23,7 @@ public final class NativeGmPlayerProbe {
   private final List<Map<String, Object>> equipmentSyncs = new ArrayList<>();
   private final List<Map<String, Object>> trialNotifications = new ArrayList<>();
   private final List<Map<String, Object>> trialStateChanges = new ArrayList<>();
+  private final List<Map<String, Object>> petChanges = new ArrayList<>();
   private Ukcp channel;
   private int requests;
   private byte[] lastReplyHeader = new byte[0];
@@ -81,6 +82,11 @@ public final class NativeGmPlayerProbe {
       if (failure.get() != null) throw new IllegalStateException("KCP failure", failure.get());
       var frame = inbox.poll(1, TimeUnit.SECONDS);
       if (frame == null) continue;
+      if (frame.command() == protocol.clientCommand("PetDataChangeScNotify")) {
+        if (frame.header().length > 0)
+          throw new IllegalStateException("Pet notification inherited a request packet ID");
+        petChanges.add(project(protocol.clientSchema().parse("PetDataChangeScNotify", frame.body())));
+      }
       if (frame.command() == protocol.clientCommand("CurTrialActivityScNotify"))
         trialNotifications.add(project(protocol.clientSchema().parse("CurTrialActivityScNotify", frame.body())));
       if (frame.command() == protocol.clientCommand("TrialActivityDataChangeScNotify")) {
@@ -172,7 +178,7 @@ public final class NativeGmPlayerProbe {
                 "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
                 "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
                 "GetShopListCsReq", "GetPlayerBoardDataCsReq", "GetPhoneDataCsReq", "SetPersonalCardCsReq",
-                "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq",
+                "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq", "SummonPetCsReq", "RecallPetCsReq",
                 "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
                 "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
                 "GetLevelRewardCsReq", "GetLevelRewardTakenListCsReq",
@@ -184,6 +190,7 @@ public final class NativeGmPlayerProbe {
                 "GetAllServerPrefsDataCsReq", "GetServerPrefsDataCsReq", "UpdateServerPrefsCsReq").contains(command))
               throw new IllegalArgumentException("Unsupported owned equipment smoke request");
             equipmentSyncs.clear();
+            petChanges.clear();
             byte[] header = new byte[0];
             if (step.has("packetId")) {
               int packetId = step.get("packetId").getAsInt();
@@ -202,11 +209,12 @@ public final class NativeGmPlayerProbe {
             var result = callWire(command, payload,
                 step.get("success").getAsBoolean(), header);
             replies.add(Map.of("command", command, "response", project(result), "syncs", List.copyOf(equipmentSyncs),
-                "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader)));
+                "petChanges", List.copyOf(petChanges), "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader)));
           }
           lastEquipment = requested.has("commands")
               ? Map.of("requestId", id, "responses", List.copyOf(replies))
               : Map.of("requestId", id, "response", replies.getFirst().get("response"), "syncs", replies.getFirst().get("syncs"),
+              "petChanges", replies.getFirst().get("petChanges"),
               "replyHeader", Base64.getEncoder().encodeToString(lastReplyHeader));
           lastEquipmentId = id;
         }
