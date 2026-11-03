@@ -15,10 +15,10 @@
   "features": [
     {
       "id": "backwater-simple-gates",
-      "name": "边缘通路普通控制台与铁门联动",
+      "name": "边缘通路普通铁门与剧情控制台",
       "status": "partial",
-      "evidence": "src/test/java/org/hkrpg/server/gameplay/BackwaterGate46Test.java",
-      "gap": "原始101001简单开门控制图与101004铁门双向绑定保留，1010同存并同步准确控制台和门；重登、重复操作、旧单边记录及保存失败有回归。后续锁定与拼图不提前完成，实际F操作、动画和完整追逃剧情仍待客户端验收，见docs/backwater-gates-4.6.md。"
+      "evidence": "src/test/java/org/hkrpg/server/gameplay/BackwaterStoryConsole46Test.java",
+      "gap": "普通101001控制图与101004铁门双向绑定并同存。剧情台G21/300007按104完整启用脚本恢复Closed，演出回执后接取105，原物件拼图完成才通过1010联动300006并接取后续剧情；提前完成、取消、错源、保存回退及重登有回归。实际F、演出、电路拼图与动画仍待实机确认，见docs/backwater-story-console-4.6.md。"
     },
     {
       "id": "literal-scene-transfers",

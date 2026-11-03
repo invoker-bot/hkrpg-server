@@ -1,3 +1,5 @@
+`BackwaterStoryConsole` 核对 101030104 的完整原始 UI/启用脚本，供 `StoryDoors` 为 G21/300007 恢复 Closed；演出完成后的 105 仍由原始物件拼图回执完成。摄像机、拼图板与目标门保持原绑定，保存事务继续复用现有场景状态流程。来源与验证边界见[剧情控制台说明](backwater-story-console-4.6.md)。
+
 `StoryDoors` 识别原始 `101001/BaseConsole_01A_Control_SimpleDoor` 与 `101004/IronGate_06` 的双向绑定，`FloorInfo` 保留两端共享值，交互复用 `ScenePropTransitions` 同存并同步控制台和铁门；后续 Locked 机关不被提前启用。来源与验证边界见[铁门联动说明](backwater-gates-4.6.md)。
 
 `OrdinaryDestructibles` 按世界绑定普通物件与区域池：空间站 `100026/100027` 对应 `[2000102,101001]`，雅利洛 `101017` 对应 `[2000102,101002]`。共用既有领取、库存和重登防重流程，不把掉落池号当作固定奖励；兼容数量、刷新规则、原始 89 处新增点和客户端验收边界见[普通可破坏物说明](ordinary-destructible-drops-4.6.md)。

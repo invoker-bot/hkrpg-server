@@ -102,7 +102,8 @@ public final class StoryDoors {
   }
 
   private static boolean paired(PropInfo info) {
-    return simpleDoorConsole(info) || info != null && info.getPropID() == 100000
+    return simpleDoorConsole(info) || BackwaterStoryConsole.matches(info)
+        || info != null && info.getPropID() == 100000
         && info.getInitLevelGraph() != null
         && PAIRED_GRAPHS.contains(info.getInitLevelGraph());
   }
@@ -124,6 +125,7 @@ public final class StoryDoors {
   private static String bindingKey(PropInfo info) {
     if (keyLift(info)) return LIFT_KEY;
     if (!paired(info)) return null;
+    if (BackwaterStoryConsole.matches(info)) return "TargetDoor";
     if (simpleDoorConsole(info) || BRIDGE.equals(info.getInitLevelGraph())) return SIMPLE_DOOR_KEY;
     if (BRIDGE_SIMPLE.equals(info.getInitLevelGraph())) return "Maze_Prop_Chap00_BaseControllSimpleDoor";
     return DOOR_KEY;
@@ -164,7 +166,7 @@ public final class StoryDoors {
               .filter(v -> v != null && v.has("Key") && key.equals(v.get("Key").getAsString()))
               .toList();
       if (values.size() != 1) return null;
-      if ((simpleDoorConsole(info) || ironGate(info))
+      if ((simpleDoorConsole(info) || BackwaterStoryConsole.matches(info) || ironGate(info))
           && (!values.getFirst().has("$type")
               || !"RPG.GameCore.SharedString".equals(values.getFirst().get("$type").getAsString()))) return null;
       var value = values.getFirst().get("Value");
@@ -205,7 +207,9 @@ public final class StoryDoors {
 
   private static boolean objective(
       Scene scene, int group, PropInfo info, MissionInfo.SubMissionInfo c) {
-    if (!observes(scene, group, info, c) || c.getTask() == null) return false;
+    if (!observes(scene, group, info, c)) return false;
+    if (BackwaterStoryConsole.matches(info)) return BackwaterStoryConsole.objective(scene, group, info, c);
+    if (c.getTask() == null) return false;
     try {
       var script = JsonParser.parseString(c.getTask().getSourceDefinition());
       if (snowdrift(info))
@@ -432,6 +436,7 @@ public final class StoryDoors {
     }
     if (completed(scene, group, info)) return PropState.Open;
     if (info.getState() == PropState.Locked && !ready(scene, group, info)
+        && !BackwaterStoryConsole.introductionReady(scene, group, info)
         && !unlocked(scene, group, info)) return PropState.Locked;
     if (standalone(info) ? receipt(scene, group, info) : pairReceipt(scene, group, info))
       return PropState.Open;
@@ -453,7 +458,8 @@ public final class StoryDoors {
 
   /** The former loader changed every 100000 definition to state 5 and discarded its bindings. */
   static boolean legacySource(ScenePropState.Snapshot record, PropInfo info) {
-    if (record == null || !(info.getPropID() == 100000 || simpleDoorConsole(info) || ironGate(info))) return false;
+    if (record == null || !(info.getPropID() == 100000 || simpleDoorConsole(info)
+        || BackwaterStoryConsole.matches(info) || ironGate(info))) return false;
     var copy =
         ResourceLoader.getGson().fromJson(ResourceLoader.getGson().toJson(info), PropInfo.class);
     if (info.getPropID() == 100000) copy.setState(PropState.BridgeState3);
@@ -500,6 +506,8 @@ public final class StoryDoors {
       return Retcode.SUCC; // The shared transition validator checks original identity.
     if (!controller(info))
       return validateTarget(prop, config);
+    if (BackwaterStoryConsole.matches(info) && !ready(scene, prop.getGroupId(), info))
+      return Retcode.INTERACT_TYPE_INVALID;
     var link = link(info);
     if (repeatable(info)) {
       var current = state(scene, prop.getGroupId(), info);
@@ -527,7 +535,7 @@ public final class StoryDoors {
     var source = original(scene, link.group(), link.instance());
     var target = actor(scene, link);
     return source != null && target != null && target.getPropInfo() == source
-        && (simpleDoorConsole(owner) ? ironGate(source)
+        && (simpleDoorConsole(owner) || BackwaterStoryConsole.matches(owner) ? ironGate(source)
             && new Link(owner.getGroup().getId(), owner.getID()).equals(link(source, IRON_GATE_CONTROLLER_KEY))
             && target.getExcel().getPropStateList().contains(PropState.Open)
             : keyLift(owner) ? target.getPropType() == PropType.PROP_ELEVATOR

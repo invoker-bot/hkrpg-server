@@ -8,7 +8,7 @@
 
 | 功能 | 当前状态 | 证据/参考 | 已知缺口 |
 |---|---|---|---|
-| 边缘通路普通控制台与铁门联动 | 部分实现 | [src/test/java/org/hkrpg/server/gameplay/BackwaterGate46Test.java](../src/test/java/org/hkrpg/server/gameplay/BackwaterGate46Test.java) | 原始101001简单开门控制图与101004铁门双向绑定保留，1010同存并同步准确控制台和门；重登、重复操作、旧单边记录及保存失败有回归。后续锁定与拼图不提前完成，实际F操作、动画和完整追逃剧情仍待客户端验收，见docs/backwater-gates-4.6.md。 |
+| 边缘通路普通铁门与剧情控制台 | 部分实现 | [src/test/java/org/hkrpg/server/gameplay/BackwaterStoryConsole46Test.java](../src/test/java/org/hkrpg/server/gameplay/BackwaterStoryConsole46Test.java) | 普通101001控制图与101004铁门双向绑定并同存。剧情台G21/300007按104完整启用脚本恢复Closed，演出回执后接取105，原物件拼图完成才通过1010联动300006并接取后续剧情；提前完成、取消、错源、保存回退及重登有回归。实际F、演出、电路拼图与动画仍待实机确认，见docs/backwater-story-console-4.6.md。 |
 | 初始化与开始序列的共用剧情切图 | 部分实现 | [docs/literal-scene-transfers-4.6.md](../docs/literal-scene-transfers-4.6.md) | 完整单步EnterMap在初始化和开始序列共用准入、准确落点、重登及同会话15秒保护，按实际接取选择唯一候选；Auto和多前置保留原始关系，正常与恢复切图的短期回执防止重复请求覆盖剧情落点。主线42处来源夹具均有回归；缺失脚本、复杂序列、循环自动执行和真实客户端画面仍待分别完成或验收。 |
 | 任务地图的远处锚点场景组 | 部分实现 | [docs/train-map-anchor-groups-4.6.md](../docs/train-map-anchor-groups-4.6.md) | 地图查询返回当前已加载的无属性组，并为远处地图补入原始初始启用、无任务或保存值门槛的普通锚点组；解锁编号、物件状态与可定位组一致，保留已保存的禁用状态。查询不创建场景或更改队伍、位置、任务。2026-11-02用户已确认列车长的馈赠点击前往成功回到列车；条件组的完整远程求值、其他任务、锚点图标显示细节及后续演出仍待分别验收。 |
 | 永冬城之夜维修机器交互解锁 | 部分实现 | [docs/serval-repair-machine-4.6.md](../docs/serval-repair-machine-4.6.md) | 按原始101020109目标及完整启用脚本恢复机械屋G12/300002的Closed状态，保留电路拼图的镜头、板件与目标绑定；客户端完成上报1010后保存Open并接取101020110对白。回归及本地服务验证见说明；真实客户端F提示、电路拼图操作和后续演出仍待验收。 |

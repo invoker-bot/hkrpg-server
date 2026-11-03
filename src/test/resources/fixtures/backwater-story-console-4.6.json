@@ -1,0 +1,523 @@
+{
+  "source": "DimbreathBot/TurnBasedGameData@724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "description": "边缘通路剧情台104启用与105完成；主线资料与机关图保留完整原件，MainMission只筛选所需行。楼层和G21复用backwater-gates-4.6.json。",
+  "sources": [
+    {
+      "path": "Config/Level/Mission/1010301/MissionInfo_1010301.json",
+      "sha256": "a0e6278e4be82bf0f4ede95f9fdb806e18ed08fa12dd4b192981ab12cfa03d5f"
+    },
+    {
+      "path": "Config/Level/Mission/1010301/MissionInfo_1010301.partial.json",
+      "sha256": "993bf141aff786cbf5ec614c970438a3f5f7b6b205dc6146695f0f96c39d2d76"
+    },
+    {
+      "path": "Config/Level/Mission/1010301/Mission_101030104.json",
+      "sha256": "b7089e98cdfd5e264efe1109f8f8d7c18d7d5e7d9b063ffa3f93574d3d4843c8"
+    },
+    {
+      "path": "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_CablePuzzle_01.json",
+      "sha256": "cf4f9e322c796feb71db49cf4d1d52a092b0c2f8ab52ddd625d885fc8faf9815"
+    },
+    {
+      "path": "ExcelOutput/MainMission.json",
+      "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a"
+    }
+  ],
+  "records": {
+    "Config/Level/Mission/1010301/MissionInfo_1010301.json": {
+      "MainMissionID": 1010301,
+      "StartSubMissionList": [
+        101030102,
+        101030104
+      ],
+      "FinishSubMissionList": [
+        101030201
+      ]
+    },
+    "Config/Level/Mission/1010301/MissionInfo_1010301.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 101030102,
+          "MainMissionID": 1010301,
+          "MissionJsonPath": "Config/Level/Mission/1010301/Mission_101030102.json",
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101030102",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShow": false,
+          "IsShowStartHint": "Update",
+          "WayPointFloorID": 20111001
+        },
+        {
+          "ID": 101030104,
+          "MainMissionID": 1010301,
+          "MissionJsonPath": "Config/Level/Mission/1010301/Mission_101030104.json",
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "Auto",
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101030104",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20111001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 300009
+        },
+        {
+          "ID": 101030105,
+          "MainMissionID": 1010301,
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101030104
+          ],
+          "MazePlaneID": 20111,
+          "MazeFloorID": 20111001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 21,
+          "ParamInt2": 300007,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20111001,
+          "WayPointGroupID": 21,
+          "WayPointEntityID": 300007
+        },
+        {
+          "ID": 101030201,
+          "MainMissionID": 1010301,
+          "MissionJsonPath": "Config/Level/Mission/1010302/Mission_101030201.json",
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101030105
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101030201",
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20111001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 300009
+        }
+      ]
+    },
+    "Config/Level/Mission/1010301/Mission_101030104.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                    "FetchType": "SinglePropByPropID",
+                    "SinglePropID": {
+                      "GroupID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 21
+                        }
+                      },
+                      "ID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 300007
+                        }
+                      }
+                    }
+                  },
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.StartPropInteractMode",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                        "FetchType": "SinglePropByPropID",
+                        "SinglePropID": {
+                          "GroupID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 21
+                            }
+                          },
+                          "ID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 300007
+                            }
+                          }
+                        }
+                      },
+                      "Mode": "UsePose02"
+                    },
+                    {
+                      "$type": "RPG.GameCore.WaitSecond",
+                      "WaitTime": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 0.5
+                        }
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.TriggerPerformance",
+                      "PerformanceType": "D",
+                      "PerformanceID": 101030112,
+                      "ValueSource": {}
+                    },
+                    {
+                      "$type": "RPG.GameCore.EndPropInteract"
+                    },
+                    {
+                      "$type": "RPG.GameCore.FinishPerformanceMission",
+                      "Key": "Mission_101030104"
+                    }
+                  ]
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 21
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300007
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.ChangePropState"
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_CablePuzzle_01.json": {
+      "OnInitSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncSubPropState"
+            }
+          ]
+        }
+      ],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.SyncAllSubPropState"
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.StartPropInteractMode",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "Mode": "UseInteractiveProp",
+                      "UseOverrideData": true,
+                      "OverrideData01": {
+                        "AreasPath": "Level/Common_Adventure/UseCompassPuzzle.prefab",
+                        "AreaName": "UseCompassPuzzle",
+                        "AnchorName": "PuzzleCompassCam"
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropInitPuzzle",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "BoardPath": {
+                        "Custom": true,
+                        "Key": "BoardFilePath"
+                      },
+                      "LocalPosition": {
+                        "X": 0,
+                        "Y": 0,
+                        "Z": 0
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.TakenMazePuzzleChallenge",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "MazePuzzleChallengeID": {
+                        "Value": "1018"
+                      },
+                      "AutoClosePuzzle": false,
+                      "AutoResetPuzzle": false,
+                      "AutoFinishChallenge": false,
+                      "OnReset": [],
+                      "OnCancel": []
+                    },
+                    {
+                      "$type": "RPG.GameCore.SetLocalPlayerDitherAlpha"
+                    }
+                  ]
+                }
+              ],
+              "InteractAngleRange": 220,
+              "OverrideTargetTypes": [],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+              }
+            }
+          ]
+        },
+        {
+          "IsLoop": true,
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.WaitCustomString",
+              "CustomString": {
+                "Value": "CablePuzzle_Reset"
+              },
+              "WaitOwnerOnly": true
+            },
+            {
+              "$type": "RPG.GameCore.PlayScreenTransfer",
+              "Mode": "SwitchOut",
+              "CustomTime": 0.25,
+              "KeepDisplay": true,
+              "TextEnabled": true,
+              "TalkSentenceID": 100000004
+            },
+            {
+              "$type": "RPG.GameCore.WaitSecond",
+              "WaitTime": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0.5
+                }
+              }
+            },
+            {
+              "$type": "RPG.GameCore.WaitSecond",
+              "WaitTime": {
+                "IsDynamic": false,
+                "FixedValue": {
+                  "Value": 0.5
+                }
+              }
+            },
+            {
+              "$type": "RPG.GameCore.PlayScreenTransfer",
+              "CustomTime": 0.25,
+              "KeepDisplay": true,
+              "TextEnabled": true,
+              "TalkSentenceID": 100000004
+            }
+          ]
+        },
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropPuzzleEventListener",
+              "FinishCallback": [
+                {
+                  "$type": "RPG.GameCore.PropEnableCollider",
+                  "OPType": "TriggerOnly",
+                  "TriggerSelect": "PropInteractionTrigger",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.WaitSecond",
+                  "WaitTime": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 1
+                    }
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.PropClosePuzzle",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.FinishMazePuzzleChallenge",
+                  "MazePuzzleChallengeID": {
+                    "Value": "1018"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.SetLocalPlayerDitherAlpha",
+                  "DitherAlpha": 1,
+                  "Duration": 0.2
+                },
+                {
+                  "$type": "RPG.GameCore.ToastPage",
+                  "MessageOne": {
+                    "Hash": 2012001348524219443
+                  },
+                  "MessageTwo": {
+                    "Hash": 9297148114216607155
+                  },
+                  "CanInterrupt": true
+                },
+                {
+                  "$type": "RPG.GameCore.PropTriggerAnimState",
+                  "AnimStateName": "Activing",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.AnimSetParameter",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                    "FetchType": "SinglePropByPropKey",
+                    "SinglePropKey": {
+                      "Custom": true,
+                      "Key": "TargetDoor"
+                    }
+                  },
+                  "ParameterName": "TriggerOpen",
+                  "ParameterType": "Trigger"
+                },
+                {
+                  "$type": "RPG.GameCore.EndPropInteract"
+                },
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  },
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.PropReqInteract",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                      },
+                      "InteractID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 1010
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "QuitCallback": [
+                {
+                  "$type": "RPG.GameCore.CancelMazePuzzleChallenge",
+                  "MazePuzzleChallengeID": {
+                    "Value": "1018"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.PropClosePuzzle",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                  }
+                },
+                {
+                  "$type": "RPG.GameCore.SetLocalPlayerDitherAlpha",
+                  "DitherAlpha": 1,
+                  "Duration": 0.2
+                },
+                {
+                  "$type": "RPG.GameCore.EndPropInteract"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "ValueSource": {
+        "Values": [
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "Vcam"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "BoardFilePath"
+          },
+          {
+            "$type": "RPG.GameCore.SharedString",
+            "Key": "TargetDoor"
+          }
+        ]
+      }
+    },
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1010301,
+        "Type": "Main",
+        "WorldID": 201,
+        "DisplayPriority": 1010301,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 2365687367446686567
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010204
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1010302,
+        "TrackWeight": 100,
+        "RewardID": 11010301,
+        "DisplayRewardID": 11010302,
+        "MissionPack": 1010301,
+        "ChapterID": 101001,
+        "SubRewardList": []
+      }
+    ]
+  }
+}
