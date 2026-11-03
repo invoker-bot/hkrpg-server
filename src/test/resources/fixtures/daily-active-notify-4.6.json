@@ -1,0 +1,49 @@
+{
+  "sourceRows": [
+    {
+      "kind": "pool",
+      "source": "resources/4.6/ExcelOutput/DailyActiveQuestPool.json",
+      "sourceSHA256": "08395f3943b46cc581a7b06e1c1d166757a2e937ddc763b9a9e16aebfa555cdd",
+      "index": 46,
+      "row": {
+        "QuestID": 2100139,
+        "Type": 14
+      }
+    },
+    {
+      "kind": "quest",
+      "source": "resources/4.6/ExcelOutput/QuestData.json",
+      "sourceSHA256": "c57c1aa4a737ef244fee3b1f0a1b9ff09d353e6687b570ef05925195f9be3412",
+      "index": 2695,
+      "row": {
+        "QuestID": 2100139,
+        "QuestType": 5,
+        "QuestTitle": {
+          "Hash": 92522303521384476
+        },
+        "ImagePath": "",
+        "UnlockType": "AutoUnlock",
+        "UnlockParamList": [],
+        "RewardID": 103004,
+        "FinishWayID": 2100139,
+        "GotoID": 1504
+      }
+    },
+    {
+      "kind": "rule",
+      "source": "resources/4.6/ExcelOutput/FinishWay.json",
+      "sourceSHA256": "aff0070c274a9f83ffc817e28021d886275c50343e9a9d11b5bc3d23949ad6c2",
+      "index": 539,
+      "row": {
+        "ID": 2100139,
+        "FinishType": "UseItem",
+        "ParamType": "Equal",
+        "ParamInt1": 11,
+        "ParamStr1": "",
+        "ParamIntList": [],
+        "ParamItemList": [],
+        "Progress": 120
+      }
+    }
+  ]
+}

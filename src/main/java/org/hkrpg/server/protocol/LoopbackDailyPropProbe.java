@@ -18,6 +18,7 @@ public final class LoopbackDailyPropProbe {
   private final Map<String, Object> result = new LinkedHashMap<>();
   private boolean resume;
   private int step, leader;
+  private int pushedPoints = -1, pushedPropProgress = -1;
   private final Map<Integer, Integer> boxes = new HashMap<>();
 
   private static Object field(DynamicMessage m, String name) {
@@ -157,6 +158,13 @@ public final class LoopbackDailyPropProbe {
     while (bytes.isReadable()) {
       var frame = PacketCodec.decodeNext(bytes);
       require(frame != null, "Truncated daily frame");
+      if (frame.cmdId() == protocol.clientCommand("DailyActiveInfoNotify")) {
+        require(frame.header().length == 0, "Daily push borrowed a request identity");
+        var notification = protocol.clientSchema().parse("DailyActiveInfoNotify", frame.body());
+        require(notification.getUnknownFields().asMap().isEmpty(), "Unknown daily notification fields");
+        pushedPoints = number(notification, "daily_active_point");
+        continue;
+      }
       String name =
           List.of(
                   "PlayerGetTokenScRsp",
@@ -177,6 +185,12 @@ public final class LoopbackDailyPropProbe {
       if (name == null) continue;
       var m = protocol.clientSchema().parse(name, frame.body());
       require(m.getUnknownFields().asMap().isEmpty(), "Unknown daily response fields");
+      if (name.equals("GetQuestDataScRsp") && step == 8) {
+        for (var raw : (List<?>) field(m, "quest_list")) {
+          var quest = (DynamicMessage) raw;
+          if (number(quest, "id") == 2100144) pushedPropProgress = number(quest, "progress");
+        }
+      }
       boolean duplicate =
           name.equals("TakeQuestRewardScRsp") && Set.of(5, 15, 20, 21).contains(step);
       boolean stale = name.equals("SceneCastSkillScRsp") && step == 11;
@@ -251,6 +265,8 @@ public final class LoopbackDailyPropProbe {
         case "TakeQuestRewardScRsp" -> {
           if (step == 3) {
             claimed(m, 2100132, true);
+            require(pushedPoints == 100, "Claimed login points did not arrive before a refresh query");
+            result.put("nativeAutoPointPushBeforeQuery", true);
             query(c, "GetDailyActiveInfoCsReq", 4);
           } else if (step == 5) {
             claimed(m, 2100132, false);
@@ -258,6 +274,8 @@ public final class LoopbackDailyPropProbe {
             query(c, "GetDailyActiveInfoCsReq", 6);
           } else if (step == 13) {
             claimed(m, 2100144, true);
+            require(pushedPoints == 300, "Claimed prop points did not arrive before a refresh query");
+            result.put("nativePropPointPushBeforeQuery", true);
             query(c, "GetDailyActiveInfoCsReq", 14);
           } else if (step == 15) {
             claimed(m, 2100144, false);
@@ -286,7 +304,11 @@ public final class LoopbackDailyPropProbe {
           require(
               !m.hasField(m.getDescriptorForType().findFieldByName("battle_info")),
               "Props created a battle");
-          if (step == 8) query(c, "GetQuestDataCsReq", 9);
+          if (step == 8) {
+            require(pushedPropProgress == 3, "Destruction progress did not arrive before a refresh query");
+            result.put("nativePropProgressPushBeforeQuery", true);
+            query(c, "GetQuestDataCsReq", 9);
+          }
           else {
             require(step == 11, "Unexpected cast");
             query(c, "GetQuestDataCsReq", 12);

@@ -10,7 +10,9 @@ import emu.lunarcore.game.quest.QuestManager;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.proto.DailyActivityInfoOuterClass.DailyActivityInfo;
 import emu.lunarcore.server.packet.Retcode;
+import emu.lunarcore.server.packet.SessionState;
 import emu.lunarcore.server.packet.send.PacketDailyActiveInfoNotify;
+import emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp;
 import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
@@ -187,8 +189,6 @@ public final class DailyManager {
     if (changed) {
       player.save();
       sync();
-      if (player.isOnline())
-        player.sendPacket(new emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp(player));
     }
   }
 
@@ -276,7 +276,6 @@ public final class DailyManager {
     if (changed) {
       player.save();
       sync();
-      if (player.isOnline()) player.sendPacket(new emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp(player));
     }
   }
 
@@ -543,6 +542,17 @@ public final class DailyManager {
   }
 
   private void sync() {
-    if (player.isOnline()) player.sendPacket(new PacketDailyActiveInfoNotify(player));
+    if (!player.isOnline()) return;
+    var session = player.getSession();
+    var protocol = session == null ? null : session.getProtocol();
+    if (protocol != null && protocol.experimental() && session.getState() != SessionState.ACTIVE) return;
+    var packet = new PacketDailyActiveInfoNotify(player);
+    if (protocol != null && protocol.experimental()) {
+      // The frozen legacy CmdId is -1, so GameSession.send(BasePacket) would drop this push.
+      session.sendClientPacket("DailyActiveInfoNotify",
+          protocol.translate("DailyActiveInfoNotify", packet.getData().toByteArray(), true));
+    } else player.sendPacket(packet);
+    // The active-info push contains quest ids, but no progress or completion status.
+    player.sendPacket(new PacketGetQuestDataScRsp(player));
   }
 }

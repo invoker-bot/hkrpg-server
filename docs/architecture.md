@@ -1067,3 +1067,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 `ShopService` 统一游戏内货币购买、自选奖励展开、唯一物品与容量校验。`ShopPurchaseState` 保存累计购买次数和未完成付款记录，`ShopCosmetics46` 提供已购名片及帕姆服装的查询和选择；现有多文档存储不提供跨崩溃原子性，异常记录不自动重复扣款。全目录检查和客户端边界见[商店购买说明](shop-purchases-4.6.md)。
 
 `ShopAvailability` 用独立文件保存全服下架商品对，整批验证、备份与原子发布后生效；购买读锁与修改写锁防止下架确认后继续准入付款。GM 商品投影、旧/4.6 查询与购买入口共读该状态，不改资源或玩家限购。范围与验证见[GM 商店管理](gm-shops.md)。
+
+`DailyManager.sync()` 对 ACTIVE 的 4.6 会话使用原生 3360 活跃度通知，随后以 925 同步已保存任务进度，避免冻结旧消息编号 -1 被发送层丢弃。保存、重登与客户端验收边界见[活跃度通知说明](daily-active-notify-4.6.md)。
