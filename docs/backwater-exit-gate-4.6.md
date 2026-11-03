@@ -41,3 +41,5 @@
 - 发布核验记录在 `build/backwater-exit-gate-20261103/` 的 `deployment.json`、`backup-proof.json`、`data-preservation.json` 和 `compose-verification.json`。
 
 更新后请退出游戏重新登录，再触发裂隙前控制装置的剧情，清除旧会话中失败的交互等待。真实客户端镜头、地图界面、碰撞及战斗接续仍待用户复测，本轮没有启动或操作客户端，也没有使用 computer use。
+
+2026-11-03 后续用户复测仍未通过：按裂隙 F 后整个画面冻结。实际客户端日志定位到本地地图页的空初始化参数，上一轮机关修复未覆盖该入口；原因、客户端兼容修复及验证边界另见[空间裂隙地图冻结](space-fissure-map-freeze-4.6.md)。

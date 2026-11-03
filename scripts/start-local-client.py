@@ -90,6 +90,18 @@ def load_manifest(path):
     digests = list(data['clientFiles'].values()) + [data['debugConsole']['sha256']]
     if any(not isinstance(value, str) or not re.fullmatch('[0-9a-f]{64}', value) for value in digests):
         raise ValueError('客户端清单 SHA256 无效')
+    lua_files = data.get('clientLuaFiles', {})
+    lua_prefix = 'StarRail_Data/Persistent/Lua/Windows/'
+    if not isinstance(lua_files, dict) or len(lua_files) not in (0, 4):
+        raise ValueError('地图兼容资源清单不完整')
+    if lua_files and (lua_prefix + 'M_LuaV.bytes' not in lua_files
+                     or sum(name.startswith(lua_prefix + 'LuaV_') for name in lua_files) != 1):
+        raise ValueError('地图兼容资源缺少入口或索引')
+    for relative, expected in lua_files.items():
+        if (not relative.startswith(lua_prefix)
+                or not re.fullmatch(r'(M_LuaV|LuaV_[a-f0-9]{32}|[a-f0-9]{32})\.bytes', relative[len(lua_prefix):])
+                or not isinstance(expected, str) or not re.fullmatch('[0-9a-f]{64}', expected)):
+            raise ValueError('地图兼容资源路径或 SHA256 无效')
     service = data['service']
     url = urlsplit(service['readyUrl'])
     if (url.scheme != 'http' or url.hostname != '127.0.0.1' or url.username or url.password
@@ -250,9 +262,14 @@ def start(manifest, *, dry_run=False, repair_only=False):
     for relative, expected in data['clientFiles'].items():
         if sha(checked_path(root, relative)) != expected:
             raise ValueError('客户端文件已变化，拒绝覆盖或启动: ' + relative)
+    for relative, expected in data.get('clientLuaFiles', {}).items():
+        if sha(checked_path(root, relative)) != expected:
+            raise ValueError('地图兼容资源已变化，请重新核对: ' + relative)
     state = retire_console_proxy(root, data['debugConsole']['sha256'], dry_run=dry_run)
     result = {'dryRun': dry_run, 'repairOnly': repair_only, 'console': 'external',
               'clientRoot': str(root), 'clientFilesVerified': len(REQUIRED_FILES), **state}
+    if data.get('clientLuaFiles'):
+        result['clientLuaFilesVerified'] = len(data['clientLuaFiles'])
     if not dry_run and not repair_only:
         snapshot = None
         try:
