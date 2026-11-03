@@ -1,0 +1,294 @@
+{
+  "source": "DimbreathBot/TurnBasedGameData@724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "description": "边缘通路空间裂隙前的203原始机关回调；完整脚本和任务定义，表格只筛选所需行。楼层、G21、控制器图及铁门图复用backwater-gates-4.6.json。",
+  "sources": [
+    {
+      "path": "Config/Level/Mission/1010302/MissionInfo_1010302.json",
+      "sha256": "9349b7e9c48d04ee1afdf2b36e7cffd46632060a76c4bd81e3d08289574a8b2f"
+    },
+    {
+      "path": "Config/Level/Mission/1010302/MissionInfo_1010302.partial.json",
+      "sha256": "2c4b6ad427e27d3be79c09ab8ac05396eda7466bab19d7ef65f12c06827e44f2"
+    },
+    {
+      "path": "Config/Level/Mission/1010302/Mission_101030203.json",
+      "sha256": "e1b762a30c0aa1981e0a8c5fd5cc4df972e729fe489129d79cced9416b39b8fe"
+    },
+    {
+      "path": "ExcelOutput/MainMission.json",
+      "sha256": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a"
+    },
+    {
+      "path": "ExcelOutput/InteractConfig.json",
+      "sha256": "3a1e0f178b95a482fa2c03975f3a8f2a4ffa1e609c4819aeee5108dc9ef29de9"
+    }
+  ],
+  "records": {
+    "Config/Level/Mission/1010302/MissionInfo_1010302.json": {
+      "MainMissionID": 1010302,
+      "StartSubMissionList": [
+        101030203
+      ],
+      "FinishSubMissionList": [
+        101030205
+      ]
+    },
+    "Config/Level/Mission/1010302/MissionInfo_1010302.partial.json": {
+      "SubMissionList": [
+        {
+          "ID": 101030203,
+          "MainMissionID": 1010302,
+          "MissionJsonPath": "Config/Level/Mission/1010302/Mission_101030203.json",
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "Auto",
+          "MazePlaneID": 20111,
+          "MazeFloorID": 20111001,
+          "FinishType": "PropState",
+          "ParamType": "Equal",
+          "ParamInt1": 21,
+          "ParamInt2": 300004,
+          "ParamInt3": 1,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20111001,
+          "WayPointGroupID": 21,
+          "WayPointEntityID": 300004
+        },
+        {
+          "ID": 101030204,
+          "MainMissionID": 1010302,
+          "MissionJsonPath": "Config/Level/Mission/1010302/Mission_101030204.json",
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101030203
+          ],
+          "FinishType": "StageWin",
+          "ParamType": "Equal",
+          "ParamInt1": 20111010,
+          "ParamItemList": [],
+          "Progress": 1,
+          "WayPointType": "Prop",
+          "WayPointFloorID": 20111001,
+          "WayPointGroupID": 4,
+          "WayPointEntityID": 300009
+        },
+        {
+          "ID": 101030205,
+          "MainMissionID": 1010302,
+          "MissionJsonPath": "Config/Level/Mission/1010302/Mission_101030205.json",
+          "LevelPlaneID": 20111,
+          "LevelFloorID": 20111001,
+          "TakeType": "AnySequence",
+          "TakeParamIntList": [
+            101030204
+          ],
+          "FinishType": "Talk",
+          "ParamType": "Equal",
+          "ParamStr1": "Mission_101030205",
+          "ParamItemList": [],
+          "Progress": 1,
+          "IsShowFinishEffect": 2,
+          "WayPointFloorID": 20111001
+        }
+      ]
+    },
+    "Config/Level/Mission/1010302/Mission_101030203.json": {
+      "OnInitSequece": [],
+      "OnStartSequece": [
+        {
+          "TaskList": [
+            {
+              "$type": "RPG.GameCore.PropSetupUITrigger",
+              "ButtonIcon": "SpriteOutput/TalkIcon/ChatIcon.png",
+              "IconType": {
+                "EnumIndex": 20,
+                "Value": 1
+              },
+              "ButtonText": {
+                "Hash": 4901613590055454325
+              },
+              "ButtonCallback": [
+                {
+                  "$type": "RPG.GameCore.PropStateExecute",
+                  "TargetType": {
+                    "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                    "FetchType": "SinglePropByPropID",
+                    "SinglePropID": {
+                      "GroupID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 21
+                        }
+                      },
+                      "ID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 300004
+                        }
+                      }
+                    }
+                  },
+                  "State": "Locked",
+                  "Execute": [
+                    {
+                      "$type": "RPG.GameCore.StartPropInteractMode",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                        "FetchType": "SinglePropByPropID",
+                        "SinglePropID": {
+                          "GroupID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 21
+                            }
+                          },
+                          "ID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 300004
+                            }
+                          }
+                        }
+                      },
+                      "Mode": "UsePose02"
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropTriggerAnimState",
+                      "AnimStateName": "Activing",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                        "FetchType": "SinglePropByPropID",
+                        "SinglePropID": {
+                          "GroupID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 21
+                            }
+                          },
+                          "ID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 300004
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.WaitSecond",
+                      "WaitTime": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 1.5
+                        }
+                      }
+                    },
+                    {
+                      "$type": "RPG.GameCore.EndPropInteract"
+                    },
+                    {
+                      "$type": "RPG.GameCore.TriggerPerformance",
+                      "PerformanceType": "D",
+                      "PerformanceID": 101030203,
+                      "ValueSource": {}
+                    },
+                    {
+                      "$type": "RPG.GameCore.PropReqInteract",
+                      "TargetType": {
+                        "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                        "FetchType": "SinglePropByPropID",
+                        "SinglePropID": {
+                          "GroupID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 21
+                            }
+                          },
+                          "ID": {
+                            "IsDynamic": false,
+                            "FixedValue": {
+                              "Value": 300004
+                            }
+                          }
+                        }
+                      },
+                      "InteractID": {
+                        "IsDynamic": false,
+                        "FixedValue": {
+                          "Value": 1210
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "TargetType": {
+                "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                "FetchType": "SinglePropByPropID",
+                "SinglePropID": {
+                  "GroupID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 21
+                    }
+                  },
+                  "ID": {
+                    "IsDynamic": false,
+                    "FixedValue": {
+                      "Value": 300004
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "Type": "Mission"
+    },
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1010302,
+        "Type": "Main",
+        "WorldID": 201,
+        "DisplayPriority": 1010302,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 8406191718267571345
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010301
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1010401,
+        "TrackWeight": 100,
+        "RewardID": 100,
+        "DisplayRewardID": 11010302,
+        "MissionPack": 1010301,
+        "ChapterID": 101001,
+        "SubRewardList": []
+      }
+    ],
+    "ExcelOutput/InteractConfig.json": [
+      {
+        "InteractID": 1210,
+        "SrcState": "Locked",
+        "TargetState": "Open",
+        "ItemCostList": []
+      }
+    ]
+  }
+}

@@ -209,6 +209,7 @@ public final class StoryDoors {
       Scene scene, int group, PropInfo info, MissionInfo.SubMissionInfo c) {
     if (!observes(scene, group, info, c)) return false;
     if (BackwaterStoryConsole.matches(info)) return BackwaterStoryConsole.objective(scene, group, info, c);
+    if (BackwaterExitGate.matches(scene, info)) return BackwaterExitGate.objective(scene, group, info, c);
     if (c.getTask() == null) return false;
     try {
       var script = JsonParser.parseString(c.getTask().getSourceDefinition());
@@ -435,6 +436,9 @@ public final class StoryDoors {
           && !completed(scene, group, info) ? PropState.Locked : PropState.Closed;
     }
     if (completed(scene, group, info)) return PropState.Open;
+    if (BackwaterExitGate.matches(scene, info))
+      return ready(scene, group, info) && pairReceipt(scene, group, info)
+          ? PropState.Open : PropState.Locked;
     if (info.getState() == PropState.Locked && !ready(scene, group, info)
         && !BackwaterStoryConsole.introductionReady(scene, group, info)
         && !unlocked(scene, group, info)) return PropState.Locked;
@@ -509,6 +513,12 @@ public final class StoryDoors {
     if (BackwaterStoryConsole.matches(info) && !ready(scene, prop.getGroupId(), info))
       return Retcode.INTERACT_TYPE_INVALID;
     var link = link(info);
+    if (BackwaterExitGate.matches(scene, info)) {
+      if (config != 1210 || prop.getState() != PropState.Locked
+          || state(scene, prop.getGroupId(), info) != PropState.Locked
+          || !ready(scene, prop.getGroupId(), info)) return Retcode.INTERACT_TYPE_INVALID;
+      return validLink(scene, info, link) ? Retcode.SUCC : Retcode.REQ_PARA_INVALID;
+    }
     if (repeatable(info)) {
       var current = state(scene, prop.getGroupId(), info);
       boolean valid = config == 1010 && current == PropState.Closed

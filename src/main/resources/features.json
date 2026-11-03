@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "backwater-exit-gate",
+      "name": "边缘通路空间裂隙前的剧情机关",
+      "status": "partial",
+      "evidence": "src/test/java/org/hkrpg/server/gameplay/BackwaterExitGate46Test.java",
+      "gap": "101030203原始演出回调1210按完整任务、脚本与双向绑定校验，将G21/300004从Locked直接改为Open并联动300005；接取不提前启用。复用整对保存、失败回滚和重登恢复，只推进到原战斗目标204。裂隙地图UI、演出和后续两场战斗仍须实机验收，见docs/backwater-exit-gate-4.6.md。"
+    },
+    {
       "id": "backwater-simple-gates",
       "name": "边缘通路普通铁门与剧情控制台",
       "status": "partial",
