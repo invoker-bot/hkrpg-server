@@ -93,7 +93,8 @@ public class UniverseLifecycleTest {
       var entry = emu.lunarcore.data.GameData.getMapEntranceExcelMap().get(id);
       var floor = entry == null ? null : emu.lunarcore.data.GameData.getFloorInfo(
           entry.getPlaneID(), entry.getFloorID());
-      if (floor != null && floor.getAnchorInfo(group, anchor) != null)
+      var source = floor == null ? null : floor.getGroups().get(group);
+      if (source != null && source.getAnchorList() != null && floor.getAnchorInfo(group, anchor) != null)
         return super.enterSceneAtAnchor(id, group, anchor, send);
       return enterScene(id, 0, send);
     }

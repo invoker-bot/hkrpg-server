@@ -28,6 +28,7 @@ class Universe46RoomTest {
             }
           };
       int entry = 11;
+      int enteredGroup, enteredAnchor;
       boolean rejectScene;
 
       public void save() {}
@@ -55,6 +56,11 @@ class Universe46RoomTest {
         if (rejectScene) return false;
         entry = id;
         return true;
+      }
+
+      @Override public boolean enterSceneAtAnchor(int id, int group, int anchor, boolean send) {
+        enteredGroup = group; enteredAnchor = anchor;
+        return enterScene(id, 0, send);
       }
     }
 
@@ -141,6 +147,8 @@ class Universe46RoomTest {
             (DynamicMessage) InitialData46Test.field(response, "scene"), "entry_id"));
     assertEquals(2, run.getSiteId());
     assertEquals(ROOM2, run.getRoomId());
+    assertEquals(2, session.player.enteredGroup);
+    assertEquals(1, session.player.enteredAnchor);
     assertEquals(Set.of(1), run.getCleared());
     assertTrue(session.player.getGameplay().getRewards().isEmpty());
     assertEquals(
