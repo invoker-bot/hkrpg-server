@@ -526,6 +526,7 @@ class ItemSaleTest {
     assertNotEquals(0, session.code());
     assertEquals(0, stock(221));
     assertEquals("RESERVED", player.getGameplay().getItemSale().getLastAttempt().getPhase());
+    intact(failed);
     intact(last);
     var deletionUpdates = packets.stream().map(BasePacket::getData)
         .filter(emu.lunarcore.proto.PlayerSyncScNotifyOuterClass.PlayerSyncScNotify.class::isInstance)

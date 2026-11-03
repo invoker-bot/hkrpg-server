@@ -194,26 +194,27 @@ public class Inventory extends BasePlayerManager {
         // Sanity check
         if (items.size() == 0) return results;
 
-        // Add to inventory
-        for (GameItem item : items) {
-            var delivery = deliver(item);
-            GameItem result = delivery.stored();
-            if (result != null && delivery.amount() > 0) {
-                updates.add(result);
-                results.add(stackItem(result) ? new GameItem(result.getExcel(),delivery.amount()) : result);
-                acquired.merge(item.getItemId(),delivery.amount(),Math::addExact);
+        try {
+            // Add to inventory
+            for (GameItem item : items) {
+                var delivery = deliver(item);
+                GameItem result = delivery.stored();
+                if (result != null && delivery.amount() > 0) {
+                    updates.add(result);
+                    results.add(stackItem(result) ? new GameItem(result.getExcel(),delivery.amount()) : result);
+                    acquired.merge(item.getItemId(),delivery.amount(),Math::addExact);
+                }
             }
-        }
-
-        // Send packet (update)
-        if (results.size() > 0) {
-            getPlayer().sendPacket(new PacketPlayerSyncScNotify(updates));
-            if (showHint) {
-                getPlayer().sendPacket(new PacketScenePlaneEventScNotify(results));
+        } finally {
+            // A later failed write cannot hide items whose earlier writes already succeeded.
+            if (!results.isEmpty()) {
+                getPlayer().sendPacket(new PacketPlayerSyncScNotify(updates));
+                if (showHint) {
+                    getPlayer().sendPacket(new PacketScenePlaneEventScNotify(results));
+                }
             }
+            if (!acquired.isEmpty()) getPlayer().getMissionManager().onItemsAcquired(acquired);
         }
-
-        if (!acquired.isEmpty()) getPlayer().getMissionManager().onItemsAcquired(acquired);
 
         return results;
     }
@@ -306,11 +307,7 @@ public class Inventory extends BasePlayerManager {
                 }
                 // Duplicates cause problems
                 item.setCount(1);
-                // Adds to inventory
-                this.putItem(item, tab);
-                // Set ownership and save to database
-                item.save();
-                return item;
+                return saveNewItem(item, tab);
             case Virtual:
                 // Handle
                 if (!this.addVirtualItem(item.getItemId(), item.getCount())) return null;
@@ -384,20 +381,33 @@ public class Inventory extends BasePlayerManager {
                     if (tab.getSize() >= tab.getMaxCapacity()) {
                         return null;
                     }
-                    // Put item to inventory
-                    this.putItem(item, tab);
-                    // Set ownership and save to db
-                    item.save();
-                    return item;
+                    return saveNewItem(item, tab);
                 } else {
                     // Add count to item
-                    int amount = Utils.safeAdd(existingItem.getCount(), item.getCount(), emu.lunarcore.game.shop.ShopItems.stackLimit(item.getExcel()), 0);
+                    int previousCount = existingItem.getCount();
+                    int amount = Utils.safeAdd(previousCount, item.getCount(), emu.lunarcore.game.shop.ShopItems.stackLimit(item.getExcel()), 0);
                     if (existingItem.setCount(amount)) {
-                        existingItem.save();
+                        try {
+                            existingItem.save();
+                        } catch (RuntimeException failed) {
+                            existingItem.setCount(previousCount);
+                            throw failed;
+                        }
                     }
                     return existingItem;
                 }
         }
+    }
+
+    /** Called under the inventory lock; publish a new item only after its save succeeds. */
+    private GameItem saveNewItem(GameItem item, InventoryTab tab) {
+        item.setOwner(this.getPlayer());
+        item.save();
+        if (tab != null) {
+            getItems().put(item.getInternalUid(), item);
+            tab.onAddItem(item);
+        }
+        return item;
     }
 
     private synchronized void putItem(GameItem item, InventoryTab tab) {
@@ -466,49 +476,52 @@ public class Inventory extends BasePlayerManager {
       // Init results and remove items from inventory
       List<GameItem> results = new ArrayList<GameItem>(items.size());
 
-      for (ItemParam param : items) {
-        // Remove virtual items first
-        if (param.getType() == ItemParamType.PILE) {
-          if (param.getId() == GameConstants.MATERIAL_COIN_ID) {
-            // Remove credits
-            int before = getPlayer().getScoin();
-            getPlayer().addSCoin(-param.getCount() * multiplier);
-            if (before > getPlayer().getScoin())
-              consumed.merge(param.getId(), before - getPlayer().getScoin(), Math::addExact);
-            continue;
-          } else if (param.getId() == GameConstants.MATERIAL_HCOIN_ID) {
-            // Remove credits
-            int before = getPlayer().getHcoin();
-            getPlayer().addHCoin(-param.getCount() * multiplier);
-            if (before > getPlayer().getHcoin())
-              consumed.merge(param.getId(), before - getPlayer().getHcoin(), Math::addExact);
-            continue;
-          } else if (param.getId() == 3) {
-            int before = getPlayer().getMcoin();
-            getPlayer().addMCoin(-param.getCount() * multiplier);
-            if (before > getPlayer().getMcoin())
-              consumed.merge(3, before - getPlayer().getMcoin(), Math::addExact);
-            continue;
+      try {
+        for (ItemParam param : items) {
+          // Remove virtual items first
+          if (param.getType() == ItemParamType.PILE) {
+            if (param.getId() == GameConstants.MATERIAL_COIN_ID) {
+              // Remove credits
+              int before = getPlayer().getScoin();
+              getPlayer().addSCoin(-param.getCount() * multiplier);
+              if (before > getPlayer().getScoin())
+                consumed.merge(param.getId(), before - getPlayer().getScoin(), Math::addExact);
+              continue;
+            } else if (param.getId() == GameConstants.MATERIAL_HCOIN_ID) {
+              // Remove credits
+              int before = getPlayer().getHcoin();
+              getPlayer().addHCoin(-param.getCount() * multiplier);
+              if (before > getPlayer().getHcoin())
+                consumed.merge(param.getId(), before - getPlayer().getHcoin(), Math::addExact);
+              continue;
+            } else if (param.getId() == 3) {
+              int before = getPlayer().getMcoin();
+              getPlayer().addMCoin(-param.getCount() * multiplier);
+              if (before > getPlayer().getMcoin())
+                consumed.merge(3, before - getPlayer().getMcoin(), Math::addExact);
+              continue;
+            }
+          }
+
+          // Remove param items
+          GameItem item = this.getItemByParam(param);
+          if (item == null) continue;
+
+          int before = item.getCount();
+          GameItem result = this.deleteItem(item, param.getCount() * multiplier);
+          if (result != null) {
+            results.add(result);
+            consumed.merge(item.getItemId(), before - item.getCount(), Math::addExact);
           }
         }
-
-        // Remove param items
-        GameItem item = this.getItemByParam(param);
-        if (item == null) continue;
-
-        int before = item.getCount();
-        GameItem result = this.deleteItem(item, param.getCount() * multiplier);
-        if (result != null) {
-          results.add(result);
-          consumed.merge(item.getItemId(), before - item.getCount(), Math::addExact);
+      } finally {
+        // Earlier item writes may have succeeded before a later debit failed.
+        // Publish only those confirmed changes, as for removeItems(Collection).
+        if (!results.isEmpty()) {
+          getPlayer().sendPacket(new PacketPlayerSyncScNotify(results));
         }
+        if (!consumed.isEmpty()) getPlayer().getMissionManager().onItemsConsumed(consumed);
       }
-
-      // Send packet (update)
-      if (results.size() > 0) {
-        getPlayer().sendPacket(new PacketPlayerSyncScNotify(results));
-      }
-      getPlayer().getMissionManager().onItemsConsumed(consumed);
     }
   }
 
@@ -606,10 +619,20 @@ public class Inventory extends BasePlayerManager {
       return null;
     }
 
+    int previousCount = item.getCount();
     if (item.getExcel() == null || item.getExcel().isEquippable()) {
       item.setCount(0);
     } else {
       item.setCount(Utils.safeSubtract(item.getCount(), count));
+    }
+
+    // A rejected write must leave both inventory indexes and the in-memory count intact.
+    // Unlink only after storage confirms deletion; callers receive no false debit notification.
+    try {
+      item.save();
+    } catch (RuntimeException failed) {
+      item.setCount(previousCount);
+      throw failed;
     }
 
     if (item.getCount() <= 0) {
@@ -626,9 +649,6 @@ public class Inventory extends BasePlayerManager {
       // Remove from items map
       getItems().remove(item.getInternalUid());
     }
-
-    // Update in db
-    item.save();
 
     // Returns true on success
     return item;

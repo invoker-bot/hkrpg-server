@@ -177,14 +177,25 @@ public class GachaService extends BaseGameService {
         }
     }
 
-    public synchronized void doPulls(Player player, int gachaId, int times) {
+    public void doPulls(Player player, int gachaId, int times) {
+        GachaBanner banner;
+        synchronized (this) {
+            banner = this.getGachaBanners().get(gachaId);
+        }
+        // Keep the capacity check, debit, rolls and delivery in one player operation.
+        // Never hold the banner-service lock while waiting for the player lock.
+        synchronized (player) {
+            doPullsLocked(player, banner, times);
+        }
+    }
+
+    private void doPullsLocked(Player player, GachaBanner banner, int times) {
         // Sanity checks
         if (times != 10 && times != 1) {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_NUM_INVALID));
             return;
         }
 
-        GachaBanner banner = this.getGachaBanners().get(gachaId);
         if (banner == null || !banner.isActive(System.currentTimeMillis() / 1000L)) {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.GACHA_ID_NOT_EXIST));
             return;
@@ -206,8 +217,11 @@ public class GachaService extends BaseGameService {
             return;
         }
 
-        // Prevent player from using gacha if they are at max light cones
-        if (player.getInventory().getTabByItemType(ItemMainType.Equipment).getSize() >= player.getInventory().getTabByItemType(ItemMainType.Equipment).getMaxCapacity()) {
+        // Every draw can yield a distinct cone, including discounted beginner ten-pulls.
+        // Reserve room for the whole batch before spending tickets or changing pity.
+        var equipmentTab = player.getInventory().getTabByItemType(ItemMainType.Equipment);
+        if (equipmentTab == null || equipmentTab.getAvailableCapacity() < times
+                || !player.getInventory().hasItemIdCapacity(times)) {
             player.sendPacket(new PacketDoGachaScRsp(Retcode.EQUIPMENT_EXCEED_LIMIT));
             return;
         }

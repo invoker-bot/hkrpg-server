@@ -229,12 +229,12 @@ class DiceUpgrade46Test {
         };
     assertTrue(s.player.getInventory().addItem(item));
     assertThrows(IllegalStateException.class, () -> upgrade(s, DiceCombat46Test.AVATAR));
-    assertEquals(940, dust(s));
+    assertEquals(1000, dust(s), "A rejected item write must preserve the owned dust");
     assertEquals(1, level(s));
     assertEquals(
         Retcode.SYSTEM_BUSY.getVal(),
         Gameplay46.number(upgrade(s, DiceCombat46Test.AVATAR), "retcode"));
-    assertEquals(940, dust(s));
+    assertEquals(1000, dust(s));
   }
 
   @Test

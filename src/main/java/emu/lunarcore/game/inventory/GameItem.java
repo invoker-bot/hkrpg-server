@@ -174,19 +174,19 @@ public class GameItem implements Syncable {
     }
 
     public boolean setEquipAvatar(BaseAvatar baseAvatar) {
-        if (baseAvatar == null && this.isEquipped()) {
+        if (baseAvatar == null) {
+            boolean changed = this.equipAvatarId != null || this.equipAvatarExcelId != 0;
             this.equipAvatarId = null;
             this.equipAvatar = null;
             this.equipAvatarExcelId = 0; // Legacy field
-            return true;
-        } else if (this.equipAvatarId != baseAvatar.getId()) {
-            this.equipAvatarId = baseAvatar.getId();
-            this.equipAvatar = baseAvatar;
-            this.equipAvatarExcelId = 0; // Legacy field
-            return true;
+            return changed;
         }
-
-        return false;
+        boolean changed = !java.util.Objects.equals(this.equipAvatarId, baseAvatar.getId())
+            || this.equipAvatarExcelId != 0;
+        this.equipAvatarId = baseAvatar.getId();
+        this.equipAvatar = baseAvatar;
+        this.equipAvatarExcelId = 0; // Legacy field
+        return changed;
     }
 
     // Sub affixes

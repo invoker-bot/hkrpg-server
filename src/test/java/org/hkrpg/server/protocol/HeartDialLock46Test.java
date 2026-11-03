@@ -464,24 +464,45 @@ class HeartDialLock46Test {
             .getAsBoolean());
   }
 
+  @Test
+  void aConfirmedMissingDebitFollowedByAnInterruptedCallbackCannotBeDebitedAgain() throws Exception {
+    interruptedDebit(MISSING, 0, true);
+  }
+
+  @Test
+  void aConfirmedLockDebitFollowedByAnInterruptedCallbackCannotBeDebitedAgain() throws Exception {
+    stock(MISSING, 3);
+    assertEquals(0, submit(MISSING));
+    interruptedDebit(LOCK, 2, true);
+    assertTrue(journal(fixture.player.getGameplay()).getAsJsonObject("missingPayment")
+        .get("paid").getAsBoolean());
+  }
+
   void interruptedDebit(int id, int expectedStep) throws Exception {
+    interruptedDebit(id, expectedStep, false);
+  }
+
+  void interruptedDebit(int id, int expectedStep, boolean afterDebit) throws Exception {
     var item =
         new GameItem(id, 3) {
           public void save() {
-            if (getCount() == 2)
-              throw new IllegalStateException("interrupted after the inventory debit");
+            if (!afterDebit && getCount() == 2)
+              throw new IllegalStateException("rejected inventory debit write");
           }
         };
     assertTrue(fixture.player.getInventory().addItem(item));
     fixture.saved.clear();
-    assertThrows(IllegalStateException.class, () -> submit(id));
-    assertEquals(2, item.getCount());
+    fixture.interruptAfterDebit = afterDebit;
+    try { assertThrows(IllegalStateException.class, () -> submit(id)); }
+    finally { fixture.interruptAfterDebit = false; }
+    int remaining = afterDebit ? 2 : 3;
+    assertEquals(remaining, item.getCount());
     assertEquals(1, fixture.saved.size());
     reload(fixture.saved.getFirst());
     assertEquals(expectedStep, step());
     assertEquals(Retcode.SYSTEM_BUSY.getVal(), submit(id));
     assertEquals(Retcode.SYSTEM_BUSY.getVal(), report(expectedStep == 0 ? 1010801 : 1010802));
-    assertEquals(2, item.getCount());
+    assertEquals(remaining, item.getCount());
     assertEquals(
         expectedStep == 0 ? -1 : 2,
         journal(fixture.player.getGameplay()).get("notifiedStep").getAsInt());

@@ -428,7 +428,7 @@ class Offering46Test {
   }
 
   @Test
-  void interruptionBetweenInventoryDebitAndProgressKeepsTheReservationWithoutRedebiting()
+  void rejectedInventoryWriteKeepsTheReservationAndOriginalStockWithoutRedebiting()
       throws Exception {
     var s = new DiceCombat46Test.Session();
     var interrupted = new boolean[] {false};
@@ -443,9 +443,10 @@ class Offering46Test {
     interrupted[0] = true;
     assertThrows(IllegalStateException.class, () -> submit(s));
     interrupted[0] = false;
-    assertFalse(s.player.getInventory().hasItem(POINT, 1));
+    assertTrue(s.player.getInventory().hasItem(POINT, 250));
     progress(query(s), 0, 0, 0);
     assertEquals(Retcode.SYSTEM_BUSY.getVal(), Gameplay46.number(submit(s), "retcode"));
+    assertEquals(250, item.getCount());
     assertTrue(
         s.player.getGameplay().getOfferings().get(12).getSubmissions().stream()
             .noneMatch(GameplayState.OfferingSubmission::isPaid));
@@ -603,7 +604,7 @@ class Offering46Test {
   }
 
   @Test
-  void interruptionAfterARewardInventoryWriteKeepsTheBatchUnclaimedAndCannotRepeat()
+  void rejectedRewardInventoryWriteKeepsTheBatchUnclaimedAndOriginalStockWithoutRepeating()
       throws Exception {
     var s = new DiceCombat46Test.Session();
     fixture.stock(s, POINT, 50);
@@ -621,12 +622,12 @@ class Offering46Test {
     assertThrows(
         IllegalStateException.class, () -> request(s, "TakeOfferingRewardCsReq", List.of(1), 0));
     fail[0] = false;
-    assertEquals(2, coin.getCount());
+    assertEquals(1, coin.getCount());
     assertTrue(((List<?>) Gameplay46.value(query(s), "has_taken_reward_id_list")).isEmpty());
     assertEquals(
         Retcode.SYSTEM_BUSY.getVal(),
         Gameplay46.number(request(s, "TakeOfferingRewardCsReq", List.of(1), 0), "retcode"));
-    assertEquals(2, coin.getCount());
+    assertEquals(1, coin.getCount());
   }
 
   @Test

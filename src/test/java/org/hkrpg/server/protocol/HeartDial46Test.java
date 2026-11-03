@@ -38,10 +38,20 @@ class HeartDial46Test {
   EntityNpc npc;
   GameSession session;
   String version = "4.6.0";
+  boolean interruptAfterDebit;
 
   final Player player =
       new Player() {
-        final Inventory inventory = new Inventory(this);
+        final Inventory inventory = new Inventory(this) {
+          @Override public boolean consumeForUse(
+              emu.lunarcore.game.inventory.GameItem item, int count, Runnable effect) {
+            return super.consumeForUse(item, count, () -> {
+              if (interruptAfterDebit)
+                throw new IllegalStateException("interrupted after the confirmed inventory debit");
+              effect.run();
+            });
+          }
+        };
 
         public Inventory getInventory() {
           return inventory;
