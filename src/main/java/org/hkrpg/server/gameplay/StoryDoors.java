@@ -24,6 +24,12 @@ public final class StoryDoors {
       "Config/Level/Mission/1010101/Prop/Prop_NormalInteract_SnowBall.json";
   private static final String REPAIR_GRAPH =
       "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_CablePuzzle_03.json";
+  private static final String SIMPLE_DOOR_GRAPH =
+      "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_BaseConsole_01A_Control_SimpleDoor.json";
+  private static final String IRON_GATE_GRAPH =
+      "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_IronGate_06.json";
+  private static final String SIMPLE_DOOR_KEY = "Maze_Prop_Chap01_BaseControllSimpleDoor";
+  private static final String IRON_GATE_CONTROLLER_KEY = "Maze_Prop_Chap01_IronGate06Controller_ConfigID";
   private static final JsonElement REPAIR_BINDINGS = JsonParser.parseString("""
       {"Values":[
         {"$type":"RPG.GameCore.SharedString","Value":"Chap01_ADV_MachineHouse_LevelArea,CablePuzzleCam_01","Key":"Vcam"},
@@ -83,8 +89,20 @@ public final class StoryDoors {
     return paired(info) || standalone(info) || repeatable(info);
   }
 
+  public static boolean retainsSource(PropInfo info) {
+    return controller(info) || ironGate(info);
+  }
+
+  private static boolean simpleDoorConsole(PropInfo info) {
+    return info != null && info.getPropID() == 101001 && SIMPLE_DOOR_GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean ironGate(PropInfo info) {
+    return info != null && info.getPropID() == 101004 && IRON_GATE_GRAPH.equals(info.getInitLevelGraph());
+  }
+
   private static boolean paired(PropInfo info) {
-    return info != null && info.getPropID() == 100000
+    return simpleDoorConsole(info) || info != null && info.getPropID() == 100000
         && info.getInitLevelGraph() != null
         && PAIRED_GRAPHS.contains(info.getInitLevelGraph());
   }
@@ -106,7 +124,7 @@ public final class StoryDoors {
   private static String bindingKey(PropInfo info) {
     if (keyLift(info)) return LIFT_KEY;
     if (!paired(info)) return null;
-    if (BRIDGE.equals(info.getInitLevelGraph())) return "Maze_Prop_Chap01_BaseControllSimpleDoor";
+    if (simpleDoorConsole(info) || BRIDGE.equals(info.getInitLevelGraph())) return SIMPLE_DOOR_KEY;
     if (BRIDGE_SIMPLE.equals(info.getInitLevelGraph())) return "Maze_Prop_Chap00_BaseControllSimpleDoor";
     return DOOR_KEY;
   }
@@ -133,7 +151,10 @@ public final class StoryDoors {
   }
 
   private static Link link(PropInfo info) {
-    String key = bindingKey(info);
+    return link(info, bindingKey(info));
+  }
+
+  private static Link link(PropInfo info, String key) {
     if (key == null
         || info.getValueSource() == null
         || info.getValueSource().getValues() == null) return null;
@@ -143,6 +164,9 @@ public final class StoryDoors {
               .filter(v -> v != null && v.has("Key") && key.equals(v.get("Key").getAsString()))
               .toList();
       if (values.size() != 1) return null;
+      if ((simpleDoorConsole(info) || ironGate(info))
+          && (!values.getFirst().has("$type")
+              || !"RPG.GameCore.SharedString".equals(values.getFirst().get("$type").getAsString()))) return null;
       var value = values.getFirst().get("Value");
       if (value == null
           || !value.isJsonPrimitive()
@@ -429,10 +453,10 @@ public final class StoryDoors {
 
   /** The former loader changed every 100000 definition to state 5 and discarded its bindings. */
   static boolean legacySource(ScenePropState.Snapshot record, PropInfo info) {
-    if (record == null || info.getPropID() != 100000) return false;
+    if (record == null || !(info.getPropID() == 100000 || simpleDoorConsole(info) || ironGate(info))) return false;
     var copy =
         ResourceLoader.getGson().fromJson(ResourceLoader.getGson().toJson(info), PropInfo.class);
-    copy.setState(PropState.BridgeState3);
+    if (info.getPropID() == 100000) copy.setState(PropState.BridgeState3);
     copy.setValueSource(null);
     return record.getSource().equals(PropTimelines.source(copy));
   }
@@ -444,7 +468,7 @@ public final class StoryDoors {
     if (info == null || prop.getPropInfo() != info) return;
     if (controller(info)) {
       prop.setState(state(scene, prop.getGroupId(), info), false);
-    } else if (prop.getExcel().isDoor() || prop.getPropType() == PropType.PROP_PLATFORM) {
+    } else if (prop.getExcel().isDoor() || ironGate(info) || prop.getPropType() == PropType.PROP_PLATFORM) {
       var owners = controllers(scene, prop.getGroupId(), prop.getInstId());
       if (owners.isEmpty()) return;
       boolean open =
@@ -503,7 +527,10 @@ public final class StoryDoors {
     var source = original(scene, link.group(), link.instance());
     var target = actor(scene, link);
     return source != null && target != null && target.getPropInfo() == source
-        && (keyLift(owner) ? target.getPropType() == PropType.PROP_ELEVATOR
+        && (simpleDoorConsole(owner) ? ironGate(source)
+            && new Link(owner.getGroup().getId(), owner.getID()).equals(link(source, IRON_GATE_CONTROLLER_KEY))
+            && target.getExcel().getPropStateList().contains(PropState.Open)
+            : keyLift(owner) ? target.getPropType() == PropType.PROP_ELEVATOR
             && source.getPropID() == 100007
             && (ROOT + "Elevator_Move_01.json").equals(source.getInitLevelGraph())
             : (DOOR_KEY.equals(bindingKey(owner)) ? target.getExcel().isDoor()
@@ -513,7 +540,7 @@ public final class StoryDoors {
 
   private static Retcode validateTarget(EntityProp prop, int config) {
     var scene = prop.getScene();
-    if ((prop.getExcel().isDoor() || prop.getPropType() == PropType.PROP_PLATFORM)
+    if ((prop.getExcel().isDoor() || ironGate(prop.getPropInfo()) || prop.getPropType() == PropType.PROP_PLATFORM)
         && !controllers(scene, prop.getGroupId(), prop.getInstId()).isEmpty())
       return Retcode.INTERACT_TYPE_INVALID;
     if (prop.getPropType() != PropType.PROP_ELEVATOR) return Retcode.SUCC;

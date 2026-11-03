@@ -1,3 +1,5 @@
+`StoryDoors` 识别原始 `101001/BaseConsole_01A_Control_SimpleDoor` 与 `101004/IronGate_06` 的双向绑定，`FloorInfo` 保留两端共享值，交互复用 `ScenePropTransitions` 同存并同步控制台和铁门；后续 Locked 机关不被提前启用。来源与验证边界见[铁门联动说明](backwater-gates-4.6.md)。
+
 `LiteralSceneTransfer` 为初始化与开始序列提供完整单步 EnterMap 解析；普通请求、登录恢复和同会话恢复共读，按实际接取与来源筛选唯一候选，并为正常剧情切图保留短期回执。原始 Auto/多前置、等待重置和验证边界见[共用场景接续](literal-scene-transfers-4.6.md)。
 
 `StoryDoors` 为机械屋原始 `CablePuzzle_03` 加入限定的自身状态交互，按 `1010206/101020109` 完整启用脚本和准确绑定恢复 Closed；`FloorInfo` 的现有控制器分支保留原始镜头、拼图板与目标共享值。完成上报继续走状态事务和原任务事件，完整客户端拼图及演出边界见[维修机器说明](serval-repair-machine-4.6.md)。
