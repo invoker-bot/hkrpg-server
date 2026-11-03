@@ -13,8 +13,13 @@ import emu.lunarcore.game.inventory.ItemParamMap;
 import emu.lunarcore.game.enums.ItemMainType;
 import emu.lunarcore.game.inventory.tabs.*;
 import emu.lunarcore.game.player.Player;
+import emu.lunarcore.game.player.PlayerUnlockData;
 import emu.lunarcore.server.packet.BasePacket;
+import emu.lunarcore.server.packet.CmdId;
 import emu.lunarcore.server.packet.Retcode;
+import emu.lunarcore.server.packet.send.PacketGetAvatarDataScRsp;
+import org.hkrpg.server.protocol.ProtocolBridge;
+import com.google.protobuf.DynamicMessage;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -187,17 +192,77 @@ class AvatarMilestonesTest {
     assertEquals(5,ticket.getCount()); assertTrue(f.avatar.hasTakenReward(1));
   }
 
+  @ParameterizedTest @ValueSource(ints={1,3,5})
+  void claimedCurrentPromotionIsPresentInSyncAndLoginSnapshots(int promotion) throws Exception {
+    var p = new FailedPlayer();
+    var avatar = owned(p);
+    avatar.setPromotion(promotion);
+    var tickets = stock(p,101,4);
+    var expected = new ArrayList<Integer>();
+    for (int milestone : List.of(1,3,5)) {
+      if (milestone > promotion) break;
+      assertEquals(Retcode.SUCC,AvatarMilestones.claimPromotion(p,1202,milestone).retcode());
+      expected.add(milestone);
+    }
+    assertEquals(4 + expected.size(),tickets.getCount());
+    var packet = p.packets.getLast();
+    assertEquals(CmdId.PlayerSyncScNotify,packet.getCmdId());
+    assertPromotionSnapshot(packet,"PlayerSyncScNotify",expected);
+    assertPromotionSnapshot(new PacketGetAvatarDataScRsp(p),"GetAvatarDataScRsp",expected);
+    assertEquals(Retcode.PROMOTION_REWARD_ALREADY_TAKEN,
+        AvatarMilestones.claimPromotion(p,1202,promotion).retcode());
+    assertEquals(4 + expected.size(),tickets.getCount());
+  }
+
+  @ParameterizedTest @ValueSource(ints={1,3,5})
+  void unclaimedCurrentPromotionRemainsAvailableInLoginSnapshot(int promotion) throws Exception {
+    var p = new FailedPlayer();
+    var avatar = owned(p);
+    avatar.setPromotion(promotion);
+    stock(p,101,4);
+    var expected = new ArrayList<Integer>();
+    for (int milestone : List.of(1,3,5)) {
+      if (milestone >= promotion) break;
+      assertEquals(Retcode.SUCC,AvatarMilestones.claimPromotion(p,1202,milestone).retcode());
+      expected.add(milestone);
+    }
+    assertFalse(avatar.hasTakenReward(promotion));
+    assertPromotionSnapshot(new PacketGetAvatarDataScRsp(p),"GetAvatarDataScRsp",expected);
+  }
+
+  private void assertPromotionSnapshot(BasePacket packet,String name,List<Integer> expected)
+      throws Exception {
+    var bridge = ProtocolBridge.forVersion("4.6.0");
+    var wire = bridge.outbound(packet.getCmdId(),packet.getData().toByteArray());
+    assertEquals(bridge.clientCommand(name),wire.cmdId());
+    var snapshot = bridge.clientSchema().parse(name,wire.body());
+    assertTrue(snapshot.getUnknownFields().asMap().isEmpty());
+    if (name.equals("PlayerSyncScNotify")) {
+      snapshot = (DynamicMessage) snapshot.getField(
+          snapshot.getDescriptorForType().findFieldByName("avatar_sync"));
+    }
+    var avatars = snapshot.getDescriptorForType().findFieldByName("avatar_list");
+    assertEquals(1,snapshot.getRepeatedFieldCount(avatars));
+    var avatar = (DynamicMessage) snapshot.getRepeatedField(avatars,0);
+    assertEquals(1202,avatar.getField(avatar.getDescriptorForType().findFieldByName("base_avatar_id")));
+    assertEquals(expected,avatar.getField(
+        avatar.getDescriptorForType().findFieldByName("has_taken_promotion_reward_list")));
+  }
+
   static class FailedPlayer extends Player {
     int saves, failAt;
     boolean failAvatar, failGrant;
+    final List<BasePacket> packets = new ArrayList<>();
+    final PlayerUnlockData unlocks = new PlayerUnlockData(this) { @Override public void save() {} };
     final Inventory inventory=new Inventory(this) {
       @Override public GrantResult grantItems(ItemParamMap amounts,boolean hint) {
         return failGrant ? new GrantResult(List.of(),false) : super.grantItems(amounts,hint);
       }
     };
     @Override public Inventory getInventory() { return inventory; }
+    @Override public PlayerUnlockData getUnlocks() { return unlocks; }
     @Override public void save() { if(++saves==failAt) throw new IllegalStateException("injected save failure"); }
-    @Override public void sendPacket(BasePacket packet) {}
+    @Override public void sendPacket(BasePacket packet) { packets.add(packet); }
   }
 
   GameAvatar owned(FailedPlayer p) {

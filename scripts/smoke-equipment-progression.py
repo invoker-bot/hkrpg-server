@@ -48,6 +48,7 @@ def pile(item, count):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar', help='待验证的独立运行包')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/equipment-progression-native.json')
     parser.add_argument('--gates', action='store_true', help='验证突破、行迹和锁定批次；仍使用独立 H2/账号')
     parser.add_argument('--milestones', action='store_true', help='加验星魂扣料、晋阶奖励、重复请求和 H2 重登；包含 gates')
@@ -56,7 +57,7 @@ def main():
     if args.selection and (args.gates or args.milestones):
         parser.error('--selection 与养成门槛测试分别运行')
     args.gates |= args.milestones
-    jar = ROOT / 'build/libs/hkrpg-server.jar'
+    jar = args.jar.resolve()
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     runs = ROOT / 'build/smoke'
@@ -239,6 +240,7 @@ def main():
         ready = gm.wait_for(lambda: matching_snapshot(lambda s: material(s, 11202) == 1), 40)
         before_tickets = material(ready, 101)
         assert milestone_rank(ready) == 0
+        assert not avatar(ready, 1202).get('has_taken_promotion_reward_list')
         reject('RankUpAvatarCsReq', rank_request(item=101))
         reject('RankUpAvatarCsReq', rank_request(count=2))
         reject('RankUpAvatarCsReq', number(7, 1202))
@@ -250,11 +252,16 @@ def main():
         claimed = wire('TakePromotionRewardCsReq', number(5, 1202) + number(2, 1))
         assert material(claimed, 101) == before_tickets + 1
         assert claimed['equipmentReply']['response'].get('reward_list')
-        assert any(r.get('avatar_sync') for r in claimed['equipmentReply']['syncs'])
+        assert avatar(claimed, 1202)['has_taken_promotion_reward_list'] == [1]
+        synced_avatars = [a for sync in claimed['equipmentReply']['syncs']
+                          for a in sync.get('avatar_sync', {}).get('avatar_list', [])
+                          if a['base_avatar_id'] == 1202]
+        assert synced_avatars and synced_avatars[-1]['has_taken_promotion_reward_list'] == [1]
         return reject('TakePromotionRewardCsReq', number(5, 1202) + number(2, 1))
 
     def milestones_after_restart():
         assert milestone_rank(snapshot()) == 1
+        assert avatar(snapshot(), 1202)['has_taken_promotion_reward_list'] == [1]
         reject('TakePromotionRewardCsReq', number(5, 1202) + number(2, 1))
         reject('RankUpAvatarCsReq', rank_request())
         grant(11202, 1)

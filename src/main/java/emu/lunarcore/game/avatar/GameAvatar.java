@@ -353,7 +353,7 @@ public class GameAvatar extends BaseAvatar implements GameEntity {
                 .setIsMarked(this.isMarked())
                 .setFirstMetTimestamp(this.getTimestamp());
 
-        for (int i = 0; i < this.getPromotion(); i++) {
+        for (int i = 0; i <= this.getPromotion(); i++) {
             if (this.hasTakenReward(i)) {
                 proto.addTakenRewards(i);
             }
