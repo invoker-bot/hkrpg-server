@@ -222,20 +222,21 @@ def changed_chunk(index, chunk, entry, original, replacement):
     return digest + '.bytes', result
 
 
-def build_files(client):
+def build_profile_files(client, *, index_sha, page, companion, companion_sha, patcher):
+    """在已核对的现有索引上替换一个页面，并保留同包的既有兼容修复。"""
     directory = client / LUA
     pointer = (directory / 'M_LuaV.bytes').read_bytes()
     digest = pointer_digest(pointer)
     raw_index = (directory / ('LuaV_' + digest + '.bytes')).read_bytes()
-    require(sha(raw_index) == INDEX_SHA and hashlib.md5(raw_index).hexdigest() == digest, '客户端 Lua 索引已变化')
+    require(sha(raw_index) == index_sha and hashlib.md5(raw_index).hexdigest() == digest, '客户端 Lua 索引已变化')
     chunks = read_index(raw_index)
     first = chunks[0]
     manifest_chunk = (directory / (first['digest'] + '.bytes')).read_bytes()
     record = first['entries'][0]
     manifest = manifest_chunk[record['offset']:record['offset'] + record['length']]
     rows = [json.loads(line) for line in manifest.splitlines()]
-    wanted = {row['Md5']: row['Path'] for row in rows if row['Path'] in (PAGE, PARAM)}
-    require(set(wanted.values()) == {PAGE, PARAM}, '地图页目录缺失或重复')
+    wanted = {row['Md5']: row['Path'] for row in rows if row['Path'] in (page, companion)}
+    require(len(wanted) == 2 and set(wanted.values()) == {page, companion}, '页面目录缺失或重复')
     found = {}
     for chunk in chunks:
         data = (directory / chunk['locale'] / (chunk['digest'] + '.bytes')).read_bytes()
@@ -246,10 +247,11 @@ def build_files(client):
             if key in wanted:
                 require(wanted[key] not in found, '原件记录重复')
                 found[wanted[key]] = (chunk, entry, data, raw)
-    require(set(found) == {PAGE, PARAM} and sha(found[PARAM][3]) == PARAM_SHA, '地图参数原件不符')
-    chunk, entry, data, original = found[PAGE]
-    patched = patch_record(original)
-    require(patched != original, '缺少地图参数修复')
+    require(set(found) == {page, companion} and sha(found[companion][3]) == companion_sha, '既有兼容页面不符')
+    chunk, entry, data, original = found[page]
+    require(chunk is not first, '页面不得覆盖模块目录所在分块')
+    patched = patcher(original)
+    require(patched != original, '缺少页面修复')
     index = bytearray(raw_index)
     filename, packed = changed_chunk(index, chunk, entry, data, patched)
     old_md5, new_md5 = hashlib.md5(original).hexdigest(), hashlib.md5(patched).hexdigest()
@@ -269,8 +271,13 @@ def build_files(client):
     return report, files, pointer
 
 
-def prepare(client, output):
-    report, files, pointer = build_files(client)
+def build_files(client):
+    return build_profile_files(client, index_sha=INDEX_SHA, page=PAGE, companion=PARAM,
+                               companion_sha=PARAM_SHA, patcher=patch_record)
+
+
+def prepare(client, output, *, build=None):
+    report, files, pointer = (build or build_files)(client)
     output.mkdir(parents=True, exist_ok=False)
     for name, content in files.items():
         (output / name).write_bytes(content)
@@ -295,7 +302,7 @@ def atomic(path, raw):
     os.replace(temp, path)
 
 
-def install(prepared, manifest_path, backup):
+def install(prepared, manifest_path, backup, *, build=None):
     report = json.loads((prepared / 'prepared.json').read_text('utf-8'))
     launcher = launcher_module()
     launcher.require_stopped()
@@ -303,6 +310,8 @@ def install(prepared, manifest_path, backup):
     require(client == Path(report['clientRoot']).resolve(), '客户端根目录不符')
     for relative, expected in document['clientFiles'].items():
         require(launcher.sha(launcher.checked_path(client, relative)) == expected, '既有客户端文件变化')
+    for relative, expected in document.get('clientLuaFiles', {}).items():
+        require(launcher.sha(launcher.checked_path(client, relative)) == expected, '既有 Lua 兼容资源变化')
     files = {}
     for relative, expected in report['files'].items():
         require(relative.startswith(LUA) and re.fullmatch(r'(M_LuaV|LuaV_[a-f0-9]{32}|[a-f0-9]{32})\.bytes', relative[len(LUA):]), '未知补丁路径')
@@ -316,7 +325,7 @@ def install(prepared, manifest_path, backup):
         require(document.get('clientLuaFiles') == report['files'], '已安装入口与启动清单不一致')
         return dict(passed=True, alreadyInstalled=True, clientExecuted=False)
     require(sha(before) == report['originalPointerSHA256'], '客户端 Lua 入口已变化')
-    expected, generated, _ = build_files(client)
+    expected, generated, _ = (build or build_files)(client)
     require(expected == report and all(content == generated[Path(relative).name]
                                       for relative, content in files.items()), '准备目录与原件重新计算的补丁不一致')
     original_manifest = manifest_path.read_bytes()
