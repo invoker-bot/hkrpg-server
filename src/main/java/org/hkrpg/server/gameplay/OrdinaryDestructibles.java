@@ -10,7 +10,7 @@ import java.time.*;
 import java.util.*;
 
 /**
- * Space-station ordinary boxes. DropList identifiers are drop pools, NOT RewardData identifiers.
+ * Verified station and Jarilo-VI ordinary props. DropList IDs are pools, NOT RewardData IDs.
  * Until the server pool table is available, use an explicit local 100-credit/1-metal policy.
  * Refresh at UTC+8 04:00 on scene entry; this timing and the rewards are compatibility rules.
  */
@@ -29,12 +29,17 @@ public final class OrdinaryDestructibles {
     return s != null
         && s.getDimensionId() == 0
         && s.getStoryLineId() == 0
-        && s.getWorldId() == 101
+        && (s.getWorldId() == 101 || s.getWorldId() == 201)
         && (s.getPlaneType() == PlaneType.Town || s.getPlaneType() == PlaneType.Maze);
   }
 
-  private static boolean family(PropInfo p) {
-    return p != null && (p.getPropID() == 100026 || p.getPropID() == 100027);
+  private static boolean family(Scene s, PropInfo p) {
+    if (p == null) return false;
+    return switch (s.getWorldId()) {
+      case 101 -> p.getPropID() == 100026 || p.getPropID() == 100027;
+      case 201 -> p.getPropID() == 101017;
+      default -> false;
+    };
   }
 
   private static PropInfo original(Scene s, int group, int instance) {
@@ -48,15 +53,15 @@ public final class OrdinaryDestructibles {
   public static boolean applies(EntityProp p) {
     if (p == null || !world(p.getScene())) return false;
     var original = original(p.getScene(), p.getGroupId(), p.getInstId());
-    // The four station areas have different event IDs for the same ordinary drop pools.
+    // Areas use different event IDs; match the world-specific prop family and pool pair instead.
     // Route authored reward events through validation; malformed pools must not silently destroy.
-    return family(p.getPropInfo()) && p.getPropInfo().getEventID() > 0
-        || family(original) && original.getEventID() > 0;
+    return family(p.getScene(), p.getPropInfo()) && p.getPropInfo().getEventID() > 0
+        || family(p.getScene(), original) && original.getEventID() > 0;
   }
 
   private static boolean configured(Scene s, PropInfo p) {
     if (!world(s)
-        || !family(p)
+        || !family(s, p)
         || p.getEventID() <= 0
         || p.getID() <= 0
         || p.isIsDelete()
@@ -76,8 +81,9 @@ public final class OrdinaryDestructibles {
         || e.getReward() != 0
         || e.getDropList() == null
         || e.getDropList().size() != 2) return false;
-    // Require exact source pool shapes; never substitute the unrelated RewardData 101001 bundle.
-    return e.getDropList().toString().equals("[2000102,101001]");
+    // Require the exact regional pair; never substitute same-numbered RewardData bundles.
+    String pools = s.getWorldId() == 201 ? "[2000102,101002]" : "[2000102,101001]";
+    return e.getDropList().toString().equals(pools);
   }
 
   private static String key(Scene s, int group, int instance) {
@@ -85,7 +91,7 @@ public final class OrdinaryDestructibles {
   }
 
   public static boolean removed(Scene s, GroupInfo group, PropInfo info) {
-    if (!world(s) || !family(info) || info.getEventID() <= 0) return false;
+    if (!world(s) || !family(s, info) || info.getEventID() <= 0) return false;
     var state = s.getPlayer().getGameplay().getDestructibleRewards();
     if (state == null || !state.valid()) return false;
     var r = state.getReceipts().get(key(s, group.getId(), info.getID()));

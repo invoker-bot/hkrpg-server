@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Authored space-station boxes; explicit compatibility rewards and isolated actual storage. */
+/** Authored ordinary props; explicit compatibility rewards and isolated actual storage. */
 class OrdinaryDestructible46Test {
   @TempDir Path root;
   final WorldChestActivity46Test fixture = new WorldChestActivity46Test();
@@ -77,17 +77,19 @@ class OrdinaryDestructible46Test {
   void setup() throws Exception {
     OrdinaryDestructibles.clock =
         Clock.fixed(Instant.parse("2026-10-22T03:00:00Z"), ZoneOffset.UTC);
-    try (var input = getClass().getResourceAsStream("/fixtures/ordinary-destructibles-4.6.json")) {
-      var source =
-          JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8))
-              .getAsJsonObject();
-      for (String section : List.of("records", "groups", "floors", "locations", "headers"))
-        for (var row : source.getAsJsonObject(section).entrySet()) {
-          var target = fixture.source.getAsJsonObject(section);
-          if (section.equals("records") && target.has(row.getKey()))
-            target.getAsJsonArray(row.getKey()).addAll(row.getValue().getAsJsonArray());
-          else target.add(row.getKey(), row.getValue());
-        }
+    for (String file : List.of("ordinary-destructibles-4.6.json", "jarilo-destructibles-4.6.json")) {
+      try (var input = getClass().getResourceAsStream("/fixtures/" + file)) {
+        var source =
+            JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8))
+                .getAsJsonObject();
+        for (String section : List.of("records", "groups", "floors", "locations", "headers"))
+          for (var row : source.getAsJsonObject(section).entrySet()) {
+            var target = fixture.source.getAsJsonObject(section);
+            if (section.equals("records") && target.has(row.getKey()))
+              target.getAsJsonArray(row.getKey()).addAll(row.getValue().getAsJsonArray());
+            else target.add(row.getKey(), row.getValue());
+          }
+      }
     }
     fixture.root = root;
     fixture.load();
@@ -163,6 +165,36 @@ class OrdinaryDestructible46Test {
   void everyOriginalStationBoxAndCylinderAwardsAndSurvivesReload(
       int plane, int floor, int entry, int group, int instance, int propId, int eventId)
       throws Exception {
+    assertOriginalDropAndReload(plane, floor, entry, group, instance, propId, eventId);
+  }
+
+  static java.util.stream.Stream<Arguments> jariloPlacements() throws Exception {
+    try (var input = OrdinaryDestructible46Test.class.getResourceAsStream(
+        "/fixtures/jarilo-destructibles-4.6.json")) {
+      var rows = JsonParser.parseString(new String(input.readAllBytes(), StandardCharsets.UTF_8))
+          .getAsJsonObject().getAsJsonArray("placements");
+      assertEquals(89, rows.size(), "Frozen ordinary Jarilo-VI placement coverage changed");
+      return rows.asList().stream().map(raw -> {
+        var row = raw.getAsJsonObject();
+        return Arguments.of(row.get("plane").getAsInt(), row.get("floor").getAsInt(),
+            row.get("entry").getAsInt(), row.get("group").getAsInt(),
+            row.get("instance").getAsInt(), row.get("prop").getAsInt(),
+            row.get("event").getAsInt());
+      });
+    }
+  }
+
+  @ParameterizedTest(name = "Jarilo {0} group {3} instance {4}")
+  @MethodSource("jariloPlacements")
+  void everyOriginalJariloBarrelAwardsAndSurvivesReload(
+      int plane, int floor, int entry, int group, int instance, int propId, int eventId)
+      throws Exception {
+    assertOriginalDropAndReload(plane, floor, entry, group, instance, propId, eventId);
+  }
+
+  void assertOriginalDropAndReload(
+      int plane, int floor, int entry, int group, int instance, int propId, int eventId)
+      throws Exception {
     actor.plane = plane;
     actor.floor = floor;
     actor.entry = entry;
@@ -173,7 +205,7 @@ class OrdinaryDestructible46Test {
     assertEquals(eventId, prop.getPropInfo().getEventID());
     actor.getPos().set(prop.getPos());
     assertTrue(actor.scene.destroyProp(prop));
-    assertEquals(100, actor.getScoin(), "Destroyed a station prop without its credit drop");
+    assertEquals(100, actor.getScoin(), "Destroyed an ordinary prop without its credit drop");
     assertEquals(1, actor.getInventory().getMaterialByItemId(180005).getCount());
     assertEquals(1, actor.packets.stream()
         .filter(p -> p.getCmdId() == CmdId.ScenePlaneEventScNotify).count());
@@ -185,6 +217,99 @@ class OrdinaryDestructible46Test {
     assertTrue(actor.getGameplay().getDestructibleRewards().getReceipts()
         .get(plane + ":" + floor + ":" + group + ":" + instance).isGranted());
     assertEquals(0, actor.grants);
+  }
+
+  void backwaterPass() {
+    actor.plane = 20111;
+    actor.floor = 20111001;
+    actor.entry = 201110102;
+    fixture.scene();
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1, 2, 3, 4, 5, 6})
+  void backwaterPassStoryEntranceAndEveryWorldLevelUseTheRegionalPool(int world)
+      throws Exception {
+    DailyMissionAcceptance46Test.set(actor, "worldLevel", world);
+    backwaterPass();
+    assertTrue(actor.scene.destroyProp(box(6, 300001)));
+    assertEquals(100, actor.getScoin());
+    assertEquals(1, actor.getInventory().getMaterialByItemId(180005).getCount());
+    reload();
+    assertNull(box(6, 300001));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"pool", "station-pool", "stage", "reward", "unknown-event", "source"})
+  void malformedJariloRewardEventsLeaveTheBarrelAndInventoryUntouched(String fault)
+      throws Exception {
+    backwaterPass();
+    var prop = box(6, 300001);
+    var event = GameData.getPlaneEventExcelMap().get(20111401, 0);
+    switch (fault) {
+      case "pool" -> DailyMissionAcceptance46Test.set(event, "DropList",
+          JsonParser.parseString("[101002]").getAsJsonArray());
+      case "station-pool" -> DailyMissionAcceptance46Test.set(event, "DropList",
+          JsonParser.parseString("[2000102,101001]").getAsJsonArray());
+      case "stage" -> DailyMissionAcceptance46Test.set(event, "StageID", 1);
+      case "reward" -> DailyMissionAcceptance46Test.set(event, "Reward", 101002);
+      case "unknown-event" -> DailyMissionAcceptance46Test.set(prop.getPropInfo(), "EventID", 99999999);
+      case "source" -> {
+        var copy = fixture.gson.fromJson(fixture.gson.toJson(prop.getPropInfo()),
+            emu.lunarcore.data.config.PropInfo.class);
+        DailyMissionAcceptance46Test.set(copy, "EventID", 20101401);
+        prop.setPropInfo(copy);
+      }
+    }
+    assertFalse(actor.scene.destroyProp(prop));
+    assertSame(prop, box(6, 300001));
+    assertEquals(0, actor.getScoin());
+    assertEquals(0, actor.grants);
+    assertEquals(0, actor.saves);
+    assertTrue(actor.getGameplay().getDestructibleRewards().getReceipts().isEmpty());
+  }
+
+  @Test
+  void jariloRecoveryPropsDoNotBecomeOrdinaryMaterialDrops() {
+    backwaterPass();
+    var recovery = box(6, 300004);
+    assertNotNull(recovery);
+    assertEquals(101016, recovery.getPropId());
+    assertFalse(OrdinaryDestructibles.applies(recovery));
+    assertTrue(actor.scene.destroyProp(recovery));
+    assertEquals(0, actor.getScoin());
+    assertEquals(0, actor.grants);
+    assertTrue(actor.getGameplay().getDestructibleRewards().getReceipts().isEmpty());
+  }
+
+  @Test
+  void jariloMissionBarrelKeepsItsOriginalPrerequisite() {
+    actor.plane = 20131;
+    actor.floor = 20131001;
+    actor.entry = 2013101;
+    fixture.scene();
+    assertNotNull(box(4, 300001));
+    assertFalse(actor.scene.getLoadedGroups().contains(82));
+    assertNull(box(82, 300001));
+    assertEquals(0, actor.grants);
+  }
+
+  @Test
+  void jariloFullInventoryAndFailedSaveKeepTheBarrelForRetry() {
+    backwaterPass();
+    assertTrue(actor.getInventory().addItem(180005, 99999));
+    var barrel = box(6, 300001);
+    assertFalse(actor.scene.destroyProp(barrel));
+    assertSame(barrel, box(6, 300001));
+    actor.getInventory().getMaterialByItemId(180005).setCount(99998);
+    actor.failSave = true;
+    assertFalse(actor.scene.destroyProp(barrel));
+    assertSame(barrel, box(6, 300001));
+    assertEquals(0, actor.getScoin());
+    actor.failSave = false;
+    assertTrue(actor.scene.destroyProp(barrel));
+    assertEquals(100, actor.getScoin());
+    assertEquals(99999, actor.getInventory().getMaterialByItemId(180005).getCount());
   }
 
   @ParameterizedTest
