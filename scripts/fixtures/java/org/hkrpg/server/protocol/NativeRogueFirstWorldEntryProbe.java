@@ -22,6 +22,9 @@ public final class NativeRogueFirstWorldEntryProbe {
   private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
   private Ukcp channel;
   private int requests;
+  private boolean legacyOrigin;
+  private JsonObject spawn;
+  private Map<String, Integer> leaderPosition = Map.of();
 
   private static Object field(DynamicMessage m, String n) {
     return m.getField(Objects.requireNonNull(m.getDescriptorForType().findFieldByName(n), n));
@@ -72,9 +75,23 @@ public final class NativeRogueFirstWorldEntryProbe {
             && number(scene, "floor_id") == 80001003,
         "Wrong original room entrance");
     var actual = new TreeMap<Integer, Map<String, Integer>>();
+    boolean foundLeader = false;
+    int leader = number(scene, "leader_entity_id");
     for (var rawGroup : (List<?>) field(scene, "entity_group_list"))
       for (var raw : (List<?>) field((DynamicMessage) rawGroup, "entity_list")) {
         var entity = (DynamicMessage) raw;
+        if (number(entity, "entity_id") == leader) {
+          var motion = (DynamicMessage) field(entity, "motion");
+          var pos = (DynamicMessage) field(motion, "pos");
+          var rot = (DynamicMessage) field(motion, "rot");
+          for (String axis : List.of("x", "y", "z"))
+            require(Math.abs(number(pos, axis) - (legacyOrigin ? 0 : spawn.get(axis).getAsInt())) <= 2,
+                "Native leader is outside the authored room entrance: " + axis + "=" + number(pos, axis));
+          require(Math.abs(number(rot, "y") - (legacyOrigin ? 0 : spawn.get("rotY").getAsInt())) <= 2,
+              "Native leader rotation differs from room entrance");
+          leaderPosition = Map.of("x", number(pos, "x"), "y", number(pos, "y"), "z", number(pos, "z"));
+          foundLeader = true;
+        }
         if (!entity.hasField(entity.getDescriptorForType().findFieldByName("npc_monster")))
           continue;
         int group = number(entity, "group_id"), inst = number(entity, "inst_id");
@@ -97,11 +114,14 @@ public final class NativeRogueFirstWorldEntryProbe {
     require(
         actual.size() == 3 && actual.keySet().equals(Set.of(18, 19, 20)),
         "Missing source room actors");
+    require(foundLeader, "Missing native leader position");
     return actual;
   }
 
   private Map<String, Object> execute(JsonObject credentials) throws Exception {
     String mode = credentials.get("mode").getAsString();
+    legacyOrigin = credentials.has("legacyOrigin") && credentials.get("legacyOrigin").getAsBoolean();
+    spawn = credentials.getAsJsonObject("spawn");
     require(Set.of("pending", "start", "resume").contains(mode), "Unknown probe mode");
     int uid =
         number(
@@ -181,6 +201,8 @@ public final class NativeRogueFirstWorldEntryProbe {
     result.put("mode", mode);
     result.put("assignments", initial);
     result.put("actors", bindings);
+    result.put("leaderPosition", leaderPosition);
+    result.put("legacyOriginExpected", legacyOrigin);
     result.put("requests", requests);
     result.put("credits", 0);
     result.put("clientGameplayVerified", false);

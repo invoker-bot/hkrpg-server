@@ -8,6 +8,7 @@
 
 | 功能 | 当前状态 | 证据/参考 | 已知缺口 |
 |---|---|---|---|
+| 模拟宇宙房间入口与旧局落点 | 部分实现 | [docs/rogue-room-spawns-4.6.md](../docs/rogue-room-spawns-4.6.md) | 开局、换房及继续探索按原始房间组锚点进入，覆盖704条原始房间配置；旧局仅在场景及分配匹配、恰处旧楼层入口时恢复位置和朝向，保留探索、怪物、任务与奖励，保存失败回退。来源切片、先失败回归、全量源码与实际发布包、网络和本地部署范围见说明；落点覆盖不代表全部房间战斗、机关、完整宇宙或真实客户端画面已验收。 |
 | 边缘通路空间裂隙前的剧情机关 | 部分实现 | [src/test/java/org/hkrpg/server/gameplay/BackwaterExitGate46Test.java](../src/test/java/org/hkrpg/server/gameplay/BackwaterExitGate46Test.java) | 101030203原始演出回调1210按完整任务、脚本与双向绑定校验，将G21/300004从Locked直接改为Open并联动300005；接取不提前启用。复用整对保存、失败回滚和重登恢复，只推进到原战斗目标204。裂隙地图UI、演出和后续两场战斗仍须实机验收，见docs/backwater-exit-gate-4.6.md。 |
 | 边缘通路普通铁门与剧情控制台 | 部分实现 | [src/test/java/org/hkrpg/server/gameplay/BackwaterStoryConsole46Test.java](../src/test/java/org/hkrpg/server/gameplay/BackwaterStoryConsole46Test.java) | 普通101001控制图与101004铁门双向绑定并同存。剧情台G21/300007按104完整启用脚本恢复Closed，演出回执后接取105，原物件拼图完成才通过1010联动300006并接取后续剧情；提前完成、取消、错源、保存回退及重登有回归。实际F、演出、电路拼图与动画仍待实机确认，见docs/backwater-story-console-4.6.md。 |
 | 初始化与开始序列的共用剧情切图 | 部分实现 | [docs/literal-scene-transfers-4.6.md](../docs/literal-scene-transfers-4.6.md) | 完整单步EnterMap在初始化和开始序列共用准入、准确落点、重登及同会话15秒保护，按实际接取选择唯一候选；Auto和多前置保留原始关系，正常与恢复切图的短期回执防止重复请求覆盖剧情落点。主线42处来源夹具均有回归；缺失脚本、复杂序列、循环自动执行和真实客户端画面仍待分别完成或验收。 |

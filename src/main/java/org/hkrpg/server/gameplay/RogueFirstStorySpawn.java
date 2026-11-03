@@ -41,12 +41,15 @@ public final class RogueFirstStorySpawn {
     return anchor(player, room) != null;
   }
 
-  /** Recover only an untouched old run stranded beyond the authored final door. */
+  /** Existing login hook: retain tutorial-specific recovery and repair ordinary floor-origin saves. */
   public static boolean recoverOnLogin(Player player) {
     synchronized (player) {
       var session = player.getSession();
       var run = player.getGameplay().getRogue();
       var room = GameplayDefinitions.rooms.get(run.getRoomId());
+      // Keep the installed server's existing login hook binary-compatible.
+      // The original first-story recovery below retains its stricter mission and progress gates.
+      if (!applies(run, room)) return RogueRoomSpawn.recoverOnLogin(player);
       var pos = player.getPos();
       if (session == null || !session.getProtocol().experimental()
           || !applies(run, room) || run.isFirstStoryEntrancePlaced()

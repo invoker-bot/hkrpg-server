@@ -26,6 +26,7 @@ public final class RogueFirstWorldEntryFixtureInspector {
       throw new IllegalArgumentException("Missing fixture marker");
     int uid = Integer.parseInt(args[1]);
     boolean active = args[2].equals("active");
+    boolean legacyOrigin = args.length == 4 && args[3].equals("legacy-origin");
     if (uid <= 0 || !Set.of("pending", "active").contains(args[2]))
       throw new IllegalArgumentException("Invalid inspector arguments");
     var expected =
@@ -57,6 +58,14 @@ public final class RogueFirstWorldEntryFixtureInspector {
           || !saved.getCycleWeeks().isEmpty())
         throw new IllegalStateException("Entry unexpectedly granted settlement or currency");
       if (active) {
+        var spawn = JsonParser.parseString(Files.readString(directory.resolve("spawn.json"))).getAsJsonObject();
+        int[] actual = {player.getPos().getX(), player.getPos().getY(), player.getPos().getZ()};
+        for (int i = 0; i < actual.length; i++) {
+          String axis = List.of("x", "y", "z").get(i);
+          int expectedPoint = legacyOrigin ? 0 : spawn.get(axis).getAsInt();
+          if (Math.abs(actual[i] - expectedPoint) > 2)
+            throw new IllegalStateException("Saved player is outside authored room entrance: " + axis);
+        }
         if (run.getPhase() != GameplayState.RogueRun.Phase.EXPLORING
             || !run.isInside()
             || run.getAreaId() != 110
@@ -103,6 +112,7 @@ public final class RogueFirstWorldEntryFixtureInspector {
       output.put("rooms", run.getRooms());
       output.put("sourceChoices", run.getMonsterSelections());
       output.put("runId", run.getRunId());
+      output.put("position", List.of(player.getPos().getX(), player.getPos().getY(), player.getPos().getZ()));
       output.put("changedPlayers", 0);
       System.out.println(new Gson().toJson(output));
     } finally {

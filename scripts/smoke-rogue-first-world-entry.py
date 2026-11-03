@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import secrets
 import socket
 import subprocess
 import tempfile
@@ -17,15 +18,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def free_port(kind=socket.SOCK_STREAM):
-    with socket.socket(type=kind) as sock:
-        sock.bind(('127.0.0.1', 0))
-        return sock.getsockname()[1]
+    # Avoid the Windows ephemeral range used by concurrent KCP clients during resource startup.
+    for _ in range(128):
+        with socket.socket(type=kind) as sock:
+            try:
+                sock.bind(('127.0.0.1', 20000 + secrets.randbelow(20000)))
+                return sock.getsockname()[1]
+            except OSError:
+                continue
+    raise RuntimeError('No isolated smoke port available')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resources', type=Path, default=ROOT / 'resources/4.6')
     parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
+    parser.add_argument('--legacy-jar', type=Path, help='先以旧包建立原点旧局，再由目标包重登恢复；仅隔离测试目录')
     args = parser.parse_args()
     source = args.resources.resolve()
     jar = args.jar.resolve()
@@ -34,6 +42,9 @@ def main():
         java = Path(os.environ['JAVA_HOME']) / 'bin/java.exe'
     assert java and java.is_file() and jar.is_file()
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
+    legacy = args.legacy_jar.resolve() if args.legacy_jar else None
+    assert legacy is None or legacy.is_file()
+    legacy_digest = hashlib.sha256(legacy.read_bytes()).hexdigest() if legacy else None
     runs = ROOT / 'build/smoke'
     runs.mkdir(exist_ok=True)
     directory = Path(tempfile.mkdtemp(prefix='rogue-first-world-entry-', dir=runs))
@@ -93,6 +104,11 @@ def main():
     stages = json.loads((source / 'ExcelOutput/StageConfig.json').read_text('utf-8'))
     first = next(r for r in rooms if r['RogueRoomID'] == 304)
     assert first['MapEntrance'] == 8000103 and first['RogueRoomType'] == 1
+    group = json.loads((source / 'Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G18.json').read_text('utf-8'))
+    anchor = next(row for row in group['AnchorList'] if row['ID'] == 1)
+    spawn = {axis: int(anchor.get('Pos' + axis.upper(), 0) * 1000) for axis in ('x', 'y', 'z')}
+    spawn['rotY'] = int(anchor.get('RotY', 0) * 1000)
+    (directory / 'spawn.json').write_text(json.dumps(spawn), 'utf-8')
     actors = {}
     for group, content in first['GroupWithContent'].items():
         authored = json.loads((source / f'Config/LevelOutput/SharedRuntimeGroup/Groups_P80001_F80001003/LevelGroup_P80001_F80001003_G{group}.json').read_text('utf-8'))
@@ -145,7 +161,8 @@ def main():
     snapshots, inspections, credentials, stops = [], [], None, 0
     def probe(mode):
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
-        child = subprocess.run([str(java), *encoding, fallback, '-cp', str(jar) + os.pathsep + str(probe_classes),
+        assert legacy is None or hashlib.sha256(legacy.read_bytes()).hexdigest() == legacy_digest
+        child = subprocess.run([str(java), *encoding, fallback, '-cp', str(active_jar) + os.pathsep + str(probe_classes),
             'org.hkrpg.server.protocol.NativeRogueFirstWorldEntryProbe', str(game)], cwd=directory,
             input=json.dumps(dict(credentials, mode=mode)) + '\n', capture_output=True,
             text=True, encoding='utf-8', errors='replace', timeout=90, creationflags=flags)
@@ -157,8 +174,20 @@ def main():
         snapshots.append(snapshot)
 
     for iteration, mode in enumerate(['pending', 'start', 'resume']):
+        if iteration:
+            http, mongo, game = free_port(), free_port(), free_port(socket.SOCK_DGRAM)
+            config_file = directory / 'config.json'
+            config = json.loads(config_file.read_text('utf-8'))
+            config['httpServer']['bindPort'] = http
+            config['internalMongoServer']['port'] = mongo
+            config['gameServer']['bindPort'] = game
+            config_file.write_text(json.dumps(config), 'utf-8')
+        using_legacy = legacy is not None and iteration < 2
+        active_jar = legacy if using_legacy else jar
+        active_command = list(command)
+        active_command[active_command.index('-jar') + 1] = str(active_jar)
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
-            process = subprocess.Popen(command, cwd=directory, stdin=subprocess.PIPE,
+            process = subprocess.Popen(active_command, cwd=directory, stdin=subprocess.PIPE,
                 stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
             try:
                 deadline = time.monotonic() + 90
@@ -179,7 +208,8 @@ def main():
                     combo = request('/hkrpg_cn/combo/granter/login/v2/login', {
                         'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
                     assert combo['retcode'] == 0
-                    credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'actors': actors}
+                    credentials = {'accountUid': account['uid'], 'comboToken': combo['data']['combo_token'], 'actors': actors, 'spawn': spawn}
+                credentials['legacyOrigin'] = using_legacy
                 assert (data / 'RogueMapGenByMap.json').read_bytes() == mapped_defaults
                 probe(mode)
                 if mode == 'start':
@@ -202,7 +232,8 @@ def main():
                         process.stdin.close()
         child = subprocess.run([str(java), *encoding, fallback, '-cp', str(probe_classes) + os.pathsep + str(jar),
             'org.hkrpg.server.gameplay.RogueFirstWorldEntryFixtureInspector', str(directory),
-            str(snapshots[0]['uid']), 'pending' if iteration == 0 else 'active'], cwd=ROOT,
+            str(snapshots[0]['uid']), 'pending' if iteration == 0 else 'active',
+            'legacy-origin' if using_legacy else 'authored-origin'], cwd=ROOT,
             text=True, encoding='utf-8', capture_output=True, timeout=45, creationflags=flags)
         log = directory / f'inspector-{iteration}.log'
         log.write_text(child.stdout + child.stderr, 'utf-8')
@@ -220,6 +251,8 @@ def main():
     assert (data / 'RogueMapGenByMap.json').read_bytes() == mapped_defaults
     assert hashes == {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     print(json.dumps({'passed': True, 'runtimeDirectory': str(directory), 'rootJarSHA256': digest,
+        'legacyRuntimeSHA256': legacy_digest, 'legacyOriginRecoveryVerified': legacy is not None,
+        'authoredRoomEntrancePositionVerified': True,
         'snapshots': snapshots, 'inspections': inspections, 'normalStops': stops,
         'sameUIDNormalH2ProcessRestarts': 2, 'sourceResourceHashes': hashes,
         'sourceResourcesModified': False, 'fixture': {'syntheticNoRewardPrerequisites': prerequisites,
@@ -229,6 +262,7 @@ def main():
             'bossRosterMatchesOriginalWorldPreview': boss_rosters,
             'officialRoomGenerationVerified': False},
         'clientGameplayVerified': False, 'allSevenRoomsPlayed': False,
+        'fixturePortsOutsideWindowsEphemeralRange': True,
         'crashAtomicityVerified': False}, ensure_ascii=False))
 
 

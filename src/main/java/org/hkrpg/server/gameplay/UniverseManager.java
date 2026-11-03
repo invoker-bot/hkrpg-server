@@ -179,9 +179,7 @@ public final class UniverseManager {
         var pool = RogueTalentEffects.group(100005);
         if (pool.isPresent()) createBlessingOffer(run, pool.get(), false);
       }
-      boolean entered = firstStory || secondStory
-          ? player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket)
-          : player.enterScene(room.MapEntrance(), 0, sendPacket);
+      boolean entered = player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket);
       if (!entered) {
         player.getGameplay().setRogue(prior);
         return Retcode.ROGUE_AREA_INVALID;
@@ -215,10 +213,8 @@ public final class UniverseManager {
       int priorSite = run.getSiteId(), priorRoom = run.getRoomId();
       run.enter(siteId, room.RogueRoomID());
       boolean secondStory = RogueSecondStoryEntry.room(run, room);
-      boolean entered = secondStory
-          ? RogueSecondStoryEntry.hasAnchor(player, room)
-              && player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, true)
-          : player.enterScene(room.MapEntrance(), 0, true);
+      boolean entered = (!secondStory || RogueSecondStoryEntry.hasAnchor(player, room))
+          && player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, true);
       if (!entered) {
         run.enter(priorSite, priorRoom);
         return Retcode.ROGUE_AREA_INVALID;
@@ -267,9 +263,8 @@ public final class UniverseManager {
         return Retcode.ROGUE_AREA_INVALID;
       boolean wasInside = run.isInside();
       run.setInside(true);
-      boolean entered = room != null && (firstStory || secondStory
-          ? player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket)
-          : player.enterScene(room.MapEntrance(), 0, sendPacket));
+      boolean entered = room != null
+          && player.enterSceneAtAnchor(room.MapEntrance(), room.GroupID(), 1, sendPacket);
       if (entered) {
         if (firstStory) run.markFirstStoryEntrancePlaced();
         readyRestRoom(run, room);
