@@ -1,0 +1,180 @@
+{
+  "sourceVersion": "4.6.0",
+  "sources": {
+    "GuideRogueData": "0a6bec81c872a9c2de361a1ea219a59b0225f12fca2f43e404465b2d385415e3",
+    "GuideRogueTab": "1bd988d1a524805fb1d19f875e2d5803511ebc556ec85b2d9e23d92d4bbce138",
+    "RogueTournArea": "59261688a01cb1bc76a8824acdacd1aa41036141192d453e4520b6dc532ebe27"
+  },
+  "records": {
+    "GuideRogueData": [
+      {
+        "ID": 101,
+        "Name": {
+          "Hash": 7618010570370743835
+        },
+        "IconPath": "",
+        "TabIconPath": "",
+        "UnlockConditions": [
+          {
+            "Type": "PlayerLevel",
+            "Param": "21"
+          },
+          {
+            "Type": "FinishMainMission",
+            "Param": "4030009"
+          }
+        ],
+        "OpenConditions": [
+          {
+            "Type": "FinishSubMission",
+            "Param": "804150002"
+          }
+        ],
+        "TabID": 1001
+      },
+      {
+        "ID": 201,
+        "Name": {
+          "Hash": 15461519274233738937
+        },
+        "Priority": 4,
+        "IconPath": "",
+        "TabIconPath": "",
+        "UnlockConditions": [],
+        "OpenConditions": [],
+        "TabID": 1002,
+        "RelatedID": 101
+      },
+      {
+        "ID": 202,
+        "Name": {
+          "Hash": 15862253931736838302
+        },
+        "Priority": 3,
+        "IconPath": "",
+        "TabIconPath": "",
+        "UnlockConditions": [],
+        "OpenConditions": [
+          {
+            "Type": "FinishMainMission",
+            "Param": "8013104"
+          }
+        ],
+        "TabID": 1002,
+        "RelatedID": 201
+      },
+      {
+        "ID": 203,
+        "Name": {
+          "Hash": 16788203232595155110
+        },
+        "Priority": 2,
+        "IconPath": "",
+        "TabIconPath": "",
+        "UnlockConditions": [],
+        "OpenConditions": [
+          {
+            "Type": "FinishMainMission",
+            "Param": "8016101"
+          }
+        ],
+        "TabID": 1002,
+        "RelatedID": 202
+      },
+      {
+        "ID": 204,
+        "Name": {
+          "Hash": 7887669547656261279
+        },
+        "Priority": 1,
+        "IconPath": "",
+        "TabIconPath": "",
+        "UnlockConditions": [],
+        "OpenConditions": [
+          {
+            "Type": "FinishSubMission",
+            "Param": "802640102"
+          }
+        ],
+        "TabID": 1002,
+        "RelatedID": 501
+      },
+      {
+        "ID": 301,
+        "Name": {
+          "Hash": 12766196657685680910
+        },
+        "Priority": 5,
+        "IconPath": "",
+        "TabIconPath": "",
+        "UnlockConditions": [
+          {
+            "Type": "PlayerLevel",
+            "Param": "21"
+          }
+        ],
+        "OpenConditions": [
+          {
+            "Type": "FinishSubMission",
+            "Param": "803710003"
+          }
+        ],
+        "TabID": 1003
+      }
+    ],
+    "GuideRogueTab": [
+      {
+        "ID": 1001,
+        "Priority": 2,
+        "GuideType": "RogueRelease",
+        "ResBarKey": "",
+        "Name": {
+          "Hash": 3848846982209751333
+        },
+        "IconPath": "SpriteOutput/ItemIcon/110501.png"
+      },
+      {
+        "ID": 1002,
+        "Priority": 3,
+        "GuideType": "RogueBeta",
+        "ResBarKey": "",
+        "Name": {
+          "Hash": 7101172980135609973
+        },
+        "IconPath": "SpriteOutput/ItemIcon/110501.png"
+      },
+      {
+        "ID": 1003,
+        "Priority": 1,
+        "GuideType": "GridFight",
+        "ResBarKey": "",
+        "Name": {
+          "Hash": 11179573777653333385
+        },
+        "IconPath": "SpriteOutput/ItemIcon/110501.png"
+      }
+    ],
+    "RogueTournArea": [
+      {
+        "BEOFPCAACEP": 101,
+        "PJGJLMIODBD": "Guide",
+        "JJKLIJNFIBB": 3001301,
+        "EODCEHDOAEB": [
+          1001
+        ],
+        "DOKMKLJDCEK": {
+          "LHLKJIDFLIN": "Battle"
+        },
+        "GLNDIILFKBN": [
+          101
+        ],
+        "GOEDJMNFALN": "Difficulty_1",
+        "NKLFPMKHELN": 99,
+        "IMNLCDOMMOG": 110600,
+        "PIKODOAKLGE": {
+          "Hash": 7942183719110286571
+        }
+      }
+    ]
+  }
+}

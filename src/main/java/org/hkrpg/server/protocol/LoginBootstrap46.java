@@ -86,6 +86,12 @@ final class LoginBootstrap46 {
     // there is no active game. Its empty snapshot grants no division progress.
     var data = Gameplay46.builder(session, "KIKEAJJLAMH");
     Gameplay46.set(data, "DLDCFHHFMID", Gameplay46.builder(session, "JGMDJIENFFH").build());
+    // Original permanent guide 101: no pass, reward, unlock or active run is granted.
+    // Native df70310 treats an empty collection as all guides passed; the handbook
+    // then hides RogueBeta before its replacement category has been unlocked.
+    var guide = Gameplay46.builder(session, "DLEKOLHCNIE");
+    Gameplay46.set(guide, "area_id", 101);
+    Gameplay46.add(data, "DANNIDIPFAL", guide.build());
     return data.build().toByteArray();
   }
 

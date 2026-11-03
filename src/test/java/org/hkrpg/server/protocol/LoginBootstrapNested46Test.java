@@ -15,6 +15,15 @@ class LoginBootstrapNested46Test {
 
   static void noInventedProgress(DynamicMessage value) {
     for (var entry : value.getAllFields().entrySet()) {
+      if (value.getDescriptorForType().getName().equals("KIKEAJJLAMH")
+          && entry.getKey().getName().equals("DANNIDIPFAL")) {
+        var areas = (java.util.List<?>) entry.getValue();
+        assertEquals(1, areas.size());
+        var guide = (DynamicMessage) areas.getFirst();
+        assertEquals(1, guide.getAllFields().size());
+        assertEquals(101, InitialData46Test.field(guide, "area_id"));
+        continue;
+      }
       if (entry.getKey().isRepeated()
           && value.getDescriptorForType().getName().equals("TrainPartyInfo")
           && entry.getKey().getName().equals("area_list")) {

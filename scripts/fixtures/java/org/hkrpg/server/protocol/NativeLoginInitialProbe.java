@@ -241,7 +241,11 @@ public final class NativeLoginInitialProbe implements KcpListener {
               require(data.getField(data.getDescriptorForType().findFieldByNumber(6)).equals(1),
                   "TrainParty initial turn must resolve to ProgressID 1");
             } else if (frame.cmdId() == 6017) {
-              child(child(profile, "LFLCDNGALME"), "DLDCFHHFMID");
+              var staticProfile = child(profile, "LFLCDNGALME");
+              child(staticProfile, "DLDCFHHFMID");
+              var guides = (List<?>) staticProfile.getField(
+                  staticProfile.getDescriptorForType().findFieldByName("DANNIDIPFAL"));
+              require(guides.size() == 1, "Missing unpassed permanent guide: handbook would be blank");
               require(!profile.hasField(profile.getDescriptorForType().findFieldByNumber(5)),
                   "Inactive profile must not start a tournament run");
             } else {
@@ -572,6 +576,16 @@ public final class NativeLoginInitialProbe implements KcpListener {
 
   private static void requireEmptyProgress(DynamicMessage message) {
     for (var entry : message.getAllFields().entrySet()) {
+      if (message.getDescriptorForType().getName().equals("KIKEAJJLAMH")
+          && entry.getKey().getName().equals("DANNIDIPFAL")) {
+        var guides = (List<?>) entry.getValue();
+        require(guides.size() == 1, "Missing original permanent guide reference");
+        var guide = (DynamicMessage) guides.getFirst();
+        require(guide.getAllFields().size() == 1
+            && guide.getField(guide.getDescriptorForType().findFieldByName("area_id")).equals(101),
+            "Permanent guide must retain zero pass, reward and unlock flags");
+        continue;
+      }
       if (entry.getKey().isRepeated()
           && message.getDescriptorForType().getName().equals("TrainPartyInfo")
           && entry.getKey().getName().equals("area_list")) {

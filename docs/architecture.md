@@ -1,3 +1,5 @@
+`LoginBootstrap46` 为差分宇宙初始资料提供永久教学101的零进度目录参考，避免空集合被客户端视为教学全通而隐藏旧模拟宇宙分类。原进入条件、字段链和验收边界见[指南空白说明](rogue-guide-handbook-4.6.md)。
+
 第一世界的客户端红色锁定提示由 `client_lua_rogue_hint.py` 在已核对的详情页函数中补充三项原始前置名称；共用 Lua 打包与安装器保留地图修复和原始解锁判断。版本、中文兼容文案与实机边界见[选世界说明](rogue-tutorial-world-selection-4.6.md#第一世界红色锁定栏的前置提示)。
 
 `Pet46` 处理普通跟随宠物的原生请求与状态 union，`PetSelection` 在玩家锁内验证解锁、保存选择并回退失败；通知在保存成功后发布。沿用 Player 和独立解锁文档，重登查询由 `ProtocolBridge` 映射已选状态。来源与验证边界见[宠物说明](pet-followers-4.6.md)。
