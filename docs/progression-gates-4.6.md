@@ -15,7 +15,9 @@
 
 资源来自本地固定的 TurnBasedGameData `724b139d8c9c32d12552eb95745a4fee72bfe48b`，202 条原始记录及文件 SHA 保存在 `src/test/resources/fixtures/progression-gates-4.6.json`。协议字段与接收行为核对 March7thHoney-OpenSource `fe00bdbda3c28ca33d01f171566aa35b5ab95083` 的 4.6 proto 和接收源码；没有复制其运行时实现，也没有执行参考仓库中的程序。
 
-原生请求/回复命令：角色突破 358/356、光锥突破 563/575、行迹 360/316、光锥保护 560/516、遗器保护 521/512。光锥突破的另一组重复名称命令、遗器智能弃置没有据此开放。
+原生请求/回复命令：角色突破 358/356、普通光锥晋阶 505/575、行迹 360/316、光锥保护 560/516、遗器保护 521/512。563/509 是结构不同的快速培养，遗器智能弃置也没有据此开放。
+
+2026-11-02 更正：此前把同名导出的 563 当作普通晋阶，旧探针也从同一错误枚举取号，因此下方历史验证没有覆盖实际按钮的 505 请求。本次按原始 Raw 导出、本机发送器和真实错误日志修正入口与回复关联，新增失败回归和最终运行包验证见[普通光锥晋阶修复](lightcone-promotion-4.6.md)。
 
 ```powershell
 ./gradlew.bat test --tests '*ProgressionGatesTest' --tests '*ProgressionGates46Test' --tests '*EquipmentProgressionTest' --tests '*EquipmentUpgrade46Test' --tests '*DailyUpgradeTest'

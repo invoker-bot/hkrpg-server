@@ -14,7 +14,7 @@ class ProgressionGates46Test {
       super.sendClientPacket(name,bytes);
     }
   }
-  @ParameterizedTest @CsvSource({"358,5,PromoteAvatarScRsp,1","563,10,PromoteEquipmentScRsp,1",
+  @ParameterizedTest @CsvSource({"358,5,PromoteAvatarScRsp,1","505,10,PromoteEquipmentScRsp,1",
       "360,11,UnlockSkilltreeScRsp,14","560,7,LockEquipmentScRsp,7","521,5,LockRelicScRsp,12"})
   void unknownOwnedTargetReceivesTypedFailure(int command,int idField,String response,int retcodeField) throws Exception {
     var s=new CheckedSession();
@@ -24,7 +24,7 @@ class ProgressionGates46Test {
     assertEquals(SessionState.ACTIVE,s.getState());
   }
 
-  @ParameterizedTest @CsvSource({"358,PromoteAvatarScRsp,1","563,PromoteEquipmentScRsp,1",
+  @ParameterizedTest @CsvSource({"358,PromoteAvatarScRsp,1","505,PromoteEquipmentScRsp,1",
       "360,UnlockSkilltreeScRsp,14","560,LockEquipmentScRsp,7","521,LockRelicScRsp,12"})
   void malformedRequestReceivesFailureWithoutSessionLoss(int command,String response,int retcodeField) throws Exception {
     var s=new CheckedSession();

@@ -124,7 +124,7 @@ def main():
         result = request('/gm/api/operate', {'requestId': str(uuid.uuid4()), 'uid': uid, 'action': 'grant',
                                           'itemId': tid, 'amount': amount,
                                           'level': level if level is not None else (1 if tid in (20000, 20006, 24000) else 0),
-                                          'rank': 1 if tid in (20000, 20006, 24000) else 0})['data']
+                                          'rank': 1 if tid in (20000, 20006, 23004, 24000) else 0})['data']
         assert result['state'] == 'completed', result
 
     def operate(command, target, costs, success=True):
@@ -134,6 +134,8 @@ def main():
         key = str(uuid.uuid4())
         data = {'requestId': key, 'command': command, 'success': success,
                 'wire': base64.b64encode(payload).decode()}
+        if command == 'PromoteEquipmentCsReq':
+            data['packetId'] = uuid.uuid4().int & 0x7fffffff or 1
         temporary = directory / 'equipment-request.tmp'
         temporary.write_text(json.dumps(data), encoding='utf-8')
         temporary.replace(directory / 'equipment-request.json')
@@ -201,7 +203,22 @@ def main():
         unlocked = wire('LockRelicCsReq', number(5, relic))
         assert not row(unlocked, 'relic', relic).get('is_protected', False)
         locked = wire('LockRelicCsReq', number(5, relic) + number(12, 1))
-        return locked
+        # Ordinary promotion uses the real 505/575 pair, including the async header.
+        grant(23004, 1, 20)
+        grant(112001, 32)
+        ready = gm.wait_for(lambda: matching_snapshot(lambda s: material(s, 112001) == 32 and
+                            len(items(s, 'equipment', 23004)) == 1), 40)
+        five_star = items(ready, 'equipment', 23004)[0]['unique_id']
+        credits = ready['basic']['scoin']
+        wire('LockEquipmentCsReq', number(7, five_star) + number(6, 1))
+        promoted = wire('PromoteEquipmentCsReq', number(10, five_star) +
+                        message(13, message(2, pile(112001, 8))))
+        assert row(promoted, 'equipment', five_star)['promotion'] == 1
+        assert row(promoted, 'equipment', five_star)['level'] == 20
+        assert promoted['basic']['scoin'] == credits - 5000 and material(promoted, 112001) == 24
+        assert promoted['equipmentReply']['replyHeader']
+        assert any(r.get('equipment_list') for r in promoted['equipmentReply']['syncs'])
+        return reject('PromoteEquipmentCsReq', number(10, five_star))
 
     def stop(strict=True):
         nonlocal probe, server, normal_stops
@@ -448,6 +465,10 @@ def main():
                     recommendation(restored, 8002)
                 elif args.gates:
                     assert initial['avatars'] == final['avatars'], 'Promotion/traces did not survive H2 restart'
+                    five_star = items(initial, 'equipment', 23004)[0]['unique_id']
+                    assert row(initial, 'equipment', five_star)['promotion'] == 1
+                    assert material(initial, 112001) == 24
+                    reject('PromoteEquipmentCsReq', number(10, five_star))
                     target = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('promotion') == 1)
                     donor = next(r['unique_id'] for r in items(initial, 'equipment', 20000) if r.get('is_protected'))
                     reject('RankUpEquipmentCsReq', selection('RankUpEquipmentCsReq', target, [number(2, donor)]))

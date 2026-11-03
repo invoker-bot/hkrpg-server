@@ -247,6 +247,9 @@ public final class ProtocolBridge {
   }
 
   public int clientCommand(String name) {
+    // The upstream command enum collides ordinary promotion with EquipmentQuickUp.
+    // Raw/StarRail.proto and the pinned CN4.6 client bind the ordinary 10/13 fields to 505.
+    if (experimental() && name.equals("PromoteEquipmentCsReq")) return 505;
     var id = clientCommands.get(name);
     if (id == null || id <= 0) throw new ProtocolException("No client command: " + name);
     return id;
@@ -254,6 +257,9 @@ public final class ProtocolBridge {
 
   /** A reply must have a named request/response pair in this exact wire command table. */
   public int clientResponseCommand(int requestCommand) {
+    if (experimental() && requestCommand == 505) return 575;
+    // 563 is quick growth, whose distinct 509 reply is not implemented here.
+    if (experimental() && requestCommand == 563) return 0;
     // The pinned CN4.6 response is named SetTeamFavourite, not MarkPresetLineupScRsp.
     if (experimental() && requestCommand == 793) return 773;
     // The native replacement reply shares a misleading JoinLineupScRsp descriptor name.
