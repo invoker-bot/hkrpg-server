@@ -4,7 +4,7 @@
 
 `StoryDoors` 识别原始 `101001/BaseConsole_01A_Control_SimpleDoor` 与 `101004/IronGate_06` 的双向绑定，`FloorInfo` 保留两端共享值，交互复用 `ScenePropTransitions` 同存并同步控制台和铁门；后续 Locked 机关不被提前启用。来源与验证边界见[铁门联动说明](backwater-gates-4.6.md)。
 
-`OrdinaryDestructibles` 按世界绑定普通物件与区域池：空间站 `100026/100027` 对应 `[2000102,101001]`，雅利洛 `101017` 对应 `[2000102,101002]`。共用既有领取、库存和重登防重流程，不把掉落池号当作固定奖励；兼容数量、刷新规则、原始 89 处新增点和客户端验收边界见[普通可破坏物说明](ordinary-destructible-drops-4.6.md)。
+`OrdinaryDestructibles` 用不可变目录绑定六个世界的普通物件家族和七种精确区域池组合，覆盖新增四世界的 1,895 处普通配置；罗浮两种区域池、二相乐园复用旧外形分别核验。共用领取、库存和重登防重，中性事件 `10000` 保留无奖励销毁；金矛、绑定护盾与时间回溯不进入普通奖励或隐藏流程。兼容数量、来源和验收边界见[普通可破坏物说明](ordinary-destructible-drops-4.6.md)。
 
 `LiteralSceneTransfer` 为初始化与开始序列提供完整单步 EnterMap 解析；普通请求、登录恢复和同会话恢复共读，按实际接取与来源筛选唯一候选，并为正常剧情切图保留短期回执。原始 Auto/多前置、等待重置和验证边界见[共用场景接续](literal-scene-transfers-4.6.md)。
 

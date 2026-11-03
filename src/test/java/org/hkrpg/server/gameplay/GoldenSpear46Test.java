@@ -72,6 +72,7 @@ class GoldenSpear46Test {
 
   void destroy(int group) {
     var shield = shield(group);
+    assertFalse(OrdinaryDestructibles.applies(shield), "A golden-spear shield is not an ordinary drop");
     assertTrue(fixture.player.scene.destroyProp(shield));
     assertEquals(0, shield.getEntityId());
     assertEquals(PropState.ChestClosed, treasure(group).getState());

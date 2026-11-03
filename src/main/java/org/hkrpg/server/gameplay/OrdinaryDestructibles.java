@@ -10,11 +10,21 @@ import java.time.*;
 import java.util.*;
 
 /**
- * Verified station and Jarilo-VI ordinary props. DropList IDs are pools, NOT RewardData IDs.
+ * Verified ordinary world props. DropList IDs are pools, NOT RewardData IDs.
  * Until the server pool table is available, use an explicit local 100-credit/1-metal policy.
  * Refresh at UTC+8 04:00 on scene entry; this timing and the rewards are compatibility rules.
  */
 public final class OrdinaryDestructibles {
+  private record Policy(Set<Integer> props, Set<String> pools) {}
+
+  private static final Map<Integer, Policy> POLICIES = Map.of(
+      101, new Policy(Set.of(100026, 100027), Set.of("[2000102,101001]")),
+      201, new Policy(Set.of(101017), Set.of("[2000102,101002]")),
+      301, new Policy(Set.of(102007, 102008), Set.of("[2000102,101003]", "[2000102,101004]")),
+      401, new Policy(Set.of(103016, 103017), Set.of("[2000102,101005]")),
+      501, new Policy(Set.of(104010, 104011), Set.of("[2000102,101006]")),
+      601, new Policy(Set.of(105013, 105014, 101017, 102007, 103016), Set.of("[2000102,101008]")));
+
   static Clock clock = Clock.systemUTC();
 
   static long day() {
@@ -29,17 +39,29 @@ public final class OrdinaryDestructibles {
     return s != null
         && s.getDimensionId() == 0
         && s.getStoryLineId() == 0
-        && (s.getWorldId() == 101 || s.getWorldId() == 201)
+        && POLICIES.containsKey(s.getWorldId())
         && (s.getPlaneType() == PlaneType.Town || s.getPlaneType() == PlaneType.Maze);
   }
 
   private static boolean family(Scene s, PropInfo p) {
-    if (p == null) return false;
-    return switch (s.getWorldId()) {
-      case 101 -> p.getPropID() == 100026 || p.getPropID() == 100027;
-      case 201 -> p.getPropID() == 101017;
-      default -> false;
-    };
+    var policy = POLICIES.get(s.getWorldId());
+    return p != null && policy != null && policy.props().contains(p.getPropID());
+  }
+
+  private static boolean special(Scene scene, GroupInfo group, PropInfo info) {
+    return info != null && (PropTimelines.tagged(info)
+        || GoldenSpears.keepsSourceValues(group)
+        || !WorldMechanisms.shields(scene, group == null ? 0 : group.getId(), info.getID()).isEmpty());
+  }
+
+  private static boolean rewardEvent(Scene scene, PropInfo info) {
+    if (!family(scene, info) || info.getEventID() <= 0) return false;
+    if (info.getEventID() != 10000) return true;
+    // Authored neutral destruction is intentionally reward-free. Malformed markers still fail
+    // validation rather than silently destroying an ordinary prop.
+    var event = GameData.getPlaneEventExcelMap().get(10000, RaidDifficultySettings.world(scene));
+    return event == null || event.getStageId() != 0 || event.getReward() != 0
+        || event.getDropList() == null || !event.getDropList().isEmpty();
   }
 
   private static PropInfo original(Scene s, int group, int instance) {
@@ -53,16 +75,19 @@ public final class OrdinaryDestructibles {
   public static boolean applies(EntityProp p) {
     if (p == null || !world(p.getScene())) return false;
     var original = original(p.getScene(), p.getGroupId(), p.getInstId());
+    var group = p.getScene().getFloorInfo() == null ? null
+        : p.getScene().getFloorInfo().getGroups().get(p.getGroupId());
+    if (special(p.getScene(), group, original == null ? p.getPropInfo() : original)) return false;
     // Areas use different event IDs; match the world-specific prop family and pool pair instead.
     // Route authored reward events through validation; malformed pools must not silently destroy.
-    return family(p.getScene(), p.getPropInfo()) && p.getPropInfo().getEventID() > 0
-        || family(p.getScene(), original) && original.getEventID() > 0;
+    return rewardEvent(p.getScene(), p.getPropInfo()) || rewardEvent(p.getScene(), original);
   }
 
   private static boolean configured(Scene s, PropInfo p) {
     if (!world(s)
         || !family(s, p)
         || p.getEventID() <= 0
+        || p.getEventID() == 10000
         || p.getID() <= 0
         || p.isIsDelete()
         || p.isIsClientOnly()
@@ -82,8 +107,7 @@ public final class OrdinaryDestructibles {
         || e.getDropList() == null
         || e.getDropList().size() != 2) return false;
     // Require the exact regional pair; never substitute same-numbered RewardData bundles.
-    String pools = s.getWorldId() == 201 ? "[2000102,101002]" : "[2000102,101001]";
-    return e.getDropList().toString().equals(pools);
+    return POLICIES.get(s.getWorldId()).pools().contains(e.getDropList().toString());
   }
 
   private static String key(Scene s, int group, int instance) {
@@ -91,7 +115,7 @@ public final class OrdinaryDestructibles {
   }
 
   public static boolean removed(Scene s, GroupInfo group, PropInfo info) {
-    if (!world(s) || !family(s, info) || info.getEventID() <= 0) return false;
+    if (!world(s) || !rewardEvent(s, info) || special(s, group, info)) return false;
     var state = s.getPlayer().getGameplay().getDestructibleRewards();
     if (state == null || !state.valid()) return false;
     var r = state.getReceipts().get(key(s, group.getId(), info.getID()));
@@ -111,6 +135,7 @@ public final class OrdinaryDestructibles {
           || prop.getExcel() != GameData.getPropExcelMap().get(info.getPropID())
           || !Objects.equals(PropTimelines.source(info), PropTimelines.source(prop.getPropInfo()))
           || group == null
+          || special(s, group, info)
           || group.getLoadSide() != GroupInfo.GroupLoadSide.Server
           || GameData.getFloorInfo(s.getPlaneId(), s.getFloorId()) != s.getFloorInfo()
           || !s.getFloorInfo().isGroupInDimension(prop.getGroupId(), 0)

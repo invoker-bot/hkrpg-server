@@ -240,7 +240,7 @@ public final class WorldMechanisms {
         : null;
   }
 
-  private static List<WorldMechanismSources.Rule> shields(Scene scene, int group, int instance) {
+  static List<WorldMechanismSources.Rule> shields(Scene scene, int group, int instance) {
     return rules(scene, group).stream()
         .filter(r -> r.kind() == WorldMechanismSources.Kind.SPEAR && r.shield() == instance)
         .toList();
