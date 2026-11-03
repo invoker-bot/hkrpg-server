@@ -31,3 +31,13 @@
 - 前置主/子任务为独立数据库夹具，战斗和演出回执为合成请求。先前几轮因夹具包含未定义的历史目标、把已领奖终态限定为 FINISHED、或假定完成章节后仍留在旧场景而中止；这些运行不计为通过。最终完整报告为 `build/backwater-exit-gate-20261103/native.json`，运行目录 `build/smoke/backwater-exit-gate-u1k7c4f2/`，11 份所用资源文件摘要前后相同。
 - 实际发布包以现服 `83f635ae46b9ff784ce0b5e21549fa726a83bfe243f1aa2968bd78cb229b0374` 为基础。现服 `StoryDoors.class` 与本轮修改前的 HEAD 源码独立编译结果逐字节相同；仅替换该类、加入 `BackwaterExitGate.class`，并追加本功能目录项。其他 **23,957** 份既有 ZIP 条目内容及原有功能项逐项保持一致。
 - 发布包 SHA-256：`263e5268235e7b8a28c5410f1210af905d0b4c74991140db0639332e83a0b170`。144 项专项、两轮冒烟与 44 次网络请求均针对这个包；全量源码构建结果单独记录，不冒称为合成发布包的全量测试。
+
+## 2026-11-03 本地服务更新
+
+- 修复提交：`d37a5f55fcba2a8d9de776dd35195b1dd2d0d163`，未推送远程。
+- 正常停服后备份 `.local/backups/backwater-exit-gate-20261103-054558-263e526/`，62 份文件逐一核验；原服务退出码 143，无 OOM。没有使用备份覆盖运营数据库。
+- 已更新 `hkrpg-local-server-1`，运行程序 SHA-256 与上述发布包一致。镜像 `sha256:dac860e989ac2c20346033792c11b8de9c7fa6413ec5fd5f0d57d94f60789e68`，服务为 healthy；Compose 只读检查、CN/OS 派发、网关和原生心跳通过。
+- 对停服备份数据库的隔离副本读取与新进程存档逐文档比较，所有非区域文档完全一致；区域文档仅发生正常启动的 `up=false` 到 `true` 变化。配置和资源清单一致，没有代替玩家完成剧情或修改位置。
+- 发布核验记录在 `build/backwater-exit-gate-20261103/` 的 `deployment.json`、`backup-proof.json`、`data-preservation.json` 和 `compose-verification.json`。
+
+更新后请退出游戏重新登录，再触发裂隙前控制装置的剧情，清除旧会话中失败的交互等待。真实客户端镜头、地图界面、碰撞及战斗接续仍待用户复测，本轮没有启动或操作客户端，也没有使用 computer use。
