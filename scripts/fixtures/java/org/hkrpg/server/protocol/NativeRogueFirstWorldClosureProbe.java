@@ -23,6 +23,8 @@ public final class NativeRogueFirstWorldClosureProbe {
   private final List<Map<String, Integer>> encounters = new ArrayList<>();
   private Ukcp channel;
   private int requests, finishNotifications, actionResults, rejected, credits;
+  private final Map<Integer, DynamicMessage> dialogueCache = new LinkedHashMap<>();
+  private int dialogueNotifications;
   private JsonObject sources;
 
   private static Object field(DynamicMessage m, String name) {
@@ -35,6 +37,17 @@ public final class NativeRogueFirstWorldClosureProbe {
   private static void require(boolean ok, String why) { if (!ok) throw new IllegalStateException(why); }
 
   private void observe(Frame frame) throws Exception {
+    if (frame.command()==protocol.clientCommand("SyncRogueCommonDialogueDataScNotify")) {
+      var notify=protocol.clientSchema().parse("SyncRogueCommonDialogueDataScNotify",frame.body());
+      require(notify.getUnknownFields().asMap().isEmpty(),"Unknown dialogue notification fields");
+      dialogueCache.clear();
+      for(var raw:(List<?>)field(notify,"dialogue_list")) {
+        var row=(DynamicMessage)raw;
+        require(number(row,"AIAFEKGBFIF")>0
+            && dialogueCache.put(number(row,"AIAFEKGBFIF"),row)==null,"Duplicate event cache identity");
+      }
+      dialogueNotifications++;
+    }
     if (frame.command()==protocol.clientCommand("SyncRogueFinishScNotify")) {
       var data=nested(protocol.clientSchema().parse("SyncRogueFinishScNotify",frame.body()),"NLEOMLNOKCC");
       require(number(data,"area_id")==110 && (Boolean)field(data,"is_win")
@@ -89,6 +102,9 @@ public final class NativeRogueFirstWorldClosureProbe {
   }
   private void enter(int site) throws Exception {
     call("EnterRogueMapRoomCsReq",Map.of("MAJKFIMPOOF",site,"room_id",ROOMS.get(site)));
+    // Check before GetRogueInfo or any explicit dialogue query could hide the missing push.
+    if(site==5) event();
+    else require(dialogueCache.isEmpty(),"Old event options survived a room transition");
   }
   private void locked(int site) throws Exception {
     reject("EnterRogueMapRoomCsReq",Map.of("MAJKFIMPOOF",site,"room_id",ROOMS.get(site)));
@@ -180,9 +196,9 @@ public final class NativeRogueFirstWorldClosureProbe {
     throw new IllegalStateException("Menu confirmation did not terminate");
   }
   private int event() throws Exception {
-    var rows=(List<?>)field(call("GetRogueCommonDialogueDataCsReq"),"dialogue_list");
+    var rows=new ArrayList<>(dialogueCache.values());
     require(rows.size()==1,"Original event actor missing");
-    var row=(DynamicMessage)rows.getFirst();
+    var row=rows.getFirst();
     require(number(nested(nested(row,"owner"),"MFAEGBJBJBE"),"OEANPIHCHHF")==40398,"Wrong source event");
     return number(row,"AIAFEKGBFIF");
   }
@@ -215,6 +231,7 @@ public final class NativeRogueFirstWorldClosureProbe {
         "token",credentials.get("comboToken").getAsString(),"platform",1)),"uid");
     credits=number(nested(call("PlayerLoginCsReq"),"basic_info"),"scoin");
     call("PlayerLoginFinishCsReq");
+    call("GetRogueInfoCsReq");
     int unique=mode.equals("start")?0:credentials.get("unique").getAsInt();
     int batch=mode.equals("start")?0:credentials.get("batch").getAsInt();
     int buff=mode.equals("start")?0:credentials.get("buff").getAsInt();
@@ -229,7 +246,7 @@ public final class NativeRogueFirstWorldClosureProbe {
       enter(4); fightAll(4); map(current(),4,4,false);
       enter(5); map(current(),5,4,false);
       unique=event();
-      var row=(DynamicMessage)((List<?>)field(call("GetRogueCommonDialogueDataCsReq"),"dialogue_list")).getFirst();
+      var row=dialogueCache.values().iterator().next();
       var options=(List<?>)field(row,"KFNMIEMBJGD");
       require(options.size()==3,"Original three options changed");
       for(var raw:options) require((Boolean)field((DynamicMessage)raw,"is_valid"),"Default recipe did not make the original choices usable");
@@ -238,8 +255,10 @@ public final class NativeRogueFirstWorldClosureProbe {
       var pending=pending(current()); batch=pending[0]; buff=pending[1];
       verifyPendingEvent(unique,batch,buff,money);
       call("LeaveRogueCsReq");
+      require(dialogueCache.isEmpty(),"Paused event options remained in the client cache");
       acquire(batch,buff,false);
       call("EnterRogueCsReq",Map.of("area_id",110));
+      require(event()==unique,"Resume did not push the saved event identity");
       verifyPendingEvent(unique,batch,buff,money);
     } else if(!mode.equals("finished")) {
       verifyPendingEvent(unique,batch,buff,money);
@@ -263,7 +282,7 @@ public final class NativeRogueFirstWorldClosureProbe {
       require(enumeration(current,"status").equals("RogueStatus_Finish") && (Boolean)field(current,"ILOFGCAFHAH")
           && blessings(current).contains(buff),"Completed run did not restore");
       acquire(batch,buff,false); choose(unique,14102,false);
-      require(((List<?>)field(call("GetRogueCommonDialogueDataCsReq"),"dialogue_list")).isEmpty(),"Old event NPC leaked outside the run");
+      require(dialogueCache.isEmpty(),"Old event NPC leaked outside the run");
       require(number(scene(),"entry_id")!=8000103,"Terminal leave location did not restore");
     }
     var state=current();
@@ -274,6 +293,9 @@ public final class NativeRogueFirstWorldClosureProbe {
     result.put("encounters",encounters); result.put("finishNotifications",finishNotifications); result.put("actionResults",actionResults);
     result.put("rejectedDuplicateOrBlockedActions",rejected); result.put("requests",requests);
     result.put("allSevenRoomsPlayed",mode.equals("resume") || mode.equals("finished"));
+    result.put("dialogueNotifications",dialogueNotifications);
+    result.put("dialogueQueryRequests",0);
+    result.put("passiveDialogueCacheVerified",true);
     result.put("clientGameplayVerified",false); return result;
   }
 

@@ -168,6 +168,8 @@ def main():
         assert child.returncode == 0, log
         snapshot = json.loads(next(line for line in child.stdout.splitlines() if line.startswith('{"uid":')))
         assert snapshot['passed'] and not snapshot['clientGameplayVerified']
+        assert snapshot['passiveDialogueCacheVerified'] and snapshot['dialogueQueryRequests'] == 0
+        assert snapshot['dialogueNotifications'] > 0
         unchanged_runtime_inputs()
         snapshot.update(runtimeJarSHA256=digest, isolatedConfigSHA256=config_digest)
         snapshots.append(snapshot)

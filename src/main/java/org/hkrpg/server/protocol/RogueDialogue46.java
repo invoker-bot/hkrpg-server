@@ -60,6 +60,19 @@ public final class RogueDialogue46 {
     return row.build();
   }
 
+  /** The native event UI filters options against this cache; a scene NPC alone is insufficient. */
+  public static void sync(GameSession session) {
+    if (!session.getProtocol().experimental() || session.getState() != SessionState.ACTIVE) return;
+    synchronized (session.getPlayer()) {
+      var scene = session.getPlayer().getScene();
+      persist(scene);
+      var notify = builder(session, "SyncRogueCommonDialogueDataScNotify");
+      for (var actor : active(scene)) add(notify, "dialogue_list", dialogue(session, actor));
+      // This native notification replaces the whole cache, including an empty room on departure.
+      session.sendClientPacket("SyncRogueCommonDialogueDataScNotify", notify.build().toByteArray());
+    }
+  }
+
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
     if (!session.getProtocol().experimental()) return false;
     boolean query =

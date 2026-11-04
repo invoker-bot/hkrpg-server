@@ -53,6 +53,7 @@ public final class Universe46 {
         var season = activeSeason(Instant.now());
         set(response, "rogue_game_info", snapshot(session, season));
         if (season == null) set(response, "retcode", Retcode.ROGUE_AREA_INVALID.getVal());
+        RogueDialogue46.sync(session);
         session.sendClientPacket("GetRogueInfoScRsp", response.build().toByteArray());
         syncFinish(session);
       }
@@ -199,6 +200,7 @@ public final class Universe46 {
   private static void sceneAndLineup(GameSession session, DynamicMessage.Builder response)
       throws IOException {
     var player = session.getPlayer();
+    RogueDialogue46.sync(session);
     for (String type : List.of("SceneInfo", "LineupInfo")) {
       var bytes =
           type.equals("SceneInfo")

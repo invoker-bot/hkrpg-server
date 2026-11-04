@@ -43,7 +43,9 @@ class UniverseDialogueEntry46Test {
     Scene scene;
     int saves;
     boolean interruptSave;
-    final PlayerLineup lineup = new PlayerLineup(this, 0);
+    final PlayerLineup lineup = new PlayerLineup(this, 0) {
+      @Override public int getMp() { return 5; }
+    };
 
     public GameplayState getGameplay() {
       return state;
@@ -61,6 +63,18 @@ class UniverseDialogueEntry46Test {
       return 8000103;
     }
 
+    @Override public boolean enterSceneAtAnchor(int entry, int group, int anchor, boolean send) {
+      if (entry != 8000103 || group != 21 || anchor != 1 || scene == null) return false;
+      scene = new Scene(this, scene.getExcel(), 80001003) {
+        @Override public emu.lunarcore.proto.SceneInfoOuterClass.SceneInfo toProto() {
+          return emu.lunarcore.proto.SceneInfoOuterClass.SceneInfo.newInstance()
+              .setPlaneId(80001).setFloorId(80001003).setEntryId(entry);
+        }
+      };
+      scene.setEntryId(entry);
+      return true;
+    }
+
     public void save() {
       if (interruptSave) throw new IllegalStateException("Injected dialogue save failure");
       saves++;
@@ -69,9 +83,15 @@ class UniverseDialogueEntry46Test {
 
   static class Session extends Gameplay46HandlerTest.Session {
     final Explorer explorer = new Explorer();
+    final List<Map.Entry<String, DynamicMessage>> sent = new ArrayList<>();
 
     public Player getPlayer() {
       return explorer;
+    }
+
+    @Override public void sendClientPacket(String name, byte[] bytes) {
+      super.sendClientPacket(name, bytes);
+      sent.add(Map.entry(name, response));
     }
 
     DynamicMessage query() throws Exception {
@@ -198,6 +218,93 @@ class UniverseDialogueEntry46Test {
 
   int unique(DynamicMessage event) {
     return Gameplay46.number(event, "AIAFEKGBFIF");
+  }
+
+  DynamicMessage pushedDialogue() {
+    return session.sent.stream()
+        .filter(packet -> packet.getKey().equals("SyncRogueCommonDialogueDataScNotify"))
+        .map(Map.Entry::getValue).reduce((first, last) -> last)
+        .orElseThrow(() -> new AssertionError("Native client never received the event option cache"));
+  }
+
+  @Test
+  void roomTransitionPublishesNewOptionsWithoutAnotherDialogueQuery() throws Exception {
+    int previous = unique(dialogues(session.query()).getFirst());
+    var run = session.explorer.state.getRogue();
+    run.getRooms().put(2, 305);
+    GameplayDefinitions.maps.put(199959, List.of(
+        new GameplayDefinitions.Site(199959, 1, true, List.of(2), 3),
+        new GameplayDefinitions.Site(199959, 2, false, List.of(), 3)));
+    try {
+      run.clear();
+      session.sent.clear();
+      var request = Gameplay46.builder(session, "EnterRogueMapRoomCsReq");
+      Gameplay46.set(request, "MAJKFIMPOOF", 2);
+      Gameplay46.set(request, "room_id", 305);
+      assertTrue(Universe46.handle(session,
+          session.getProtocol().clientCommand("EnterRogueMapRoomCsReq"), request.build().toByteArray()));
+      assertEquals("EnterRogueMapRoomScRsp", session.responseName);
+      assertEquals(0, Gameplay46.number(session.response, "retcode"));
+      var rows = dialogues(pushedDialogue());
+      assertEquals(1, rows.size());
+      assertNotEquals(previous, unique(rows.getFirst()));
+      assertEquals(RogueDialogue46.active(session.explorer.scene).getFirst().binding().getUniqueId(),
+          unique(rows.getFirst()));
+      assertEquals(List.of(14101, 14102, 14103),
+          ((List<?>) Gameplay46.value(rows.getFirst(), "KFNMIEMBJGD")).stream()
+              .map(DynamicMessage.class::cast).map(o -> Gameplay46.number(o, "HAFOKMHCGFM")).toList());
+      assertTrue(session.sent.indexOf(Map.entry("SyncRogueCommonDialogueDataScNotify", pushedDialogue()))
+          < session.sent.size() - 1, "Options must arrive before the room response enables interaction");
+      assertEquals(Set.of(1), run.getCleared());
+      assertTrue(session.explorer.state.getRewards().isEmpty());
+    } finally {
+      GameplayDefinitions.maps.remove(199959);
+    }
+  }
+
+  @Test
+  void reconnectSnapshotPublishesSavedEventWithoutQueryingDialogueAgain() throws Exception {
+    int id = unique(dialogues(session.query()).getFirst());
+    session.explorer.state = gson.fromJson(gson.toJson(session.explorer.state), GameplayState.class);
+    reloadScene();
+    session.sent.clear();
+    session.request("GetRogueInfoCsReq");
+    assertEquals(id, unique(dialogues(pushedDialogue()).getFirst()));
+    assertTrue(session.explorer.state.getRogue().getCleared().isEmpty());
+    assertTrue(session.explorer.state.getRewards().isEmpty());
+  }
+
+  @Test
+  void snapshotOutsideRunClearsPreviouslyCachedEventOptions() throws Exception {
+    session.query();
+    session.explorer.state.getRogue().setInside(false);
+    session.sent.clear();
+    session.request("GetRogueInfoCsReq");
+    assertTrue(dialogues(pushedDialogue()).isEmpty());
+  }
+
+  @Test
+  void rejectedRoomTransitionDoesNotReplaceCurrentEventCache() throws Exception {
+    session.sent.clear();
+    var request = Gameplay46.builder(session, "EnterRogueMapRoomCsReq");
+    Gameplay46.set(request, "MAJKFIMPOOF", 2);
+    Gameplay46.set(request, "room_id", 305);
+    assertTrue(Universe46.handle(session,
+        session.getProtocol().clientCommand("EnterRogueMapRoomCsReq"), request.build().toByteArray()));
+    assertNotEquals(0, Gameplay46.number(session.response, "retcode"));
+    assertFalse(session.sent.stream().anyMatch(p -> p.getKey().equals("SyncRogueCommonDialogueDataScNotify")));
+    assertEquals(1, session.explorer.state.getRogue().getSiteId());
+  }
+
+  @Test
+  void nativeFullSnapshotUsesVerifiedCommandAndRepeatedDialogueField() {
+    var protocol = session.getProtocol();
+    assertEquals(5691, protocol.clientCommand("SyncRogueCommonDialogueDataScNotify"));
+    var field = protocol.clientSchema().message("SyncRogueCommonDialogueDataScNotify")
+        .findFieldByName("dialogue_list");
+    assertEquals(6, field.getNumber());
+    assertTrue(field.isRepeated());
+    assertEquals("HFEOGNAMHCG", field.getMessageType().getName());
   }
 
   @Test
