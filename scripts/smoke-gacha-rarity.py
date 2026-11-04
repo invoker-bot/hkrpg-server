@@ -22,6 +22,7 @@ spec.loader.exec_module(gm)
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--ticket-exchange', action='store_true', help='从一张票开始，验证星琼补票、十连、库存和重启保存')
+    parser.add_argument('--duplicate-rewards', action='store_true', help='仅向隔离账号预先授予常驻角色，验证重复角色星魂和星芒实际到账')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/gacha-rarity-native.json')
     args = parser.parse_args()
     jar = ROOT / 'build/libs/hkrpg-server.jar'
@@ -47,7 +48,7 @@ def main():
     java_flags = ['-Dfile.encoding=UTF-8', '-Dio.netty.eventLoopThreads=2',
                   '-Djdk.net.unixdomain.tmpdir=' + str(directory / 'tcp-fallback')]
     account_name = 'gacha_rarity_' + uuid.uuid4().hex + '@example.invalid'
-    logs, pulls, exchanges = [], [], []
+    logs, pulls, exchanges, seeded_avatars = [], [], [], []
     server = probe = None
     uid = None
     csrf = ''
@@ -105,6 +106,7 @@ def main():
         return json.loads(next(line.removeprefix('RARITY_FIXTURE=') for line in result.stdout.decode('utf-8').splitlines() if line.startswith('RARITY_FIXTURE=')))
 
     def pull(count):
+        before = snapshot()
         request_id = str(uuid.uuid4())
         target = directory / 'gacha-pull-request.json'
         temp = target.with_suffix('.tmp')
@@ -117,7 +119,19 @@ def main():
         rows = response['gacha_item_list']
         assert len(rows) == count
         won = [row['gacha_item']['item_id'] for row in rows]
-        pulls.append({'count': count, 'items': won, 'ticketsAfter': stock(result)})
+        bonuses = {}
+        for row in rows:
+            tokens = row.get('token_item', {}).get('item_list', [])
+            item = row['gacha_item']['item_id']
+            if item_types[item] == 'Equipment':
+                expected = {251: 20} if rarity[item] == 3 else {252: 8 if rarity[item] == 4 else 40}
+                assert {r['item_id']: r['num'] for r in tokens} == expected, row
+            for reward in tokens + row.get('transfer_item_list', {}).get('item_list', []):
+                item_id, amount = reward['item_id'], reward['num']
+                bonuses[item_id] = bonuses.get(item_id, 0) + amount
+        for item_id, amount in bonuses.items():
+            assert stock(result, item_id) - stock(before, item_id) == amount, (item_id, amount)
+        pulls.append({'count': count, 'items': won, 'ticketsAfter': stock(result), 'bonusesReceived': bonuses})
         return won, result
 
     def purchase(shop, goods, item, count, success=True):
@@ -157,11 +171,12 @@ def main():
                           'jadeAfter': result['basic']['hcoin'], 'stockAfter': stock(result, item), 'response': reply})
         return result
 
-    rarity = {}
+    rarity, item_types = {}, {}
     for name in ('ItemConfigAvatar.json', 'ItemConfigEquipment.json'):
         rows = json.loads((ROOT / 'resources/4.6/ExcelOutput' / name).read_text(encoding='utf-8'))
         rows = rows if isinstance(rows, list) else rows.values()
         rarity.update({row['ID']: {'Rare': 3, 'VeryRare': 4, 'SuperRare': 5}.get(row['Rarity'], 0) for row in rows})
+        item_types.update({row['ID']: row['ItemMainType'] for row in rows})
     try:
         seeded = after_draws = restored = None
         for iteration in range(3):
@@ -177,7 +192,11 @@ def main():
                 assert all(rarity[item['id']] == 5 for item in row['pool5'])
                 assert all(rarity[item['id']] == 4 for item in row['pool4'])
             normal = next(row for row in current if row['id'] == 1001)
-            assert len(normal['up5']) == 14 and len(normal['up4']) == 34
+            if args.duplicate_rewards and iteration > 0:
+                assert len(normal['up5']) == sum(rarity[i] == 5 for i in seeded_avatars)
+                assert len(normal['up4']) == sum(rarity[i] == 4 for i in seeded_avatars)
+            else:
+                assert len(normal['up5']) == 14 and len(normal['up4']) == 34
             account = request('/hkrpg_cn/mdk/shield/api/login', {'account': account_name, 'password': 'disposable-rarity-smoke'})['data']['account']
             combo = request('/hkrpg_cn/combo/granter/login/v2/login', {'data': json.dumps({'uid': account['uid'], 'token': account['token']})})
             credentials = directory / 'credentials.json'
@@ -201,8 +220,22 @@ def main():
                 if args.ticket_exchange:
                     operation('grant', itemId=1, amount=3200, level=0, rank=0)
                     gm.wait_for(lambda: snapshot()['basic'].get('hcoin', 0) == 3200, 30)
+                if args.duplicate_rewards:
+                    seeded_avatars = sorted({row['id'] for row in normal['pool5'] + normal['pool4']
+                                             if item_types[row['id']] == 'AvatarCard'})
+                    for avatar in seeded_avatars:
+                        operation('grant', itemId=avatar, amount=1, level=1, rank=0)
                 (directory / 'rarity-fixture.json').write_text(json.dumps({'testFixture': True, 'uid': uid}), encoding='utf-8')
                 stop()
+                if args.duplicate_rewards:
+                    # Only this normally stopped, owned fixture pool is narrowed. Hard pity must
+                    # choose an owned character, so eidolon coverage never depends on a lucky roll.
+                    banners = json.loads(original)
+                    fixture = next(row for row in banners if row['id'] == 1001)
+                    fixture['rateUpItems5'] = [i for i in seeded_avatars if rarity[i] == 5]
+                    fixture['rateUpItems4'] = [i for i in seeded_avatars if rarity[i] == 4]
+                    original = json.dumps(banners, ensure_ascii=False, indent=2).encode('utf-8')
+                    (directory / 'data/Banners.json').write_bytes(original)
                 seeded = inspect('seed')
                 assert (seeded['pity5'], seeded['pity4'], seeded['failedFeatured'], seeded['tickets']) == (89,9,1,tickets)
             elif iteration == 1:
@@ -224,6 +257,10 @@ def main():
                     assert stock(first) == 49 and stock(last) == 39
                 assert rarity[won5[0]] == 5, 'Hard five-star pity awarded a lower rarity'
                 assert any(rarity[i] == 4 for i in won5 + won10), 'Eleven pulls after four-star pity produced no four-star item'
+                if args.duplicate_rewards:
+                    assert sum(p['bonusesReceived'].get(252, 0) for p in pulls) > 0, 'Missing actual starlight'
+                    assert any(item > 10000 and amount > 0 for p in pulls
+                               for item, amount in p['bonusesReceived'].items()), 'Missing actual eidolon'
                 stop()
                 after_draws = inspect('inspect')
                 pity5, pity4 = 89, 9
@@ -237,11 +274,11 @@ def main():
                 assert stock(initial) == (0 if args.ticket_exchange else 39)
                 if args.ticket_exchange:
                     assert initial['basic']['hcoin'] == 1280 and stock(initial, 102) == 2
-                    assert initial['avatars'] == last['avatars']
-                    def inventory(s):
-                        return {k: sorted(json.dumps({f: v for f, v in x.items() if f != 'unique_id'}, sort_keys=True) for x in rows)
-                                for k, rows in s['bag'].items() if isinstance(rows, list)}
-                    assert inventory(initial) == inventory(last), 'Rewards/tickets changed after restart'
+                assert initial['avatars'] == last['avatars']
+                def inventory(s):
+                    return {k: sorted(json.dumps({f: v for f, v in x.items() if f != 'unique_id'}, sort_keys=True) for x in rows)
+                            for k, rows in s['bag'].items() if isinstance(rows, list)}
+                assert inventory(initial) == inventory(last), 'Rewards/tickets changed after restart'
                 restored = initial
                 stop()
                 final = inspect('inspect')
@@ -251,9 +288,12 @@ def main():
         report = {'passed': True, 'jarSHA256': digest, 'runtimeDirectory': str(directory), 'uid': uid,
                   'normalStops': 3, 'actualPulls': 11, 'pulls': pulls, 'seeded': seeded, 'persisted': after_draws,
                   'actualPlayerReads': 6, 'sameUidAfterTwoRestarts': True, 'ticketCost': 11,
-                  'bannerFileUnchanged': True, 'all53PoolsResourceChecked': True,
+                  'bannerFileUnchanged': not args.duplicate_rewards, 'all53PoolsResourceChecked': True,
                   'restoredSnapshot': restored, 'operatorDataModified': False, 'clientGameplayVerified': False}
         report['ticketExchange'] = args.ticket_exchange
+        report['seededAvatarsForDuplicateRewards'] = seeded_avatars
+        report['characterOnlyStandardPoolFixture'] = args.duplicate_rewards
+        report['bannerFileUnchangedAfterFixture'] = True
         report['exchanges'] = exchanges
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')

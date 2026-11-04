@@ -23,10 +23,19 @@ public final class GachaRarityResources implements AutoCloseable {
         if (item.getItemMainType() == emu.lunarcore.game.enums.ItemMainType.AvatarCard) {
           avatars.put(id, GameData.getAvatarExcelMap().get(id));
           GameData.getAvatarExcelMap().add(json.fromJson("{\"AvatarID\":"+id+",\"MaxRank\":6}", AvatarExcel.class));
+          int shard = id + 10000;
+          items.put(shard, GameData.getItemExcelMap().get(shard));
+          GameData.getItemExcelMap().add(json.fromJson("{\"ID\":" + shard
+              + ",\"ItemMainType\":\"Material\",\"ItemSubType\":\"Eidolon\",\"PileLimit\":999}", ItemExcel.class));
         } else {
           item.setEquipmentExcel(json.fromJson("{\"EquipmentID\":"+id+",\"MaxRank\":5}", EquipmentExcel.class));
         }
         GameData.getItemExcelMap().add(item);
+      }
+      for (int id : List.of(251, 252)) {
+        items.put(id, GameData.getItemExcelMap().get(id));
+        GameData.getItemExcelMap().add(json.fromJson("{\"ID\":" + id
+            + ",\"ItemMainType\":\"Material\",\"ItemSubType\":\"Material\",\"PileLimit\":999999}", ItemExcel.class));
       }
     }
   }

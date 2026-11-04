@@ -237,10 +237,19 @@ public class GachaService extends BaseGameService {
                 return;
             }
 
+            if (!bonusesFit(player, pool, times, costItem, cost)) {
+                player.sendPacket(new PacketDoGachaScRsp(Retcode.ITEM_REWARD_EXCEED_LIMIT));
+                return;
+            }
             if (!player.getInventory().removeItem(costItem, cost)) {
                 player.sendPacket(new PacketDoGachaScRsp(Retcode.FAIL));
                 return;
             }
+        }
+
+        if (banner.getGachaType().getCostItem() <= 0 && !bonusesFit(player, pool, times, null, cost)) {
+            player.sendPacket(new PacketDoGachaScRsp(Retcode.ITEM_REWARD_EXCEED_LIMIT));
+            return;
         }
 
         // Add gacha ceiling
@@ -418,6 +427,63 @@ public class GachaService extends BaseGameService {
         // Packets
         player.save();
         player.sendPacket(new PacketDoGachaScRsp(player, banner, times, list));
+    }
+
+    /** Reserve possible bonuses before RNG; rejecting a rolled result would let bag contents bias draws. */
+    private static boolean bonusesFit(Player player, GachaPool pool, int times, GameItem costItem, int cost) {
+        var inventory = player.getInventory();
+        var bonuses = new java.util.HashMap<Integer, Integer>();
+        int maxStarlight = 0, maxNewStacksPerDraw = 0;
+        var starlight = inventory.getMaterialByItemId(starglightId);
+        var possible = java.util.stream.Stream.of(pool.fiveStars(), pool.fourStars(), pool.base3())
+            .flatMap(List::stream).distinct().toList();
+        for (int id : possible) {
+            var item = GameData.getItemExcelMap().get(id);
+            int token = 0;
+            if (item.getItemMainType() == ItemMainType.AvatarCard) {
+                var avatar = player.getAvatars().getAvatarById(id);
+                int duplicates = avatar == null ? times - 1 : times;
+                if (duplicates == 0) continue;
+                int shardId = GameData.getAvatarExcelMap().get(id).getRankUpItemId();
+                var held = inventory.getMaterialByItemId(shardId);
+                long rank = (avatar == null ? 0L : avatar.getRank()) + (held == null ? 0L : held.getCount());
+                int remaining = (int) Math.max(0L, Math.min(6L, 6L - rank));
+                int reward = (duplicates > remaining ? 20 : 8)
+                    * (item.getRarity() == ItemRarity.SuperRare ? 5 : 1);
+                maxStarlight = Math.max(maxStarlight, reward);
+                int slots = starlight == null ? 1 : 0;
+                if (remaining > 0) {
+                    bonuses.put(shardId, Math.min(remaining, duplicates));
+                    if (held == null) slots++;
+                }
+                maxNewStacksPerDraw = Math.max(maxNewStacksPerDraw, slots);
+            } else {
+                switch (item.getRarity()) {
+                    case SuperRare -> { maxStarlight = Math.max(maxStarlight, 40); token = starglightId; }
+                    case VeryRare -> { maxStarlight = Math.max(maxStarlight, 8); token = starglightId; }
+                    case Rare -> { bonuses.put(embersId, 20 * times); token = embersId; }
+                    default -> {}
+                }
+                if (token != 0 && inventory.getMaterialByItemId(token) == null)
+                    maxNewStacksPerDraw = Math.max(maxNewStacksPerDraw, 1);
+            }
+        }
+        if (maxStarlight > 0) bonuses.put(starglightId, maxStarlight * times);
+        int newStacks = 0;
+        for (var bonus : bonuses.entrySet()) {
+            var item = GameData.getItemExcelMap().get(bonus.getKey());
+            if (item == null || !emu.lunarcore.game.inventory.Inventory.isStackType(item)) return false;
+            var held = inventory.getMaterialByItemId(bonus.getKey());
+            if ((held == null ? 0L : held.getCount()) + bonus.getValue()
+                    > emu.lunarcore.game.shop.ShopItems.stackLimit(item)) return false;
+            if (held == null) newStacks++;
+        }
+        // Different outcomes may need different new stacks; a draw creates at most a token and an eidolon.
+        newStacks = Math.min(newStacks, times * maxNewStacksPerDraw);
+        var material = inventory.getTab(emu.lunarcore.game.inventory.tabs.InventoryTabType.MATERIAL);
+        int freedSlot = costItem != null && costItem.getCount() == cost ? 1 : 0;
+        return material != null && (long) material.getAvailableCapacity() + freedSlot >= newStacks
+            && inventory.hasItemIdCapacity(times + newStacks);
     }
 
     public List<GameItem> exchangeGachaCeiling(Player player, int avatarId) {
