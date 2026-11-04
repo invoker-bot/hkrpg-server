@@ -159,6 +159,10 @@ public final class MissionManager {
           }
           if (config.getProgress() < 0
               || !MissionStateRecords.doing(state, config.getId(), goal(config))) continue;
+          if (RogueTeachingFlow.advanceAutomatic(player, config, now())) {
+            pass = true;
+            continue;
+          }
           if (matchesPlace(config) && new StoryActions(player).recoverableLineupCompletion(config)) {
             pass |= advance(config, state, goal(config) - state.getProgress());
             if (state.getPhase() != QuestState.Phase.DOING) continue;
@@ -407,6 +411,7 @@ public final class MissionManager {
         return Retcode.MISSION_NOT_DOING;
       if (!"Talk".equals(config.getFinishType()) || !config.getParamStr1().equals(talk))
         return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+      if (RogueTeachingFlow.automatic(id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
       if (config.getLevelFloorID() != 0 && config.getLevelFloorID() != player.getFloorId())
         return Retcode.MISSION_SCENE_NOT_MATCH;
       if (!MissionTalkScriptGates.allows(player, id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
@@ -1201,7 +1206,8 @@ public final class MissionManager {
           TrialAvatarMissionConditions.satisfied(player, c);
       case "DelTrialAvatar" -> MissionTrialRemovals.satisfied(player, c);
       case "RogueExploreScore" -> RogueExploreScoreMission.satisfied(player, c);
-      case "RogueEnterRoomWithLevel", "KillMonster" -> RogueSecondStoryProgress.satisfied(player, c);
+      case "RogueEnterRoomWithLevel", "KillMonster" ->
+          RogueSecondStoryProgress.satisfied(player, c) || RogueTeachingFlow.restSatisfied(player, c);
       case "ClockParkProgress" -> matchesPlace(c) && ClockParkMissionProgress.satisfied(player, c);
       case "StoryLineAddTrialAvatar" -> StoryTrialReplacement.apply(player, c);
       case "EnterRaidScene" -> new MissionRaid(player).transfer(c);

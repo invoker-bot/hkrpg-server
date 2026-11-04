@@ -1,3 +1,5 @@
+`RogueTeachingFlow` 在原始来源和保存历史匹配时执行隐藏的三个自动衔接目标；`UniverseManager`、`RogueMapPools` 和原生目录共用首次世界教学地图，任务管理器按真实休整房到达证据接取黑塔教学。来源、旧局接续和实机边界见[教学衔接说明](rogue-teaching-flow-4.6.md)。
+
 `UniverseManager` 的开局、换房和继续探索统一使用房间所属组的锚点；现有登录回调通过 `RogueRoomSpawn` 恢复旧楼层原点记录，只保存位置与朝向。来源、回退与实机边界见[房间入口说明](rogue-room-spawns-4.6.md)。
 
 `LoginBootstrap46` 为差分宇宙初始资料提供永久教学101的零进度目录参考，避免空集合被客户端视为教学全通而隐藏旧模拟宇宙分类。原进入条件、字段链和验收边界见[指南空白说明](rogue-guide-handbook-4.6.md)。

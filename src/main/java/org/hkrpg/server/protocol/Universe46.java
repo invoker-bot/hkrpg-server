@@ -293,6 +293,10 @@ public final class Universe46 {
         if (id == 100 && run.getAreaId() == 100 && run.getMapId() == 2
             && run.getPhase() == GameplayState.RogueRun.Phase.EXPLORING) map = 2;
         else if (id == 100 && org.hkrpg.server.gameplay.RogueSecondStoryEntry.awaiting(player)) map = 2;
+        if (id == 110 && run.getAreaId() == 110 && run.getMapId() == 3
+            && run.getPhase() == GameplayState.RogueRun.Phase.EXPLORING) map = 3;
+        else if (id == 110 && org.hkrpg.server.gameplay.RogueTeachingFlow.introCompleted(player)
+            && run.getPhase() != GameplayState.RogueRun.Phase.EXPLORING) map = 3;
         set(area, "map_id", map);
         boolean claimed = player.getRewardLedger().granted("rogue-first:" + id);
         enumValue(

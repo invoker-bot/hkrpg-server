@@ -150,6 +150,8 @@ final class RogueMapPools {
           || !Map.of(29, 2007).equals(c.GroupWithContent())) return Optional.empty();
       return Optional.of(new Assignment(1, Map.of(1, 201, 2, 202, 3, 203)));
     }
+    if (mapId == 3 && area == 110 && !GameplayDefinitions.roomPoolByMap.containsKey(3))
+      return RogueTeachingFlow.assignment();
     var rooms = new HashMap<Integer, Integer>();
     for (var site : sites) {
       var pool =

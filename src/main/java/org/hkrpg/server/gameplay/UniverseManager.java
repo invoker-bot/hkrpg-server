@@ -137,6 +137,9 @@ public final class UniverseManager {
           || player.getScene().getPlaneType() == emu.lunarcore.game.enums.PlaneType.Rogue)
         return Retcode.ROGUE_STATUS_NOT_MATCH;
       boolean secondStory = areaId == 100 && RogueSecondStoryEntry.inProgress(player);
+      boolean firstWorldTeaching = areaId == 110 && RogueTeachingFlow.inProgress(player);
+      if (firstWorldTeaching && (!RogueTeachingFlow.introCompleted(player) || !RogueTeachingFlow.office(player)))
+        return Retcode.MISSION_NOT_DOING;
       if (secondStory && !RogueSecondStoryEntry.awaiting(player)) return Retcode.ROGUE_AREA_INVALID;
       if (secondStory && !RogueSecondStoryEntry.inOffice(player)) return Retcode.ROGUE_STATUS_NOT_MATCH;
       var ids = selected == null ? List.<Integer>of() : List.copyOf(selected);
@@ -156,12 +159,14 @@ public final class UniverseManager {
                           || player.getAvatarById(id).getAvatarType()
                               != emu.lunarcore.proto.AvatarTypeOuterClass.AvatarType
                                   .AVATAR_FORMAL_TYPE)) return Retcode.REQ_PARA_INVALID;
-      int mapId = secondStory ? 2 : area.mapId();
+      int mapId = secondStory ? 2 : firstWorldTeaching ? 3 : area.mapId();
       var planned = RogueMapPools.assign(mapId, player.getUid(), areaId);
       if (planned.isEmpty()) return Retcode.ROGUE_AREA_INVALID;
       var assignments = planned.get().rooms();
       if (secondStory && !RogueSecondStoryEntry.plan(assignments)) return Retcode.ROGUE_AREA_INVALID;
-      var boss = RogueBossEncounters.prepare(area, assignments);
+      if (firstWorldTeaching && !RogueTeachingFlow.plan(assignments)) return Retcode.ROGUE_AREA_INVALID;
+      var boss = firstWorldTeaching ? new RogueBossEncounters.Prepared(true,null)
+          : RogueBossEncounters.prepare(area, assignments);
       if (!boss.valid()) return Retcode.ROGUE_AREA_INVALID;
       var run = new GameplayState.RogueRun(areaId, mapId, assignments, boss.plan(), aeon);
       run.setupTeam(player, ids);
@@ -226,7 +231,7 @@ public final class UniverseManager {
       if (run.getCoins() != beforeRoomEffects)
         org.hkrpg.server.protocol.RogueTalent46.syncCurrency(player);
       org.hkrpg.server.protocol.Universe46.syncMap(player);
-      if (secondStory) player.getMissionManager().refresh();
+      if (secondStory || run.getAreaId() == 110) player.getMissionManager().refresh();
       return Retcode.SUCC;
     }
   }
