@@ -1,3 +1,5 @@
+`ProtocolBridge.clientResponseCommand` 为原生待选动作5676登记已核对的5657响应，让现有`ReplyCorrelation46`为实际领取与错误回复保留本次点击编号；共用处理器继续校验和保存奖励。来源、隔离及实机边界见[领取回复说明](rogue-pending-reply-4.6.md)。
+
 `RogueTeachingFlow` 在原始来源和保存历史匹配时执行隐藏的三个自动衔接目标；`UniverseManager`、`RogueMapPools` 和原生目录共用首次世界教学地图，任务管理器按真实休整房到达证据接取黑塔教学。来源、旧局接续和实机边界见[教学衔接说明](rogue-teaching-flow-4.6.md)。
 
 `UniverseManager` 的开局、换房和继续探索统一使用房间所属组的锚点；现有登录回调通过 `RogueRoomSpawn` 恢复旧楼层原点记录，只保存位置与朝向。来源、回退与实机边界见[房间入口说明](rogue-room-spawns-4.6.md)。

@@ -171,6 +171,7 @@ def main():
         assert snapshot['passiveDialogueCacheVerified'] and snapshot['dialogueQueryRequests'] == 0
         assert snapshot['dialogueNotifications'] > 0
         assert snapshot['finishCorrelatedReplies'] == snapshot['finishAcknowledgements'] + snapshot['finishRejections']
+        assert snapshot['pendingCorrelatedReplies'] == snapshot['pendingReplies']
         unchanged_runtime_inputs()
         snapshot.update(runtimeJarSHA256=digest, isolatedConfigSHA256=config_digest)
         snapshots.append(snapshot)

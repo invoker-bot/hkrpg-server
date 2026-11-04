@@ -257,6 +257,9 @@ public final class ProtocolBridge {
 
   /** A reply needs a named pair or an independently verified native pair in this wire version. */
   public int clientResponseCommand(int requestCommand) {
+    // The native reward action has an obfuscated request name, so the named-pair lookup misses it.
+    if (experimental() && requestCommand == Universe46.PENDING_ACTION_COMMAND)
+      return clientCommand("HandleRogueCommonPendingActionScRsp");
     // The name-only importer omits the native rogue End pair (raw BIHACLHMAKO / LPDPAJGFBMM).
     if (experimental() && requestCommand == RogueDialogue46.FINISH_COMMAND)
       return RogueDialogue46.FINISH_RESPONSE;

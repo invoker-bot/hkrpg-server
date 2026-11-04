@@ -27,6 +27,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   private int dialogueNotifications;
   private int finishAcknowledgements, finishRejections;
   private int finishPacketIdentity = Integer.MIN_VALUE, finishCorrelatedReplies;
+  private int pendingReplies, pendingCorrelatedReplies;
   private JsonObject sources;
 
   private static Object field(DynamicMessage m, String name) {
@@ -326,6 +327,8 @@ public final class NativeRogueFirstWorldClosureProbe {
     result.put("finishAcknowledgements",finishAcknowledgements);
     result.put("finishRejections",finishRejections);
     result.put("finishCorrelatedReplies",finishCorrelatedReplies);
+    result.put("pendingReplies",pendingReplies);
+    result.put("pendingCorrelatedReplies",pendingCorrelatedReplies);
     result.put("clientGameplayVerified",false); return result;
   }
 
@@ -352,7 +355,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   }
   private Frame raw(int command,byte[] payload,int response) throws Exception {
     byte[] header=new byte[0];
-    if(command==5646) {
+    if(command==5646 || command==5676) {
       var output=new java.io.ByteArrayOutputStream();
       var wire=CodedOutputStream.newInstance(output);
       wire.writeUInt32(1,++finishPacketIdentity); wire.flush(); header=output.toByteArray();
@@ -369,6 +372,11 @@ public final class NativeRogueFirstWorldClosureProbe {
         if(command==5646) {
           require(Arrays.equals(header,frame.header()),"End acknowledgement lost the click packet identity");
           finishCorrelatedReplies++;
+        }
+        if(command==5676) {
+          pendingReplies++;
+          require(Arrays.equals(header,frame.header()),"Pending reward reply lost the click packet identity");
+          pendingCorrelatedReplies++;
         }
         return frame;
       }
