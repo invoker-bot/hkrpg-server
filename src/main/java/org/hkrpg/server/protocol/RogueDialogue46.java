@@ -13,6 +13,10 @@ import org.hkrpg.server.gameplay.RogueDialogueRewards;
 
 /** Native NPC/option reads and sender are recorded in client46-rogue-dialogue-evidence.json. */
 public final class RogueDialogue46 {
+  // Native DialogueManager sends 0x160e and waits for 5631 after DialogueFinished.
+  // Existing raw BIHACLHMAKO / LPDPAJGFBMM codecs use fields 2 / 9 respectively.
+  public static final int FINISH_COMMAND = 5646;
+  public static final int FINISH_RESPONSE = 5631;
   public static List<RogueEventNpc> active(Scene scene) {
     if (scene == null) return List.of();
     return scene.getEntities().values().stream()
@@ -75,6 +79,10 @@ public final class RogueDialogue46 {
 
   public static boolean handle(GameSession session, int command, byte[] bytes) throws IOException {
     if (!session.getProtocol().experimental()) return false;
+    if (command == FINISH_COMMAND) {
+      finish(session, bytes);
+      return true;
+    }
     boolean query =
         command == session.getProtocol().clientCommand("GetRogueCommonDialogueDataCsReq");
     boolean select =
@@ -128,6 +136,23 @@ public final class RogueDialogue46 {
       }
     }
     return true;
+  }
+
+  private static void finish(GameSession session, byte[] bytes) throws IOException {
+    if (session.getState() != SessionState.ACTIVE) return;
+    synchronized (session.getPlayer()) {
+      var type = session.getProtocol().clientSchema().message("BIHACLHMAKO");
+      int unique = NativeUnsignedActionWire.valid(type, bytes, 0)
+          ? number(session.getProtocol().clientSchema().parse("BIHACLHMAKO", bytes), "AIAFEKGBFIF") : 0;
+      var actor = unique <= 0 ? null : active(session.getPlayer().getScene()).stream()
+          .filter(npc -> npc.binding().getUniqueId() == unique).findFirst().orElse(null);
+      var result = actor == null ? Retcode.REQ_PARA_INVALID
+          : RogueDialogueRewards.canFinish(session.getPlayer(), actor) ? Retcode.SUCC
+          : Retcode.ROGUE_STATUS_NOT_MATCH;
+      var response = builder(session, "LPDPAJGFBMM");
+      set(response, "retcode", result.getVal());
+      session.sendClientPacket(FINISH_RESPONSE, response.build().toByteArray());
+    }
   }
 
   private RogueDialogue46() {}

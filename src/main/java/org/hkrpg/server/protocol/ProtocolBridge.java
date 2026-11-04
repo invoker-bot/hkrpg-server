@@ -255,8 +255,11 @@ public final class ProtocolBridge {
     return id;
   }
 
-  /** A reply must have a named request/response pair in this exact wire command table. */
+  /** A reply needs a named pair or an independently verified native pair in this wire version. */
   public int clientResponseCommand(int requestCommand) {
+    // The name-only importer omits the native rogue End pair (raw BIHACLHMAKO / LPDPAJGFBMM).
+    if (experimental() && requestCommand == RogueDialogue46.FINISH_COMMAND)
+      return RogueDialogue46.FINISH_RESPONSE;
     if (experimental() && requestCommand == 505) return 575;
     // 563 is quick growth, whose distinct 509 reply is not implemented here.
     if (experimental() && requestCommand == 563) return 0;

@@ -170,12 +170,13 @@ def main():
         assert snapshot['passed'] and not snapshot['clientGameplayVerified']
         assert snapshot['passiveDialogueCacheVerified'] and snapshot['dialogueQueryRequests'] == 0
         assert snapshot['dialogueNotifications'] > 0
+        assert snapshot['finishCorrelatedReplies'] == snapshot['finishAcknowledgements'] + snapshot['finishRejections']
         unchanged_runtime_inputs()
         snapshot.update(runtimeJarSHA256=digest, isolatedConfigSHA256=config_digest)
         snapshots.append(snapshot)
         credentials.update({key: snapshot[key] for key in ['unique', 'batch', 'buff', 'coins']})
 
-    for iteration, mode in enumerate(['start', 'resume', 'finished']):
+    for iteration, mode in enumerate(['start', 'acquired', 'resume', 'finished']):
         unchanged_runtime_inputs()
         with (directory / f'server-{iteration}.log').open('w', encoding='utf-8') as log:
             process = subprocess.Popen(command, cwd=directory, stdin=subprocess.PIPE,
@@ -222,7 +223,7 @@ def main():
                         process.stdin.close()
         child = subprocess.run([str(java), *encoding, fallback, '-cp', str(jar) + os.pathsep + str(probe_classes),
             'org.hkrpg.server.gameplay.RogueFirstWorldClosureFixtureInspector', str(directory),
-            str(snapshots[0]['uid']), 'pending' if iteration == 0 else 'finished'], cwd=ROOT,
+            str(snapshots[0]['uid']), 'pending' if iteration == 0 else 'acquired' if iteration == 1 else 'finished'], cwd=ROOT,
             text=True, encoding='utf-8', capture_output=True, timeout=45, creationflags=flags)
         log = directory / f'inspector-{iteration}.log'
         log.write_text(child.stdout + child.stderr, 'utf-8')
@@ -231,25 +232,27 @@ def main():
         assert inspection['passed'] and inspection['changedPlayers'] == 0
         unchanged_runtime_inputs()
         inspections.append(inspection)
-    assert stops == 3 and len(snapshots) == 4 and len(inspections) == 3
+    assert stops == 4 and len(snapshots) == 5 and len(inspections) == 4
     assert all(s['uid'] == snapshots[0]['uid'] and s['unique'] == snapshots[0]['unique']
                and s['batch'] == snapshots[0]['batch'] and s['buff'] == snapshots[0]['buff'] for s in snapshots)
     assert snapshots[0]['blessings'] == snapshots[1]['blessings']
     assert set(snapshots[2]['blessings']) == set(snapshots[0]['blessings']) | {snapshots[0]['buff']}
-    assert snapshots[2]['blessings'] == snapshots[3]['blessings']
-    assert snapshots[2]['currentCoins'] == snapshots[3]['currentCoins']
-    assert snapshots[2]['credits'] == snapshots[3]['credits']
-    assert len(snapshots[0]['encounters']) == 7 and len(snapshots[2]['encounters']) == 1
-    assert inspections[0]['runId'] == inspections[1]['runId'] == inspections[2]['runId']
-    assert inspections[1]['eventReward'] == inspections[2]['eventReward']
-    assert inspections[1]['sourceChoices'] == inspections[2]['sourceChoices']
+    assert snapshots[2]['blessings'] == snapshots[3]['blessings'] == snapshots[4]['blessings']
+    assert snapshots[3]['currentCoins'] == snapshots[4]['currentCoins']
+    assert snapshots[3]['credits'] == snapshots[4]['credits']
+    assert sum(s['finishAcknowledgements'] for s in snapshots) >= 5
+    assert sum(s['finishRejections'] for s in snapshots) >= 4
+    assert len(snapshots[0]['encounters']) == 7 and len(snapshots[3]['encounters']) == 1
+    assert len({r['runId'] for r in inspections}) == 1
+    assert inspections[1]['eventReward'] == inspections[2]['eventReward'] == inspections[3]['eventReward']
+    assert inspections[2]['sourceChoices'] == inspections[3]['sourceChoices']
     assert all((data / name).read_bytes() == raw for name, raw in defaults.items())
     assert hashes == {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in guarded}
     unchanged_runtime_inputs()
     report = {'passed': True, 'runtimeDirectory': str(directory), 'rootJarSHA256': digest,
         'isolatedConfigSHA256': config_digest, 'jarAndConfigSHA256Unchanged': True,
         'snapshots': snapshots, 'inspections': inspections, 'normalStops': stops,
-        'sameUIDNormalH2ProcessRestarts': 2, 'sourceResourceHashes': hashes,
+        'sameUIDNormalH2ProcessRestarts': 3, 'sourceResourceHashes': hashes,
         'sourceResourcesModified': False, 'sourceCommit': PIN,
         'fixture': {'syntheticNoRewardPrerequisites': prerequisites, 'area': 110, 'sourceMap': 101,
             'productionMapAndRecipeDefaultsInstalled': True, 'operatorOverrides': False,

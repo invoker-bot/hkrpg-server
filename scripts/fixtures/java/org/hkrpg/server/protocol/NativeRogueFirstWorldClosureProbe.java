@@ -14,7 +14,7 @@ import kcp.highway.*;
 
 /** Native default seven-site route and normal H2 restart; no official client UI. */
 public final class NativeRogueFirstWorldClosureProbe {
-  private record Frame(int command, byte[] body) {}
+  private record Frame(int command, byte[] header, byte[] body) {}
   private static final Map<Integer, Integer> ROOMS = Map.of(1,304,2,302,3,303,4,304,5,305,6,306,7,307);
   private final ProtocolBridge protocol = ProtocolBridge.forVersion("4.6.0");
   private final BlockingQueue<Frame> inbox = new LinkedBlockingQueue<>();
@@ -25,6 +25,8 @@ public final class NativeRogueFirstWorldClosureProbe {
   private int requests, finishNotifications, actionResults, rejected, credits;
   private final Map<Integer, DynamicMessage> dialogueCache = new LinkedHashMap<>();
   private int dialogueNotifications;
+  private int finishAcknowledgements, finishRejections;
+  private int finishPacketIdentity = Integer.MIN_VALUE, finishCorrelatedReplies;
   private JsonObject sources;
 
   private static Object field(DynamicMessage m, String name) {
@@ -209,8 +211,18 @@ public final class NativeRogueFirstWorldClosureProbe {
     if(!success) rejected++;
     return response;
   }
+  private void finish(int unique,boolean success) throws Exception {
+    requests++;
+    var response=protocol.clientSchema().parse("LPDPAJGFBMM",
+        raw(5646,build("BIHACLHMAKO",Map.of("AIAFEKGBFIF",unique)),5631).body());
+    require(response.getUnknownFields().asMap().isEmpty(),"Unknown event-finish acknowledgement fields");
+    require((number(response,"retcode")==0)==success,"Unexpected event-finish acknowledgement");
+    if(success) finishAcknowledgements++;
+    else { finishRejections++; rejected++; }
+  }
   private void verifyPendingEvent(int unique,int batch,int buff,int money) throws Exception {
     require(event()==unique,"Dialogue lease identity changed across reconnect");
+    finish(unique,true);
     var current=current();
     map(current,5,4,true);
     require(coins(current)==money && !blessings(current).contains(buff),"Pending reward was already acquired");
@@ -223,9 +235,16 @@ public final class NativeRogueFirstWorldClosureProbe {
     require(number(response,"retcode")!=0,"Event draw could be rerolled");
     rejected++;
   }
+  private void verifyAcquiredEvent(int unique,int batch,int buff,int money) throws Exception {
+    require(event()==unique,"Acquired event identity changed across restart");
+    var current=current(); map(current,5,5,false);
+    require(coins(current)==money && blessings(current).contains(buff),"Saved event reward was lost or repeated");
+    acquire(batch,buff,false);
+    choose(unique,14102,false);
+  }
   private Map<String,Object> execute(JsonObject credentials) throws Exception {
     String mode=credentials.get("mode").getAsString();
-    require(Set.of("start","pending","resume","finished").contains(mode),"Unknown closure mode");
+    require(Set.of("start","pending","acquired","resume","finished").contains(mode),"Unknown closure mode");
     sources=credentials.getAsJsonObject("actors");
     int uid=number(call("PlayerGetTokenCsReq",Map.of("account_uid",credentials.get("accountUid").getAsString(),
         "token",credentials.get("comboToken").getAsString(),"platform",1)),"uid");
@@ -246,6 +265,7 @@ public final class NativeRogueFirstWorldClosureProbe {
       enter(4); fightAll(4); map(current(),4,4,false);
       enter(5); map(current(),5,4,false);
       unique=event();
+      finish(unique,false);
       var row=dialogueCache.values().iterator().next();
       var options=(List<?>)field(row,"KFNMIEMBJGD");
       require(options.size()==3,"Original three options changed");
@@ -256,19 +276,26 @@ public final class NativeRogueFirstWorldClosureProbe {
       verifyPendingEvent(unique,batch,buff,money);
       call("LeaveRogueCsReq");
       require(dialogueCache.isEmpty(),"Paused event options remained in the client cache");
+      finish(unique,false);
       acquire(batch,buff,false);
       call("EnterRogueCsReq",Map.of("area_id",110));
       require(event()==unique,"Resume did not push the saved event identity");
       verifyPendingEvent(unique,batch,buff,money);
-    } else if(!mode.equals("finished")) {
+    } else if(mode.equals("pending") || mode.equals("acquired")) {
       verifyPendingEvent(unique,batch,buff,money);
-      if(mode.equals("resume")) {
+      if(mode.equals("acquired")) {
         acquire(batch,buff,true);
         require(blessings(current()).contains(buff),"Confirmed event blessing not acquired");
         map(current(),5,5,false);
-        acquire(batch,buff,false);
-        choose(unique,14102,false);
+        verifyAcquiredEvent(unique,batch,buff,money);
+      }
+    } else if(mode.equals("resume")) {
+        verifyAcquiredEvent(unique,batch,buff,money);
+        finish(unique,true);
+        finish(unique,true);
+        verifyAcquiredEvent(unique,batch,buff,money);
         enter(6); map(current(),6,6,false);
+        finish(unique,false);
         choose(unique,14101,false);
         enter(7); fightAll(7);
         var current=current(); map(current,7,7,false);
@@ -276,12 +303,12 @@ public final class NativeRogueFirstWorldClosureProbe {
         require(finishNotifications==1,"Missing or repeated complete-run presentation");
         call("GetRogueInfoCsReq");
         call("LeaveRogueCsReq");
-      }
     } else {
       var current=current(); map(current,7,7,false);
       require(enumeration(current,"status").equals("RogueStatus_Finish") && (Boolean)field(current,"ILOFGCAFHAH")
           && blessings(current).contains(buff),"Completed run did not restore");
       acquire(batch,buff,false); choose(unique,14102,false);
+      finish(unique,false);
       require(dialogueCache.isEmpty(),"Old event NPC leaked outside the run");
       require(number(scene(),"entry_id")!=8000103,"Terminal leave location did not restore");
     }
@@ -296,6 +323,9 @@ public final class NativeRogueFirstWorldClosureProbe {
     result.put("dialogueNotifications",dialogueNotifications);
     result.put("dialogueQueryRequests",0);
     result.put("passiveDialogueCacheVerified",true);
+    result.put("finishAcknowledgements",finishAcknowledgements);
+    result.put("finishRejections",finishRejections);
+    result.put("finishCorrelatedReplies",finishCorrelatedReplies);
     result.put("clientGameplayVerified",false); return result;
   }
 
@@ -321,14 +351,27 @@ public final class NativeRogueFirstWorldClosureProbe {
     require(number(exchange(name,build(name,fields)),"retcode")!=0,"Blocked route action succeeded"); rejected++;
   }
   private Frame raw(int command,byte[] payload,int response) throws Exception {
-    var bytes=Unpooled.wrappedBuffer(PacketCodec.encode(command,new byte[0],payload));
+    byte[] header=new byte[0];
+    if(command==5646) {
+      var output=new java.io.ByteArrayOutputStream();
+      var wire=CodedOutputStream.newInstance(output);
+      wire.writeUInt32(1,++finishPacketIdentity); wire.flush(); header=output.toByteArray();
+    }
+    var bytes=Unpooled.wrappedBuffer(PacketCodec.encode(command,header,payload));
     try { channel.write(bytes); } finally { bytes.release(); }
     long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(20);
     while(System.nanoTime()<deadline) {
       if(failure.get()!=null) throw new IllegalStateException("Native seven-site connection failed",failure.get());
       var frame=inbox.poll(1,TimeUnit.SECONDS);
       if(frame==null) continue;
-      observe(frame); if(frame.command()==response) return frame;
+      observe(frame);
+      if(frame.command()==response) {
+        if(command==5646) {
+          require(Arrays.equals(header,frame.header()),"End acknowledgement lost the click packet identity");
+          finishCorrelatedReplies++;
+        }
+        return frame;
+      }
     }
     throw new TimeoutException("Response "+response);
   }
@@ -347,7 +390,7 @@ public final class NativeRogueFirstWorldClosureProbe {
           try {
             while(bytes.isReadable()) {
               var frame=PacketCodec.decodeNext(bytes); require(frame!=null,"Truncated native closure frame");
-              probe.inbox.add(new Frame(frame.cmdId(),frame.body()));
+              probe.inbox.add(new Frame(frame.cmdId(),frame.header(),frame.body()));
             }
           } catch(Throwable error) { probe.failure.set(error); }
         }

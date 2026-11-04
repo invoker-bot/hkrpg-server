@@ -84,6 +84,7 @@ class UniverseDialogueEntry46Test {
   static class Session extends Gameplay46HandlerTest.Session {
     final Explorer explorer = new Explorer();
     final List<Map.Entry<String, DynamicMessage>> sent = new ArrayList<>();
+    final List<Map.Entry<Integer, byte[]>> nativePackets = new ArrayList<>();
 
     public Player getPlayer() {
       return explorer;
@@ -92,6 +93,10 @@ class UniverseDialogueEntry46Test {
     @Override public void sendClientPacket(String name, byte[] bytes) {
       super.sendClientPacket(name, bytes);
       sent.add(Map.entry(name, response));
+    }
+
+    @Override public void sendClientPacket(int command, byte[] bytes) {
+      nativePackets.add(Map.entry(command, bytes.clone()));
     }
 
     DynamicMessage query() throws Exception {

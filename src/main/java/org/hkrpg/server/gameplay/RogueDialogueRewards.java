@@ -124,6 +124,18 @@ public final class RogueDialogueRewards {
         && state.getOption() == option;
   }
 
+  /** Closing presentation acknowledges an accepted choice; it never claims or clears a reward. */
+  public static boolean canFinish(Player player, RogueEventNpc actor) {
+    if (actor == null) return false;
+    var state = actor.binding().getRewardState();
+    if (!context(player, actor, state) || state.getOption() == 0) return false;
+    var run = player.getGameplay().getRogue();
+    if (state.isComplete())
+      return run.getCleared().contains(run.getSiteId())
+          && Objects.toString(run.getEventRewardLease(), "").isEmpty();
+    return state.getOption() == 14102 && blessingAllowed(player, state.getBatch(), state.getBlessing());
+  }
+
   public static Retcode select(Player player, RogueEventNpc actor, int option) {
     synchronized (player) {
       if (actor == null || !actor.valid()) return Retcode.REQ_PARA_INVALID;

@@ -20,7 +20,7 @@ public final class RogueFirstWorldClosureFixtureInspector {
     require(marker.get("testFixture").getAsBoolean() && marker.get("rogueFirstWorldClosureFixture").getAsBoolean(),"Missing closure marker");
     int uid=Integer.parseInt(args[1]);
     String mode=args[2];
-    require(uid>0 && Set.of("pending","finished").contains(mode),"Invalid inspector arguments");
+    require(uid>0 && Set.of("pending","acquired","finished").contains(mode),"Invalid inspector arguments");
     var source=JsonParser.parseString(Files.readString(directory.resolve("actors.json"))).getAsJsonObject();
     var file=directory.resolve("data/database.mv");
     require(Files.isRegularFile(file),"Missing normally stopped H2 database");
@@ -47,6 +47,12 @@ public final class RogueFirstWorldClosureFixtureInspector {
             && run.getOffers().equals(List.of(reward.getBlessing())) && run.getSelectionId()==reward.getBatch()
             && run.getEventRewardLease().equals(lease.key()) && !run.getBlessings().containsKey(reward.getBlessing())
             && state.getRogueResults().isEmpty(),"Unconfirmed event reward or exit was altered in H2");
+      } else if(mode.equals("acquired")) {
+        require(run.getPhase()==GameplayState.RogueRun.Phase.EXPLORING && run.isInside() && run.getSiteId()==5 && run.getRoomId()==305
+            && player.getEntryId()==8000103 && run.getCleared().equals(Set.of(1,2,3,4,5)) && run.getProcessedBattles().size()==7
+            && !run.pending() && run.getEventRewardLease().isEmpty() && run.getSelectionId()==reward.getBatch()
+            && run.getBlessings().get(reward.getBlessing())==1 && state.getRogueResults().isEmpty(),
+            "Acquired event checkpoint before End did not persist");
       } else {
         require(run.getPhase()==GameplayState.RogueRun.Phase.FINISHED && !run.isInside() && run.getSiteId()==7 && run.getRoomId()==307
             && player.getEntryId()!=8000103 && run.getCleared().equals(Set.of(1,2,3,4,5,6,7)) && run.getProcessedBattles().size()==8
