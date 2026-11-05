@@ -1,11 +1,13 @@
 package org.hkrpg.server.protocol;
 
+import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import java.util.HashMap;
 import org.hkrpg.server.gameplay.SceneInteractions;
+import org.hkrpg.server.gameplay.TrainWorkbench;
 
 /** The native config ID and the opaque UInt64 interaction context are distinct fields. */
 public final class SceneInteraction46 {
@@ -18,16 +20,20 @@ public final class SceneInteraction46 {
     synchronized (player) {
       int config = Gameplay46.number(req, "interact_id2");
       int entity = Gameplay46.number(req, "prop_entity_id");
-      var result =
-          req.getUnknownFields().asMap().isEmpty()
-                  && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id")
-              ? SceneInteractions.validateNative(player, config, entity)
-              : Retcode.REQ_PARA_INVALID;
-      emu.lunarcore.game.scene.entity.EntityProp prop = null;
+      var scene = player.getScene();
+      var target = scene != null && scene.getEntityById(entity) instanceof EntityProp candidate
+          ? candidate : null;
+      boolean workbench = TrainWorkbench.applies(target);
+      var result = Retcode.REQ_PARA_INVALID;
+      if (req.getUnknownFields().asMap().isEmpty()
+          && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id"))
+        result = workbench ? TrainWorkbench.interact(target, config)
+            : SceneInteractions.validateNative(player, config, entity);
+      EntityProp prop = null;
       if (result == Retcode.SUCC) {
-        var target =
-            (emu.lunarcore.game.scene.entity.EntityProp) player.getScene().getEntityById(entity);
-        if (org.hkrpg.server.gameplay.BookPickups.applies(target)) {
+        if (workbench) {
+          prop = target;
+        } else if (org.hkrpg.server.gameplay.BookPickups.applies(target)) {
           var transition = org.hkrpg.server.gameplay.BookPickups.pickUp(player, config, entity);
           result = transition.retcode();
           prop = transition.prop();

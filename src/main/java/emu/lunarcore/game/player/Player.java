@@ -492,6 +492,7 @@ public class Player implements Tickable, Syncable {
 
         // Send packet
         this.sendPacket(new PacketPlayerSyncScNotify(this));
+        if (oldLevel != this.level) org.hkrpg.server.gameplay.TrainWorkbench.reconcile(getScene());
     }
 
     public int getDisplayExp() {
