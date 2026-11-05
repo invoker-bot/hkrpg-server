@@ -813,6 +813,7 @@ public final class UniverseManager {
   public Retcode selectBlessing(int selectionId, int buff) {
     synchronized (player) {
       var run = player.getGameplay().getRogue();
+      if (RogueDialogueRewards.acquiredBlessing(player, selectionId, buff)) return Retcode.SUCC;
       if (run.getPhase() != EXPLORING
           || (!run.getRoster().isEmpty() && !run.isInside())
           || player.isInBattle()

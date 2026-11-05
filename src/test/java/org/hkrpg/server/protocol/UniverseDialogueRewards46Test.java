@@ -105,7 +105,7 @@ class UniverseDialogueRewards46Test {
     assertEquals(before + 100, run().getCoins());
     assertEquals(Set.of(1), run().getCleared());
     assertFalse(run().pending());
-    assertNotEquals(0, choose(id, 14101));
+    assertEquals(0, choose(id, 14101));
     assertNotEquals(0, choose(id, 14103));
     assertEquals(before + 100, run().getCoins());
     assertTrue(run().getMiracles().isEmpty());
@@ -138,7 +138,7 @@ class UniverseDialogueRewards46Test {
     assertEquals(Map.of(612050, 1), run().getBlessings());
     assertEquals(Set.of(1), run().getCleared());
     assertFalse(run().pending());
-    assertEquals(Retcode.REQ_PARA_INVALID,
+    assertEquals(Retcode.SUCC,
         fixture.session.explorer.getUniverseManager().selectBlessing(batch, 612050));
   }
 
@@ -159,7 +159,7 @@ class UniverseDialogueRewards46Test {
     assertSame(lease, RogueDialogue46.active(fixture.session.explorer.scene).getFirst().binding());
     fixture.session.explorer.interruptSave = false;
     assertEquals(0, choose(id, option));
-    assertNotEquals(0, choose(id, option));
+    assertEquals(0, choose(id, option));
   }
 
   @Test
@@ -237,14 +237,16 @@ class UniverseDialogueRewards46Test {
   void concurrentSelectionsApplyTheEventOnce() throws Exception {
     unique();
     var actor = RogueDialogue46.active(fixture.session.explorer.scene).getFirst();
+    int saves = fixture.session.explorer.saves;
     try (var workers = Executors.newFixedThreadPool(2)) {
       var first = workers.submit(() -> RogueDialogueRewards.select(fixture.session.explorer, actor, 14101));
       var second = workers.submit(() -> RogueDialogueRewards.select(fixture.session.explorer, actor, 14101));
-      assertEquals(1, List.of(first.get(10, TimeUnit.SECONDS), second.get(10, TimeUnit.SECONDS))
+      assertEquals(2, List.of(first.get(10, TimeUnit.SECONDS), second.get(10, TimeUnit.SECONDS))
           .stream().filter(code -> code == Retcode.SUCC).count());
     }
     assertEquals(200, run().getCoins());
     assertEquals(Set.of(1), run().getCleared());
+    assertEquals(saves + 1, fixture.session.explorer.saves);
   }
 
   byte[] wire(long id, long option, boolean duplicate, boolean unknown) throws Exception {
@@ -458,7 +460,7 @@ class UniverseDialogueRewards46Test {
         fixture.session.explorer.state = restored.getGameplay();
         fixture.reloadScene();
         assertEquals(id, unique());
-        assertNotEquals(0, choose(id, option));
+        assertEquals(0, choose(id, option));
         if (option == 14102 && iteration == 0) {
           assertEquals(List.of(612050), run().getOffers());
           assertEquals(Retcode.SUCC, fixture.session.explorer.getUniverseManager()

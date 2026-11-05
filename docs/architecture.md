@@ -1,3 +1,5 @@
+`RogueDialogueRewards` 以当前有效事件收据确认相同选项和已到账祝福的重试；`UniverseManager` 在实际领取前识别严格匹配的完成收据。确认不改菜单、持有或存档，错误身份继续拒绝，见[事件重试说明](rogue-event-retry-4.6.md)。
+
 `ProtocolBridge.clientResponseCommand` 为原生待选动作5676登记已核对的5657响应，让现有`ReplyCorrelation46`为实际领取与错误回复保留本次点击编号；共用处理器继续校验和保存奖励。来源、隔离及实机边界见[领取回复说明](rogue-pending-reply-4.6.md)。
 
 `RogueTeachingFlow` 在原始来源和保存历史匹配时执行隐藏的三个自动衔接目标；`UniverseManager`、`RogueMapPools` 和原生目录共用首次世界教学地图，任务管理器按真实休整房到达证据接取黑塔教学。来源、旧局接续和实机边界见[教学衔接说明](rogue-teaching-flow-4.6.md)。

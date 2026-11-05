@@ -28,6 +28,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   private int finishAcknowledgements, finishRejections;
   private int finishPacketIdentity = Integer.MIN_VALUE, finishCorrelatedReplies;
   private int pendingReplies, pendingCorrelatedReplies;
+  private int optionCorrelatedReplies;
   private JsonObject sources;
 
   private static Object field(DynamicMessage m, String name) {
@@ -229,7 +230,8 @@ public final class NativeRogueFirstWorldClosureProbe {
     require(coins(current)==money && !blessings(current).contains(buff),"Pending reward was already acquired");
     require(Arrays.equals(pending(current),new int[]{batch,buff,1}),"Frozen event draw changed");
     locked(6);
-    choose(unique,14102,false);
+    choose(unique,14102,true);
+    require(Arrays.equals(pending(current()),new int[]{batch,buff,1}),"Retry changed the frozen event menu");
     var response=protocol.clientSchema().parse("HandleRogueCommonPendingActionScRsp",
         raw(5676,choiceRequest(batch,buff,true).toByteArray(),protocol.clientCommand("HandleRogueCommonPendingActionScRsp")).body());
     requests++;
@@ -240,8 +242,10 @@ public final class NativeRogueFirstWorldClosureProbe {
     require(event()==unique,"Acquired event identity changed across restart");
     var current=current(); map(current,5,5,false);
     require(coins(current)==money && blessings(current).contains(buff),"Saved event reward was lost or repeated");
-    acquire(batch,buff,false);
-    choose(unique,14102,false);
+    acquire(batch,buff,true);
+    choose(unique,14102,true);
+    var retried=current();
+    require(coins(retried)==money && blessings(retried).equals(blessings(current)),"Retry regranted an event reward");
   }
   private Map<String,Object> execute(JsonObject credentials) throws Exception {
     String mode=credentials.get("mode").getAsString();
@@ -329,6 +333,7 @@ public final class NativeRogueFirstWorldClosureProbe {
     result.put("finishCorrelatedReplies",finishCorrelatedReplies);
     result.put("pendingReplies",pendingReplies);
     result.put("pendingCorrelatedReplies",pendingCorrelatedReplies);
+    result.put("optionCorrelatedReplies",optionCorrelatedReplies);
     result.put("clientGameplayVerified",false); return result;
   }
 
@@ -355,7 +360,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   }
   private Frame raw(int command,byte[] payload,int response) throws Exception {
     byte[] header=new byte[0];
-    if(command==5646 || command==5676) {
+    if(command==5646 || command==5676 || command==5636) {
       var output=new java.io.ByteArrayOutputStream();
       var wire=CodedOutputStream.newInstance(output);
       wire.writeUInt32(1,++finishPacketIdentity); wire.flush(); header=output.toByteArray();
@@ -377,6 +382,10 @@ public final class NativeRogueFirstWorldClosureProbe {
           pendingReplies++;
           require(Arrays.equals(header,frame.header()),"Pending reward reply lost the click packet identity");
           pendingCorrelatedReplies++;
+        }
+        if(command==5636) {
+          require(Arrays.equals(header,frame.header()),"Event option reply lost the click packet identity");
+          optionCorrelatedReplies++;
         }
         return frame;
       }

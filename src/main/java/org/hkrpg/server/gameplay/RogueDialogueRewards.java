@@ -139,9 +139,22 @@ public final class RogueDialogueRewards {
   public static Retcode select(Player player, RogueEventNpc actor, int option) {
     synchronized (player) {
       if (actor == null || !actor.valid()) return Retcode.REQ_PARA_INVALID;
-      if (!selectable(player, actor, option)) return Retcode.ROGUE_STATUS_NOT_MATCH;
       var state = actor.binding().getRewardState();
       var run = player.getGameplay().getRogue();
+      // The original UI can reopen its selected option after reconnect or a lost reply.
+      // Acknowledge the saved choice, without drawing, clearing or saving it again.
+      if (option > 0 && context(player, actor, state) && state.getOption() == option) {
+        boolean accepted = state.isComplete()
+            ? option == 14102
+                ? acquiredBlessing(player, state.getBatch(), state.getBlessing())
+                : canFinish(player, actor)
+            : option == 14102 && blessingAllowed(player, state.getBatch(), state.getBlessing());
+        if (accepted) {
+          if (!state.isComplete()) org.hkrpg.server.protocol.Universe46.syncPending(player);
+          return Retcode.SUCC;
+        }
+      }
+      if (!selectable(player, actor, option)) return Retcode.ROGUE_STATUS_NOT_MATCH;
       var before = copy(run);
       var mark = state.mark();
       try {
@@ -176,6 +189,21 @@ public final class RogueDialogueRewards {
       if (state != null && state.getOption() == 14102 && !state.isComplete()) return actor;
     }
     return null;
+  }
+
+  /** Exact persisted event receipt only; acknowledgement must not change any current menu. */
+  public static boolean acquiredBlessing(Player player, int batch, int buff) {
+    var run = player.getGameplay().getRogue();
+    if (batch <= 0 || buff <= 0 || !Objects.toString(run.getEventRewardLease(), "").isEmpty()
+        || !run.getCleared().contains(run.getSiteId())
+        || run.getBlessings().getOrDefault(buff, 0) < 1
+        || !player.getGameplay().getRogueCollectedBuffs().contains(buff)) return false;
+    for (var actor : org.hkrpg.server.protocol.RogueDialogue46.active(player.getScene())) {
+      var state = actor.binding().getRewardState();
+      if (context(player, actor, state) && state.isComplete() && state.getOption() == 14102
+          && state.getBatch() == batch && state.getBlessing() == buff) return true;
+    }
+    return false;
   }
 
   /** A pending event menu cannot be acquired through an unrelated or corrupted run menu. */
