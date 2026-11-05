@@ -485,7 +485,23 @@ class RoguePropQuestTest {
   void receiptAndActualCountAreSavedBeforeQuestAndRemovalNotifications() throws Exception {
     var saved = new ArrayList<Integer>();
     var notices = new ArrayList<emu.lunarcore.server.packet.BasePacket>();
-    var session = new Gameplay46HandlerTest.Session();
+    var questNotices = new int[1];
+    var session = new Gameplay46HandlerTest.Session() {
+      @Override public Player getPlayer() { return RoguePropQuestTest.this.player; }
+      @Override public void sendClientPacket(String name, byte[] bytes) {
+        super.sendClientPacket(name, bytes);
+        var actual = RoguePropQuestTest.this.player;
+        if (!name.equals("PlayerSyncScNotify") || actual.getGameplay().getRogueDestructions().total() == 0)
+          return;
+        assertEquals(actual.getGameplay().getRogueDestructions().total(), saved.getLast());
+        assertEquals(1, actual.getGameplay().getRogue().getDestroyedDestructibleProps().size());
+        var rows = (List<?>) Gameplay46.value(response, "quest_list");
+        var row = rows.stream().map(com.google.protobuf.DynamicMessage.class::cast)
+            .filter(q -> Gameplay46.number(q, "id") == 4092312).findFirst().orElseThrow();
+        assertEquals(1, Gameplay46.number(row, "progress"));
+        questNotices[0]++;
+      }
+    };
     var actor =
         new Explorer() {
           public emu.lunarcore.server.game.GameSession getSession() {
@@ -510,11 +526,7 @@ class RoguePropQuestTest {
     reload();
     int originalEntity = prop(300007).getEntityId();
     destroy(1);
-    assertEquals(
-        1,
-        notices.stream()
-            .filter(emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp.class::isInstance)
-            .count());
+    assertEquals(1, questNotices[0]);
     var removals =
         notices.stream()
             .filter(

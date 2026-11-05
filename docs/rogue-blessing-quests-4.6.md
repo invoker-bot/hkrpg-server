@@ -1,5 +1,7 @@
 # 4.6 祝福图鉴任务与奖励
 
+2026-11-04已领奖但弹窗仍显示领取的问题，原记录为CLOSED，修复实时状态通知的依据与验证边界见[领奖显示同步](rogue-blessing-claim-sync-4.6.md)。
+
 原始 `RogueBuffType.RugueBuffTypeRewardQuestList` 将九种命途与 53 个图鉴任务关联。普通前四档使用 QuestType 1，后续追加档及繁育、智识的部分档位使用 QuestType 3；这些关联的 Type 3 是永久图鉴记录，不能仅因编号相同而放入周期重置域。
 
 `RogueBlessingQuests` 只统计已实际取得记录中的不同一级祝福编号。编号同时需要唯一的 RogueVersion 1 定义、IsShow 和对应一级 MazeBuff；隐藏共鸣、升级、同一祝福的再次取得、未知正数编号和重复定义均不会增加数量。任务沿用原始 Equal 条件和参数，达到目标才完成，不固定完成全部图鉴。缺失资源、损坏历史及保存记录的编号、阶段、进度或时间不一致时，查询和领取都保持关闭。

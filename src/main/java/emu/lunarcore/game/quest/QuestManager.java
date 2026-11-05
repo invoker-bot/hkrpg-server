@@ -415,9 +415,13 @@ public final class QuestManager extends BasePlayerManager {
     synchronized (getPlayer()) { sync(); }
   }
 
-  private void sync() {
-    if (getPlayer().getSession() != null)
-      getPlayer().sendPacket(new PacketGetQuestDataScRsp(getPlayer()));
+  public void sync() {
+    synchronized (getPlayer()) {
+      var session = getPlayer().getSession();
+      if (session == null) return;
+      if (!org.hkrpg.server.protocol.QuestSync46.sync(getPlayer()))
+        getPlayer().sendPacket(new PacketGetQuestDataScRsp(getPlayer()));
+    }
   }
 
   private static long now() {

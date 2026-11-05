@@ -349,23 +349,29 @@ class RogueEnhancementQuestTest {
             saved.add(getGameplay().getRogueEnhancements().total());
           }
 
-          @Override
-          public void sendPacket(BasePacket packet) {
-            if (packet instanceof emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp
-                && getGameplay().getRogueEnhancements().total() > 0) {
-              assertEquals(getGameplay().getRogueEnhancements().total(), saved.getLast());
-              assertEquals(200, getGameplay().getRogue().getCoins());
-              assertEquals(2, getGameplay().getRogue().getBlessings().get(BUFF));
-              assertEquals(1, getQuestStates().get(4092314).getProgress());
-              notifications[0]++;
-            }
-          }
         };
     for (String name : List.of("gameplay", "questStates", "name")) {
       var f = Player.class.getDeclaredField(name);
       f.setAccessible(true);
       f.set(actor, f.get(player()));
     }
+    fixture.s = new UniverseEnhance46Test.Session() {
+      @Override public void sendClientPacket(String name, byte[] bytes) {
+        super.sendClientPacket(name, bytes);
+        if (!name.equals("PlayerSyncScNotify") || actor.getGameplay().getRogueEnhancements().total() == 0)
+          return;
+        assertEquals(actor.getGameplay().getRogueEnhancements().total(), saved.getLast());
+        assertEquals(200, actor.getGameplay().getRogue().getCoins());
+        assertEquals(2, actor.getGameplay().getRogue().getBlessings().get(BUFF));
+        var rows = (List<?>) Gameplay46.value(response, "quest_list");
+        var row = rows.stream().map(com.google.protobuf.DynamicMessage.class::cast)
+            .filter(q -> Gameplay46.number(q, "id") == 4092314).findFirst().orElseThrow();
+        assertEquals(1, Gameplay46.number(row, "progress"));
+        assertEquals(1, ((com.google.protobuf.Descriptors.EnumValueDescriptor)
+            Gameplay46.value(row, "status")).getNumber());
+        notifications[0]++;
+      }
+    };
     var f = UniverseEnhance46Test.Session.class.getDeclaredField("explorer");
     f.setAccessible(true);
     f.set(fixture.s, actor);

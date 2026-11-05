@@ -6,7 +6,6 @@ import emu.lunarcore.proto.ItemListOuterClass.ItemList;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
-import emu.lunarcore.server.packet.send.PacketGetQuestDataScRsp;
 import java.io.IOException;
 import java.util.*;
 
@@ -144,7 +143,7 @@ public final class VersionedPacketHandler {
             .clientSchema()
             .parse("ItemList", protocol.translate("ItemList", reward.toByteArray(), true)));
     session.sendClientPacket("TakeQuestRewardScRsp", response.build().toByteArray());
-    session.send(new PacketGetQuestDataScRsp(session.getPlayer()));
+    session.getPlayer().getQuestManager().sync();
     return true;
   }
 
