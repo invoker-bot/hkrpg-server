@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /** Original companion mission battle graphs, exercised through 4.6 requests. */
@@ -345,32 +346,69 @@ class PeppyBattleProgress46Test {
     assertEquals(QuestState.Phase.DOING, phase(FOLLOW_PEPPY));
   }
 
-  @ParameterizedTest
-  @ValueSource(ints = {0, 1, 6})
-  void authoredArlanTriggerUsesTheStageWinEventAndAcceptsTheNextDialogue(int world) throws Exception {
+  private void prepareArlan() throws Exception {
     placePlayer(20003);
-    player.world = world;
     complete(FOLLOW_PEPPY);
     complete(200021122);
     accept(RESCUE_ARLAN);
-    var battle = enter(MISSING_ARLAN_EVENT);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"20003215, 0", "20003215, 1", "20003215, 6",
+      "20003216, 0", "20003216, 1", "20003216, 6"})
+  void arlanVictoryAcceptsTheNextDialogue(int event, int world) throws Exception {
+    prepareArlan();
+    player.world = world;
+    session.request("GetMissionDataCsReq", Map.of());
+    var battle = enter(event);
     assertEquals(ARLAN_EVENT * 10 + world, battle.getStage().getId());
     var reply = finish(battle, "BATTLE_END_WIN");
     assertEquals(0, field(reply, "retcode"));
-    assertEquals(MISSING_ARLAN_EVENT, field(reply, "event_id"));
+    assertEquals(event, field(reply, "event_id"));
     assertEquals(QuestState.Phase.FINISHED, phase(RESCUE_ARLAN));
     assertEquals(QuestState.Phase.DOING, phase(ARLAN_TALK));
-    assertNotEquals(0, field(requestEntry(MISSING_ARLAN_EVENT), "retcode"));
+    var notify = session.responses.get("PlayerSyncScNotify");
+    assertNotNull(notify, "The client needs the new mission status after winning");
+    var sync = (DynamicMessage) field(notify, "mission_sync");
+    assertEquals("MissionStatus_MissionFinish", status(sync, "mission_list", RESCUE_ARLAN));
+    assertEquals("MissionStatus_MissionDoing", status(sync, "mission_list", ARLAN_TALK));
+    assertNotEquals(0, field(requestEntry(event), "retcode"));
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {ARLAN_EVENT, MISSING_ARLAN_EVENT})
+  void arlanEncounterRequiresItsOriginalPrerequisiteAndFloor(int event) throws Exception {
+    complete(200021122);
+    accept(RESCUE_ARLAN);
+    assertNotEquals(0, field(requestEntry(event), "retcode"));
+    placePlayer(20003);
+    accept(200021122);
+    assertNotEquals(0, field(requestEntry(event), "retcode"));
+    assertNull(player.getBattle());
   }
 
   @Test
-  void arlanAliasRequiresItsOriginalPrerequisiteAndFloor() throws Exception {
-    complete(200021122);
-    accept(RESCUE_ARLAN);
-    assertNotEquals(0, field(requestEntry(MISSING_ARLAN_EVENT), "retcode"));
-    placePlayer(20003);
-    accept(200021122);
-    assertNotEquals(0, field(requestEntry(MISSING_ARLAN_EVENT), "retcode"));
-    assertNull(player.getBattle());
+  void savedArlanVictoryRetiresBothBattleTriggers() throws Exception {
+    prepareArlan();
+    complete(RESCUE_ARLAN);
+    accept(ARLAN_TALK);
+    for (int event : List.of(ARLAN_EVENT, MISSING_ARLAN_EVENT)) {
+      assertNotEquals(0, field(requestEntry(event), "retcode"));
+      assertNull(player.getBattle());
+    }
+    assertEquals(QuestState.Phase.DOING, phase(ARLAN_TALK));
+  }
+
+  @Test
+  void aDifferentEncounterSharingArlansStageDoesNotCompleteTheObjective() throws Exception {
+    prepareArlan();
+    var direct = Objects.requireNonNull(fixture.service.startBattle(player, 200032150, 0));
+    assertEquals(0, field(finish(direct, "BATTLE_END_WIN"), "retcode"));
+    int otherEvent = 29999999;
+    GameData.getPlaneEventExcelMap().add(fixture.gson.fromJson(
+        "{\"EventID\":" + otherEvent + ",\"StageID\":200032150}", PlaneEventExcel.class));
+    assertEquals(0, field(finish(enter(otherEvent), "BATTLE_END_WIN"), "retcode"));
+    assertEquals(QuestState.Phase.DOING, phase(RESCUE_ARLAN));
+    assertNull(player.getMissionManager().sub(ARLAN_TALK));
   }
 }

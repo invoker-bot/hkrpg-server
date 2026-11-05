@@ -17,13 +17,15 @@ public final class StoryBattleEvents {
   private static final Objective FOLLOW_PEPPY = new Objective(
       20003214, 20003214, 2000211, 200021114, 200021113, 20001, 20001001, "Companion",
       "09e9f02b0d5e1b650352bf00b35f05eba4fa24b682b39577acf25e724dc1b4cc");
+  // The installed client uses 20003215. The reference JSON uses the 20003216 alias.
   private static final Objective RESCUE_ARLAN = new Objective(
       20003216, 20003215, 2000211, 200021123, 200021122, 20003, 20003001, "Companion",
       "763fbdedd2b37fcd5406872a4094be5f6e699b40134030dac51adab0597f1fa6");
   private static final Map<Integer, Objective> BY_REQUEST = Map.of(
       STATION_BOSS.request(), STATION_BOSS,
       FOLLOW_PEPPY.request(), FOLLOW_PEPPY,
-      RESCUE_ARLAN.request(), RESCUE_ARLAN);
+      RESCUE_ARLAN.request(), RESCUE_ARLAN,
+      RESCUE_ARLAN.event(), RESCUE_ARLAN);
   private static final Map<Integer, Objective> COMPANION_OBJECTIVES =
       Map.of(FOLLOW_PEPPY.sub(), FOLLOW_PEPPY, RESCUE_ARLAN.sub(), RESCUE_ARLAN);
 
@@ -72,6 +74,7 @@ public final class StoryBattleEvents {
     return objective.event();
   }
 
+  /** Returns the reference graph's event when the companion objective is verified. */
   static int companionRequest(MissionInfo.SubMissionInfo definition) {
     var objective = COMPANION_OBJECTIVES.get(definition.getId());
     return objective != null && objective.matches(definition) ? objective.request() : 0;

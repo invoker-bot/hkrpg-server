@@ -12,7 +12,7 @@ import java.util.*;
 public final class MissionStageWins {
   private record Clause(
       int main, int stageOrEvent, int progress, int plane, int floor,
-      boolean eventMapped, int requiredEvent, String script) {}
+      boolean eventMapped, int scriptEvent, String script) {}
 
   private record Target(
       MissionInfo.SubMissionInfo definition,
@@ -66,8 +66,9 @@ public final class MissionStageWins {
               : !raid.matches(player))
           || target.definition() != definition
           || !target.clause().equals(clause(definition))
-          || (target.clause().requiredEvent() != 0
-              && battle.getEventId() != target.clause().requiredEvent())
+          || (target.clause().scriptEvent() != 0
+              && battle.getEventId() != target.clause().scriptEvent()
+              && battle.getEventId() != target.clause().stageOrEvent())
           || !condition(target.clause(), stage.getId(), world, plane, floor)) return false;
       var g = player.getGameplay();
       return g.getMainMissions().get(definition.getMainMissionID()) == target.main()
@@ -138,8 +139,8 @@ public final class MissionStageWins {
 
   private static Clause clause(MissionInfo.SubMissionInfo c) {
     if (!supported(c)) return null;
-    int requiredEvent = StoryBattleEvents.companionRequest(c);
-    boolean eventMapped = mainline(c) || requiredEvent != 0;
+    int scriptEvent = StoryBattleEvents.companionRequest(c);
+    boolean eventMapped = mainline(c) || scriptEvent != 0;
     String script = script(c, eventMapped);
     if (script == null) return null;
     return new Clause(
@@ -149,7 +150,7 @@ public final class MissionStageWins {
         c.getLevelPlaneID(),
         c.getLevelFloorID(),
         eventMapped,
-        requiredEvent,
+        scriptEvent,
         script);
   }
 
