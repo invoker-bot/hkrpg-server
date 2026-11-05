@@ -1363,7 +1363,10 @@ public class Player implements Tickable, Syncable {
         // Load into saved scene (should happen after everything else loads)
         if (!trialRestored && !getStoryLineManager().restoreOnLogin()) {
             org.hkrpg.server.gameplay.RogueFirstStorySpawn.recoverOnLogin(this);
-            this.loadScene(planeId, floorId, entryId, this.getPos(), this.getRot(), false);
+            var anchor = org.hkrpg.server.gameplay.RockyTruthPerformance.resumeAnchor(this);
+            this.loadScene(planeId, floorId, entryId,
+                    anchor == null ? getPos() : anchor.getPos(),
+                    anchor == null ? getRot() : anchor.getRot(), false);
         }
 
         // Reset position to starting scene in case we couldn't load the scene

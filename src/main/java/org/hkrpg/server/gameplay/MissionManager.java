@@ -383,6 +383,17 @@ public final class MissionManager {
 
   public Retcode finishTalk(int id, String talk, Map<Integer, Integer> values) {
     synchronized (player) {
+      var rocky = RockyTruthPerformance.report(id, talk);
+      if (rocky != null) {
+        if (!RockyTruthPerformance.atStation(player)) return Retcode.MISSION_SCENE_NOT_MATCH;
+        if (!rocky.delivered(player)) return Retcode.MISSION_NOT_DOING;
+        if (!values.isEmpty()) return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+        if (subFinished(rocky.talk())) {
+          refresh();
+          return Retcode.SUCC;
+        }
+        id = rocky.talk();
+      }
       if (id == 0) {
         var matches =
             GameplayDefinitions.subs.values().stream()
@@ -1201,6 +1212,7 @@ public final class MissionManager {
 
   private boolean currentCondition(MissionInfo.SubMissionInfo c) {
     return switch (Objects.toString(c.getFinishType(), "")) {
+      case "Talk" -> RockyTruthPerformance.followupSatisfied(player, c);
       case "TimeLineSetState" -> PropTimelines.satisfied(player,c);
       case "BoxingClubAccomplish" -> BoxingClubMissionGoals.satisfied(player, c);
       case "GetTrialAvatar", "GetTrialAvatarList" ->
