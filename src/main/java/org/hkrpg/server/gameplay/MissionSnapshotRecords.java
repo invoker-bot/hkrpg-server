@@ -28,6 +28,15 @@ public final class MissionSnapshotRecords {
     }
   }
 
+  /** The saved status can be used by a local scene gate without reopening retired objectives. */
+  public static QuestState sceneSub(Player player, int id) {
+    synchronized (player) {
+      return MissionStateRecords.subAccepted(player, id) && !retiredSub(player, id)
+          ? player.getGameplay().getSubMissions().get(id)
+          : null;
+    }
+  }
+
   public static boolean valid(Player player) {
     synchronized (player) {
       for (Integer id : player.getGameplay().getMainMissions().keySet())

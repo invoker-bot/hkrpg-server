@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.*;
 import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.DynamicMessage;
 import emu.lunarcore.data.*;
@@ -34,6 +35,7 @@ class ClientNpcOwnership46Test {
   static final String FLOOR = "P10001_F10001001";
   static final int ROCKY = 10106, BERNARD = 10403, SERVER_NPC = 10122;
   static final int ROCKY_GROUP = 18, IDLE_GROUP = 31, SERVER_GROUP = 97;
+  static final int BERNARD_GROUP = 16, MONITOR_MISSION = 200011007;
   static final int MIXED_PROP = 781827;
   final Gson gson = ResourceLoader.getGson();
   final Map<Integer, JsonObject> groups = new HashMap<>();
@@ -43,6 +45,7 @@ class ClientNpcOwnership46Test {
   List<NpcExcel> oldNpcs;
   List<PropExcel> oldProps;
   MissionInfo.SubMissionInfo oldControl;
+  MissionInfo.SubMissionInfo oldMonitor;
 
   static class Actor extends Player {
     final LineupManager teams = new LineupManager(this);
@@ -117,6 +120,10 @@ class ClientNpcOwnership46Test {
         GameplayDefinitions.subs.put(
             200070501,
             gson.fromJson(source.get("controlSubMission"), MissionInfo.SubMissionInfo.class));
+    oldMonitor =
+        GameplayDefinitions.subs.put(
+            MONITOR_MISSION,
+            gson.fromJson(source.get("bernardMonitorSubMission"), MissionInfo.SubMissionInfo.class));
     actor.getGameplay().getMainMissions().put(1000401, completed(1000401));
     actor.getGameplay().getMainMissions().put(2000705, new QuestState(2000705));
     actor.getGameplay().getSubMissions().put(200070501, completed(200070501));
@@ -132,6 +139,8 @@ class ClientNpcOwnership46Test {
     oldProps.forEach(GameData.getPropExcelMap()::add);
     if (oldControl == null) GameplayDefinitions.subs.remove(200070501);
     else GameplayDefinitions.subs.put(200070501, oldControl);
+    if (oldMonitor == null) GameplayDefinitions.subs.remove(MONITOR_MISSION);
+    else GameplayDefinitions.subs.put(MONITOR_MISSION, oldMonitor);
   }
 
   static QuestState completed(int id) {
@@ -142,6 +151,13 @@ class ClientNpcOwnership46Test {
 
   void acceptRocky() {
     actor.getGameplay().getMainMissions().put(2000110, new QuestState(2000110));
+  }
+
+  void prepareBernardQuest() {
+    groups.put(BERNARD_GROUP, source.getAsJsonObject("bernardGroup"));
+    actor.getGameplay().getMainMissions().put(2000110, completed(2000110));
+    actor.getGameplay().getMainMissions().put(2000111, new QuestState(2000111));
+    actor.getGameplay().getMainMissions().put(2000119, new QuestState(2000119));
   }
 
   void buildScene() {
@@ -232,6 +248,64 @@ class ClientNpcOwnership46Test {
     assertEquals(List.of(2000111), field(gates, "finished_main_mission_id_list"));
     assertEquals(List.of(2000110), field(gates, "unfinished_main_mission_id_list"));
     assertEquals(List.of(), field(gates, "sub_mission_status_list"));
+  }
+
+  @Test
+  void sceneEntryAndCurrentSceneSupplyBernardsCompletedMonitorGate() throws Exception {
+    prepareBernardQuest();
+    actor.getGameplay().getSubMissions().put(MONITOR_MISSION, completed(MONITOR_MISSION));
+    buildScene();
+    assertEquals(400001, npc(BERNARD_GROUP, BERNARD).getInstId());
+
+    var entered =
+        nativePacket("EnterSceneByServerScNotify", new PacketEnterSceneByServerScNotify(actor).build());
+    for (var scene : List.of(snapshot(), (DynamicMessage) field(entered, "scene"))) {
+      assertFalse(npcs(scene).contains(BERNARD));
+      assertMonitorGate(scene, 2, 1);
+    }
+  }
+
+  @Test
+  void sceneIncludesAnInProgressSubGateEvenWhenItsGroupIsUnloaded() throws Exception {
+    prepareBernardQuest();
+    actor.getGameplay().getSubMissions().put(MONITOR_MISSION, new QuestState(MONITOR_MISSION));
+    buildScene();
+
+    assertFalse(actor.scene.getLoadedGroups().contains(BERNARD_GROUP));
+    assertMonitorGate(snapshot(), 1, 0);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"unstarted", "cancelled", "invalid", "missing-parent", "retired"})
+  void sceneDoesNotPublishUnavailableSubMissionGates(String state) throws Exception {
+    prepareBernardQuest();
+    var saved = actor.getGameplay().getSubMissions();
+    if (!state.equals("unstarted")) saved.put(MONITOR_MISSION, completed(MONITOR_MISSION));
+    switch (state) {
+      case "cancelled" -> actor.getGameplay().getCancelledSubs().add(MONITOR_MISSION);
+      case "invalid" -> saved.put(MONITOR_MISSION, completed(200070501));
+      case "missing-parent" -> actor.getGameplay().getMainMissions().remove(2000111);
+      case "retired" -> {
+        actor.getGameplay().getMainMissions().put(2000111, completed(2000111));
+        saved.put(MONITOR_MISSION, new QuestState(MONITOR_MISSION));
+      }
+    }
+    buildScene();
+
+    assertFalse(actor.scene.getLoadedGroups().contains(BERNARD_GROUP));
+    assertEquals(
+        List.of(),
+        field((DynamicMessage) field(snapshot(), "scene_mission_info"), "sub_mission_status_list"));
+  }
+
+  static void assertMonitorGate(DynamicMessage scene, int status, int progress) {
+    var gates = (DynamicMessage) scene.getField(scene.getDescriptorForType().findFieldByNumber(1284));
+    var rows = (List<?>) gates.getField(gates.getDescriptorForType().findFieldByNumber(7));
+    assertEquals(1, rows.size(), "Only the sub-mission gate used by the floor should be sent");
+    var row = (DynamicMessage) rows.getFirst();
+    assertEquals(MONITOR_MISSION, field(row, "id"));
+    assertEquals(progress, field(row, "progress"));
+    assertEquals(status, ((EnumValueDescriptor) field(row, "status")).getNumber());
   }
 
   static List<Integer> npcs(DynamicMessage root) {

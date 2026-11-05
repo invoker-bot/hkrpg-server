@@ -2580,7 +2580,9 @@
     "Config/LevelOutput/RuntimeFloor/P10001_F10001001.json": "0e62aaf9cde183ea193379f1d1310f04358652e881acb50f4f95a5a2a91a0eae",
     "ExcelOutput/MazePlane.json": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de",
     "ExcelOutput/NPCData.json": "7cc09d92d5161a1fe484e8b60b18254e4c5a5a1446b1310433fc6fdfe1e60c78",
-    "Config/Level/Mission/2000705/MissionInfo_2000705.partial.json": "b414f234e2edcb8c1d830f662f5a8d2ec03ae8a4b0dc83a58477d45bc305a474"
+    "Config/Level/Mission/2000705/MissionInfo_2000705.partial.json": "b414f234e2edcb8c1d830f662f5a8d2ec03ae8a4b0dc83a58477d45bc305a474",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10001_F10001001/LevelGroup_P10001_F10001001_G16.json": "1a3445cc93e260a9006b083206d20dbbbfe3bd54c6f2cf6467a0d500a944553e",
+    "Config/Level/Mission/2000111/MissionInfo_2000111.partial.json": "87b3b853ecbf76c95add615ae7b373639749d14d3f163a1080ca800496e43652"
   },
   "controlSubMission": {
     "ID": 200070501,
@@ -2601,5 +2603,171 @@
     "GroupIDList": [],
     "RequiredNPCSeriesIDList": [],
     "WayPointFloorID": 80112001
+  },
+  "bernardGroup": {
+    "$type": "RPG.GameCore.RtLevelGroupInfo",
+    "GroupName": "SubMission2000110",
+    "AreaAnchorName": "LevelArea_P10001_F10001001_G16",
+    "SaveType": "Reset",
+    "LoadCondition": {
+      "Conditions": [
+        {
+          "Type": "SubMission",
+          "Phase": "Finish",
+          "ID": 200011007
+        }
+      ]
+    },
+    "UnloadCondition": {
+      "Conditions": [
+        {
+          "Phase": "Finish",
+          "ID": 2000119
+        }
+      ],
+      "DelayToLevelReload": true
+    },
+    "ValueSource": {},
+    "ConflictIDList": [],
+    "TagContainer": {
+      "List": [
+        {
+          "Tag": "Group.Mission.LegacyNormal",
+          "TagHash": 439974373
+        }
+      ]
+    },
+    "AnchorList": [
+      {
+        "Name": "Anchor1",
+        "ID": 1,
+        "PosX": -0.137632,
+        "PosY": -0.263439,
+        "PosZ": 34.53814
+      }
+    ],
+    "MonsterList": [],
+    "PropList": [
+      {
+        "PropID": 100,
+        "IsOverrideInitLevelGraph": true,
+        "ValueSource": {},
+        "Trigger": {
+          "Radius": 1.5,
+          "DimX": 1,
+          "DimY": 1,
+          "DimZ": 1,
+          "PointList": []
+        },
+        "CampID": 4,
+        "CustomTriggerMap": {},
+        "CustomTriggerMapV2": {},
+        "StateConfigs": [],
+        "DialogueGroups": [],
+        "TalkDialogGroupIDList": [],
+        "ServerInteractVerificationIDList": [],
+        "InteractIconType": {
+          "EnumIndex": 20,
+          "Value": 0
+        },
+        "DialogueTriggerSkipSpecifiedFakeAvatarList": [],
+        "CameraCenterEntityList": [],
+        "SpawnConfig": {},
+        "Name": "Prop1",
+        "ID": 300001,
+        "PosX": -8.55,
+        "PosY": -0.268284,
+        "PosZ": 31.03
+      }
+    ],
+    "DistrictList": [],
+    "WaypointList": [],
+    "PathwayList": [],
+    "BattleAreaList": [],
+    "NPCList": [
+      {
+        "NPCID": 10403,
+        "DialogueGroups": [
+          200011031,
+          200011032
+        ],
+        "ServerInteractVerificationIDList": [],
+        "DefaultLookAtMode": "Closed",
+        "BoardShowList": [
+          1,
+          4,
+          8,
+          64
+        ],
+        "TalkDialogGroupIDList": [],
+        "DefaultIdleFreeStyleMotionID": 100030000,
+        "InitialHiddenNodeList": [],
+        "Dialog": {
+          "LevelGraph": "Config/Level/NPCDialogue/P10001/F10001001_G16/DialogueMain_F10001001_G16_N400001.json",
+          "PackList": [
+            {
+              "Name": "Transferred",
+              "LevelGraph": "Config/Level/NPCDialogue/P10001/F10001001_G16/DialoguePack_Transferred_F10001001_G16_N400001.json"
+            }
+          ],
+          "EnableCondition": {
+            "Conditions": [
+              {
+                "Type": "SubMission",
+                "ID": 200011031
+              },
+              {
+                "Type": "SubMission",
+                "ID": 200011032
+              }
+            ],
+            "Operation": "Or"
+          }
+        },
+        "OverrideReplaceMaterialKeyList": [],
+        "CameraCenterEntityList": [],
+        "Name": "NPC1",
+        "RotY": 63.53872,
+        "ID": 400001,
+        "PosX": -8.499,
+        "PosY": -0.258115,
+        "PosZ": 30.948
+      }
+    ],
+    "CrowdList": [],
+    "PedestrianList": [],
+    "AudienceList": [],
+    "SmartObjectList": [],
+    "CurveList": [],
+    "LittleGameList": []
+  },
+  "bernardMonitorSubMission": {
+    "ID": 200011007,
+    "MainMissionID": 2000111,
+    "MissionJsonPath": "Config/Level/Mission/2000110/Mission_200011007.json",
+    "LevelPlaneID": 20001,
+    "LevelFloorID": 20001001,
+    "TakeType": "AnySequence",
+    "TakeParamIntList": [
+      200011006
+    ],
+    "FinishType": "Talk",
+    "ParamType": "Equal",
+    "ParamStr1": "Mission_200011007",
+    "ParamItemList": [],
+    "FinishActionList": [
+      {
+        "FinishActionType": "addMissionItem",
+        "FinishActionPara": [
+          140074,
+          1
+        ]
+      }
+    ],
+    "Progress": 1,
+    "WayPointType": "Prop",
+    "WayPointFloorID": 20001001,
+    "WayPointGroupID": 13,
+    "WayPointEntityID": 300001
   }
 }

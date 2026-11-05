@@ -4,6 +4,7 @@ import com.google.protobuf.DynamicMessage;
 import emu.lunarcore.data.config.LevelGroupMissionCondition.LevelGroupMissionPhase;
 import emu.lunarcore.data.config.LevelGroupMissionCondition.LevelGroupMissionType;
 import emu.lunarcore.data.config.LoadConditionInfo;
+import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityNpc;
 import java.util.List;
@@ -29,24 +30,27 @@ final class ClientNpcPublication46 {
     return withMissionGates(projected, scene);
   }
 
-  /** The native map setup reads these completion flags before initializing local groups. */
+  /** The native map setup reads these statuses before initializing local groups. */
   private static DynamicMessage withMissionGates(DynamicMessage message, Scene scene) {
     var field = message.getDescriptorForType().findFieldByName("scene_mission_info");
     if (message.hasField(field)) return message;
-    var ids = new TreeSet<Integer>();
+    var mains = new TreeSet<Integer>();
+    var subs = new TreeSet<Integer>();
     for (var source : scene.getResourceGroups().values()) {
       if (!source.isClientOwnedNpcSource()) continue;
       // Also include unloaded groups so a completed exit condition is available on reentry.
-      addMainGates(ids, source.getLoadCondition());
-      addMainGates(ids, source.getUnloadCondition());
+      addGates(mains, subs, source.getLoadCondition());
+      addGates(mains, subs, source.getUnloadCondition());
     }
-    if (ids.isEmpty()) return message;
+    if (mains.isEmpty() && subs.isEmpty()) return message;
 
     var gates = DynamicMessage.newBuilder(field.getMessageType());
+    var subList = gates.getDescriptorForType().findFieldByName("sub_mission_status_list");
+    var subStatus = subList.getMessageType().findFieldByName("status");
     var player = scene.getPlayer();
     synchronized (player) {
       var saved = player.getGameplay().getMainMissions();
-      for (int id : ids) {
+      for (int id : mains) {
         if (saved.containsKey(id) && !MissionSnapshotRecords.main(player, id)) continue;
         Gameplay46.add(
             gates,
@@ -55,22 +59,34 @@ final class ClientNpcPublication46 {
                 : "unfinished_main_mission_id_list",
             id);
       }
+      for (int id : subs) {
+        var state = MissionSnapshotRecords.sceneSub(player, id);
+        if (state == null) continue;
+        var row = DynamicMessage.newBuilder(subList.getMessageType());
+        Gameplay46.set(row, "id", id);
+        Gameplay46.set(row, "progress", state.getProgress());
+        var status =
+            state.getPhase() == QuestState.Phase.DOING
+                ? "MissionStatus_MissionDoing"
+                : "MissionStatus_MissionFinish";
+        row.setField(subStatus, subStatus.getEnumType().findValueByName(status));
+        gates.addRepeatedField(subList, row.build());
+      }
     }
     return gates.getAllFields().isEmpty()
         ? message
         : message.toBuilder().setField(field, gates.build()).build();
   }
 
-  private static void addMainGates(Set<Integer> ids, LoadConditionInfo set) {
+  private static void addGates(Set<Integer> mains, Set<Integer> subs, LoadConditionInfo set) {
     if (set == null || set.getConditions() == null) return;
     for (var condition : set.getConditions()) {
-      if (condition != null
-          && condition.getID() > 0
-          && condition.getMissionType() == LevelGroupMissionType.MainMission
-          && (condition.getPhase() == LevelGroupMissionPhase.Accept
-              || condition.getPhase() == LevelGroupMissionPhase.Finish)) {
-        ids.add(condition.getID());
-      }
+      if (condition == null
+          || condition.getID() <= 0
+          || (condition.getPhase() != LevelGroupMissionPhase.Accept
+              && condition.getPhase() != LevelGroupMissionPhase.Finish)) continue;
+      if (condition.getMissionType() == LevelGroupMissionType.MainMission) mains.add(condition.getID());
+      if (condition.getMissionType() == LevelGroupMissionType.SubMission) subs.add(condition.getID());
     }
   }
 
