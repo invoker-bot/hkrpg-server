@@ -24,6 +24,15 @@
 
 现用程序与源码另有尚未安装的历史活动实现差异。首次直接替换整个 `Gameplay46.class` 时，发布包测试发现缺少活动会话 API，因此该候选被拒绝。最终按 `1d90306^` 的同版源码重编译，先逐字节复现原 `Gameplay46.class`，再仅移入已验证的任务快照方法；其他入口保留。最终包相对于原包只改变三个任务相关类与功能目录，没有安装其他源码差异。源码中的活动已领奖字段 15 检查在正式原包和最终兼容包均以相同断言失败，已单独留证并从上述 247 项中排除，没有计为通过或扩大为本轮活动修复。
 
-证据目录为 `build/asta-sensitive-beings-20261104/`，其中 `baseline-runtime-xml/`、`candidate-runtime-xml/`、`projection-candidate.json`、`package-proof.json` 和 `dispatch-smoke-summary.json` 对应上述检查。完整构建在冻结源码副本中单独执行，最终结果与服务更新记录另行补记。
+证据目录为 `build/asta-sensitive-beings-20261104/`，其中 `baseline-runtime-xml/`、`candidate-runtime-xml/`、`projection-candidate.json`、`package-proof.json` 和 `dispatch-smoke-summary.json` 对应上述检查。
 
 本轮验证只针对旧告别目标干扰当前任务入口。三名科员的实际场景交互、机房终端、后续身份校验、整条「人非草木」任务演出与奖励仍需分别验证，不能由本次修复宣称整条任务已完成。没有代操作游戏客户端。
+
+## 完整构建与本地服务更新
+
+- 冻结副本执行 `scripts/build.ps1 -TestForks 4`：**697 组 / 19,764 项，失败、错误、跳过均为 0**；4,516 项冻结输入摘要保持一致。完整源码 JAR 为 `0d019b5d03448fffe62bd1aaafee169113cc1437e90def87dca018d79b3a0f3d`，结果与原始报告在 `full-summary.json`、`full-build.log` 和 `full-xml/`。
+- 修复提交：`1903fae0b21ed7c82fad34ab058602892b2c36f1`。实际兼容发布包为 `41fd297e48bd386d369104e59b64ebc454d6b777307a611ec7ecf4bda8971300`，上述 247 项发布包检查、存档任务投影和启动恢复检查均使用这个包。完整源码测试与实际兼容包检查分别记录，没有将二者混称为同一个产物。
+- 正常停止现有 `hkrpg-local-server-1` 后，32 份运行数据文件已逐文件校验备份到 `build/asta-sensitive-beings-20261104/release-backup/`，配置、热更配置、旧程序与部署记录同时保留。只在可丢弃副本中读取正常停服后的 H2 存档，没有用旧数据库覆盖正式数据。
+- 服务使用镜像 `sha256:717693762d97dee7afdfa5b78407eb4b8e30470eb772b59451940b3dfe4b954a` 更新，恢复为 healthy，`/health/ready` 为 true，容器内程序摘要与实际受测包一致。配置和热更配置摘要未变化。
+- 停服写盘后与更新后的只读快照完全一致：UID 10001 的任务、剧情、奖励、位置、货币及按所属玩家汇总的角色/物品文档摘要保留，`200030101` 仍为 DOING、进度 0。完整部署证据为 `release-proof.json`；没有替用户完成任务。
+- 本机原始对话菜单文字为「听说你有事找我？」。用户重新登录后需实际进入该委托对白，确认随后出现调查梅厄、克里斯和乔安的目标；本轮尚未取得这一步的真实客户端确认。
