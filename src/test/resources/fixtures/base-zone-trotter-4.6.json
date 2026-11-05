@@ -6,7 +6,8 @@
     "ExcelOutput/NPCMonsterData.json": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
     "ExcelOutput/StageConfig.json": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
     "ExcelOutput/ItemConfig.json": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
-    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G28.json": "c9c7ac254f4a255ad5ad77125f7c0e2adfe79786cf9cacb61b209409158ef57a"
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G28.json": "c9c7ac254f4a255ad5ad77125f7c0e2adfe79786cf9cacb61b209409158ef57a",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20121_F20121001/LevelGroup_P20121_F20121001_G55.json": "1fe76baa296b115888ed3151e1da682706fcd28ec7020c9bc75152b39c5c333c"
   },
   "plane": {
     "PlaneID": 20001,
@@ -176,5 +177,69 @@
     "SmartObjectList": [],
     "CurveList": [],
     "LittleGameList": []
+  },
+  "greatMineGroup": {
+    "$type": "RPG.GameCore.RtLevelGroupInfo",
+    "GroupName": "MainMission1010501_",
+    "Category": "Mission",
+    "AreaAnchorName": "LevelArea_P20121_F20121001_G55",
+    "LoadCondition": {
+      "Conditions": [
+        {
+          "Phase": "Finish",
+          "ID": 1010501
+        }
+      ]
+    },
+    "LoadSide": "Server",
+    "OwnerMainMissionID": 1010501,
+    "ConflictIDList": [],
+    "AnchorList": [],
+    "MonsterList": [
+      {
+        "NPCMonsterID": 8002040,
+        "AIConfig": {
+          "PathwayList": [],
+          "SlaveConfigList": []
+        },
+        "CampID": 3,
+        "BattleArea": {
+          "GroupID": 2,
+          "ID": 1
+        },
+        "EventID": 20121143,
+        "BoardShowList": [
+          2
+        ],
+        "Name": "Monster1",
+        "RotY": 270,
+        "ID": 200001,
+        "PosX": 173.236,
+        "PosY": 46.658,
+        "PosZ": -73.634
+      }
+    ],
+    "PropList": [],
+    "DistrictList": [],
+    "WaypointList": [],
+    "PathwayList": [],
+    "BattleAreaList": [],
+    "NPCList": [],
+    "CrowdList": [],
+    "PedestrianList": []
+  },
+  "greatMinePlane": {
+    "PlaneID": 20121,
+    "PlaneType": "Maze",
+    "SubType": 1,
+    "MazePoolType": 1,
+    "WorldID": 201,
+    "PlaneName": {
+      "Hash": 4945004407039184856
+    },
+    "StartFloorID": 20121001,
+    "FloorIDList": [
+      20121001
+    ]
   }
 }

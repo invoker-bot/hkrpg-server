@@ -3,6 +3,8 @@ package org.hkrpg.server.gameplay;
 import emu.lunarcore.GameConstants;
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.config.GroupInfo;
+import emu.lunarcore.data.config.LevelGroupMissionCondition.LevelGroupMissionPhase;
+import emu.lunarcore.data.config.LevelGroupMissionCondition.LevelGroupMissionType;
 import emu.lunarcore.data.config.MonsterInfo;
 import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.enums.PlaneType;
@@ -108,6 +110,22 @@ public final class WorldTrotters {
   public static boolean spawns(Scene scene, GroupInfo group, MonsterInfo actor) {
     var location = source(scene, group, actor);
     return location == null || !finished(scene.getPlayer(), location);
+  }
+
+  /** The Great Mine's trotter group explicitly loads after its owning mission finishes. */
+  public static boolean loadsAfterOwner(Scene scene, GroupInfo group) {
+    int owner = 1010501;
+    if (scene.getFloorId() != 20121001 || group.getId() != 55 || group.getOwnerMainMissionID() != owner
+        || group.getCategory() != GroupInfo.GroupCategory.Mission || group.getUnloadCondition() != null
+        || group.getMonsterList() == null || group.getMonsterList().size() != 1
+        || source(scene, group, group.getMonsterList().getFirst()) == null) return false;
+    var condition = group.getLoadCondition();
+    if (condition == null || condition.isDelayToLevelReload()
+        || condition.getConditions() == null || condition.getConditions().length != 1) return false;
+    var clause = condition.getConditions()[0];
+    return clause != null && clause.getID() == owner && clause.getMissionType() == LevelGroupMissionType.MainMission
+        && clause.getPhase() == LevelGroupMissionPhase.Finish
+        && MissionGroupConditions.matches(scene.getPlayer(), condition);
   }
 
   public static boolean ownsDrops(EntityMonster actor) {

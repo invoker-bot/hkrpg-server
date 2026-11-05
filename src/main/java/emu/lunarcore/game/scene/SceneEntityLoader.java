@@ -30,7 +30,7 @@ public class SceneEntityLoader {
                 || org.hkrpg.server.gameplay.DeferredMissionGroups.tracks(group, scene)
                 || org.hkrpg.server.gameplay.CompatibleMechanisms.tracksGroup(group, scene)
                 || org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, scene)) {
-                isToLoad = scene.getPlayer().getMissionManager().shouldLoadGroup(group, scene);
+                isToLoad = scene.shouldLoadMissionGroup(group);
             }
 
             // These cause the map to get stuck loading

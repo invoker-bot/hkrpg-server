@@ -331,6 +331,11 @@ public class Scene implements Tickable {
                 .toList();
     }
 
+    boolean shouldLoadMissionGroup(GroupInfo group) {
+        return getPlayer().getMissionManager().shouldLoadGroup(group, this)
+                || org.hkrpg.server.gameplay.WorldTrotters.loadsAfterOwner(this, group);
+    }
+
     public void refreshMissionGroups() {
         if (getFloorInfo() == null) return;
         var toLoad = new ArrayList<GroupInfo>();
@@ -344,7 +349,7 @@ public class Scene implements Tickable {
             if ((!atmosphere && !deferred && !ordinary && !compatible && !debug && !music && group.getCategory()!=GroupInfo.GroupCategory.Mission) || group.getLoadSide()!=GroupInfo.GroupLoadSide.Server) continue;
             if (atmosphere && (getPlaneType() == PlaneType.Rogue || getPlaneType() == PlaneType.Challenge || getPlaneType() == PlaneType.TrialActivity)) continue;
             if (org.hkrpg.server.gameplay.MusicSceneGroups.allowed(group, this)
-                    && getPlayer().getMissionManager().shouldLoadGroup(group, this)) toLoad.add(group);
+                    && shouldLoadMissionGroup(group)) toLoad.add(group);
             else if (loadedGroups.remove(group.getId())) {
                 for (var entity : List.copyOf(getEntities().values())) if (entity.getGroupId()==group.getId()) {
                     if (entity instanceof EntityProp prop) getHealingSprings().remove(prop);

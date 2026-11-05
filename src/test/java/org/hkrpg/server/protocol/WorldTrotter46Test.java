@@ -14,6 +14,7 @@ import emu.lunarcore.game.battle.BattleService;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.player.lineup.LineupManager;
 import emu.lunarcore.game.player.lineup.PlayerLineup;
+import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.proto.BattleEndStatusOuterClass.BattleEndStatus;
@@ -57,9 +58,9 @@ class WorldTrotter46Test {
     int saves;
 
     public String getName() { return "Trotter fixture"; }
-    public int getPlaneId() { return scene == null ? 10001 : PLANE; }
-    public int getFloorId() { return scene == null ? 10001001 : FLOOR; }
-    public int getEntryId() { return scene == null ? 1000101 : ENTRY; }
+    public int getPlaneId() { return scene == null ? 10001 : scene.getPlaneId(); }
+    public int getFloorId() { return scene == null ? 10001001 : scene.getFloorId(); }
+    public int getEntryId() { return scene == null ? 1000101 : scene.getEntryId(); }
     public int getWorldId() { return 101; }
     public Scene getScene() { return scene; }
     public LineupManager getLineupManager() { return lineups; }
@@ -241,5 +242,51 @@ class WorldTrotter46Test {
     assertEquals(60, player.getHcoin());
     enter(player);
     assertTrue(actors(player).isEmpty());
+  }
+
+  @Test
+  void greatMineEncounterLoadsAfterItsOwnerMissionFinishes() throws Exception {
+    int plane = 20121, floorId = 20121001, groupId = 55, owner = 1010501;
+    String floorKey = "P20121_F20121001";
+    var oldFloor = GameData.getFloorInfo(plane, floorId);
+    var oldPlane = GameData.getMazePlaneExcelMap().get(plane);
+    try (var reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(
+        "/fixtures/base-zone-trotter-4.6.json")), StandardCharsets.UTF_8)) {
+      var source = JsonParser.parseReader(reader).getAsJsonObject();
+      var mine = gson.fromJson(source.get("greatMinePlane"), MazePlaneExcel.class);
+      GameData.getMazePlaneExcelMap().add(mine);
+      var mineFloor = gson.fromJson("""
+          {"FloorID":20121001,"GroupInstanceList":[{"ID":55}],
+           "DimensionList":[{"GroupIndexList":[0]}]}
+          """, FloorInfo.class);
+      var group = gson.fromJson(source.get("greatMineGroup"), GroupInfo.class);
+      group.setId(groupId);
+      mineFloor.registerGroup(0, group);
+      mineFloor.onLoad();
+      GameData.getFloorInfos().put(floorKey, mineFloor);
+
+      player.scene = new Scene(player, mine, floorId);
+      assertFalse(player.scene.getLoadedGroups().contains(groupId));
+      var mission = new QuestState(owner);
+      player.getGameplay().getMainMissions().put(owner, mission);
+      player.scene = new Scene(player, mine, floorId);
+      assertFalse(player.scene.getLoadedGroups().contains(groupId));
+      mission.advance(1, 1, 1);
+      mission.reserveReward();
+      mission.closeReward();
+      player.scene.refreshMissionGroups();
+      assertEquals(1, player.scene.getEntitiesByGroup(EntityMonster.class, groupId).size());
+      player.scene = new Scene(player, mine, floorId);
+      var monsters = player.scene.getEntitiesByGroup(EntityMonster.class, groupId);
+      assertEquals(1, monsters.size());
+      assertEquals(20121143, monsters.getFirst().getEventId());
+      player.getGameplay().getCancelledMissions().add(owner);
+      player.scene = new Scene(player, mine, floorId);
+      assertFalse(player.scene.getLoadedGroups().contains(groupId));
+    } finally {
+      if (oldFloor == null) GameData.getFloorInfos().remove(floorKey);
+      else GameData.getFloorInfos().put(floorKey, oldFloor);
+      restore(GameData.getMazePlaneExcelMap(), plane, oldPlane);
+    }
   }
 }
