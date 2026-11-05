@@ -29,6 +29,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   private int finishPacketIdentity = Integer.MIN_VALUE, finishCorrelatedReplies;
   private int pendingReplies, pendingCorrelatedReplies;
   private int optionCorrelatedReplies;
+  private int npcInteractionChecks, npcFinishedSnapshots, npcCompletionNotifications;
   private JsonObject sources;
 
   private static Object field(DynamicMessage m, String name) {
@@ -41,6 +42,11 @@ public final class NativeRogueFirstWorldClosureProbe {
   private static void require(boolean ok, String why) { if (!ok) throw new IllegalStateException(why); }
 
   private void observe(Frame frame) throws Exception {
+    if (frame.command()==protocol.clientCommand("SceneGroupRefreshScNotify")) {
+      var refresh=protocol.clientSchema().parse("SceneGroupRefreshScNotify",frame.body());
+      for(var info:npcInfos(refresh))
+        if ((Boolean)field(info,"NLAFLKPLPFE")) npcCompletionNotifications++;
+    }
     if (frame.command()==protocol.clientCommand("SyncRogueCommonDialogueDataScNotify")) {
       var notify=protocol.clientSchema().parse("SyncRogueCommonDialogueDataScNotify",frame.body());
       require(notify.getUnknownFields().asMap().isEmpty(),"Unknown dialogue notification fields");
@@ -72,6 +78,24 @@ public final class NativeRogueFirstWorldClosureProbe {
     return nested(game,"CFDIKLBINHK");
   }
   private DynamicMessage scene() throws Exception { return nested(call("GetCurSceneInfoCsReq"),"scene"); }
+  private List<DynamicMessage> npcInfos(DynamicMessage message) {
+    var result=new ArrayList<DynamicMessage>();
+    if(message.getDescriptorForType().getName().equals("NpcRogueGameInfo")) result.add(message);
+    for(var value:message.getAllFields().values()) {
+      if(value instanceof DynamicMessage child) result.addAll(npcInfos(child));
+      else if(value instanceof List<?> rows)
+        for(var row:rows) if(row instanceof DynamicMessage child) result.addAll(npcInfos(child));
+    }
+    return result;
+  }
+  private void interactionGate(boolean finished) throws Exception {
+    var rows=npcInfos(scene());
+    require(rows.size()==1,"Event NPC metadata missing from the current scene");
+    require((Boolean)field(rows.getFirst(),"NLAFLKPLPFE")==finished,
+        finished?"Completed event still enables F interaction":"Pending event lost its F interaction");
+    npcInteractionChecks++;
+    if(finished) npcFinishedSnapshots++;
+  }
   private List<DynamicMessage> entities(DynamicMessage scene,String type) {
     var result=new ArrayList<DynamicMessage>();
     for (var group:(List<?>)field(scene,"entity_group_list"))
@@ -224,6 +248,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   }
   private void verifyPendingEvent(int unique,int batch,int buff,int money) throws Exception {
     require(event()==unique,"Dialogue lease identity changed across reconnect");
+    interactionGate(false);
     finish(unique,true);
     var current=current();
     map(current,5,4,true);
@@ -240,6 +265,7 @@ public final class NativeRogueFirstWorldClosureProbe {
   }
   private void verifyAcquiredEvent(int unique,int batch,int buff,int money) throws Exception {
     require(event()==unique,"Acquired event identity changed across restart");
+    interactionGate(true);
     var current=current(); map(current,5,5,false);
     require(coins(current)==money && blessings(current).contains(buff),"Saved event reward was lost or repeated");
     acquire(batch,buff,true);
@@ -270,6 +296,7 @@ public final class NativeRogueFirstWorldClosureProbe {
       enter(4); fightAll(4); map(current(),4,4,false);
       enter(5); map(current(),5,4,false);
       unique=event();
+      interactionGate(false);
       finish(unique,false);
       var row=dialogueCache.values().iterator().next();
       var options=(List<?>)field(row,"KFNMIEMBJGD");
@@ -334,6 +361,9 @@ public final class NativeRogueFirstWorldClosureProbe {
     result.put("pendingReplies",pendingReplies);
     result.put("pendingCorrelatedReplies",pendingCorrelatedReplies);
     result.put("optionCorrelatedReplies",optionCorrelatedReplies);
+    result.put("npcInteractionChecks",npcInteractionChecks);
+    result.put("npcFinishedSnapshots",npcFinishedSnapshots);
+    result.put("npcCompletionNotifications",npcCompletionNotifications);
     result.put("clientGameplayVerified",false); return result;
   }
 

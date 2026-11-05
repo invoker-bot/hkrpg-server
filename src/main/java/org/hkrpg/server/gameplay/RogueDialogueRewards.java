@@ -136,6 +136,14 @@ public final class RogueDialogueRewards {
     return state.getOption() == 14102 && blessingAllowed(player, state.getBatch(), state.getBlessing());
   }
 
+  /** The native interaction gate closes only for an actually completed, valid event receipt. */
+  public static boolean interactionFinished(Player player, RogueEventNpc actor) {
+    if (actor == null) return false;
+    var state = actor.binding().getRewardState();
+    return state != null && state.isComplete() && canFinish(player, actor)
+        && (state.getOption() != 14102 || acquiredBlessing(player, state.getBatch(), state.getBlessing()));
+  }
+
   public static Retcode select(Player player, RogueEventNpc actor, int option) {
     synchronized (player) {
       if (actor == null || !actor.valid()) return Retcode.REQ_PARA_INVALID;

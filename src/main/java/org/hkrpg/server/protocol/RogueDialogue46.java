@@ -4,8 +4,10 @@ import static org.hkrpg.server.protocol.Gameplay46.*;
 
 import com.google.protobuf.DynamicMessage;
 import emu.lunarcore.game.scene.Scene;
+import emu.lunarcore.game.player.Player;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
+import emu.lunarcore.server.packet.send.PacketSceneGroupRefreshScNotify;
 import java.io.IOException;
 import java.util.*;
 import org.hkrpg.server.gameplay.RogueEventNpc;
@@ -42,7 +44,21 @@ public final class RogueDialogue46 {
     set(info, "AIAFEKGBFIF", actor.binding().getUniqueId());
     set(info, "OEANPIHCHHF", actor.binding().getDialogue());
     set(info, "MJBKNMJHOGP", actor.binding().getProgress());
+    // TalkTrigger._CheckRogueDialogue reads field 9 (native +0x29) to hide the F interaction.
+    set(info, "NLAFLKPLPFE", RogueDialogueRewards.interactionFinished(actor.getScene().getPlayer(), actor));
     return info.build();
+  }
+
+  /** Refresh existing NPC metadata; keep the actor so in-flight dialogue replies remain valid. */
+  public static void syncCompletedNpcs(Player player) {
+    synchronized (player) {
+      var session = player.getSession();
+      if (!player.isOnline() || session == null || session.getState() != SessionState.ACTIVE
+          || !session.getProtocol().experimental()) return;
+      for (var actor : active(player.getScene()))
+        if (RogueDialogueRewards.interactionFinished(player, actor))
+          session.send(new PacketSceneGroupRefreshScNotify(player.getScene(), actor, null));
+    }
   }
 
   private static DynamicMessage dialogue(GameSession session, RogueEventNpc actor) {
@@ -152,6 +168,7 @@ public final class RogueDialogue46 {
       var response = builder(session, "LPDPAJGFBMM");
       set(response, "retcode", result.getVal());
       session.sendClientPacket(FINISH_RESPONSE, response.build().toByteArray());
+      if (result == Retcode.SUCC) syncCompletedNpcs(session.getPlayer());
     }
   }
 

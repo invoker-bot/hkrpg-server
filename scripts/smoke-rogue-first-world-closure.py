@@ -243,6 +243,9 @@ def main():
     assert snapshots[3]['credits'] == snapshots[4]['credits']
     assert sum(s['finishAcknowledgements'] for s in snapshots) >= 5
     assert sum(s['finishRejections'] for s in snapshots) >= 4
+    assert sum(s['npcInteractionChecks'] for s in snapshots) == 8
+    assert sum(s['npcFinishedSnapshots'] for s in snapshots) == 3
+    assert sum(s['npcCompletionNotifications'] for s in snapshots) >= 3
     assert len(snapshots[0]['encounters']) == 7 and len(snapshots[3]['encounters']) == 1
     assert len({r['runId'] for r in inspections}) == 1
     assert inspections[1]['eventReward'] == inspections[2]['eventReward'] == inspections[3]['eventReward']

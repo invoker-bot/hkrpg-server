@@ -862,6 +862,7 @@ public final class UniverseManager {
         finishRun(FINISHED);
       org.hkrpg.server.protocol.Universe46.syncMap(player);
       if (run.pending()) org.hkrpg.server.protocol.Universe46.syncPending(player);
+      org.hkrpg.server.protocol.RogueDialogue46.syncCompletedNpcs(player);
       return Retcode.SUCC;
     }
   }

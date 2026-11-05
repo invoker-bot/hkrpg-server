@@ -1,3 +1,5 @@
+`RogueDialogue46.npcInfo` 按有效完成收据填写原生NPC交互关闭字段9，收尾及实际领取后以现有场景刷新同步；保留NPC和迟到请求身份。原生消费链与验证边界见[事件交互关闭说明](rogue-event-interaction-4.6.md)。
+
 `RogueDialogueRewards` 以当前有效事件收据确认相同选项和已到账祝福的重试；`UniverseManager` 在实际领取前识别严格匹配的完成收据。确认不改菜单、持有或存档，错误身份继续拒绝，见[事件重试说明](rogue-event-retry-4.6.md)。
 
 `ProtocolBridge.clientResponseCommand` 为原生待选动作5676登记已核对的5657响应，让现有`ReplyCorrelation46`为实际领取与错误回复保留本次点击编号；共用处理器继续校验和保存奖励。来源、隔离及实机边界见[领取回复说明](rogue-pending-reply-4.6.md)。
