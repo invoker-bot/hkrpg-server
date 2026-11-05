@@ -459,6 +459,8 @@ public class BattleService extends BaseGameService {
                 : java.util.List.<org.hkrpg.server.gameplay.BattleAvatarExperience.Grant>of();
             if (experience == null) return null;
             if (!org.hkrpg.server.gameplay.ActivityKillQuests.record(player, active, result, monsters)) return null;
+            var trotterDrops = org.hkrpg.server.gameplay.WorldTrotters.recordBattle(active, result, monsters);
+            if (trotterDrops == null) return null;
             if (!active.beginSettlement()) return null;
             org.hkrpg.server.gameplay.RogueResonance.saveReport(active, energies);
             active.setReportedMonsters(result == BattleEndStatus.BATTLE_END_WIN ? List.copyOf(monsters) : List.of());
@@ -468,7 +470,9 @@ public class BattleService extends BaseGameService {
                 return resonance.finish(result, stats);
             if (active instanceof org.hkrpg.server.gameplay.LocalLegendBattle legend)
                 return legend.finish(result, stats);
-            return settleBattle(player, result, stats, experience);
+            var settled = settleBattle(player, result, stats, experience);
+            if (settled != null) settled.getDrops().addAll(trotterDrops);
+            return settled;
         }
     }
 

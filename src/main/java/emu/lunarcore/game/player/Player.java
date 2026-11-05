@@ -452,7 +452,15 @@ public class Player implements Tickable, Syncable {
         return true;
     }
 
-    public void addHCoin(int amount) {
+    /** Caller persists the wallet and the gameplay receipt together before notifying clients. */
+    public synchronized boolean tryChangeHCoin(int amount) {
+        long next = (long) this.hcoin + amount;
+        if (next < 0 || next > Integer.MAX_VALUE) return false;
+        this.hcoin = (int) next;
+        return true;
+    }
+
+    public synchronized void addHCoin(int amount) {
         int newAmount = Utils.safeAdd(this.hcoin, amount);
         if (this.hcoin != newAmount) {
             this.hcoin = newAmount;

@@ -162,6 +162,16 @@ class TrainMapAnchor46Test {
   }
 
   @Test
+  void anAuthoredEmptyAndOfFloorValuesDoesNotHideTheRemoteAnchor() throws Exception {
+    var group = source.getAsJsonObject("group").deepCopy();
+    group.add("SavedValueCondition", JsonParser.parseString("{\"Conditions\":[],\"Operation\":\"And\"}"));
+    install(group, false);
+    var map = query();
+    assertEquals(Set.of(2), groups(map));
+    assertEquals(List.of(2215), Gameplay46.value(map, "unlock_teleport_list"));
+  }
+
+  @Test
   void aSavedDisabledAnchorRemainsDisabledDespiteItsAuthoredEnabledDefault() throws Exception {
     session.getPlayer().getGameplay().getStoryValues().put(
         "prop-state:10000:10000000:2:300001", PropState.CheckPointDisable.getVal());

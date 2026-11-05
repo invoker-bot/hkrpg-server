@@ -16,6 +16,7 @@ import org.hkrpg.server.gameplay.MissionSceneEntrances;
 import org.hkrpg.server.gameplay.SceneAnchors;
 import org.hkrpg.server.gameplay.StoryLineConditions;
 import org.hkrpg.server.gameplay.WorldChests;
+import org.hkrpg.server.gameplay.WorldTrotters;
 
 /** Base scene map queries expose authored defaults and saved anchor transitions. */
 public final class SceneMap46 {
@@ -171,6 +172,8 @@ public final class SceneMap46 {
               putMap(map, "floor_saved_value_map", value.getKey(), value.getValue());
             for (int chest : WorldChests.openedOnFloor(player, entry.getPlaneID(), floor, 0))
               Gameplay46.add(map, "opened_chest_id_list", chest);
+            for (int trotter : WorldTrotters.finishedOnFloor(player, entry.getPlaneID(), floor))
+              Gameplay46.add(map, "finished_chest_monster_id_list", trotter);
             var groups = mapGroups(player, entry, config, values);
             for (var group : groups.entrySet()) {
               var info = Gameplay46.builder(session, "MazeGroup");
@@ -268,7 +271,7 @@ public final class SceneMap46 {
     if (!(raw instanceof JsonObject condition)
         || !Set.of("Conditions", "Operation").containsAll(condition.keySet())
         || condition.has("Operation") && !new JsonPrimitive("And").equals(condition.get("Operation"))
-        || !(condition.get("Conditions") instanceof JsonArray clauses) || clauses.isEmpty())
+        || !(condition.get("Conditions") instanceof JsonArray clauses))
       return false;
     for (var clause : clauses) {
       if (!(clause instanceof JsonObject row)

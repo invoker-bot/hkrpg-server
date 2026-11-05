@@ -153,6 +153,7 @@ public class EntityMonster implements GameEntity, Tickable {
     }
 
     public void calculateDrops(ItemParamMap drops) {
+        if (org.hkrpg.server.gameplay.WorldTrotters.ownsDrops(this)) return;
         var dropExcel = GameData.getMonsterDropExcelMap().get(this.getExcel().getId(), this.getWorldLevel());
         if (dropExcel == null) return;
 

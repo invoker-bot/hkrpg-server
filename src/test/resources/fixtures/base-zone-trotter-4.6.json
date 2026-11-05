@@ -1,0 +1,180 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceFiles": {
+    "ExcelOutput/MazePlane.json": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de",
+    "ExcelOutput/MapEntrance.json": "d808baea60c70e4f96e889bdc7899450ac1c6c97eb62ba684bc144642ea52da4",
+    "ExcelOutput/NPCMonsterData.json": "c01f9e9d6c620b7b986699455fffb3f844f0b324478a97592670a683ed57b87e",
+    "ExcelOutput/StageConfig.json": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2",
+    "ExcelOutput/ItemConfig.json": "1f334007198e21f63886acdb6c367ea5c5fa314a5e4a2a71284dee89c8fe2048",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P20001_F20001001/LevelGroup_P20001_F20001001_G28.json": "c9c7ac254f4a255ad5ad77125f7c0e2adfe79786cf9cacb61b209409158ef57a"
+  },
+  "plane": {
+    "PlaneID": 20001,
+    "PlaneType": "Maze",
+    "SubType": 1,
+    "MazePoolType": 1,
+    "WorldID": 101,
+    "PlaneName": {
+      "Hash": 9764321538343869922
+    },
+    "StartFloorID": 20001001,
+    "FloorIDList": [
+      20001001
+    ]
+  },
+  "entry": {
+    "ID": 2000101,
+    "EntranceType": "Mission",
+    "PlaneID": 20001,
+    "FloorID": 20001001,
+    "StartGroupID": 2,
+    "StartAnchorID": 1,
+    "BeginMainMissionList": [],
+    "FinishMainMissionList": [
+      1000101
+    ],
+    "FinishSubMissionList": [
+      100010103
+    ]
+  },
+  "npc": {
+    "ID": 8002040,
+    "NPCName": {
+      "Hash": 6795294568996807262
+    },
+    "ConfigEntityPath": "Config/ConfigEntity/NPCMonster/NPCMonster_XP_Minion04_00_Entity.json",
+    "JsonPath": "Config/ConfigCharacter/NPCMonster/NPCMonster_XP_Minion04_00_Config.json",
+    "DefaultAIPath": "Config/ConfigAI/Adventure/NPCMonster/NPCMonster_XP_Minion04/ST_NPCMonster_XP_Minion04_Master.json",
+    "MiniMapIconType": 5,
+    "Rank": "MinionLv2",
+    "IsMazeLink": true,
+    "PrototypeID": 8002040
+  },
+  "stage": {
+    "StageID": 200011110,
+    "StageType": "Mainline",
+    "StageName": {
+      "Hash": 1659673182808509609
+    },
+    "HardLevelGroup": 1,
+    "Level": 7,
+    "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+    "StageAbilityConfig": [],
+    "SubLevelGraphs": [],
+    "StageConfigData": [
+      {
+        "BFLIFKBEOPJ": "_Wave",
+        "MNDFOPKBHKP": "1"
+      },
+      {
+        "BFLIFKBEOPJ": "_IsEliteBattle",
+        "MNDFOPKBHKP": "0"
+      }
+    ],
+    "MonsterList": [
+      {
+        "Monster0": 8012010,
+        "Monster1": 8012020,
+        "Monster2": 8002040
+      }
+    ],
+    "LevelLoseCondition": [],
+    "LevelWinCondition": [],
+    "Release": true,
+    "ForbidExitBattle": true,
+    "MonsterWarningRatio": 1,
+    "TrialAvatarList": []
+  },
+  "jade": {
+    "ID": 1,
+    "ItemMainType": "Virtual",
+    "ItemSubType": "Virtual",
+    "InventoryDisplayTag": 1,
+    "Rarity": "SuperRare",
+    "PurposeType": 12,
+    "ItemName": {
+      "Hash": 7739077644877555281
+    },
+    "ItemBGDesc": {
+      "Hash": 4559313086410327619
+    },
+    "ItemIconPath": "SpriteOutput/ItemIcon/900001.png",
+    "ItemFigureIconPath": "SpriteOutput/ItemFigures/900001.png",
+    "ItemCurrencyIconPath": "SpriteOutput/ItemCurrency/1.png",
+    "ItemAvatarIconPath": "",
+    "PileLimit": 999999999,
+    "CustomDataList": [],
+    "ReturnItemIDList": []
+  },
+  "group": {
+    "$type": "RPG.GameCore.RtLevelGroupInfo",
+    "GroupName": "MonsterEscape",
+    "AreaAnchorName": "LevelArea_P20001_F20001001_G28",
+    "SavedValueCondition": {
+      "Conditions": [
+        {
+          "SavedValueName": "SceneStateByMainMission",
+          "Value": 1
+        }
+      ],
+      "Operation": "And"
+    },
+    "LoadSide": "Server",
+    "ValueSource": {},
+    "ConflictIDList": [],
+    "IsHoyoGroup": true,
+    "ConflictWhiteList": [],
+    "TagContainer": {
+      "List": [
+        {
+          "Tag": "Group.Level.SpecialMonster",
+          "TagHash": -1267591894
+        }
+      ]
+    },
+    "AnchorList": [],
+    "MonsterList": [
+      {
+        "NPCMonsterID": 8002040,
+        "AIConfig": {
+          "PathwayList": [],
+          "SlaveConfigList": []
+        },
+        "AIVariableSource": {},
+        "ValueSource": {},
+        "CampID": 3,
+        "BattleArea": {
+          "GroupID": 2,
+          "ID": 1
+        },
+        "EventID": 20001111,
+        "BoardShowList": [
+          2
+        ],
+        "TagList": [],
+        "SpawnConfig": {
+          "EntitySpawnConfig": {}
+        },
+        "Name": "Monster1",
+        "RotY": 180,
+        "ID": 200001,
+        "PosX": -26.6,
+        "PosY": 0.15,
+        "PosZ": 181.84
+      }
+    ],
+    "PropList": [],
+    "DistrictList": [],
+    "WaypointList": [],
+    "PathwayList": [],
+    "BattleAreaList": [],
+    "NPCList": [],
+    "CrowdList": [],
+    "PedestrianList": [],
+    "PedestrianV2List": [],
+    "AudienceList": [],
+    "SmartObjectList": [],
+    "CurveList": [],
+    "LittleGameList": []
+  }
+}

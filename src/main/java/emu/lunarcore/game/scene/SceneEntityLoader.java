@@ -56,6 +56,7 @@ public class SceneEntityLoader {
         if (!org.hkrpg.server.gameplay.WolfBroAmmunition.spawns(scene, group, monsterInfo)) return null;
         if (!org.hkrpg.server.gameplay.WorldMechanisms.spawns(scene, group, monsterInfo)) return null;
         if (!org.hkrpg.server.gameplay.CompatibleMechanisms.spawns(scene, group, monsterInfo)) return null;
+        if (!org.hkrpg.server.gameplay.WorldTrotters.spawns(scene, group, monsterInfo)) return null;
 
         // Get excels from game data
         NpcMonsterExcel npcMonsterExcel = GameData.getNpcMonsterExcelMap().get(monsterInfo.getNPCMonsterID());
