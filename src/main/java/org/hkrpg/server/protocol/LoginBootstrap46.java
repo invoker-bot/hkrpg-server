@@ -25,7 +25,7 @@ final class LoginBootstrap46 {
       case 9 -> 27; case 522 -> 549; case 2922 -> 2949; case 3405 -> 3475;
       case 5734 -> 5725; case 5834 -> 5825; case 8680 -> 8580;
       case 8948 -> 8914; case 9504 -> 9548;
-      case 6029 -> 6017; case 9990 -> 9996;
+      case 6029 -> 6017; case 9990 -> 9996; case 3758 -> 3756;
       default -> 0;
     };
     if (response == 0) return false;
@@ -44,7 +44,7 @@ final class LoginBootstrap46 {
       case 9894 -> 13; case 9490, 9990 -> 9;
       case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;
       case 5734 -> 4; case 5834 -> 10; case 8680 -> 9; case 8948 -> 13;
-      case 6029 -> 2;
+      case 6029 -> 2; case 3758 -> 3;
       default -> throw new AssertionError(command);
     };
     var body = new ByteArrayOutputStream();
@@ -116,7 +116,8 @@ final class LoginBootstrap46 {
 
   private static boolean validRequest(int command, byte[] bytes) {
     if (bytes.length == 0) return true;
-    if (bytes.length > 16_384 || command != 5697 && command != 8110) return false;
+    if (bytes.length > 16_384 || command != 5697 && command != 8110 && command != 3758)
+      return false;
     var input = CodedInputStream.newInstance(bytes);
     int selectors = 0;
     boolean singleSeen = false;
@@ -135,6 +136,10 @@ final class LoginBootstrap46 {
         } else if (command == 8110 && tag == 48 && !singleSeen) {
           singleSeen = true;
           input.readUInt32();
+        } else if (command == 3758 && tag == 32 && !singleSeen) {
+          // TrainModule sends register type 1 or 2. Zero is the protobuf default.
+          singleSeen = true;
+          if (Long.compareUnsigned(input.readUInt64(), 2) > 0) return false;
         } else return false;
       }
       return input.isAtEnd();

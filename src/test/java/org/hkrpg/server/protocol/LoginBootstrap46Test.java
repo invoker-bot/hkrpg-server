@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class LoginBootstrap46Test {
   // Matched Honey fe00bdb Raw command pairs and response retcode field numbers.
@@ -27,7 +28,8 @@ class LoginBootstrap46Test {
         Arguments.of(5734, 5725, 4), Arguments.of(5834, 5825, 10),
         Arguments.of(8680, 8580, 9),
         Arguments.of(8948, 8914, 13), Arguments.of(9504, 9548, 8),
-        Arguments.of(6029, 6017, 2), Arguments.of(9990, 9996, 9));
+        Arguments.of(6029, 6017, 2), Arguments.of(9990, 9996, 9),
+        Arguments.of(3758, 3756, 3));
   }
 
   @ParameterizedTest @MethodSource("queries")
@@ -39,6 +41,7 @@ class LoginBootstrap46Test {
       case 5697 -> new byte[] {106, 2, 1, 2}; // Packed query selectors.
       case 31 -> new byte[] {90, 4, 1, 2, 3, 4}; // Synthetic security request, never logged.
       case 8110 -> new byte[] {48, 1}; // Native request field 6.
+      case 3758 -> new byte[] {32, 1}; // Initial train visitor registration.
       default -> new byte[0];
     };
     assertTrue(VersionedPacketHandler.handle(session, request, body),
@@ -64,6 +67,39 @@ class LoginBootstrap46Test {
         "Inactive initial profiles must not grant progression, purchases, keys or rewards");
     assertEquals(before, new Gson().toJson(session.player.getGameplay()));
     assertEquals(SessionState.ACTIVE, session.getState());
+  }
+
+  @ParameterizedTest @ValueSource(ints = {0, 1, 2})
+  void trainVisitorRegisterCompletesPamMenuQueries(int selector) throws Exception {
+    var session = new PlayerReturnInitial46Test.Session();
+    byte[] body = selector == 0 ? new byte[0] : new byte[] {32, (byte) selector};
+    var before = new Gson().toJson(session.player.getGameplay());
+
+    assertTrue(VersionedPacketHandler.handle(session, 3758, body));
+
+    var packet = session.nativePackets.getFirst();
+    assertEquals(3756, packet.cmdId());
+    var response = session.bridge.clientSchema().parse("GetTrainVisitorRegisterScRsp", packet.body());
+    var type = response.getDescriptorForType();
+    assertEquals(0, response.getField(type.findFieldByNumber(3)));
+    assertEquals(0, response.getRepeatedFieldCount(type.findFieldByNumber(11)));
+    assertEquals(0, response.getRepeatedFieldCount(type.findFieldByNumber(13)));
+    assertEquals(before, new Gson().toJson(session.player.getGameplay()));
+  }
+
+  @Test void trainVisitorRegisterRejectsUnknownOrAmbiguousSelectors() throws Exception {
+    for (byte[] body : new byte[][] {
+        {32, 3}, {32, 1, 32, 2}, {34, 1, 2}, {32, (byte) 0x82, (byte) 0x80,
+            (byte) 0x80, (byte) 0x80, 0x10}
+    }) {
+      var session = new PlayerReturnInitial46Test.Session();
+      assertTrue(VersionedPacketHandler.handle(session, 3758, body));
+      var packet = session.nativePackets.getFirst();
+      assertEquals(3756, packet.cmdId());
+      var response = session.bridge.clientSchema().parse("GetTrainVisitorRegisterScRsp", packet.body());
+      assertEquals(Retcode.REQ_PARA_INVALID.getVal(), InitialData46Test.field(response, "retcode"));
+      assertEquals(SessionState.ACTIVE, session.getState());
+    }
   }
 
   @ParameterizedTest @MethodSource("queries")
@@ -102,7 +138,7 @@ class LoginBootstrap46Test {
         session.bridge.clientCommand("ContentPackageGetDataCsReq"), new byte[0], new byte[0]));
     try { session.onMessage(input); } finally { input.release(); }
     assertFalse(session.closed);
-    assertEquals(22, session.nativePackets.size());
+    assertEquals(23, session.nativePackets.size());
     assertTrue(session.clientBodies.containsKey("GetLevelRewardTakenListScRsp"));
     assertTrue(session.clientBodies.containsKey("GetAllServerPrefsDataScRsp"));
     assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));
