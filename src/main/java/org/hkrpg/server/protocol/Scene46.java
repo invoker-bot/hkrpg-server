@@ -82,8 +82,9 @@ public final class Scene46 {
           .setField(story,scene.getStoryLineId());
       Gameplay46.set(selected, "interact_id", scene.getRuntimeId());
       Gameplay46.set(selected, "client_pos_version", scene.getClientPosVersion());
-      message = selected.build();
+      message = ClientNpcPublication46.sceneInfo(selected.build(), scene);
     }
+    if ("SceneGroupRefreshScNotify".equals(type)) message = ClientNpcPublication46.refresh(message, scene);
     if (message.getDescriptorForType().getName().equals("SceneEntityInfo")) {
       int entityId = Gameplay46.number(message, "entity_id");
       var avatar = scene.getAvatarByEntityId(entityId);

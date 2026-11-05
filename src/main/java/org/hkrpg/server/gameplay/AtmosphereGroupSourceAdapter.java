@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonWriter;
 import emu.lunarcore.data.config.GroupInfo;
 import java.io.IOException;
 
-/** Preserve the native Client role of dormant original atmosphere definitions. */
+/** Preserve native ownership for proven shapes without changing the inherited group default. */
 public final class AtmosphereGroupSourceAdapter implements TypeAdapterFactory {
   @Override
   public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
@@ -24,11 +24,13 @@ public final class AtmosphereGroupSourceAdapter implements TypeAdapterFactory {
           boolean dormant = initial == null || initial.isJsonPrimitive()
               && initial.getAsJsonPrimitive().isBoolean() && !initial.getAsBoolean();
           if (tag != null && tag.isJsonPrimitive() && tag.getAsJsonPrimitive().isString()
-              && "RPG.GameCore.RtLevelGroupInfo".equals(tag.getAsString())
-              && group.getCategory() == GroupInfo.GroupCategory.Atmosphere
-              && !row.has("LoadCondition") && !row.has("UnloadCondition")
-              && !row.has("AtmosphereCondition")
-              && dormant && !row.has("LoadSide")) group.setLoadSide(GroupInfo.GroupLoadSide.Client);
+              && "RPG.GameCore.RtLevelGroupInfo".equals(tag.getAsString())) {
+            if (group.getCategory() == GroupInfo.GroupCategory.Atmosphere
+                && !row.has("LoadCondition") && !row.has("UnloadCondition")
+                && !row.has("AtmosphereCondition")
+                && dormant && !row.has("LoadSide")) group.setLoadSide(GroupInfo.GroupLoadSide.Client);
+            ClientNpcGroups.markSource(group, row);
+          }
         }
         return value;
       }

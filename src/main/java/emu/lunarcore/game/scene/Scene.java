@@ -614,7 +614,7 @@ public class Scene implements Tickable {
         entity.onAdd();
 
         // Send packet
-        if (sendPacket) {
+        if (sendPacket && org.hkrpg.server.gameplay.ClientNpcGroups.shouldPublish(entity)) {
             player.sendPacket(new PacketSceneGroupRefreshScNotify(this, entity, null));
         }
     }
@@ -662,7 +662,8 @@ public class Scene implements Tickable {
             // Run event
             entity.onRemove();
             // Send packet
-            player.sendPacket(new PacketSceneGroupRefreshScNotify(this, null, entity));
+            if (org.hkrpg.server.gameplay.ClientNpcGroups.shouldPublish(entity))
+                player.sendPacket(new PacketSceneGroupRefreshScNotify(this, null, entity));
             // Reset entity id
             entity.setEntityId(0);
         }

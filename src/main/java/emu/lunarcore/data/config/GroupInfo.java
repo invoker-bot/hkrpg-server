@@ -15,6 +15,8 @@ public class GroupInfo {
     private String GroupName;
     private transient int id;
     @Setter private GroupLoadSide LoadSide = GroupLoadSide.Server;
+    // Native client ownership is distinct from the legacy logical group used for mission checks.
+    @Setter private transient boolean clientOwnedNpcSource;
     private GroupCategory Category;
     private boolean LoadOnInitial = true;
     private int OwnerMainMissionID;
