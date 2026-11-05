@@ -6,10 +6,13 @@ import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.game.player.Player;
 import java.util.*;
 
-/** Only the recovered three-message script has a verified server-side completion gate. */
+/** Extra completion conditions expressed in authored dialogue scripts. */
 final class MissionTalkScriptGates {
   private static final Gson GSON = ResourceLoader.getGson();
   private static final int MESSAGE_TALK = 434011114, STUDIO_TALK = 105450340;
+  private static final int MEMORY_BUBBLE_AGREEMENT = 200032002;
+  private static final int FIRST_MEMORY_BUBBLE = 200032003;
+  private static final int LAST_MEMORY_BUBBLE = 200032022;
   private static final List<Integer> WATCHED = List.of(434011111, 434011112, 434011113);
   private static final Map<Integer, JsonElement> ORIGINAL = originalRows();
   private static final JsonElement SCRIPT =
@@ -261,6 +264,10 @@ final class MissionTalkScriptGates {
     if (id == DailyMissionFollowupSources.TALK && DailyMissionFollowupRules.handles(DailyMissionFollowupSources.MAIN))
       return DailyMissionFollowupRules.loaded(player);
     if (id == 300060001) return DailyMissionMessageRules.initialTalk(player);
+    // The original read objectives start early so the client can spawn the bubbles for the intro.
+    // Completing one requires the separate agreement aggregate, regardless of which puppet was used.
+    if (id >= FIRST_MEMORY_BUBBLE && id <= LAST_MEMORY_BUBBLE)
+      return MissionStateRecords.subCompleted(player, MEMORY_BUBBLE_AGREEMENT);
     if (id == STUDIO_TALK) return false;
     if (id != MESSAGE_TALK) return true;
     synchronized (player) {
