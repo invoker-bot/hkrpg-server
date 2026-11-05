@@ -1,24 +1,77 @@
 package org.hkrpg.server.protocol;
 
 import com.google.protobuf.DynamicMessage;
+import emu.lunarcore.data.config.LevelGroupMissionCondition.LevelGroupMissionPhase;
+import emu.lunarcore.data.config.LevelGroupMissionCondition.LevelGroupMissionType;
+import emu.lunarcore.data.config.LoadConditionInfo;
 import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityNpc;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import org.hkrpg.server.gameplay.ClientNpcGroups;
+import org.hkrpg.server.gameplay.MissionSnapshotRecords;
 
 /** Do not give the native client a network copy of an NPC it already creates locally. */
 final class ClientNpcPublication46 {
   static DynamicMessage sceneInfo(DynamicMessage message, Scene scene) {
     if (!ClientNpcGroups.supports(scene)) return message;
-    return projectRows(
-        message,
-        "entity_group_list",
-        group -> {
-          var projected =
-              projectRows(group, "entity_list", entity -> local(entity, scene) ? null : entity);
-          return projected != group && only(projected, "group_id") ? null : projected;
-        });
+    var projected =
+        projectRows(
+            message,
+            "entity_group_list",
+            group -> {
+              var filtered =
+                  projectRows(group, "entity_list", entity -> local(entity, scene) ? null : entity);
+              return filtered != group && only(filtered, "group_id") ? null : filtered;
+            });
+    return withMissionGates(projected, scene);
+  }
+
+  /** The native map setup reads these completion flags before initializing local groups. */
+  private static DynamicMessage withMissionGates(DynamicMessage message, Scene scene) {
+    var field = message.getDescriptorForType().findFieldByName("scene_mission_info");
+    if (message.hasField(field)) return message;
+    var ids = new TreeSet<Integer>();
+    for (var source : scene.getResourceGroups().values()) {
+      if (!source.isClientOwnedNpcSource()) continue;
+      // Also include unloaded groups so a completed exit condition is available on reentry.
+      addMainGates(ids, source.getLoadCondition());
+      addMainGates(ids, source.getUnloadCondition());
+    }
+    if (ids.isEmpty()) return message;
+
+    var gates = DynamicMessage.newBuilder(field.getMessageType());
+    var player = scene.getPlayer();
+    synchronized (player) {
+      var saved = player.getGameplay().getMainMissions();
+      for (int id : ids) {
+        if (saved.containsKey(id) && !MissionSnapshotRecords.main(player, id)) continue;
+        Gameplay46.add(
+            gates,
+            player.getMissionManager().finished(id)
+                ? "finished_main_mission_id_list"
+                : "unfinished_main_mission_id_list",
+            id);
+      }
+    }
+    return gates.getAllFields().isEmpty()
+        ? message
+        : message.toBuilder().setField(field, gates.build()).build();
+  }
+
+  private static void addMainGates(Set<Integer> ids, LoadConditionInfo set) {
+    if (set == null || set.getConditions() == null) return;
+    for (var condition : set.getConditions()) {
+      if (condition != null
+          && condition.getID() > 0
+          && condition.getMissionType() == LevelGroupMissionType.MainMission
+          && (condition.getPhase() == LevelGroupMissionPhase.Accept
+              || condition.getPhase() == LevelGroupMissionPhase.Finish)) {
+        ids.add(condition.getID());
+      }
+    }
   }
 
   static DynamicMessage refresh(DynamicMessage message, Scene scene) {

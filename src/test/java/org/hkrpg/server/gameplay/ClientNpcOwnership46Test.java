@@ -17,6 +17,7 @@ import emu.lunarcore.game.scene.entity.EntityNpc;
 import emu.lunarcore.proto.GetCurSceneInfoScRspOuterClass.GetCurSceneInfoScRsp;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
+import emu.lunarcore.server.packet.send.PacketEnterSceneByServerScNotify;
 import emu.lunarcore.server.packet.send.PacketSceneGroupRefreshScNotify;
 import io.netty.buffer.Unpooled;
 import java.io.InputStreamReader;
@@ -197,6 +198,40 @@ class ClientNpcOwnership46Test {
 
   DynamicMessage snapshot() throws Exception {
     return (DynamicMessage) field(nativePacket("GetCurSceneInfoScRsp", coreSnapshot()), "scene");
+  }
+
+  @Test
+  void sceneEntryAndCurrentSceneCarryTheGatesOfBothRockyVersions() throws Exception {
+    acceptRocky();
+    buildScene();
+    assertFalse(actor.scene.getLoadedGroups().contains(IDLE_GROUP));
+    assertTrue(actor.scene.getLoadedGroups().contains(ROCKY_GROUP));
+
+    var entered =
+        nativePacket("EnterSceneByServerScNotify", new PacketEnterSceneByServerScNotify(actor).build());
+    for (var scene : List.of(snapshot(), (DynamicMessage) field(entered, "scene"))) {
+      var descriptor = scene.getDescriptorForType().findFieldByNumber(1284);
+      assertTrue(scene.hasField(descriptor), "map entry did not supply legacy group mission state");
+      var gates = (DynamicMessage) scene.getField(descriptor);
+      assertEquals(
+          List.of(1000401), gates.getField(gates.getDescriptorForType().findFieldByNumber(15)));
+      assertEquals(
+          List.of(2000110, 2000111), gates.getField(gates.getDescriptorForType().findFieldByNumber(3)));
+      assertFalse(npcs(scene).contains(ROCKY));
+    }
+  }
+
+  @Test
+  void sceneStatusDoesNotReportACorruptCompletionOrReplaySubMissions() throws Exception {
+    acceptRocky();
+    actor.getGameplay().getMainMissions().put(1000401, completed(1000302));
+    actor.getGameplay().getMainMissions().put(2000111, completed(2000111));
+    buildScene();
+
+    var gates = (DynamicMessage) field(snapshot(), "scene_mission_info");
+    assertEquals(List.of(2000111), field(gates, "finished_main_mission_id_list"));
+    assertEquals(List.of(2000110), field(gates, "unfinished_main_mission_id_list"));
+    assertEquals(List.of(), field(gates, "sub_mission_status_list"));
   }
 
   static List<Integer> npcs(DynamicMessage root) {
