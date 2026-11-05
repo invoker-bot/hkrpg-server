@@ -202,6 +202,7 @@ public class Scene implements Tickable {
 
     public void loadGroup(GroupInfo group) {
         if (group == null || group.getLoadSide() != GroupInfo.GroupLoadSide.Server
+            || !org.hkrpg.server.gameplay.BookPickups.allowsGroup(this, group)
             || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)
             || !org.hkrpg.server.gameplay.DebugGroupConditions.allowed(group, this)
             || !org.hkrpg.server.gameplay.MusicSceneGroups.allowed(group, this)

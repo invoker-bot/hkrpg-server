@@ -23,7 +23,7 @@ public final class MissionGroupConditions {
         && scene.getResourceGroups().get(group.getId()) == group;
   }
 
-  private static boolean declaresCondition(LoadConditionInfo set) {
+  static boolean declaresCondition(LoadConditionInfo set) {
     // Some normal groups serialize unused default sets as {"Conditions":[]}.
     // Invalid/unknown sets still enter evaluation and fail closed.
     return set != null

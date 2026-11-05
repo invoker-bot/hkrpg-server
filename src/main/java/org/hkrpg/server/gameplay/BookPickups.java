@@ -10,9 +10,7 @@ import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
-/**
- * Standard fixed reading props: an authored single book, with durable once-per-location delivery.
- */
+/** Standard fixed reading props: authored book rewards, with durable once-per-location delivery. */
 public final class BookPickups {
   public static final int INTERACT = 118191;
   private static final String GRAPH =
@@ -20,7 +18,7 @@ public final class BookPickups {
 
   public record Result(Retcode retcode, EntityProp prop) {}
 
-  private record Loot(int reward, int book) {}
+  private record Loot(int reward, List<Integer> books) {}
 
   private static boolean shape(PropInfo info) {
     return info != null
@@ -45,13 +43,30 @@ public final class BookPickups {
         || event.getDropList() == null
         || !event.getDropList().isEmpty()) return null;
     var reward = GameData.getRewardExcelMap().get(event.getReward());
-    if (reward == null || reward.getRewards() == null || reward.getRewards().size() != 1)
-      return null;
-    var entry = reward.getRewards().int2IntEntrySet().iterator().next();
-    var book = GameData.getItemExcelMap().get(entry.getIntKey());
-    return entry.getIntValue() == 1 && BookItems.storable(book)
-        ? new Loot(reward.getId(), book.getId())
-        : null;
+    if (reward == null
+        || reward.getRewards() == null
+        || reward.getRewards().isEmpty()
+        || reward.getRewards().size() > 6) return null;
+    for (var entry : reward.getRewards().int2IntEntrySet()) {
+      if (entry.getIntValue() != 1
+          || !BookItems.storable(GameData.getItemExcelMap().get(entry.getIntKey()))) return null;
+    }
+    return new Loot(
+        reward.getId(), reward.getRewards().keySet().intStream().sorted().boxed().toList());
+  }
+
+  /** Some reading atmosphere groups still declare their prerequisites as legacy mission clauses. */
+  public static boolean allowsGroup(Scene scene, GroupInfo group) {
+    if (!world(scene)
+        || group == null
+        || group.getCategory() != GroupInfo.GroupCategory.Atmosphere
+        || group.getPropList() == null
+        || group.getPropList().stream().noneMatch(BookPickups::shape)) return true;
+    return (!MissionGroupConditions.declaresCondition(group.getLoadCondition())
+            || MissionGroupConditions.matches(scene.getPlayer(), group.getLoadCondition()))
+        && (!MissionGroupConditions.declaresCondition(group.getUnloadCondition())
+            || MissionGroupConditions.evaluate(scene.getPlayer(), group.getUnloadCondition())
+                == MissionGroupConditions.Result.NO_MATCH);
   }
 
   public static boolean supportedGroup(Scene scene, GroupInfo group) {
@@ -135,23 +150,26 @@ public final class BookPickups {
     if (state.getReceipts().containsKey(key(prop))) return Retcode.QUEST_REWARD_ALREADY_TAKEN;
     var loot = loot(prop.getPropInfo(), RaidDifficultySettings.world(scene));
     var inventory = player.getInventory();
-    var definition = GameData.getItemExcelMap().get(loot.book());
-    var item = inventory.getMaterialByItemId(loot.book());
-    if (item != null
-        && (item.getOwnerUid() != player.getUid()
-            || item.isDiscarded()
-            || item.getEquipAvatarId() != null
-            || item.getEquipAvatarExcelId() != 0
-            || item.getExcel() != definition
-            || item.getInternalUid() <= 0
-            || inventory.getItemByUid(item.getInternalUid()) != item
-            || item.getCount() <= 0
-            || item.getCount() > definition.getPileLimit())) return Retcode.PLAYER_DATA_ERROR;
-    var tab = inventory.getTabByItemType(definition.getItemMainType());
-    if (tab == null
-        || item == null && tab.getSize() >= tab.getMaxCapacity()
-        || item != null && item.getCount() == definition.getPileLimit())
-      return Retcode.ITEM_EXCEED_LIMIT;
+    int newStacks = 0;
+    var tab = inventory.getTabByItemType(ItemMainType.Usable);
+    if (tab == null) return Retcode.ITEM_EXCEED_LIMIT;
+    for (int book : loot.books()) {
+      var definition = GameData.getItemExcelMap().get(book);
+      var item = inventory.getMaterialByItemId(book);
+      if (item != null
+          && (item.getOwnerUid() != player.getUid()
+              || item.isDiscarded()
+              || item.getEquipAvatarId() != null
+              || item.getEquipAvatarExcelId() != 0
+              || item.getExcel() != definition
+              || item.getInternalUid() <= 0
+              || inventory.getItemByUid(item.getInternalUid()) != item
+              || item.getCount() <= 0
+              || item.getCount() > definition.getPileLimit())) return Retcode.PLAYER_DATA_ERROR;
+      if (item == null) newStacks++;
+      else if (item.getCount() == definition.getPileLimit()) return Retcode.ITEM_EXCEED_LIMIT;
+    }
+    if ((long) tab.getSize() + newStacks > tab.getMaxCapacity()) return Retcode.ITEM_EXCEED_LIMIT;
     return Retcode.SUCC;
   }
 
@@ -165,7 +183,7 @@ public final class BookPickups {
       var loot = loot(prop.getPropInfo(), RaidDifficultySettings.world(prop.getScene()));
       var receipt =
           new BookPickupState.Receipt(
-              PropTimelines.source(prop.getPropInfo()), loot.reward(), loot.book(), false);
+              PropTimelines.source(prop.getPropInfo()), loot.reward(), loot.books(), false);
       var prepared = old.with(key(prop), receipt);
       player.getGameplay().bookPickups(prepared);
       try {
@@ -175,7 +193,7 @@ public final class BookPickups {
         return new Result(Retcode.SYSTEM_BUSY, null);
       }
       var items = new ItemParamMap();
-      items.add(loot.book(), 1);
+      for (int book : loot.books()) items.add(book, 1);
       try {
         var delivered = player.getInventory().grantItems(items, true);
         if (delivered == null || !delivered.complete())
@@ -186,7 +204,7 @@ public final class BookPickups {
       var completed =
           prepared.with(
               key(prop),
-              new BookPickupState.Receipt(receipt.getSource(), loot.reward(), loot.book(), true));
+              new BookPickupState.Receipt(receipt.getSource(), loot.reward(), loot.books(), true));
       player.getGameplay().bookPickups(completed);
       try {
         player.save();
@@ -215,7 +233,7 @@ public final class BookPickups {
     var loot = loot(prop.getPropInfo(), RaidDifficultySettings.world(prop.getScene()));
     if (receipt.getSource().equals(PropTimelines.source(prop.getPropInfo()))
         && receipt.getReward() == loot.reward()
-        && receipt.getBook() == loot.book()) prop.setState(PropState.EventOpen, false);
+        && receipt.books().equals(loot.books())) prop.setState(PropState.EventOpen, false);
   }
 
   private BookPickups() {}

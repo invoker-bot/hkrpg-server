@@ -23,6 +23,7 @@ def free_port(kind=socket.SOCK_STREAM):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
     parser.add_argument('--doors', action='store_true', help='校验控制台、两扇剧情门及两次同 UID H2 重启')
     parser.add_argument('--readings', action='store_true', help='校验接待中心两份阅读物拾取、背包、防重和重启恢复；移动为合成请求')
     parser.add_argument('--barriers', action='store_true', help='校验大厅及走廊击杀屏障卸载、失败保留和重连/H2重启；包含剧情门检查')
@@ -78,7 +79,7 @@ def main():
     if args.barriers:
         args.doors = True
     source = ROOT / 'resources/4.6'
-    jar = ROOT / 'build/libs/hkrpg-server.jar'
+    jar = args.jar.resolve(strict=True)
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     guarded = ['ExcelOutput/MainMission.json', 'ExcelOutput/PlaneEvent.json', 'ExcelOutput/StageConfig.json']

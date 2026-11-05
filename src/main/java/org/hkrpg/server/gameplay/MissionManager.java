@@ -1441,7 +1441,7 @@ public final class MissionManager {
     if (!DebugGroupConditions.allowed(group, scene)) return false;
     if (!CompatibleMechanisms.shouldLoad(scene, group)) return false;
     if (group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Atmosphere)
-      return AtmosphereGroups.allowed(player, group, scene);
+      return AtmosphereGroups.allowed(player, group, scene) && BookPickups.allowsGroup(scene, group);
     boolean deferred = DeferredMissionGroups.tracks(group, scene);
     boolean ordinary = MissionGroupConditions.tracks(group, scene);
     if (group.getCategory() != emu.lunarcore.data.config.GroupInfo.GroupCategory.Mission

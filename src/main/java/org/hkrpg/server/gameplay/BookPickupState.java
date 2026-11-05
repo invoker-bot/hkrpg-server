@@ -14,6 +14,8 @@ public class BookPickupState {
     private String source;
     private int reward;
     private int book;
+    // Absent on legacy single-book receipts. The old book field remains their stable identity.
+    private List<Integer> books;
     private boolean granted;
 
     private Receipt() {}
@@ -25,8 +27,26 @@ public class BookPickupState {
       this.granted = granted;
     }
 
+    Receipt(String source, int reward, List<Integer> books, boolean granted) {
+      this(source, reward, books.getFirst(), granted);
+      if (books.size() > 1) this.books = List.copyOf(books);
+    }
+
+    List<Integer> books() {
+      return books == null ? List.of(book) : books;
+    }
+
     boolean valid() {
-      return source != null && source.matches("[a-f0-9]{64}") && reward > 0 && book > 0;
+      return source != null
+          && source.matches("[a-f0-9]{64}")
+          && reward > 0
+          && book > 0
+          && (books == null
+              || books.size() >= 2
+                  && books.size() <= 6
+                  && books.stream().allMatch(id -> id != null && id > 0)
+                  && books.equals(books.stream().distinct().sorted().toList())
+                  && books.getFirst() == book);
     }
   }
 
