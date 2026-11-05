@@ -8,9 +8,11 @@ import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.quest.QuestState;
 import java.util.*;
 
-/** Mainline event mappings and legacy stage-family prefixes, frozen at accepted battle start. */
+/** Story event mappings and legacy stage-family prefixes, frozen at accepted battle start. */
 public final class MissionStageWins {
-  private record Clause(int main, int prefix, int progress, int plane, int floor, String script) {}
+  private record Clause(
+      int main, int stageOrEvent, int progress, int plane, int floor,
+      boolean eventMapped, int requiredEvent, String script) {}
 
   private record Target(
       MissionInfo.SubMissionInfo definition,
@@ -64,7 +66,9 @@ public final class MissionStageWins {
               : !raid.matches(player))
           || target.definition() != definition
           || !target.clause().equals(clause(definition))
-          || !condition(definition, stage.getId(), world, plane, floor)) return false;
+          || (target.clause().requiredEvent() != 0
+              && battle.getEventId() != target.clause().requiredEvent())
+          || !condition(target.clause(), stage.getId(), world, plane, floor)) return false;
       var g = player.getGameplay();
       return g.getMainMissions().get(definition.getMainMissionID()) == target.main()
           && MissionStateRecords.mainDoing(player, definition.getMainMissionID())
@@ -96,14 +100,16 @@ public final class MissionStageWins {
         var g = player.getGameplay();
         for (var state : g.getSubMissions().values()) {
           var c = state == null ? null : GameplayDefinitions.subs.get(state.getQuestId());
+          if (c == null || !MissionStateRecords.doing(state, c.getId(), Math.max(1, c.getProgress())))
+            continue;
+          var clause = clause(c);
           if (condition(
-                  c,
+                  clause,
                   stage.getId(),
                   player.getWorldLevel(),
                   player.getPlaneId(),
                   player.getFloorId())
               && (raid == null || raid.owns(c.getMainMissionID()))
-              && MissionStateRecords.doing(state, c.getId(), Math.max(1, c.getProgress()))
               && player.getMissionManager().canFinishFromAction(c.getId()))
             targets.put(
                 c.getId(),
@@ -113,7 +119,7 @@ public final class MissionStageWins {
                     state,
                     state.getProgress(),
                     DailyMissionRepeats.mainKey(player, c.getMainMissionID()),
-                    clause(c),
+                    clause,
                     raid == null ? null : MissionBattleAcceptance.capture(player, c)));
         }
       }
@@ -131,13 +137,20 @@ public final class MissionStageWins {
   }
 
   private static Clause clause(MissionInfo.SubMissionInfo c) {
+    if (!supported(c)) return null;
+    int requiredEvent = StoryBattleEvents.companionRequest(c);
+    boolean eventMapped = mainline(c) || requiredEvent != 0;
+    String script = script(c, eventMapped);
+    if (script == null) return null;
     return new Clause(
         c.getMainMissionID(),
         c.getParamInt1(),
         c.getProgress(),
         c.getLevelPlaneID(),
         c.getLevelFloorID(),
-        script(c));
+        eventMapped,
+        requiredEvent,
+        script);
   }
 
   private static boolean mainline(MissionInfo.SubMissionInfo c) {
@@ -145,9 +158,9 @@ public final class MissionStageWins {
     return main != null && "Main".equals(main.getType()) && !main.isInRaid();
   }
 
-  private static String script(MissionInfo.SubMissionInfo c) {
-    if (!mainline(c) || c.getTask() == null) return MissionStageScripts.signature(c);
-    // Mainline presentation scripts run on the client. Their action shape must not gate
+  private static String script(MissionInfo.SubMissionInfo c, boolean eventMapped) {
+    if (!eventMapped || c.getTask() == null) return MissionStageScripts.signature(c);
+    // These presentation scripts run on the client. Their action shape must not gate
     // the server's StageWin condition (the opening script even declares a legacy event).
     // Retain the complete source in the battle snapshot so a reload cannot change it.
     var source = c.getTask().getSourceDefinition();
@@ -155,12 +168,12 @@ public final class MissionStageWins {
             && source != null
             && !source.isBlank()
             && source.length() <= 1048576
-        ? "Main:" + source
+        ? source
         : null;
   }
 
   static boolean repeatable(MissionInfo.SubMissionInfo c) {
-    return supported(c)
+    return clause(c) != null
         && MissionStageScripts.signature(c) != null
         && GameData.getStageExcelMap().values().stream()
             .anyMatch(stage -> prefix(c.getParamInt1(), stage.getId()));
@@ -172,17 +185,11 @@ public final class MissionStageWins {
         && Integer.toString(stage).startsWith(Integer.toString(authored));
   }
 
-  private static boolean condition(
-      MissionInfo.SubMissionInfo c, int stage, int world, int plane, int floor) {
-    return supported(c)
-        && stageMatches(c, stage, world)
-        && (c.getLevelPlaneID() == 0 || c.getLevelPlaneID() == plane)
-        && (c.getLevelFloorID() == 0 || c.getLevelFloorID() == floor);
-  }
-
-  private static boolean stageMatches(MissionInfo.SubMissionInfo c, int stage, int world) {
-    if (!mainline(c)) return prefix(c.getParamInt1(), stage);
-    var mapped = SceneEventBattles.resolve(c.getParamInt1(), world);
+  private static boolean condition(Clause clause, int stage, int world, int plane, int floor) {
+    if (clause == null || (clause.plane() != 0 && clause.plane() != plane)
+        || (clause.floor() != 0 && clause.floor() != floor)) return false;
+    if (!clause.eventMapped()) return prefix(clause.stageOrEvent(), stage);
+    var mapped = SceneEventBattles.resolve(clause.stageOrEvent(), world);
     return mapped != null && mapped.getId() == stage;
   }
 
@@ -207,7 +214,6 @@ public final class MissionStageWins {
         && c.getStoryLineIDList() != null
         && c.getStoryLineIDList().isEmpty()
         && c.getStoryTrialTask() == null
-        && script(c) != null
         && c.getMazePlaneID() == 0
         && c.getMazeFloorID() == 0
         && !c.isBackTrack();

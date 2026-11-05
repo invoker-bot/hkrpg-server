@@ -1,0 +1,1893 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceSHA256": {
+    "Config/Level/Mission/2000211/MissionInfo_2000211.json": "dae1503ffa595453d8173162ab4df1d02c53ab9863269507c78b6e496729ff79",
+    "Config/Level/Mission/2000211/MissionInfo_2000211.partial.json": "4c60b190ae389990696dccbce4d195687c9c3652be005c327fe5c81c0edbf6fb",
+    "Config/Level/Mission/2000211/Mission_200021114.json": "ca3b657d64c593bc5bd7c668c88dcd59ec4e3576b51331bb8216ad70903e5bc8",
+    "Config/Level/Mission/2000211/Mission_200021123.json": "86966044aa82cd3c53c6868f5fc6f58a3b8566bd0f48827059355b67778f50fc",
+    "ExcelOutput/MainMission.json": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "ExcelOutput/PlaneEvent.json": "5dfc9c2509bbf1455f0286a77c26a903d33a9c39442b523e006d33d8ac803922",
+    "ExcelOutput/StageConfig.json": "dcc420635ee03361fef7ffb71b2957037166c3539536bbb5ae9b1b45a3f7baf2"
+  },
+  "records": [
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/2000211/MissionInfo_2000211.json",
+      "row": {
+        "MainMissionID": 2000211,
+        "StartSubMissionList": [
+          200021100
+        ],
+        "FinishSubMissionList": [
+          200021125
+        ]
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/2000211/MissionInfo_2000211.partial.json",
+      "row": {
+        "SubMissionList": [
+          {
+            "ID": 200021100,
+            "MainMissionID": 2000211,
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              2000211
+            ],
+            "FinishType": "EnterFloor",
+            "ParamType": "Equal",
+            "ParamInt1": 10001,
+            "ParamInt2": 10001001,
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021101,
+            "MainMissionID": 2000211,
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021100
+            ],
+            "FinishType": "MessageSectionFinish",
+            "ParamType": "Equal",
+            "ParamInt1": 1011300,
+            "ParamItemList": [],
+            "FinishActionList": [],
+            "Progress": 1,
+            "IsBackTrack": true,
+            "CustomValueList": [],
+            "CustomValueReward": [],
+            "RequiredNPCSeriesIDList": [],
+            "IsShow": false,
+            "IsTrackByMessage": true,
+            "MessageGroupID": 10113
+          },
+          {
+            "ID": 200021102,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021102.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021101
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021102",
+            "ParamItemList": [],
+            "Progress": 1,
+            "SubRewardID": 2000266,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 4,
+            "WayPointEntityID": 400001
+          },
+          {
+            "ID": 200021103,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021103.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021102
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021103",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShowStartHint": "New",
+            "WayPointType": "NPC",
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 50,
+            "WayPointEntityID": 400001
+          },
+          {
+            "ID": 200021104,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021104.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021104",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 50,
+            "WayPointEntityID": 400002
+          },
+          {
+            "ID": 200021105,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021105.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021103
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              200021104,
+              200021106,
+              200021108,
+              200021110
+            ],
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021106,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021106.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021106",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021107,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021107.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021106
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              200021104,
+              200021108,
+              200021110
+            ],
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021108,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021108.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021108",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021109,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021109.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021108
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              200021104,
+              200021110
+            ],
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021110,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021110.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021103
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021110",
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021111,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021111.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021110
+            ],
+            "FinishType": "SubMissionFinishCnt",
+            "ParamType": "ListContain",
+            "ParamIntList": [
+              200021104
+            ],
+            "ParamItemList": [],
+            "Progress": 1,
+            "IsShow": false
+          },
+          {
+            "ID": 200021112,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021112.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021104
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021112",
+            "ParamItemList": [],
+            "FinishActionList": [
+              {
+                "FinishActionType": "addRecoverMissionItem",
+                "FinishActionPara": [
+                  140132,
+                  1,
+                  140133,
+                  1,
+                  140134,
+                  1
+                ]
+              }
+            ],
+            "Progress": 1,
+            "SubRewardID": 2000265,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 50,
+            "WayPointEntityID": 400003
+          },
+          {
+            "ID": 200021113,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021113.json",
+            "LevelPlaneID": 10001,
+            "LevelFloorID": 10001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021112
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021113",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 4,
+            "WayPointEntityID": 400001
+          },
+          {
+            "ID": 200021114,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021114.json",
+            "LevelPlaneID": 20001,
+            "LevelFloorID": 20001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021113
+            ],
+            "FinishType": "StageWin",
+            "ParamType": "Equal",
+            "ParamInt1": 20003214,
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20001001,
+            "WayPointGroupID": 70,
+            "WayPointEntityID": 400001
+          },
+          {
+            "ID": 200021115,
+            "MainMissionID": 2000211,
+            "LevelPlaneID": 20001,
+            "LevelFloorID": 20001001,
+            "TakeType": "Auto",
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021115",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Prop",
+            "WayPointFloorID": 20001001,
+            "WayPointGroupID": 70,
+            "WayPointEntityID": 300001
+          },
+          {
+            "ID": 200021116,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021116.json",
+            "LevelPlaneID": 20001,
+            "LevelFloorID": 20001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021114,
+              200021115
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021116",
+            "ParamItemList": [],
+            "FinishActionList": [
+              {
+                "FinishActionType": "addRecoverMissionItem",
+                "FinishActionPara": [
+                  140135,
+                  1,
+                  140136,
+                  1,
+                  140137,
+                  1
+                ]
+              }
+            ],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20001001,
+            "WayPointGroupID": 70,
+            "WayPointEntityID": 400002
+          },
+          {
+            "ID": 200021117,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021117.json",
+            "LevelPlaneID": 20001,
+            "LevelFloorID": 20001001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021116
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021117",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20001001,
+            "WayPointGroupID": 70,
+            "WayPointEntityID": 400005
+          },
+          {
+            "ID": 200021118,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021118.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021117
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021118",
+            "ParamItemList": [],
+            "FinishActionList": [
+              {
+                "FinishActionType": "addRecoverMissionItem",
+                "FinishActionPara": [
+                  140138,
+                  1
+                ]
+              }
+            ],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 400003
+          },
+          {
+            "ID": 200021119,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021119.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [
+              200021118
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021119",
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 400001
+          },
+          {
+            "ID": 200021120,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021120.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021118
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021120",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Prop",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 300002
+          },
+          {
+            "ID": 200021121,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021121.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "Auto",
+            "TakeParamIntList": [],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021121",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Prop",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 300003
+          },
+          {
+            "ID": 200021122,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021122.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021120
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021122",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Prop",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 300004
+          },
+          {
+            "ID": 200021123,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021123.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021122
+            ],
+            "FinishType": "StageWin",
+            "ParamType": "Equal",
+            "ParamInt1": 20003215,
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "Prop",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 300005
+          },
+          {
+            "ID": 200021124,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021124.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021123
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021124",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "Progress": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 400002
+          },
+          {
+            "ID": 200021125,
+            "MainMissionID": 2000211,
+            "MissionJsonPath": "Config/Level/Mission/2000211/Mission_200021125.json",
+            "LevelPlaneID": 20003,
+            "LevelFloorID": 20003001,
+            "TakeType": "AnySequence",
+            "TakeParamIntList": [
+              200021124
+            ],
+            "FinishType": "Talk",
+            "ParamType": "Equal",
+            "ParamStr1": "Mission_200021125",
+            "ParamIntList": [],
+            "ParamItemList": [],
+            "Progress": 1,
+            "SubRewardID": 2000398,
+            "IsShowFinishEffect": 1,
+            "WayPointType": "NPC",
+            "WayPointFloorID": 20003001,
+            "WayPointGroupID": 87,
+            "WayPointEntityID": 400002
+          }
+        ]
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/2000211/Mission_200021114.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": []
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 70
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400001
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupUITrigger",
+                "DestroyAfterTriggered": true,
+                "ButtonIcon": "SpriteOutput/TalkIcon/ChatIcon.png",
+                "IconType": {
+                  "EnumIndex": 20,
+                  "Value": 1
+                },
+                "ButtonText": {
+                  "Hash": 9804709740694052000
+                },
+                "ButtonCallback": [
+                  {
+                    "$type": "RPG.GameCore.PlayMissionTalk",
+                    "SimpleTalkList": [
+                      {
+                        "TalkSentenceID": 200031402,
+                        "ProtectTime": 2
+                      }
+                    ]
+                  },
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "200021114_Run"
+                    }
+                  }
+                ],
+                "OverrideTargetTypes": [],
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 70
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300002
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021114_Run"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.CreateProp",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 70
+                  }
+                },
+                "GroupPropID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 300001
+                  }
+                },
+                "CreateList": []
+              },
+              {
+                "$type": "RPG.GameCore.SetNpcWaypath",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvNpcEx",
+                  "FetchType": "SingleNpcByNpcID",
+                  "SingleNpcID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 70
+                      }
+                    },
+                    "GroupNpcID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 400001
+                      }
+                    }
+                  }
+                },
+                "UsageType": "TaskFollow"
+              },
+              {
+                "$type": "RPG.GameCore.SetNpcStatus",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvNpcEx",
+                  "FetchType": "SingleNpcByNpcID",
+                  "SingleNpcID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 70
+                      }
+                    },
+                    "GroupNpcID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 400001
+                      }
+                    }
+                  }
+                },
+                "Status": "FollowByPlayer"
+              },
+              {
+                "$type": "RPG.GameCore.PropEnableCollider",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 5
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300003
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "$type": "RPG.GameCore.PropTriggerAnimState",
+                "AnimStateName": "Open",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 5
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300003
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021114_Run"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 70
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400007
+                  }
+                },
+                "CreateList": []
+              },
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 70
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400002
+                  }
+                },
+                "CreateList": []
+              },
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 70
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400003
+                  }
+                },
+                "CreateList": []
+              },
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 70
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400004
+                  }
+                },
+                "NPCUniqueName": {
+                  "Value": "200002116_2"
+                },
+                "CreateList": []
+              },
+              {
+                "$type": "RPG.GameCore.CharacterTriggerFreeStyle",
+                "CharacterUniqueName": "200002116_2",
+                "StoryAvatarID": "NPC_Male",
+                "StoryMotionID": 100010242
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021114_Run"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.WaitSecond",
+                "WaitTime": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              },
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 70
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300001
+                      }
+                    }
+                  }
+                },
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 300003
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 300003
+                  }
+                },
+                "TargetTypes": [],
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "200021114_Per"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021114_Per"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "E",
+                "PerformanceID": 200021114,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.TriggerCustomString",
+                "CustomString": {
+                  "Value": "200021114_Battle"
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021114_Battle"
+                },
+                "GoNextImmediately": true
+              },
+              {
+                "$type": "RPG.GameCore.TriggerBattle",
+                "EventID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 20003214
+                  }
+                },
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 2
+                  }
+                },
+                "BattleAreaID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "file",
+      "source": "Config/Level/Mission/2000211/Mission_200021123.json",
+      "row": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 87
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400004
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.CreateNPC",
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 87
+                  }
+                },
+                "GroupNpcID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 400002
+                  }
+                },
+                "NPCUniqueName": {
+                  "Value": "200021123_al"
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropSetupTrigger",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx",
+                  "FetchType": "SinglePropByPropID",
+                  "SinglePropID": {
+                    "GroupID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 87
+                      }
+                    },
+                    "ID": {
+                      "IsDynamic": false,
+                      "FixedValue": {
+                        "Value": 300005
+                      }
+                    }
+                  }
+                },
+                "TargetGroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 0
+                  }
+                },
+                "TargetTypes": [],
+                "OnTriggerEnter": [
+                  {
+                    "$type": "RPG.GameCore.TriggerCustomString",
+                    "CustomString": {
+                      "Value": "200021123_Per"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021123_Per"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.TriggerPerformance",
+                "PerformanceType": "E",
+                "PerformanceID": 200021123,
+                "ValueSource": {}
+              },
+              {
+                "$type": "RPG.GameCore.TriggerCustomString",
+                "CustomString": {
+                  "Value": "200021123_Battle"
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "200021123_Battle"
+                },
+                "GoNextImmediately": true
+              },
+              {
+                "$type": "RPG.GameCore.TriggerBattle",
+                "EventID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 20003216
+                  }
+                },
+                "GroupID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 2
+                  }
+                },
+                "BattleAreaID": {
+                  "IsDynamic": false,
+                  "FixedValue": {
+                    "Value": 1
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    {
+      "kind": "MainMission",
+      "source": "ExcelOutput/MainMission.json",
+      "row": {
+        "MainMissionID": 2000211,
+        "Type": "Companion",
+        "WorldID": 101,
+        "DisplayPriority": 2000211,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 11798600028959779156
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 2000132
+          },
+          {
+            "Type": "MultiSequence",
+            "Value": 1010403
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "RewardID": 12000211,
+        "DisplayRewardID": 12000211,
+        "ChapterID": 600001,
+        "SubRewardList": [
+          2000265,
+          2000266,
+          2000398
+        ]
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "StageID": 200032140,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "WorldLevel": 1,
+        "StageID": 200032141,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "WorldLevel": 2,
+        "StageID": 200032142,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "WorldLevel": 3,
+        "StageID": 200032143,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "WorldLevel": 4,
+        "StageID": 200032144,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "WorldLevel": 5,
+        "StageID": 200032145,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003214,
+        "WorldLevel": 6,
+        "StageID": 200032146,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "StageID": 200032150,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "WorldLevel": 1,
+        "StageID": 200032151,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "WorldLevel": 2,
+        "StageID": 200032152,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "WorldLevel": 3,
+        "StageID": 200032153,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "WorldLevel": 4,
+        "StageID": 200032154,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "WorldLevel": 5,
+        "StageID": 200032155,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "PlaneEvent",
+      "source": "ExcelOutput/PlaneEvent.json",
+      "row": {
+        "EventID": 20003215,
+        "WorldLevel": 6,
+        "StageID": 200032156,
+        "DropList": [],
+        "IsUseMonsterDrop": true,
+        "DisplayItemList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032140,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 15,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032141,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 30,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032142,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 40,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032143,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 48,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032144,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 56,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032145,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 66,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032146,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 10926781862263016942
+        },
+        "HardLevelGroup": 1,
+        "Level": 75,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "0"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001020,
+            "Monster1": 8002010,
+            "Monster2": 8002010,
+            "Monster3": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032150,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 16,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032151,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 31,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032152,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 40,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032153,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 48,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032154,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 56,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032155,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 66,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    },
+    {
+      "kind": "StageConfig",
+      "source": "ExcelOutput/StageConfig.json",
+      "row": {
+        "StageID": 200032156,
+        "StageType": "Mainline",
+        "StageName": {
+          "Hash": 11380886388086495789
+        },
+        "HardLevelGroup": 1,
+        "Level": 75,
+        "LevelGraphPath": "Config/Level/StageCommonTemplate.json",
+        "StageAbilityConfig": [],
+        "SubLevelGraphs": [],
+        "StageConfigData": [
+          {
+            "BFLIFKBEOPJ": "_Wave",
+            "MNDFOPKBHKP": "1"
+          },
+          {
+            "BFLIFKBEOPJ": "_IsEliteBattle",
+            "MNDFOPKBHKP": "1"
+          }
+        ],
+        "MonsterList": [
+          {
+            "Monster0": 8001010,
+            "Monster1": 8003020,
+            "Monster2": 8001010
+          }
+        ],
+        "LevelLoseCondition": [],
+        "LevelWinCondition": [],
+        "Release": true,
+        "ForbidExitBattle": true,
+        "MonsterWarningRatio": 1,
+        "TrialAvatarList": []
+      }
+    }
+  ]
+}
