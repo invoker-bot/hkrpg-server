@@ -5,7 +5,7 @@ import emu.lunarcore.game.quest.QuestState;
 
 /** Read-only history checks, distinct from cancellation-sensitive gameplay eligibility. */
 public final class MissionSnapshotRecords {
-  /** Unfinished optional children stop being active when their parent has actually completed. */
+  /** Retire unfinished objectives whose parent or corresponding encounter has finished. */
   public static boolean retiredSub(Player player, int id) {
     synchronized (player) {
       var state = player.getGameplay().getSubMissions().get(id);
@@ -15,9 +15,10 @@ public final class MissionSnapshotRecords {
           && state.getPhase() == QuestState.Phase.DOING
           && source != null
           && source.getId() == id
-          && MissionStateRecords.completed(
-              player.getGameplay().getMainMissions().get(source.getMainMissionID()),
-              source.getMainMissionID(), 1);
+          && (MissionStateRecords.completed(
+                  player.getGameplay().getMainMissions().get(source.getMainMissionID()),
+                  source.getMainMissionID(), 1)
+              || PeppyMissionScene.retiredFightMarker(player, source));
     }
   }
 

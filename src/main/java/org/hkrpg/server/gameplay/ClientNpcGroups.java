@@ -25,11 +25,13 @@ public final class ClientNpcGroups {
                 && initial.getAsJsonPrimitive().isBoolean()
                 && initial.getAsBoolean()
             || gate != null && gate.getConditions() != null && gate.getConditions().length > 0;
+    boolean ordinary =
+        group.getOwnerMainMissionID() == 0
+            && (!raw.has("Category") || group.getCategory() == GroupInfo.GroupCategory.Normal);
     if (client
         && active
-        && group.getOwnerMainMissionID() == 0
         && !empty(group.getNPCList())
-        && (!raw.has("Category") || group.getCategory() == GroupInfo.GroupCategory.Normal))
+        && (ordinary || PeppyMissionScene.matchesSource(group, raw)))
       group.setClientOwnedNpcSource(true);
   }
 

@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import org.hkrpg.server.gameplay.ClientNpcGroups;
 import org.hkrpg.server.gameplay.MissionSnapshotRecords;
+import org.hkrpg.server.gameplay.PeppyMissionScene;
 
 /** Do not give the native client a network copy of an NPC it already creates locally. */
 final class ClientNpcPublication46 {
@@ -23,6 +24,8 @@ final class ClientNpcPublication46 {
             message,
             "entity_group_list",
             group -> {
+              if (PeppyMissionScene.clientGroup(scene, Gameplay46.number(group, "group_id")))
+                return null;
               var filtered =
                   projectRows(group, "entity_list", entity -> local(entity, scene) ? null : entity);
               return filtered != group && only(filtered, "group_id") ? null : filtered;
@@ -38,6 +41,10 @@ final class ClientNpcPublication46 {
     var subs = new TreeSet<Integer>();
     for (var source : scene.getResourceGroups().values()) {
       if (!source.isClientOwnedNpcSource()) continue;
+      if (PeppyMissionScene.clientGroup(scene, source.getId())) {
+        mains.add(source.getOwnerMainMissionID());
+        subs.addAll(PeppyMissionScene.SCENE_GRAPH_OBJECTIVES);
+      }
       // Also include unloaded groups so a completed exit condition is available on reentry.
       addGates(mains, subs, source.getLoadCondition());
       addGates(mains, subs, source.getUnloadCondition());
@@ -96,6 +103,8 @@ final class ClientNpcPublication46 {
         message,
         "group_refresh_list",
         group -> {
+          if (PeppyMissionScene.clientGroup(scene, Gameplay46.number(group, "group_id")))
+            return null;
           var projected =
               projectRows(
                   group,
