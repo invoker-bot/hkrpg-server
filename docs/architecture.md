@@ -1,3 +1,5 @@
+`MissionSnapshotRecords.retiredSub` 为已核验完成父任务中的未完成子目标提供只读失效判断，完整快照、增量通知和依赖查询统一投影为 NONE，保留真实保存记录及已完成历史。艾丝妲旧告别对白与当前委托的验证边界见[任务对话说明](asta-sensitive-beings-4.6.md)。
+
 `RogueDialogue46.npcInfo` 按有效完成收据填写原生NPC交互关闭字段9，收尾及实际领取后以现有场景刷新同步；保留NPC和迟到请求身份。原生消费链与验证边界见[事件交互关闭说明](rogue-event-interaction-4.6.md)。
 
 `RogueDialogueRewards` 以当前有效事件收据确认相同选项和已到账祝福的重试；`UniverseManager` 在实际领取前识别严格匹配的完成收据。确认不改菜单、持有或存档，错误身份继续拒绝，见[事件重试说明](rogue-event-retry-4.6.md)。

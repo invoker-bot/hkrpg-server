@@ -316,15 +316,17 @@ public final class Gameplay46 {
         continue;
       }
       var mission = builder(session, "Mission");
+      boolean retired = MissionSnapshotRecords.retiredSub(player, state.getQuestId());
       set(mission, "id", state.getQuestId());
-      set(mission, "progress", state.getProgress());
+      set(mission, "progress", retired ? 0 : state.getProgress());
       var status =
           mission
               .getDescriptorForType()
               .findFieldByName("status")
               .getEnumType()
               .findValueByName(
-                  state.getPhase() == QuestState.Phase.DOING
+                  retired ? "MissionStatus_MissionNone"
+                      : state.getPhase() == QuestState.Phase.DOING
                       ? "MissionStatus_MissionDoing"
                       : "MissionStatus_MissionFinish");
       set(mission, "status", status);

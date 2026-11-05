@@ -30,10 +30,12 @@ public class PacketGetMissionStatusScRsp extends BasePacket {
 
         for (int missionId : req.getSubMissionIdList()) {
             var state=player==null?null:player.getMissionManager().sub(missionId);
+            boolean retired = player != null
+                    && org.hkrpg.server.gameplay.MissionSnapshotRecords.retiredSub(player, missionId);
             var mission = Mission.newInstance()
                     .setId(missionId)
-                    .setProgress(state==null?0:state.getProgress())
-                    .setStatus(state==null?MissionStatus.MISSION_NONE:state.getPhase()==emu.lunarcore.game.quest.QuestState.Phase.DOING?MissionStatus.MISSION_DOING:MissionStatus.MISSION_FINISH);
+                    .setProgress(state==null || retired?0:state.getProgress())
+                    .setStatus(state==null || retired?MissionStatus.MISSION_NONE:state.getPhase()==emu.lunarcore.game.quest.QuestState.Phase.DOING?MissionStatus.MISSION_DOING:MissionStatus.MISSION_FINISH);
 
             data.addSubMissionStatusList(mission);
         }
