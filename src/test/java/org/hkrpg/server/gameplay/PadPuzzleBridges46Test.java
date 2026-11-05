@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.gson.*;
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.ResourceLoader;
+import emu.lunarcore.data.config.MissionInfo;
+import emu.lunarcore.data.config.MissionTaskInfo;
 import emu.lunarcore.data.excel.PropExcel;
 import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.quest.QuestState;
@@ -132,6 +134,109 @@ class PadPuzzleBridges46Test {
     assertEquals(PropState.Open, f.prop(3, 300039).getState());
   }
 
+  private void supplyZone() {
+    f.planeId = 20003;
+    f.scene();
+  }
+
+  private void acceptRepeat(int main, int prerequisite) {
+    f.player.getGameplay().getMainMissions().put(main, new QuestState(main));
+    if (prerequisite != 0) {
+      var definition = new MissionInfo.SubMissionInfo();
+      definition.setId(prerequisite);
+      definition.setMainMissionID(prerequisite / 100);
+      GameplayDefinitions.subs.put(prerequisite, definition);
+      f.f.completed(prerequisite);
+    }
+  }
+
+  @ParameterizedTest @CsvSource({
+      "2000302,0,32,41", "2000303,200030301,41,42", "2000304,200030401,42,43"})
+  void nextBoardHidesThePreviousBridgeOnMissionRefreshAndReload(
+      int main, int prerequisite, int previousBoard, int nextBoard) throws Exception {
+    supplyZone();
+    var previous = f.info(previousBoard, 300002);
+    savedPuzzleOnly(20003, previousBoard, 300002, PropTimelines.source(previous));
+    var bridge = f.info(1, 300025);
+    var states = f.player.getGameplay().getScenePropStates().with(List.of(
+        new ScenePropState.Snapshot(20003, 20003001, 0, 0, 1, 300025, bridge.getPropID(),
+            PropState.Open.getVal(), PropTimelines.source(bridge), "")));
+    f.player.getGameplay().scenePropStates(states);
+    f.construct();
+    assertEquals(PropState.Open, f.prop(1, 300025).getState());
+    f.player.scene.toProto();
+    f.player.packets.clear();
+
+    acceptRepeat(main, prerequisite);
+    f.player.scene.refreshMissionGroups();
+
+    assertEquals(PropState.Closed, f.prop(nextBoard, 300002).getState());
+    assertEquals(PropState.Closed, f.prop(1, 300025).getState(), "Previous bridge covers the new tiles");
+    assertEquals(List.of(PropState.Closed.getVal()), bridgeRefreshes(1, 300025));
+    f.player.packets.clear();
+    int saves = f.player.saves;
+    assertEquals(Retcode.SUCC, f.use(1, 300025, 1010), "The bridge callback may arrive on its own");
+    assertEquals(PropState.Closed, f.prop(1, 300025).getState());
+    assertEquals(saves, f.player.saves);
+    f.player.scene.refreshMissionGroups();
+    assertTrue(bridgeRefreshes(1, 300025).isEmpty());
+    assertSame(states, f.player.getGameplay().getScenePropStates());
+
+    f.reload();
+    assertEquals(PropState.Closed, f.prop(1, 300025).getState());
+    assertEquals(PropState.Closed, f.prop(nextBoard, 300002).getState());
+    assertEquals(PropState.Open.getVal(), f.player.getGameplay().getScenePropStates()
+        .get(PropTimelines.key(f.player.scene, previousBoard, 300002)).getState());
+
+    f.player.getGameplay().getCancelledMissions().add(main);
+    f.player.scene.refreshMissionGroups();
+    assertEquals(PropState.Open, f.prop(1, 300025).getState());
+  }
+
+  @Test void pendingRepeatResetAdvancesToTheOriginalPuzzleObjective() {
+    supplyZone();
+    assertEquals(Retcode.SUCC, f.use(32, 300002, 1010));
+    assertEquals(PropState.Open, f.prop(1, 300025).getState());
+    loadSecondRoundObjectives();
+    acceptRepeat(2000302, 0);
+
+    f.player.getMissionManager().refresh();
+
+    assertTrue(MissionStateRecords.subCompleted(f.player, 200030200));
+    assertEquals(QuestState.Phase.DOING, f.player.getMissionManager().sub(200030201).getPhase());
+    assertEquals(PropState.Closed, f.prop(1, 300025).getState());
+    assertEquals(PropState.Closed, f.prop(41, 300002).getState());
+  }
+
+  static void loadSecondRoundObjectives() {
+    var gson = ResourceLoader.getGson();
+    var reset = JsonParser.parseString("""
+        {"ID":200030200,"MainMissionID":2000302,
+         "MissionJsonPath":"Config/Level/Mission/2000301/Mission_200030200.json",
+         "LevelPlaneID":20003,"LevelFloorID":20003001,"TakeType":"Auto",
+         "MazePlaneID":20003,"MazeFloorID":20003001,"FinishType":"PropState",
+         "ParamType":"Equal","ParamInt1":1,"ParamInt2":300025,"ParamItemList":[],"Progress":1,
+         "WayPointType":"Prop","WayPointFloorID":20003001,"WayPointGroupID":11,"WayPointEntityID":300002}
+        """);
+    var graph = JsonParser.parseString("""
+        {"OnInitSequece":[],"OnStartSequece":[{"TaskList":[
+         {"$type":"RPG.GameCore.ChangePropState"}]}],"Type":"Mission"}
+        """);
+    var stage = gson.fromJson(reset, MissionInfo.SubMissionInfo.class);
+    var task = gson.fromJson(graph, MissionTaskInfo.class);
+    task.retainSourceDefinition(graph);
+    stage.setTask(task);
+    GameplayDefinitions.subs.put(stage.getId(), stage);
+    var objective = gson.fromJson("""
+        {"ID":200030201,"MainMissionID":2000302,"TakeType":"AnySequence","TakeParamIntList":[200030200],
+         "LevelPlaneID":20003,"LevelFloorID":20003001,"MazePlaneID":20003,"MazeFloorID":20003001,
+         "FinishType":"PropState","ParamType":"Equal","ParamInt1":18,"ParamInt2":300010,"ParamInt3":12,
+         "ParamItemList":[],"Progress":1,"WayPointType":"Prop","WayPointFloorID":20003001,
+         "WayPointGroupID":11,"WayPointEntityID":300002}
+        """, MissionInfo.SubMissionInfo.class);
+    GameplayDefinitions.subs.put(objective.getId(), objective);
+  }
+
   @ParameterizedTest @CsvSource({
       "20002,32,300002,3,300040", "20002,33,300002,3,300041",
       "20003,32,300002,1,300025", "20003,41,300002,1,300025",
@@ -209,26 +314,29 @@ class PadPuzzleBridges46Test {
     scene.toProto(); // Initial scene has been sent; subsequent state changes must notify it.
     f.player.packets.clear();
     assertEquals(Retcode.SUCC, f.use(26, 300002, 1010));
+    assertEquals(List.of(PropState.Open.getVal()), bridgeRefreshes(3, 300039));
+  }
+
+  private List<Integer> bridgeRefreshes(int groupId, int instance) throws Exception {
     var protocol = org.hkrpg.server.protocol.ProtocolBridge.forVersion("4.6.0");
-    int bridges = 0;
+    var states = new java.util.ArrayList<Integer>();
     for (var packet : f.player.packets) {
       if (packet.getCmdId() != emu.lunarcore.server.packet.CmdId.SceneGroupRefreshScNotify) continue;
       var wire = protocol.outbound(packet.getCmdId(), packet.getData().toByteArray());
       var message = protocol.clientSchema().parse("SceneGroupRefreshScNotify", wire.body());
       for (var rawGroup : (List<?>) field(message, "group_refresh_list")) {
         var group = (com.google.protobuf.DynamicMessage) rawGroup;
-        if (!Integer.valueOf(3).equals(field(group, "group_id"))) continue;
+        if (!Integer.valueOf(groupId).equals(field(group, "group_id"))) continue;
         for (var rawEntity : (List<?>) field(group, "refresh_entity")) {
           var added = (com.google.protobuf.DynamicMessage) field(
               (com.google.protobuf.DynamicMessage) rawEntity, "add_entity");
-          if (!Integer.valueOf(300039).equals(field(added, "inst_id"))) continue;
+          if (!Integer.valueOf(instance).equals(field(added, "inst_id"))) continue;
           var prop = (com.google.protobuf.DynamicMessage) field(added, "prop");
-          assertEquals(PropState.Open.getVal(), field(prop, "prop_state"));
-          bridges++;
+          states.add((Integer) field(prop, "prop_state"));
         }
       }
     }
-    assertEquals(1, bridges, "The matching bridge must be refreshed once after saving");
+    return states;
   }
 
   private static Object field(com.google.protobuf.DynamicMessage message, String name) {

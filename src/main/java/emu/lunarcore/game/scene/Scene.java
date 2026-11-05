@@ -356,6 +356,7 @@ public class Scene implements Tickable {
             }
         }
         // Remove obsolete actors before spawning replacements with the same NPC id.
+        org.hkrpg.server.gameplay.PadPuzzleBridges.reconcile(this);
         for (var group : toLoad) loadGroup(group);
         org.hkrpg.server.gameplay.DailyRecoverPerformances.reconcile(this);
     }

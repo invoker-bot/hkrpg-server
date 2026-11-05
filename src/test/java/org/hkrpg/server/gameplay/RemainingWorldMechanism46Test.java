@@ -148,6 +148,35 @@ class RemainingWorldMechanism46Test {
       assertEquals(PropState.Open, actor(1, 300025).getState());
   }
 
+  @Test
+  void secondVerificationContinuesWhenItsOwnBoardRevealsTheChest() {
+    PadPuzzleBridges46Test.loadSecondRoundObjectives();
+    doing(2000302);
+    var player = map().fixture.player;
+    player.getGameplay().getSubMissions().put(200030200, new QuestState(200030200));
+    player.getGameplay().getSubMissions().get(200030200).advance(1, 1, 1);
+    player.getGameplay().getSubMissions().put(200030201, new QuestState(200030201));
+    map().enter(20003657);
+    int board = actor(41, 300002).getEntityId();
+    assertEquals(PropState.Hidden, map().chest(20003657).getState());
+
+    player.failSave = true;
+    assertEquals(Retcode.SYSTEM_BUSY, ScenePropTransitions.interact(player, 1010, board).retcode());
+    assertEquals(PropState.Closed, actor(1, 300025).getState());
+    assertEquals(PropState.Hidden, map().chest(20003657).getState());
+    assertEquals(QuestState.Phase.DOING, player.getMissionManager().sub(200030201).getPhase());
+
+    player.failSave = false;
+    assertEquals(Retcode.SUCC, ScenePropTransitions.interact(player, 1010, board).retcode());
+    assertTrue(MissionStateRecords.subCompleted(player, 200030201));
+    assertEquals(PropState.Open, actor(1, 300025).getState());
+    assertEquals(PropState.ChestClosed, map().chest(20003657).getState());
+    assertEquals(0, player.grants);
+    fixture.reload();
+    assertEquals(PropState.Open, actor(1, 300025).getState());
+    assertTrue(MissionStateRecords.subCompleted(map().fixture.player, 200030201));
+  }
+
   @ParameterizedTest
   @ValueSource(ints = {20223651, 20223652, 20223653})
   void droneReportTargetsChestInOwnerGroupAndSurvivesReload(int chest) {

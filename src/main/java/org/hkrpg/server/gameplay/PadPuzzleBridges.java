@@ -1,15 +1,20 @@
 package org.hkrpg.server.gameplay;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.ResourceLoader;
 import emu.lunarcore.data.config.FloorInfo;
 import emu.lunarcore.data.config.GroupInfo;
+import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.data.config.PropInfo;
 import emu.lunarcore.game.enums.PlaneType;
 import emu.lunarcore.game.enums.PropState;
+import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.server.packet.Retcode;
+import emu.lunarcore.server.packet.send.PacketSceneGroupRefreshScNotify;
 import java.util.*;
 
 /** The pad puzzle's original finish callback opens its separately placed bridge. */
@@ -30,6 +35,21 @@ public final class PadPuzzleBridges {
       "20004:20004001:5:300006", List.of("5,300001", LEVELS + "Chap00_Prop_Pad_N4.prefab"));
 
   private record Link(GroupInfo group, PropInfo prop) {}
+
+  private static final int SUPPLY_PLANE = 20003, SUPPLY_FLOOR = 20003001;
+  private static final int SHARED_GROUP = 1, SHARED_BRIDGE = 300025, BRIDGE_PROP = 300004;
+  private static final int BOARD_INSTANCE = 300002;
+  private static final int CHEST_GROUP = 18;
+  private record RepeatBoard(int group, int reset, int reveal, int chest, int mapping) {}
+  private static final List<RepeatBoard> REPEAT_BOARDS = List.of(
+      new RepeatBoard(43, 200030400, 200030402, 300012, 20003659),
+      new RepeatBoard(42, 200030300, 200030302, 300011, 20003658),
+      new RepeatBoard(41, 200030200, 200030201, 300010, 20003657));
+  // The client graph omits the server task parameters; the matching PropState objective has them.
+  private static final JsonElement RESET_SCRIPT = JsonParser.parseString("""
+      {"OnInitSequece":[],"OnStartSequece":[{"TaskList":[
+        {"$type":"RPG.GameCore.ChangePropState"}]}],"Type":"Mission"}
+      """);
 
   private static boolean world(Scene scene) {
     return scene != null && (scene.getPlaneType() == PlaneType.Town || scene.getPlaneType() == PlaneType.Maze)
@@ -63,7 +83,7 @@ public final class PadPuzzleBridges {
   }
 
   private static boolean bridge(PropInfo info) {
-    return info != null && (info.getPropID() == 100 || info.getPropID() == 300004)
+    return info != null && (info.getPropID() == 100 || info.getPropID() == BRIDGE_PROP)
         && BRIDGE.equals(info.getInitLevelGraph()) && info.getState() == PropState.Closed;
   }
 
@@ -122,9 +142,49 @@ public final class PadPuzzleBridges {
         && PropTimelines.source(actor.getPropInfo()).equals(PropTimelines.source(link.prop())) ? actor : null;
   }
 
-  static Retcode validate(EntityProp prop, int config) {
-    if (config != 1010 || !puzzle(prop.getPropInfo())) return Retcode.SUCC;
+  private static EntityProp actor(Scene scene, int group, int instance) {
+    var info = original(scene, group, instance);
+    return info == null ? null : actor(scene, new Link(scene.getResourceGroups().get(group), info));
+  }
+
+  private static boolean supplyZone(Scene scene) {
+    return world(scene) && scene.getPlaneId() == SUPPLY_PLANE && scene.getFloorId() == SUPPLY_FLOOR
+        && scene.getFloorInfo() != null;
+  }
+
+  private static boolean sharedBridge(EntityProp prop) {
     var scene = prop.getScene();
+    return prop.getGroupId() == SHARED_GROUP && prop.getInstId() == SHARED_BRIDGE
+        && prop.getPropId() == BRIDGE_PROP && supplyZone(scene) && bridge(prop.getPropInfo())
+        && original(scene, SHARED_GROUP, SHARED_BRIDGE) == prop.getPropInfo();
+  }
+
+  private static RepeatBoard activeRepeat(Scene scene) {
+    if (!supplyZone(scene)) return null;
+    var player = scene.getPlayer();
+    for (var repeat : REPEAT_BOARDS) {
+      if (!MissionStateRecords.mainDoing(player, repeat.reset() / 100)) continue;
+      var group = scene.getResourceGroups().get(repeat.group());
+      var board = original(scene, repeat.group(), BOARD_INSTANCE);
+      var bridge = board == null ? null : link(scene, repeat.group(), board);
+      if (bridge != null && bridge.group().getId() == SHARED_GROUP
+          && bridge.prop().getID() == SHARED_BRIDGE && bridge.prop().getPropID() == BRIDGE_PROP
+          && group.getLoadSide() == GroupInfo.GroupLoadSide.Server
+          && player.getMissionManager().shouldLoadGroup(group, scene)) return repeat;
+    }
+    return null;
+  }
+
+  private static boolean completed(Scene scene, RepeatBoard repeat) {
+    return savedOpen(scene, scene.getResourceGroups().get(repeat.group()),
+        original(scene, repeat.group(), BOARD_INSTANCE));
+  }
+
+  static Retcode validate(EntityProp prop, int config) {
+    var scene = prop.getScene();
+    if (config != 1010 && sharedBridge(prop) && activeRepeat(scene) != null)
+      return Retcode.INTERACT_TYPE_INVALID;
+    if (config != 1010 || !puzzle(prop.getPropInfo())) return Retcode.SUCC;
     var owner = original(scene, prop.getGroupId(), prop.getInstId());
     var linked = owner == null ? null : link(scene, prop.getGroupId(), owner);
     var target = actor(scene, linked);
@@ -133,6 +193,10 @@ public final class PadPuzzleBridges {
         || !scene.getPlayer().getMissionManager().shouldLoadGroup(scene.getResourceGroups().get(prop.getGroupId()), scene)
         || linked == null || scene.getLoadedGroups().contains(linked.group().getId()) && target == null
         || target != null && target.getState() != PropState.Closed && target.getState() != PropState.Open)
+      return Retcode.MISSION_SCENE_NOT_MATCH;
+    var repeat = activeRepeat(scene);
+    if (repeat != null && linked.group().getId() == SHARED_GROUP
+        && linked.prop().getID() == SHARED_BRIDGE && repeat.group() != prop.getGroupId())
       return Retcode.MISSION_SCENE_NOT_MATCH;
     return Retcode.SUCC;
   }
@@ -175,23 +239,82 @@ public final class PadPuzzleBridges {
     return false;
   }
 
-  /** Reconstruct a missing legacy bridge state from the exact already-saved puzzle receipt. */
+  /** Project the shared bridge for the current board, and recover legacy one-board bridges. */
   public static void restore(EntityProp prop) {
-    if (prop == null || !bridge(prop.getPropInfo()) || prop.getState() != PropState.Closed) return;
+    if (prop == null || !bridge(prop.getPropInfo())) return;
     var scene = prop.getScene();
+    var repeat = sharedBridge(prop) ? activeRepeat(scene) : null;
+    if (repeat != null) {
+      // The solid surface is shared. Only a receipt for the current board can show it.
+      prop.setState(completed(scene, repeat) ? PropState.Open : PropState.Closed, false);
+      return;
+    }
+    if (prop.getState() != PropState.Closed) return;
     var state = scene.getPlayer().getGameplay().getScenePropStates();
     if (!state.valid() || state.get(PropTimelines.key(scene, prop.getGroupId(), prop.getInstId())) != null) return;
     if (hasCompletedOwner(prop)) prop.setState(PropState.Open, false);
   }
 
-  /** The client's authored finish callback may repeat the already-applied open interaction. */
-  static boolean repeatedOpen(EntityProp prop, int config) {
+  /** The shared bridge can remain loaded while mission groups replace their boards. */
+  public static void reconcile(Scene scene) {
+    if (!supplyZone(scene)) return;
+    var player = scene.getPlayer();
+    synchronized (player) {
+      var prop = actor(scene, SHARED_GROUP, SHARED_BRIDGE);
+      if (prop == null || !sharedBridge(prop)) return;
+      var before = prop.getState();
+      SceneInteractions.restore(prop);
+      ScenePropTransitions.restore(prop);
+      restore(prop);
+      if (before != prop.getState() && scene.isLoaded())
+        player.sendPacket(new PacketSceneGroupRefreshScNotify(scene, prop, null));
+    }
+  }
+
+  /** Bridge-only callbacks may arrive before or after the board's own completion. */
+  static boolean acknowledgesBridgeOpen(EntityProp prop, int config) {
     var row = GameData.getInteractExcelMap().get(config);
     return prop != null && config == 1010 && row != null && row.getSrcState() == PropState.Closed
         && row.getTargetState() == PropState.Open && row.getItemCostList() != null
         && row.getItemCostList().isEmpty() && row.getInteractCostType() != null
         && (row.getInteractCostType().isBlank() || row.getInteractCostType().equals("None"))
-        && prop.getState() == PropState.Open && hasCompletedOwner(prop);
+        && (sharedBridge(prop) && activeRepeat(prop.getScene()) != null
+            || prop.getState() == PropState.Open && hasCompletedOwner(prop));
+  }
+
+  static boolean satisfied(Player player, MissionInfo.SubMissionInfo objective) {
+    if (objective.getLevelPlaneID() != SUPPLY_PLANE || objective.getLevelFloorID() != SUPPLY_FLOOR
+        || !"Equal".equals(objective.getParamType()) || objective.getProgress() != 1
+        || !"".equals(objective.getParamStr1()) || objective.getParamIntList().length != 0
+        || !objective.getParamItemList().isEmpty()) return false;
+    var scene = player.getScene();
+    var repeat = activeRepeat(scene);
+    if (repeat == null || scene.getPlayer() != player || scene.getEntryId() != player.getEntryId()
+        || player.getPlaneId() != SUPPLY_PLANE || player.getFloorId() != SUPPLY_FLOOR
+        || objective.getMainMissionID() != repeat.reset() / 100) return false;
+    if (objective.getId() == repeat.reset() && objective.getParamInt1() == SHARED_GROUP
+        && objective.getParamInt2() == SHARED_BRIDGE && objective.getParamInt3() == PropState.Closed.getVal()
+        && ("Config/Level/Mission/2000301/Mission_" + repeat.reset() + ".json").equals(objective.getMissionJsonPath())
+        && objective.getTask() != null
+        && RESET_SCRIPT.equals(JsonParser.parseString(objective.getTask().getSourceDefinition()))) {
+      reconcile(scene);
+      var bridge = actor(scene, SHARED_GROUP, SHARED_BRIDGE);
+      return bridge != null && sharedBridge(bridge)
+          && (bridge.getState() == PropState.Closed || completed(scene, repeat));
+    }
+    if (objective.getId() != repeat.reveal() || objective.getParamInt1() != CHEST_GROUP
+        || objective.getParamInt2() != repeat.chest() || objective.getParamInt3() != PropState.ChestClosed.getVal()
+        || !MissionStateRecords.subCompleted(player, repeat.reset()) || !completed(scene, repeat)
+        || !player.getGameplay().getWorldMechanisms().completed(repeat.mapping())) return false;
+    var chest = actor(scene, CHEST_GROUP, repeat.chest());
+    return chest != null && Objects.equals(WorldChests.identity(chest), repeat.mapping())
+        && (chest.getState() == PropState.ChestClosed || chest.getState() == PropState.ChestUsed);
+  }
+
+  static boolean revealsRepeatChest(EntityProp prop) {
+    var repeat = activeRepeat(prop.getScene());
+    return repeat != null && prop.getGroupId() == repeat.group() && prop.getInstId() == BOARD_INSTANCE
+        && puzzle(prop.getPropInfo());
   }
 
   private PadPuzzleBridges() {}

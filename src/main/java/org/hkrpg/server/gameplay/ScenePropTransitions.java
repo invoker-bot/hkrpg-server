@@ -131,7 +131,7 @@ public final class ScenePropTransitions {
           || scene.getStoryLineId() != player.getGameplay().getStoryLines().getCurrentId()
           || player.getGameplay().getStoryLines().isTransitionPending())
         return new Result(Retcode.MISSION_SCENE_NOT_MATCH, null);
-      if (PadPuzzleBridges.repeatedOpen(prop, config)) return new Result(Retcode.SUCC, prop);
+      if (PadPuzzleBridges.acknowledgesBridgeOpen(prop, config)) return new Result(Retcode.SUCC, prop);
       var scope = scope(scene, false);
       if (scope == null) return new Result(Retcode.MISSION_SCENE_NOT_MATCH, null);
       if (!scope.state().valid()) return new Result(Retcode.PLAYER_DATA_ERROR, null);
@@ -223,6 +223,8 @@ public final class ScenePropTransitions {
           .getMissionManager()
           .onPropInteraction(
               scene.getFloorId(), prop.getGroupId(), prop.getInstId(), prop.getState().getVal());
+      if (nextMechanisms != previousMechanisms && PadPuzzleBridges.revealsRepeatChest(prop))
+        player.getMissionManager().refresh();
       return new Result(Retcode.SUCC, prop);
     }
   }

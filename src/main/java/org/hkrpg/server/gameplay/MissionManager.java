@@ -1306,7 +1306,8 @@ public final class MissionManager {
                 == c.getParamInt2();
       }
       case "GroupPropertyValueIgnoreVerse" -> StoryGroupConditions.shared(player, c);
-      case "PropState" -> ScenePropTransitions.satisfied(player, c) || StoryDoors.satisfied(player, c);
+      case "PropState" -> PadPuzzleBridges.satisfied(player, c)
+          || ScenePropTransitions.satisfied(player, c) || StoryDoors.satisfied(player, c);
       default -> false;
     };
   }

@@ -34,7 +34,7 @@ public final class SceneInteractions {
     if (result != Retcode.SUCC) {
       if (result == Retcode.UNSUPPORTED_PROP_STATE && player.getScene() != null
           && player.getScene().getEntityById(entity) instanceof EntityProp repeated
-          && PadPuzzleBridges.repeatedOpen(repeated, config)) return Retcode.SUCC;
+          && PadPuzzleBridges.acknowledgesBridgeOpen(repeated, config)) return Retcode.SUCC;
       return result;
     }
     var prop = (EntityProp) player.getScene().getEntityById(entity);
