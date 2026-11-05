@@ -11,6 +11,7 @@ import lombok.Getter;
 /** Original chest identity is permanent; activity credit belongs to its captured acceptance. */
 @Entity(useDiscriminator = false)
 public final class WorldChestState {
+  @Getter(lombok.AccessLevel.PACKAGE)
   private int version = 1;
   private Map<Integer, Opening> records = new TreeMap<>();
   private Map<Integer, QuestState> quests = new TreeMap<>();

@@ -6,6 +6,7 @@ import emu.lunarcore.game.player.Player;
 import java.io.IOException;
 import java.util.*;
 import org.hkrpg.server.gameplay.RoguePortal;
+import org.hkrpg.server.gameplay.WorldChests;
 
 /** Native scene fields absent from the frozen lite 4.2 schema. */
 public final class Scene46 {
@@ -82,6 +83,10 @@ public final class Scene46 {
           .setField(story,scene.getStoryLineId());
       Gameplay46.set(selected, "interact_id", scene.getRuntimeId());
       Gameplay46.set(selected, "client_pos_version", scene.getClientPosVersion());
+      if (scene.getPlayer().getInstance() == null)
+        for (int chest : WorldChests.openedOnFloor(
+            scene.getPlayer(), scene.getPlaneId(), scene.getFloorId(), scene.getDimensionId()))
+          Gameplay46.add(selected, "opened_chests_list", chest);
       message = ClientNpcPublication46.sceneInfo(selected.build(), scene);
     }
     if ("SceneGroupRefreshScNotify".equals(type)) message = ClientNpcPublication46.refresh(message, scene);

@@ -1,7 +1,12 @@
 package org.hkrpg.server.protocol;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.protobuf.DynamicMessage;
 import emu.lunarcore.data.GameData;
+import emu.lunarcore.data.config.FloorInfo;
+import emu.lunarcore.data.config.GroupInfo;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
@@ -10,6 +15,7 @@ import java.util.*;
 import org.hkrpg.server.gameplay.MissionSceneEntrances;
 import org.hkrpg.server.gameplay.SceneAnchors;
 import org.hkrpg.server.gameplay.StoryLineConditions;
+import org.hkrpg.server.gameplay.WorldChests;
 
 /** Base scene map queries expose authored defaults and saved anchor transitions. */
 public final class SceneMap46 {
@@ -163,7 +169,9 @@ public final class SceneMap46 {
                     });
             for (var value : values.entrySet())
               putMap(map, "floor_saved_value_map", value.getKey(), value.getValue());
-            var groups = mapGroups(player, entry);
+            for (int chest : WorldChests.openedOnFloor(player, entry.getPlaneID(), floor, 0))
+              Gameplay46.add(map, "opened_chest_id_list", chest);
+            var groups = mapGroups(player, entry, config, values);
             for (var group : groups.entrySet()) {
               var info = Gameplay46.builder(session, "MazeGroup");
               Gameplay46.set(info, "group_id", group.getKey());
@@ -203,7 +211,8 @@ public final class SceneMap46 {
 
   /** Map availability is metadata, not permission to create a second live scene. */
   private static SortedMap<Integer, SortedMap<String, Integer>> mapGroups(
-      emu.lunarcore.game.player.Player player, emu.lunarcore.data.excel.MapEntranceExcel entry) {
+      emu.lunarcore.game.player.Player player, emu.lunarcore.data.excel.MapEntranceExcel entry,
+      FloorInfo floor, Map<String, Integer> floorValues) {
     var result = new TreeMap<Integer, SortedMap<String, Integer>>();
     var scene = player.getScene();
     if (scene != null && scene.getPlaneId() == entry.getPlaneID()
@@ -219,17 +228,17 @@ public final class SceneMap46 {
       }
       return result;
     }
-    var floor = GameData.getFloorInfo(entry.getPlaneID(), entry.getFloorID());
     for (var prop : floor.getCachedTeleports().values()) {
       var group = prop.getGroup();
       if (!prop.isLoadOnInitial()
           || SceneAnchors.find(entry.getId(), group.getId(), prop.getID()) != prop
           || floor.getGroups(0).get(group.getId()) != group
           || !floor.isGroupInDimension(group.getId(), 0)
-          || !unconditionalAnchorGroup(group)
+          || !remoteAnchorGroup(group)
+          || !savedValuesMatch(group, floor, floorValues)
           || entry.getPlaneID() == 20501 && group.getId() >= 360) continue;
-      // Only initial ordinary anchor groups with no gameplay gates can be established from
-      // remote metadata. Mission/atmosphere/scripted groups still require their live loader.
+      // Initial ordinary anchor groups can use simple, declared floor values. Other gameplay
+      // gates still require the live loader.
       var properties = new TreeMap<String, Integer>();
       if (group.getGroupPropertyMap() != null)
         for (var property : group.getGroupPropertyMap().values())
@@ -241,16 +250,44 @@ public final class SceneMap46 {
     return result;
   }
 
-  private static boolean unconditionalAnchorGroup(emu.lunarcore.data.config.GroupInfo group) {
-    return group.getLoadSide() == emu.lunarcore.data.config.GroupInfo.GroupLoadSide.Server
+  private static boolean remoteAnchorGroup(GroupInfo group) {
+    return group.getLoadSide() == GroupInfo.GroupLoadSide.Server
         && (group.getCategory() == null
-            || group.getCategory() == emu.lunarcore.data.config.GroupInfo.GroupCategory.Normal)
+            || group.getCategory() == GroupInfo.GroupCategory.Normal)
         && group.isLoadOnInitial() && group.getOwnerMainMissionID() == 0
         && emptyCondition(group.getLoadCondition()) && emptyCondition(group.getUnloadCondition())
-        && emptyObject(group.getAtmosphereCondition()) && emptyObject(group.getSavedValueCondition())
-        && emptyObject(group.getValueSource())
+        && emptyObject(group.getAtmosphereCondition()) && emptyObject(group.getValueSource())
         && !group.getGroupName().contains("Bug") && !group.getGroupName().contains("Book")
         && !group.getGroupName().contains("AngryBlock") && !group.getGroupName().contains("ShelfDoor");
+  }
+
+  private static boolean savedValuesMatch(
+      GroupInfo group, FloorInfo floor, Map<String, Integer> floorValues) {
+    var raw = group.getSavedValueCondition();
+    if (emptyObject(raw)) return true;
+    if (!(raw instanceof JsonObject condition)
+        || !Set.of("Conditions", "Operation").containsAll(condition.keySet())
+        || condition.has("Operation") && !new JsonPrimitive("And").equals(condition.get("Operation"))
+        || !(condition.get("Conditions") instanceof JsonArray clauses) || clauses.isEmpty())
+      return false;
+    for (var clause : clauses) {
+      if (!(clause instanceof JsonObject row)
+          || !Set.of("SavedValueName", "Operation", "Value").containsAll(row.keySet())
+          || row.has("Operation") && !new JsonPrimitive("Equal").equals(row.get("Operation"))
+          || !(row.get("SavedValueName") instanceof JsonPrimitive key) || !key.isString()
+          || !(row.get("Value") instanceof JsonPrimitive expected) || !expected.isNumber())
+        return false;
+      String name = key.getAsString();
+      Integer actual = floorValues.get(name);
+      if (actual == null || floor.getExtraDatas().stream().filter(d -> name.equals(d.getName())).count() != 1)
+        return false;
+      try {
+        if (actual != expected.getAsBigDecimal().intValueExact()) return false;
+      } catch (ArithmeticException | NumberFormatException invalid) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static boolean emptyCondition(emu.lunarcore.data.config.LoadConditionInfo condition) {

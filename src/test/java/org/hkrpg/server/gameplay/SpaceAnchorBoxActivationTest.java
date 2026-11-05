@@ -76,7 +76,13 @@ class SpaceAnchorBoxActivationTest {
   }
 
   void load() throws Exception {
-    floor = gson.fromJson("{\"FloorID\":20001001}", FloorInfo.class);
+    floor = gson.fromJson("""
+        {"FloorID":20001001,"GroupInstanceList":[{"ID":18}],"DimensionList":[{
+          "GroupIndexList":[0],"SavedValues":[{
+            "ID":1,"Name":"SceneStateByMainMission","AllowedValues":[0,1],"MaxValue":1
+          }]
+        }]}
+        """, FloorInfo.class);
     var group = gson.fromJson(raw, GroupInfo.class);
     group.setId(GROUP);
     SceneAnchors.loadTriggers(group, raw);

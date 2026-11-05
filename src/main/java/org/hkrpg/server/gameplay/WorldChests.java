@@ -1,5 +1,6 @@
 package org.hkrpg.server.gameplay;
 
+import emu.lunarcore.data.GameData;
 import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.inventory.ItemParamMap;
 import emu.lunarcore.game.player.Player;
@@ -35,6 +36,38 @@ public final class WorldChests {
 
   public static boolean applies(EntityProp actor) {
     return identity(actor) != null;
+  }
+
+  /** Project committed openings for the requested map without loading reward tables. */
+  public static List<Integer> openedOnFloor(Player player, int plane, int floor, int dimension) {
+    var state = player.getGameplay().getWorldChests();
+    var records = state.getRecords();
+    var config = GameData.getFloorInfo(plane, floor);
+    if (state.getVersion() != 1 || records == null || records.isEmpty() || config == null)
+      return List.of();
+    var groups = config.getGroups(dimension);
+    var opened = new ArrayList<Integer>();
+    for (var entry : records.entrySet()) {
+      var record = entry.getValue();
+      if (record == null || !Objects.equals(entry.getKey(), record.getChest())
+          || record.getPhase() != WorldChestState.Phase.OPEN || record.getPlane() != plane
+          || record.getFloor() != floor || record.getDimension() != dimension) continue;
+      var location = LOCATIONS.get(record.getChest());
+      if (location == null || location.plane() != plane || location.floor() != floor
+          || !location.dimensions().contains(dimension) || location.group() != record.getGroup()
+          || location.instance() != record.getInstance() || location.prop() != record.getProp())
+        continue;
+      var receipt = player.getGameplay().getRewards().get(record.rewardKey());
+      var group = groups.get(location.group());
+      if (receipt == null || !receipt.isGranted() || receipt.getRewardId() != 0
+          || group == null || group.getPropList() == null) continue;
+      if (group.getPropList().stream().anyMatch(prop -> prop.getID() == location.instance()
+          && prop.getPropID() == location.prop() && !prop.isIsDelete() && !prop.isIsClientOnly()
+          && Objects.equals(record.getPropSource(), PropTimelines.source(prop))))
+        opened.add(record.getChest());
+    }
+    Collections.sort(opened);
+    return opened;
   }
 
   public static boolean golden(EntityProp actor) {
