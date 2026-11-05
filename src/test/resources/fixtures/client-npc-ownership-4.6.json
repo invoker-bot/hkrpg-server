@@ -2582,7 +2582,8 @@
     "ExcelOutput/NPCData.json": "7cc09d92d5161a1fe484e8b60b18254e4c5a5a1446b1310433fc6fdfe1e60c78",
     "Config/Level/Mission/2000705/MissionInfo_2000705.partial.json": "b414f234e2edcb8c1d830f662f5a8d2ec03ae8a4b0dc83a58477d45bc305a474",
     "Config/LevelOutput/SharedRuntimeGroup/Groups_P10001_F10001001/LevelGroup_P10001_F10001001_G16.json": "1a3445cc93e260a9006b083206d20dbbbfe3bd54c6f2cf6467a0d500a944553e",
-    "Config/Level/Mission/2000111/MissionInfo_2000111.partial.json": "87b3b853ecbf76c95add615ae7b373639749d14d3f163a1080ca800496e43652"
+    "Config/Level/Mission/2000111/MissionInfo_2000111.partial.json": "87b3b853ecbf76c95add615ae7b373639749d14d3f163a1080ca800496e43652",
+    "ExcelOutput/MazeProp.json": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418"
   },
   "controlSubMission": {
     "ID": 200070501,
@@ -2769,5 +2770,28 @@
     "WayPointFloorID": 20001001,
     "WayPointGroupID": 13,
     "WayPointEntityID": 300001
+  },
+  "bernardInteractionProp": {
+    "ID": 100,
+    "PropType": "PROP_ORDINARY",
+    "PropName": {
+      "Hash": 13013349132478528449
+    },
+    "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+    "BoardShowList": [
+      4
+    ],
+    "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+    "DamageTypeList": [],
+    "MiniMapStateIcons": [],
+    "JsonPath": "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+    "PropStateList": [
+      "Closed",
+      "Open",
+      "Locked",
+      "TriggerDisable",
+      "TriggerEnable"
+    ],
+    "PerformanceType": "D"
   }
 }

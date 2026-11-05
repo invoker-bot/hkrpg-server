@@ -15,6 +15,7 @@ import emu.lunarcore.game.player.lineup.LineupManager;
 import emu.lunarcore.game.quest.QuestState;
 import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityNpc;
+import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.proto.GetCurSceneInfoScRspOuterClass.GetCurSceneInfoScRsp;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
@@ -36,6 +37,7 @@ class ClientNpcOwnership46Test {
   static final int ROCKY = 10106, BERNARD = 10403, SERVER_NPC = 10122;
   static final int ROCKY_GROUP = 18, IDLE_GROUP = 31, SERVER_GROUP = 97;
   static final int BERNARD_GROUP = 16, MONITOR_MISSION = 200011007;
+  static final int BERNARD_TRIGGER = 100, BERNARD_TRIGGER_INSTANCE = 300001;
   static final int MIXED_PROP = 781827;
   final Gson gson = ResourceLoader.getGson();
   final Map<Integer, JsonObject> groups = new HashMap<>();
@@ -155,6 +157,9 @@ class ClientNpcOwnership46Test {
 
   void prepareBernardQuest() {
     groups.put(BERNARD_GROUP, source.getAsJsonObject("bernardGroup"));
+    var prop = gson.fromJson(source.get("bernardInteractionProp"), PropExcel.class);
+    prop.onLoad();
+    GameData.getPropExcelMap().add(prop);
     actor.getGameplay().getMainMissions().put(2000110, completed(2000110));
     actor.getGameplay().getMainMissions().put(2000111, new QuestState(2000111));
     actor.getGameplay().getMainMissions().put(2000119, new QuestState(2000119));
@@ -260,9 +265,77 @@ class ClientNpcOwnership46Test {
     var entered =
         nativePacket("EnterSceneByServerScNotify", new PacketEnterSceneByServerScNotify(actor).build());
     for (var scene : List.of(snapshot(), (DynamicMessage) field(entered, "scene"))) {
-      assertFalse(npcs(scene).contains(BERNARD));
       assertMonitorGate(scene, 2, 1);
     }
+  }
+
+  @Test
+  void bernardsModelIsPublishedAlongsideTheOriginalInteraction() throws Exception {
+    prepareBernardQuest();
+    actor.getGameplay().getSubMissions().put(MONITOR_MISSION, completed(MONITOR_MISSION));
+    buildScene();
+    var logicalNpc = npc(BERNARD_GROUP, BERNARD);
+    assertEquals(400001, logicalNpc.getInstId());
+
+    var entered =
+        nativePacket("EnterSceneByServerScNotify", new PacketEnterSceneByServerScNotify(actor).build());
+    for (var scene : List.of(snapshot(), (DynamicMessage) field(entered, "scene"))) {
+      var group =
+          ((List<?>) field(scene, "entity_group_list"))
+              .stream()
+                  .map(DynamicMessage.class::cast)
+                  .filter(g -> Objects.equals(BERNARD_GROUP, field(g, "group_id")))
+                  .findFirst()
+                  .orElseThrow();
+      var entities =
+          ((List<?>) field(group, "entity_list")).stream().map(DynamicMessage.class::cast).toList();
+      var prop =
+          entities.stream()
+              .filter(e -> Objects.equals(BERNARD_TRIGGER_INSTANCE, field(e, "inst_id")))
+              .findFirst()
+              .orElseThrow();
+      assertEquals(BERNARD_TRIGGER, field((DynamicMessage) field(prop, "prop"), "prop_id"));
+      assertEquals(List.of(BERNARD), npcs(group), "The prop-only group would hide Bernard");
+      var npc = entities.stream().filter(e -> !npcs(e).isEmpty()).findFirst().orElseThrow();
+      assertEquals(400001, field(npc, "inst_id"));
+      var pos = (DynamicMessage) field((DynamicMessage) field(npc, "motion"), "pos");
+      assertEquals(logicalNpc.getPos().getX(), field(pos, "x"));
+      assertEquals(logicalNpc.getPos().getY(), field(pos, "y"));
+      assertEquals(logicalNpc.getPos().getZ(), field(pos, "z"));
+      assertEquals(1, npcs(scene).stream().filter(id -> id == BERNARD).count());
+      assertFalse(npcs(scene).contains(ROCKY));
+    }
+  }
+
+  @Test
+  void bernardsModelIsAddedAndRemovedEvenAfterTheInteractionLeaves() throws Exception {
+    prepareBernardQuest();
+    buildScene();
+    snapshot();
+    assertFalse(actor.scene.getLoadedGroups().contains(BERNARD_GROUP));
+    actor.packets.clear();
+
+    actor.getGameplay().getSubMissions().put(MONITOR_MISSION, completed(MONITOR_MISSION));
+    actor.scene.refreshMissionGroups();
+    var bernard = npc(BERNARD_GROUP, BERNARD);
+    var published = new ArrayList<Integer>();
+    for (var packet : actor.packets) {
+      published.addAll(npcs(nativePacket("SceneGroupRefreshScNotify", packet.build())));
+    }
+    assertEquals(List.of(BERNARD), published);
+
+    var trigger = actor.scene.getEntitiesByGroup(EntityProp.class, BERNARD_GROUP).getFirst();
+    assertEquals(BERNARD_TRIGGER_INSTANCE, trigger.getInstId());
+    actor.scene.removeEntity(trigger);
+    actor.packets.clear();
+    int entityId = bernard.getEntityId();
+    actor.scene.removeEntity(bernard);
+    assertEquals(1, actor.packets.size());
+    var removal = nativePacket("SceneGroupRefreshScNotify", actor.packets.getFirst().build());
+    var group = (DynamicMessage) ((List<?>) field(removal, "group_refresh_list")).getFirst();
+    assertEquals(BERNARD_GROUP, field(group, "group_id"));
+    var entity = (DynamicMessage) ((List<?>) field(group, "refresh_entity")).getFirst();
+    assertEquals(entityId, field(entity, "delete_entity"));
   }
 
   @Test

@@ -50,11 +50,13 @@ public final class ClientNpcGroups {
     return source != null && source.isClientOwnedNpcSource() ? source : null;
   }
 
+  /** Whether this authored placement can load without a server entity. */
   public static boolean clientOwned(GameEntity entity) {
     if (!(entity instanceof EntityNpc npc) || npc.getClass() != EntityNpc.class) return false;
     var source = group(npc.getScene(), npc.getGroupId());
     return source != null
         && source.getNPCList() != null
+        && !publishBernardWithTrigger(npc, source)
         && source.getNPCList().stream()
                 .filter(
                     info ->
@@ -64,6 +66,25 @@ public final class ClientNpcGroups {
                             && info.getNPCID() == npc.getNpcId())
                 .count()
             == 1;
+  }
+
+  private static boolean publishBernardWithTrigger(EntityNpc npc, GroupInfo source) {
+    // The native loader registers group 16 when it receives the interaction prop, so
+    // it skips the local NPC pass for that group. Keep the same route for adds and deletes.
+    return npc.getScene().getFloorId() == 10001001
+        && source.getId() == 16
+        && npc.getInstId() == 400001
+        && npc.getNpcId() == 10403
+        && source.getPropList() != null
+        && source.getPropList().stream()
+            .anyMatch(
+                prop ->
+                    prop != null
+                        && prop.getID() == 300001
+                        && prop.getPropID() == 100
+                        && prop.isLoadOnInitial()
+                        && !prop.isIsDelete()
+                        && !prop.isIsClientOnly());
   }
 
   public static boolean shouldPublish(GameEntity entity) {
