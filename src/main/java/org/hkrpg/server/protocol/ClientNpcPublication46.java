@@ -11,11 +11,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.UnaryOperator;
+import org.hkrpg.server.gameplay.ClientInvestigationGroups;
 import org.hkrpg.server.gameplay.ClientNpcGroups;
 import org.hkrpg.server.gameplay.MissionSnapshotRecords;
 import org.hkrpg.server.gameplay.PeppyMissionScene;
 
-/** Do not give the native client a network copy of an NPC it already creates locally. */
+/** Keep native client-owned placements out of scene entity publication. */
 final class ClientNpcPublication46 {
   static DynamicMessage sceneInfo(DynamicMessage message, Scene scene) {
     if (!ClientNpcGroups.supports(scene)) return message;
@@ -24,7 +25,7 @@ final class ClientNpcPublication46 {
             message,
             "entity_group_list",
             group -> {
-              if (PeppyMissionScene.clientGroup(scene, Gameplay46.number(group, "group_id")))
+              if (clientGroup(scene, Gameplay46.number(group, "group_id")))
                 return null;
               var filtered =
                   projectRows(group, "entity_list", entity -> local(entity, scene) ? null : entity);
@@ -40,7 +41,8 @@ final class ClientNpcPublication46 {
     var mains = new TreeSet<Integer>();
     var subs = new TreeSet<Integer>();
     for (var source : scene.getResourceGroups().values()) {
-      if (!source.isClientOwnedNpcSource()) continue;
+      if (!source.isClientOwnedNpcSource()
+          && !ClientInvestigationGroups.clientGroup(scene, source.getId())) continue;
       if (PeppyMissionScene.clientGroup(scene, source.getId())) {
         mains.add(source.getOwnerMainMissionID());
         subs.addAll(PeppyMissionScene.SCENE_GRAPH_OBJECTIVES);
@@ -103,7 +105,7 @@ final class ClientNpcPublication46 {
         message,
         "group_refresh_list",
         group -> {
-          if (PeppyMissionScene.clientGroup(scene, Gameplay46.number(group, "group_id")))
+          if (clientGroup(scene, Gameplay46.number(group, "group_id")))
             return null;
           var projected =
               projectRows(
@@ -122,6 +124,11 @@ final class ClientNpcPublication46 {
               ? null
               : projected;
         });
+  }
+
+  private static boolean clientGroup(Scene scene, int groupId) {
+    return PeppyMissionScene.clientGroup(scene, groupId)
+        || ClientInvestigationGroups.clientGroup(scene, groupId);
   }
 
   private static boolean local(DynamicMessage entity, Scene scene) {

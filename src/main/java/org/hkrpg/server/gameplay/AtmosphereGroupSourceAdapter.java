@@ -30,6 +30,7 @@ public final class AtmosphereGroupSourceAdapter implements TypeAdapterFactory {
                 && !row.has("AtmosphereCondition")
                 && dormant && !row.has("LoadSide")) group.setLoadSide(GroupInfo.GroupLoadSide.Client);
             ClientNpcGroups.markSource(group, row);
+            ClientInvestigationGroups.markSource(group, row);
           }
         }
         return value;
