@@ -10,6 +10,7 @@ import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import java.util.*;
+import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.gameplay.*;
 
 /** Native 4.6 named gameplay fields; unverified opaque action fields never become gameplay. */
@@ -72,6 +73,8 @@ public final class Gameplay46 {
                   && only(req, "performance_id", "performance_type")
               ? DailyRecoverPerformances.start(player, number(req, "performance_id"), number(req, "performance_type"))
               : Retcode.REQ_PARA_INVALID;
+          GameDiagnostics.outcome(session, name, number(req, "performance_id"), code,
+              "performance-start", "performanceType=" + number(req, "performance_type"));
           send(session, "StarPerformanceRelayScRsp", Map.of("retcode", code.getVal()));
         }
         case "GetNpcStatusCsReq",
@@ -109,6 +112,8 @@ public final class Gameplay46 {
               valid
                   ? player.getMissionManager().submitItems(id, reported)
                   : Retcode.REQ_PARA_INVALID;
+          GameDiagnostics.outcome(session, name, id, result, "mission-item-submit",
+              "explicitItems=" + (reported != null));
           send(
               session,
               "FinishCosumeItemMissionScRsp",
@@ -135,6 +140,7 @@ public final class Gameplay46 {
               only(req, "main_mission_id")
                   ? player.getMissionManager().accept(id)
                   : Retcode.REQ_PARA_INVALID;
+          GameDiagnostics.outcome(session, name, id, result, "mission-accept", "");
           send(
               session,
               "AcceptMainMissionScRsp",
@@ -181,10 +187,14 @@ public final class Gameplay46 {
             if (values.putIfAbsent(number(v, "index"), number(v, "custom_value")) != null)
               valid = false;
           }
+          var sub = player.getMissionManager().sub(id);
+          var phase = sub == null ? "none" : sub.getPhase();
           var result =
               valid
                   ? player.getMissionManager().finishTalk(id, talk, values)
                   : Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+          GameDiagnostics.outcome(session, name, id, result, "mission-talk",
+              "subPhaseBefore=" + phase + " customValues=" + values.size());
           var response = builder(session, "FinishTalkMissionScRsp");
           set(response, "retcode", result.getVal());
           set(response, "sub_mission_id", id);

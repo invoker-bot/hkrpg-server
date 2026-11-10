@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "game-diagnostics",
+      "name": "客户端与服务端故障日志",
+      "status": "tested",
+      "evidence": "docs/game-diagnostics.md",
+      "gap": "服务端记录协议、场景放置、关键交互及任务失败的位置和原因，客户端独立读取器保留首条与重复计数。两边按 UTC 对照，客户端原始日志仍可复查。"
+    },
+    {
       "id": "great-mine-entrances",
       "name": "大矿区虚数深龋与矿车调查",
       "status": "partial",

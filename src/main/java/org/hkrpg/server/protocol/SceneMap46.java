@@ -12,6 +12,7 @@ import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import java.util.*;
+import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.gameplay.GreatMineEntrances;
 import org.hkrpg.server.gameplay.MissionSceneEntrances;
 import org.hkrpg.server.gameplay.SceneAnchors;
@@ -41,6 +42,7 @@ public final class SceneMap46 {
     synchronized (player) {
       boolean valid = req.getUnknownFields().asMap().isEmpty();
       if (name.equals("EnterSceneCsReq")) {
+        int originFloor = player.getFloorId();
         int entryId = Gameplay46.number(req, "entry_id");
         int teleport = Gameplay46.number(req, "teleport_id");
         var entry = GameData.getMapEntranceExcelMap().get(entryId);
@@ -87,6 +89,8 @@ public final class SceneMap46 {
         if (result == Retcode.SUCC && !recovered
             && !MissionSceneEntrances.enter(player, entryId, teleport, player.isOnline()))
           result = Retcode.SCENE_ENTRY_ID_NOT_MATCH;
+        GameDiagnostics.outcome(session, name, entryId, result, "scene-entry",
+            "originFloor=" + originFloor + " teleport=" + teleport + " recovered=" + recovered);
         var response = Gameplay46.builder(session, "EnterSceneScRsp");
         Gameplay46.set(response, "retcode", result.getVal());
         if (result == Retcode.SUCC) {

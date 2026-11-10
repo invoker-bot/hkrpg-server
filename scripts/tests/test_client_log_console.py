@@ -227,6 +227,48 @@ class ReaderLifecycleTest(unittest.TestCase):
         self.assertNotIn('redacted', text)
         self.assertLess(text.index('fatal exit marker'), text.index('Client exited'))
 
+    def test_repeated_unity_errors_keep_one_stack_and_a_repeat_count(self):
+        stack = (b'  at RPG.Client.Test.Fail()\n'
+                 b'  at RPG.Client.Test.OnTick()\n'
+                 b'\n(Filename: Engine/Debug.bindings.h Line: 39)\n\n')
+        first = b'Promise InvokeHandler Error: System.NullReferenceException: test failure\n'
+        other = first + stack.replace(b'Test.Fail', b'Test.Other')
+        network = b'Curl error 28: SSL connection timeout\n'
+        raw = (first + stack + network) * 20 + other + b'Game resumed\n'
+        self.log.write_bytes(raw)
+        self.assertEqual(0, self.run_reader())
+        text = self.output.getvalue()
+        self.assertEqual(2, text.count('Promise InvokeHandler Error:'))
+        self.assertEqual(1, text.count('Test.Fail()'))
+        self.assertEqual(1, text.count('Test.Other()'))
+        self.assertEqual(1, text.count('Curl error 28:'))
+        self.assertIn('repeated=38', text)
+        self.assertIn('[Unity] Game resumed', text)
+        self.assertLess(text.index('repeated=38'), text.index('Client exited'))
+        self.assertEqual(raw, self.log.read_bytes())
+
+    def test_repeat_identity_uses_prop_placement_and_keeps_split_stack_lines(self):
+        name = b'Name PROP_11-300003 is used. old entity 12. new entity 34\n'
+        frame = b'RPG.GameCore.EntityManager:RegisterUniqueNameEntity(GameEntity)\n'
+        end = b'(Filename: Engine/Debug.bindings.h Line: 39)\n'
+        self.log.write_bytes(name + frame)
+
+        def finish_read(_seconds):
+            with self.log.open('ab') as stream:
+                stream.write(end)
+                stream.write(name.replace(b'12.', b'56.').replace(b'34', b'78') + frame + end)
+                stream.write(name.replace(b'PROP_11', b'PROP_53') + frame + end)
+                stream.write(b'token=private-for-test\n')
+            self.process.live = False
+
+        self.assertEqual(0, self.run_reader(pause=finish_read))
+        text = self.output.getvalue()
+        self.assertEqual(1, text.count('Name PROP_11-300003'))
+        self.assertEqual(1, text.count('Name PROP_53-300003'))
+        self.assertEqual(2, text.count('RegisterUniqueNameEntity'))
+        self.assertIn('repeated=1', text)
+        self.assertNotIn('private-for-test', text)
+
     def test_ctrl_c_only_closes_reader_handle(self):
         def interrupt(_seconds): raise KeyboardInterrupt()
         self.assertEqual(0,self.run_reader(pause=interrupt))
@@ -267,6 +309,32 @@ class ReaderLifecycleTest(unittest.TestCase):
                           '--process-created','1','--ready-file',str(self.ready),
                           '--log-path','private-file'])
         self.assertEqual(2,caught.exception.code)
+
+
+class UnityDiagnosticsTest(unittest.TestCase):
+    def test_repeated_event_is_reported_again_after_the_window_and_summary(self):
+        lines = []
+        report = console.UnityDiagnostics(lines.append)
+        head = 'PerformanceInstance E - 101050127 Promise execute error: Missing prop'
+        end = '(Filename: Debug.bindings.h Line: 39)'
+        report.feed([head, end, head, end], 1)
+        report.feed([head.replace('101050127', '101050131'), end], 1.5)
+        report.feed([], 61)
+        report.feed([head, end], 61.1)
+        self.assertEqual(2, sum(head in line for line in lines))
+        self.assertIn('[Unity repeats] repeated=1 events=#1+1', lines)
+        self.assertTrue(any('101050131' in line for line in lines))
+
+    def test_large_stack_keeps_a_bounded_first_record_and_still_counts_repeats(self):
+        lines = []
+        report = console.UnityDiagnostics(lines.append)
+        frames = ['  at RPG.Client.Test.Frame()'] * (report.MAX_STACK_LINES + 4)
+        block = ['LuaException: missing resource', *frames, '(Filename: Debug.bindings.h Line: 39)']
+        report.feed(block + block, 0)
+        report.close(1)
+        self.assertEqual(report.MAX_STACK_LINES - 1, sum('Frame()' in line for line in lines))
+        self.assertTrue(any('stack_lines_omitted=6' in line for line in lines))
+        self.assertIn('[Unity repeats] repeated=1 events=#1+1', lines)
 
 
 @unittest.skipUnless(os.name=='nt' and shutil.which('gcc'),'Windows native fixture')

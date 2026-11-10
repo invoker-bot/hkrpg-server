@@ -30,6 +30,7 @@ import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.gameplay.GreatMineEntrances;
 import us.hebi.quickbuf.RepeatedInt;
 
@@ -225,7 +226,7 @@ public class Scene implements Tickable {
                     EntityMonster monster = this.getEntityLoader().loadMonster(this, group, monsterInfo);
                     this.addEntity(monster, this.isLoaded());
                 } catch (Exception e) {
-                    // Ignored
+                    GameDiagnostics.scenePlacement(this, group.getId(), "monster", monsterInfo, e);
                 }
             }
         }
@@ -237,7 +238,7 @@ public class Scene implements Tickable {
                     EntityProp prop = this.getEntityLoader().loadProp(this, group, propInfo);
                     this.addEntity(prop, this.isLoaded());
                 } catch (Exception e) {
-                    // Ignored
+                    GameDiagnostics.scenePlacement(this, group.getId(), "prop", propInfo, e);
                 }
             }
         }
@@ -249,7 +250,7 @@ public class Scene implements Tickable {
                     EntityNpc npc = this.getEntityLoader().loadNpc(this, group, npcInfo);
                     this.addEntity(npc, this.isLoaded());
                 } catch (Exception e) {
-                    // Ignored
+                    GameDiagnostics.scenePlacement(this, group.getId(), "npc", npcInfo, e);
                 }
             }
         }

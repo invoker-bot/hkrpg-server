@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import kcp.highway.KcpListener;
 import kcp.highway.Ukcp;
+import org.hkrpg.server.GameDiagnostics;
 
 public class GameServerKcpListener implements KcpListener {
     private final GameServer server;
@@ -47,6 +48,6 @@ public class GameServerKcpListener implements KcpListener {
 
     @Override
     public void handleException(Throwable err, Ukcp ukcp) {
-
+        GameDiagnostics.packetFailure(sessions.get(ukcp), -1, false, "kcp", err);
     }
 }

@@ -57,12 +57,4 @@ class SceneActionContract46Test {
         bytes.toByteArray(), 0, ""));
   }
 
-  @Test void diagnosisBudgetAllowsDistinctFailuresWithoutUnboundedLogging() {
-    var budget = new SceneActionDiagnostics46.Budget();
-    for (int i = 0; i < 8; i++) assertTrue(budget.allow(0));
-    for (int i = 0; i < 100; i++) assertFalse(budget.allow(59_999_999_999L));
-    assertTrue(budget.allow(60_000_000_000L));
-    for (int i = 0; i < 7; i++) assertTrue(budget.allow(60_000_000_000L));
-    assertFalse(budget.allow(60_000_000_001L));
-  }
 }

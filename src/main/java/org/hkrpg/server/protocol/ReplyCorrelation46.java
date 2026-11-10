@@ -70,7 +70,7 @@ public final class ReplyCorrelation46 {
   /** Do not echo tracing, account or other client-authored header fields. */
   static byte[] replyHeader(byte[] header) {
     if (header == null || header.length > 4096)
-      throw new ProtocolException("Invalid request header size");
+      throw ProtocolException.diagnostic("Invalid request header size");
     var input = CodedInputStream.newInstance(header);
     boolean found = false;
     long id = 0;
@@ -78,11 +78,11 @@ public final class ReplyCorrelation46 {
       int tag;
       while ((tag = input.readTag()) != 0) {
         if ((tag >>> 3) == 1) {
-          if (tag != 8 || found) throw new ProtocolException("Invalid request packet ID");
+          if (tag != 8 || found) throw ProtocolException.diagnostic("Invalid request packet ID");
           found = true;
           id = input.readUInt64();
           if (Long.compareUnsigned(id, 0xffffffffL) > 0)
-            throw new ProtocolException("Request packet ID exceeds uint32");
+            throw ProtocolException.diagnostic("Request packet ID exceeds uint32");
         } else if (!input.skipField(tag)) {
           throw new ProtocolException("Invalid request header tag");
         }

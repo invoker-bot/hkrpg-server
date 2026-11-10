@@ -8,6 +8,7 @@ import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.*;
 import java.io.IOException;
 import java.util.*;
+import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.gameplay.MissionRaid;
 import org.hkrpg.server.gameplay.ParkourRaid;
 import org.hkrpg.server.gameplay.RaidTeams;
@@ -101,6 +102,7 @@ public final class Raid46 {
             story.current() == null
                 ? manager.leave(raid, (boolean) value(req, "is_save"))
                 : story.leave(raid, (boolean) value(req, "is_save"));
+      GameDiagnostics.outcome(s, name, raid, code, "raid-entry-or-exit", "worldLevel=" + world);
       var response = builder(s, responseName);
       set(response, "retcode", code.getVal());
       if (name.equals("LeaveRaidCsReq")) {

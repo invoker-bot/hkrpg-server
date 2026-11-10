@@ -1,5 +1,6 @@
 """Independent Windows client-log console. Never loads code into the game."""
 import argparse
+from collections import OrderedDict
 import ctypes
 from ctypes import wintypes
 from datetime import datetime, timezone
@@ -21,6 +22,14 @@ SENSITIVE_KEYS = ('token', 'authkey', 'password', 'email', 'account', 'combo', '
                   'userid', 'user_id', 'username', 'user_name', 'deviceid', 'device_id', 'uid=')
 SNAPSHOT_KEYS = {'exists', 'device', 'fileIndex', 'size', 'checkpointOffset',
                  'checkpointSHA256', 'endsWithNewline'}
+ENTITY_DUPLICATE = re.compile(
+    r'^Name ((?:PROP_|NPC_)?\d+-\d+) is used\. old entity \d+\. new entity \d+[.!]?$')
+DIAGNOSTIC_HEAD = re.compile(
+    r'^(?:Curl error \d+:|Request failed without retry chance\s*$|wm_initialize:failed:'
+    r'|\[(?:warn(?:ing)?|error|exception|fatal)\]'
+    r'|[\w. +]{0,80}(?:Exception|Error):|PerformanceInstance \w+ - \d+ .*error:'
+    r'|\[Task\] .*\b(?:not found|failed|missing)\b)', re.IGNORECASE)
+STACK_FRAME = re.compile(r'^[\w.$+<>`/]+:[^\s(]+\(')
 
 
 class DebugUnavailable(RuntimeError):
@@ -139,6 +148,108 @@ def safe_line(line):
         return None
     # Logs are untrusted text, not terminal control sequences.
     return ''.join(ch if ch == '\t' or ord(ch) >= 32 and not 127 <= ord(ch) <= 159 else ' ' for ch in line)
+
+
+class UnityDiagnostics:
+    """Coalesce known warning/error blocks after redaction, keeping one bounded stack per signature."""
+
+    WINDOW = 60.0
+    STACK_IDLE = 0.75
+    MAX_EVENTS = 256
+    MAX_STACK_LINES = 48
+    MAX_STACK_BYTES = 32 * 1024
+
+    def __init__(self, emit):
+        self.emit = emit
+        self.recent = OrderedDict()
+        self.event_id = 0
+        self.lines = []
+        self.signature = None
+        self.last_line = 0.0
+        self.size = 0
+        self.omitted = 0
+
+    @staticmethod
+    def _head(line):
+        duplicate = ENTITY_DUPLICATE.fullmatch(line)
+        if duplicate:
+            return 'Name ' + duplicate[1] + ' is used.'
+        return line if DIAGNOSTIC_HEAD.match(line) else None
+
+    @staticmethod
+    def _stack(line):
+        return line.startswith(('at ', '(Filename:', 'BakedLua/', 'stack traceback:', '#0 ')) \
+            or bool(STACK_FRAME.match(line))
+
+    def _repeat_counts(self, events):
+        counts = [(number, repeats) for _, number, repeats in events if repeats]
+        for offset in range(0, len(counts), 16):
+            rows = counts[offset:offset + 16]
+            refs = ' '.join(f'#{number}+{repeats}' for number, repeats in rows)
+            self.emit(f'[Unity repeats] repeated={sum(n for _, n in rows)} events={refs}')
+
+    def _finish(self, now):
+        if not self.lines:
+            return
+        key = self.signature.digest()
+        if key in self.recent:
+            start, number, repeats = self.recent[key]
+            self.recent[key] = (start, number, repeats + 1)
+        else:
+            if len(self.recent) == self.MAX_EVENTS:
+                self._repeat_counts([self.recent.popitem(last=False)[1]])
+            self.event_id += 1
+            self.recent[key] = (now, self.event_id, 0)
+            self.emit(f'[Unity] [event #{self.event_id}] {self.lines[0]}')
+            for line in self.lines[1:]:
+                self.emit('[Unity] ' + line)
+            if self.omitted:
+                self.emit(f'[Unity] [event #{self.event_id}] stack_lines_omitted={self.omitted}')
+        self.lines.clear()
+        self.signature = None
+
+    def _expire(self, now):
+        expired = []
+        while self.recent and now - next(iter(self.recent.values()))[0] >= self.WINDOW:
+            expired.append(self.recent.popitem(last=False)[1])
+        self._repeat_counts(expired)
+
+    def feed(self, lines, now):
+        self._expire(now)
+        if self.lines and now - self.last_line >= self.STACK_IDLE:
+            self._finish(now)
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            head = self._head(stripped)
+            if self.lines and head is None and self._stack(stripped):
+                raw = stripped.encode('utf-8')
+                self.signature.update(b'\n' + raw)
+                self.last_line = now
+                if len(self.lines) < self.MAX_STACK_LINES and self.size + len(raw) <= self.MAX_STACK_BYTES:
+                    self.lines.append(line)
+                    self.size += len(raw)
+                else:
+                    self.omitted += 1
+                if stripped.startswith('(Filename:'):
+                    self._finish(now)
+                continue
+            self._finish(now)
+            if head is None:
+                self.emit('[Unity] ' + line)
+                continue
+            self.lines.append(line)
+            self.signature = hashlib.sha256(head.encode('utf-8'))
+            self.last_line = now
+            self.size = len(line.encode('utf-8'))
+            self.omitted = 0
+
+    def close(self, now):
+        self._expire(now)
+        self._finish(now)
+        self._repeat_counts(self.recent.values())
+        self.recent.clear()
 
 
 class LogTail:
@@ -364,13 +475,14 @@ def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_p
     ready = None
     ready_written = False
     def emit(line):
-        text = datetime.now(timezone.utc).isoformat(timespec='seconds') + ' ' + line + '\n'
+        text = datetime.now(timezone.utc).isoformat(timespec='milliseconds') + ' ' + line + '\n'
         if output:
             output.write(text)
             output.flush()
         if journal:
             journal.write(text)
             journal.flush()
+    diagnostics = UnityDiagnostics(emit)
     try:
         directory = Path(output_directory) if output_directory is not None else journal_directory()
         ready = _validate_ready_file(ready_file, directory)
@@ -383,7 +495,7 @@ def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_p
         name += '-' + str(pid) + '-' + uuid.uuid4().hex[:12] + '.log'
         journal = (directory / name).open('x', encoding='utf-8')
         emit(f'HKRPG CLIENT DEBUG - client PID {pid}; independent reader PID {os.getpid()}')
-        emit('Source: client Player.log. Sensitive and oversized lines are omitted.')
+        emit('Source: client Player.log. Repeats refer to event numbers. Sensitive and oversized lines are omitted.')
         emit('Closing this window or pressing Ctrl+C stops only this reader.')
         _ready(ready, {'ready': True, 'pid': os.getpid(), 'clientPid': pid})
         ready_written = True
@@ -392,19 +504,18 @@ def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_p
             emit('Wait-state capture: separate client-waits journal; read-only, up to 10 minutes.')
         except Exception:
             emit('Wait-state capture unavailable; ordinary client logging continues.')
-        for line in first_lines:
-            emit('[Unity] ' + line)
+        diagnostics.feed(first_lines, time.monotonic())
         while True:
             if not process.alive():
                 for chunk in tail.drain_after_exit():
-                    for line in chunk:
-                        emit('[Unity] ' + line)
+                    diagnostics.feed(chunk, time.monotonic())
+                diagnostics.close(time.monotonic())
                 emit(f'Client exited; status {process.exit_code()}. Debug reader finished.')
                 return 0
-            for line in tail.poll():
-                emit('[Unity] ' + line)
+            diagnostics.feed(tail.poll(), time.monotonic())
             pause(.25)
     except KeyboardInterrupt:
+        diagnostics.close(time.monotonic())
         emit('Debug reader stopped; the game was not stopped.')
         return 0
     except Exception as error:
@@ -416,6 +527,7 @@ def run_reader(pid, client_root, snapshot, process_created, ready_file, *, log_p
             except OSError:
                 pass
         try:
+            diagnostics.close(time.monotonic())
             emit(message)
         except (OSError, ValueError):
             pass

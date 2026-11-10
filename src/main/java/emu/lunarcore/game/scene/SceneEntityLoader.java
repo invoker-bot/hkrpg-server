@@ -12,6 +12,7 @@ import emu.lunarcore.game.scene.entity.EntityMonster;
 import emu.lunarcore.game.scene.entity.EntityNpc;
 import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.game.scene.entity.GameEntity;
+import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.gameplay.GreatMineEntrances;
 
 public class SceneEntityLoader {
@@ -61,7 +62,10 @@ public class SceneEntityLoader {
 
         // Get excels from game data
         NpcMonsterExcel npcMonsterExcel = GameData.getNpcMonsterExcelMap().get(monsterInfo.getNPCMonsterID());
-        if (npcMonsterExcel == null) return null;
+        if (npcMonsterExcel == null) {
+            GameDiagnostics.scenePlacement(scene, group.getId(), "monster", monsterInfo, null);
+            return null;
+        }
 
         // Create monster from group monster info
         EntityMonster monster = new EntityMonster(scene, npcMonsterExcel, group, monsterInfo);
@@ -86,7 +90,10 @@ public class SceneEntityLoader {
 
         // Get prop excel to make sure prop exists
         PropExcel propExcel = GameData.getPropExcelMap().get(propInfo.getPropID());
-        if (propExcel == null) return null;
+        if (propExcel == null) {
+            GameDiagnostics.scenePlacement(scene, group.getId(), "prop", propInfo, null);
+            return null;
+        }
 
         // Remove these annoying props from the map
         if (propExcel.isDisabled() && !org.hkrpg.server.gameplay.PropTimelines.tagged(propInfo)) {
@@ -157,6 +164,7 @@ public class SceneEntityLoader {
 
         // Sanity check npc id
         if (!GameData.getNpcExcelMap().containsKey(npcInfo.getNPCID())) {
+            GameDiagnostics.scenePlacement(scene, group.getId(), "npc", npcInfo, null);
             return null;
         }
 

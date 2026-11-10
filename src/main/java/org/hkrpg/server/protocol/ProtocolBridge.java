@@ -223,6 +223,10 @@ public final class ProtocolBridge {
     return !legacy;
   }
 
+  public String inboundName(int id) {
+    return clientNames.getOrDefault(id, "UNKNOWN");
+  }
+
   public byte[] outboundFrames(byte[] bytes) {
     return outboundFrames(bytes, null);
   }
@@ -322,10 +326,10 @@ public final class ProtocolBridge {
     try {
       var message = DynamicMessage.parseFrom(source, bytes);
       if (!message.getUnknownFields().asMap().isEmpty())
-        throw new ProtocolException("Unknown wire fields in " + source.getFullName());
+        throw ProtocolException.diagnostic("Unknown wire fields in " + source.getFullName());
       return convert(message, target, outbound, 0).toByteArray();
     } catch (IOException ex) {
-      throw new ProtocolException("Malformed protobuf: " + coreName);
+      throw ProtocolException.diagnostic("Malformed protobuf: " + coreName);
     }
   }
 
@@ -337,9 +341,9 @@ public final class ProtocolBridge {
               || !request.getAllFields().isEmpty()))
         throw new ProtocolException("Unsupported mail snapshot fields");
       if (!request.getUnknownFields().asMap().isEmpty())
-        throw new ProtocolException("Unknown wire fields in " + name);
+        throw ProtocolException.diagnostic("Unknown wire fields in " + name);
     } catch (IOException ex) {
-      throw new ProtocolException("Malformed protobuf: " + name);
+      throw ProtocolException.diagnostic("Malformed protobuf: " + name);
     }
   }
 
@@ -366,7 +370,7 @@ public final class ProtocolBridge {
                             .addVarint(3)
                             .build()));
     if (!entityRefresh && !input.getUnknownFields().asMap().isEmpty())
-      throw new ProtocolException(
+      throw ProtocolException.diagnostic(
           "Unknown nested wire fields: " + input.getDescriptorForType().getFullName());
     if (outbound && input.getDescriptorForType().getName().equals("SceneInfo"))
       input = Scene46Migration.normalize(input);
@@ -375,7 +379,7 @@ public final class ProtocolBridge {
       for (var field : target.getFields()) {
         if (mappedField(field, input.getDescriptorForType(), true) == null
             && !field.getFullName().endsWith("PVEBattleResultCsReq.is_ai_consider_ultra_skill")) {
-          throw new ProtocolException(
+          throw ProtocolException.diagnostic(
               "Core request field has no 4.6 mapping: " + field.getFullName());
         }
       }
@@ -412,10 +416,10 @@ public final class ProtocolBridge {
       if (field == null) {
         // Extra client telemetry is ignored only when it has no corresponding core field.
         if (!outbound) continue;
-        throw new ProtocolException("Unmapped outgoing field: " + sourceField.getFullName());
+        throw ProtocolException.diagnostic("Unmapped outgoing field: " + sourceField.getFullName());
       }
       if (!compatible(sourceField, field))
-        throw new ProtocolException("Incompatible field: " + sourceField.getFullName());
+        throw ProtocolException.diagnostic("Incompatible field: " + sourceField.getFullName());
       if (sourceField.isRepeated()) {
         for (Object value : (List<?>) entry.getValue())
           result.addRepeatedField(field, convertValue(value, field, outbound, depth));
@@ -489,7 +493,7 @@ public final class ProtocolBridge {
         String targetName = enumName(candidate);
         if (semanticName.equals(targetName)) return candidate;
       }
-      throw new ProtocolException("Unmapped enum value: " + source.getFullName());
+      throw ProtocolException.diagnostic("Unmapped enum value: " + source.getFullName());
     }
     return value;
   }

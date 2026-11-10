@@ -1,6 +1,7 @@
 package emu.lunarcore.server.game;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicLong;
 
 import emu.lunarcore.LunarCore;
 import emu.lunarcore.game.account.Account;
@@ -19,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import us.hebi.quickbuf.ProtoMessage;
+import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.protocol.ActiveProtocol;
 import org.hkrpg.server.protocol.ProtocolBridge;
 import org.hkrpg.server.protocol.ProtocolException;
@@ -27,6 +29,8 @@ import org.hkrpg.server.protocol.VersionedPacketHandler;
 
 @Getter
 public class GameSession {
+    private static final AtomicLong DIAGNOSTIC_IDS = new AtomicLong();
+    private final long diagnosticId = DIAGNOSTIC_IDS.incrementAndGet();
     private final GameServer server;
     private final Int2LongMap packetCooldown;
     private InetSocketAddress address;
@@ -129,24 +133,36 @@ public class GameSession {
     }
 
     public void onMessage(ByteBuf packet) {
+        var bridge = getProtocol();
+        int command = -1;
+        String step = "frame";
         try {
             // Decrypt and turn back into a packet
             // Crypto.xor(packet.array(), useSecretKey() ? Crypto.ENCRYPT_KEY : Crypto.DISPATCH_KEY);
 
             // Decode
             while (packet.readableBytes() > 0) {
+                step = "frame";
+                command = -1;
                 var frame = PacketCodec.decodeNext(packet);
-                if (frame == null) return;
-                try (var reply = replyCorrelation.enter(getProtocol(), frame.cmdId(), frame.header())) {
-                    if (VersionedPacketHandler.handle(this, frame.cmdId(), frame.body())) continue;
+                if (frame == null) {
+                    GameDiagnostics.incompleteFrame(this, packet.readableBytes());
+                    return;
+                }
+                command = frame.cmdId();
+                step = "reply-header";
+                try (var reply = replyCorrelation.enter(bridge, command, frame.header())) {
+                    step = "native-handler";
+                    if (VersionedPacketHandler.handle(this, command, frame.body())) continue;
+                    step = "bridge-inbound";
                     ProtocolBridge.Packet converted;
                     try {
-                        converted = protocol.inbound(frame.cmdId(), frame.body());
+                        converted = bridge.inbound(command, frame.body());
                     } catch (UnsupportedInboundCommandException unsupported) {
                         // Match the core's unhandled-command behavior. An optional module query must
                         // not terminate login or discard later frames in this same KCP message.
                         // Never guess a response command, acknowledge success, or log its payload.
-                        LunarCore.getLogger().warn("Unhandled {} inbound command: {}", protocol.version(), frame.cmdId());
+                        GameDiagnostics.unhandled(this, command, false);
                         continue;
                     }
                     int opcode = converted.cmdId();
@@ -160,11 +176,12 @@ public class GameSession {
                     }
 
                     // Handle
+                    step = "core-dispatch";
                     getServer().getPacketHandler().handle(this, opcode, data);
                 }
             }
         } catch (Exception e) {
-            LunarCore.getLogger().warn("Rejected {} packet from {}: {}", protocol.version(), address, e.getMessage());
+            GameDiagnostics.packetFailure(this, command, false, step, e);
             if (e instanceof ProtocolException) { setState(SessionState.INACTIVE); close(); }
         } finally {
             // packet.release();

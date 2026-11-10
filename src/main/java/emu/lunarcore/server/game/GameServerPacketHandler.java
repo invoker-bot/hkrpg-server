@@ -3,6 +3,7 @@ package emu.lunarcore.server.game;
 import java.util.Set;
 
 import org.reflections.Reflections;
+import org.hkrpg.server.GameDiagnostics;
 
 import emu.lunarcore.LunarCore;
 import emu.lunarcore.server.packet.*;
@@ -71,15 +72,14 @@ public class GameServerPacketHandler {
                 // Handle packet
                 handler.handle(session, data);
             } catch (org.hkrpg.server.protocol.ProtocolException ex) {
-                LunarCore.getLogger().warn("Rejected {} response for {}: {}", session.getProtocol().version(), CmdIdUtils.getCmdIdName(cmdId), ex.getMessage());
+                GameDiagnostics.packetFailure(session, cmdId, true, "core-response", ex);
                 session.setState(SessionState.INACTIVE);
                 session.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                GameDiagnostics.packetFailure(session, cmdId, true, "core-handler", ex);
             }
+        } else {
+            GameDiagnostics.unhandled(session, cmdId, true);
         }
-
-        // Log unhandled packets
-        //LunarCore.getLogger().info("Unhandled packet (" + cmdId + "): " + CmdIdUtils.getCmdIdName(cmdId));
     }
 }

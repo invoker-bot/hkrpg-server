@@ -170,7 +170,7 @@ public final class Universe46 {
                     ? Retcode.ROGUE_AREA_INVALID
                     : player.getUniverseManager().start(area, ids, aeon, false);
         if (secondEntry) SceneActionDiagnostics46.rogueEntry(session, area, ids, trials, aeon,
-            (List<?>) value(request, "JKPIPNMGGOA"), request.getUnknownFields().asMap().keySet(), valid, result);
+            ((List<?>) value(request, "JKPIPNMGGOA")).size(), request.getUnknownFields().asMap().keySet(), valid, result);
       } else {
         boolean valid =
             request.getUnknownFields().asMap().isEmpty()

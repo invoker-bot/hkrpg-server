@@ -57,8 +57,7 @@ public final class SceneInteraction46 {
       fields.put("retcode", result.getVal());
       fields.put("prop_entity_id", entity);
       if (prop != null) fields.put("prop_state", prop.getState().getVal());
-      SceneActionDiagnostics46.rejected(session, "InteractPropCsReq", "interaction-config:" + config,
-          result, 0, entity, 0, 0);
+      SceneActionDiagnostics46.interaction(session, config, entity, target, result);
       Gameplay46.send(session, "InteractPropScRsp", fields);
     }
     return true;

@@ -204,10 +204,11 @@ public class GameServer extends KcpServer {
                 try {
                     player.onTick(timestamp, delta);
                 } catch (Exception e) {
-                    LunarCore.getLogger().error("[UID: " + player.getUid() + "] Player tick error: ", e);
+                    org.hkrpg.server.GameDiagnostics.tickFailure(player, e);
                 }
             }
         }
+        org.hkrpg.server.GameDiagnostics.flush(false);
     }
 
     public void onShutdown() {
@@ -227,5 +228,6 @@ public class GameServer extends KcpServer {
         for (Player player : list) {
             player.getSession().close();
         }
+        org.hkrpg.server.GameDiagnostics.flush(true);
     }
 }

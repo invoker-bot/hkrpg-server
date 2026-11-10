@@ -1,74 +1,50 @@
 package org.hkrpg.server.protocol;
 
-import emu.lunarcore.LunarCore;
+import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
-import java.util.WeakHashMap;
+import java.util.List;
+import java.util.Set;
+import org.hkrpg.server.GameDiagnostics;
 
-/** Bounded rejection metadata only; no packet dumps, ability strings, credentials or inventory. */
+/** Bounded rejection metadata only; no packet dumps or client ability strings. */
 final class SceneActionDiagnostics46 {
-  private static final WeakHashMap<GameSession, Budget> BUDGETS = new WeakHashMap<>();
-
-  static final class Budget {
-    private long start;
-    private int emitted;
-    boolean allow(long now) {
-      if (emitted == 0 || now - start >= 60_000_000_000L) {
-        start = now;
-        emitted = 0;
-      }
-      if (emitted >= 8) return false;
-      emitted++;
-      return true;
-    }
-  }
-
   static void rejected(GameSession session, String command, String reason, Retcode error,
       int use, int actor, int hits, int assists) {
-    if (error == Retcode.SUCC) return;
-    if (!allow(session)) return;
-    var player = session.getPlayer();
-    LunarCore.getLogger().warn(
-        "Scene action rejected: command={} uid={} floor={} reason={} retcode={} use={} actor={} hits={} assists={}",
-        command, player.getUid(), player.getFloorId(), reason, error.getVal(),
-        Integer.toUnsignedString(use), actor, hits, assists);
+    if (error != Retcode.SUCC)
+      GameDiagnostics.outcome(session, command, 0, error, reason,
+          "use=" + Integer.toUnsignedString(use) + " actor=" + actor
+              + " hits=" + hits + " assists=" + assists);
+  }
+
+  static void interaction(GameSession session, int config, int entity, EntityProp target, Retcode result) {
+    String place = target == null ? "target-missing"
+        : "prop-" + target.getGroupId() + "-" + target.getInstId();
+    GameDiagnostics.outcome(session, "InteractPropCsReq", config, result, place,
+        "entity=" + entity + (target == null ? "" : " group=" + target.getGroupId()
+            + " instance=" + target.getInstId() + " prop=" + target.getPropId()
+            + " propState=" + target.getState()));
   }
 
   static void battleRejected(GameSession session, String reason, int battleId, int stageId,
-      java.util.List<Integer> reportedAvatars) {
-    if (!allow(session)) return;
-    var player = session.getPlayer();
-    var active = player.getBattle();
-    LunarCore.getLogger().warn(
-        "Battle result rejected: uid={} floor={} reason={} battle={} stage={} activeBattle={} participants={} reported={}",
-        player.getUid(), player.getFloorId(), reason, battleId, stageId,
-        active == null ? 0 : active.getId(),
-        active == null ? java.util.Set.of() : active.getParticipantIds().stream().sorted().limit(8).toList(),
-        reportedAvatars.stream().limit(8).toList());
+      List<Integer> reportedAvatars) {
+    var active = session.getPlayer().getBattle();
+    int separator = reason.indexOf(' ');
+    String category = separator < 0 ? reason : reason.substring(0, separator);
+    GameDiagnostics.outcome(session, "PVEBattleResultCsReq", stageId, null, category,
+        "battle=" + battleId + " activeBattle=" + (active == null ? 0 : active.getId())
+            + " participants=" + (active == null ? Set.of() : active.getParticipantIds().stream().sorted().limit(8).toList())
+            + " reported=" + reportedAvatars.stream().limit(8).toList()
+            + (separator < 0 ? "" : reason.substring(separator)));
   }
 
-  /** Bounded gameplay IDs only; imported field names are not assumed to be semantic evidence. */
-  static void rogueEntry(GameSession session, int area, java.util.List<?> regular,
-      java.util.List<?> trials, int aeon, java.util.List<?> other,
-      java.util.Set<Integer> unknown, boolean shapeValid, Retcode result) {
-    if (!allow(session)) return;
-    LunarCore.getLogger().info(
-        "Second tutorial start: uid={} area={} regular={} trials={} aeon={} other={} unknownFields={} shapeValid={} retcode={}",
-        session.getPlayer().getUid(), area, regular.stream().limit(4).toList(),
-        trials.stream().limit(4).toList(), aeon, other.stream().limit(4).toList(),
-        unknown.stream().sorted().limit(12).toList(), shapeValid, result.getVal());
-  }
-
-  private static boolean allow(GameSession session) {
-    synchronized (BUDGETS) {
-      var budget = BUDGETS.get(session);
-      if (budget == null) {
-        if (BUDGETS.size() >= 256) return false;
-        budget = new Budget();
-        BUDGETS.put(session, budget);
-      }
-      return budget.allow(System.nanoTime());
-    }
+  static void rogueEntry(GameSession session, int area, List<Integer> regular, List<Integer> trials,
+      int aeon, int otherCount, Set<Integer> unknown, boolean shapeValid, Retcode result) {
+    GameDiagnostics.outcome(session, "StartRogueCsReq", area, result, "second-tutorial",
+        "regular=" + regular.stream().limit(4).toList() + " trials=" + trials.stream().limit(4).toList()
+            + " aeon=" + aeon + " otherCount=" + otherCount
+            + " unknownFields=" + unknown.stream().sorted().limit(12).toList()
+            + " shapeValid=" + shapeValid);
   }
 
   private SceneActionDiagnostics46() {}
