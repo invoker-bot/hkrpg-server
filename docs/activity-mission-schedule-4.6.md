@@ -19,3 +19,11 @@
 全量构建通过 712 组、19,920 项 Java 测试。隔离 4.6 联机共完成 42 次原生请求、五次正常停服和三次 H2 进度核对。无窗口时测试号的当前列表未新增 15 项限时任务，显式接取《银河信号漫游》也返回拒绝。重连时旧进度暂时收起，单独开放 50080/5008001 后只有《银河信号漫游》恢复，关闭后再次收起。三个关闭阶段各发送三次相同接取请求，每个阶段保留首条详情和两次重复的计数。另有两轮 Dispatch 和两轮登录初始化冒烟通过。
 
 正式停服备份用 `MVStore.readOnly` 比较同一份任务记录。旧包会显示全部 15 项，候选包的当前任务中显示 0 项，15 项进度仍在原档。两包都保留《列车改造奇遇》《宇宙家装指南：前言》和已结算的两项帕姆任务。证据在 `build/pam-mission-burst/` 的 `native-release.json`、`projection-before.log` 和 `projection-after.log`。
+
+## 本机安装
+
+2026-11-10 已在本机 Compose 安装 `e9941bf` 的活动任务修复。以安装前的运行包编译补丁，保留既有登录和活动配置格式。重启后健康检查和存档核对通过。本次停服备份也复现了 15 项原进度、当前任务显示 0 项的结果，见 `projection-install-backup.log`。
+
+- 运行包 SHA-256 `3c9faae6d48caa823b75c712fa14401aa96e42d26476cdeed0b2d8c0db92815a`。
+- 停机备份 `.local/backups/activity-mission-schedule-20261110-175431/`。
+- 完整构建与安装报告在 `build/pam-mission-burst/` 的 `full-summary.json`、`deployment.json` 和 `compose-after.json`。
