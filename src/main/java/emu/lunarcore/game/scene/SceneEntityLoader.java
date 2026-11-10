@@ -79,7 +79,7 @@ public class SceneEntityLoader {
 
     public EntityProp loadProp(Scene scene, GroupInfo group, PropInfo propInfo) {
         if (group.getGroupName().contains("Book") && !org.hkrpg.server.gameplay.BookPickups.supported(scene, propInfo)) return null;
-        if (GreatMineEntrances.prematureWheelDialogue(scene, group, propInfo)) return null;
+        if (GreatMineEntrances.obsoleteCartDialogues(scene, group)) return null;
         // Don't spawn entity if they have certain flags in their info
         if (propInfo.isIsDelete() /* || propInfo.isIsClientOnly() */ || !propInfo.isLoadOnInitial()) {
             return null;

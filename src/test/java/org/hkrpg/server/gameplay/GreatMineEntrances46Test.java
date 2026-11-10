@@ -15,6 +15,7 @@ import emu.lunarcore.data.config.GroupInfo;
 import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.data.excel.MapEntranceExcel;
 import emu.lunarcore.data.excel.MazePlaneExcel;
+import emu.lunarcore.data.excel.NpcExcel;
 import emu.lunarcore.data.excel.PropExcel;
 import emu.lunarcore.game.enums.PropState;
 import emu.lunarcore.game.quest.QuestState;
@@ -44,10 +45,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 class GreatMineEntrances46Test {
   private static final int PLANE = 20121, FLOOR = 20121001, ENTRY = 2012101;
   private static final int MAIN = 1010501, EARLY = 101050106, WHEEL = 101050118;
+  private static final int BEFORE_CART = 101050107, MAIN_CART = 101050113;
   private static final int CART = 11, RIFT = 92, RAID = 4012102, MAP_ID = 1408;
   private static final String FLOOR_KEY = "P20121_F20121001";
   private final Gson gson = ResourceLoader.getGson();
   private final Map<Integer, PropExcel> previousProps = new HashMap<>();
+  private final Map<Integer, NpcExcel> previousNpcs = new HashMap<>();
   private final Map<Integer, MissionInfo.SubMissionInfo> previousObjectives = new HashMap<>();
   private final Map<Long, GameplayDefinitions.Raid> previousRaids = new HashMap<>();
   private final ClientNpcOwnership46Test.Actor player = new ClientNpcOwnership46Test.Actor() {
@@ -73,6 +76,10 @@ class GreatMineEntrances46Test {
         prop.onLoad();
         previousProps.put(prop.getId(), GameData.getPropExcelMap().get(prop.getId()));
         GameData.getPropExcelMap().add(prop);
+      }
+      for (int id : List.of(11204, 11103, 11102)) {
+        previousNpcs.put(id, GameData.getNpcExcelMap().get(id));
+        GameData.getNpcExcelMap().add(gson.fromJson("{\"ID\":" + id + "}", NpcExcel.class));
       }
       for (var raw : fixture.getAsJsonArray("objectives")) {
         var objective = gson.fromJson(raw, MissionInfo.SubMissionInfo.class);
@@ -111,6 +118,10 @@ class GreatMineEntrances46Test {
       GameData.getPropExcelMap().keySet().remove(id);
       if (prop != null) GameData.getPropExcelMap().add(prop);
     });
+    previousNpcs.forEach((id, npc) -> {
+      GameData.getNpcExcelMap().keySet().remove(id);
+      if (npc != null) GameData.getNpcExcelMap().add(npc);
+    });
     previousObjectives.forEach((id, objective) -> {
       if (objective == null) GameplayDefinitions.subs.remove(id);
       else GameplayDefinitions.subs.put(id, objective);
@@ -120,14 +131,43 @@ class GreatMineEntrances46Test {
   }
 
   @Test
-  void earlyStoryKeepsOtherInvestigationsButOmitsThePrematureWheelDialogue() throws Exception {
+  void earlyStoryOmitsAllThreeObsoleteCartPrompts() throws Exception {
     enter();
-    assertEquals(List.of(300001, 300002), props(CART));
-    assertEquals(List.of(300001, 300002), nativeProps(CART));
+    player.scene.loadGroup(CART);
+    assertTrue(props(CART).isEmpty());
+    assertTrue(nativeProps(CART).isEmpty());
     assertTrue(props(53).isEmpty());
     assertTrue(props(67).isEmpty());
     assertEquals(QuestState.Phase.DOING, player.getMissionManager().sub(EARLY).getPhase());
     assertNull(player.getMissionManager().sub(WHEEL));
+  }
+
+  @Test
+  void mainStoryCartAndItsActorsArePublishedOnlyByTheClient() throws Exception {
+    player.getGameplay().getSubMissions().put(EARLY, completed(EARLY));
+    player.getGameplay().getSubMissions().put(BEFORE_CART, completed(BEFORE_CART));
+    var cart = new QuestState(MAIN_CART);
+    player.getGameplay().getSubMissions().put(MAIN_CART, cart);
+    enter();
+    for (int group : List.of(16, 19)) {
+      assertTrue(props(group).contains(300001));
+      assertTrue(nativeProps(group).isEmpty());
+      var prop = player.scene.getEntitiesByGroup(EntityProp.class, group).getFirst();
+      var add = new PacketSceneGroupRefreshScNotify(player.scene, prop, null).build();
+      assertTrue(((List<?>) field(nativePacket("SceneGroupRefreshScNotify", add), "group_refresh_list")).isEmpty());
+    }
+    var gates = (DynamicMessage) field(sceneInfo(), "scene_mission_info");
+    var subs = (List<?>) field(gates, "sub_mission_status_list");
+    assertTrue(subs.stream().map(DynamicMessage.class::cast)
+        .anyMatch(row -> field(row, "id").equals(MAIN_CART)
+            && field(row, "status").toString().equals("MissionStatus_MissionDoing")));
+    assertSame(cart, player.getMissionManager().sub(MAIN_CART));
+    assertNull(player.getMissionManager().sub(101050125));
+
+    player.getGameplay().getSubMissions().put(MAIN_CART, completed(MAIN_CART));
+    player.scene.refreshMissionGroups();
+    assertTrue(props(19).isEmpty());
+    assertTrue(props(16).contains(300001));
   }
 
   @Test
@@ -243,8 +283,8 @@ class GreatMineEntrances46Test {
 
   private void enter() {
     var floor = gson.fromJson("""
-        {"FloorID":20121001,"GroupInstanceList":[{"ID":11},{"ID":53},{"ID":67},{"ID":92},{"ID":95}],
-         "DimensionList":[{"ID":0,"GroupIndexList":[0,1,2,3,4]}]}
+        {"FloorID":20121001,"GroupInstanceList":[{"ID":11},{"ID":16},{"ID":19},{"ID":53},{"ID":67},{"ID":92},{"ID":95}],
+         "DimensionList":[{"ID":0,"GroupIndexList":[0,1,2,3,4,5,6]}]}
         """, FloorInfo.class);
     for (int index : floor.getReferencedGroupIndices()) {
       int id = floor.getSimpleGroupList().get(index).getID();
