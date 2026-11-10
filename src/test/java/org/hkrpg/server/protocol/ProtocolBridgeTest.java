@@ -1,10 +1,12 @@
 package org.hkrpg.server.protocol;
 
 import com.google.protobuf.DynamicMessage;
+import emu.lunarcore.proto.DressRelicAvatarCsReqOuterClass.DressRelicAvatarCsReq;
 import emu.lunarcore.proto.PlayerGetTokenCsReqOuterClass.PlayerGetTokenCsReq;
 import emu.lunarcore.proto.PlayerGetTokenScRspOuterClass.PlayerGetTokenScRsp;
 import emu.lunarcore.proto.PlayerHeartBeatScRspOuterClass.PlayerHeartBeatScRsp;
 import emu.lunarcore.proto.PlayerLoginScRspOuterClass.PlayerLoginScRsp;
+import emu.lunarcore.proto.TakeOffRelicCsReqOuterClass.TakeOffRelicCsReq;
 import emu.lunarcore.server.packet.CmdId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,5 +65,31 @@ class ProtocolBridgeTest {
         assertEquals(CmdId.GetQuestDataCsReq, query.cmdId());
         assertArrayEquals(new byte[0], query.body());
         assertThrows(ProtocolException.class, () -> bridge.inbound(934, new byte[] {8, 1}));
+    }
+
+    @Test void relicDressRequestPreservesAvatarAndEachSlotAndItem() throws Exception {
+        // CN4.6 uses avatar field 8 and switch_list field 4 with slot 1 and item 7 inside.
+        byte[] wire = {0x40, (byte) 0xC2, 0x3E, 0x22, 4, 8, 3, 56, 91, 0x22, 4, 8, 6, 56, 92};
+        var converted = bridge.inbound(364, wire);
+        assertEquals(CmdId.DressRelicAvatarCsReq, converted.cmdId());
+        var request = DressRelicAvatarCsReq.parseFrom(converted.body());
+        assertEquals(8002, request.getAvatarId());
+        assertEquals(2, request.getParamList().length());
+        assertEquals(3, request.getParamList().get(0).getSlot());
+        assertEquals(91, request.getParamList().get(0).getRelicUniqueId());
+        assertEquals(6, request.getParamList().get(1).getSlot());
+        assertEquals(92, request.getParamList().get(1).getRelicUniqueId());
+        assertEquals(321, bridge.outbound(CmdId.DressRelicAvatarScRsp, new byte[0]).cmdId());
+    }
+
+    @Test void relicTakeOffRequestPreservesAvatarAndPackedSlots() throws Exception {
+        // CN4.6 uses avatar field 10 and packed relic_type_list field 2.
+        byte[] wire = {0x50, (byte) 0xC2, 0x3E, 0x12, 2, 3, 6};
+        var converted = bridge.inbound(312, wire);
+        assertEquals(CmdId.TakeOffRelicCsReq, converted.cmdId());
+        var request = TakeOffRelicCsReq.parseFrom(converted.body());
+        assertEquals(8002, request.getAvatarId());
+        assertArrayEquals(new int[] {3, 6}, request.getSlotList().toArray());
+        assertEquals(311, bridge.outbound(CmdId.TakeOffRelicScRsp, new byte[0]).cmdId());
     }
 }

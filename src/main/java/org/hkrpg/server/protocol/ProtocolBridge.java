@@ -67,6 +67,10 @@ public final class ProtocolBridge {
           Map.entry("AvatarPathInfo.enhance_id", "unk_enhanced_id"),
           Map.entry("AvatarPathInfo.skilltree_list", "avatar_path_skill_tree"),
           Map.entry("AvatarPathSkillTree.anchor_point_id", "point_id"),
+          // Honey fe00bdb CmdAvatarType binds equip 364 (list 4, slot 1) and remove 312 (slots 2).
+          Map.entry("DressRelicAvatarCsReq.param_list", "switch_list"),
+          Map.entry("RelicParam.slot", "relic_type"),
+          Map.entry("TakeOffRelicCsReq.slot_list", "relic_type_list"),
           Map.entry("EquipRelic.slot", "type"),
           // Honey fe00bdb CmdArchiveType / PacketGetArchiveDataScRsp:
           // monster list 13; relic set 3 and slot/type 15. Preserve the core catalog values.
