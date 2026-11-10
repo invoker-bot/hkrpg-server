@@ -30,9 +30,13 @@ final class MissionStateRecords {
 
   static boolean mainDoing(Player player, int id) {
     synchronized (player) {
-      return !player.getGameplay().getCancelledMissions().contains(id)
-          && doing(player.getGameplay().getMainMissions().get(id), id, 1);
+      return recordedMainDoing(player, id) && !ActivityMissionSchedule.paused(player, id);
     }
+  }
+
+  private static boolean recordedMainDoing(Player player, int id) {
+    return !player.getGameplay().getCancelledMissions().contains(id)
+        && doing(player.getGameplay().getMainMissions().get(id), id, 1);
   }
 
   static boolean mainCompleted(Player player, int id) {
@@ -51,11 +55,13 @@ final class MissionStateRecords {
   static boolean subCompleted(Player player, int id) {
     synchronized (player) {
       var definition = GameplayDefinitions.subs.get(id);
+      int main = definition == null ? 0 : definition.getMainMissionID();
       return definition != null
           && definition.getId() == id
           && definition.getProgress() >= 0
           && !player.getGameplay().getCancelledSubs().contains(id)
-          && mainAccepted(player, definition.getMainMissionID())
+          // Activity panel prerequisites can consult completed objectives inside a paused mission.
+          && (recordedMainDoing(player, main) || mainCompleted(player, main))
           && completed(
               player.getGameplay().getSubMissions().get(id),
               id,

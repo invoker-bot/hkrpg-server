@@ -24,6 +24,7 @@ public final class MissionManager {
 
   // Runtime call stack only. Saved pending cursors never become resumable through this set.
   private final Set<Integer> activeActions = new HashSet<>();
+  private Set<Integer> pausedActivityMissions = Set.of();
 
   public MissionManager(Player player) {
     this.player = player;
@@ -63,7 +64,12 @@ public final class MissionManager {
         && (!config.isInRaid() || new MissionRaid(player).owns(config.getId()))
         && gates(config.getTakeParam(), config.getTakeOperation(), manual)
         && gates(config.getBeginParam(), config.getBeginOperation(), manual)
+        && activityWindowOpen(config.getId())
         && DailyCommissionAcceptance.check(player, config.getId(), clock.instant()) == Retcode.SUCC;
+  }
+
+  public boolean activityWindowOpen(int id) {
+    return ActivityMissionSchedule.mayAccept(player, id, clock.instant());
   }
 
   boolean canAcceptInRaid(int id) {
@@ -75,6 +81,7 @@ public final class MissionManager {
         && GameData.getMissionInfos().containsKey(id)
         && gates(config.getTakeParam(), config.getTakeOperation(), true)
         && gates(config.getBeginParam(), config.getBeginOperation(), true)
+        && (state == null ? activityWindowOpen(id) : !ActivityMissionSchedule.paused(player, id))
         && (state == null
             || state.getQuestId() == id
                 && state.getPhase() == QuestState.Phase.DOING
@@ -247,8 +254,14 @@ public final class MissionManager {
         new MissionRewards(player).settle(rewardKey, state);
       }
       new StoryParties(player).reconcile();
-      if (changed) sync();
-      else if (player.getScene() != null) player.getScene().refreshMissionGroups();
+      var paused = new HashSet<Integer>();
+      for (int id : player.getGameplay().getMainMissions().keySet()) {
+        if (MissionSnapshotRecords.pausedMain(player, id)) paused.add(id);
+      }
+      if (changed || !paused.equals(pausedActivityMissions)) {
+        sync();
+        pausedActivityMissions = paused;
+      } else if (player.getScene() != null) player.getScene().refreshMissionGroups();
       Mascots.reconcile(player);
       WorldMechanisms.missionRewards(player);
       CompatibleMechanisms.reconcile(player);

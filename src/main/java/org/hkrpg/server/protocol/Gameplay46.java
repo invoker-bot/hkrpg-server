@@ -140,7 +140,10 @@ public final class Gameplay46 {
               only(req, "main_mission_id")
                   ? player.getMissionManager().accept(id)
                   : Retcode.REQ_PARA_INVALID;
-          GameDiagnostics.outcome(session, name, id, result, "mission-accept", "");
+          String reason = result == Retcode.MISSION_NOT_DOING
+                  && !player.getMissionManager().activityWindowOpen(id)
+              ? "activity-window-or-panel" : "mission-accept";
+          GameDiagnostics.outcome(session, name, id, result, reason, "");
           send(
               session,
               "AcceptMainMissionScRsp",
@@ -161,14 +164,15 @@ public final class Gameplay46 {
               var main = builder(session, "MainMission");
               set(main, "id", id);
               var state = player.getGameplay().getMainMissions().get(id);
+              boolean paused = MissionSnapshotRecords.pausedMain(player, id);
               setMissionStatus(
                   main,
-                  state == null
+                  state == null || paused
                       ? "MissionStatus_MissionNone"
                       : state.getPhase() == QuestState.Phase.DOING
                           ? "MissionStatus_MissionDoing"
                           : "MissionStatus_MissionFinish");
-              appendCustom(session, main, id);
+              if (!paused) appendCustom(session, main, id);
               add(response, "main_mission_list", main.build());
             }
           session.sendClientPacket(
@@ -348,7 +352,8 @@ public final class Gameplay46 {
             .toList()) {
       if (state.getPhase() != QuestState.Phase.DOING)
         add(response, "finished_main_mission_id_list", state.getQuestId());
-      if (!sync && state.getPhase() == QuestState.Phase.DOING) {
+      if (!sync && state.getPhase() == QuestState.Phase.DOING
+          && !MissionSnapshotRecords.pausedMain(player, state.getQuestId())) {
         var main = builder(session, "MainMission");
         set(main, "id", state.getQuestId());
         var field = main.getDescriptorForType().findFieldByName("status");

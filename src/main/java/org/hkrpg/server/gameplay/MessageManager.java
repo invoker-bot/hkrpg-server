@@ -75,10 +75,7 @@ public final class MessageManager {
   }
 
   private boolean activeMain(int id) {
-    var state = player.getGameplay().getMainMissions().get(id);
-    return state != null
-        && state.getPhase() == QuestState.Phase.DOING
-        && !player.getGameplay().getCancelledMissions().contains(id);
+    return MissionStateRecords.mainDoing(player, id);
   }
 
   private boolean eligible(GameplayDefinitions.MessageSection s) {

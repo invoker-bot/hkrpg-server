@@ -443,6 +443,7 @@ public final class GameplayDefinitions {
     Path settings = Path.of(LunarCore.getConfig().getDataDir(), "Gameplay46.json");
     try { ActivitySchedules.load(settings); }
     catch (java.io.IOException e) { throw new IllegalStateException("Invalid Gameplay46.json",e); }
+    ActivityMissionSchedule.load(root);
     Path pool = Path.of(LunarCore.getConfig().getDataDir(), "RogueMapGen.json");
     if (Files.isRegularFile(pool))
       try (var reader = Files.newBufferedReader(pool)) {
