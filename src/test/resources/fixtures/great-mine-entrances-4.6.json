@@ -1,0 +1,641 @@
+{
+  "groups": {
+    "11": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission",
+      "AreaAnchorName": "LevelArea_P20121_F20121001_G11",
+      "LoadSide": "Server",
+      "AnchorList": [],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Mission/1010501/Drop/Drop_1010501_7.json",
+          "Trigger": {
+            "Radius": 3,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1
+          },
+          "CampID": 4,
+          "OverrideHintRange": 10,
+          "DialogueGroups": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop1",
+          "ID": 300001,
+          "PosX": 185.138,
+          "PosY": 56.852,
+          "PosZ": -180.397
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Mission/1010501/Drop/Drop_1010501_3.json",
+          "Trigger": {
+            "Radius": 3,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1
+          },
+          "CampID": 4,
+          "OverrideHintRange": 10,
+          "DialogueGroups": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "ID": 300002,
+          "PosX": 160.677,
+          "PosY": 57.693,
+          "PosZ": -195.411
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Mission/1010501/Drop/Drop_1010501_4.json",
+          "Trigger": {
+            "Radius": 3,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1
+          },
+          "CampID": 4,
+          "OverrideHintRange": 10,
+          "DialogueGroups": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "ID": 300003,
+          "PosX": 163.01,
+          "PosY": 57.587,
+          "PosZ": -185.578
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "53": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission1010501_",
+      "Category": "Mission",
+      "AreaAnchorName": "LevelArea_P20121_F20121001_G53",
+      "SaveType": "Reset",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "ID": 101050117
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101050118
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101050126
+          }
+        ],
+        "Operation": "Or"
+      },
+      "UnloadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "Phase": "Finish",
+            "ID": 101050118
+          }
+        ]
+      },
+      "OwnerMainMissionID": 1010501,
+      "ConflictIDList": [],
+      "AnchorList": [],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "ID": 300003,
+          "PosX": 188.0065,
+          "PosY": 55.08819,
+          "PosZ": -176.8312
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "OverrideHintRange": 10,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "ID": 300002,
+          "PosX": 183.23,
+          "PosY": 55.822,
+          "PosZ": -170.818
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "67": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission1010501_",
+      "Category": "Mission",
+      "AreaAnchorName": "LevelArea_P20121_F20121001_G67",
+      "SaveType": "Reset",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "ID": 101050125
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101050126
+          }
+        ],
+        "Operation": "Or"
+      },
+      "UnloadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "Phase": "Finish",
+            "ID": 101050126
+          }
+        ]
+      },
+      "OwnerMainMissionID": 1010501,
+      "ConflictIDList": [],
+      "AnchorList": [],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 1,
+            "DimY": 1,
+            "DimZ": 1,
+            "PointList": []
+          },
+          "CampID": 4,
+          "OverrideHintRange": 10,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "ID": 300002,
+          "PosX": 206.42,
+          "PosY": 51.886,
+          "PosZ": -173.62
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop1",
+          "ID": 300001,
+          "PosX": 218.5152,
+          "PosY": 52.44456,
+          "PosZ": -176.946
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "92": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "RaidGate",
+      "ConfigPrefabPath": "Level/Maze/Chapter01/Chap01_MAZ_M203_LevelArea.prefab",
+      "AreaAnchorName": "LevelArea_P20121_F20121001_G92",
+      "LoadSide": "Server",
+      "GroupRefreshID": 1,
+      "AnchorList": [
+        {
+          "Name": "Checkpoint1",
+          "RotY": 226.7653,
+          "ID": 1,
+          "PosX": 113.106,
+          "PosY": 58.985,
+          "PosZ": -111.376
+        },
+        {
+          "RotX": 1.549981,
+          "RotZ": 359.7772,
+          "Usage": "Camera",
+          "Name": "Camera",
+          "RotY": 205.8515,
+          "ID": 2,
+          "PosX": 123.5759,
+          "PosY": 47.7,
+          "PosZ": -69.22596
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 3001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Maze/MazeProp/Maze_Prop_ChallengeRaid_Entrance.json",
+          "ValueSource": {
+            "Values": [
+              {
+                "$type": "RPG.GameCore.SharedString",
+                "Value": "LevelArea_P20121_F20121001_G92,Camera",
+                "Key": "VCam"
+              }
+            ]
+          },
+          "Trigger": {
+            "Radius": 2,
+            "DimX": 2,
+            "DimY": 4,
+            "DimZ": 14,
+            "Offset": {
+              "X": 2,
+              "Y": 0,
+              "Z": 0
+            },
+            "Server": true
+          },
+          "CampID": 4,
+          "State": "CheckPointDisable",
+          "CustomTriggerMap": {
+            "CustomTrigger_DoorClose": {
+              "Radius": 12
+            },
+            "CustomTrigger_Spring": {
+              "Radius": 6,
+              "Offset": {
+                "X": 2,
+                "Y": 0,
+                "Z": 0
+              },
+              "Server": true
+            }
+          },
+          "AnchorGroupID": 92,
+          "AnchorID": 1,
+          "MappingInfoID": 1408,
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [
+            16
+          ],
+          "RaidID": 4012102,
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "RotY": 313.8239,
+          "ID": 300003,
+          "PosX": 111.55,
+          "PosY": 58.98,
+          "PosZ": -112.8
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
+    "95": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission4020103_",
+      "Category": "Mission",
+      "AreaAnchorName": "LevelArea_P20121_F20121001_G95",
+      "SaveType": "Reset",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "ID": 4020103
+          }
+        ]
+      },
+      "UnloadCondition": {
+        "Conditions": [
+          {
+            "Phase": "Finish",
+            "ID": 4020103
+          }
+        ]
+      },
+      "LoadSide": "Server",
+      "OwnerMainMissionID": 4020103,
+      "ConflictIDList": [],
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "RotY": 315.4975,
+          "ID": 1,
+          "PosX": 143.3767,
+          "PosY": 32.423,
+          "PosZ": -97.84619
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 3001,
+          "IsOverrideInitLevelGraph": true,
+          "InitLevelGraph": "Config/Level/Props/Raid/InitLevelGraph_Prop_Raid_Entrance_02.json",
+          "Trigger": {
+            "Radius": 2.5,
+            "Offset": {
+              "X": 1.15,
+              "Y": 0.5,
+              "Z": 0
+            },
+            "PointList": [],
+            "Server": true
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "AnchorGroupID": 95,
+          "AnchorID": 1,
+          "MappingInfoID": 1403,
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [
+            16
+          ],
+          "RaidID": 41003,
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "RotY": 43.79347,
+          "ID": 300002,
+          "PosX": 142.12,
+          "PosY": 32.756,
+          "PosZ": -96.57999
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [],
+      "CrowdList": [],
+      "PedestrianList": []
+    }
+  },
+  "props": [
+    {
+      "ID": 100,
+      "PropType": "PROP_ORDINARY",
+      "PropName": {
+        "Hash": 13013349132478528449
+      },
+      "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+      "BoardShowList": [
+        4
+      ],
+      "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+      "DamageTypeList": [],
+      "MiniMapStateIcons": [],
+      "JsonPath": "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+      "PropStateList": [
+        "Closed",
+        "Open",
+        "Locked",
+        "TriggerDisable",
+        "TriggerEnable"
+      ],
+      "PerformanceType": "D"
+    },
+    {
+      "ID": 3001,
+      "PropType": "PROP_RELIC",
+      "IsMapContent": true,
+      "PropName": {
+        "Hash": 10060311851348457107
+      },
+      "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+      "BoardShowList": [
+        4
+      ],
+      "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_SpaceFissurel_04_Entity.json",
+      "DamageTypeList": [],
+      "MiniMapStateIcons": [
+        {
+          "State": "CheckPointDisable",
+          "IconID": 14,
+          "Color": "#4b4b4b"
+        },
+        {
+          "State": "CheckPointEnable",
+          "IconID": 14,
+          "Color": ""
+        }
+      ],
+      "JsonPath": "Config/Props/Common/Prop_Common_SpaceFissurel_04_Config.json",
+      "PropStateList": [
+        "Closed",
+        "Open",
+        "Locked",
+        "CheckPointDisable",
+        "CheckPointEnable",
+        "Hidden"
+      ],
+      "PerformanceType": "B",
+      "HasRendererComponent": true,
+      "LodPriority": 2
+    }
+  ],
+  "objectives": [
+    {
+      "ID": 101050106,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050106.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050115
+      ],
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 20121004,
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 4,
+      "WayPointEntityID": 300011
+    },
+    {
+      "ID": 101050117,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050117.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050126
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050117",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 53,
+      "WayPointEntityID": 300003,
+      "WayPointShowRangeMin": 30,
+      "MapWaypointRange": 25
+    },
+    {
+      "ID": 101050118,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050118.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050117
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050118",
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "addMissionItem",
+          "FinishActionPara": [
+            140039,
+            1
+          ]
+        }
+      ],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 53,
+      "WayPointEntityID": 300002
+    },
+    {
+      "ID": 101050125,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050125.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050113
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050125",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 67,
+      "WayPointEntityID": 300001,
+      "WayPointShowRangeMin": 30,
+      "MapWaypointRange": 25
+    },
+    {
+      "ID": 101050126,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050126.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050125
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050126",
+      "ParamItemList": [],
+      "FinishActionList": [
+        {
+          "FinishActionType": "addMissionItem",
+          "FinishActionPara": [
+            140033,
+            1
+          ]
+        }
+      ],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 67,
+      "WayPointEntityID": 300002
+    }
+  ]
+}

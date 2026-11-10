@@ -18,6 +18,7 @@ public class GroupInfo {
     // Native client ownership is distinct from the legacy logical group used for mission checks.
     @Setter private transient boolean clientOwnedNpcSource;
     @Setter private transient int clientInvestigationFloor;
+    @Setter private transient int greatMineSourceGroup;
     private GroupCategory Category;
     private boolean LoadOnInitial = true;
     private int OwnerMainMissionID;

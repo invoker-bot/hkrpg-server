@@ -12,6 +12,7 @@ import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import java.util.*;
+import org.hkrpg.server.gameplay.GreatMineEntrances;
 import org.hkrpg.server.gameplay.MissionSceneEntrances;
 import org.hkrpg.server.gameplay.SceneAnchors;
 import org.hkrpg.server.gameplay.StoryLineConditions;
@@ -234,6 +235,7 @@ public final class SceneMap46 {
     for (var prop : floor.getCachedTeleports().values()) {
       var group = prop.getGroup();
       if (!prop.isLoadOnInitial()
+          || GreatMineEntrances.unavailableRift(player, entry.getPlaneID(), entry.getFloorID(), group)
           || SceneAnchors.find(entry.getId(), group.getId(), prop.getID()) != prop
           || floor.getGroups(0).get(group.getId()) != group
           || !floor.isGroupInDimension(group.getId(), 0)

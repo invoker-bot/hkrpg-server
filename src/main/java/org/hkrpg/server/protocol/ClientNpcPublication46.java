@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import org.hkrpg.server.gameplay.ClientInvestigationGroups;
 import org.hkrpg.server.gameplay.ClientNpcGroups;
+import org.hkrpg.server.gameplay.GreatMineEntrances;
 import org.hkrpg.server.gameplay.MissionSnapshotRecords;
 import org.hkrpg.server.gameplay.PeppyMissionScene;
 
@@ -41,8 +42,11 @@ final class ClientNpcPublication46 {
     var mains = new TreeSet<Integer>();
     var subs = new TreeSet<Integer>();
     for (var source : scene.getResourceGroups().values()) {
+      boolean mine = GreatMineEntrances.clientGroup(scene, source.getId());
       if (!source.isClientOwnedNpcSource()
+          && !mine
           && !ClientInvestigationGroups.clientGroup(scene, source.getId())) continue;
+      if (mine) mains.add(source.getOwnerMainMissionID());
       if (PeppyMissionScene.clientGroup(scene, source.getId())) {
         mains.add(source.getOwnerMainMissionID());
         subs.addAll(PeppyMissionScene.SCENE_GRAPH_OBJECTIVES);
@@ -128,7 +132,8 @@ final class ClientNpcPublication46 {
 
   private static boolean clientGroup(Scene scene, int groupId) {
     return PeppyMissionScene.clientGroup(scene, groupId)
-        || ClientInvestigationGroups.clientGroup(scene, groupId);
+        || ClientInvestigationGroups.clientGroup(scene, groupId)
+        || GreatMineEntrances.clientGroup(scene, groupId);
   }
 
   private static boolean local(DynamicMessage entity, Scene scene) {

@@ -30,6 +30,7 @@ import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import org.hkrpg.server.gameplay.GreatMineEntrances;
 import us.hebi.quickbuf.RepeatedInt;
 
 @Getter
@@ -202,6 +203,7 @@ public class Scene implements Tickable {
 
     public void loadGroup(GroupInfo group) {
         if (group == null || group.getLoadSide() != GroupInfo.GroupLoadSide.Server
+            || GreatMineEntrances.unavailableRift(player, planeId, floorId, group)
             || !org.hkrpg.server.gameplay.BookPickups.allowsGroup(this, group)
             || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)
             || !org.hkrpg.server.gameplay.DebugGroupConditions.allowed(group, this)
