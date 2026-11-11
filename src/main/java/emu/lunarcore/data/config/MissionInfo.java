@@ -85,6 +85,7 @@ public class MissionInfo {
 
         @Setter private MissionTaskInfo task;
         private transient org.hkrpg.server.gameplay.StoryTrialReplacement.Plan storyTrialTask;
+        private transient boolean unavailableNativeScript;
     }
 
     public record MissionItemCost(int ItemID, int ItemNum) {}

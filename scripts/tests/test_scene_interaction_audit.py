@@ -31,7 +31,7 @@ class SceneInteractionAuditTest(unittest.TestCase):
 
     def placement(self, deleted=False, prop=3001, dimension=0):
         group = 'Config/LevelOutput/SharedRuntimeGroup/Groups_P1_F1001/LevelGroup_P1_F1001_G1.json'
-        self.write(group, {'PropList': [{'ID':300001,'PropID':prop,'RaidID':201,
+        self.write(group, {'LoadOnInitial':True,'PropList': [{'ID':300001,'PropID':prop,'RaidID':201,
             'IsOverrideInitLevelGraph':True,'InitLevelGraph':'Config/Level/Props/test.json'}]})
         self.write('Config/LevelOutput/RuntimeFloor/P1_F1001.json', {'FloorID':1001,
             'GroupInstanceList':[{'GroupPath':group,'ID':1,'IsDelete':deleted}],
@@ -49,6 +49,23 @@ class SceneInteractionAuditTest(unittest.TestCase):
         result = audit.audit(self.root)['summary']
         self.assertEqual(1, result['dynamicPerformances'])
         self.assertEqual(0, result['unresolvedReferences'])
+
+    def test_disabled_task_and_disabled_parent_do_not_become_live_missing_references(self):
+        self.trigger(TaskEnabled=False)
+        result=audit.audit(self.root)
+        self.assertEqual([],result['missingPerformances'])
+        self.assertEqual(1,result['summary']['disabledPerformanceReferences'])
+        self.write('Config/Level/Props/test.json',{'TaskEnabled':False,'ButtonCallback':[
+            {'$type':'RPG.GameCore.TriggerPerformance','PerformanceType':'E','PerformanceID':999}]})
+        self.assertEqual([],audit.audit(self.root)['missingPerformances'])
+
+    def test_omitted_native_group_initial_flag_is_false(self):
+        self.trigger();self.placement()
+        group=next((self.root/'Config/LevelOutput/SharedRuntimeGroup').glob('*/*.json'))
+        raw=json.loads(group.read_text('utf-8'));raw.pop('LoadOnInitial');group.write_text(json.dumps(raw),'utf-8')
+        result=audit.audit(self.root)['summary']
+        self.assertEqual(0,result['initiallyPlacedUnresolvedReferences'])
+        self.assertEqual(0,result['activeDefaultMissingRaidPlacements'])
 
     def test_deleted_or_other_dimension_group_is_not_initial_default_candidate(self):
         self.trigger()

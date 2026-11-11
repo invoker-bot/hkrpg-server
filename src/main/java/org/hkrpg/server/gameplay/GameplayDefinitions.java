@@ -512,6 +512,8 @@ public final class GameplayDefinitions {
             }
           }
         }
+        UnavailableMissionScripts.markSource(
+            root.toAbsolutePath().normalize().getParent().getParent().getParent(), full, mission);
       }
     } catch (Exception e) {
       throw new IllegalStateException("Cannot load mission definitions", e);

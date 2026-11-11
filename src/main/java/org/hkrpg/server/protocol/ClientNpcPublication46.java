@@ -13,14 +13,16 @@ import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import org.hkrpg.server.gameplay.ClientInvestigationGroups;
 import org.hkrpg.server.gameplay.ClientNpcGroups;
+import org.hkrpg.server.gameplay.ClientVisualGroups;
 import org.hkrpg.server.gameplay.GreatMineEntrances;
 import org.hkrpg.server.gameplay.MissionSnapshotRecords;
+import org.hkrpg.server.gameplay.NativeMissionGroups;
 import org.hkrpg.server.gameplay.PeppyMissionScene;
 
 /** Keep native client-owned placements out of scene entity publication. */
 final class ClientNpcPublication46 {
   static DynamicMessage sceneInfo(DynamicMessage message, Scene scene) {
-    if (!ClientNpcGroups.supports(scene)) return message;
+    if (!NativeMissionGroups.supports(scene)) return message;
     var projected =
         projectRows(
             message,
@@ -38,15 +40,23 @@ final class ClientNpcPublication46 {
   /** The native map setup reads these statuses before initializing local groups. */
   private static DynamicMessage withMissionGates(DynamicMessage message, Scene scene) {
     var field = message.getDescriptorForType().findFieldByName("scene_mission_info");
-    if (message.hasField(field)) return message;
+    boolean hadGates=message.hasField(field);
     var mains = new TreeSet<Integer>();
     var subs = new TreeSet<Integer>();
+    var player = scene.getPlayer();
     for (var source : scene.getResourceGroups().values()) {
       boolean mine = GreatMineEntrances.clientGroup(scene, source.getId());
+      boolean visual=ClientVisualGroups.clientGroup(scene,source.getId());
       if (!source.isClientOwnedNpcSource()
           && !mine
+          && !visual
           && !ClientInvestigationGroups.clientGroup(scene, source.getId())) continue;
       if (mine) mains.add(source.getOwnerMainMissionID());
+      if (visual) {
+        if(MissionSnapshotRecords.main(player,source.getOwnerMainMissionID()))
+          mains.add(source.getOwnerMainMissionID());
+        NativeMissionGroups.addSavedBindings(scene,source,subs);
+      }
       if (PeppyMissionScene.clientGroup(scene, source.getId())) {
         mains.add(source.getOwnerMainMissionID());
         subs.addAll(PeppyMissionScene.SCENE_GRAPH_OBJECTIVES);
@@ -57,14 +67,26 @@ final class ClientNpcPublication46 {
     }
     if (mains.isEmpty() && subs.isEmpty()) return message;
 
-    var gates = DynamicMessage.newBuilder(field.getMessageType());
+    var gates = hadGates ? ((DynamicMessage)message.getField(field)).toBuilder()
+        : DynamicMessage.newBuilder(field.getMessageType());
     var subList = gates.getDescriptorForType().findFieldByName("sub_mission_status_list");
     var subStatus = subList.getMessageType().findFieldByName("status");
-    var player = scene.getPlayer();
+    // A partial upstream snapshot may already contain unrelated missions. Replace only
+    // the statuses this projection owns, keeping the rest and any unknown fields.
+    for(String name:List.of("finished_main_mission_id_list","unfinished_main_mission_id_list")) {
+      var list=gates.getDescriptorForType().findFieldByName(name);
+      var keep=((List<?>)gates.getField(list)).stream().filter(id->!mains.contains((Integer)id)).toList();
+      gates.clearField(list);for(var id:keep)gates.addRepeatedField(list,id);
+    }
+    var keep=((List<?>)gates.getField(subList)).stream().map(DynamicMessage.class::cast)
+        .filter(row->!subs.contains(Gameplay46.number(row,"id"))).toList();
+    gates.clearField(subList);for(var row:keep)gates.addRepeatedField(subList,row);
     synchronized (player) {
-      var saved = player.getGameplay().getMainMissions();
+      var saved=player.getGameplay().getMainMissions();
       for (int id : mains) {
-        if (saved.containsKey(id) && !MissionSnapshotRecords.main(player, id)) continue;
+        if (saved.containsKey(id) && (!MissionSnapshotRecords.main(player,id)
+            || MissionSnapshotRecords.pausedMain(player,id)
+            || player.getGameplay().getCancelledMissions().contains(id))) continue;
         Gameplay46.add(
             gates,
             player.getMissionManager().finished(id)
@@ -86,9 +108,9 @@ final class ClientNpcPublication46 {
         gates.addRepeatedField(subList, row.build());
       }
     }
-    return gates.getAllFields().isEmpty()
-        ? message
-        : message.toBuilder().setField(field, gates.build()).build();
+    if(gates.getAllFields().isEmpty() && gates.getUnknownFields().asMap().isEmpty())
+      return hadGates ? message.toBuilder().clearField(field).build() : message;
+    return message.toBuilder().setField(field,gates.build()).build();
   }
 
   private static void addGates(Set<Integer> mains, Set<Integer> subs, LoadConditionInfo set) {
@@ -104,7 +126,7 @@ final class ClientNpcPublication46 {
   }
 
   static DynamicMessage refresh(DynamicMessage message, Scene scene) {
-    if (!ClientNpcGroups.supports(scene)) return message;
+    if (!NativeMissionGroups.supports(scene)) return message;
     return projectRows(
         message,
         "group_refresh_list",
@@ -133,6 +155,7 @@ final class ClientNpcPublication46 {
   private static boolean clientGroup(Scene scene, int groupId) {
     return PeppyMissionScene.clientGroup(scene, groupId)
         || ClientInvestigationGroups.clientGroup(scene, groupId)
+        || ClientVisualGroups.clientGroup(scene,groupId)
         || GreatMineEntrances.clientGroup(scene, groupId);
   }
 

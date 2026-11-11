@@ -19,7 +19,8 @@ public final class MissionSnapshotRecords {
                   player.getGameplay().getMainMissions().get(source.getMainMissionID()),
                   source.getMainMissionID(), 1)
               || pausedMain(player, source.getMainMissionID())
-              || PeppyMissionScene.retiredFightMarker(player, source));
+              || PeppyMissionScene.retiredFightMarker(player, source)
+              || UnavailableMissionScripts.suppressed(player, source));
     }
   }
 

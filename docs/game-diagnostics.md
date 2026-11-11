@@ -11,6 +11,8 @@
 | `Unhandled` | 协议版本、命令编号、能识别的命令名及连接阶段。 |
 | `Packet rejected` | 失败发生在分帧、请求头、协议转换、处理器或传输阶段。保留异常类型和有限调用栈，已知映射缺失附上原字段名。 |
 | `Scene placement skipped` | 缺定义或加载失败的楼层、维度、组、实例和物件、NPC 或怪物资源号。缺失副本的旧入口另记 `reason=missing-raid`、实际楼层、组和副本号。 |
+| `Scene placement skipped: reason=inactive-mission-group` | `inactive-mission-group` 的位面、楼层、维度、剧情线、组及归属任务，定位旧组或错步骤的显式加载。 |
+| `Mission script skipped` | `missing-optional-performance` 的主任务、子任务、演出及连接场景，定位原始失效的非必需分支。 |
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
 | `Player tick error` | 定时更新的场景、异常类型及有限调用栈。 |
 

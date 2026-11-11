@@ -283,6 +283,7 @@ public final class MissionManager {
   }
 
   private boolean subEligible(MissionInfo.SubMissionInfo config) {
+    if (UnavailableMissionScripts.suppressed(player, config)) return false;
     if (BoxingClubMissionGoals.declaredStart(config)) return true;
     if ("Auto".equals(config.getTakeType())) return true;
     if ("CustomValue".equals(config.getTakeType())) return customGate(config);
@@ -1491,7 +1492,10 @@ public final class MissionManager {
         && scene.isLoaded()
         && !scene.getLoadedGroups().contains(group.getId())) return false;
     boolean load =
-        group.getLoadCondition() == null
+        NativeMissionGroups.usesBindings(scene,group)
+            ? NativeMissionGroups.boundToCurrentStep(scene,group)
+                && (group.getLoadCondition()==null || conditions(group.getLoadCondition()))
+            : group.getLoadCondition() == null
             ? group.isLoadOnInitial()
                 && (group.getOwnerMainMissionID() != 0
                     || group.getCategory()

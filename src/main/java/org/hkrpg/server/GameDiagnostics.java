@@ -91,6 +91,12 @@ public final class GameDiagnostics {
     });
   }
 
+  public static void missionScriptUnavailable(Player player, int main, int sub, int performance) {
+    record(Topic.PROGRESS,Level.WARN,"unavailable-script:"+main+":"+sub,
+        ()->"Mission script skipped: reason=missing-optional-performance main="+main
+            +" sub="+sub+" performance="+performance+context(player.getSession(),player.getScene()));
+  }
+
   private static void logSummary(Topic topic, Summary summary) {
     if (summary == null) return;
     LunarCore.getLogger().info("Diagnostic repeats: topic={} repeated={} overLimit={} examples={} at={}",
@@ -174,6 +180,15 @@ public final class GameDiagnostics {
         () -> "Scene placement skipped: reason=" + reason + placement
             + context(scene.getPlayer().getSession(), scene)
             + (failure == null ? "" : " " + stack(failure)));
+  }
+
+  /** Identifiers and reasons must come from numeric fields, enums or authored server code. */
+  public static void missionGroupRejected(Scene scene,int group,int owner) {
+    String place=" plane="+scene.getPlaneId()+" floor="+scene.getFloorId()
+        +" dimension="+scene.getDimensionId()+" storyline="+scene.getStoryLineId()
+        +" group="+group+" main="+owner;
+    record(Topic.SCENE,Level.INFO,"inactive-mission-group"+place,
+        ()->"Scene placement skipped: reason=inactive-mission-group"+place);
   }
 
   /** Identifiers and reasons must come from numeric fields, enums or authored server code. */

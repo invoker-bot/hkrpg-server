@@ -210,6 +210,11 @@ public class Scene implements Tickable {
             || !org.hkrpg.server.gameplay.DebugGroupConditions.allowed(group, this)
             || !org.hkrpg.server.gameplay.MusicSceneGroups.allowed(group, this)
             || !org.hkrpg.server.gameplay.CompatibleMechanisms.shouldLoad(this, group)) return;
+        if (org.hkrpg.server.gameplay.NativeMissionGroups.usesBindings(this,group)
+            && !shouldLoadMissionGroup(group)) {
+            GameDiagnostics.missionGroupRejected(this,group.getId(),group.getOwnerMainMissionID());
+            return;
+        }
         if (org.hkrpg.server.gameplay.MissionGroupConditions.tracks(group, this)
             && (SceneEntityLoader.isExcludedGroup(this, group)
                 || !getPlayer().getMissionManager().shouldLoadGroup(group, this))) return;

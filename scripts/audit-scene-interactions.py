@@ -35,6 +35,15 @@ def walk(value, path=()):
             yield from walk(item, (*path, key))
 
 
+def disabled_at(value, path):
+    for key in (*path, None):
+        if isinstance(value, dict) and value.get('TaskEnabled') is False:
+            return True
+        if key is not None:
+            value = value[key]
+    return False
+
+
 def performance_ids(resources):
     result, sizes = {}, {}
     for kind, names in PERFORMANCE_TABLES.items():
@@ -95,10 +104,10 @@ def audit(resources):
                 npcs=len(raw.get('NPCList', [])), monsters=len(raw.get('MonsterList', []))))
         if raw.get('LevelGraph'):
             graph_users[raw['LevelGraph']].append(dict(**common, kind='group', initial=raw.get(
-                'LoadOnInitial', True), deleted=raw.get('IsDelete', False)))
+                'LoadOnInitial', False), deleted=raw.get('IsDelete', False)))
         for prop in raw.get('PropList', []):
             placement = dict(**common, kind='prop', instance=prop.get('ID'), prop=prop.get('PropID'),
-                initial=raw.get('LoadOnInitial', True) and prop.get('LoadOnInitial', True),
+                initial=raw.get('LoadOnInitial', False) and prop.get('LoadOnInitial', True),
                 deleted=raw.get('IsDelete', False) or prop.get('IsDelete', False))
             if prop.get('IsOverrideInitLevelGraph') and prop.get('InitLevelGraph'):
                 graph_users[prop['InitLevelGraph']].append(placement)
@@ -110,7 +119,7 @@ def audit(resources):
                 raid_candidates.append(candidate)
             else:
                 other_namespaces.append(candidate)
-    missing, dynamic, unknown, raid_graphs = [], [], [], []
+    missing, dynamic, unknown, raid_graphs, disabled = [], [], [], [], []
     counts = Counter()
     graph_paths = sorted((resources / 'Config/Level').rglob('*.json'))
     for path in graph_paths:
@@ -122,7 +131,9 @@ def audit(resources):
                 row = dict(graph=source, location=list(location), type=node.get('PerformanceType'),
                     id=node.get('PerformanceID', 0), placements=graph_users.get(source, []),
                     button=any(k in location for k in ('ButtonCallback', 'OnPressedCallback')))
-                if any(node.get(key) is not None for key in ('PerformanceType_DS', 'PerformanceID_DS')):
+                if disabled_at(raw, location):
+                    disabled.append(row)
+                elif any(node.get(key) is not None for key in ('PerformanceType_DS', 'PerformanceID_DS')):
                     dynamic.append(row)
                 elif row['type'] not in performances:
                     unknown.append(row)
@@ -131,13 +142,15 @@ def audit(resources):
                     if row['id'] not in performances[row['type']]:
                         missing.append(row)
             raid = node.get('RaidID', 0)
-            if task in ('OpenTreasureChallenge', 'OpenRaid') and type(raid) is int and raid and raid not in raid_ids:
+            if (task in ('OpenTreasureChallenge', 'OpenRaid') and type(raid) is int and raid
+                    and raid not in raid_ids and not disabled_at(raw, location)):
                 raid_graphs.append(dict(graph=source, location=list(location), task=task, raid=raid,
                     placements=graph_users.get(source, [])))
     candidates = [row for row in missing if any(active_placement(p) for p in row['placements'])]
     summary = dict(floors=floor_count, groups=len(group_paths), graphs=len(graph_paths),
         staticPerformances=counts['static'], dynamicPerformances=len(dynamic),
         unknownPerformanceTypes=len(unknown), unresolvedReferences=len(missing),
+        disabledPerformanceReferences=len(disabled),
         unresolvedPerformanceIds=len({(row['type'], row['id']) for row in missing}),
         initiallyPlacedUnresolvedReferences=len(candidates),
         initiallyPlacedUnresolvedIds=len({(row['type'],row['id']) for row in candidates}),
@@ -147,6 +160,7 @@ def audit(resources):
     return dict(readOnly=True, runtimePublicationChecked=False, clientAccepted=False,
         summary=summary, performanceTableSizes=table_sizes, missingPerformances=missing,
         dynamicPerformances=dynamic, unknownPerformanceTypes=unknown,
+        disabledPerformanceReferences=disabled,
         missingRaidPlacements=raid_candidates, otherRaidIdNamespaces=other_namespaces,
         missingRaidGraphReferences=raid_graphs, clientPropGroups=client_groups,
         tableSHA256={p.relative_to(resources).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
