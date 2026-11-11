@@ -35,3 +35,9 @@
 `scripts/build.ps1 -TestForks 8` 全量通过 713 组、19,927 项 Java 测试，零失败、错误或跳过。全量包 SHA-256 为 `71b0a8f2419710497322d8895cd7637ba3f68e812ddd1ab69f77420a3cabc72b`。候选运行包以原安装包为底，15 个变更编译条目与全量包逐字节一致，另更新功能清单；包内其余 23,972 个条目内容保持一致。
 
 验证报告包括 `full-summary.json`、`release-proof.json`、`native-release.json`、`login.json`、`native-floor-evidence.json` 和 `native-binding-evidence.json`。游戏内实际 F、场景显示和完整演出仍待验收。
+
+## 本机安装
+
+修复提交 `d24e3b2` 已在 2026-11-11 更新到本机 Compose。运行包 SHA-256 为 `1d2d809d42c7f764724e10ca5e820bdb6f90a3816b3042dc23767b30cc0603e4`，与隔离联机及登录检查使用的候选包一致，资源沿用原镜像。
+
+正常停服后备份 61 个运行文件、其中 32 个数据文件，备份位于 `.local/backups/interaction-audit-20261111-20261111-113832/`。启动后健康、双区网关和 KCP 心跳通过，正式存档前后核对一致，玩家仍在「继续深入矿区」`101050113`。安装及只读复核记录为同一报告目录的 `deployment.json`、`save-check.json` 和 `compose-after.json`。客户端重新登录后重新加载场景；本轮没有操作游戏客户端。
