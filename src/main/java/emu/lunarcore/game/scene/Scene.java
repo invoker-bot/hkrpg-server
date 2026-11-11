@@ -204,7 +204,7 @@ public class Scene implements Tickable {
 
     public void loadGroup(GroupInfo group) {
         if (group == null || group.getLoadSide() != GroupInfo.GroupLoadSide.Server
-            || GreatMineEntrances.unavailableRift(player, planeId, floorId, group)
+            || org.hkrpg.server.gameplay.UnavailableRaidEntrances.unavailable(player, planeId, floorId, group)
             || !org.hkrpg.server.gameplay.BookPickups.allowsGroup(this, group)
             || !org.hkrpg.server.gameplay.Mascots.shouldLoad(this, group)
             || !org.hkrpg.server.gameplay.DebugGroupConditions.allowed(group, this)

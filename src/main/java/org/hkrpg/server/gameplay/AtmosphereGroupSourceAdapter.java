@@ -32,6 +32,7 @@ public final class AtmosphereGroupSourceAdapter implements TypeAdapterFactory {
             ClientNpcGroups.markSource(group, row);
             ClientInvestigationGroups.markSource(group, row);
             GreatMineEntrances.markSource(group, row);
+            UnavailableRaidEntrances.markSource(group, row);
           }
         }
         return value;

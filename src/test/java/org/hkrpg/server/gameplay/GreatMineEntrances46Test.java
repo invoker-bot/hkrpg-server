@@ -77,7 +77,11 @@ class GreatMineEntrances46Test {
         previousProps.put(prop.getId(), GameData.getPropExcelMap().get(prop.getId()));
         GameData.getPropExcelMap().add(prop);
       }
-      for (int id : List.of(11204, 11103, 11102)) {
+      var npcIds = new java.util.HashSet<>(List.of(11204, 11103, 11102));
+      for (var source : groups.entrySet())
+        for (var npc : source.getValue().getAsJsonObject().getAsJsonArray("NPCList"))
+          npcIds.add(npc.getAsJsonObject().get("NPCID").getAsInt());
+      for (int id : npcIds) {
         previousNpcs.put(id, GameData.getNpcExcelMap().get(id));
         GameData.getNpcExcelMap().add(gson.fromJson("{\"ID\":" + id + "}", NpcExcel.class));
       }
@@ -140,6 +144,42 @@ class GreatMineEntrances46Test {
     assertTrue(props(67).isEmpty());
     assertEquals(QuestState.Phase.DOING, player.getMissionManager().sub(EARLY).getPhase());
     assertNull(player.getMissionManager().sub(WHEEL));
+  }
+
+  @Test
+  void mainStoryBackgroundGroupsKeepLogicalActorsWithoutDuplicatePublication() throws Exception {
+    enter();
+    for (int group : List.of(4, 15)) {
+      var actors = player.scene.getEntities().values().stream()
+          .filter(entity -> entity.getGroupId() == group).toList();
+      assertFalse(actors.isEmpty());
+      assertEquals(group == 4 ? 21 : 4, props(group).size());
+      assertTrue(nativeProps(group).isEmpty());
+      for (var actor : actors) {
+        for (boolean deleting : List.of(false, true)) {
+          var update = new PacketSceneGroupRefreshScNotify(player.scene,
+              deleting ? null : actor, deleting ? actor : null).build();
+          assertTrue(((List<?>) field(nativePacket("SceneGroupRefreshScNotify", update),
+              "group_refresh_list")).isEmpty());
+        }
+      }
+    }
+    var gates = (DynamicMessage) field(sceneInfo(), "scene_mission_info");
+    assertTrue(((List<?>) field(gates, "sub_mission_status_list")).stream()
+        .map(DynamicMessage.class::cast).anyMatch(row -> field(row, "id").equals(EARLY)
+            && field(row, "status").toString().equals("MissionStatus_MissionDoing")));
+    player.getGameplay().getSubMissions().put(EARLY, completed(EARLY));
+    player.getGameplay().getSubMissions().put(MAIN_CART, new QuestState(MAIN_CART));
+    player.scene.refreshMissionGroups();
+    assertTrue(props(15).isEmpty());
+    assertEquals(21, props(4).size());
+  }
+
+  @Test
+  void modifiedBackgroundGroupKeepsOperatorPublication() throws Exception {
+    prop(4, 0).addProperty("PosX", 12.5);
+    enter();
+    assertEquals(21, nativeProps(4).size());
   }
 
   @Test
@@ -283,8 +323,8 @@ class GreatMineEntrances46Test {
 
   private void enter() {
     var floor = gson.fromJson("""
-        {"FloorID":20121001,"GroupInstanceList":[{"ID":11},{"ID":16},{"ID":19},{"ID":53},{"ID":67},{"ID":92},{"ID":95}],
-         "DimensionList":[{"ID":0,"GroupIndexList":[0,1,2,3,4,5,6]}]}
+        {"FloorID":20121001,"GroupInstanceList":[{"ID":11},{"ID":16},{"ID":19},{"ID":53},{"ID":67},{"ID":92},{"ID":95},{"ID":4},{"ID":15}],
+         "DimensionList":[{"ID":0,"GroupIndexList":[0,1,2,3,4,5,6,7,8]}]}
         """, FloorInfo.class);
     for (int index : floor.getReferencedGroupIndices()) {
       int id = floor.getSimpleGroupList().get(index).getID();
@@ -313,6 +353,8 @@ class GreatMineEntrances46Test {
     return ((List<?>) field(sceneInfo(), "entity_group_list")).stream().map(DynamicMessage.class::cast)
         .filter(row -> field(row, "group_id").equals(group))
         .flatMap(row -> ((List<?>) field(row, "entity_list")).stream())
+        .map(DynamicMessage.class::cast)
+        .filter(row -> row.hasField(row.getDescriptorForType().findFieldByName("prop")))
         .map(row -> (Integer) field((DynamicMessage) row, "inst_id")).sorted().toList();
   }
 

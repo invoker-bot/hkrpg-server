@@ -239,7 +239,7 @@ public final class SceneMap46 {
     for (var prop : floor.getCachedTeleports().values()) {
       var group = prop.getGroup();
       if (!prop.isLoadOnInitial()
-          || GreatMineEntrances.unavailableRift(player, entry.getPlaneID(), entry.getFloorID(), group)
+          || org.hkrpg.server.gameplay.UnavailableRaidEntrances.unavailable(player, entry.getPlaneID(), entry.getFloorID(), group)
           || SceneAnchors.find(entry.getId(), group.getId(), prop.getID()) != prop
           || floor.getGroups(0).get(group.getId()) != group
           || !floor.isGroupInDimension(group.getId(), 0)

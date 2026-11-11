@@ -53,6 +53,20 @@ class GameDiagnosticsIntegrationTest {
             && message.contains("BuyGoodsCsReq") && message.contains("Invalid request packet ID")));
   }
 
+  @Test void unavailableRaidLogsItsActualDestinationAndSummarizesRepeatedQueries() {
+    GameDiagnostics.flush(true);
+    var player = new Player();
+    for (int i = 0; i < 12; i++) GameDiagnostics.unavailableRaid(player, 20134, 20134001, 15, 4010102);
+    GameDiagnostics.unavailableRaid(player, 20121, 20121001, 92, 4012102);
+    var details = capture.list.stream().map(ILoggingEvent::getFormattedMessage)
+        .filter(m -> m.contains("reason=missing-raid")).toList();
+    assertEquals(2, details.size());
+    assertTrue(details.getFirst().contains("plane=20134 floor=20134001 group=15 raid=4010102"));
+    GameDiagnostics.flush(true);
+    assertTrue(capture.list.stream().map(ILoggingEvent::getFormattedMessage)
+        .anyMatch(m -> m.contains("topic=SCENE repeated=11")));
+  }
+
   @Test void recurringTickFailuresKeepOneSanitizedStackAndDoNotStopOtherPlayers() throws Exception {
     var registry = new Int2ObjectOpenHashMap<Player>();
     var ticks = new java.util.concurrent.atomic.AtomicInteger();

@@ -158,7 +158,7 @@ public final class SceneAnchors {
 
   public static boolean unlocked(Player player, MapEntranceExcel entry, PropInfo prop) {
     return prop != null
-        && !GreatMineEntrances.unavailableRift(player, entry.getPlaneID(), entry.getFloorID(), prop.getGroup())
+        && !UnavailableRaidEntrances.unavailable(player, entry.getPlaneID(), entry.getFloorID(), prop.getGroup())
         && find(entry.getId(), prop.getGroup().getId(), prop.getID()) == prop
         && state(player, entry, prop) == PropState.CheckPointEnable;
   }

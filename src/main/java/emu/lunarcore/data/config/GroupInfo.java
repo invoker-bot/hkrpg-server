@@ -19,6 +19,7 @@ public class GroupInfo {
     @Setter private transient boolean clientOwnedNpcSource;
     @Setter private transient int clientInvestigationFloor;
     @Setter private transient int greatMineSourceGroup;
+    @Setter private transient int unavailableRaidSourceFloor;
     private GroupCategory Category;
     private boolean LoadOnInitial = true;
     private int OwnerMainMissionID;

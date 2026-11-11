@@ -177,6 +177,14 @@ public final class GameDiagnostics {
   }
 
   /** Identifiers and reasons must come from numeric fields, enums or authored server code. */
+  public static void unavailableRaid(Player player, int plane, int floor, int group, int raid) {
+    String place = " plane=" + plane + " floor=" + floor + " group=" + group + " raid=" + raid;
+    record(Topic.SCENE, Level.WARN, "missing-raid" + place,
+        () -> "Scene placement skipped: reason=missing-raid" + place
+            + " session=" + (player.getSession() == null ? 0 : player.getSession().getDiagnosticId()));
+  }
+
+  /** Identifiers and reasons must come from numeric fields, enums or authored server code. */
   public static void outcome(GameSession session, String command, int subject, Retcode result,
       String reason, String details) {
     var scene = scene(session);
