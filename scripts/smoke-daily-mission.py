@@ -54,6 +54,14 @@ def main():
         (folder/f'MissionInfo_{prerequisite}.json').write_text(json.dumps({'MainMissionID': prerequisite, 'StartSubMissionList': [sub], 'FinishSubMissionList': [sub]}), 'utf-8')
         (folder/f'MissionInfo_{prerequisite}.partial.json').write_text(json.dumps({'SubMissionList': [{'ID': sub, 'MainMissionID': prerequisite, 'TakeType': 'Auto', 'FinishType': 'Auto', 'Progress': 1}]}), 'utf-8')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+    # The probe is a test client, independent of helpers bundled in the candidate server.
+    # Keep the classpath narrow so persistence scanning cannot load unrelated test classes.
+    probe_classes = directory/'probe-classes'
+    probe_classes.mkdir()
+    subprocess.run([str(java.with_name('javac.exe')), '-encoding', 'UTF-8', '-proc:none',
+        '-cp', str(jar), '-d', str(probe_classes),
+        str(ROOT/'src/main/java/org/hkrpg/server/protocol/LoopbackDailyMissionProbe.java')],
+        check=True, creationflags=flags)
     if junctions:
         plan = directory/'junction-plan.json'
         plan.write_text(json.dumps(junctions), 'utf-8')
@@ -86,7 +94,7 @@ def main():
 
     def probe(phase):
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest
-        result = subprocess.run([str(java), *java_flags, '-cp', str(jar), 'org.hkrpg.server.protocol.LoopbackDailyMissionProbe', str(game_port)],
+        result = subprocess.run([str(java), *java_flags, '-cp', str(probe_classes)+os.pathsep+str(jar), 'org.hkrpg.server.protocol.LoopbackDailyMissionProbe', str(game_port)],
             input=json.dumps(dict(credentials, phase=phase)), text=True, encoding='utf-8', capture_output=True, timeout=60, creationflags=flags)
         (directory/f'probe-{len(snapshots)}.log').write_text(result.stdout+result.stderr, 'utf-8')
         assert result.returncode == 0, directory

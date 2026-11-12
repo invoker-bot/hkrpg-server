@@ -142,11 +142,10 @@ public final class LoopbackDailyMissionProbe {
       var main = (DynamicMessage) raw;
       if (number(main, "id") == 3000201) mains.add(main);
     }
-    require(mains.size() == 1, "Missing or duplicate actual daily assignment");
-    require(
-        ((EnumValueDescriptor) field(mains.getFirst(), "status")).getNumber()
-            == (completed ? 2 : 1),
-        "Wrong actual daily main phase");
+    require(mains.size() == (completed ? 0 : 1), "Missing or duplicate actual daily assignment");
+    if (!completed)
+      require(((EnumValueDescriptor) field(mains.getFirst(), "status")).getNumber() == 1,
+          "Wrong actual daily main phase");
     require(
         ((List<?>) field(data, "finished_main_mission_id_list")).contains(3000201) == completed,
         "Wrong actual daily completion history");
@@ -156,6 +155,24 @@ public final class LoopbackDailyMissionProbe {
       int id = number(row, "id");
       if (id >= 300020101 && id <= 300020106)
         require(subs.put(id, row) == null, "Duplicate original daily sub");
+    }
+    // Full login/query snapshots put completed objectives in field 15. Query their actual
+    // progress instead of inferring it or requiring historical FINISH rows in mission_list.
+    var historical = (List<?>) field(data, "OLKALABEDOA");
+    var missing = new ArrayList<Integer>();
+    for (int id = 300020101; id <= 300020106; id++)
+      if (historical.contains(id) && !subs.containsKey(id)) missing.add(id);
+    if (!missing.isEmpty()) {
+      var reply = call("GetMissionStatusCsReq", Map.of("sub_mission_id_list", missing), 0);
+      var statuses = (List<?>) field(reply, "sub_mission_status_list");
+      require(statuses.size() == missing.size(), "Missing historical daily status");
+      for (var raw : statuses) {
+        var row = (DynamicMessage) raw;
+        int id = number(row, "id");
+        require(missing.contains(id)
+            && ((EnumValueDescriptor) field(row, "status")).getNumber() == 2
+            && subs.putIfAbsent(id, row) == null, "Invalid historical daily completion");
+      }
     }
     require(subs.containsKey(300020101), "Original daily start was not accepted");
     require(
