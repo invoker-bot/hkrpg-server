@@ -110,6 +110,19 @@ public final class GameDiagnostics {
             +" reservation=pending"+context(player.getSession(),player.getScene()));
   }
 
+  public static void storyActionInterrupted(Player player,int sub,int index,String stage,Throwable failure) {
+    record(Topic.PROGRESS,Level.WARN,"story-action:"+sub+":"+index+":"+stage,
+        ()->"Story action interrupted: sub="+sub+" index="+index+" stage="+stage
+            +(failure == null ? "" : " error="+failure.getClass().getSimpleName())
+            +context(player.getSession(),player.getScene()));
+  }
+
+  public static void questRewardInterrupted(Player player,int quest,int reward,String reason) {
+    record(Topic.PROGRESS,Level.WARN,"quest-reward:"+quest+":"+reason,
+        ()->"Quest reward incomplete: quest="+quest+" reward="+reward+" reason="+reason
+            +" reservation=claiming"+context(player.getSession(),player.getScene()));
+  }
+
   private static void logSummary(Topic topic, Summary summary) {
     if (summary == null) return;
     LunarCore.getLogger().info("Diagnostic repeats: topic={} repeated={} overLimit={} examples={} at={}",

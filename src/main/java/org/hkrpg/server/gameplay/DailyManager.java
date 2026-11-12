@@ -459,15 +459,18 @@ public final class DailyManager {
       ensureDay();
       var state = player.getGameplay().getDailyQuests().get(id);
       if (state == null) return new QuestManager.Claim(Retcode.QUEST_NOT_ACCEPT, List.of());
+      var q = GameData.getQuestExcelMap().get(id);
       if (!new DailyCycleQuests(player).summaryClaimValid(id, state, clock.instant()))
         return new QuestManager.Claim(Retcode.QUEST_STATUS_ERROR, List.of());
       if (state.getPhase() == QuestState.Phase.CLOSED)
         return new QuestManager.Claim(Retcode.QUEST_REWARD_ALREADY_TAKEN, List.of());
-      if (state.getPhase() == QuestState.Phase.CLAIMING)
+      if (state.getPhase() == QuestState.Phase.CLAIMING) {
+        org.hkrpg.server.GameDiagnostics.questRewardInterrupted(
+            player, id, q == null ? 0 : q.getRewardID(), "pending-claim");
         return new QuestManager.Claim(Retcode.SYSTEM_BUSY, List.of());
+      }
       if (state.getPhase() != QuestState.Phase.FINISHED)
         return new QuestManager.Claim(Retcode.QUEST_NOT_FINISH, List.of());
-      var q = GameData.getQuestExcelMap().get(id);
       var reward = q == null ? null : GameData.getRewardExcelMap().get(q.getRewardID());
       if (reward == null || reward.getRewards() == null)
         return new QuestManager.Claim(Retcode.REWARD_CONFIG_NOT_EXIST, List.of());
@@ -481,14 +484,22 @@ public final class DailyManager {
       }
       if (points < 0 || points > 500)
         return new QuestManager.Claim(Retcode.PLAYER_DATA_ERROR, List.of());
-      state.reserveReward();
-      player.save();
-      var grant = player.getInventory().grantItems(inventory, true);
-      if (!grant.complete())
+      QuestRewardWrites.reserve(player, state);
+      emu.lunarcore.game.inventory.Inventory.GrantResult grant;
+      try {
+        grant = player.getInventory().grantItems(inventory, true);
+      } catch (RuntimeException failure) {
+        org.hkrpg.server.GameDiagnostics.questRewardInterrupted(
+            player, id, q.getRewardID(), "delivery-exception");
+        throw failure;
+      }
+      if (!grant.complete()) {
+        org.hkrpg.server.GameDiagnostics.questRewardInterrupted(
+            player, id, q.getRewardID(), "partial-delivery");
         return new QuestManager.Claim(Retcode.PLAYER_DATA_ERROR, grant.items());
+      }
       player.getGameplay().addPoints(points);
-      state.closeReward();
-      player.save();
+      QuestRewardWrites.complete(player, state);
       sync();
       return new QuestManager.Claim(Retcode.SUCC, List.copyOf(grant.items()));
     }

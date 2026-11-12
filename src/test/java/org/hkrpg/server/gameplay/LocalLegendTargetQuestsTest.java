@@ -329,17 +329,28 @@ class LocalLegendTargetQuestsTest {
   }
 
   @Test
-  void reservationSaveFailureCannotTouchInventoryOrRetryPayment() {
+  void rejectedReservationCanRetryAfterStorageRecoversWithoutTouchingInventoryEarly() {
     actor.getGameplay().getLocalLegendProgress().merge(LocalLegendCatalog.level(1, 1), 1, 100);
     actor.getQuestManager().refreshUnlocks();
     actor.getDailyManager().ensureDay();
+    var acceptance = actor.getQuestStates().get(6072113);
+    long finishedAt = acceptance.getFinishTime();
     actor.failSave = true;
     assertThrows(IllegalStateException.class, () -> actor.getQuestManager().claim(6072113));
-    assertEquals(QuestState.Phase.CLAIMING, actor.getQuestStates().get(6072113).getPhase());
-    actor.failSave = false;
-    assertEquals(Retcode.SYSTEM_BUSY, actor.getQuestManager().claim(6072113).retcode());
+    assertSame(acceptance, actor.getQuestStates().get(6072113));
+    assertEquals(QuestState.Phase.FINISHED, acceptance.getPhase());
+    assertEquals(finishedAt, acceptance.getFinishTime());
     assertEquals(0, actor.grants);
     assertTrue(actor.amounts.isEmpty());
+    assertThrows(IllegalStateException.class, () -> actor.getQuestManager().claim(6072113));
+    assertEquals(0, actor.grants);
+    actor.failSave = false;
+    assertEquals(Retcode.SUCC, actor.getQuestManager().claim(6072113).retcode());
+    assertEquals(QuestState.Phase.CLOSED, acceptance.getPhase());
+    assertEquals(Map.of(1, 40, 2, 40000, 213, 4), actor.amounts);
+    assertEquals(1, actor.grants);
+    assertEquals(Retcode.QUEST_REWARD_ALREADY_TAKEN, actor.getQuestManager().claim(6072113).retcode());
+    assertEquals(1, actor.grants);
   }
 
   @Test

@@ -298,28 +298,37 @@ public final class QuestManager extends BasePlayerManager {
       if (state == null) return new Claim(Retcode.QUEST_NOT_ACCEPT, List.of());
       if (state.getPhase() == QuestState.Phase.CLOSED)
         return new Claim(Retcode.QUEST_REWARD_ALREADY_TAKEN, List.of());
-      if (state.getPhase() == QuestState.Phase.CLAIMING)
+      if (state.getPhase() == QuestState.Phase.CLAIMING) {
+        org.hkrpg.server.GameDiagnostics.questRewardInterrupted(
+            getPlayer(), questId, definition.getRewardID(), "pending-claim");
         return new Claim(Retcode.SYSTEM_BUSY, List.of());
+      }
       if (state.getPhase() != QuestState.Phase.FINISHED)
         return new Claim(Retcode.QUEST_NOT_FINISH, List.of());
       var reward = GameData.getRewardExcelMap().get(definition.getRewardID());
       if (definition.getRewardID() != 0 && (reward == null || reward.getRewards() == null))
         return new Claim(Retcode.PLAYER_DATA_ERROR, List.of());
-      state.reserveReward();
-      getPlayer().save();
+      org.hkrpg.server.gameplay.QuestRewardWrites.reserve(getPlayer(), state);
       // Persist reservation before touching inventory. Interrupted claims require reconciliation;
       // the inherited inventory stores separate documents without a cross-document transaction.
-      var granted =
-          reward == null
-              ? new emu.lunarcore.game.inventory.Inventory.GrantResult(List.of(), true)
-              : getPlayer().getInventory().grantItems(reward.getRewards(), true);
+      emu.lunarcore.game.inventory.Inventory.GrantResult granted;
+      try {
+        granted = reward == null
+            ? new emu.lunarcore.game.inventory.Inventory.GrantResult(List.of(), true)
+            : getPlayer().getInventory().grantItems(reward.getRewards(), true);
+      } catch (RuntimeException failure) {
+        org.hkrpg.server.GameDiagnostics.questRewardInterrupted(
+            getPlayer(), questId, definition.getRewardID(), "delivery-exception");
+        throw failure;
+      }
       if (!granted.complete()) {
+        org.hkrpg.server.GameDiagnostics.questRewardInterrupted(
+            getPlayer(), questId, definition.getRewardID(), "partial-delivery");
         // Currency balances belong to this player document as well as the reservation.
         getPlayer().save();
         return new Claim(Retcode.PLAYER_DATA_ERROR, granted.items());
       }
-      state.closeReward();
-      getPlayer().save();
+      org.hkrpg.server.gameplay.QuestRewardWrites.complete(getPlayer(), state);
       sync();
       return new Claim(Retcode.SUCC, List.copyOf(granted.items()));
     }

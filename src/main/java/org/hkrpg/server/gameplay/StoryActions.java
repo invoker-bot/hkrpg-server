@@ -6,6 +6,7 @@ import emu.lunarcore.game.inventory.ItemParamMap;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
+import org.hkrpg.server.GameDiagnostics;
 
 /** Server finish actions from the pinned resource, never instructions supplied by a client. */
 public final class StoryActions {
@@ -18,7 +19,10 @@ public final class StoryActions {
   public Retcode execute(MissionInfo.SubMissionInfo sub) {
     synchronized (player) {
       var cursor = player.getGameplay().getStoryActions().get(sub.getId());
-      if (cursor != null && cursor.isPending() && !resumableLineup(sub, cursor)) return Retcode.SYSTEM_BUSY;
+      if (cursor != null && cursor.isPending() && !resumableLineup(sub, cursor)) {
+        GameDiagnostics.storyActionInterrupted(player, sub.getId(), cursor.getNext(), "pending-cursor", null);
+        return Retcode.SYSTEM_BUSY;
+      }
       var manager = player.getMissionManager();
       if (!manager.beginActions(sub.getId())) return Retcode.SYSTEM_BUSY;
       try {
@@ -43,6 +47,7 @@ public final class StoryActions {
         validateSequence(
             sub, new HashSet<>(), new HashMap<>(player.getGameplay().getStoryValues()));
     if (validation != Retcode.SUCC) return validation;
+    boolean newCursor = !player.getGameplay().getStoryActions().containsKey(sub.getId());
     var cursor =
         player
             .getGameplay()
@@ -50,7 +55,8 @@ public final class StoryActions {
             .computeIfAbsent(sub.getId(), k -> new GameplayState.ActionCursor());
     if (cursor.isPending() && !resumableLineup(sub, cursor)) return Retcode.SYSTEM_BUSY;
     while (cursor.getNext() < actions.length) {
-      var action = actions[cursor.getNext()];
+      int index = cursor.getNext();
+      var action = actions[index];
       if (variable(action)) {
         try {
           variableResult(sub, action, player.getGameplay().getStoryValues());
@@ -66,16 +72,28 @@ public final class StoryActions {
         else cursor.reserve();
         try { player.save(); }
         catch (RuntimeException error) {
-          if (lineup) cursor.cancelLineupReservation();
+          // No action has started. The same pending/source fields serve all reservation types.
+          cursor.cancelLineupReservation();
+          if (newCursor && index == 0) player.getGameplay().getStoryActions().remove(sub.getId(), cursor);
+          GameDiagnostics.storyActionInterrupted(player, sub.getId(), index, "reserve-save", error);
           throw error;
         }
       }
       // Only source-bound idempotent lineup changes may resume automatically.
-      if (!apply(sub, action, key)) return Retcode.PLAYER_DATA_ERROR;
+      try {
+        if (!apply(sub, action, key)) {
+          GameDiagnostics.storyActionInterrupted(player, sub.getId(), index, "apply-rejected", null);
+          return Retcode.PLAYER_DATA_ERROR;
+        }
+      } catch (RuntimeException error) {
+        GameDiagnostics.storyActionInterrupted(player, sub.getId(), index, "apply-exception", error);
+        throw error;
+      }
       cursor.complete();
       try { player.save(); }
       catch (RuntimeException error) {
         if (lineup) cursor.retryLineup(source);
+        GameDiagnostics.storyActionInterrupted(player, sub.getId(), index, "complete-save", error);
         throw error;
       }
       if ("ChangeTrainWorldId".equals(action.getType()))

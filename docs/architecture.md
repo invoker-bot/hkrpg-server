@@ -1085,3 +1085,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 `ShopAvailability` 用独立文件保存全服下架商品对，整批验证、备份与原子发布后生效；购买读锁与修改写锁防止下架确认后继续准入付款。GM 商品投影、旧/4.6 查询与购买入口共读该状态，不改资源或玩家限购。范围与验证见[GM 商店管理](gm-shops.md)。
 
 `DailyManager.sync()` 对 ACTIVE 的 4.6 会话使用原生 3360 活跃度通知，随后以 925 同步已保存任务进度，避免冻结旧消息编号 -1 被发送层丢弃。保存、重登与客户端验收边界见[活跃度通知说明](daily-active-notify-4.6.md)。
+
+剧情动作预约失败撤销未执行的预约并保留已保存前缀；`QuestRewardWrites` 在玩家锁内统一普通和每日目标的领奖阶段保存，失败恢复同一接取对象，投递后的不确定状态继续保留 CLAIMING。限频诊断及验证边界见[保存恢复说明](quest-action-save-recovery.md)。
