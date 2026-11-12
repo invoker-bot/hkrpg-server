@@ -374,7 +374,12 @@ public final class MissionManager {
       if (report == null) {
         report = new GameplayState.FirstTalkReport(player.getPlaneId(), player.getFloorId(), ids);
         player.getGameplay().getFirstTalkReports().put(performance, report);
-        player.save();
+        try { player.save(); }
+        catch (RuntimeException failed) {
+          player.getGameplay().getFirstTalkReports().remove(performance, report);
+          org.hkrpg.server.GameDiagnostics.saveFailed(player,"first-talk-reserve",performance,0,failed);
+          throw failed;
+        }
       }
       for (int id : ids) {
         var state = sub(id);
@@ -383,12 +388,17 @@ public final class MissionManager {
         if (!canFinishFromAction(id)) return Retcode.MISSION_NOT_DOING;
         var result = new StoryActions(player).execute(c);
         if (result != Retcode.SUCC) return result;
-        state.advance(1, 1, now());
-        new MissionRewards(player).freezeSub(c);
-        player.save();
+        MissionCompletionWrites.complete(player,c,state);
       }
-      report.complete();
-      player.save();
+      var completed = new GameplayState.FirstTalkReport(report.getPlane(),report.getFloor(),report.getSubMissionIds());
+      completed.complete();
+      player.getGameplay().getFirstTalkReports().put(performance,completed);
+      try { player.save(); }
+      catch(RuntimeException failed) {
+        player.getGameplay().getFirstTalkReports().put(performance,report);
+        org.hkrpg.server.GameDiagnostics.saveFailed(player,"first-talk-complete",performance,0,failed);
+        throw failed;
+      }
       refresh();
       sync();
       return Retcode.SUCC;
@@ -487,10 +497,7 @@ public final class MissionManager {
       }
       var actionResult = new StoryActions(player).execute(config);
       if (actionResult != Retcode.SUCC) return actionResult;
-      player.getGameplay().getStoryValues().putAll(customUpdates);
-      state.advance(goal(config), goal(config), now());
-      new MissionRewards(player).freezeSub(config);
-      player.save();
+      MissionCompletionWrites.complete(player,config,state,customUpdates);
       refresh();
       sync();
       return Retcode.SUCC;
@@ -714,9 +721,7 @@ public final class MissionManager {
       }
       var result = actions.execute(c);
       if (result != Retcode.SUCC) return result;
-      state.advance(goal(c), goal(c), now());
-      new MissionRewards(player).freezeSub(c);
-      player.save();
+      MissionCompletionWrites.complete(player,c,state);
       refresh();
       sync();
       return Retcode.SUCC;
@@ -1445,9 +1450,7 @@ public final class MissionManager {
     if (state.getPhase() != QuestState.Phase.DOING) return Retcode.SUCC;
     var result = new StoryActions(player).execute(c);
     if (result != Retcode.SUCC) return result;
-    state.advance(goal(c), goal(c), now());
-    new MissionRewards(player).freezeSub(c);
-    player.save();
+    MissionCompletionWrites.complete(player,c,state);
     return Retcode.SUCC;
   }
 

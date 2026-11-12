@@ -97,6 +97,19 @@ public final class GameDiagnostics {
             +" sub="+sub+" performance="+performance+context(player.getSession(),player.getScene()));
   }
 
+  /** Stage is an authored constant; no transaction keys or exception messages are logged. */
+  public static void saveFailed(Player player,String stage,int subject,int receiptHash,Throwable failure) {
+    record(Topic.PROGRESS,Level.WARN,"save:"+stage+":"+subject+":"+receiptHash,
+        ()->"Gameplay save failed: stage="+stage+" subject="+subject+" receiptHash="+receiptHash
+            +" error="+failure.getClass().getSimpleName()+context(player.getSession(),player.getScene()));
+  }
+
+  public static void rewardDeliveryInterrupted(Player player,int reward,int receiptHash) {
+    record(Topic.PROGRESS,Level.WARN,"reward-delivery:"+reward+":"+receiptHash,
+        ()->"Reward delivery incomplete: reward="+reward+" receiptHash="+receiptHash
+            +" reservation=pending"+context(player.getSession(),player.getScene()));
+  }
+
   private static void logSummary(Topic topic, Summary summary) {
     if (summary == null) return;
     LunarCore.getLogger().info("Diagnostic repeats: topic={} repeated={} overLimit={} examples={} at={}",

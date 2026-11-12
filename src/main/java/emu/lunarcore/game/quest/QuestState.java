@@ -64,6 +64,18 @@ public class QuestState {
     return true;
   }
 
+  /** Roll back only unsaved progress, under the owning player's lock. */
+  public Runnable progressCheckpoint() {
+    int previousProgress = progress;
+    long previousFinish = finishTime;
+    Phase previousPhase = phase;
+    return () -> {
+      progress = previousProgress;
+      finishTime = previousFinish;
+      phase = previousPhase;
+    };
+  }
+
   public boolean reserveReward() {
     if (phase != Phase.FINISHED) return false;
     phase = Phase.CLAIMING;

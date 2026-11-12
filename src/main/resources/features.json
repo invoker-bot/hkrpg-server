@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "gameplay-write-recovery",
+      "name": "显式任务完成与领奖保存失败恢复",
+      "status": "partial",
+      "evidence": "docs/server-bug-audit-2026-11-13.md",
+      "gap": "普通对白、交物、首次演出与显式动作的最终保存失败回退未保存进度、选择和新奖励计划，保留已存动作及扣款凭据。共享领奖首次预约失败可重试，投递后完成写入失败保留待复核预约，查询与领取共用玩家锁。新增限频去重定位日志；自动事件批次、其他玩法所有写入和真实客户端故障恢复未计入本次覆盖。"
+    },
+    {
       "id": "native-scene-ownership",
       "name": "4.6 场景归属、任务步骤绑定与失效分支隔离",
       "status": "partial",

@@ -56,16 +56,38 @@ public final class RewardLedger {
         return new Claim(Retcode.PLAYER_DATA_ERROR, List.of());
     var receipt = new GameplayState.Receipt(rewardId);
     receipts.put(key, receipt);
-    player.save();
-    var grant = player.getInventory().grantItems(rewards, true);
-    if (!grant.complete()) return new Claim(Retcode.PLAYER_DATA_ERROR, grant.items());
+    try { player.save(); }
+    catch (RuntimeException failed) {
+      // Delivery has not started. A live retry may safely write a fresh reservation.
+      receipts.remove(key,receipt);
+      org.hkrpg.server.GameDiagnostics.saveFailed(player,"reward-reserve",rewardId,key.hashCode(),failed);
+      throw failed;
+    }
+    emu.lunarcore.game.inventory.Inventory.GrantResult grant;
+    try { grant = player.getInventory().grantItems(rewards, true); }
+    catch(RuntimeException failed) {
+      org.hkrpg.server.GameDiagnostics.rewardDeliveryInterrupted(player,rewardId,key.hashCode());
+      throw failed;
+    }
+    if (!grant.complete()) {
+      org.hkrpg.server.GameDiagnostics.rewardDeliveryInterrupted(player,rewardId,key.hashCode());
+      return new Claim(Retcode.PLAYER_DATA_ERROR, grant.items());
+    }
     receipt.complete();
-    player.save();
+    try { player.save(); }
+    catch (RuntimeException failed) {
+      // Inventory writes may already be durable. Retain the original pending evidence.
+      receipts.put(key,new GameplayState.Receipt(rewardId));
+      org.hkrpg.server.GameDiagnostics.saveFailed(player,"reward-complete",rewardId,key.hashCode(),failed);
+      throw failed;
+    }
     return new Claim(Retcode.SUCC, List.copyOf(grant.items()));
   }
 
   public boolean granted(String key) {
-    var r = player.getGameplay().getRewards().get(key);
-    return r != null && r.isGranted();
+    synchronized (player) {
+      var r = player.getGameplay().getRewards().get(key);
+      return r != null && r.isGranted();
+    }
   }
 }
