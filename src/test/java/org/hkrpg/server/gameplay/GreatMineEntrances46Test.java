@@ -183,6 +183,111 @@ class GreatMineEntrances46Test {
   }
 
   @Test
+  void robotEncounterKeepsLogicalActorsButPublishesNoDuplicateNpcOrTrigger() throws Exception {
+    robotBattleDoing();
+    enter();
+    var actors = player.scene.getEntities().values().stream()
+        .filter(entity -> entity.getGroupId() == 8).toList();
+    assertEquals(4, actors.size(), "Original robot NPC and three triggers must exist logically");
+    assertTrue(nativeGroup(8).isEmpty(), "The native scene already creates this robot");
+    for (var actor : actors) {
+      for (boolean deleting : List.of(false, true)) {
+        var packet = new PacketSceneGroupRefreshScNotify(player.scene,
+            deleting ? null : actor, deleting ? actor : null).build();
+        assertTrue(((List<?>) field(nativePacket("SceneGroupRefreshScNotify", packet),
+            "group_refresh_list")).isEmpty());
+      }
+    }
+    assertRobotStatus("MissionStatus_MissionDoing");
+  }
+
+  @Test
+  void completedRobotCannotReturnThroughExplicitGroupReloadOrReentry() throws Exception {
+    robotBattleDoing();
+    enter();
+    assertTrue(player.scene.getLoadedGroups().contains(8));
+    player.getGameplay().getSubMissions().put(101050114, completed(101050114));
+    player.getGameplay().getSubMissions().put(101050112, new QuestState(101050112));
+    player.scene.refreshMissionGroups();
+    assertRobotAbsent();
+    assertRobotStatus("MissionStatus_MissionFinish");
+
+    player.scene.loadGroup(8);
+    assertRobotAbsent();
+    enter();
+    player.scene.loadGroup(8);
+    assertRobotAbsent();
+    assertRobotStatus("MissionStatus_MissionFinish");
+    assertEquals(QuestState.Phase.DOING, player.getMissionManager().sub(101050112).getPhase());
+    assertNull(player.getMissionManager().sub(101050110));
+    assertNull(player.getMissionManager().sub(101050111));
+  }
+
+  @Test
+  void robotCannotLoadBeforeItsOriginalMissionGate() throws Exception {
+    enter();
+    player.scene.loadGroup(8);
+    assertRobotAbsent();
+  }
+
+  @Test
+  void uncompletedRobotBattleKeepsItsActorsAcrossRefreshAndReentry() throws Exception {
+    robotBattleDoing();
+    enter();
+    player.scene.refreshMissionGroups();
+    assertTrue(player.scene.getLoadedGroups().contains(8));
+    enter();
+    assertTrue(player.scene.getLoadedGroups().contains(8));
+    assertEquals(QuestState.Phase.DOING, player.getMissionManager().sub(101050114).getPhase());
+    assertNull(player.getMissionManager().sub(101050112));
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void modifiedRobotSourceAndLegacyProtocolKeepTheirPublication(boolean legacy) throws Exception {
+    robotBattleDoing();
+    if (legacy) player.wire = ProtocolBridge.forVersion("4.2.0");
+    else groups.getAsJsonObject("8").getAsJsonArray("NPCList").get(0)
+        .getAsJsonObject().addProperty("PosX", 238.5);
+    enter();
+    assertFalse(player.scene.getEntities().values().stream()
+        .filter(entity -> entity.getGroupId() == 8).toList().isEmpty());
+    if (legacy) {
+      boolean published = false;
+      for (var group : player.scene.toProto().getEntityGroupList())
+        if (group.getGroupId() == 8) published = true;
+      assertTrue(published);
+    } else assertFalse(nativeGroup(8).isEmpty());
+  }
+
+  private void robotBattleDoing() {
+    player.getGameplay().getSubMissions().remove(EARLY);
+    player.getGameplay().getSubMissions().put(101050109, completed(101050109));
+    player.getGameplay().getSubMissions().put(101050123, completed(101050123));
+    player.getGameplay().getSubMissions().put(101050114, new QuestState(101050114));
+  }
+
+  private void assertRobotAbsent() throws Exception {
+    assertFalse(player.scene.getLoadedGroups().contains(8));
+    assertTrue(player.scene.getEntities().values().stream()
+        .noneMatch(entity -> entity.getGroupId() == 8));
+    assertTrue(nativeGroup(8).isEmpty());
+  }
+
+  private void assertRobotStatus(String expected) throws Exception {
+    var gates = (DynamicMessage) field(sceneInfo(), "scene_mission_info");
+    var rows = ((List<?>) field(gates, "sub_mission_status_list")).stream()
+        .map(DynamicMessage.class::cast).filter(row -> field(row, "id").equals(101050114)).toList();
+    assertEquals(1, rows.size());
+    assertEquals(expected, field(rows.getFirst(), "status").toString());
+  }
+
+  private List<DynamicMessage> nativeGroup(int group) throws Exception {
+    return ((List<?>) field(sceneInfo(), "entity_group_list")).stream()
+        .map(DynamicMessage.class::cast).filter(row -> field(row, "group_id").equals(group)).toList();
+  }
+
+  @Test
   void mainStoryCartAndItsActorsArePublishedOnlyByTheClient() throws Exception {
     player.getGameplay().getSubMissions().put(EARLY, completed(EARLY));
     player.getGameplay().getSubMissions().put(BEFORE_CART, completed(BEFORE_CART));
@@ -323,8 +428,8 @@ class GreatMineEntrances46Test {
 
   private void enter() {
     var floor = gson.fromJson("""
-        {"FloorID":20121001,"GroupInstanceList":[{"ID":11},{"ID":16},{"ID":19},{"ID":53},{"ID":67},{"ID":92},{"ID":95},{"ID":4},{"ID":15}],
-         "DimensionList":[{"ID":0,"GroupIndexList":[0,1,2,3,4,5,6,7,8]}]}
+        {"FloorID":20121001,"GroupInstanceList":[{"ID":11},{"ID":16},{"ID":19},{"ID":53},{"ID":67},{"ID":92},{"ID":95},{"ID":4},{"ID":15},{"ID":8}],
+         "DimensionList":[{"ID":0,"GroupIndexList":[0,1,2,3,4,5,6,7,8,9]}]}
         """, FloorInfo.class);
     for (int index : floor.getReferencedGroupIndices()) {
       int id = floor.getSimpleGroupList().get(index).getID();

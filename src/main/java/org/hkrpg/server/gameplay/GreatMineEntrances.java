@@ -10,12 +10,13 @@ import java.util.Set;
 /** Compatibility for the original 4.6 Great Mine placements. */
 public final class GreatMineEntrances {
   private static final int PLANE = 20121, FLOOR = 20121001;
-  private static final int CART = 11, WHEEL = 53, COUPLER = 67;
-  private static final Set<Integer> CLIENT_GROUPS = Set.of(4, 15, 16, 19, WHEEL, COUPLER);
+  private static final int ROBOT = 8, CART = 11, WHEEL = 53, COUPLER = 67;
+  private static final Set<Integer> CLIENT_GROUPS = Set.of(4, ROBOT, 15, 16, 19, WHEEL, COUPLER);
   private record Source(int group, String fingerprint) {}
 
   private static final Map<String, Source> SOURCES = Map.of(
       "LevelArea_P20121_F20121001_G4", new Source(4, "bfaf9f2b0e03b8f214825a2204139d35c99482a7375408f870ff009abd0c1ec6"),
+      "LevelArea_P20121_F20121001_G8", new Source(ROBOT, "1702295d4999003ae7e476cf7e0f1270273e14c8ba3530dea2fd5c644a9f3bd4"),
       "LevelArea_P20121_F20121001_G11", new Source(CART, "c646445bb4b78f6f82a50748765ee68da029abd05df146d0ad5cda1cf6124e6f"),
       "LevelArea_P20121_F20121001_G15", new Source(15, "a0296790d2534cd4cd5de9ddeddd493b747359ec00937c76dc44c64621d68072"),
       "LevelArea_P20121_F20121001_G16", new Source(16, "5b2603c4d467981b929d0cf119c59f149f7f0f0919f7450410ab092c63ab33d9"),
@@ -52,6 +53,12 @@ public final class GreatMineEntrances {
   public static boolean clientGroup(Scene scene, int id) {
     return CLIENT_GROUPS.contains(id) && ClientNpcGroups.supports(scene)
         && matches(scene.getPlaneId(), scene.getFloorId(), scene.getResourceGroups().get(id), id);
+  }
+
+  /** A late explicit load must not recreate the original robot after its victory exit gate. */
+  public static boolean requiresMissionGate(Scene scene, GroupInfo group) {
+    return scene != null && group != null && group.getId() == ROBOT && nativePlayer(scene.getPlayer())
+        && clientGroup(scene, ROBOT) && scene.getResourceGroups().get(ROBOT) == group;
   }
 
   private GreatMineEntrances() {}

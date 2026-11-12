@@ -1,5 +1,152 @@
 {
   "groups": {
+    "8": {
+      "$type": "RPG.GameCore.RtLevelGroupInfo",
+      "GroupName": "MainMission1010501_",
+      "Category": "Mission",
+      "ConfigPrefabPath": "Level/Mission/1010501/1010501_temp.prefab",
+      "AreaAnchorName": "LevelArea_P20121_F20121001_G8",
+      "SaveType": "Reset",
+      "LoadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "ID": 101050109
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101050114
+          },
+          {
+            "Type": "SubMission",
+            "ID": 101050123
+          }
+        ],
+        "Operation": "Or"
+      },
+      "UnloadCondition": {
+        "Conditions": [
+          {
+            "Type": "SubMission",
+            "Phase": "Finish",
+            "ID": 101050114
+          }
+        ]
+      },
+      "OwnerMainMissionID": 1010501,
+      "ConflictIDList": [],
+      "AnchorList": [
+        {
+          "Name": "Anchor1",
+          "ID": 1,
+          "PosX": 237.004,
+          "PosY": 52.52284,
+          "PosZ": -164.972
+        }
+      ],
+      "MonsterList": [],
+      "PropList": [
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 3,
+            "DimX": 10,
+            "DimY": 2,
+            "DimZ": 5,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop1",
+          "RotY": 45.4416,
+          "ID": 300001,
+          "PosX": 236.09,
+          "PosY": 53.53,
+          "PosZ": -170.64
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "Trigger": {
+            "Shape": "Box",
+            "Radius": 3,
+            "DimX": 10,
+            "DimY": 2,
+            "DimZ": 5,
+            "PointList": []
+          },
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop2",
+          "RotY": 104.0968,
+          "ID": 300002,
+          "PosX": 228.45,
+          "PosY": 53.53,
+          "PosZ": -175.07
+        },
+        {
+          "PropID": 100,
+          "IsOverrideInitLevelGraph": true,
+          "CampID": 4,
+          "CustomTriggerMap": {},
+          "DialogueGroups": [],
+          "TalkDialogGroupIDList": [],
+          "ServerInteractVerificationIDList": [],
+          "InteractIconType": {
+            "EnumIndex": 20,
+            "Value": 0
+          },
+          "Name": "Prop3",
+          "ID": 300003,
+          "PosX": 225.676,
+          "PosY": 55.04,
+          "PosZ": -174.557
+        }
+      ],
+      "DistrictList": [],
+      "WaypointList": [],
+      "PathwayList": [],
+      "BattleAreaList": [],
+      "NPCList": [
+        {
+          "NPCID": 2106,
+          "DialogueGroups": [],
+          "ServerInteractVerificationIDList": [],
+          "DefaultIdleStateName": "StandBy",
+          "DefaultLookAtMode": "Closed",
+          "BoardShowList": [
+            4
+          ],
+          "TalkDialogGroupIDList": [],
+          "DefaultIdleFreeStyleMotionID": 200100000,
+          "InitialHiddenNodeList": [],
+          "Name": "NPC1",
+          "RotY": 196.7703,
+          "ID": 400001,
+          "PosX": 237.17,
+          "PosY": 52.4897,
+          "PosZ": -163.42
+        }
+      ],
+      "CrowdList": [],
+      "PedestrianList": []
+    },
     "11": {
       "$type": "RPG.GameCore.RtLevelGroupInfo",
       "GroupName": "MainMission",
@@ -2714,6 +2861,87 @@
     }
   ],
   "objectives": [
+    {
+      "ID": 101050109,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050109.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050119
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050109",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointFloorID": 20121001
+    },
+    {
+      "ID": 101050112,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050112.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050114
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050112",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 4,
+      "WayPointEntityID": 300013
+    },
+    {
+      "ID": 101050114,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050114.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050123
+      ],
+      "FinishType": "StageWin",
+      "ParamType": "Equal",
+      "ParamInt1": 20121005,
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 4,
+      "WayPointEntityID": 300013
+    },
+    {
+      "ID": 101050123,
+      "MainMissionID": 1010501,
+      "MissionJsonPath": "Config/Level/Mission/1010501/Mission_101050123.json",
+      "LevelPlaneID": 20121,
+      "LevelFloorID": 20121001,
+      "AudioEmotionState": "State_Tense",
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        101050109
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_101050123",
+      "ParamItemList": [],
+      "Progress": 1,
+      "WayPointType": "Prop",
+      "WayPointFloorID": 20121001,
+      "WayPointGroupID": 4,
+      "WayPointEntityID": 300013
+    },
     {
       "ID": 101050106,
       "MainMissionID": 1010501,

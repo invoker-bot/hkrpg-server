@@ -1,3 +1,5 @@
+`GreatMineEntrances` 按完整原始 G8 来源过滤机器人和剧情触发物件的重复发布；`Scene.loadGroup` 对该原生组复查同一任务条件，防止胜利后迟到加载及提前生成。逻辑实体、任务进度和后续区域触发保留，来源与验证边界见[机器人退场说明](great-mine-robot-exit-4.6.md)。
+
 `MissionSnapshotRecords.retiredSub` 为已核验完成父任务中的未完成子目标提供只读失效判断，完整快照、增量通知和依赖查询统一投影为 NONE，保留真实保存记录及已完成历史。艾丝妲旧告别对白与当前委托的验证边界见[任务对话说明](asta-sensitive-beings-4.6.md)。
 
 `RogueDialogue46.npcInfo` 按有效完成收据填写原生NPC交互关闭字段9，收尾及实际领取后以现有场景刷新同步；保留NPC和迟到请求身份。原生消费链与验证边界见[事件交互关闭说明](rogue-event-interaction-4.6.md)。
