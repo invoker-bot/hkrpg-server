@@ -64,6 +64,12 @@ final class ClientNpcPublication46 {
       // Also include unloaded groups so a completed exit condition is available on reentry.
       addGates(mains, subs, source.getLoadCondition());
       addGates(mains, subs, source.getUnloadCondition());
+      // Local NPCs also evaluate their dialogue's own mission gates before offering F.
+      // A loaded group alone does not make an active boxing objective visible to that check.
+      if (source.getNPCList() != null)
+        for (var npc : source.getNPCList())
+          if (npc != null && !npc.isIsDelete() && npc.getDialog() != null)
+            addGates(mains, subs, npc.getDialog().getEnableCondition());
     }
     if (mains.isEmpty() && subs.isEmpty()) return message;
 

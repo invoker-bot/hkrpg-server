@@ -103,14 +103,21 @@ final class BoxingClubRules {
       emu.lunarcore.game.player.Player player,
       BoxingClubCatalog.Challenge challenge,
       Instant time) {
-    if (challenge == null
-        || time == null
-        || !equal(panel, GameData.getActivityPanelExcelMap().get(50000))
-        || !ActivityAccess.unlocked(player, 50000)) return false;
+    return unavailableReason(player, challenge, time) == null;
+  }
+
+  String unavailableReason(
+      emu.lunarcore.game.player.Player player,
+      BoxingClubCatalog.Challenge challenge,
+      Instant time) {
+    if (challenge == null) return "unknown-challenge";
+    if (time == null) return "invalid-time";
+    if (!equal(panel, GameData.getActivityPanelExcelMap().get(50000))) return "panel-source-mismatch";
+    if (!ActivityAccess.unlocked(player, 50000)) return "unlock-condition";
     var modules = rows.get("ActivityConfig:50000").getAsJsonArray("ResidentModuleList");
-    if (!modules.contains(new JsonPrimitive(challenge.module()))) return false;
+    if (!modules.contains(new JsonPrimitive(challenge.module()))) return "module-source-mismatch";
     long now = time.getEpochSecond();
-    return GameplayDefinitions.windows.stream()
+    long count = GameplayDefinitions.windows.stream()
             .filter(
                 w ->
                     w.panelId() == 50000
@@ -119,8 +126,8 @@ final class BoxingClubRules {
                         && w.endTime() > w.beginTime()
                         && w.beginTime() <= now
                         && now < w.endTime())
-            .count()
-        == 1;
+            .count();
+    return count == 1 ? null : count == 0 ? "activity-window-closed" : "activity-window-ambiguous";
   }
 
   StageExcel stage(int event, int world) {

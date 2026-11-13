@@ -120,6 +120,10 @@ public final class BoxingClub46 {
         }
         if (code == 0 && catalog != null) set(response, "OCDLPDDMCLP", progress(s, catalog, id));
       }
+      if (code != 0)
+        BoxingClubRejections.record(s, name, req == null
+            || req.getDescriptorForType().findFieldByName("challenge_id") == null
+                ? 0 : number(req, "challenge_id"), code, req != null);
       set(response, "retcode", code);
       s.sendClientPacket(responseName, response.build().toByteArray());
       return true;

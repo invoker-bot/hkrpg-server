@@ -21,6 +21,7 @@
 | `Anchor trigger skipped` | 实际场景中遇到无法识别或不合法的锚点触发范围，记录楼层、组和实例；启动扫描不逐条打印。 |
 | `Space anchor activated` | 保存后实际激活的锚点、地图编号及场景，配合 `anchor-activate` 保存失败阶段检查缺少 F 提示。 |
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
+| `Gameplay result: command=…BoxingClub…` | 拳馆拒绝的关卡、面板、模块、等级与世界等级；`unlock-condition`/`unlock-mission` 为原剧情门槛，`activity-window-closed`/`activity-window-ambiguous` 为排期，另分缺失来源、非法请求和状态/队伍/选择不符。只记录固定原因和数值编号。 |
 | `Player tick error` | 定时更新的场景、异常类型及有限调用栈。 |
 
 例如，客户端出现演出异常而该时段服务端没有对应交互或任务回执时，可以先按客户端演出编号定位本地脚本。两边日志仍需按时间、场景和请求实际出现情况交叉确认。

@@ -36,6 +36,7 @@ public class ResourceLoader {
             .registerTypeAdapter(double.class, new LunarCoreDoubleDeserializer())
             .registerTypeAdapter(long.class, new LunarCoreHashDeserializer())
             .registerTypeAdapterFactory(new org.hkrpg.server.gameplay.AtmosphereGroupSourceAdapter())
+            .registerTypeAdapterFactory(new org.hkrpg.server.gameplay.NpcDialogueSourceAdapter())
             .create();
 
     // Load all resources

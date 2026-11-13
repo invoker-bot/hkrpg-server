@@ -104,27 +104,34 @@ final class BoxingClubResonanceRules {
       emu.lunarcore.game.player.Player player,
       BoxingClubResonanceCatalog.Challenge challenge,
       Instant time) {
-    if (challenge == null
-        || time == null
-        || !equal(panel, GameData.getActivityPanelExcelMap().get(40003))
-        || !ActivityAccess.unlocked(player, 40003)) return false;
+    return unavailableReason(player, challenge, time) == null;
+  }
+
+  String unavailableReason(
+      emu.lunarcore.game.player.Player player,
+      BoxingClubResonanceCatalog.Challenge challenge,
+      Instant time) {
+    if (challenge == null) return "unknown-challenge";
+    if (time == null) return "invalid-time";
+    if (!equal(panel, GameData.getActivityPanelExcelMap().get(40003))) return "panel-source-mismatch";
+    if (!ActivityAccess.unlocked(player, 40003)) return "unlock-condition";
     var prerequisites =
         rows.get("BoxingClubConstValueClient:BoxingClubResonance_UnlockMissionList")
             .getAsJsonObject("Value")
             .getAsJsonArray("ArrayValue");
     for (var raw : prerequisites)
       if (!player.getMissionManager().finished(raw.getAsJsonObject().get("IntValue").getAsInt()))
-        return false;
+        return "unlock-mission";
     int preMission =
         rows.get("BoxingClubConstValueClient:BoxingClubResonance_Pre_Mission")
             .getAsJsonObject("Value")
             .get("IntValue")
             .getAsInt();
-    if (!player.getMissionManager().finished(preMission)) return false;
+    if (!player.getMissionManager().finished(preMission)) return "unlock-mission";
     var modules = rows.get("ActivityConfig:40003").getAsJsonArray("ResidentModuleList");
-    if (!modules.contains(new JsonPrimitive(challenge.module()))) return false;
+    if (!modules.contains(new JsonPrimitive(challenge.module()))) return "module-source-mismatch";
     long now = time.getEpochSecond();
-    return GameplayDefinitions.windows.stream()
+    long count = GameplayDefinitions.windows.stream()
             .filter(
                 w ->
                     w.panelId() == 40003
@@ -133,8 +140,8 @@ final class BoxingClubResonanceRules {
                         && w.endTime() > w.beginTime()
                         && w.beginTime() <= now
                         && now < w.endTime())
-            .count()
-        == 1;
+            .count();
+    return count == 1 ? null : count == 0 ? "activity-window-closed" : "activity-window-ambiguous";
   }
 
   StageExcel stage(int event, int world) {
