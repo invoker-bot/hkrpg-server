@@ -126,6 +126,9 @@ public class ResourceLoader {
                 LunarCore.getLogger().error("Error loading resource file: " + Arrays.toString(type.name()), e);
             }
         }
+        if ("4.6.0".equals(LunarCore.getConfig().protocol.wireVersion)) {
+            org.hkrpg.server.gameplay.SkinShopCatalog.install();
+        }
     }
 
     static <T> int loadResourceDefinition(Class<T> c, ResourceType type, ResourceMap<T> map) throws Exception {

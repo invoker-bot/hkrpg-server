@@ -109,7 +109,8 @@ public final class NativeGmPlayerProbe {
         throw new IllegalStateException("Response did not complete the matching async request: " + response);
       var result = protocol.clientSchema().parse(response, frame.body());
       String retcodeField = Set.of("PromoteAvatarScRsp", "PromoteEquipmentScRsp", "RankUpAvatarScRsp",
-          "DressAvatarScRsp", "TakeOffEquipmentScRsp").contains(response) ? "PLDKENJLKME" : "retcode";
+          "DressAvatarScRsp", "TakeOffEquipmentScRsp", "DressAvatarSkinScRsp", "TakeOffAvatarSkinScRsp")
+          .contains(response) ? "PLDKENJLKME" : "retcode";
       if (!result.getUnknownFields().asMap().isEmpty() || ((Integer) field(result, retcodeField) == 0) != success)
         throw new IllegalStateException("Unexpected response: " + response + " " + project(result));
       return result;
@@ -180,6 +181,7 @@ public final class NativeGmPlayerProbe {
                 "GetShopListCsReq", "GetPlayerBoardDataCsReq", "GetPhoneDataCsReq", "SetPersonalCardCsReq",
                 "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq", "SummonPetCsReq", "RecallPetCsReq",
                 "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
+                "DressAvatarSkinCsReq", "TakeOffAvatarSkinCsReq",
                 "GetGachaCeilingCsReq", "ExchangeGachaCeilingCsReq",
                 "GetLevelRewardCsReq", "GetLevelRewardTakenListCsReq",
                 "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",

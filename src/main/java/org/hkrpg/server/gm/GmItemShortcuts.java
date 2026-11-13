@@ -28,7 +28,7 @@ final class GmItemShortcuts {
 
   static List<ItemShortcut> load(Path resources, List<CatalogItem> catalog) throws IOException {
     var hints = new HashMap<Integer,Hint>();
-    var origins = rows(resources.resolve("ExcelOutput/ItemComeFrom.json"));
+    var origins = rows(originsPath(resources));
     var hashes = new HashSet<String>();
     for (var row : origins) hashes.add(hash(row.getAsJsonObject().get("Desc")));
     var descriptions = texts(resources.resolve("TextMap/TextMapCHS.json"),hashes);
@@ -139,6 +139,11 @@ final class GmItemShortcuts {
     if (Files.size(path)>20_000_000) throw new IOException("Shortcut source too large: "+path.getFileName());
     try { return JsonParser.parseString(Files.readString(path,StandardCharsets.UTF_8)).getAsJsonArray(); }
     catch (RuntimeException e) { throw new IOException("Invalid shortcut source: "+path.getFileName(),e); }
+  }
+
+  static Path originsPath(Path resources) {
+    var actual = resources.resolve("ExcelOutput/ItemComefrom.json");
+    return Files.exists(actual) ? actual : resources.resolve("ExcelOutput/ItemComeFrom.json");
   }
 
   private static String hash(JsonElement element) {

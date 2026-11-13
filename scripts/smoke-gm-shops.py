@@ -36,14 +36,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--browser-pause', action='store_true')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/gm-shops-native.json')
+    parser.add_argument('--jar', type=Path, default=ROOT / 'build/libs/hkrpg-server.jar')
     args = parser.parse_args()
-    jar = ROOT / 'build/libs/hkrpg-server.jar'
+    jar = args.jar.resolve()
     digest = hashlib.sha256(jar.read_bytes()).hexdigest()
     resource = ROOT / 'resources/4.6/ExcelOutput/ShopGoodsConfig.json'
     resource_digest = hashlib.sha256(resource.read_bytes()).hexdigest()
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'))
     runs = ROOT / 'build/smoke'
-    runs.mkdir(exist_ok=True)
+    runs.mkdir(parents=True, exist_ok=True)
     directory = Path(tempfile.mkdtemp(prefix='gm-shops-', dir=runs))
     helpers = directory / 'helpers'
     helpers.mkdir()
@@ -151,7 +152,10 @@ def main():
             assert request('/gm/api/players')['data'] == []
             if cycle == 0:
                 catalog = request('/gm/api/shops?limit=100')['data']
-                assert catalog['total'] == 900 and len(catalog['shops']) == 102, catalog['total']
+                assert catalog['total'] == 903 and len(catalog['shops']) == 102, catalog['total']
+                for goods_id, skin_id in [(107013, 1141501), (107015, 1150501), (107016, 1140901)]:
+                    rows = request(f'/gm/api/shops?shopId=107&q={goods_id}')['data']['items']
+                    assert len(rows) == 1 and rows[0]['itemId'] == skin_id and rows[0]['listed'], rows
                 first = request('/gm/api/shops?shopId=101&q=101001')['data']['items'][0]
                 assert first['name'] == '星轨通票' and first['costs'][0]['amount'] == 20, first
                 old_unlist = operation('shop-unlist', shopGoods=targets)
