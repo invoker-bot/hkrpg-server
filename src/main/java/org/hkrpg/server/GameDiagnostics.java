@@ -237,6 +237,13 @@ public final class GameDiagnostics {
         ()->"Scene placement skipped: reason=inactive-mission-group"+place);
   }
 
+  public static void dormantDebugGroup(Scene scene, int group) {
+    String place = " plane=" + scene.getPlaneId() + " floor=" + scene.getFloorId()
+        + " dimension=" + scene.getDimensionId() + " group=" + group;
+    record(Topic.SCENE, Level.INFO, "dormant-debug-group" + place,
+        () -> "Scene placement skipped: reason=dormant-debug-group" + place);
+  }
+
   /** Identifiers and reasons must come from numeric fields, enums or authored server code. */
   public static void unavailableRaid(Player player, int plane, int floor, int group, int raid) {
     String place = " plane=" + plane + " floor=" + floor + " group=" + group + " raid=" + raid;

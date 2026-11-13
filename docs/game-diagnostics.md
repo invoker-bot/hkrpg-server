@@ -12,6 +12,7 @@
 | `Packet rejected` | 失败发生在分帧、请求头、协议转换、处理器或传输阶段。保留异常类型和有限调用栈，已知映射缺失附上原字段名。 |
 | `Scene placement skipped` | 缺定义或加载失败的楼层、维度、组、实例和物件、NPC 或怪物资源号。缺失副本的旧入口另记 `reason=missing-raid`、实际楼层、组和副本号。 |
 | `Scene placement skipped: reason=inactive-mission-group` | `inactive-mission-group` 的位面、楼层、维度、剧情线、组及归属任务，定位旧组或错步骤的显式加载。 |
+| `Scene placement skipped: reason=dormant-debug-group` | 位面、楼层、维度及组编号，定位完整来源已核对的未启用测试组；当前覆盖廉价房间、宾馆走廊、花店、列车、金人巷和黑塔办公室六组。 |
 | `Mission script skipped` | `missing-optional-performance` 的主任务、子任务、演出及连接场景，定位原始失效的非必需分支。 |
 | `Mission prop state` | 限定原始自动物件动作的子任务、组、实例、目标状态及执行或拒绝原因，区分来源/场景不符与坏存档；保存失败复用 `mission-prop-state` 阶段。 |
 | `Gameplay save failed` | 固定保存阶段、任务或奖励编号、数值收据摘要、异常类型及场景，区分预约未开始投递和投递后的完成写入。 |

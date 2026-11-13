@@ -22,6 +22,7 @@ public class GroupInfo {
     @Setter private transient int unavailableRaidSourceFloor;
     @Setter private transient int clientVisualSource;
     @Setter private transient boolean nativeDormantMissionSource;
+    @Setter private transient int dormantDebugSourceFloor;
     private GroupCategory Category;
     private boolean LoadOnInitial = true;
     private int OwnerMainMissionID;

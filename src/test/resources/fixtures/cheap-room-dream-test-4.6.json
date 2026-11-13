@@ -1,0 +1,618 @@
+{
+  "resourceSource": "https://github.com/DimbreathBot/TurnBasedGameData",
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "scope": "Original cheap room floor, G2 exit, G9 story interaction and G16 DreamTest; selected original plane, prop, NPC, main and sub-mission rows. Player histories and explicitly marked mutations are synthetic.",
+  "sourceFiles": {
+    "Config/LevelOutput/RuntimeFloor/P10102_F10102002.json": "5c38850fd3fe495c9153e55b631b38692f45d39109d9e089ac3db8928249407b",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G2.json": "b3e8ee8f1282e74b309052465c2a510ec75363f4172d089a0b9aa992a0888066",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G9.json": "f42343ae4bf54c2a40c08f167cf7dc7477b776ce1ae2f14cd613f2dae0b50f65",
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G16.json": "421e6e1a9309075029a2eca15d874e12a4289efda539e45c154fb8d43e68d16f",
+    "ExcelOutput/MazePlane.json": "21e88bb5effe5943bb1aca5e339ceeb3345fc1ce6397850503eb1e7866f400de",
+    "ExcelOutput/MazeProp.json": "59488c8b6f656f48017a72847b5685ae58b81b6451e93b97c64708b5c9eb5418",
+    "ExcelOutput/NPCData.json": "7cc09d92d5161a1fe484e8b60b18254e4c5a5a1446b1310433fc6fdfe1e60c78",
+    "ExcelOutput/MainMission.json": "9558dc6a9c2a76ed02af1c798207cc40f9de713715d6af7260b27521bf0d890a",
+    "Config/Level/Mission/1010601/MissionInfo_1010601.partial.json": "e91d273eaf79da729488d9c2e842bb186540dd7001098270094f4dc2bac1ab48"
+  },
+  "records": {
+    "Config/LevelOutput/RuntimeFloor/P10102_F10102002.json": [
+      {
+        "FloorID": 10102002,
+        "StartAnchorID": 1,
+        "StageData": "Stages/Outputs/Chapter01/Stages/Chap01_INT_Orphanage_01_Room_StageData/Chap01_INT_Orphanage_01_Room_StageData.stage",
+        "CameraType": "Room",
+        "LayerToAreaMask": [
+          1
+        ],
+        "GroupInstanceList": [
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G2.json",
+            "Name": "Default",
+            "ID": 2
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G4.json",
+            "Name": "Books",
+            "ID": 4
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G9.json",
+            "Name": "MainMission_1010601_03",
+            "ID": 9
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G11.json",
+            "Name": "MainMission_Prop",
+            "ID": 11
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G8.json",
+            "Name": "MainMission_101060103",
+            "ID": 8
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G1.json",
+            "Name": "Sound",
+            "ID": 1
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G14.json",
+            "Name": "MainMission4040121_",
+            "ID": 14
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G15.json",
+            "Name": "MainMission2011901_18",
+            "ID": 15
+          },
+          {
+            "GroupPath": "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G16.json",
+            "Name": "DreamTest",
+            "ID": 16
+          }
+        ],
+        "DimensionList": [
+          {
+            "DefaultEnviroProfile": "Stages/Outputs/Chapter01/EnviroProfile/Chap01_CloseView_INT_Orphanage_01_Room_Day.enviroProfile.asset",
+            "CameraType": "Room",
+            "IsExclusiveSaveMapSection": true,
+            "GroupIndexList": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ],
+            "ExclusiveSavedGroupIDList": [],
+            "StartAnchorID": 1
+          }
+        ],
+        "GroupInstanceCommonMap": {
+          "2": {
+            "SaveType": "Reset",
+            "LoadOnInitial": true
+          },
+          "4": {
+            "SaveType": "Permanent",
+            "LoadSide": "Server",
+            "LoadOnInitial": true
+          },
+          "9": {
+            "Category": "Mission",
+            "SaveType": "Reset",
+            "UnloadCondition": {
+              "Conditions": [
+                {
+                  "Type": "SubMission",
+                  "Phase": "Finish",
+                  "ID": 101060104
+                }
+              ]
+            }
+          },
+          "11": {
+            "Category": "Mission",
+            "SaveType": "Permanent",
+            "LoadSide": "Server",
+            "UnloadCondition": {
+              "Conditions": [
+                {
+                  "Type": "SubMission",
+                  "Phase": "Finish",
+                  "ID": 101100103
+                }
+              ]
+            }
+          },
+          "8": {
+            "SaveType": "Reset",
+            "UnloadCondition": {
+              "Conditions": [
+                {
+                  "Phase": "Finish",
+                  "ID": 1010602
+                }
+              ]
+            }
+          },
+          "1": {
+            "SaveType": "Reset",
+            "LoadOnInitial": true
+          },
+          "14": {
+            "Category": "Mission",
+            "SaveType": "Reset",
+            "UnloadCondition": {
+              "Conditions": [
+                {
+                  "Type": "SubMission",
+                  "Phase": "Finish",
+                  "ID": 404012101
+                }
+              ]
+            }
+          },
+          "15": {
+            "Category": "Mission",
+            "SaveType": "Reset"
+          },
+          "16": {
+            "SaveType": "Reset"
+          }
+        }
+      }
+    ],
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G2.json": [
+      {
+        "$type": "RPG.GameCore.RtLevelGroupInfo",
+        "GroupName": "Default",
+        "AreaAnchorName": "LevelArea_P10102_F10102002_G2",
+        "SaveType": "Reset",
+        "LoadOnInitial": true,
+        "ConflictIDList": [],
+        "AnchorList": [
+          {
+            "Name": "Anchor1",
+            "RotY": 165,
+            "ID": 1,
+            "PosX": 1.89,
+            "PosY": 1,
+            "PosZ": 1.976
+          },
+          {
+            "Name": "Anchor2",
+            "RotY": 19.1,
+            "ID": 2,
+            "PosX": -0.005,
+            "PosY": 2e-06,
+            "PosZ": -1.625
+          }
+        ],
+        "MonsterList": [],
+        "PropList": [
+          {
+            "PropID": 107,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Maze/Chapter01/Town/Town_Chapter01_Entry.json",
+            "ValueSource": {
+              "Values": [
+                {
+                  "$type": "RPG.GameCore.SharedString",
+                  "Value": "FloorName_10102001",
+                  "Key": "ButtonTextFloorName"
+                },
+                {
+                  "$type": "RPG.GameCore.SharedInt",
+                  "Value": 101020102,
+                  "Key": "EnterMapEntranceID"
+                }
+              ]
+            },
+            "Trigger": {
+              "Radius": 1.5,
+              "DimX": 1,
+              "DimY": 1,
+              "DimZ": 1,
+              "PointList": []
+            },
+            "CustomTriggerMap": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "OverrideMapIconType": 100,
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop1",
+            "ID": 300001,
+            "PosX": 1.89,
+            "PosY": 1.9,
+            "PosZ": 3.87
+          }
+        ],
+        "DistrictList": [],
+        "WaypointList": [],
+        "PathwayList": [],
+        "BattleAreaList": [],
+        "NPCList": [],
+        "CrowdList": [],
+        "PedestrianList": []
+      }
+    ],
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G9.json": [
+      {
+        "$type": "RPG.GameCore.RtLevelGroupInfo",
+        "GroupName": "MainMission1010601_",
+        "Category": "Mission",
+        "AreaAnchorName": "LevelArea_P10102_F10102002_G9",
+        "SaveType": "Reset",
+        "LoadCondition": {
+          "Conditions": [
+            {
+              "Type": "SubMission",
+              "ID": 101060104
+            }
+          ]
+        },
+        "UnloadCondition": {
+          "Conditions": [
+            {
+              "Type": "SubMission",
+              "Phase": "Finish",
+              "ID": 101060104
+            }
+          ]
+        },
+        "OwnerMainMissionID": 1010601,
+        "ConflictIDList": [],
+        "AnchorList": [],
+        "MonsterList": [],
+        "PropList": [
+          {
+            "PropID": 100,
+            "IsOverrideInitLevelGraph": true,
+            "Trigger": {
+              "Radius": 2,
+              "DimX": 1,
+              "DimY": 1,
+              "DimZ": 1,
+              "PointList": []
+            },
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "DialogueGroups": [
+              101060101
+            ],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop1",
+            "ID": 300001,
+            "PosX": 2.604,
+            "PosY": 0.677,
+            "PosZ": -0.816
+          }
+        ],
+        "DistrictList": [],
+        "WaypointList": [],
+        "PathwayList": [],
+        "BattleAreaList": [],
+        "NPCList": [],
+        "CrowdList": [],
+        "PedestrianList": []
+      }
+    ],
+    "Config/LevelOutput/SharedRuntimeGroup/Groups_P10102_F10102002/LevelGroup_P10102_F10102002_G16.json": [
+      {
+        "$type": "RPG.GameCore.RtLevelGroupInfo",
+        "GroupName": "DreamTest",
+        "AreaAnchorName": "LevelArea_P10102_F10102002_G16",
+        "SaveType": "Reset",
+        "ConflictIDList": [],
+        "AnchorList": [
+          {
+            "Name": "Anchor1",
+            "RotY": 204.5562,
+            "ID": 1,
+            "PosX": 1.631,
+            "PosZ": 1.881
+          }
+        ],
+        "MonsterList": [],
+        "PropList": [
+          {
+            "PropID": 100,
+            "IsOverrideInitLevelGraph": true,
+            "Trigger": {
+              "Radius": 1,
+              "DimX": 1,
+              "DimY": 1,
+              "DimZ": 1,
+              "PointList": []
+            },
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop1",
+            "ID": 300001,
+            "PosX": 1.872,
+            "PosY": 0.64,
+            "PosZ": 4.103
+          },
+          {
+            "PropID": 101017,
+            "IsOverrideInitLevelGraph": true,
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop2",
+            "ID": 300002,
+            "PosX": -0.821,
+            "PosY": 0.059,
+            "PosZ": -1.925
+          },
+          {
+            "PropID": 101017,
+            "IsOverrideInitLevelGraph": true,
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop3",
+            "ID": 300003,
+            "PosX": 3.038,
+            "PosY": 0.059,
+            "PosZ": 0.611
+          },
+          {
+            "PropID": 101017,
+            "IsOverrideInitLevelGraph": true,
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop4",
+            "ID": 300004,
+            "PosX": -3.204,
+            "PosY": 0.059,
+            "PosZ": 2.466
+          }
+        ],
+        "DistrictList": [],
+        "WaypointList": [],
+        "PathwayList": [],
+        "BattleAreaList": [],
+        "NPCList": [
+          {
+            "NPCID": 1991,
+            "LoadOnInitial": false,
+            "DialogueGroups": [],
+            "ServerInteractVerificationIDList": [],
+            "BoardShowList": [],
+            "TalkDialogGroupIDList": [],
+            "DefaultIdleFreeStyleMotionID": 380010000,
+            "InitialHiddenNodeList": [],
+            "Name": "NPC1",
+            "RotY": 204.5562,
+            "ID": 400001,
+            "PosX": 1.631,
+            "PosZ": 1.881
+          },
+          {
+            "NPCID": 12119,
+            "DialogueGroups": [],
+            "ServerInteractVerificationIDList": [],
+            "BoardShowList": [],
+            "TalkDialogGroupIDList": [],
+            "DefaultIdleFreeStyleMotionID": 100010291,
+            "InitialHiddenNodeList": [],
+            "Name": "NPC2",
+            "RotY": 30.49512,
+            "ID": 400002,
+            "PosX": -0.837,
+            "PosZ": -1.941
+          }
+        ],
+        "CrowdList": [],
+        "PedestrianList": []
+      }
+    ],
+    "ExcelOutput/MazePlane.json": [
+      {
+        "PlaneID": 10102,
+        "PlaneType": "Town",
+        "SubType": 1,
+        "MazePoolType": 1,
+        "WorldID": 201,
+        "PlaneName": {
+          "Hash": 574234790833788729
+        },
+        "StartFloorID": 10102001,
+        "FloorIDList": [
+          10102001,
+          10102002,
+          10102003,
+          10102004
+        ]
+      }
+    ],
+    "ExcelOutput/MazeProp.json": [
+      {
+        "ID": 100,
+        "PropType": "PROP_ORDINARY",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [
+          4
+        ],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Common/Prop_Common_EmptyProp_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "D"
+      },
+      {
+        "ID": 101017,
+        "PropType": "PROP_DESTRUCT",
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+        "BoardShowList": [],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_Des_Ashcan_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Chap01/Prop_Chap01_DesBox_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked"
+        ],
+        "PerformanceType": "C",
+        "HasRendererComponent": true,
+        "LodPriority": 2
+      },
+      {
+        "ID": 107,
+        "PropType": "PROP_ORDINARY",
+        "IsMapContent": true,
+        "PropName": {
+          "Hash": 13013349132478528449
+        },
+        "PropIconPath": "SpriteOutput/TalkIcon/ChatOutIcon.png",
+        "BoardShowList": [
+          4
+        ],
+        "ConfigEntityPath": "Config/ConfigEntity/Props/Common/Prop_Common_EmptyProp_01_Entity.json",
+        "DamageTypeList": [],
+        "MiniMapIconType": 98,
+        "MiniMapStateIcons": [],
+        "JsonPath": "Config/Props/Common/Prop_Common_BuildingEntranceExit_01_Config.json",
+        "PropStateList": [
+          "Closed",
+          "Open",
+          "Locked",
+          "TriggerDisable",
+          "TriggerEnable"
+        ],
+        "PerformanceType": "D"
+      }
+    ],
+    "ExcelOutput/NPCData.json": [
+      {
+        "ID": 1991,
+        "DefaultNPCName": {
+          "Hash": 16338470086567881427
+        },
+        "ConfigEntityPath": "Config/ConfigEntity/NPC/Avatar/NPC_Avatar_Lad_PlayerBoy_00_Entity.json",
+        "JsonPath": "Config/ConfigCharacter/NPC/Avatar/NPC_Avatar_PlayerBoy_00_Config.json",
+        "SubType": "Avatar"
+      },
+      {
+        "ID": 12119,
+        "DefaultNPCName": {
+          "Hash": 6380474038167975994
+        },
+        "ConfigEntityPath": "Config/ConfigEntity/NPC/Normal/NPC_W2_Male_11_Entity.json",
+        "JsonPath": "Config/ConfigCharacter/NPC/Normal/NPC_Male_Common_Config.json"
+      }
+    ],
+    "ExcelOutput/MainMission.json": [
+      {
+        "MainMissionID": 1010601,
+        "Type": "Main",
+        "WorldID": 201,
+        "DisplayPriority": 1010601,
+        "NextMainMissionList": [],
+        "Name": {
+          "Hash": 884571521216440936
+        },
+        "TakeOperation": "And",
+        "BeginOperation": "And",
+        "TakeParam": [
+          {
+            "Type": "MultiSequence",
+            "Value": 1010501
+          }
+        ],
+        "BeginParam": [
+          {
+            "Type": "Auto"
+          }
+        ],
+        "NextTrackMainMission": 1010602,
+        "TrackWeight": 100,
+        "RewardID": 100,
+        "DisplayRewardID": 11010602,
+        "MissionPack": 1010601,
+        "ChapterID": 101001,
+        "SubRewardList": []
+      }
+    ],
+    "Config/Level/Mission/1010601/MissionInfo_1010601.partial.json": [
+      {
+        "ID": 101060104,
+        "MainMissionID": 1010601,
+        "MissionJsonPath": "Config/Level/Mission/1010601/Mission_101060104.json",
+        "LevelPlaneID": 10102,
+        "LevelFloorID": 10102002,
+        "AudioEmotionState": "State_Joyful",
+        "TakeType": "AnySequence",
+        "TakeParamIntList": [
+          101060105
+        ],
+        "FinishType": "Talk",
+        "ParamType": "Equal",
+        "ParamStr1": "Mission_101060104",
+        "ParamItemList": [],
+        "FinishActionList": [],
+        "Progress": 1,
+        "CustomValueList": [],
+        "CustomValueReward": [],
+        "RequiredNPCSeriesIDList": [],
+        "WayPointType": "Prop",
+        "WayPointFloorID": 10102002,
+        "WayPointGroupID": 9,
+        "WayPointEntityID": 300001
+      }
+    ]
+  }
+}

@@ -217,14 +217,17 @@ class DailyMissionInitialNpcLifecycle46Test {
     assertTrue(npcs().isEmpty());assertFalse(recording.getScene().getLoadedGroups().contains(84));
   }
   @ParameterizedTest @ValueSource(booleans={false,true})
-  void theExistingExplicitGroupLoaderCannotResurrectCompletedSameDayReportActors(boolean pendingReward){
+  void theExplicitGroupLoaderKeepsCompletedSameDayActorsAndPropsUnloaded(boolean pendingReward){
     completeOriginalPeriod(pendingReward);origin.g61.floor();
     String before=origin.saved();int saves=recording.saves,credit=recording.getScoin(),points=recording.getGameplay().getDailyPoints();
     // The public loader is an existing server API; this is not a claim of client reentry.
     recording.getScene().loadGroup(84);
-    assertTrue(recording.getScene().getLoadedGroups().contains(84));
+    assertFalse(recording.getScene().getLoadedGroups().contains(84));
     assertEquals(0,npcs().size(),"A completed accepted-period report still owns its actor removals until the day changes");
-    assertEquals(3,recording.getScene().getEntitiesByGroup(EntityProp.class,84).size());
+    assertEquals(0,recording.getScene().getEntitiesByGroup(EntityProp.class,84).size());
+    // Keep the actor receipt independently verified even when the group admission rejects first.
+    for(var npc:origin.group().getNPCList())
+      assertNull(recording.getScene().getEntityLoader().loadNpc(recording.getScene(),origin.group(),npc));
     assertEquals(before,origin.saved());assertEquals(saves,recording.saves);assertEquals(credit,recording.getScoin());assertEquals(points,recording.getGameplay().getDailyPoints());
   }
   @ParameterizedTest @ValueSource(booleans={false,true})
