@@ -37,3 +37,11 @@
 最终独立源码副本的完整构建通过 722 组、20,011 项测试，失败、错误、跳过均为零，耗时 12 分 32 秒。3,050 份构建输入保持一致，本轮四份 Java 源码与工作区逐字节相同。配置请求四个测试进程，JDK 的两个有效处理器限制下，Gradle 实际使用两个测试进程。
 
 完整源码包 SHA-256 为 `cadbc60e5984c8141460bda18a9450e656318e7ba1d619da1794fc5ab2675f00`，候选中的四个业务编译条目与该包逐字节一致；仅将上述受控候选安装，不携带完整源码包中其他尚未发布功能。结果见 `full-summary.json`、`full-results/`、`inputs-before.json`、`inputs-after.json` 和 `release-proof.json`。
+
+## 本机更新
+
+修复提交 `2c933bf` 已于 2026-11-13 更新到本机 Compose，运行包 SHA-256 为 `af4ead6619f289de8f9a122dbcdf96ae192cdbb8163645a8f0bcf353a61492d1`。确认在线连接已超过 15 分钟无运行文件写入后正常停服，备份 63 个运行文件、其中 32 个数据文件，目录为 `.local/backups/anchor-offset-20261113-20261113-104154/`。正常保存后的正式数据库在更新前后逐项一致，配置、凭据和资源保持。
+
+启动后健康、Dispatch、KCP 心跳及功能目录检查通过，未发现 ERROR、协议拒绝、tick 错误、类链接错误或无关锚点警告。两处正式锚点的只读状态记录与更新前相同，未以手工改档代替实际靠近激活。用户重新登录后在锚点旁移动，才沿正常移动流程接受激活并显示交互；实际客户端 F 提示和打开地图仍待复验。
+
+`deployment.json`、`backup-manifest.json`、`save-check.json`、`compose-after.json`、`anchor-state-before.log`、`anchor-state-after.log` 和 `live-verification.json` 保留安装、备份与正式存档核对。
