@@ -24,6 +24,8 @@ INDEX_PROFILES = {
     # Explicit local station-himeko-menu-v1 profile: one SpecialAvatar UI Type byte and
     # its block digest, without changing index layout or any other design record.
     'bcac71ed6783dfd447de127bdcab7c40ae4e21d488c39cba1af6ef6aa801b608': (255, 4, 33, 141295),
+    # Explicit local skin-shop profile: three added rows in the checked shop data block.
+    'ee8d096acb51627c2fcf57d609f1fd145c2d7824edd6764182c64b5b8f44642d': (255, 4, 33, 141295),
 }
 
 

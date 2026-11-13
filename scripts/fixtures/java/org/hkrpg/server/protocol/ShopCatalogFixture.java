@@ -29,6 +29,7 @@ public class ShopCatalogFixture {
   }
   public static void main(String[] args) throws Exception {
     LunarCore.getConfig().resourceDir = Path.of(args[0]).toAbsolutePath().toString();
+    LunarCore.getConfig().protocol.wireVersion = "4.6.0";
     ResourceLoader.loadResources();
     var now = Instant.parse("2026-10-25T12:00:00Z");
     var rows = new ArrayList<Map<String,Object>>();

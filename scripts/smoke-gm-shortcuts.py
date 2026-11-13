@@ -22,10 +22,11 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--browser-pause',action='store_true')
     parser.add_argument('--output',type=Path,default=ROOT/'build/gm-shortcuts-native.json')
+    parser.add_argument('--jar',type=Path,default=ROOT/'build/libs/hkrpg-server.jar')
     args=parser.parse_args()
-    jar=ROOT/'build/libs/hkrpg-server.jar';digest=hashlib.sha256(jar.read_bytes()).hexdigest()
+    jar=args.jar.resolve();digest=hashlib.sha256(jar.read_bytes()).hexdigest()
     java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'))
-    runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True)
+    runs=ROOT/'build/smoke';runs.mkdir(parents=True, exist_ok=True)
     directory=Path(tempfile.mkdtemp(prefix='gm-shortcuts-',dir=runs));helpers=directory/'helpers';helpers.mkdir()
     flags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
     subprocess.run([str(java.with_name('javac.exe')),'-encoding','UTF-8','-cp',str(jar),'-d',str(helpers),
@@ -82,7 +83,7 @@ def main():
             codes.append(server.returncode==(1000 if os.name=='nt' else 232));server.stdin.close();server=None
         if strict:assert all(codes),codes;stops+=1
 
-    catalog=[];selected={};saved=None
+    catalog=[];selected={};extra_skins=[];saved=None
     try:
         for cycle in range(2):
             log=(directory/f'server-{cycle}.log').open('w',encoding='utf-8');logs.append(log)
@@ -95,6 +96,9 @@ def main():
                 for offset in range(0,total,100):catalog.extend(request(f'/gm/api/item-shortcuts?limit=100&offset={offset}')['data']['items'])
                 assert len(catalog)==total and len({i['item']['id'] for i in catalog})==total
                 by_id={i['item']['id']:i for i in catalog}
+                for skin_id in [1141501,1150501,1140901]:
+                    assert by_id[skin_id]['type']=='skin' and by_id[skin_id]['grantable'],by_id[skin_id]
+                    extra_skins.append(by_id[skin_id])
                 chosen={'avatar':1102,'equipment':23001,'skin':1131001,'icon':200001,'bubble':220001,
                         'theme':221002,'case':254001,'outfit':227003,'pet':251001,'pam':252001,'card':253001,'medal':250601,'material':170}
                 for kind,item_id in chosen.items():
@@ -120,16 +124,19 @@ def main():
             if cycle==0:
                 grant(selected['theme'],2,False)
                 for kind,item in selected.items():grant(item,3 if kind=='material' else 1)
+                for item in extra_skins:grant(item)
                 unsupported=next(i for i in catalog if not i['grantable']);grant(unsupported,success=False)
                 unknown=request('/gm/api/operate',{'requestId':str(uuid.uuid4()),'action':'shortcut-grant','uid':uid,'itemId':1,'amount':1})['data']
                 assert unknown['state']=='failed'
             for body in operations:assert request('/gm/api/operate',body)['data']['state']=='completed'
             for kind in ['theme','skin','bubble','case','outfit','pet','pam','card','medal','music']:grant(selected[kind],success=False)
+            for item in extra_skins:grant(item,success=False)
             phone=send('GetPhoneDataCsReq');assert {220001,221002,254001}.issubset(integers(phone)),phone
             board=send('GetPlayerBoardDataCsReq');assert {200001,253001}.issubset(integers(board)),board
             pam=send('GetPamSkinDataCsReq');assert 252001 in integers(pam),pam
             pets=send('GetPetDataCsReq');assert 1001 in integers(pets),pets
             gm.wait_for(lambda:1131001 in integers(snapshot()['avatars']) and 1102 in integers(snapshot()['avatars']))
+            gm.wait_for(lambda:{1141501,1150501,1140901}.issubset(set(snapshot()['avatars'].get('skin_list',[]))))
             current=snapshot();stock={r['tid']:r['num'] for r in current['bag'].get('material_list',[])}
             assert stock.get(170)==3 and stock.get(227003)==1
             assert any(r.get('tid')==23001 for r in current['bag'].get('equipment_list',[])),current['bag']
