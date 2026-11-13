@@ -17,6 +17,8 @@
 | `Reward delivery incomplete` | 奖励号、数值收据摘要与保留的 pending 状态，定位需要复核的部分或异常投递。 |
 | `Story action interrupted` | 子任务、动作序号及预约保存、执行、完成保存或已有 pending 的固定阶段，定位剧情动作中断。 |
 | `Quest reward incomplete` | 普通或每日目标、奖励号、部分投递或已有 CLAIMING 等固定原因，定位无法自动重发的领奖。 |
+| `Anchor trigger skipped` | 实际场景中遇到无法识别或不合法的锚点触发范围，记录楼层、组和实例；启动扫描不逐条打印。 |
+| `Space anchor activated` | 保存后实际激活的锚点、地图编号及场景，配合 `anchor-activate` 保存失败阶段检查缺少 F 提示。 |
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
 | `Player tick error` | 定时更新的场景、异常类型及有限调用栈。 |
 

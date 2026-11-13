@@ -49,9 +49,13 @@ public final class SceneAnchors {
   /** Keep the raw source model unchanged; unsupported shapes never receive a guessed radius. */
   public static void loadTriggers(GroupInfo group, JsonObject original) {
     if (group == null || group.getPropList() == null) return;
-    group.getPropList().forEach(p -> p.setSpringActivation(null));
+    group.getPropList().forEach(p -> {
+      p.setSpringActivation(null);
+      p.setSpringActivationRejected(false);
+    });
     if (original == null || !original.has("PropList") || !original.get("PropList").isJsonArray()) return;
     for (var value : original.getAsJsonArray("PropList")) {
+      PropInfo candidate = null;
       try {
         var row = value.getAsJsonObject();
         int id = row.get("ID").getAsBigDecimal().intValueExact();
@@ -60,33 +64,48 @@ public final class SceneAnchors {
         var map = row.getAsJsonObject("CustomTriggerMap");
         if (!map.has("CustomTrigger_Spring")) continue;
         var trigger = map.getAsJsonObject("CustomTrigger_Spring");
-        String shape = trigger.has("Shape") ? trigger.get("Shape").getAsString() : "Sphere";
-        var allowed = switch (shape) {
-          case "Sphere" -> Set.of("Radius", "Offset", "PointList", "Server", "Shape");
-          case "Box" -> Set.of("Radius", "DimX", "DimY", "DimZ", "Offset", "PointList", "Server", "Shape");
-          default -> Set.<String>of();
-        };
-        if (!allowed.containsAll(trigger.keySet())
-            || !trigger.has("Server") || !trigger.get("Server").isJsonPrimitive()
-            || !trigger.getAsJsonPrimitive("Server").isBoolean() || !trigger.get("Server").getAsBoolean()
-            || trigger.has("PointList") && (!trigger.get("PointList").isJsonArray()
-                || !trigger.getAsJsonArray("PointList").isEmpty())) continue;
-        var offset = trigger.getAsJsonObject("Offset");
-        if (offset == null || !Set.of("X", "Y", "Z").containsAll(offset.keySet())) continue;
-        double x = number(offset, "X"), y = number(offset, "Y"), z = number(offset, "Z");
-        if (shape.equals("Sphere")) {
-          double radius = number(trigger, "Radius");
-          if (radius > 0) matches.getFirst().setSpringActivation(new Sphere(radius, x, y, z));
-        } else if (shape.equals("Box")) {
-          double width = number(trigger, "DimX"), height = number(trigger, "DimY"), depth = number(trigger, "DimZ");
-          if (trigger.has("Radius") && number(trigger, "Radius") <= 0) continue;
-          if (width > 0 && height > 0 && depth > 0)
-            matches.getFirst().setSpringActivation(new Box(width, height, depth, x, y, z));
-        }
+        // Client-only triggers are not server activation permission.
+        if (!trigger.has("Server") || !trigger.get("Server").isJsonPrimitive()
+            || !trigger.getAsJsonPrimitive("Server").isBoolean() || !trigger.get("Server").getAsBoolean())
+          continue;
+        candidate = matches.getFirst();
+        var volume = volume(trigger);
+        candidate.setSpringActivation(volume);
+        candidate.setSpringActivationRejected(volume == null);
       } catch (RuntimeException unsupported) {
         // Invalid/missing geometry is not permission to unlock a waypoint.
+        if (candidate != null) candidate.setSpringActivationRejected(true);
       }
     }
+  }
+
+  private static Volume volume(JsonObject trigger) {
+    String shape = trigger.has("Shape") ? trigger.get("Shape").getAsString() : "Sphere";
+    var allowed = switch (shape) {
+      case "Sphere" -> Set.of("Radius", "Offset", "PointList", "Server", "Shape");
+      case "Box" -> Set.of("Radius", "DimX", "DimY", "DimZ", "Offset", "PointList", "Server", "Shape");
+      default -> Set.<String>of();
+    };
+    if (!allowed.containsAll(trigger.keySet())
+        || trigger.has("PointList") && (!trigger.get("PointList").isJsonArray()
+            || !trigger.getAsJsonArray("PointList").isEmpty())) return null;
+    // Authored zero vectors can be omitted. A present malformed vector is still rejected.
+    var offset = trigger.has("Offset") ? trigger.getAsJsonObject("Offset") : null;
+    if (trigger.has("Offset") && (offset == null
+        || !Set.of("X", "Y", "Z").containsAll(offset.keySet()))) return null;
+    double x = offset == null ? 0 : number(offset, "X");
+    double y = offset == null ? 0 : number(offset, "Y");
+    double z = offset == null ? 0 : number(offset, "Z");
+    if (shape.equals("Sphere")) {
+      double radius = number(trigger, "Radius");
+      if (radius > 0) return new Sphere(radius, x, y, z);
+    } else if (shape.equals("Box")) {
+      double width = number(trigger, "DimX"), height = number(trigger, "DimY"), depth = number(trigger, "DimZ");
+      if (trigger.has("Radius") && number(trigger, "Radius") <= 0) return null;
+      if (width > 0 && height > 0 && depth > 0)
+        return new Box(width, height, depth, x, y, z);
+    }
+    return null;
   }
 
   private static double number(JsonObject object, String key) {
@@ -222,8 +241,13 @@ public final class SceneAnchors {
             || scene.getEntityById(entity.getEntityId()) != entity
             || entity.getPropType() != PropType.PROP_SPRING || prop == null
             || entity.getState() != PropState.CheckPointDisable || prop.getState() != PropState.CheckPointDisable
-            || prop.getSpringActivation() == null
-            || find(entry.getId(), entity.getGroupId(), entity.getInstId()) != prop
+            || find(entry.getId(), entity.getGroupId(), entity.getInstId()) != prop) continue;
+        if (prop.isSpringActivationRejected()) {
+          org.hkrpg.server.GameDiagnostics.anchorTriggerSkipped(scene.getPlaneId(), scene.getFloorId(),
+              entity.getGroupId(), entity.getInstId());
+          continue;
+        }
+        if (prop.getSpringActivation() == null
             || !prop.getSpringActivation().contains(prop, player.getPos())) continue;
         changed.add(entity);
         records.add(snapshot(entry, prop));
@@ -234,12 +258,16 @@ public final class SceneAnchors {
         player.save();
       } catch (RuntimeException failed) {
         player.getGameplay().scenePropStates(previous);
+        org.hkrpg.server.GameDiagnostics.saveFailed(player, "anchor-activate",
+            changed.getFirst().getPropInfo().getMappingInfoID(), 0, failed);
         return;
       }
       for (var entity : changed) {
         entity.setState(PropState.CheckPointEnable);
         player.getMissionManager().onPropInteraction(scene.getFloorId(), entity.getGroupId(),
             entity.getInstId(), PropState.CheckPointEnable.getVal());
+        org.hkrpg.server.GameDiagnostics.anchorActivated(scene, entity.getGroupId(), entity.getInstId(),
+            entity.getPropInfo().getMappingInfoID());
       }
     }
   }

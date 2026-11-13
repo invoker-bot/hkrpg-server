@@ -1087,3 +1087,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 `DailyManager.sync()` 对 ACTIVE 的 4.6 会话使用原生 3360 活跃度通知，随后以 925 同步已保存任务进度，避免冻结旧消息编号 -1 被发送层丢弃。保存、重登与客户端验收边界见[活跃度通知说明](daily-active-notify-4.6.md)。
 
 剧情动作预约失败撤销未执行的预约并保留已保存前缀；`QuestRewardWrites` 在玩家锁内统一普通和每日目标的领奖阶段保存，失败恢复同一接取对象，投递后的不确定状态继续保留 CLAIMING。限频诊断及验证边界见[保存恢复说明](quest-action-save-recovery.md)。
+
+`SceneAnchors` 对整体省略的 Offset 使用零向量，保留原始范围及生成、状态、楼层和剧情门槛；坏参数继续拒绝，并记录配置跳过、保存失败及实际激活。原件和验证边界见[大矿区锚点说明](great-mine-anchor-offset-4.6.md)。

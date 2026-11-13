@@ -1,0 +1,641 @@
+{
+  "description": "大矿区组2完整原件及通用锚点按钮状态图；测试仅实例化四个原始锚点。",
+  "sources": [
+    {
+      "path": "Config/LevelOutput/SharedRuntimeGroup/Groups_P20121_F20121001/LevelGroup_P20121_F20121001_G2.json",
+      "sha256": "8dd78a2d916a99a098637b08db5fc3d4faf1ab1e5b70a631604ba7a833fc04d2",
+      "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+      "gitEqual": true,
+      "original": {
+        "$type": "RPG.GameCore.RtLevelGroupInfo",
+        "GroupName": "DefaultData",
+        "ConfigPrefabPath": "Level/Maze/Chapter01/Chap01_MAZ_M201_LevelArea.prefab",
+        "AreaAnchorName": "LevelArea_P20121_F20121001_G2",
+        "LoadSide": "Server",
+        "LoadOnInitial": true,
+        "GroupRefreshID": 1,
+        "ConflictIDList": [],
+        "AnchorList": [
+          {
+            "Name": "SavePoint1",
+            "RotY": 190,
+            "ID": 1,
+            "PosX": 127.85,
+            "PosY": 46.58787,
+            "PosZ": -27.59
+          },
+          {
+            "Name": "SavePoint2",
+            "RotY": 40,
+            "ID": 2,
+            "PosX": 177.855,
+            "PosY": 55.671,
+            "PosZ": -185.106
+          },
+          {
+            "Name": "SavePoint3",
+            "RotY": 9.999994,
+            "ID": 4,
+            "PosX": 191.75,
+            "PosY": 34.6445,
+            "PosZ": -153.71
+          },
+          {
+            "Name": "SavePoint4",
+            "RotY": 300,
+            "ID": 3,
+            "PosX": 245.86,
+            "PosY": 45.26504,
+            "PosZ": -70.27
+          }
+        ],
+        "MonsterList": [],
+        "PropList": [
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "State": "CheckPointEnable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Shape": "Box",
+                "Radius": 5,
+                "DimX": 24,
+                "DimY": 2,
+                "DimZ": 8,
+                "Offset": {
+                  "X": 8,
+                  "Y": 0,
+                  "Z": 0
+                },
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 2,
+            "AnchorID": 1,
+            "MappingInfoID": 2012101,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop6",
+            "RotY": 13.99191,
+            "ID": 300006,
+            "PosX": 124.66,
+            "PosY": 46.85038,
+            "PosZ": -23.66
+          },
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "State": "CheckPointDisable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 7,
+                "Offset": {
+                  "X": -1,
+                  "Y": 1,
+                  "Z": 3.5
+                },
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 2,
+            "AnchorID": 2,
+            "MappingInfoID": 2012102,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop2",
+            "ID": 300002,
+            "PosX": 179.27,
+            "PosY": 55.69065,
+            "PosZ": -188.1
+          },
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "State": "CheckPointDisable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 6,
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 2,
+            "AnchorID": 4,
+            "MappingInfoID": 2012103,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop4",
+            "ID": 300004,
+            "PosX": 189.17,
+            "PosY": 34.69807,
+            "PosZ": -155.57
+          },
+          {
+            "PropID": 114,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Maze/Chapter01/Town/Town_Chapter01_Entry.json",
+            "ValueSource": {
+              "Values": [
+                {
+                  "$type": "RPG.GameCore.SharedString",
+                  "Value": "FloorName_10102001",
+                  "Key": "ButtonTextFloorName"
+                },
+                {
+                  "$type": "RPG.GameCore.SharedInt",
+                  "Value": 101020105,
+                  "Key": "EnterMapEntranceID"
+                }
+              ]
+            },
+            "Trigger": {
+              "Shape": "Box",
+              "Radius": 4,
+              "DimX": 9,
+              "DimY": 8,
+              "DimZ": 6,
+              "PointList": []
+            },
+            "OverrideHintRange": 0,
+            "CustomTriggerMap": {
+              "CustomTrigger_OnEnter": {
+                "Radius": 20,
+                "PointList": []
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "MappingInfoID": 2012104,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop5",
+            "RotY": 347.08,
+            "ID": 300005,
+            "PosX": 130.17,
+            "PosY": 46.6589,
+            "PosZ": -17.5
+          },
+          {
+            "PropID": 115,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Maze/Chapter01/Town/Town_Chapter01_TownExit_CameraArea.json",
+            "ValueSource": {
+              "Values": [
+                {
+                  "$type": "RPG.GameCore.SharedString",
+                  "Value": "Chap01_MAZ_M201_LevelArea,ExitCam_01",
+                  "Key": "Camera1"
+                },
+                {
+                  "$type": "RPG.GameCore.SharedString",
+                  "Value": "Chap01_MAZ_M201_LevelArea,ExitCam_02",
+                  "Key": "Camera2"
+                },
+                {
+                  "$type": "RPG.GameCore.SharedString",
+                  "Value": "Chap01_MAZ_M201_LevelArea,ExitCam_Root",
+                  "Key": "Anchor"
+                }
+              ]
+            },
+            "Trigger": {
+              "Shape": "Box",
+              "Radius": 1,
+              "DimX": 9,
+              "DimY": 8,
+              "DimZ": 8,
+              "PointList": []
+            },
+            "CampID": 4,
+            "OverrideHintRange": 0,
+            "CustomTriggerMap": {},
+            "CustomTriggerMapV2": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop3",
+            "RotY": 347.08,
+            "ID": 300003,
+            "PosX": 130.17,
+            "PosY": 48.15,
+            "PosZ": -17.5
+          },
+          {
+            "Scale": {
+              "X": 6,
+              "Y": 2,
+              "Z": 1
+            },
+            "PropID": 102,
+            "IsOverrideInitLevelGraph": true,
+            "CampID": 4,
+            "CustomTriggerMap": {},
+            "CustomTriggerMapV2": {},
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop7",
+            "RotY": 347.08,
+            "ID": 300007,
+            "PosX": 131.47,
+            "PosY": 46.11,
+            "PosZ": -17.2
+          },
+          {
+            "PropID": 101,
+            "IsOverrideInitLevelGraph": true,
+            "InitLevelGraph": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+            "Trigger": {
+              "Radius": 2.5,
+              "Offset": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "PointList": []
+            },
+            "State": "CheckPointDisable",
+            "CustomTriggerMap": {
+              "CustomTrigger_Spring": {
+                "Radius": 8,
+                "PointList": [],
+                "Server": true
+              }
+            },
+            "CustomTriggerMapV2": {},
+            "AnchorGroupID": 2,
+            "AnchorID": 3,
+            "MappingInfoID": 2012105,
+            "DialogueGroups": [],
+            "TalkDialogGroupIDList": [],
+            "ServerInteractVerificationIDList": [],
+            "InteractIconType": {
+              "EnumIndex": 20,
+              "Value": 0
+            },
+            "Name": "Prop1",
+            "ID": 300001,
+            "PosX": 248.2507,
+            "PosY": 45.26504,
+            "PosZ": -74.4
+          }
+        ],
+        "DistrictList": [],
+        "WaypointList": [],
+        "PathwayList": [],
+        "BattleAreaList": [
+          {
+            "EnviroProfile": "Stages/Outputs/Chapter01/EnviroProfile/Chap01_CloseView_BAT_Area_M201_01_Night.enviroProfile.asset",
+            "Tags": [
+              "BattleArea01"
+            ],
+            "AudioEnterEvent": [],
+            "PrefetchMainMissionList": [],
+            "PrefetchSubMissionList": [],
+            "Name": "BattleArea1",
+            "ID": 1,
+            "PosX": -318.24,
+            "PosZ": 126.08
+          }
+        ],
+        "NPCList": [],
+        "CrowdList": [],
+        "PedestrianList": [],
+        "SmartObjectList": []
+      }
+    },
+    {
+      "path": "Config/Level/Props/Common/InitLevelGraph_Prop_Common_CheckPoint_ActiveHint.json",
+      "sha256": "e86c35a85bab2dd0bb3cbc0676a05c5e2839757d25f5ae99a3f78f7a5d50857e",
+      "commit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+      "gitEqual": true,
+      "original": {
+        "OnInitSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.AnimSetParameter",
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                },
+                "ParameterName": "AnchorType",
+                "ParameterType": "Int",
+                "Value": {
+                  "IsDynamic": true,
+                  "PostfixExpr": {
+                    "OpCodes": "AQAR",
+                    "FixedValues": [],
+                    "DynamicHashes": [
+                      -1104357971
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.PropStateChangeListenerConfig",
+                "FromState": "CheckPointDisable",
+                "ToState": "CheckPointEnable",
+                "OnChange": [
+                  {
+                    "$type": "RPG.GameCore.GenericSwitchCase",
+                    "SwitchRef": {
+                      "$type": "RPG.GameCore.SwitchRefGraphDynamicFloat",
+                      "Name": "AnchorType"
+                    },
+                    "Cases": [
+                      {
+                        "$type": "RPG.GameCore.NumberCaseContainer",
+                        "Case": {
+                          "IsDynamic": false,
+                          "FixedValue": {
+                            "Value": 0
+                          }
+                        },
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.ToastPile",
+                            "DescTextID": {
+                              "Hash": 17452269684094254257
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "$type": "RPG.GameCore.NumberCaseContainer",
+                        "Case": {
+                          "IsDynamic": false,
+                          "FixedValue": {
+                            "Value": 1
+                          }
+                        },
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.ToastPile",
+                            "DescTextID": {
+                              "Hash": 3505319184770055508
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "TargetType": {
+                  "$type": "RPG.GameCore.TargetFetchAdvPropEx"
+                }
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.AdvSetupButtonListTrigger",
+                "TriggerName": "InteractTrigger",
+                "ButtonsByName": [
+                  "Interact"
+                ],
+                "ButtonConfigs": []
+              },
+              {
+                "$type": "RPG.GameCore.GenericSwitchCase",
+                "SwitchRef": {
+                  "$type": "RPG.GameCore.SwitchRefPropState"
+                },
+                "Cases": [
+                  {
+                    "$type": "RPG.GameCore.PropStateCaseContainer",
+                    "Case": "CheckPointDisable",
+                    "OnSuccess": [
+                      {
+                        "$type": "RPG.GameCore.AdvEnableButtons",
+                        "TriggerName": "InteractTrigger",
+                        "ButtonsByName": [
+                          "Interact"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "$type": "RPG.GameCore.PropStateCaseContainer",
+                    "Case": "CheckPointEnable",
+                    "OnSuccess": [
+                      {
+                        "$type": "RPG.GameCore.AdvEnableButtons",
+                        "TriggerName": "InteractTrigger",
+                        "ButtonsByName": [
+                          "Interact"
+                        ],
+                        "IsEnable": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitPropStateChange",
+                "FromAnyState": true,
+                "ToAnyState": true,
+                "OnChange": [
+                  {
+                    "$type": "RPG.GameCore.GenericSwitchCase",
+                    "SwitchRef": {
+                      "$type": "RPG.GameCore.SwitchRefPropState"
+                    },
+                    "Cases": [
+                      {
+                        "$type": "RPG.GameCore.PropStateCaseContainer",
+                        "Case": "CheckPointDisable",
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.AdvEnableButtons",
+                            "TriggerName": "InteractTrigger",
+                            "ButtonsByName": [
+                              "Interact"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "$type": "RPG.GameCore.PropStateCaseContainer",
+                        "Case": "CheckPointEnable",
+                        "OnSuccess": [
+                          {
+                            "$type": "RPG.GameCore.AdvEnableButtons",
+                            "TriggerName": "InteractTrigger",
+                            "ButtonsByName": [
+                              "Interact"
+                            ],
+                            "IsEnable": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.AdvOnButtonPressed",
+                "ButtonName": "Interact",
+                "OnPressedCallback": [
+                  {
+                    "$type": "RPG.GameCore.ShowCurrentMapPage"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "ValueSource": {
+          "Values": [
+            {
+              "$type": "RPG.GameCore.SharedInt",
+              "Key": "AnchorType"
+            }
+          ]
+        },
+        "Type": "Entity",
+        "EntityEventList": []
+      }
+    }
+  ],
+  "propOriginal": {
+    "ID": 101,
+    "PropType": "PROP_SPRING",
+    "IsMapContent": true,
+    "PropName": {
+      "Hash": 7667535464665530603
+    },
+    "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+    "BoardShowList": [],
+    "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_RecoveryDoor_01_Entity.json",
+    "DamageTypeList": [],
+    "MiniMapIconType": 2,
+    "MiniMapStateIcons": [
+      {
+        "State": "CheckPointDisable",
+        "IconID": 10,
+        "Color": ""
+      },
+      {
+        "State": "CheckPointEnable",
+        "IconID": 8,
+        "Color": ""
+      }
+    ],
+    "JsonPath": "Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json",
+    "PropStateList": [
+      "CheckPointDisable",
+      "CheckPointEnable"
+    ],
+    "PerformanceType": "A",
+    "HasRendererComponent": true,
+    "LodPriority": 3
+  },
+  "prop": {
+    "ID": 101,
+    "PropType": "PROP_SPRING",
+    "IsMapContent": true,
+    "PropName": 7667535464665530603,
+    "PropIconPath": "SpriteOutput/TalkIcon/ChatIcon.png",
+    "BoardShowList": [],
+    "ConfigEntityPath": "Config/ConfigEntity/Props/Chap01/Prop_Chap01_RecoveryDoor_01_Entity.json",
+    "DamageTypeList": [],
+    "MiniMapIconType": 2,
+    "MiniMapStateIcons": [
+      {
+        "State": "CheckPointDisable",
+        "IconID": 10,
+        "Color": ""
+      },
+      {
+        "State": "CheckPointEnable",
+        "IconID": 8,
+        "Color": ""
+      }
+    ],
+    "JsonPath": "Config/Props/Common/Prop_Common_RecoveryAnchor_01_Config.json",
+    "PropStateList": [
+      "CheckPointDisable",
+      "CheckPointEnable"
+    ],
+    "PerformanceType": "A",
+    "HasRendererComponent": true,
+    "LodPriority": 3
+  }
+}

@@ -123,6 +123,19 @@ public final class GameDiagnostics {
             +" reservation=claiming"+context(player.getSession(),player.getScene()));
   }
 
+  public static void anchorTriggerSkipped(int plane,int floor,int group,int instance) {
+    String place=" plane="+plane+" floor="+floor+" group="+group+" instance="+instance;
+    record(Topic.SCENE,Level.WARN,"anchor-trigger:"+place,
+        ()->"Anchor trigger skipped: reason=unsupported-volume"+place);
+  }
+
+  public static void anchorActivated(Scene scene,int group,int instance,int mapping) {
+    String place=" plane="+scene.getPlaneId()+" floor="+scene.getFloorId()
+        +" group="+group+" instance="+instance+" mapping="+mapping;
+    record(Topic.PROGRESS,Level.INFO,"anchor-activated:"+place,
+        ()->"Space anchor activated:"+place+context(scene.getPlayer().getSession(),scene));
+  }
+
   private static void logSummary(Topic topic, Summary summary) {
     if (summary == null) return;
     LunarCore.getLogger().info("Diagnostic repeats: topic={} repeated={} overLimit={} examples={} at={}",
