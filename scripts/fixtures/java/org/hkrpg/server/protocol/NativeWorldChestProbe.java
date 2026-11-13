@@ -349,6 +349,10 @@ public final class NativeWorldChestProbe {
               && number(response, "old_value") == targetValue
               && number(response, "new_value") == targetValue,
           "Property replay lost receipt: " + response);
+    } else if (op.equals("late-report")) {
+      var result = interact(current, chest, 120120);
+      require(number(result, "retcode") == 0 && number(result, "prop_state") == 12,
+          "Delayed client report did not acknowledge the saved unlock");
     } else if (op.equals("claim")) {
       var result = interact(current, chest);
       require(

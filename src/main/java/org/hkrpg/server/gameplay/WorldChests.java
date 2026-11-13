@@ -118,6 +118,10 @@ public final class WorldChests {
 
   public static Result open(Player p, int config, int entity) {
     synchronized (p) {
+      if (p.getScene() != null
+          && p.getScene().getEntityById(entity) instanceof EntityProp reported
+          && RobotHunts.acknowledgesChestReport(p, config, reported))
+        return new Result(Retcode.SUCC, reported);
       var code = validate(p, config, entity);
       if (code != Retcode.SUCC) return new Result(code, null);
       var actor = (EntityProp) p.getScene().getEntityById(entity);
