@@ -9,6 +9,7 @@ import emu.lunarcore.game.scene.Scene;
 import emu.lunarcore.game.scene.entity.EntityProp;
 import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
+import org.hkrpg.server.GameDiagnostics;
 
 /**
  * Ordinary-world consoles, door pairs and source-bound story interactions.
@@ -30,6 +31,16 @@ public final class StoryDoors {
       "Config/Level/Props/Chap01/InitLevelGraph_Prop_Chap01_IronGate_06.json";
   private static final String SIMPLE_DOOR_KEY = "Maze_Prop_Chap01_BaseControllSimpleDoor";
   private static final String IRON_GATE_CONTROLLER_KEY = "Maze_Prop_Chap01_IronGate06Controller_ConfigID";
+  private static final JsonElement RIVET_CONSOLE_BINDING = JsonParser.parseString("""
+      {"Values":[{"$type":"RPG.GameCore.SharedString","Value":"12,300009",
+        "Key":"Maze_Prop_Chap01_BaseControllSimpleDoor"}]}
+      """);
+  private static final JsonElement RIVET_GATE_BINDING = JsonParser.parseString("""
+      {"Values":[
+        {"$type":"RPG.GameCore.SharedString","Key":"Maze_Prop_Chap01_IronGate06Controller_ConfigID"},
+        {"$type":"RPG.GameCore.SharedString","Value":"MazeText_LockedDoor02",
+          "Key":"Maze_Chap01_Prop_IronGate06_LockHint"}]}
+      """);
   private static final JsonElement REPAIR_BINDINGS = JsonParser.parseString("""
       {"Values":[
         {"$type":"RPG.GameCore.SharedString","Value":"Chap01_ADV_MachineHouse_LevelArea,CablePuzzleCam_01","Key":"Vcam"},
@@ -93,12 +104,53 @@ public final class StoryDoors {
     return controller(info) || ironGate(info);
   }
 
+  public static boolean retainsSource(FloorInfo floor, PropInfo info) {
+    return retainsSource(info) || floor != null && floor.getFloorID() == 20122001
+        && rivetGateIdentity(info);
+  }
+
   private static boolean simpleDoorConsole(PropInfo info) {
     return info != null && info.getPropID() == 101001 && SIMPLE_DOOR_GRAPH.equals(info.getInitLevelGraph());
   }
 
   private static boolean ironGate(PropInfo info) {
     return info != null && info.getPropID() == 101004 && IRON_GATE_GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean rivetGateIdentity(PropInfo info) {
+    return info != null && info.getGroup() != null && info.getGroup().getId() == 12
+        && info.getID() == 300009 && info.getPropID() == 101005
+        && IRON_GATE_GRAPH.equals(info.getInitLevelGraph());
+  }
+
+  private static boolean rivetGate(Scene scene, PropInfo info) {
+    return scene.getPlaneId() == 20122 && scene.getFloorId() == 20122001
+        && rivetGateIdentity(info);
+  }
+
+  private static boolean rivetConsole(Scene scene, PropInfo info) {
+    return scene.getPlaneId() == 20122 && scene.getFloorId() == 20122001
+        && info != null && info.getGroup() != null && info.getGroup().getId() == 12
+        && info.getID() == 300010 && simpleDoorConsole(info);
+  }
+
+  // This original placement intentionally has no gate-to-controller value. Require the
+  // entire authored binding on both objects and a single controller for this gate.
+  private static boolean rivetPair(Scene scene, PropInfo owner, PropInfo gate) {
+    if (!rivetConsole(scene, owner) || !rivetGate(scene, gate)
+        || owner.getState() != PropState.Closed || gate.getState() != PropState.Closed
+        || !RIVET_CONSOLE_BINDING.equals(ResourceLoader.getGson().toJsonTree(owner.getValueSource()))
+        || !RIVET_GATE_BINDING.equals(ResourceLoader.getGson().toJsonTree(gate.getValueSource())))
+      return false;
+    var owners = controllers(scene, 12, 300009);
+    return owners.size() == 1 && owners.getFirst() == owner;
+  }
+
+  private static void rivetLinkRejected(Scene scene, PropInfo info, String reason) {
+    if (rivetConsole(scene, info))
+      GameDiagnostics.outcome(scene.getPlayer().getSession(), "RivetTownGateLink", 1010,
+          Retcode.REQ_PARA_INVALID, reason,
+          "plane=20122 floor=20122001 group=12 instance=300010 targetGroup=12 targetInstance=300009");
   }
 
   private static boolean paired(PropInfo info) {
@@ -435,6 +487,12 @@ public final class StoryDoors {
       return info.getState() == PropState.Locked && !ready(scene, group, info)
           && !completed(scene, group, info) ? PropState.Locked : PropState.Closed;
     }
+    if (rivetConsole(scene, info)) {
+      var link = link(info);
+      var gate = link == null ? null : original(scene, link.group(), link.instance());
+      return rivetPair(scene, info, gate) && pairReceipt(scene, group, info)
+          ? PropState.Open : info.getState();
+    }
     if (completed(scene, group, info)) return PropState.Open;
     if (BackwaterExitGate.matches(scene, info))
       return ready(scene, group, info) && pairReceipt(scene, group, info)
@@ -478,6 +536,11 @@ public final class StoryDoors {
     if (info == null || prop.getPropInfo() != info) return;
     if (controller(info)) {
       prop.setState(state(scene, prop.getGroupId(), info), false);
+    } else if (rivetGate(scene, info)) {
+      var owners = controllers(scene, prop.getGroupId(), prop.getInstId());
+      boolean open = owners.size() == 1 && rivetPair(scene, owners.getFirst(), info)
+          && state(scene, owners.getFirst().getGroup().getId(), owners.getFirst()) == PropState.Open;
+      prop.setState(open ? PropState.Open : info.getState(), false);
     } else if (prop.getExcel().isDoor() || ironGate(info) || prop.getPropType() == PropType.PROP_PLATFORM) {
       var owners = controllers(scene, prop.getGroupId(), prop.getInstId());
       if (owners.isEmpty()) return;
@@ -533,10 +596,14 @@ public final class StoryDoors {
     boolean open = config == (keyDoor(info) ? keyInteraction(info) : 1010)
         && state(scene, prop.getGroupId(), info) == PropState.Closed;
     if (standalone(info)) return open ? Retcode.SUCC : Retcode.INTERACT_TYPE_INVALID;
-    if ((!unlock && !open) || link == null)
+    if ((!unlock && !open) || link == null) {
+      if (link == null) rivetLinkRejected(scene, info, "missing-binding");
       return Retcode.INTERACT_TYPE_INVALID;
-    if (!validLink(scene, info, link))
+    }
+    if (!validLink(scene, info, link)) {
+      rivetLinkRejected(scene, info, "invalid-source-or-binding");
       return Retcode.REQ_PARA_INVALID;
+    }
     return Retcode.SUCC;
   }
 
@@ -545,8 +612,9 @@ public final class StoryDoors {
     var source = original(scene, link.group(), link.instance());
     var target = actor(scene, link);
     return source != null && target != null && target.getPropInfo() == source
-        && (simpleDoorConsole(owner) || BackwaterStoryConsole.matches(owner) ? ironGate(source)
+        && (simpleDoorConsole(owner) || BackwaterStoryConsole.matches(owner) ? (ironGate(source)
             && new Link(owner.getGroup().getId(), owner.getID()).equals(link(source, IRON_GATE_CONTROLLER_KEY))
+            || rivetPair(scene, owner, source))
             && target.getExcel().getPropStateList().contains(PropState.Open)
             : keyLift(owner) ? target.getPropType() == PropType.PROP_ELEVATOR
             && source.getPropID() == 100007
@@ -558,6 +626,7 @@ public final class StoryDoors {
 
   private static Retcode validateTarget(EntityProp prop, int config) {
     var scene = prop.getScene();
+    if (rivetGate(scene, prop.getPropInfo())) return Retcode.INTERACT_TYPE_INVALID;
     if ((prop.getExcel().isDoor() || ironGate(prop.getPropInfo()) || prop.getPropType() == PropType.PROP_PLATFORM)
         && !controllers(scene, prop.getGroupId(), prop.getInstId()).isEmpty())
       return Retcode.INTERACT_TYPE_INVALID;
