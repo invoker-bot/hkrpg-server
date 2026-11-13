@@ -37,3 +37,14 @@
 本次证据位于 `build/anchor-similar-audit-20261113/`：`red-summary.json`、`focused-summary.json`、`resource-audit.json`、`source-originals.json`、`volume-parity.json`、`native-anchor.json`、`native-log-check.json`、`full-summary.json`、`release-proof.json` 和登录/dispatch 冒烟报告。
 
 真实游戏中三个样本及其余候选地点的 F 提示、客户端演出和完整任务流程仍待分别验收。
+
+
+## 本机安装
+
+2026-11-13 本机 Compose 已更新并通过只读健康、HTTP/dispatch 及 KCP 心跳核对。先正常停服再备份，备份包含 63 个工作文件，其中 32 个数据文件；离线备份与重新启动后的保存文档快照一致。原配置、凭据、资源清单及其余运行包条目均保持原内容。
+
+- 业务源码提交：`6281f71f1880e60b24e92cb3fb6ca9750ff6f5e5`，未推送远程。
+- 本机运行包 SHA-256：`dd42f82e024a71e820cf74a5ac520af8e529b93779653f7b92d25b00dbf45000`。
+- 停服备份：`.local/backups/sphere-anchor-fields-20261113-20261113-125150/`。
+- 安装报告：同目录下 `deployment.json`、`save-check.json`、`compose-after.json` 与 `live-verification.json`。
+- 启动日志错误、锚点配置拒绝、玩家更新异常、协议拒绝及类加载异常均为 0；功能目录仍标为部分实现，真实客户端 F 提示未冒充已验收。
