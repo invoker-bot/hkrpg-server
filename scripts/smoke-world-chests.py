@@ -40,7 +40,7 @@ def main():
     parser.add_argument('--robot-hunt', action='store_true', help='Verify robot repair, endpoint, delayed report and loot')
     parser.add_argument('--oracle-puzzle', action='store_true', help='Verify oracle completion, delayed report and loot')
     parser.add_argument('--controller-finish', action='store_true', help='Verify command robot completion, delayed report and loot')
-    parser.add_argument('--legacy-jar', type=Path, help='With --robot-hunt, save the old endpoint before upgrading')
+    parser.add_argument('--legacy-jar', type=Path, help='Save an old completion before upgrading')
     parser.add_argument('--remaining', action='store_true', help='Verify cross-group, mission and time-lock completion receipts')
     parser.add_argument('--remaining-case', type=int, choices=REMAINING_IDS, help='Verify one --remaining chest in isolation')
     parser.add_argument('--final-bindings', action='store_true', help='Verify compass guards, cargo NPC and QTE reward with H2 restarts')
@@ -48,7 +48,7 @@ def main():
     args = parser.parse_args()
     assert args.final_case is None or args.final_bindings, '--final-case requires --final-bindings'
     assert args.remaining_case is None or args.remaining, '--remaining-case requires --remaining'
-    assert args.legacy_jar is None or args.robot_hunt, '--legacy-jar requires --robot-hunt'
+    assert args.legacy_jar is None or args.robot_hunt or args.controller_finish or args.oracle_puzzle, '--legacy-jar requires a supported fixture'
     assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.robot_hunt, args.oracle_puzzle, args.controller_finish, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
     if args.dynamic or args.robot_hunt or args.oracle_puzzle or args.controller_finish or args.remaining or args.final_bindings:
         args.mechanisms = True
@@ -298,6 +298,16 @@ def main():
                 dict(common, op='late-report', before=12, after=12),
                 dict(common, op='claim', before=12, after=13),
                 dict(common, op='verify', before=13, after=13)]
+            if legacy:
+                if args.controller_finish:
+                    actions[1]['after'] = 20
+                    recovered = dict(common, op='verify', before=12, after=12, states={'300001': 1})
+                else:
+                    actions[1] = dict(common, op='finish', controller=0, finish=120120, before=20, after=12)
+                    recovered = dict(common, op='verify', before=12, after=12, floorValues={
+                        'floor:10403001:FSV_OracleMachine_Chest_1': 1,
+                        'group:10403001:137:SGP_PuzzleState': 1})
+                actions.insert(2, recovered)
         if args.remaining:
             actions = remaining_actions(chests, catalog)
             prerequisite = REMAINING_PREREQUISITES.get(chests[0]['id'])
@@ -317,7 +327,8 @@ def main():
         if mechanism_spec:
             control['mechanism'] = mechanism_spec
         with (directory / f'server-{index}.log').open('wb') as log:
-            phase_jar = legacy if legacy and index <= 2 else jar
+            legacy_last_phase = 1 if args.controller_finish or args.oracle_puzzle else 2
+            phase_jar = legacy if legacy and index <= legacy_last_phase else jar
             process = subprocess.Popen([str(java), *options, '-Xmx1536m', '-jar', str(phase_jar), '--no-handbook'],
                 cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
             try:
@@ -372,6 +383,10 @@ def main():
                 assert child.returncode == 0, probe_log
                 value = json.loads(next(line for line in reversed(probe_log.read_text('utf-8').splitlines()) if line.startswith('{')))
                 assert value['passed']
+                deadline = time.monotonic() + 15
+                while request('/status/server')['status']['playerCount']:
+                    assert process.poll() is None and time.monotonic() < deadline, 'Probe player did not log out'
+                    time.sleep(.2)
                 credentials.setdefault('uid', value['uid'])
                 assert credentials['uid'] == value['uid']
                 snapshots.append(value)
@@ -391,6 +406,7 @@ def main():
                         process.stdin.flush()
                         process.wait(timeout=45)
                         assert process.returncode == (1000 if os.name == 'nt' else 232), directory
+                        assert 'Exception in thread "hkrpg-shutdown"' not in (directory / f'server-{index}.log').read_text('utf-8'), directory
                         stops += 1
                     finally:
                         if process.poll() is None:
@@ -402,7 +418,7 @@ def main():
             mechanism_progress[str(mechanism_spec['id'])] = dict(
                 complete=mechanism_spec['after'] == 12, defeated=mechanism_spec['defeated'],
                 late=bool(mechanism_spec.get('late')))
-        if legacy and index == 3:
+        if legacy and index == (2 if args.controller_finish or args.oracle_puzzle else 3):
             mechanism_progress[str(mechanism_spec['id'])] = dict(complete=True, defeated=[], late=False)
         if (args.dynamic or args.robot_hunt or args.oracle_puzzle or args.controller_finish or args.remaining or args.final_bindings) and mechanism_spec:
             prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec.get('actorGroup', mechanism_spec['group'])}:"

@@ -87,6 +87,19 @@ public final class NativeWorldChestProbe {
     return call(name, builder(name));
   }
 
+  private void logout() throws InterruptedException {
+    var bytes =
+        Unpooled.wrappedBuffer(
+            PacketCodec.encode(
+                protocol.clientCommand("PlayerLogoutCsReq"), new byte[0], new byte[0]));
+    try {
+      channel.write(bytes);
+    } finally {
+      bytes.release();
+    }
+    Thread.sleep(250);
+  }
+
   private DynamicMessage scene(JsonObject control) throws Exception {
     var reply = call("GetCurSceneInfoCsReq");
     require(number(reply, "retcode") == 0, "Scene query rejected");
@@ -351,7 +364,8 @@ public final class NativeWorldChestProbe {
           "Property replay lost receipt: " + response);
     } else if (op.equals("late-report")) {
       var result = interact(current, chest, 120120);
-      require(number(result, "retcode") == 0 && number(result, "prop_state") == 12,
+      require(
+          number(result, "retcode") == 0 && number(result, "prop_state") == 12,
           "Delayed client report did not acknowledge the saved unlock");
     } else if (op.equals("claim")) {
       var result = interact(current, chest);
@@ -605,8 +619,9 @@ public final class NativeWorldChestProbe {
       connection =
           client.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(args[0])), config);
       probe.channel = probe.connected.get(10, TimeUnit.SECONDS);
-      System.out.write(
-          (new Gson().toJson(probe.execute(control)) + "\n").getBytes(StandardCharsets.UTF_8));
+      var result = probe.execute(control);
+      probe.logout();
+      System.out.write((new Gson().toJson(result) + "\n").getBytes(StandardCharsets.UTF_8));
       System.out.flush();
       exit = 0;
     } catch (Exception error) {
