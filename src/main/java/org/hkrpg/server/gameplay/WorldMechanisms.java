@@ -179,7 +179,7 @@ public final class WorldMechanisms {
   }
 
   /** An in-memory state change or the old unbound story-value cache cannot collect a piece. */
-  private static boolean durableState(EntityProp actor) {
+  static boolean durableState(EntityProp actor) {
     var scene = actor.getScene();
     var saved = scene.getPlayer().getGameplay().getScenePropStates();
     if (!saved.valid()) return false;
@@ -218,7 +218,7 @@ public final class WorldMechanisms {
     return changes;
   }
 
-  private static EntityProp boundActor(
+  static EntityProp boundActor(
       Scene scene, WorldMechanismSources.Rule rule, int instance, int type) {
     var group = WorldMechanismSources.group(rule, scene);
     if (group == null) return null;

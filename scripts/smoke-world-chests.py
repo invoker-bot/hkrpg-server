@@ -37,6 +37,8 @@ def main():
     parser.add_argument('--map-chests', action='store_true', help='Verify original chests across seven worlds')
     parser.add_argument('--mechanisms', action='store_true', help='Verify guard/puzzle unlock, loot and H2 restart')
     parser.add_argument('--dynamic', action='store_true', help='Verify staged boards, tramcar replacements and spear variants')
+    parser.add_argument('--robot-hunt', action='store_true', help='Verify robot repair, endpoint, delayed report and loot')
+    parser.add_argument('--legacy-jar', type=Path, help='With --robot-hunt, save the old endpoint before upgrading')
     parser.add_argument('--remaining', action='store_true', help='Verify cross-group, mission and time-lock completion receipts')
     parser.add_argument('--remaining-case', type=int, choices=REMAINING_IDS, help='Verify one --remaining chest in isolation')
     parser.add_argument('--final-bindings', action='store_true', help='Verify compass guards, cargo NPC and QTE reward with H2 restarts')
@@ -44,8 +46,9 @@ def main():
     args = parser.parse_args()
     assert args.final_case is None or args.final_bindings, '--final-case requires --final-bindings'
     assert args.remaining_case is None or args.remaining, '--remaining-case requires --remaining'
-    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
-    if args.dynamic or args.remaining or args.final_bindings:
+    assert args.legacy_jar is None or args.robot_hunt, '--legacy-jar requires --robot-hunt'
+    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.robot_hunt, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
+    if args.dynamic or args.robot_hunt or args.remaining or args.final_bindings:
         args.mechanisms = True
     original_resources = args.base_zone or args.map_chests or args.mechanisms
     jar, output = args.jar.resolve(), args.output.resolve()
@@ -54,8 +57,12 @@ def main():
     java = next((ROOT / '.tools').glob('jdk-21*/bin/java.exe'), None)
     assert java
     artifact = sha(jar)
+    legacy = args.legacy_jar.resolve() if args.legacy_jar else None
+    if legacy is not None:
+        assert legacy.is_file() and legacy.is_relative_to(ROOT / 'build')
+    legacy_artifact = sha(legacy) if legacy else None
     source = ROOT / 'resources/4.6'
-    fixture_name = ('world-mechanisms-4.6.json' if args.mechanisms else 'map-chests-4.6.json' if args.map_chests
+    fixture_name = ('robot-hunt-4.6.json' if args.robot_hunt else 'world-mechanisms-4.6.json' if args.mechanisms else 'map-chests-4.6.json' if args.map_chests
                     else 'base-zone-chests-4.6.json' if args.base_zone else 'world-chest-4.6.json')
     golden = json.loads((ROOT / 'src/test/resources/fixtures' / fixture_name).read_text('utf-8'))
     final_mission_rewards = []
@@ -94,7 +101,7 @@ def main():
         chests = [row for row in chests if row['id'] != 20001632]  # Locked guard challenge is a rejection fixture.
     chests.sort(key=lambda row: row['id'])
     if args.mechanisms:
-        selected = FINAL_IDS if args.final_bindings else REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
+        selected = (20122655,) if args.robot_hunt else FINAL_IDS if args.final_bindings else REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
         if args.final_case is not None:
             selected = (args.final_case,)
         if args.remaining_case is not None:
@@ -102,6 +109,8 @@ def main():
         chests = sorted((row for row in chests if row['id'] in selected), key=lambda row: selected.index(row['id']))
     expected_chests = len(FINAL_IDS) if args.final_bindings else len(REMAINING_IDS) if args.remaining else len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
     if args.final_case is not None or args.remaining_case is not None:
+        expected_chests = 1
+    if args.robot_hunt:
         expected_chests = 1
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
@@ -257,6 +266,22 @@ def main():
             prerequisite = FINAL_PREREQUISITES.get(chests[0]['id'])
         if args.dynamic:
             actions = dynamic_actions(chests, catalog)
+        if args.robot_hunt:
+            chest = chests[0]
+            common = dict(chest, controller=300002, finish=1010, defeated=[], remaining=[])
+            actions = [None,
+                dict(common, op='step', configs=[1010], before=20, after=20,
+                     beforeStates={'300002': 0, '300007': 0}, states={'300002': 1, '300007': 0}),
+                dict(common, op='finish', controller=300007, before=20, after=12,
+                     beforeStates={'300002': 1, '300007': 0}, states={'300002': 1, '300007': 1}),
+                dict(common, op='late-report', before=12, after=12,
+                     beforeStates={'300002': 1, '300007': 1}, states={'300002': 1, '300007': 1}),
+                dict(common, op='claim', before=12, after=13, states={'300002': 1, '300007': 1}),
+                dict(common, op='verify', before=13, after=13, states={'300002': 1, '300007': 1})]
+            if legacy:
+                actions[2]['after'] = 20
+                actions.insert(3, dict(common, op='verify', before=12, after=12,
+                    beforeStates={'300002': 1, '300007': 1}, states={'300002': 1, '300007': 1}))
         if args.remaining:
             actions = remaining_actions(chests, catalog)
             prerequisite = REMAINING_PREREQUISITES.get(chests[0]['id'])
@@ -276,7 +301,8 @@ def main():
         if mechanism_spec:
             control['mechanism'] = mechanism_spec
         with (directory / f'server-{index}.log').open('wb') as log:
-            process = subprocess.Popen([str(java), *options, '-Xmx1536m', '-jar', str(jar), '--no-handbook'],
+            phase_jar = legacy if legacy and index <= 2 else jar
+            process = subprocess.Popen([str(java), *options, '-Xmx1536m', '-jar', str(phase_jar), '--no-handbook'],
                 cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
             try:
                 deadline = time.monotonic() + 100
@@ -360,7 +386,9 @@ def main():
             mechanism_progress[str(mechanism_spec['id'])] = dict(
                 complete=mechanism_spec['after'] == 12, defeated=mechanism_spec['defeated'],
                 late=bool(mechanism_spec.get('late')))
-        if (args.dynamic or args.remaining or args.final_bindings) and mechanism_spec:
+        if legacy and index == 3:
+            mechanism_progress[str(mechanism_spec['id'])] = dict(complete=True, defeated=[], late=False)
+        if (args.dynamic or args.robot_hunt or args.remaining or args.final_bindings) and mechanism_spec:
             prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec.get('actorGroup', mechanism_spec['group'])}:"
             for instance, state in mechanism_spec.get('persistedStates', mechanism_spec.get('states', {})).items():
                 prop_progress[prefix + instance] = state
@@ -400,7 +428,7 @@ def main():
     assert len(known) == expected_chests and len(set(known)) == expected_chests
     assert claimed == [goal['id'] for goal in goals] and stops == len(batches)
     assert sum(len(snapshot.get('chestIdentityNotifications', [])) for snapshot in snapshots) == expected_chests
-    assert sha(jar) == artifact and config.read_bytes() == config_bytes
+    assert sha(jar) == artifact and (not legacy or sha(legacy) == legacy_artifact) and config.read_bytes() == config_bytes
     for path, expected in hashes.items():
         assert sha(source / path) == expected, path
     report = dict(passed=True, artifactSha256=artifact, runtimeDirectory=str(directory),
@@ -409,6 +437,7 @@ def main():
         chestIdentityNotifications=expected_chests, baseZone=args.base_zone, mapChests=args.map_chests,
         mechanisms=args.mechanisms, mechanismProgress=mechanism_progress,
         dynamicMechanisms=args.dynamic, propProgress=prop_progress,
+        robotHunt=args.robot_hunt, legacyArtifactSha256=legacy_artifact,
         finalBindings=args.final_bindings, selectedFinalCase=args.final_case,
         mascotProgress=mascot_progress, combatPayout=combat_payout,
         sourceMissionRewards=final_mission_rewards,

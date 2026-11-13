@@ -1223,6 +1223,7 @@ public class Player implements Tickable, Syncable {
         // Set player scene
         this.scene = nextScene;
         this.scene.setEntryId(entryId);
+        org.hkrpg.server.gameplay.RobotHunts.recover(this);
         this.scene.getTeleportMapLayer(); // Bind a restored layer before the first ordinary movement.
         getMissionTrialManager().reconcile();
         getStoryLineManager().onSceneLoaded();
