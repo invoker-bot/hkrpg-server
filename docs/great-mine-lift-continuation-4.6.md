@@ -39,3 +39,11 @@
 首次原生检查误把 `GetMissionStatus` 的“尚未完成”请求结果当成“已接取”，基线断言失败独立保留；检查器改读完整 `GetMissionData` 接取快照后，沿用同一候选重跑通过，未改变游戏逻辑或原始资源。
 
 证据位于 `build/story-status-20261113/`：`full-summary.json`、`full-results.zip`、`isolated-inputs-before.json`、`isolated-inputs-after.json`、`release-proof.json`、`native-lift.json`、`native-diagnostics.json` 与 `login.json`。真实客户端动画、镜头和整条后续主线仍待实机验收。
+
+## 本机更新
+
+2026-11-13 已将同一最终候选安装到本机 Compose。源码提交为 `a024367a7e4a25dbb65fb25465c3287a79214428`，实际运行包 SHA-256 为 `0343001bdcf02fe2b6458ab12db9d67e87b40102502ab1ebab90375e4bda03ea`。安装前核对在线玩家没有战斗，正常停服后完整备份 63 个运行文件，其中 32 个为数据文件；备份位于 `.local/backups/lift-continuation-20261113-20261113-131745/`。
+
+更新后健康、Dispatch 与 KCP 检查通过；首次玩家重新登录前，全部玩家和库存集合的保存摘要与备份逐项一致。配置、凭据和资源清单保持，已上线的球形锚点修复保留。结果记录为 `deployment.json`、`save-check.json` 和 `compose-after.json`。
+
+客户端重新登录后，已完成 `101050111` 且仍在原场景接取 `101050116` 的旧存档，会按相同来源恢复升降梯并接取后章。完整原生快照已核对可见首目标，实际客户端画面仍需游戏内复验；本次未操作客户端，也未直接改写正式任务进度。
