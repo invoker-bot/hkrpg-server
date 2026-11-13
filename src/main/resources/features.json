@@ -14,6 +14,13 @@
   },
   "features": [
     {
+      "id": "sphere-anchor-editor-fields-46",
+      "name": "球形空间锚点编辑字段兼容",
+      "status": "partial",
+      "evidence": "docs/sphere-anchor-editor-fields-4.6.md",
+      "gap": "按原始球形半径处理保留长方体编辑尺寸的锚点，有限数值校验与未知字段拒绝保留。普通大地图51条资源候选中40条初始未激活；三个原件、范围边界、保存失败重试及恢复有回归。资源条目数不等于实机已验收地点数，其他玩法和真实客户端F提示仍待分别验收。"
+    },
+    {
       "id": "great-mine-robot-exit",
       "name": "大矿区剧情机器人战后退场",
       "status": "partial",

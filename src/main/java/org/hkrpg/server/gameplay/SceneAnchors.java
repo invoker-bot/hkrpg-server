@@ -82,7 +82,7 @@ public final class SceneAnchors {
   private static Volume volume(JsonObject trigger) {
     String shape = trigger.has("Shape") ? trigger.get("Shape").getAsString() : "Sphere";
     var allowed = switch (shape) {
-      case "Sphere" -> Set.of("Radius", "Offset", "PointList", "Server", "Shape");
+      case "Sphere" -> Set.of("Radius", "DimX", "DimY", "DimZ", "Offset", "PointList", "Server", "Shape");
       case "Box" -> Set.of("Radius", "DimX", "DimY", "DimZ", "Offset", "PointList", "Server", "Shape");
       default -> Set.<String>of();
     };
@@ -97,6 +97,9 @@ public final class SceneAnchors {
     double y = offset == null ? 0 : number(offset, "Y");
     double z = offset == null ? 0 : number(offset, "Z");
     if (shape.equals("Sphere")) {
+      // The editor retains box dimensions on spheres; they never select or resize the volume.
+      for (String key : List.of("DimX", "DimY", "DimZ"))
+        if (trigger.has(key)) number(trigger, key);
       double radius = number(trigger, "Radius");
       if (radius > 0) return new Sphere(radius, x, y, z);
     } else if (shape.equals("Box")) {
