@@ -13,6 +13,8 @@ public final class WorldGroupProperties {
   public static Result change(
       Player player, int floor, int dimension, int group, String name, int value) {
     synchronized (player) {
+      if (OraclePuzzleRewards.owns(player.getScene(), group))
+        return OraclePuzzleRewards.change(player, floor, dimension, group, name, value);
       if (CompatibleMechanisms.ownsProperty(player.getScene(), group))
         return CompatibleMechanisms.property(player, floor, dimension, group, name, value);
       var scene = player.getScene();

@@ -34,7 +34,9 @@ public final class SceneInteractions {
     if (result != Retcode.SUCC) {
       if (player.getScene() != null
           && player.getScene().getEntityById(entity) instanceof EntityProp reported
-          && RobotHunts.acknowledgesChestReport(player, config, reported)) return Retcode.SUCC;
+          && (RobotHunts.acknowledgesChestReport(player, config, reported)
+              || ControllerFinishRewards.acknowledgesChestReport(player, config, reported)
+              || OraclePuzzleRewards.acknowledgesChestReport(player, config, reported))) return Retcode.SUCC;
       if (result == Retcode.UNSUPPORTED_PROP_STATE && player.getScene() != null
           && player.getScene().getEntityById(entity) instanceof EntityProp repeated
           && PadPuzzleBridges.acknowledgesBridgeOpen(repeated, config)) return Retcode.SUCC;
@@ -42,6 +44,7 @@ public final class SceneInteractions {
     }
     var prop = (EntityProp) player.getScene().getEntityById(entity);
     if (RobotHunts.endpoint(prop)) return RobotHunts.validateFinish(player, config, prop);
+    if (ControllerFinishRewards.controller(prop)) return ControllerFinishRewards.validate(player, config, prop);
     if (StationEnergyBridges.applies(prop)) return StationEnergyBridges.validate(prop,config);
     if (BookPickups.applies(prop)) return BookPickups.validate(player, config, prop);
     if (CompatibleMechanisms.controller(prop)) return CompatibleMechanisms.validateControl(player, config, prop);

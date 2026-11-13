@@ -38,6 +38,8 @@ def main():
     parser.add_argument('--mechanisms', action='store_true', help='Verify guard/puzzle unlock, loot and H2 restart')
     parser.add_argument('--dynamic', action='store_true', help='Verify staged boards, tramcar replacements and spear variants')
     parser.add_argument('--robot-hunt', action='store_true', help='Verify robot repair, endpoint, delayed report and loot')
+    parser.add_argument('--oracle-puzzle', action='store_true', help='Verify oracle completion, delayed report and loot')
+    parser.add_argument('--controller-finish', action='store_true', help='Verify command robot completion, delayed report and loot')
     parser.add_argument('--legacy-jar', type=Path, help='With --robot-hunt, save the old endpoint before upgrading')
     parser.add_argument('--remaining', action='store_true', help='Verify cross-group, mission and time-lock completion receipts')
     parser.add_argument('--remaining-case', type=int, choices=REMAINING_IDS, help='Verify one --remaining chest in isolation')
@@ -47,8 +49,8 @@ def main():
     assert args.final_case is None or args.final_bindings, '--final-case requires --final-bindings'
     assert args.remaining_case is None or args.remaining, '--remaining-case requires --remaining'
     assert args.legacy_jar is None or args.robot_hunt, '--legacy-jar requires --robot-hunt'
-    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.robot_hunt, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
-    if args.dynamic or args.robot_hunt or args.remaining or args.final_bindings:
+    assert sum([args.base_zone, args.map_chests, args.mechanisms, args.dynamic, args.robot_hunt, args.oracle_puzzle, args.controller_finish, args.remaining, args.final_bindings]) <= 1, 'Choose one chest fixture'
+    if args.dynamic or args.robot_hunt or args.oracle_puzzle or args.controller_finish or args.remaining or args.final_bindings:
         args.mechanisms = True
     original_resources = args.base_zone or args.map_chests or args.mechanisms
     jar, output = args.jar.resolve(), args.output.resolve()
@@ -62,7 +64,7 @@ def main():
         assert legacy.is_file() and legacy.is_relative_to(ROOT / 'build')
     legacy_artifact = sha(legacy) if legacy else None
     source = ROOT / 'resources/4.6'
-    fixture_name = ('robot-hunt-4.6.json' if args.robot_hunt else 'world-mechanisms-4.6.json' if args.mechanisms else 'map-chests-4.6.json' if args.map_chests
+    fixture_name = ('oracle-puzzles-4.6.json' if args.oracle_puzzle else 'controller-finish-rewards-4.6.json' if args.controller_finish else 'robot-hunt-4.6.json' if args.robot_hunt else 'world-mechanisms-4.6.json' if args.mechanisms else 'map-chests-4.6.json' if args.map_chests
                     else 'base-zone-chests-4.6.json' if args.base_zone else 'world-chest-4.6.json')
     golden = json.loads((ROOT / 'src/test/resources/fixtures' / fixture_name).read_text('utf-8'))
     final_mission_rewards = []
@@ -101,7 +103,7 @@ def main():
         chests = [row for row in chests if row['id'] != 20001632]  # Locked guard challenge is a rejection fixture.
     chests.sort(key=lambda row: row['id'])
     if args.mechanisms:
-        selected = (20122655,) if args.robot_hunt else FINAL_IDS if args.final_bindings else REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
+        selected = (10403660,) if args.oracle_puzzle else (20223671,) if args.controller_finish else (20122655,) if args.robot_hunt else FINAL_IDS if args.final_bindings else REMAINING_IDS if args.remaining else DYNAMIC_IDS if args.dynamic else LEGACY_IDS
         if args.final_case is not None:
             selected = (args.final_case,)
         if args.remaining_case is not None:
@@ -110,7 +112,7 @@ def main():
     expected_chests = len(FINAL_IDS) if args.final_bindings else len(REMAINING_IDS) if args.remaining else len(DYNAMIC_IDS) if args.dynamic else 7 if args.map_chests or args.mechanisms else 6 if args.base_zone else 24
     if args.final_case is not None or args.remaining_case is not None:
         expected_chests = 1
-    if args.robot_hunt:
+    if args.robot_hunt or args.oracle_puzzle or args.controller_finish:
         expected_chests = 1
     assert len(chests) == expected_chests and len({row['id'] for row in chests}) == expected_chests
     plane, floor = chests[0]['plane'], chests[0]['floor']
@@ -212,8 +214,8 @@ def main():
         control.write_text(json.dumps(dict(uid=credentials['uid'], known=known, claimed=claimed, baseZone=args.base_zone,
                                           mapChests=args.map_chests or args.mechanisms,
                                           mechanismProgress=mechanism_progress if args.mechanisms else None,
-                                          propProgress=prop_progress if args.dynamic or args.remaining or args.final_bindings else None,
-                                          valueProgress=value_progress if args.remaining or args.final_bindings else None,
+                                          propProgress=prop_progress if args.dynamic or args.controller_finish or args.remaining or args.final_bindings else None,
+                                          valueProgress=value_progress if args.oracle_puzzle or args.remaining or args.final_bindings else None,
                                           missionProgress=mission_progress if args.remaining or args.final_bindings else None,
                                           remainingFixture=args.remaining or args.final_bindings, prerequisite=prerequisite,
                                           finalBindings=args.final_bindings, mascotProgress=mascot_progress, missionItem=mission_item,
@@ -282,6 +284,20 @@ def main():
                 actions[2]['after'] = 20
                 actions.insert(3, dict(common, op='verify', before=12, after=12,
                     beforeStates={'300002': 1, '300007': 1}, states={'300002': 1, '300007': 1}))
+        if args.oracle_puzzle or args.controller_finish:
+            chest = chests[0]
+            common = dict(chest, defeated=[], remaining=[])
+            if args.oracle_puzzle:
+                finish = dict(common, op='property', actorGroup=137, property='SGP_PuzzleState',
+                              floorValue='FSV_OracleMachine_Chest_1', controller=0, finish=120120,
+                              before=20, after=12)
+            else:
+                finish = dict(common, op='finish', controller=300001, finish=1010,
+                              before=20, after=12, beforeStates={'300001': 0}, states={'300001': 1})
+            actions = [None, finish,
+                dict(common, op='late-report', before=12, after=12),
+                dict(common, op='claim', before=12, after=13),
+                dict(common, op='verify', before=13, after=13)]
         if args.remaining:
             actions = remaining_actions(chests, catalog)
             prerequisite = REMAINING_PREREQUISITES.get(chests[0]['id'])
@@ -388,7 +404,7 @@ def main():
                 late=bool(mechanism_spec.get('late')))
         if legacy and index == 3:
             mechanism_progress[str(mechanism_spec['id'])] = dict(complete=True, defeated=[], late=False)
-        if (args.dynamic or args.robot_hunt or args.remaining or args.final_bindings) and mechanism_spec:
+        if (args.dynamic or args.robot_hunt or args.oracle_puzzle or args.controller_finish or args.remaining or args.final_bindings) and mechanism_spec:
             prefix = f"{stage['plane']}:{stage['floor']}:0:0:{mechanism_spec.get('actorGroup', mechanism_spec['group'])}:"
             for instance, state in mechanism_spec.get('persistedStates', mechanism_spec.get('states', {})).items():
                 prop_progress[prefix + instance] = state
@@ -437,7 +453,8 @@ def main():
         chestIdentityNotifications=expected_chests, baseZone=args.base_zone, mapChests=args.map_chests,
         mechanisms=args.mechanisms, mechanismProgress=mechanism_progress,
         dynamicMechanisms=args.dynamic, propProgress=prop_progress,
-        robotHunt=args.robot_hunt, legacyArtifactSha256=legacy_artifact,
+        robotHunt=args.robot_hunt, oraclePuzzle=args.oracle_puzzle, controllerFinish=args.controller_finish,
+        legacyArtifactSha256=legacy_artifact,
         finalBindings=args.final_bindings, selectedFinalCase=args.final_case,
         mascotProgress=mascot_progress, combatPayout=combat_payout,
         sourceMissionRewards=final_mission_rewards,

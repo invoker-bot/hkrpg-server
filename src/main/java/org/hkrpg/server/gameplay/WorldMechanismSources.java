@@ -129,7 +129,7 @@ final class WorldMechanismSources {
     return Map.copyOf(result);
   }
 
-  private static synchronized JsonElement read(Path root, String relative) throws Exception {
+  static synchronized JsonElement read(Path root, String relative) throws Exception {
     var file = root.resolve(relative).normalize();
     if (!file.startsWith(root)
         || !Files.isRegularFile(file)

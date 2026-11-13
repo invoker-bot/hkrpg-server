@@ -120,7 +120,9 @@ public final class WorldChests {
     synchronized (p) {
       if (p.getScene() != null
           && p.getScene().getEntityById(entity) instanceof EntityProp reported
-          && RobotHunts.acknowledgesChestReport(p, config, reported))
+          && (RobotHunts.acknowledgesChestReport(p, config, reported)
+              || ControllerFinishRewards.acknowledgesChestReport(p, config, reported)
+              || OraclePuzzleRewards.acknowledgesChestReport(p, config, reported)))
         return new Result(Retcode.SUCC, reported);
       var code = validate(p, config, entity);
       if (code != Retcode.SUCC) return new Result(code, null);
@@ -130,6 +132,8 @@ public final class WorldChests {
       if (rules == null) return new Result(Retcode.REWARD_CONFIG_NOT_EXIST, null);
       var old = p.getGameplay().getWorldChests();
       var now = Instant.now();
+      var oracle = OraclePuzzleRewards.report(p, config, actor);
+      if (oracle != null) return oracle;
       if (WorldMechanisms.clientReport(id, config)) return WorldMechanisms.unlock(p, id, actor);
       if (config == TimeRelayFlameSources.UNLOCK) {
         var unlocked =

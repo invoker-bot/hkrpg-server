@@ -195,6 +195,7 @@ public final class ScenePropTransitions {
       var previousMechanisms = player.getGameplay().getWorldMechanisms();
       var nextMechanisms = WorldMechanisms.controlProgress(player, config, prop);
       nextMechanisms = RobotHunts.progress(player, config, prop, nextMechanisms);
+      nextMechanisms = ControllerFinishRewards.progress(player, config, prop, nextMechanisms);
       replace(player, scope, next);
       player.getGameplay().worldMechanisms(nextMechanisms);
       targets.forEach((candidate, state) -> candidate.setState(state, false));
@@ -208,6 +209,9 @@ public final class ScenePropTransitions {
         if (RobotHunts.endpoint(prop))
           org.hkrpg.server.GameDiagnostics.saveFailed(
               player, "robot-hunt-finish", RobotHunts.chest(prop), 0, failed);
+        if (ControllerFinishRewards.controller(prop))
+          org.hkrpg.server.GameDiagnostics.saveFailed(
+              player, "controller-finish", ControllerFinishRewards.chest(prop), 0, failed);
         return new Result(Retcode.SYSTEM_BUSY, null);
       }
       var session = player.getSession();
