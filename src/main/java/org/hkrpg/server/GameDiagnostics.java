@@ -97,6 +97,13 @@ public final class GameDiagnostics {
             +" sub="+sub+" performance="+performance+context(player.getSession(),player.getScene()));
   }
 
+  public static void missionPropState(Player player, int sub, int group, int instance, int state, String reason) {
+    record(Topic.PROGRESS, "applied".equals(reason) ? Level.INFO : Level.WARN,
+        "mission-prop:"+sub+":"+reason,
+        ()->"Mission prop state: sub="+sub+" group="+group+" instance="+instance
+            +" targetState="+state+" reason="+reason+context(player.getSession(),player.getScene()));
+  }
+
   /** Stage is an authored constant; no transaction keys or exception messages are logged. */
   public static void saveFailed(Player player,String stage,int subject,int receiptHash,Throwable failure) {
     record(Topic.PROGRESS,Level.WARN,"save:"+stage+":"+subject+":"+receiptHash,

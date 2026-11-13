@@ -13,6 +13,7 @@
 | `Scene placement skipped` | 缺定义或加载失败的楼层、维度、组、实例和物件、NPC 或怪物资源号。缺失副本的旧入口另记 `reason=missing-raid`、实际楼层、组和副本号。 |
 | `Scene placement skipped: reason=inactive-mission-group` | `inactive-mission-group` 的位面、楼层、维度、剧情线、组及归属任务，定位旧组或错步骤的显式加载。 |
 | `Mission script skipped` | `missing-optional-performance` 的主任务、子任务、演出及连接场景，定位原始失效的非必需分支。 |
+| `Mission prop state` | 限定原始自动物件动作的子任务、组、实例、目标状态及执行或拒绝原因，区分来源/场景不符与坏存档；保存失败复用 `mission-prop-state` 阶段。 |
 | `Gameplay save failed` | 固定保存阶段、任务或奖励编号、数值收据摘要、异常类型及场景，区分预约未开始投递和投递后的完成写入。 |
 | `Reward delivery incomplete` | 奖励号、数值收据摘要与保留的 pending 状态，定位需要复核的部分或异常投递。 |
 | `Story action interrupted` | 子任务、动作序号及预约保存、执行、完成保存或已有 pending 的固定阶段，定位剧情动作中断。 |

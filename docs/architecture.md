@@ -1089,3 +1089,5 @@ Java普通动态数值单元通过 `RogueResonanceDynamicCell46` 与 `RogueReson
 剧情动作预约失败撤销未执行的预约并保留已保存前缀；`QuestRewardWrites` 在玩家锁内统一普通和每日目标的领奖阶段保存，失败恢复同一接取对象，投递后的不确定状态继续保留 CLAIMING。限频诊断及验证边界见[保存恢复说明](quest-action-save-recovery.md)。
 
 `SceneAnchors` 对整体省略的 Offset 使用零向量，保留原始范围及生成、状态、楼层和剧情门槛；坏参数继续拒绝，并记录配置跳过、保存失败及实际激活。原件和验证边界见[大矿区锚点说明](great-mine-anchor-offset-4.6.md)。
+
+`GreatMineLift` 为原始隐藏目标 `101050116` 解释完整单节点 `ChangePropState`，按实际接取和来源先保存升降梯状态，再由 `MissionManager` 完成前章并接取后章；物件收据可恢复中断回调。限定范围及验证边界见[升降梯接续说明](great-mine-lift-continuation-4.6.md)。

@@ -170,6 +170,7 @@ public final class MissionManager {
             pass = true;
             continue;
           }
+          pass |= GreatMineLift.apply(player, config);
           if (matchesPlace(config) && new StoryActions(player).recoverableLineupCompletion(config)) {
             pass |= advance(config, state, goal(config) - state.getProgress());
             if (state.getPhase() != QuestState.Phase.DOING) continue;
@@ -1338,7 +1339,8 @@ public final class MissionManager {
       }
       case "GroupPropertyValueIgnoreVerse" -> StoryGroupConditions.shared(player, c);
       case "PropState" -> PadPuzzleBridges.satisfied(player, c)
-          || ScenePropTransitions.satisfied(player, c) || StoryDoors.satisfied(player, c);
+          || ScenePropTransitions.satisfied(player, c) || StoryDoors.satisfied(player, c)
+          || GreatMineLift.satisfied(player, c);
       default -> false;
     };
   }
