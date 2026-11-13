@@ -12,10 +12,10 @@ def varint(v):
 def wire(values):return b''.join(varint(k*8)+varint(v) for k,v in values)
 
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,default=ROOT/'build/shop-purchases-native.json');args=parser.parse_args()
- jar=ROOT/'build/libs/hkrpg-server.jar';digest=hashlib.sha256(jar.read_bytes()).hexdigest()
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,default=ROOT/'build/shop-purchases-native.json');parser.add_argument('--jar',type=Path,default=ROOT/'build/libs/hkrpg-server.jar');args=parser.parse_args()
+ jar=args.jar.resolve();digest=hashlib.sha256(jar.read_bytes()).hexdigest()
  java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'))
- runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True)
+ runs=ROOT/'build/smoke';runs.mkdir(parents=True, exist_ok=True)
  directory=Path(tempfile.mkdtemp(prefix='shop-purchases-',dir=runs));helpers=directory/'helpers';helpers.mkdir()
  flags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
  subprocess.run([str(java.with_name('javac.exe')),'-encoding','UTF-8','-cp',str(jar),'-d',str(helpers),str(ROOT/'scripts/fixtures/java/org/hkrpg/server/protocol/NativeGmPlayerProbe.java')],check=True,capture_output=True,creationflags=flags)
@@ -34,10 +34,10 @@ def main():
   rid=str(uuid.uuid4());target=directory/'equipment-request.json';tmp=target.with_suffix('.tmp')
   tmp.write_text(json.dumps({'requestId':rid,'command':name,'wire':base64.b64encode(payload).decode(),'success':success}),encoding='utf-8');tmp.replace(target)
   s=gm.wait_for(lambda:(lambda x:x if x.get('equipmentReply',{}).get('requestId')==rid else None)(snapshot()),40);target.unlink()
-  r=s['equipmentReply']['response'];assert (r.get('retcode',0)==0)==success,(name,r)
+  r=s['equipmentReply']['response'];assert (r.get('retcode',r.get('PLDKENJLKME',0))==0)==success,(name,r)
   results.append({'command':name,'success':success,'response':r});return r,s
  def grant(id,n):
-  data=request('/gm/api/operate',{'requestId':str(uuid.uuid4()),'uid':uid,'action':'grant','itemId':id,'amount':n,'level':0,'rank':0})['data'];assert data['state']=='completed',data
+  data=request('/gm/api/operate',{'requestId':str(uuid.uuid4()),'uid':uid,'action':'grant','itemId':id,'amount':n,'level':1 if id in (1415,1505,1409) else 0,'rank':0})['data'];assert data['state']=='completed',data
  def purchase(row,count=1,choices=(),success=True):
   before=snapshot();body=wire([(1,row['ShopID']),(3,count),(9,row['GoodsID']),(13,row.get('ItemID',0))])
   if choices:
@@ -68,6 +68,8 @@ def main():
    codes.append(server.returncode==(1000 if os.name=='nt' else 232));server.stdin.close();server=None
   if strict:assert all(codes),codes
  goods={r['GoodsID']:r for r in json.loads((ROOT/'resources/4.6/ExcelOutput/ShopGoodsConfig.json').read_text('utf-8'))}
+ for gid,skin,currency,price in [(107013,1141501,3,1680),(107015,1150501,1,2680),(107016,1140901,3,1350)]:
+  goods[gid]={'GoodsID':gid,'ShopID':107,'ItemID':skin,'CurrencyList':[currency],'CurrencyCostList':[price]}
  skin_ids=[];saved=None
  try:
   for cycle in range(2):
@@ -86,7 +88,30 @@ def main():
    assert uid==initial['uid']
    if cycle==0:
     for id,n in [(3,20000),(1,20000),(263,10000),(284,1000),(252,300)]:grant(id,n)
+    for id in [1415,1505,1409]:grant(id,1)
     gm.wait_for(lambda:snapshot()['basic'].get('mcoin',0)==20000 and stock(snapshot(),252)==300,30)
+    for gid,skin in [(107013,1141501),(107015,1150501),(107016,1140901)]:
+     row=request(f'/gm/api/shops?shopId=107&q={gid}')['data']['items']
+     assert len(row)==1 and row[0]['itemId']==skin and row[0]['listed'],row
+    missing,_=send('DressAvatarSkinCsReq',wire([(3,1141501),(11,1415)]),success=False)
+    assert missing['PLDKENJLKME']==1222,missing
+    target=[{'shopId':107,'goodsId':107013}]
+    for action in ['shop-unlist','shop-list']:
+     result=request('/gm/api/operate',{'requestId':str(uuid.uuid4()),'action':action,'shopGoods':target})['data']
+     assert result['state']=='completed',result
+     if action=='shop-unlist':purchase(goods[107013],success=False)
+    for gid,skin,avatar in [(107013,1141501,1415),(107015,1150501,1505),(107016,1140901,1409)]:
+     purchase(goods[gid]);purchase(goods[gid],success=False)
+     reply,current=send('DressAvatarSkinCsReq',wire([(3,skin),(11,avatar)]))
+     paths=current['avatars'].get('avatar_path_data_info_list',[])
+     assert any(p.get('avatar_id')==avatar and p.get('dressed_skin_id')==skin for p in paths),(avatar,skin,paths)
+     _,current=send('TakeOffAvatarSkinCsReq',wire([(1,avatar)]))
+     paths=current['avatars'].get('avatar_path_data_info_list',[])
+     assert any(p.get('avatar_id')==avatar and p.get('dressed_skin_id',0)==0 for p in paths),(avatar,paths)
+     send('DressAvatarSkinCsReq',wire([(3,skin),(11,avatar)]))
+    purchase(goods[107012],success=False);purchase(goods[107014],success=False)
+    wrong,_=send('DressAvatarSkinCsReq',wire([(3,1141501),(11,1409)]),success=False)
+    assert wrong['PLDKENJLKME']==1225,wrong
     for id in [107002,107003,107004,107006,107011]:
      purchase(goods[id]);skin_ids.append(goods[id]['ItemID']);purchase(goods[id],success=False)
     for id in [108001,108002,108005,109001,109002,109003,109005]:purchase(goods[id])
@@ -106,6 +131,8 @@ def main():
    shops,saved=send('GetShopListCsReq',wire([(12,1)]))
    rows={g['goods_id']:g for sh in shops['shop_list'] for g in sh['goods_list']}
    assert rows[107002]['buy_times']==1 and rows[999001]['buy_times']==5
+   assert all(rows[gid]['buy_times']==1 for gid in [107013,107015,107016])
+   assert {1141501,1150501,1140901}.issubset(set(saved['avatars']['skin_list']))
    stop()
   assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
   args.output.parent.mkdir(exist_ok=True,parents=True)
@@ -114,4 +141,5 @@ def main():
  finally:
   stop(False)
   for f in logs:f.close()
+  (directory/'credentials.json').unlink(missing_ok=True)
 if __name__=='__main__':main()

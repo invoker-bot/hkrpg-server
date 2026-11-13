@@ -71,4 +71,15 @@ class GmItemShortcutsTest {
     var rows=GmItemShortcuts.load(directory,catalog);
     assertEquals(1,rows.size());assertFalse(rows.getFirst().grantable());
   }
+
+  @Test void theActualResourceFilenameIsPreferredForSkinAcquisitionText() throws Exception {
+    item(1141501,"Usable","AvatarSkin",",\"isVisible\":true");
+    source("ExcelOutput/ItemComefrom.json","[{\"ID\":1141501,\"Desc\":{\"Hash\":7}}]");
+    source("TextMap/TextMapCHS.json","{\"7\":\"往期活动获得\"}");
+    assertEquals("ItemComefrom.json",GmItemShortcuts.originsPath(directory).getFileName().toString());
+    var skin=GmItemShortcuts.load(directory,catalog).getFirst();
+    assertEquals("skin",skin.type());
+    assertTrue(skin.grantable());
+    assertTrue(skin.sources().contains("往期活动获得"));
+  }
 }

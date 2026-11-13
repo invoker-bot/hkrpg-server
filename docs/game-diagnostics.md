@@ -24,6 +24,7 @@
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
 | `Gameplay result: command=RobotHuntRecovery` | 寻宝机器人旧记录无法恢复时的箱子、组编号和固定原因；维修或终点保存失败使用 `robot-hunt-finish` / `robot-hunt-recovery` 阶段。 |
 | `Gameplay result: command=OraclePuzzleCompletion` / `ControllerFinishRecovery` | 神谕机关完成或旧控制器记录恢复失败时的宝箱、组编号和固定原因；保存失败分别使用 `oracle-puzzle-finish`、`controller-finish`、`controller-finish-recovery` 阶段。 |
+| `Gameplay result: command=RivetTownGateLink` | 铆钉镇 G12/300010 开关的绑定缺失或来源、目标不符；包含控制台与目标门编号，重复拒绝沿用计数。 |
 | `Gameplay result: command=…BoxingClub…` | 拳馆拒绝的关卡、面板、模块、等级与世界等级；`unlock-condition`/`unlock-mission` 为原剧情门槛，`activity-window-closed`/`activity-window-ambiguous` 为排期，另分缺失来源、非法请求和状态/队伍/选择不符。只记录固定原因和数值编号。 |
 | `Player tick error` | 定时更新的场景、异常类型及有限调用栈。 |
 

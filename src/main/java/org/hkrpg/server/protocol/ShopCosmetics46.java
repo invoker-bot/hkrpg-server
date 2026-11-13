@@ -13,6 +13,7 @@ import java.util.TreeSet;
 /** Owned shop collectibles, using the pinned 4.6 board and Pam skin fields. */
 public final class ShopCosmetics46 {
   public static boolean handle(GameSession s, int command, byte[] bytes) throws IOException {
+    if (AvatarSkin46.handle(s, command, bytes)) return true;
     String request = switch (command) {
       case 2834 -> "GetPlayerBoardDataCsReq";
       case 2808 -> "SetPersonalCardCsReq";
