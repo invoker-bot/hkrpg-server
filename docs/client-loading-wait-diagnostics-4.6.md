@@ -10,7 +10,7 @@
 
 现有外部日志窗口就绪后，启动 `scripts/client-wait-state.py` 中的独立采样线程。它为同一 PID、同一创建时间重新核对 EXE 路径，校验 GameAssembly 和 metadata 摘要，再打开只读进程句柄。每秒最多采样一次，最多持续 600 秒；游戏退出或日志窗口结束后停止。它不注入 DLL、不调用游戏函数、不写入进程或存档，也不申请进程终止权限。
 
-输出为 `%LOCALAPPDATA%/HKRPG/client-waits-日期-时间-PID-随机后缀.jsonl`，与普通 `client-debug` 日志匹配。文件独立写入并逐行刷新，控制台输出暂停不会阻塞这份记录。只保存时间、PID、加载/剧情标志、等待项数量、响应编号和超时上限；不保存内存地址、消息正文、账号或凭据。空闲状态去重，有等待项时保留每秒记录，用于判断等待结束、重复产生或一直不解除。
+输出为 `%LOCALAPPDATA%/HKRPG/client-waits-日期-时间-PID-随机后缀.jsonl`，与普通 `client-debug` 日志匹配。文件独立写入并逐行刷新，控制台输出暂停不会阻塞这份记录。保存时间、PID、加载/剧情标志、等待项数量、响应编号和超时上限；存在固定输入锁时，另记录锁编号、类型、时限、回调有无、来源字符串的 SHA-256，以及白名单内的焦点分类和对应全屏锁目标状态。不保存内存地址、来源原文、消息正文、账号或凭据；非白名单焦点名称只记为 `other`。空闲状态去重，有等待项时保留每秒记录，用于判断等待结束、重复产生或一直不解除。
 
 未匹配客户端版本时停止内存读取。对象尚未初始化、字典版本变化、无效指针、超长数组或非有限超时值时拒绝解释该次快照，下一秒重试。权限不足等错误只记录异常类型，不中断普通 Player.log 读取，不影响游戏。
 
@@ -20,7 +20,7 @@
 
 `UIManager.get_Instance` RVA `0xe3b5d90` 从全局槽 `0x93434a8` 指向的实例表取 `+0x1398`。类型 73076 的 `_FullScreenBlock` 位于 `+0xd0`；加载、剧情和卸载标志分别为 `+0x124/+0x12c/+0x12f`。`BlockWaitNetPacket` RVA `0xe3a7d00` 进入 `0x165b4c20`，构造种类为 2 的等待项，响应编号在 `+0x3e`、超时在 `+0x40`。`NotifyWaitNetPacketReturn` RVA `0xe3a7ed0` 查询等待字典 `+0x10`。第二个阻塞字典 `+0x20` 仅读取数量，不猜测其回调含义。
 
-字典使用已核对的 entries/count/version/freeCount 布局，最多 512 个槽，跳过已释放项；采样后再次核对版本和根对象，拒绝混合快照。相关元数据和调用点保存在 `wait-types.json`、`full-screen-block.json`、`block-detail.json`；仅凭某条未处理请求的名字不认定它导致遮罩，不批量伪造成功响应。
+字典使用已核对的 entries/count/version/freeCount 布局，最多 512 个槽，跳过已释放项；采样后再次核对版本和根对象，拒绝混合快照。固定锁记录使用 `OHLCPDDLHDJ` 已核对字段，来源只存 UTF-16 字节的摘要；`GamePlayLockModule` 的 `UIFullScreenBlock` 目标按编号 12 比较持有的锁编号，并复核目标字段及根指针。相关元数据和调用点保存在 `wait-types.json`、`full-screen-block.json`、`block-detail.json`；仅凭某条未处理请求的名字不认定它导致遮罩，不批量伪造成功响应。
 
 ## 启动权限
 

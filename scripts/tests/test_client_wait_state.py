@@ -1,5 +1,6 @@
 """Read-only wait capture regressions using a bounded synthetic object graph."""
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 import struct
@@ -112,6 +113,75 @@ class WaitSnapshotTest(unittest.TestCase):
         result = wait.snapshot(memory)
         self.assertEqual([], result['waits'])
         self.assertEqual(0, result['dictionaryCounts']['0x10'])
+
+    def test_fixed_ui_lock_records_ids_and_target_without_exposing_labels(self):
+        memory = Memory()
+        fixed_dict, fixed_entries, fixed_value = 0x160000, 0x170000, 0x180000
+        manager, module, target_dict, target_entries, target = 0x190000, 0x1a0000, 0x1b0000, 0x1c0000, 0x1d0000
+        label, focus, focus_name = 0x1e0000, 0x1f0000, 0x200000
+        memory.put(memory.block + 0x20, 'Q', fixed_dict)
+        memory.put(fixed_dict + 0x18, 'Q', fixed_entries)
+        memory.put(fixed_dict + 0x20, 'iiii', 2, 3, 1, 1)
+        memory.put(fixed_entries + 0x18, 'Q', 2)
+        memory.put(fixed_entries + 0x20, 'i', 13)
+        memory.put(fixed_entries + 0x28, 'i', 42)
+        memory.put(fixed_entries + 0x30, 'Q', fixed_value)
+        memory.put(fixed_entries + 0x38, 'i', -1)
+        memory.put(fixed_value + 0x10, 'Q', 0)
+        memory.put(fixed_value + 0x18, 'Q', label)
+        memory.put(fixed_value + 0x28, 'f', 3.4028234663852886e38)
+        memory.put(fixed_value + 0x2c, 'i', 1)
+        memory.put(fixed_value + 0x34, 'f', 3.4028234663852886e38)
+        memory.put(fixed_value + 0x38, 'B', 1)
+        raw_label = 'diagnostic-source'.encode('utf-16le')
+        memory.put(label + 0x10, 'i', len(raw_label) // 2)
+        memory.data.update({label + 0x14 + i: value for i, value in enumerate(raw_label)})
+        memory.put(memory.static + 0x1468, 'Q', manager)
+        memory.put(manager + 0x500, 'Q', module)
+        memory.put(module + 0x20, 'Q', target_dict)
+        memory.put(target_dict + 0x18, 'Q', target_entries)
+        memory.put(target_dict + 0x20, 'iiii', 1, 6, 0, 0)
+        memory.put(target_entries + 0x18, 'Q', 1)
+        memory.put(target_entries + 0x20, 'i', 25)
+        memory.put(target_entries + 0x28, 'i', 12)
+        memory.put(target_entries + 0x30, 'Q', target)
+        memory.put(target + 0x20, 'i', 17)
+        memory.put(target + 0x24, 'B', 1)
+        memory.put(target + 0x28, 'i', 42)
+        memory.put(target + 0x2c, 'B', 1)
+        memory.put(memory.ui + 0xb0, 'Q', focus)
+        memory.put(focus + 0x30, 'Q', focus_name)
+        raw_focus = 'TalkDialog'.encode('utf-16le')
+        memory.put(focus_name + 0x10, 'i', len(raw_focus) // 2)
+        memory.data.update({focus_name + 0x14 + i: value for i, value in enumerate(raw_focus)})
+        result = wait.snapshot(memory)
+        self.assertIn('fixedBlocks', result)
+        self.assertEqual([{'id': 42, 'kind': 1, 'durationSeconds': 3.4028234663852886e38,
+                           'delaySeconds': 3.4028234663852886e38, 'silent': True,
+                           'callbackPresent': False,
+                           'originSHA256': hashlib.sha256(raw_label).hexdigest()}], result['fixedBlocks'])
+        self.assertEqual({'isLocked': True, 'blockId': 42, 'idPresent': True, 'matchesFixedBlock': True},
+                         result['uiLockTarget'])
+        self.assertEqual('TalkDialog', result['focusedController'])
+        self.assertNotIn('diagnostic-source', json.dumps(result))
+        self.assertNotIn(str(fixed_value), json.dumps(result))
+        self.assertNotIn((fixed_entries + 0x48, 8), memory.reads)
+
+        memory.put(target + 0x28, 'i', 43)
+        self.assertFalse(wait.snapshot(memory)['uiLockTarget']['matchesFixedBlock'])
+        memory.put(target + 0x28, 'i', 42)
+
+        memory.put(fixed_value + 0x2c, 'i', 2)
+        with self.assertRaises(wait.NotReady): wait.snapshot(memory)
+        memory.put(fixed_value + 0x2c, 'i', 1)
+
+        original_read = memory.read
+        def changed_version(address, size):
+            value = original_read(address, size)
+            if address == fixed_value + 0x38: memory.put(fixed_dict + 0x24, 'i', 4)
+            return value
+        with patch.object(memory, 'read', side_effect=changed_version):
+            with self.assertRaises(wait.NotReady): wait.snapshot(memory)
 
 
 class Signal:

@@ -78,7 +78,7 @@ class WindowsMemory:
 
 
 def snapshot(memory):
-    """Only UI flags, dictionary counts, response IDs and wait limits leave memory."""
+    """只输出限定的界面状态、等待编号及脱敏输入锁；不输出地址或任意字符串。"""
     def read(address, size):
         if not 0x10000 <= address < 0x7fffffffffff or not 0 < size <= 4096:
             raise NotReady()
@@ -89,6 +89,7 @@ def snapshot(memory):
 
     def q(address): return struct.unpack('<Q', read(address, 8))[0]
     def i(address): return struct.unpack('<i', read(address, 4))[0]
+    def f(address): return struct.unpack('<f', read(address, 4))[0]
     base = memory.image_base()
     static = q(base + 0x93434a8)
     ui = q(static + 0x1398)
@@ -128,11 +129,95 @@ def snapshot(memory):
                 result['waits'].append({'responseId': response, 'timeoutSeconds': timeout})
             if len(result['waits']) != count - free:
                 raise NotReady()
+        if offset == 0x20 and count:
+            entries = q(dictionary + 0x18)
+            if not entries or not count <= q(entries + 0x18) <= MAX_ENTRIES * 4:
+                raise NotReady()
+            fixed = []
+            for idx in range(count):
+                row = entries + 0x20 + idx * 24
+                if i(row) < 0:
+                    continue
+                identity, entry = i(row + 8), q(row + 16)
+                kind, duration, delay = i(entry + 0x2c), f(entry + 0x34), f(entry + 0x28)
+                silent, callback, label = read(entry + 0x38, 1)[0], q(entry + 0x10), q(entry + 0x18)
+                if (identity < 0 or kind != 1 or silent not in (0, 1)
+                        or not math.isfinite(duration) or duration < 0
+                        or not math.isfinite(delay) or delay < 0):
+                    raise NotReady()
+                record = {'id': identity, 'kind': kind, 'durationSeconds': duration,
+                          'delaySeconds': delay, 'silent': bool(silent), 'callbackPresent': bool(callback)}
+                if label:
+                    length = i(label + 0x10)
+                    if not 0 <= length <= 160:
+                        raise NotReady()
+                    if length:
+                        record['originSHA256'] = hashlib.sha256(read(label + 0x14, length * 2)).hexdigest()
+                fixed.append(record)
+            if len(fixed) != count - free or len({row['id'] for row in fixed}) != len(fixed):
+                raise NotReady()
+            result['fixedBlocks'] = sorted(fixed, key=lambda row: row['id'])
         if (version != i(dictionary + 0x24) or dictionary != q(block + offset)
                 or count != i(dictionary + 0x20) or free != i(dictionary + 0x2c)):
             raise NotReady()
     if ui != q(static + 0x1398) or block != q(ui + 0xd0):
         raise NotReady()
+    if result.get('fixedBlocks'):
+        # 仅对固定输入锁补采焦点和已核对的 UIFullScreenBlock 目标编号。
+        # 未列入白名单的窗口名称只标记为 other，避免写入任意游戏文本。
+        focus = q(ui + 0xb0)
+        if focus:
+            label = q(focus + 0x30)
+            if label:
+                length = i(label + 0x10)
+                if not 0 <= length <= 160:
+                    raise NotReady()
+                try:
+                    name = read(label + 0x14, length * 2).decode('utf-16le') if length else ''
+                except UnicodeDecodeError:
+                    raise NotReady() from None
+                allowed = {'TalkDialog', 'PassiveSubmitMissionItemPage',
+                           'NewPassiveSubmitMissionItemPage', 'MazeMainPage'}
+                result['focusedController'] = name if name in allowed else 'other'
+        manager = q(static + 0x1468)
+        module = q(manager + 0x500) if manager else 0
+        targets = q(module + 0x20) if module else 0
+        if targets:
+            version = i(targets + 0x24)
+            count, free = i(targets + 0x20), i(targets + 0x2c)
+            if not 0 <= free <= count <= MAX_ENTRIES:
+                raise NotReady()
+            entries = q(targets + 0x18) if count else 0
+            if count and (not entries or not count <= q(entries + 0x18) <= MAX_ENTRIES * 4):
+                raise NotReady()
+            seen, target = 0, 0
+            for idx in range(count):
+                row = entries + 0x20 + idx * 24
+                if i(row) < 0:
+                    continue
+                seen += 1
+                if i(row + 8) == 12:  # GamePlayLockTarget.UIFullScreenBlock
+                    if target:
+                        raise NotReady()
+                    target = q(row + 16)
+            if seen != count - free or version != i(targets + 0x24):
+                raise NotReady()
+            if target:
+                locked, identity, present = read(target + 0x24, 1)[0], i(target + 0x28), read(target + 0x2c, 1)[0]
+                if locked not in (0, 1) or present not in (0, 1) or identity < 0:
+                    raise NotReady()
+                result['uiLockTarget'] = {'isLocked': bool(locked), 'blockId': identity,
+                                          'idPresent': bool(present),
+                                          'matchesFixedBlock': bool(present) and any(
+                                              row['id'] == identity for row in result['fixedBlocks'])}
+                if (locked != read(target + 0x24, 1)[0] or identity != i(target + 0x28)
+                        or present != read(target + 0x2c, 1)[0]):
+                    raise NotReady()
+            if (manager != q(static + 0x1468) or module != q(manager + 0x500)
+                    or targets != q(module + 0x20)):
+                raise NotReady()
+        if ui != q(static + 0x1398) or block != q(ui + 0xd0) or focus != q(ui + 0xb0):
+            raise NotReady()
     result['waits'].sort(key=lambda row: row['responseId'])
     return result
 
