@@ -33,8 +33,30 @@ class GoodsTableTest(unittest.TestCase):
         rows = [template, dict(template, GoodsID=107012, ItemID=1150501, ShopID=996,
                               CurrencyList=[1], CurrencyCostList=[2680]),
                 dict(template, GoodsID=107014, ItemID=1140901, ShopID=996,
-                     CurrencyList=[3], CurrencyCostList=[1350])]
+                     CurrencyList=[3], CurrencyCostList=[1350]),
+                dict(template, GoodsID=109002, ItemID=227013, ShopID=109,
+                     CurrencyList=[3], CurrencyCostList=[680]),
+                dict(template, GoodsID=108012, ItemID=252004, ShopID=108,
+                     CurrencyList=[263], CurrencyCostList=[1200], LimitType1=0,
+                     LimitValue1List=[0])]
         return b'\0' + data.signed(len(rows)) + b''.join(data.encode_row(row) for row in rows)
+
+    def test_unlisted_outfits_and_chef_pam_receive_known_shop_entries(self):
+        rows = {row['GoodsID']: row for row, _ in data.decode_table(data.append_rows(self.make_table()))}
+        for goods, item in zip(range(109006, 109014),
+                               [227001, 227002, 227003, 227005, 227007, 227008, 227015, 227017]):
+            self.assertIn(goods, rows)
+            row = rows[goods]
+            self.assertEqual((109, item, [3], [680], 1),
+                             (row['ShopID'], row['ItemID'], row['CurrencyList'],
+                              row['CurrencyCostList'], row['LimitTimes']))
+            self.assertNotIn('ScheduleDataID', row)
+        self.assertIn(108022, rows)
+        chef = rows[108022]
+        self.assertEqual((108, 252001, [263], [1200], 1),
+                         (chef['ShopID'], chef['ItemID'], chef['CurrencyList'],
+                          chef['CurrencyCostList'], chef['LimitTimes']))
+        self.assertNotIn('ScheduleDataID', chef)
 
     def test_existing_rows_are_unchanged_and_three_distinct_prices_match_server(self):
         raw = self.make_table()
@@ -458,7 +480,7 @@ class LocalClientRecordTest(unittest.TestCase):
         self.assertIs(panel._binder.node_bg, replacement.transform.parent)
         self.assertEqual(2, len(panel.loads))
 
-    def test_all_900_original_rows_remain_identical_after_three_additions(self):
+    def test_all_900_original_rows_remain_identical_after_twelve_additions(self):
         chunk = (CLIENT / data.CLIENT_DIR / (data.SOURCE_CHUNK_MD5 + '.bytes')).read_bytes()
         self.assertEqual(data.SOURCE_CHUNK_MD5, hashlib.md5(chunk).hexdigest())
         raw = chunk[16547888:16547888 + 26495]
@@ -466,7 +488,7 @@ class LocalClientRecordTest(unittest.TestCase):
         before = data.decode_table(raw)
         after = data.decode_table(data.patch_record(raw))
         self.assertEqual(900, len(before))
-        self.assertEqual(903, len(after))
+        self.assertEqual(912, len(after))
         self.assertEqual(before, after[:900])
 
     def test_unrecognized_record_never_receives_the_patch(self):

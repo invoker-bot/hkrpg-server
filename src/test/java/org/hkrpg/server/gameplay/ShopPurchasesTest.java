@@ -120,6 +120,27 @@ class ShopPurchasesTest {
     assertEquals(2320,player.getHcoin());
   }
 
+  @Test void alreadySelectedPamSkinCannotBeChargedAgainWithoutAnInventoryCopy() {
+    item(1,"Virtual","Virtual",99999999);
+    item(252001,"Usable","PamSkin",100);
+    player.setCurrentPamSkinId(252001);
+    player.addHCoin(4000);
+    goods(252001,1,100,1);
+    assertNull(player.inventory.getMaterialByItemId(252001));
+    assertNull(service.buyGoods(player,shopId,199871001,1));
+    assertEquals(4000,player.getHcoin());
+    assertNull(player.inventory.getMaterialByItemId(252001));
+  }
+
+  @Test void theAlwaysOwnedPamUniformCannotBeChargedAsAnItem() {
+    item(1,"Virtual","Virtual",99999999);
+    item(252000,"Usable","PamSkin",100);
+    player.addHCoin(4000);
+    goods(252000,1,100,1);
+    assertNull(service.buyGoods(player,shopId,199871001,1));
+    assertEquals(4000,player.getHcoin());
+  }
+
   @Test void unsupportedDeliveryMustNotTakePayment() {
     item(1,"Virtual","Virtual",99999999);
     item(199871002,"Usable","Unknown",1);

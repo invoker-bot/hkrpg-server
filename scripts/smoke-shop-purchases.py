@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('gm',ROOT/'scripts/smoke-gm-console.py')
 gm=importlib.util.module_from_spec(spec); spec.loader.exec_module(gm)
+spec=importlib.util.spec_from_file_location('fashion_data',ROOT/'scripts/client_skin_shop_data.py')
+fashion_data=importlib.util.module_from_spec(spec); spec.loader.exec_module(fashion_data)
 
 def varint(v):
  b=bytearray()
@@ -12,7 +14,7 @@ def varint(v):
 def wire(values):return b''.join(varint(k*8)+varint(v) for k,v in values)
 
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,default=ROOT/'build/shop-purchases-native.json');parser.add_argument('--jar',type=Path,default=ROOT/'build/libs/hkrpg-server.jar');args=parser.parse_args()
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,default=ROOT/'build/shop-purchases-native.json');parser.add_argument('--jar',type=Path,default=ROOT/'build/libs/hkrpg-server.jar');parser.add_argument('--fashion-only',action='store_true',help='只验证新增饰品和帕姆服装');args=parser.parse_args()
  jar=args.jar.resolve();digest=hashlib.sha256(jar.read_bytes()).hexdigest()
  java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'))
  runs=ROOT/'build/smoke';runs.mkdir(parents=True, exist_ok=True)
@@ -70,6 +72,10 @@ def main():
  goods={r['GoodsID']:r for r in json.loads((ROOT/'resources/4.6/ExcelOutput/ShopGoodsConfig.json').read_text('utf-8'))}
  for gid,skin,currency,price in [(107013,1141501,3,1680),(107015,1150501,1,2680),(107016,1140901,3,1350)]:
   goods[gid]={'GoodsID':gid,'ShopID':107,'ItemID':skin,'CurrencyList':[currency],'CurrencyCostList':[price]}
+ for gid,item,shop,currency,price,_ in fashion_data.FASHION_ENTRIES:
+  goods[gid]={'GoodsID':gid,'ShopID':shop,'ItemID':item,'CurrencyList':[currency],'CurrencyCostList':[price]}
+ outfits={227001:1001,227002:1002,227003:1003,227005:1005,
+          227007:1007,227008:1008,227015:4001,227017:1017}
  skin_ids=[];saved=None
  try:
   for cycle in range(2):
@@ -87,69 +93,87 @@ def main():
    if uid is None:uid=initial['uid']
    assert uid==initial['uid']
    if cycle==0:
-    for id,n in [(3,20000),(1,20000),(2,10000),(263,10000),(284,1000),(252,300)]:grant(id,n)
+    for id,n in [(3,30000),(1,20000),(2,10000),(263,10000),(284,1000),(252,300)]:grant(id,n)
     for id in [1415,1505,1409]:grant(id,1)
-    gm.wait_for(lambda:snapshot()['basic'].get('mcoin',0)==20000 and stock(snapshot(),252)==300,30)
-    for gid,skin in [(107013,1141501),(107015,1150501),(107016,1140901)]:
-     row=request(f'/gm/api/shops?shopId=107&q={gid}')['data']['items']
-     assert len(row)==1 and row[0]['itemId']==skin and row[0]['listed'],row
-    missing,_=send('DressAvatarSkinCsReq',wire([(3,1141501),(11,1415)]),success=False)
-    assert missing['PLDKENJLKME']==1222,missing
-    target=[{'shopId':107,'goodsId':107013}]
-    for action in ['shop-unlist','shop-list']:
-     result=request('/gm/api/operate',{'requestId':str(uuid.uuid4()),'action':action,'shopGoods':target})['data']
-     assert result['state']=='completed',result
-     if action=='shop-unlist':purchase(goods[107013],success=False)
-    for gid,skin,avatar in [(107013,1141501,1415),(107015,1150501,1505),(107016,1140901,1409)]:
-     purchase(goods[gid]);purchase(goods[gid],success=False)
-     reply,current=send('DressAvatarSkinCsReq',wire([(3,skin),(11,avatar)]))
-     paths=current['avatars'].get('avatar_path_data_info_list',[])
-     assert any(p.get('avatar_id')==avatar and p.get('dressed_skin_id')==skin for p in paths),(avatar,skin,paths)
-     _,current=send('TakeOffAvatarSkinCsReq',wire([(1,avatar)]))
-     paths=current['avatars'].get('avatar_path_data_info_list',[])
-     assert any(p.get('avatar_id')==avatar and p.get('dressed_skin_id',0)==0 for p in paths),(avatar,paths)
-     send('DressAvatarSkinCsReq',wire([(3,skin),(11,avatar)]))
-    purchase(goods[107012],success=False);purchase(goods[107014],success=False)
-    wrong,_=send('DressAvatarSkinCsReq',wire([(3,1141501),(11,1409)]),success=False)
-    assert wrong['PLDKENJLKME']==1225,wrong
-    for id in [107002,107003,107004,107006,107011]:
-     purchase(goods[id]);skin_ids.append(goods[id]['ItemID']);purchase(goods[id],success=False)
-    for id in [108001,108002,108005,109001,109002,109003,109005]:purchase(goods[id])
-    # 隔离账号直接发送原生购买请求；任务上架条件不是本次网络夹具的验收对象。
-    book_reply,book_state=purchase(goods[301003])
-    chapters=set(range(190901,190908))
-    assert {row['item_id'] for row in book_reply['return_item_list']['item_list']}==chapters,book_reply
-    assert stock(book_state,300200)==0 and all(stock(book_state,i)==1 for i in chapters)
-    purchase(goods[301003],success=False)
-    # 模拟旧服务已保存的礼包，验证实际持有时可使用且不再支付；重复使用失败。
-    grant(300200,1)
-    before_use=gm.wait_for(lambda:(lambda s:s if stock(s,300200)==1 else None)(snapshot()),30)
-    used,book_state=send('UseItemCsReq',wire([(9,1),(12,300200)]))
-    assert {row['item_id'] for row in used['return_data']['item_list']}==chapters,used
-    assert used['use_item_count']==1 and used['use_item_id']==300200,used
-    assert book_state['basic']==before_use['basic'] and stock(book_state,300200)==0
-    assert all(stock(book_state,i)==2 for i in chapters)
-    _,after_retry=send('UseItemCsReq',wire([(9,1),(12,300200)]),success=False)
-    assert after_retry['basic']==book_state['basic'] and after_retry['bag']==book_state['bag']
-    purchase(goods[900041],choices=[1202001],success=False)
-    purchase(goods[900041],choices=[1202001,1202011,1202012,1202013])
-    purchase(goods[999001],count=2);purchase(goods[999001],count=3)
-    send('SetPersonalCardCsReq',wire([(1,253004)]));send('SelectPamSkinCsReq',wire([(1,252002)]))
+    gm.wait_for(lambda:snapshot()['basic'].get('mcoin',0)==30000 and stock(snapshot(),252)==300,30)
+    for gid,item,shop,_,_,_ in fashion_data.FASHION_ENTRIES:
+     row=request(f'/gm/api/shops?shopId={shop}&q={gid}')['data']['items']
+     assert len(row)==1 and row[0]['itemId']==item and row[0]['listed'],row
+     _,owned=purchase(goods[gid]);assert stock(owned,item)==1,(gid,item)
+     purchase(goods[gid],success=False)
+     if item in outfits:
+      nested=wire([(1,outfits[item])]);send('SetPlayerOutfitCsReq',b'\x0a'+varint(len(nested))+nested)
+    nested=wire([(1,1017),(1,4001)])
+    send('SetPlayerOutfitCsReq',b'\x0a'+varint(len(nested))+nested)
+    send('SelectPamSkinCsReq',wire([(1,252001)]))
+    if not args.fashion_only:
+     for gid,skin in [(107013,1141501),(107015,1150501),(107016,1140901)]:
+      row=request(f'/gm/api/shops?shopId=107&q={gid}')['data']['items']
+      assert len(row)==1 and row[0]['itemId']==skin and row[0]['listed'],row
+     missing,_=send('DressAvatarSkinCsReq',wire([(3,1141501),(11,1415)]),success=False)
+     assert missing['PLDKENJLKME']==1222,missing
+     target=[{'shopId':107,'goodsId':107013}]
+     for action in ['shop-unlist','shop-list']:
+      result=request('/gm/api/operate',{'requestId':str(uuid.uuid4()),'action':action,'shopGoods':target})['data']
+      assert result['state']=='completed',result
+      if action=='shop-unlist':purchase(goods[107013],success=False)
+     for gid,skin,avatar in [(107013,1141501,1415),(107015,1150501,1505),(107016,1140901,1409)]:
+      purchase(goods[gid]);purchase(goods[gid],success=False)
+      reply,current=send('DressAvatarSkinCsReq',wire([(3,skin),(11,avatar)]))
+      paths=current['avatars'].get('avatar_path_data_info_list',[])
+      assert any(p.get('avatar_id')==avatar and p.get('dressed_skin_id')==skin for p in paths),(avatar,skin,paths)
+      _,current=send('TakeOffAvatarSkinCsReq',wire([(1,avatar)]))
+      paths=current['avatars'].get('avatar_path_data_info_list',[])
+      assert any(p.get('avatar_id')==avatar and p.get('dressed_skin_id',0)==0 for p in paths),(avatar,paths)
+      send('DressAvatarSkinCsReq',wire([(3,skin),(11,avatar)]))
+     purchase(goods[107012],success=False);purchase(goods[107014],success=False)
+     wrong,_=send('DressAvatarSkinCsReq',wire([(3,1141501),(11,1409)]),success=False)
+     assert wrong['PLDKENJLKME']==1225,wrong
+     for id in [107002,107003,107004,107006,107011]:
+      purchase(goods[id]);skin_ids.append(goods[id]['ItemID']);purchase(goods[id],success=False)
+     for id in [108001,108002,108005,109001,109002,109003,109005]:purchase(goods[id])
+     # 隔离账号直接发送原生购买请求；任务上架条件不是本次网络夹具的验收对象。
+     book_reply,book_state=purchase(goods[301003])
+     chapters=set(range(190901,190908))
+     assert {row['item_id'] for row in book_reply['return_item_list']['item_list']}==chapters,book_reply
+     assert stock(book_state,300200)==0 and all(stock(book_state,i)==1 for i in chapters)
+     purchase(goods[301003],success=False)
+     # 模拟旧服务已保存的礼包，验证实际持有时可使用且不再支付；重复使用失败。
+     grant(300200,1)
+     before_use=gm.wait_for(lambda:(lambda s:s if stock(s,300200)==1 else None)(snapshot()),30)
+     used,book_state=send('UseItemCsReq',wire([(9,1),(12,300200)]))
+     assert {row['item_id'] for row in used['return_data']['item_list']}==chapters,used
+     assert used['use_item_count']==1 and used['use_item_id']==300200,used
+     assert book_state['basic']==before_use['basic'] and stock(book_state,300200)==0
+     assert all(stock(book_state,i)==2 for i in chapters)
+     _,after_retry=send('UseItemCsReq',wire([(9,1),(12,300200)]),success=False)
+     assert after_retry['basic']==book_state['basic'] and after_retry['bag']==book_state['bag']
+     purchase(goods[900041],choices=[1202001],success=False)
+     purchase(goods[900041],choices=[1202001,1202011,1202012,1202013])
+     purchase(goods[999001],count=2);purchase(goods[999001],count=3)
+     send('SetPersonalCardCsReq',wire([(1,253004)]));send('SelectPamSkinCsReq',wire([(1,252002)]))
    else:
     assert initial['basic']==saved['basic'],'Wallet changed after restart'
     assert initial['bag']==saved['bag'],'Inventory changed after restart'
-    assert stock(initial,300200)==0 and all(stock(initial,i)==2 for i in range(190901,190908))
+    if not args.fashion_only:assert stock(initial,300200)==0 and all(stock(initial,i)==2 for i in range(190901,190908))
     assert initial['avatars']==saved['avatars'],'Skin/avatar data changed after restart'
-    purchase(goods[107002],success=False)
-   board,_=send('GetPlayerBoardDataCsReq');assert board['current_personal_card_id']==253004
-   assert 253004 in board['unlocked_personal_card_list'] and 253002 in board['unlocked_personal_card_list']
-   pam,_=send('GetPamSkinDataCsReq');assert pam['cur_skin']==252002 and 252002 in pam['unlock_skin_list']
-   pets,_=send('GetPetDataCsReq');assert 1003 in pets['unlocked_pet_id']
+    assert all(stock(initial,item)==1 for _,item,_,_,_,_ in fashion_data.FASHION_ENTRIES)
+    if not args.fashion_only:purchase(goods[107002],success=False)
+   if not args.fashion_only:
+    board,_=send('GetPlayerBoardDataCsReq');assert board['current_personal_card_id']==253004
+    assert 253004 in board['unlocked_personal_card_list'] and 253002 in board['unlocked_personal_card_list']
+    pets,_=send('GetPetDataCsReq');assert 1003 in pets['unlocked_pet_id']
+   pam,_=send('GetPamSkinDataCsReq')
+   assert pam['cur_skin']==(252001 if args.fashion_only else 252002)
+   assert 252001 in pam['unlock_skin_list']
    shops,saved=send('GetShopListCsReq',wire([(12,1)]))
    rows={g['goods_id']:g for sh in shops['shop_list'] for g in sh['goods_list']}
-   assert rows[107002]['buy_times']==1 and rows[999001]['buy_times']==5
-   assert all(rows[gid]['buy_times']==1 for gid in [107013,107015,107016])
-   assert {1141501,1150501,1140901}.issubset(set(saved['avatars']['skin_list']))
+   assert all(rows[gid]['buy_times']==1 for gid,_,_,_,_,_ in fashion_data.FASHION_ENTRIES)
+   assert set(saved['avatars']['DHKFCDAGHDM']['EAKOLIJOEPA'])=={1017,4001}
+   if not args.fashion_only:
+    assert rows[107002]['buy_times']==1 and rows[999001]['buy_times']==5
+    assert all(rows[gid]['buy_times']==1 for gid in [107013,107015,107016])
+    assert {1141501,1150501,1140901}.issubset(set(saved['avatars']['skin_list']))
    stop()
   assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
   args.output.parent.mkdir(exist_ok=True,parents=True)

@@ -1,4 +1,4 @@
-"""为固定 4.6 客户端准备三条橱窗商品数据；安装前必须正常退出游戏。"""
+"""为固定 4.6 客户端准备时装及饰品商品数据；安装前必须正常退出游戏。"""
 import argparse
 import hashlib
 import importlib.util
@@ -17,6 +17,11 @@ RECORD_SHA = 'b26ca7cffba9477bbc46b3fba4f47458d7bf55b67f99ab151e6d3926853be2d6'
 SOURCE_CHUNK_MD5 = '1efaad7a4e7c92a8a12c66cffbe3b50a'
 ENTRIES = [(107013, 1141501, 3, 1680, 94), (107015, 1150501, 1, 2680, 93),
            (107016, 1140901, 3, 1350, 92)]
+FASHION_ENTRIES = [(109006, 227001, 109, 3, 680, 6), (109007, 227002, 109, 3, 680, 7),
+                   (109008, 227003, 109, 3, 680, 8), (109009, 227005, 109, 3, 680, 9),
+                   (109010, 227007, 109, 3, 680, 10), (109011, 227008, 109, 3, 680, 11),
+                   (109012, 227015, 109, 3, 680, 12), (109013, 227017, 109, 3, 680, 13),
+                   (108022, 252001, 108, 263, 1200, 25)]
 # Pinned ShopGoodsConfigRow.FromBinary 101473 / 1daa6090, mask bits and field offsets.
 FIELDS = ['GoodsID', 'ItemID', 'ItemGroupID', 'ItemCount', 'Level', 'Rank', 'CurrencyList',
           'CurrencyCostList', 'GoodsSortID', 'LimitType1', 'LimitValue1List', 'LimitType2',
@@ -34,6 +39,36 @@ def module(name, filename):
     spec = importlib.util.spec_from_file_location(name, ROOT / 'scripts' / filename)
     result = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(result)
+    return result
+
+
+def append_fashion_rows(raw):
+    """Preserve every existing row and append only the nine local fashion offers."""
+    before = decode_table(raw)
+    by_id = {row['GoodsID']: row for row, _ in before}
+    outfit, pam = by_id.get(109002, {}), by_id.get(108012, {})
+    if (outfit.get('ItemID'), outfit.get('ShopID'), outfit.get('LimitType1'),
+        outfit.get('LimitTimes'), outfit.get('CurrencyList'), outfit.get('CurrencyCostList')) != (
+            227013, 109, 9, 1, [3], [680]):
+        raise ValueError('时尚单品的原始模板不符')
+    if (pam.get('ItemID'), pam.get('ShopID'), pam.get('LimitTimes'),
+        pam.get('CurrencyList'), pam.get('CurrencyCostList')) != (252004, 108, 1, [263], [1200]):
+        raise ValueError('帕姆服装的原始模板不符')
+    additions = []
+    for goods, item, shop, currency, price, order in FASHION_ENTRIES:
+        if goods in by_id:
+            raise ValueError('新增时尚商品编号冲突')
+        row = dict(outfit if shop == 109 else pam, GoodsID=goods, ItemID=item,
+                   ShopID=shop, CurrencyList=[currency], CurrencyCostList=[price], GoodsSortID=order)
+        # The source schedule belongs to another item; the compatibility offer has no invented schedule.
+        row.pop('ScheduleDataID', None)
+        row.pop('IsNew', None)
+        additions.append((row, encode_row(row)))
+    result = b'\x00' + signed(len(before) + len(additions))
+    result += b''.join(original for _, original in before) + b''.join(encoded for _, encoded in additions)
+    after = decode_table(result)
+    if after[:len(before)] != before or after[len(before):] != additions:
+        raise ValueError('时尚商品补丁未保持原有记录')
     return result
 
 
@@ -132,7 +167,7 @@ def append_rows(raw):
     after = decode_table(result)
     if after[:len(before)] != before or after[len(before):] != additions:
         raise ValueError('商品表补丁未保持原有记录')
-    return result
+    return append_fashion_rows(result)
 
 
 def patch_record(raw):
@@ -143,8 +178,8 @@ def patch_record(raw):
     return append_rows(raw)
 
 
-def read_index(raw):
-    if sha(raw) != INDEX_SHA or len(raw) < 16 or struct.unpack_from('>IIII', raw) != (255, 4, 33, 141295):
+def read_index(raw, *, index_sha=INDEX_SHA):
+    if sha(raw) != index_sha or len(raw) < 16 or struct.unpack_from('>IIII', raw) != (255, 4, 33, 141295):
         raise ValueError('设计数据索引不是已核对版本')
     pos, chunks = 16, []
     for _ in range(33):

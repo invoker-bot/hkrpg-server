@@ -39,6 +39,10 @@ public final class ShopItems {
       case PhoneTheme -> u.getPhoneThemes().contains(id);
       case PhoneCase -> u.getPhoneCases().contains(id);
       case ChatBubble -> u.getChatBubbles().contains(id);
+      // Older saves may retain the selected Pam skin without a separate item entry.
+      // The default uniform is owned even when it has never appeared in inventory.
+      case PamSkin -> id == 252000 || id == p.getCurrentPamSkinId()
+          || p.getInventory().getMaterialByItemId(id) != null;
       case NormalPet -> GameData.getPetExcelMap().values().stream()
           .anyMatch(e -> e.getPetItemID()==id && u.getPets().contains(e.getPetID()));
       default -> p.getInventory().getMaterialByItemId(id)!=null;
