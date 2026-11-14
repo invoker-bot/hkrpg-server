@@ -28,6 +28,10 @@ INDEX_PROFILES = {
     'ee8d096acb51627c2fcf57d609f1fd145c2d7824edd6764182c64b5b8f44642d': (255, 4, 33, 141295),
     # Explicit research-submission candidate; individual graph readers still pin their own records.
     '80e54c8462f24fec179c6f88d57996595d4a63390ef451d319bdd28eec2268a4': (255, 4, 33, 141295),
+    # Explicit research retry candidate; other source checks stay pinned to their own versions.
+    '7b1fe9daae5364e0fe7d2241314b49ed7b080068e75dbfa6a21e730be73a0a8f': (255, 4, 33, 141295),
+    # Research focus candidate: marked research records only; independently pinned by its installer.
+    'c61c44d3c63612efdb858f8c2922dd345c532acc961ae85aabc8bc937830920d': (255, 4, 33, 141295),
 }
 
 
