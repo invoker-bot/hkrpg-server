@@ -35,6 +35,10 @@ public final class ActivityReplayState {
     if(!legacyMaterials.containsKey(panel))legacyMaterials.put(panel,new MaterialSubmitState());
     return legacyMaterials.get(panel);
   }
+  boolean legacyMaterialsValid(){return version==1 && legacyMaterials!=null;}
+  boolean hasLegacyMaterial(int panel){return legacyMaterials.containsKey(panel);}
+  MaterialSubmitState existingLegacyMaterial(int panel){return legacyMaterials.get(panel);}
+  void removeLegacyMaterial(int panel){legacyMaterials.remove(panel);}
   void legacyMaterial(int panel,MaterialSubmitState state){
     if(version!=1||legacyMaterials==null)throw new IllegalStateException("Damaged material state");
     legacyMaterials.put(panel,Objects.requireNonNull(state));

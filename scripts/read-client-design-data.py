@@ -26,6 +26,8 @@ INDEX_PROFILES = {
     'bcac71ed6783dfd447de127bdcab7c40ae4e21d488c39cba1af6ef6aa801b608': (255, 4, 33, 141295),
     # Explicit local skin-shop profile: three added rows in the checked shop data block.
     'ee8d096acb51627c2fcf57d609f1fd145c2d7824edd6764182c64b5b8f44642d': (255, 4, 33, 141295),
+    # Explicit research-submission candidate; individual graph readers still pin their own records.
+    '80e54c8462f24fec179c6f88d57996595d4a63390ef451d319bdd28eec2268a4': (255, 4, 33, 141295),
 }
 
 

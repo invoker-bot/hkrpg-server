@@ -46,8 +46,8 @@ public final class MaterialSubmitDefinitions {
     return load(root,30014);
   }
   public static MaterialSubmitDefinitions load(Path root,int activityId) {
-    if(activityId!=30011 && activityId!=30014)return null;
-    int firstId=activityId==30011?201:301;
+    if(activityId!=30005 && activityId!=30011 && activityId!=30014)return null;
+    int firstId=activityId==30005?1:activityId==30011?201:301;
     try {
       var rawTables=new TreeMap<String,byte[]>();var key=new StringBuilder("material-submit-"+activityId+"-4.6-v1\n");
       for(var input:new TreeMap<>(INPUTS).entrySet()) {
@@ -71,12 +71,22 @@ public final class MaterialSubmitDefinitions {
         if(!group.get("Type").getAsString().equals("AmphoreusCurio")
             || !group.getAsJsonArray("SubmitterIDList").equals(JsonParser.parseString("[301,302,303,304,305,306,307]"))) return null;
       }
-      var modules=new JsonArray();for(int offset=1;offset<=7;offset++)modules.add(activityId*100+offset);
+      var modules=new JsonArray();for(int offset=1;offset<=(activityId==30005?8:7);offset++)modules.add(activityId*100+offset);
       var activity=unique(tables.get("ActivityConfig"),"ActivityID",activityId);
-      if(number(activity,"ActivityPanelID")!=activityId
-          || !activity.getAsJsonArray("ActivityModuleIDList").equals(modules)) return null;
-      var panel=unique(tables.get("ActivityPanel"),"PanelID",activityId);
-      if(!panel.get("UnlockConditions").getAsString().equals("[PlayerLevel:21]")) return null;
+      if(!activity.getAsJsonArray("ActivityModuleIDList").equals(modules)) return null;
+      if(activityId==30005) {
+        // This historical activity has neither a retained panel nor a group in 4.6.
+        // Reading its orders does not make its original client submission UI available.
+        if(activity.has("ActivityPanelID")
+            || tables.get("ActivityPanel").asList().stream().map(JsonElement::getAsJsonObject)
+                .anyMatch(row->row.has("PanelID") && row.get("PanelID").getAsInt()==activityId)
+            || tables.get("MaterialSubmitterGroup").asList().stream().map(JsonElement::getAsJsonObject)
+                .anyMatch(row->row.has("ActivityID") && row.get("ActivityID").getAsInt()==activityId)) return null;
+      } else {
+        if(number(activity,"ActivityPanelID")!=activityId) return null;
+        var panel=unique(tables.get("ActivityPanel"),"PanelID",activityId);
+        if(!panel.get("UnlockConditions").getAsString().equals("[PlayerLevel:21]")) return null;
+      }
       var rows=new TreeMap<Integer,Submitter>();var items=new TreeMap<Integer,JsonObject>();
       for(int id=firstId;id<firstId+7;id++) {
         var row=unique(tables.get("MaterialSubmitter"),"ID",id);var costs=new TreeMap<Integer,Integer>();
@@ -85,7 +95,7 @@ public final class MaterialSubmitDefinitions {
           var value=cost.getAsJsonObject();
           if(costs.putIfAbsent(number(value,"ItemID"),number(value,"ItemNum"))!=null) return null;
         }
-        if(costs.size()!=2) return null;
+        if(costs.size()!=(activityId==30005?3:2)) return null;
         var reward=unique(tables.get("RewardData"),"RewardID",number(row,"RewardID"));
         var rewards=new TreeMap<Integer,Integer>();if(reward.has("Hcoin"))rewards.put(1,number(reward,"Hcoin"));
         for(int slot=1;slot<=5;slot++) if(reward.has("ItemID_"+slot))

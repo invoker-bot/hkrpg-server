@@ -408,6 +408,8 @@ public final class MissionManager {
 
   public Retcode finishTalk(int id, String talk, Map<Integer, Integer> values) {
     synchronized (player) {
+      int researchChoice = MonsterResearchDelivery.choice(id, talk);
+      if (researchChoice != 0) { id = 800017705; talk = "Mission_800017705"; }
       var rocky = RockyTruthPerformance.report(id, talk);
       if (rocky != null) {
         if (!RockyTruthPerformance.atStation(player)) return Retcode.MISSION_SCENE_NOT_MATCH;
@@ -420,12 +422,13 @@ public final class MissionManager {
         id = rocky.talk();
       }
       if (id == 0) {
+        String requestedTalk = talk;
         var matches =
             GameplayDefinitions.subs.values().stream()
                 .filter(
                     c ->
                         "Talk".equals(c.getFinishType())
-                            && c.getParamStr1().equals(talk)
+                            && c.getParamStr1().equals(requestedTalk)
                             && sub(c.getId()) != null
                             && sub(c.getId()).getPhase() == QuestState.Phase.DOING
                             && canFinishFromAction(c.getId())
@@ -508,6 +511,14 @@ public final class MissionManager {
         }
         customUpdates.put(
             "mission:" + config.getMainMissionID() + ":" + c.getName(), entry.getValue());
+      }
+      if (MonsterResearchDelivery.handles(id)) {
+        if (!values.isEmpty()) return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+        if (id == 800017705 && researchChoice == 0) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+        var validation = new StoryActions(player).validate(config);
+        if (validation != Retcode.SUCC) return validation;
+        var delivery = MonsterResearchDelivery.submit(player, config, researchChoice);
+        if (delivery != Retcode.SUCC) return delivery;
       }
       var actionResult = new StoryActions(player).execute(config);
       if (actionResult != Retcode.SUCC) return actionResult;
@@ -1454,6 +1465,7 @@ public final class MissionManager {
   }
 
   Retcode finishFromAction(int id) {
+    if (MonsterResearchDelivery.handles(id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
     if (DailyMissionRecoverDeliveryRules.sub(id)) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
     if (!canFinishFromAction(id)) return Retcode.MISSION_NOT_DOING;
     // Resource 8024111's mutually completing loss/quit branches reach an already active root.

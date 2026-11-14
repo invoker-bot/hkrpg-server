@@ -1,0 +1,833 @@
+{
+  "records": {
+    "Config/Level/Mission/8000170/MissionInfo_8000170.json": {
+      "sha256": "5fdf7088997084f02ee0a2160e3b192047d0f847b0f78ae33e72174736dae22d",
+      "source": {
+        "FinishSubMissionList": [
+          800017004
+        ],
+        "MainMissionID": 8000170,
+        "StartSubMissionList": [
+          800017001,
+          800017002,
+          800017004
+        ]
+      }
+    },
+    "Config/Level/Mission/8000170/MissionInfo_8000170.partial.json": {
+      "sha256": "09e7d904a543487bec8fb7f40d23e699fcd2cf662aba5569d167f941b8b9cc49",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017001,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000170,
+            "MissionJsonPath": "Config/Level/Mission/8000170/Mission_800017001.json",
+            "ParamStr1": "Mission_800017001",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000170
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017002,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000170,
+            "MissionJsonPath": "Config/Level/Mission/8000170/Mission_800017002.json",
+            "ParamStr1": "Mission_800017002",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000170
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017003,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000170,
+            "MissionJsonPath": "Config/Level/Mission/8000170/Mission_800017003.json",
+            "ParamStr1": "Mission_800017003",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017002
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017004,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000170,
+            "MissionJsonPath": "Config/Level/Mission/8000170/Mission_800017004.json",
+            "ParamStr1": "Mission_800017004",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000170
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000170/Mission_800017004.json": {
+      "sha256": "f9eadc88d4ee8a1b7ef8870ad653fe5006457e8380062fdf957597a65200a289",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000170"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017004"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    "Config/Level/Mission/8000171/MissionInfo_8000171.json": {
+      "sha256": "a5491deea00e8a75d3525ed72ee475d4a58a587168dc86d86db4680243f69d87",
+      "source": {
+        "FinishSubMissionList": [
+          800017104
+        ],
+        "MainMissionID": 8000171,
+        "StartSubMissionList": [
+          800017101,
+          800017103,
+          800017104
+        ]
+      }
+    },
+    "Config/Level/Mission/8000171/MissionInfo_8000171.partial.json": {
+      "sha256": "1d3be3bf041e32e1f466d04467805a502013e71772d196478e51328c1bd2561d",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017101,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000171,
+            "MissionJsonPath": "Config/Level/Mission/8000171/Mission_800017101.json",
+            "ParamStr1": "Mission_800017101",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000171
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017102,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000171,
+            "MissionJsonPath": "Config/Level/Mission/8000171/Mission_800017102.json",
+            "ParamStr1": "Mission_800017102",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017103
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017103,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000171,
+            "MissionJsonPath": "Config/Level/Mission/8000171/Mission_800017103.json",
+            "ParamStr1": "Mission_800017103",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000171
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017104,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000171,
+            "MissionJsonPath": "Config/Level/Mission/8000171/Mission_800017104.json",
+            "ParamStr1": "Mission_800017104",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000171
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000171/Mission_800017104.json": {
+      "sha256": "9d1fac74328a07742c7d56524dce00a76791e1ea9c2b95c4e3d4ea49ef2ed697",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000171"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017104"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    "Config/Level/Mission/8000172/MissionInfo_8000172.json": {
+      "sha256": "3b8971b00a0786efa43515d47ad1969f70eb5e8b95281dbf788bb94ce1a82c07",
+      "source": {
+        "FinishSubMissionList": [
+          800017204
+        ],
+        "MainMissionID": 8000172,
+        "StartSubMissionList": [
+          800017201,
+          800017203,
+          800017204
+        ]
+      }
+    },
+    "Config/Level/Mission/8000172/MissionInfo_8000172.partial.json": {
+      "sha256": "81ae7255a1fb7f373e4799f1ca9303727c4c661ac1f41037fb451c811cbe90d8",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017201,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000172,
+            "MissionJsonPath": "Config/Level/Mission/8000172/Mission_800017201.json",
+            "ParamStr1": "Mission_800017201",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000172
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017202,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000172,
+            "MissionJsonPath": "Config/Level/Mission/8000172/Mission_800017202.json",
+            "ParamStr1": "Mission_800017202",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017203
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017203,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000172,
+            "MissionJsonPath": "Config/Level/Mission/8000172/Mission_800017203.json",
+            "ParamStr1": "Mission_800017203",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000172
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017204,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000172,
+            "MissionJsonPath": "Config/Level/Mission/8000172/Mission_800017204.json",
+            "ParamStr1": "Mission_800017204",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000172
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000172/Mission_800017204.json": {
+      "sha256": "c4ce905b7120c2694accbfc4a7e3b9eb9965a3edf46f06b73373bc7be9592038",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000172"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017204"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    "Config/Level/Mission/8000173/MissionInfo_8000173.json": {
+      "sha256": "4422d095aa90407a74a637e7dc1a4b4b2d8ada80e3cb03a035df7ffae4fde6a5",
+      "source": {
+        "FinishSubMissionList": [
+          800017304
+        ],
+        "MainMissionID": 8000173,
+        "StartSubMissionList": [
+          800017301,
+          800017303,
+          800017304
+        ]
+      }
+    },
+    "Config/Level/Mission/8000173/MissionInfo_8000173.partial.json": {
+      "sha256": "6d722f9c2e79cdccf849e1a20cdf95ec817581de7d9e2d9ac4d0f2a5cffa150c",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017301,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000173,
+            "MissionJsonPath": "Config/Level/Mission/8000173/Mission_800017301.json",
+            "ParamStr1": "Mission_800017301",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000173
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017302,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000173,
+            "MissionJsonPath": "Config/Level/Mission/8000173/Mission_800017302.json",
+            "ParamStr1": "Mission_800017302",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017303
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017303,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000173,
+            "MissionJsonPath": "Config/Level/Mission/8000173/Mission_800017303.json",
+            "ParamStr1": "Mission_800017303",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000173
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017304,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000173,
+            "MissionJsonPath": "Config/Level/Mission/8000173/Mission_800017304.json",
+            "ParamStr1": "Mission_800017304",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000173
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000173/Mission_800017304.json": {
+      "sha256": "5ed4f8e631617077cb6cd6f949c07d811cf467af78043efafa95ca24e4f7f7de",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000173"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017304"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    "Config/Level/Mission/8000174/MissionInfo_8000174.json": {
+      "sha256": "4074b69e6c4e92e05c0faa2b701b036b9309a79bacdb4b5c2d39af773214350e",
+      "source": {
+        "FinishSubMissionList": [
+          800017404
+        ],
+        "MainMissionID": 8000174,
+        "StartSubMissionList": [
+          800017401,
+          800017403,
+          800017404
+        ]
+      }
+    },
+    "Config/Level/Mission/8000174/MissionInfo_8000174.partial.json": {
+      "sha256": "619a95929ff4ef85bd04fe60379ecc0a1c8b79d03196efd5d9edcbaf2f7218da",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017401,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000174,
+            "MissionJsonPath": "Config/Level/Mission/8000174/Mission_800017401.json",
+            "ParamStr1": "Mission_800017401",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000174
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017402,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000174,
+            "MissionJsonPath": "Config/Level/Mission/8000174/Mission_800017402.json",
+            "ParamStr1": "Mission_800017402",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017403
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017403,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000174,
+            "MissionJsonPath": "Config/Level/Mission/8000174/Mission_800017403.json",
+            "ParamStr1": "Mission_800017403",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000174
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017404,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000174,
+            "MissionJsonPath": "Config/Level/Mission/8000174/Mission_800017404.json",
+            "ParamStr1": "Mission_800017404",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000174
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000174/Mission_800017404.json": {
+      "sha256": "b3d7fb448b1c53683a7e6343f9334b456440ac76eeb61c369e1789206867950c",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000174"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017404"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    "Config/Level/Mission/8000175/MissionInfo_8000175.json": {
+      "sha256": "f4bb57e4874579274a046f9b574d8a57d0503e0df6b974c4e160f90c043f9740",
+      "source": {
+        "FinishSubMissionList": [
+          800017504
+        ],
+        "MainMissionID": 8000175,
+        "StartSubMissionList": [
+          800017501,
+          800017503,
+          800017504
+        ]
+      }
+    },
+    "Config/Level/Mission/8000175/MissionInfo_8000175.partial.json": {
+      "sha256": "8c14ae5f10cefaaf924360e60bd657b327839bd46b0e3ec7ac953a3ba90a5c7c",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017501,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000175,
+            "MissionJsonPath": "Config/Level/Mission/8000175/Mission_800017501.json",
+            "ParamStr1": "Mission_800017501",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000175
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017502,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000175,
+            "MissionJsonPath": "Config/Level/Mission/8000175/Mission_800017502.json",
+            "ParamStr1": "Mission_800017502",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017503
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017503,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000175,
+            "MissionJsonPath": "Config/Level/Mission/8000175/Mission_800017503.json",
+            "ParamStr1": "Mission_800017503",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000175
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017504,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000175,
+            "MissionJsonPath": "Config/Level/Mission/8000175/Mission_800017504.json",
+            "ParamStr1": "Mission_800017504",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000175
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000175/Mission_800017504.json": {
+      "sha256": "46174564d6585c120fed4611ddbcad898974c7d62d0d3ce71b41d61cc227ec49",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000175"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017504"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    },
+    "Config/Level/Mission/8000177/MissionInfo_8000177.json": {
+      "sha256": "1b84e59378a74af4f09093d1cc0433b207bfff072eff669093fa0faf3847fcfc",
+      "source": {
+        "FinishSubMissionList": [
+          800017703
+        ],
+        "MainMissionID": 8000177,
+        "StartSubMissionList": [
+          800017701,
+          800017704,
+          800017705
+        ]
+      }
+    },
+    "Config/Level/Mission/8000177/MissionInfo_8000177.partial.json": {
+      "sha256": "3cc44ed7bacf02d872adbe34428f881e78d81aa995f284739f82d83c5db78e47",
+      "source": {
+        "SubMissionList": [
+          {
+            "FinishType": "Talk",
+            "ID": 800017701,
+            "IsShowStartHint": "New",
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000177,
+            "MissionJsonPath": "Config/Level/Mission/8000177/Mission_800017701.json",
+            "ParamStr1": "Mission_800017701",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000177
+            ],
+            "TakeType": "Auto",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017702,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000177,
+            "MissionJsonPath": "Config/Level/Mission/8000177/Mission_800017702.json",
+            "ParamStr1": "Mission_800017702",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017704
+            ],
+            "TakeType": "AnySequence",
+            "WayPointEntityID": 400001,
+            "WayPointFloorID": 10001001,
+            "WayPointGroupID": 10,
+            "WayPointType": "NPC"
+          },
+          {
+            "FinishType": "MessagePerformSectionFinish",
+            "ID": 800017703,
+            "IsShow": false,
+            "IsShowFinishEffect": 1,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000177,
+            "MissionJsonPath": "Config/Level/Mission/8000177/Mission_800017703.json",
+            "ParamInt1": 1113500,
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              800017705
+            ],
+            "TakeType": "AnySequence"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017704,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000177,
+            "MissionJsonPath": "Config/Level/Mission/8000177/Mission_800017704.json",
+            "ParamStr1": "Mission_800017704",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000177
+            ],
+            "TakeType": "Auto"
+          },
+          {
+            "FinishType": "Talk",
+            "ID": 800017705,
+            "IsShow": false,
+            "LevelFloorID": 10001001,
+            "LevelPlaneID": 10001,
+            "MainMissionID": 8000177,
+            "MissionJsonPath": "Config/Level/Mission/8000177/Mission_800017705.json",
+            "ParamStr1": "Mission_800017705",
+            "ParamType": "Equal",
+            "Progress": 1,
+            "TakeParamIntList": [
+              8000177
+            ],
+            "TakeType": "Auto"
+          }
+        ]
+      }
+    },
+    "Config/Level/Mission/8000177/Mission_800017705.json": {
+      "sha256": "69c18054d7363ecf6c7b62d6de68036a183e9afc82c10d598a0494c0bcb1195e",
+      "source": {
+        "OnInitSequece": [],
+        "OnStartSequece": [
+          {
+            "TaskList": [
+              {
+                "$type": "RPG.GameCore.WaitCustomString",
+                "CustomString": {
+                  "Value": "MainFinish_8000177"
+                }
+              },
+              {
+                "$type": "RPG.GameCore.FinishPerformanceMission",
+                "Key": "Mission_800017705"
+              }
+            ]
+          }
+        ],
+        "Type": "Mission"
+      }
+    }
+  },
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b"
+}

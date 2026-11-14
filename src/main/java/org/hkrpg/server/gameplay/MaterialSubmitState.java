@@ -15,12 +15,14 @@ public final class MaterialSubmitState {
     private Map<Integer,Integer> costs;
     private String phase;
     private long reservedAt;
+    private int researchChoice;
     private Receipt(){}
     Receipt(MaterialSubmitDefinitions.Submitter row,long at) {
       id=row.id();module=row.module();costs=new TreeMap<>(row.costs());phase="RESERVED";reservedAt=at;
     }
-    Receipt copy(){var next=new Receipt();next.id=id;next.module=module;next.costs=costs==null?null:new TreeMap<>(costs);next.phase=phase;next.reservedAt=reservedAt;return next;}
+    Receipt copy(){var next=new Receipt();next.id=id;next.module=module;next.costs=costs==null?null:new TreeMap<>(costs);next.phase=phase;next.reservedAt=reservedAt;next.researchChoice=researchChoice;return next;}
     public boolean submitted(){return "SUBMITTED".equals(phase);}
+    int researchChoice(){return researchChoice;}
     void complete(){phase="SUBMITTED";}
     boolean valid(MaterialSubmitDefinitions.Submitter row) {
       return row!=null && id==row.id() && module==row.module() && costs!=null && costs.equals(row.costs())
@@ -29,11 +31,16 @@ public final class MaterialSubmitState {
   }
   public Map<Integer,Receipt> receipts(){return receipts==null?null:Collections.unmodifiableMap(receipts);}
   public boolean valid(MaterialSubmitDefinitions definitions) {
+    return valid(definitions,true);
+  }
+  boolean valid(MaterialSubmitDefinitions definitions,boolean requireContiguous) {
     if(version!=1 || fingerprint==null || receipts==null || receipts.size()>7
         || !(receipts.isEmpty()&&fingerprint.isEmpty() || fingerprint.equals(definitions.fingerprint()))) return false;
     for(var entry:receipts.entrySet()) {
       if(entry.getKey()==null || entry.getValue()==null || !entry.getValue().valid(definitions.rows().get(entry.getKey()))) return false;
-      if(entry.getKey()>definitions.firstId()) {var previous=receipts.get(entry.getKey()-1);if(previous==null || !previous.submitted())return false;}
+      int choice=entry.getValue().researchChoice();
+      if(definitions.activityId()==30005 && entry.getKey()==7 ? choice<1 || choice>3 : choice!=0) return false;
+      if(requireContiguous && entry.getKey()>definitions.firstId()) {var previous=receipts.get(entry.getKey()-1);if(previous==null || !previous.submitted())return false;}
     }
     return true;
   }
@@ -43,6 +50,9 @@ public final class MaterialSubmitState {
   }
   void reserve(MaterialSubmitDefinitions definitions,MaterialSubmitDefinitions.Submitter row,long at) {
     fingerprint=definitions.fingerprint();receipts.put(row.id(),new Receipt(row,at));
+  }
+  void reserve(MaterialSubmitDefinitions definitions,MaterialSubmitDefinitions.Submitter row,long at,int choice) {
+    reserve(definitions,row,at);receipts.get(row.id()).researchChoice=choice;
   }
   void complete(int id){receipts.get(id).complete();}
 }

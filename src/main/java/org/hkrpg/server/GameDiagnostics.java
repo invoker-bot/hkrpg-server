@@ -117,6 +117,12 @@ public final class GameDiagnostics {
             +" reservation=pending"+context(player.getSession(),player.getScene()));
   }
 
+  public static void researchSubmitRejected(Player player,int sub,String reason) {
+    record(Topic.PROGRESS,Level.WARN,"research-submit:"+sub+":"+reason,
+        ()->"Research material submission rejected: sub="+sub+" reason="+reason
+            +context(player.getSession(),player.getScene()));
+  }
+
   public static void storyActionInterrupted(Player player,int sub,int index,String stage,Throwable failure) {
     record(Topic.PROGRESS,Level.WARN,"story-action:"+sub+":"+index+":"+stage,
         ()->"Story action interrupted: sub="+sub+" index="+index+" stage="+stage
