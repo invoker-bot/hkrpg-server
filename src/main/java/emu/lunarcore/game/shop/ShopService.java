@@ -31,6 +31,7 @@ public class ShopService extends BaseGameService {
 
   public record Purchase(Retcode code, List<GameItem> items, int bought) {}
   private static Purchase fail(Retcode code) { return new Purchase(code, List.of(), 0); }
+  private static final class InvalidAutomaticGift extends IllegalArgumentException {}
 
   public List<GameItem> buyGoods(Player p, int shop, int goods, int count) {
     var result = buy(p, shop, goods, count, 0, List.of(), Instant.now());
@@ -78,6 +79,10 @@ public class ShopService extends BaseGameService {
             && !p.getUnlocks().getHeadIcons().contains(skin.getPlayerCardID()))
           rewards.putIfAbsent(skin.getPlayerCardID(), 1);
       }
+    } catch (InvalidAutomaticGift invalid) {
+      org.hkrpg.server.GameDiagnostics.outcome(p.getSession(), "ShopAutoGift", goodsId,
+          Retcode.REQ_PARA_INVALID, "invalid-auto-gift-plan", "shop=" + shopId + " item=" + itemId);
+      return fail(Retcode.REQ_PARA_INVALID);
     } catch (ArithmeticException | IllegalArgumentException invalid) {
       return fail(Retcode.REQ_PARA_INVALID);
     }
@@ -126,6 +131,28 @@ public class ShopService extends BaseGameService {
     var item = GameData.getItemExcelMap().get(itemId);
     if (item == null) throw new IllegalArgumentException("Missing shop item");
     var result = new TreeMap<Integer, Integer>();
+    int useData = item.getUseDataID() > 0 ? item.getUseDataID() : itemId;
+    var use = GameData.getItemUseExcelMap().get(useData);
+    if (item.getItemSubType() == ItemSubType.Gift
+        && item.getUseMethod() == ItemUseMethod.FixedRewardGift
+        && use != null && use.isIsAutoUse()) {
+      if (!choices.isEmpty()) throw new IllegalArgumentException("Unexpected optional reward");
+      var expanded = new ItemParamMap();
+      if (!org.hkrpg.server.gameplay.ConsumableUse.fixedRewards(use, amount, expanded))
+        throw new InvalidAutomaticGift();
+      for (var entry : expanded) {
+        var rewardItem = GameData.getItemExcelMap().get(entry.getIntKey());
+        int nestedData = rewardItem == null ? 0
+            : rewardItem.getUseDataID() > 0 ? rewardItem.getUseDataID() : rewardItem.getId();
+        var nested = GameData.getItemUseExcelMap().get(nestedData);
+        if (rewardItem != null && rewardItem.getItemSubType() == ItemSubType.Gift
+            && rewardItem.getUseMethod() == ItemUseMethod.FixedRewardGift
+            && nested != null && nested.isIsAutoUse())
+          throw new InvalidAutomaticGift();
+        result.put(entry.getIntKey(), entry.getIntValue());
+      }
+      return result;
+    }
     if (item.getItemSubType() != ItemSubType.ForceOpitonalGift) {
       if (!choices.isEmpty()) throw new IllegalArgumentException("Unexpected optional reward");
       result.put(itemId, amount);

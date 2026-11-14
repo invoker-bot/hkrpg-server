@@ -43,6 +43,10 @@ final class ShopPurchase46 {
           session.getPlayer().getUid(), failed);
       code = Retcode.SYSTEM_BUSY;
     }
+    if (code != Retcode.SUCC)
+      org.hkrpg.server.GameDiagnostics.outcome(session, "BuyGoodsCsReq",
+          request == null ? 0 : request.getGoodsId(), code, "shop-purchase-rejected",
+          request == null ? "" : "shop=" + request.getShopId());
     reply(session, request, received, code, bought);
     return true;
   }

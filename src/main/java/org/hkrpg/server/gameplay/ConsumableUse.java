@@ -169,8 +169,9 @@ public final class ConsumableUse {
     return new Food(lineup, List.copyOf(targets), mp, buff);
   }
 
-  private boolean fixedRewards(ItemUseExcel c, int count, ItemParamMap result) {
-    if (c.getUseParam() == null || c.getUseParam().isEmpty() || c.getUseParam().size() > 20)
+  public static boolean fixedRewards(ItemUseExcel c, int count, ItemParamMap result) {
+    if (c == null || count <= 0 || result == null || c.getUseParam() == null
+        || c.getUseParam().isEmpty() || c.getUseParam().size() > 20)
       return false;
     try {
       for (int id : c.getUseParam()) {

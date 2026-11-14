@@ -87,7 +87,7 @@ def main():
    if uid is None:uid=initial['uid']
    assert uid==initial['uid']
    if cycle==0:
-    for id,n in [(3,20000),(1,20000),(263,10000),(284,1000),(252,300)]:grant(id,n)
+    for id,n in [(3,20000),(1,20000),(2,10000),(263,10000),(284,1000),(252,300)]:grant(id,n)
     for id in [1415,1505,1409]:grant(id,1)
     gm.wait_for(lambda:snapshot()['basic'].get('mcoin',0)==20000 and stock(snapshot(),252)==300,30)
     for gid,skin in [(107013,1141501),(107015,1150501),(107016,1140901)]:
@@ -115,6 +115,22 @@ def main():
     for id in [107002,107003,107004,107006,107011]:
      purchase(goods[id]);skin_ids.append(goods[id]['ItemID']);purchase(goods[id],success=False)
     for id in [108001,108002,108005,109001,109002,109003,109005]:purchase(goods[id])
+    # 隔离账号直接发送原生购买请求；任务上架条件不是本次网络夹具的验收对象。
+    book_reply,book_state=purchase(goods[301003])
+    chapters=set(range(190901,190908))
+    assert {row['item_id'] for row in book_reply['return_item_list']['item_list']}==chapters,book_reply
+    assert stock(book_state,300200)==0 and all(stock(book_state,i)==1 for i in chapters)
+    purchase(goods[301003],success=False)
+    # 模拟旧服务已保存的礼包，验证实际持有时可使用且不再支付；重复使用失败。
+    grant(300200,1)
+    before_use=gm.wait_for(lambda:(lambda s:s if stock(s,300200)==1 else None)(snapshot()),30)
+    used,book_state=send('UseItemCsReq',wire([(9,1),(12,300200)]))
+    assert {row['item_id'] for row in used['return_data']['item_list']}==chapters,used
+    assert used['use_item_count']==1 and used['use_item_id']==300200,used
+    assert book_state['basic']==before_use['basic'] and stock(book_state,300200)==0
+    assert all(stock(book_state,i)==2 for i in chapters)
+    _,after_retry=send('UseItemCsReq',wire([(9,1),(12,300200)]),success=False)
+    assert after_retry['basic']==book_state['basic'] and after_retry['bag']==book_state['bag']
     purchase(goods[900041],choices=[1202001],success=False)
     purchase(goods[900041],choices=[1202001,1202011,1202012,1202013])
     purchase(goods[999001],count=2);purchase(goods[999001],count=3)
@@ -122,6 +138,7 @@ def main():
    else:
     assert initial['basic']==saved['basic'],'Wallet changed after restart'
     assert initial['bag']==saved['bag'],'Inventory changed after restart'
+    assert stock(initial,300200)==0 and all(stock(initial,i)==2 for i in range(190901,190908))
     assert initial['avatars']==saved['avatars'],'Skin/avatar data changed after restart'
     purchase(goods[107002],success=False)
    board,_=send('GetPlayerBoardDataCsReq');assert board['current_personal_card_id']==253004

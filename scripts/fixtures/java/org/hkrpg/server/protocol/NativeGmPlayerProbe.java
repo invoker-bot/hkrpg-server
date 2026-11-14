@@ -184,7 +184,7 @@ public final class NativeGmPlayerProbe {
             String command = step.get("command").getAsString();
             if (!Set.of("ExpUpEquipmentCsReq", "ExpUpRelicCsReq", "RankUpEquipmentCsReq",
                 "PromoteAvatarCsReq", "PromoteEquipmentCsReq", "UnlockSkillTreeCsReq", "LockEquipmentCsReq", "LockRelicCsReq",
-                "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq",
+                "RankUpAvatarCsReq", "TakePromotionRewardCsReq", "BuyGoodsCsReq", "UseItemCsReq",
                 "GetShopListCsReq", "GetPlayerBoardDataCsReq", "GetPhoneDataCsReq", "SetPersonalCardCsReq",
                 "GetPamSkinDataCsReq", "SelectPamSkinCsReq", "GetPetDataCsReq", "SummonPetCsReq", "RecallPetCsReq",
                 "GetBigDataRecommendCsReq", "DressAvatarCsReq", "TakeOffEquipmentCsReq", "SetAvatarPathCsReq",
