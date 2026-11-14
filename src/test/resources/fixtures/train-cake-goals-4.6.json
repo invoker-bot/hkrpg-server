@@ -1,0 +1,195 @@
+{
+  "sources": {
+    "Config/Level/Mission/4020800/MissionInfo_4020800.partial.json": "1323a408848f43cce3ad06a7bf3111ecc61d115a241de3a5bac7bb84e3b729b2",
+    "Config/Level/Mission/4020800/MissionInfo_4020800.json": "a331ba268da3d7b08a77e1a533bf5cc1664eb299dbb9ac12fa2decb507c4fe12",
+    "ExcelOutput/TextJoinConfig.json": "58f40db72192ec00655100ee7cb81641235c8e931aaa7efa8ff4a29d20276633"
+  },
+  "main": {
+    "MainMissionID": 4020800,
+    "StartSubMissionList": [
+      402080001
+    ],
+    "FinishSubMissionList": [
+      402080010
+    ],
+    "MissionCustomValueList": [],
+    "MissionCustomValueGroupConfigPack": {
+      "ConfigPackList": []
+    }
+  },
+  "missions": [
+    {
+      "ID": 402080005,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080007
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_402080005",
+      "FinishActionList": [],
+      "Progress": 1,
+      "GroupIDList": [
+        237
+      ],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 232,
+      "WayPointEntityID": 300005
+    },
+    {
+      "ID": 402080006,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080008
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_402080006",
+      "Progress": 1,
+      "GroupIDList": [
+        238
+      ],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 238,
+      "WayPointEntityID": 300001
+    },
+    {
+      "ID": 402080008,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080005
+      ],
+      "FinishType": "CakeCatchOpenBox",
+      "ParamType": "NoPara",
+      "Progress": 1,
+      "GroupIDList": [],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 240,
+      "WayPointEntityID": 300001
+    },
+    {
+      "ID": 402080009,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080006
+      ],
+      "FinishType": "CakeCatchSearchCake",
+      "ParamType": "NoPara",
+      "Progress": 1,
+      "IsBackTrack": true,
+      "GroupIDList": [],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 255,
+      "WayPointEntityID": 300001,
+      "WayPointShowRangeMin": 25,
+      "MapWaypointRange": 25
+    },
+    {
+      "ID": 402080010,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080011
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_402080010",
+      "Progress": 1,
+      "GroupIDList": [],
+      "IsShowFinishEffect": 1,
+      "WayPointType": "NPC",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 232,
+      "WayPointEntityID": 400001
+    },
+    {
+      "ID": 402080011,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080012
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_402080011",
+      "Progress": 1,
+      "GroupIDList": [
+        256
+      ],
+      "WayPointType": "NPC",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 232,
+      "WayPointEntityID": 400001
+    },
+    {
+      "ID": 402080012,
+      "MainMissionID": 4020800,
+      "LevelPlaneID": 10000,
+      "LevelFloorID": 10000003,
+      "TakeType": "AnySequence",
+      "TakeParamIntList": [
+        402080009
+      ],
+      "FinishType": "Talk",
+      "ParamType": "Equal",
+      "ParamStr1": "Mission_402080012",
+      "Progress": 1,
+      "GroupIDList": [
+        261
+      ],
+      "WayPointType": "Prop",
+      "WayPointFloorID": 10000003,
+      "WayPointGroupID": 255,
+      "WayPointEntityID": 300001,
+      "WayPointShowRangeMin": 25,
+      "MapWaypointRange": 25
+    }
+  ],
+  "textJoin": [
+    {
+      "TextJoinID": 18,
+      "DefaultItem": 180,
+      "TextJoinItemList": [
+        180,
+        181,
+        182
+      ]
+    },
+    {
+      "TextJoinID": 256,
+      "DefaultItem": 2560,
+      "TextJoinItemList": [
+        2560,
+        2561,
+        2562,
+        2563,
+        2564,
+        2565,
+        2566,
+        2567,
+        2568,
+        2569
+      ]
+    }
+  ]
+}

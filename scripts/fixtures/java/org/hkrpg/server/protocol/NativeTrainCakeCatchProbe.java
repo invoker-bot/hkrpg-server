@@ -155,6 +155,31 @@ public final class NativeTrainCakeCatchProbe {
         "Duplicate capture or wrong cat inventory");
     return rsp;
   }
+  private int textSelection(int id) throws Exception {
+    var req = builder("TextJoinQueryCsReq");
+    req.addRepeatedField(req.getDescriptorForType().findFieldByName("NKNFFPBDPJP"), id);
+    var rows = (List<?>) field(call("TextJoinQueryCsReq", req), "HPEDOFFJKKP");
+    require(rows.size() == 1, "Missing text selection");
+    var row = (DynamicMessage) rows.getFirst();
+    require(number(row, "PAIPJMKCCEH") == id, "Text selection key changed");
+    return number(row, "HPCIKHIBFHD");
+  }
+  private int saveTextSelection(int id, int item) throws Exception {
+    var row = builder("JCDNAGMDELF");
+    set(row, "PAIPJMKCCEH", id); set(row, "HPCIKHIBFHD", item);
+    var req = builder("TextJoinBatchSaveCsReq");
+    req.addRepeatedField(req.getDescriptorForType().findFieldByName("HPEDOFFJKKP"), row.build());
+    var rows = (List<?>) field(call("TextJoinBatchSaveCsReq", req), "HPEDOFFJKKP");
+    require(rows.size() == 1, "Missing saved text selection");
+    var saved = (DynamicMessage) rows.getFirst();
+    require(number(saved, "PAIPJMKCCEH") == id, "Saved text key changed");
+    return number(saved, "HPCIKHIBFHD");
+  }
+  private void checkWeeklyText(int caught) throws Exception {
+    int expected = 2569 - caught;
+    require(textSelection(256) == expected, "Weekly text did not reflect actual captures");
+    require(saveTextSelection(256, 2560) == expected, "Stale client text overwrote weekly count");
+  }
   private Map<String, Object> execute(JsonObject control) throws Exception {
     var token=builder("PlayerGetTokenCsReq");
     set(token,"account_uid",control.get("accountUid").getAsString());
@@ -171,7 +196,10 @@ public final class NativeTrainCakeCatchProbe {
       require(((List<?>)field(empty,"BJPHDKEBOBK")).isEmpty(),"Locked profile invented a batch");
       require(((List<?>)field(empty,"NIELDCLPOLA")).isEmpty(),"Locked profile granted captures");
       require((Long)field(empty,"CMHKFNFKGOI")==0L,"Locked profile changed refresh time");
+      checkWeeklyText(0);
+      require(saveTextSelection(18, 181) == 181, "Ordinary selection did not save");
     } else {
+      require(textSelection(18) == 181, "Ordinary selection was not restored");
       if(mode.equals("open")) {
         var first=call("TrainCakeCatchOpenBoxCsReq");checkBox(first);
         require(first.equals(call("TrainCakeCatchOpenBoxCsReq")),"Repeated open rerolled batch");
@@ -184,6 +212,7 @@ public final class NativeTrainCakeCatchProbe {
       int cat=mode.equals("open")?10:mode.equals("verify")?21:26;
       var first=search(cat);require(first.equals(search(cat)),"Retry changed capture receipt");
       captured.add(cat);
+      checkWeeklyText(captured.size());
       var invalid=builder("TrainCakeCatchSearchCsReq");set(invalid,"PCPDHEIEJFO",4);
       callExpected("TrainCakeCatchSearchCsReq",invalid,5);
       checkProfile(socialProfile(),uid,captured);
@@ -193,6 +222,7 @@ public final class NativeTrainCakeCatchProbe {
     result.put("capturedCats",captured);result.put("checkedScenes",checkedScenes);
     result.put("originalLevelAndIntroductionGatesRetained",true);
     result.put("emptyNativeParkContainerVerified",true);
+    result.put("weeklyAndOrdinaryTextSelectionsVerified",true);
     result.put("clientGameplayVerified",false);return result;
   }
   private void logout() throws InterruptedException {

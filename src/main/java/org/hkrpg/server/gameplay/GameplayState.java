@@ -16,6 +16,9 @@ public class GameplayState {
   private TrainCakeCatchState trainCakeCatch = new TrainCakeCatchState();
   public TrainCakeCatchState getTrainCakeCatch() { return trainCakeCatch; }
   void trainCakeCatch(TrainCakeCatchState value) { trainCakeCatch = Objects.requireNonNull(value); }
+  // Client text selections are display state only; they are never mission or reward evidence.
+  private Map<Integer, Integer> textJoinSelections = new TreeMap<>();
+  public Map<Integer, Integer> getTextJoinSelections() { return textJoinSelections; }
   private ActivityReplayState activityReplays = new ActivityReplayState();
   public ActivityReplayState getActivityReplays() {
     if(activityReplays==null)activityReplays=new ActivityReplayState();

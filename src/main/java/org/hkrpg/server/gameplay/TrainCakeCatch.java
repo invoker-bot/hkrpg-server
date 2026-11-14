@@ -58,6 +58,7 @@ public final class TrainCakeCatch {
       var row = raw.getAsJsonObject(); constants.put(row.get("ConstValueName").getAsString(), row.getAsJsonObject("Value"));
     }
     if (constants.get("CatCatch_OpenBox").get("IntValue").getAsInt() != 3
+        || constants.get("CatCatch_Week_Max").get("IntValue").getAsInt() != 9
         || constants.get("EveryCat_MaxQuantity").get("IntValue").getAsInt() != 13
         || constants.get("SocialPlay_Floor_ID").get("IntValue").getAsInt() != 10000003)
       throw new IllegalArgumentException("Box constants changed");
@@ -119,6 +120,19 @@ public final class TrainCakeCatch {
     return state;
   }
 
+  public static int weeklyRemaining(Player p, long now) {
+    try {
+      var source = catalog();
+      var state = p.getGameplay().getTrainCakeCatch();
+      if (state == null || !state.valid()
+          || state.getRefreshAt() != 0 && !state.getSource().equals(source.source()))
+        throw new IllegalStateException("Invalid saved cat box");
+      return 9 - (state.getRefreshAt() > now ? state.getCaught().size() : 0);
+    } catch (Exception invalid) {
+      throw new IllegalStateException("Cat box week source unavailable", invalid);
+    }
+  }
+
   public static Result open(Player p, long now) {
     var state = p.getGameplay().getTrainCakeCatch();
     var code = admission(p);
@@ -166,6 +180,7 @@ public final class TrainCakeCatch {
     try { p.save(); return new Result(Retcode.SUCC, next, cat); }
     catch (RuntimeException failed) {
       p.getGameplay().trainCakeCatch(previous);
+      org.hkrpg.server.GameDiagnostics.saveFailed(p, "train-cake", cat, 0, failed);
       return new Result(Retcode.SERVER_INTERNAL_ERROR, previous, cat);
     }
   }

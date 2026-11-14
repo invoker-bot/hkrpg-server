@@ -107,7 +107,7 @@ def run(jar, output, legacy_database=None):
     report = dict(passed=False, runtimeSHA256=sha(jar), runtimeDirectory=str(directory), snapshots=[],
         independentPlayerReads=[], boundaries=[], normalStops=0, databaseFiles=[],
         clientGameplayVerified=False, credentialsOmitted=True, officialGachaWeightsVerified=False,
-        syntheticGateFixture='Only the isolated player is prepared at level 21 with original prerequisite 402080005 finished')
+        syntheticGateFixture='Only the isolated player is prepared at level 21 with original 402080005 finished and 402080008 active')
     if legacy_seed is not None:
         report['legacyDatabaseSeed'] = legacy_seed
     accounts = []
@@ -158,6 +158,10 @@ def run(jar, output, legacy_database=None):
                         report['independentPlayerReads'].append(saved)
                         if saved['level'] != 21 or saved['introGatePhase'] != 'FINISHED':
                             raise RuntimeError('隔离门槛记录未保留')
+                        if saved['boxGoalPhase'] != ('DOING' if mode == 'locked' else 'FINISHED'):
+                            raise RuntimeError('开盒目标未按原生操作推进或提前完成')
+                        if mode != 'locked' and saved['nextDialoguePhase'] != 'DOING':
+                            raise RuntimeError('后续原始对话没有保持进行中')
                         expected = {str(cat): 1 for cat in snapshot['capturedCats']}
                         if ((saved.get('catBox') or {}).get('counts') or {}) != expected:
                             raise RuntimeError('真实 Player 文档的领取数与原生回包不同')

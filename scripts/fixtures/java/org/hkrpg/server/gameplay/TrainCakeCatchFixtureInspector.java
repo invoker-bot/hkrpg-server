@@ -37,7 +37,12 @@ public final class TrainCakeCatchFixtureInspector {
         // This is synthetic fixture setup, not evidence of playing the original introduction.
         var gate = new Document("questId", 402080005).append("progress", 1)
             .append("finishTime", System.currentTimeMillis() / 1000).append("phase", "FINISHED");
-        var update = new Document("level", 21).append("gameplay.subMissions.402080005", gate);
+        var main = new Document("questId", 4020800).append("progress", 0)
+            .append("finishTime", 0L).append("phase", "DOING");
+        var open = new Document("questId", 402080008).append("progress", 0)
+            .append("finishTime", 0L).append("phase", "DOING");
+        var update = new Document("level", 21).append("gameplay.subMissions.402080005", gate)
+            .append("gameplay.mainMissions.4020800", main).append("gameplay.subMissions.402080008", open);
         if (players.updateOne(selector, new Document("$set", update)).getMatchedCount() != 1)
           throw new IllegalStateException("Fixture player changed");
       }
@@ -45,8 +50,12 @@ public final class TrainCakeCatchFixtureInspector {
       var gameplay = player.get("gameplay", Document.class);
       var subs = gameplay.get("subMissions", Document.class);
       var gate = subs == null ? null : subs.get("402080005", Document.class);
+      var open = subs == null ? null : subs.get("402080008", Document.class);
+      var dialogue = subs == null ? null : subs.get("402080006", Document.class);
       var result = new Document("passed", true).append("mode", mode).append("level", player.get("level"))
           .append("introGatePhase", gate == null ? null : gate.get("phase"))
+          .append("boxGoalPhase", open == null ? null : open.get("phase"))
+          .append("nextDialoguePhase", dialogue == null ? null : dialogue.get("phase"))
           .append("catBox", gameplay.get("trainCakeCatch"))
           .append("syntheticGatePreparation", mode.equals("unlock"));
       System.out.println(result.toJson());

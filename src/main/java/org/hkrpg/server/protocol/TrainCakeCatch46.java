@@ -40,6 +40,13 @@ final class TrainCakeCatch46 {
           var result = command == 10157 ? TrainCakeCatch.open(player, TrainCakeCatch.now())
               : TrainCakeCatch.search(player, cat, TrainCakeCatch.now());
           code = result.retcode(); state = result.state();
+          if (code == Retcode.SUCC) try {
+            player.getMissionManager().onTrainCakeAction(command == 10157);
+          } catch (RuntimeException failed) {
+            code = Retcode.SERVER_INTERNAL_ERROR;
+            org.hkrpg.server.GameDiagnostics.outcome(session, request + "CsReq", 0, code,
+                "train-cat-goal-sync-failed", "");
+          }
         }
       }
       var response = builder(session, request + "ScRsp");

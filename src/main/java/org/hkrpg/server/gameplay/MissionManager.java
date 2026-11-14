@@ -1192,6 +1192,28 @@ public final class MissionManager {
     event(c -> type.equals(c.getFinishType()) && predicate.test(c), amount);
   }
 
+  /** Called only after a successful, persisted box action, under the player's lock. */
+  public void onTrainCakeAction(boolean open) {
+    synchronized (player) {
+      int id = open ? 402080008 : 402080009;
+      var state = sub(id);
+      var config = GameplayDefinitions.subs.get(id);
+      if (!MissionStateRecords.doing(state, id, 1) || !canFinishFromAction(id)) return;
+      boolean matches = open ? TrainCakeGoals.matches(player, config, true)
+          : TrainCakeGoals.searchSatisfied(player, config);
+      if (!matches) {
+        org.hkrpg.server.GameDiagnostics.outcome(player.getSession(), "TrainCakeGoal", id,
+            Retcode.MISSION_FINISH_WAY_NOT_MATCH, "source-or-prerequisite", "");
+        return;
+      }
+      // Both original targets have no actions or sub-reward. Roll back unsaved progress
+      // if this save fails; the already committed box action can safely be retried.
+      MissionCompletionWrites.complete(player, config, state);
+      refresh();
+      sync();
+    }
+  }
+
   public void onClockParkProgress() {
     event(
         c ->
@@ -1259,6 +1281,7 @@ public final class MissionManager {
       case "Talk" -> RockyTruthPerformance.followupSatisfied(player, c);
       case "TimeLineSetState" -> PropTimelines.satisfied(player,c);
       case "BoxingClubAccomplish" -> BoxingClubMissionGoals.satisfied(player, c);
+      case "CakeCatchSearchCake" -> TrainCakeGoals.searchSatisfied(player, c);
       case "GetTrialAvatar", "GetTrialAvatarList" ->
           TrialAvatarMissionConditions.satisfied(player, c);
       case "DelTrialAvatar" -> MissionTrialRemovals.satisfied(player, c);
