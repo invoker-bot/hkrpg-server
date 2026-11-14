@@ -1,4 +1,4 @@
-`PlayerRoomCatalog` 校验原始房间门槛、位置与标签，`PlayerRoomDisplay` 保存玩家实际选择，`PlayerRoomDisplay46` 处理完整快照；档案增量按当前持有身份回复。兼容投影、徽章和实机边界见[收藏展柜说明](player-room-display-4.6.md)。
+`PlayerRoomCatalog` 校验原始房间门槛、位置与标签，`BadgeCatalog` 只投影实际保存且期限有效的徽章物品；`PlayerRoomDisplay` 保存完整布置、自动填充开关和已处理的徽章期限。实际发放、旧存档及实机边界见[收藏展柜说明](player-room-display-4.6.md)。
 
 `NpcDialogueSourceAdapter` 读取客户端本地 NPC 对话的原始任务条件，`ClientNpcPublication46` 在场景快照中投影有效任务状态；拳馆排期、诊断及验证边界见[报名入口说明](boxing-club-entrance-4.6.md)。
 

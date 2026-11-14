@@ -229,7 +229,15 @@ public final class NativeLoginInitialProbe implements KcpListener {
           require(input.readTag() == INACTIVE_RETCODES.get(frame.cmdId()) << 3
               && input.readUInt32() == 0,
               "Inactive bootstrap response has invalid result or invented state: " + frame.cmdId());
-          if (frame.cmdId() == 8025 || frame.cmdId() == 8580 || frame.cmdId() == 6017) {
+          if (frame.cmdId() == 7173) {
+            var response = protocol.clientSchema().parse("GetBadgeInfoScRsp", frame.body());
+            require(response.getUnknownFields().asMap().isEmpty(), "Unknown initial badge response fields");
+            var badges = child(response, "AIANIJCIBGE");
+            require(badges.getUnknownFields().asMap().isEmpty()
+                && badges.getRepeatedFieldCount(badges.getDescriptorForType().findFieldByName("CPMCCCODGAB")) == 0,
+                "Fresh account must not receive invented badge ownership");
+            requireEmptyProgress(response);
+          } else if (frame.cmdId() == 8025 || frame.cmdId() == 8580 || frame.cmdId() == 6017) {
             var name = switch (frame.cmdId()) {
               case 8025 -> "TrainPartyGetDataScRsp";
               case 8580 -> "GridFightGetDataScRsp";

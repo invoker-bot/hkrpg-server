@@ -34,6 +34,14 @@ class ReplyCorrelation46Test {
   }
 
   @Test
+  void obfuscatedBadgeQueryRetainsItsNativeRequestId() throws Exception {
+    try (var scope = correlation.enter(bridge, 7172, requestId(72))) {
+      assertEquals(0, reply("BadgeInfoScNotify").header().length);
+      assertArrayEquals(requestId(72), reply("GetBadgeInfoScRsp").header());
+    }
+  }
+
+  @Test
   void notificationAndOtherResponseCannotConsumeThePurchaseContinuation() throws Exception {
     try (var scope =
         correlation.enter(bridge, bridge.clientCommand("BuyGoodsCsReq"), requestId(53))) {

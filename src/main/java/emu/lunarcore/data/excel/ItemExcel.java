@@ -16,8 +16,8 @@ import lombok.Setter;
 @ResourceType(name = {"ItemConfig.json", "ItemConfigAvatar.json", "ItemConfigAvatarLD.json", "ItemConfigAvatarPlayerIcon.json",
         "ItemConfigAvatarPlayerIcLD.json", "ItemConfigAvatarRank.json", "ItemConfigAvatarRankLD.json", "ItemConfigBook.json",
         "ItemConfigDisk.json", "ItemConfigEquipment.json", "ItemConfigRelic.json", "ItemPlayerCard.json",
-        "ItemConfigAvatarSkin.json", "ItemConfigTrainDynamic.json", "ItemConfigPlayerRoomDynamic.json"},
-        optionalNames = {"ItemConfigAvatarSkin.json", "ItemConfigTrainDynamic.json", "ItemConfigPlayerRoomDynamic.json"})
+        "ItemConfigAvatarSkin.json", "ItemConfigTrainDynamic.json", "ItemConfigPlayerRoomDynamic.json", "ItemConfigBadge.json"},
+        optionalNames = {"ItemConfigAvatarSkin.json", "ItemConfigTrainDynamic.json", "ItemConfigPlayerRoomDynamic.json", "ItemConfigBadge.json"})
 public class ItemExcel extends GameResource {
     // General item data
     private int ID;

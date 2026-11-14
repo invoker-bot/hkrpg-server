@@ -49,8 +49,15 @@ public final class PlayerRoomFixtureInspector {
       var gameplay = player.get("gameplay", Document.class);
       var cabinet = gameplay == null ? null : gameplay.get("playerRoomDisplay", Document.class);
       var item = db.getCollection("items").find(new Document("ownerUid", uid).append("itemId", 295603)).first();
+      var badgeItems = new java.util.TreeMap<String, Long>();
+      for (int id : new int[] {230900, 230901}) {
+        var badge = db.getCollection("items").find(new Document("ownerUid", uid).append("itemId", id)).first();
+        if (badge != null && badge.get("badgeExpireTime") instanceof Number expiry)
+          badgeItems.put(Integer.toString(id), expiry.longValue());
+      }
       var result = new Document("passed", true).append("mode", mode).append("level", player.get("level"))
           .append("cabinet", cabinet).append("fixtureItemCount", item == null ? 0 : item.getInteger("count"))
+          .append("badgeItems", badgeItems)
           .append("syntheticPreparation", mode.equals("prepare"));
       System.out.println(result.toJson());
     }

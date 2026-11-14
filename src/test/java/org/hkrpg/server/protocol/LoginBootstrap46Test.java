@@ -56,6 +56,10 @@ class LoginBootstrap46Test {
       VideoVersionKeys46Test.openingVideoKey(packet.body());
     } else if (request == 31) {
       assertEquals(72_043_514_036_987_937L, VideoBootstrap46Test.modulus(packet.body()));
+    } else if (request == 7172) {
+      assertEquals(90, input.readTag()); // Present empty badge snapshot, not an invented badge.
+      assertEquals(0, input.readByteArray().length);
+      assertEquals(0, input.readTag());
     } else if (request == 8034 || request == 8680 || request == 6029) {
       var type = switch (request) {
         case 8034 -> "TrainPartyGetDataScRsp";

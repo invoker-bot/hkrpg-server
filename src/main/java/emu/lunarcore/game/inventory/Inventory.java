@@ -235,17 +235,48 @@ public class Inventory extends BasePlayerManager {
             || (type == ItemMainType.Usable && (excel.getItemSubType() == ItemSubType.Food
                 || excel.getItemSubType() == ItemSubType.Gift
                 || excel.getItemSubType() == ItemSubType.PlayerOutfit
+                || excel.getItemSubType() == ItemSubType.Badge
                 || excel.getItemSubType() == ItemSubType.Formula
                     && excel.getUseMethod() == emu.lunarcore.game.enums.ItemUseMethod.Recipe));
     }
 
     private synchronized Delivery deliver(GameItem item) {
         if (item == null || item.getExcel() == null || item.getCount() <= 0) return new Delivery(null,0);
+        if (item.getExcel().getItemSubType() == ItemSubType.Badge) {
+            try {
+                if (item.getCount() != 1 || item.getExcel() != GameData.getItemExcelMap().get(item.getItemId())
+                    || !org.hkrpg.server.gameplay.BadgeCatalog.load().prepareGrant(item)) {
+                    org.hkrpg.server.GameDiagnostics.outcome(getPlayer().getSession(), "BadgeGrant", item.getItemId(),
+                        emu.lunarcore.server.packet.Retcode.PLAYER_DATA_ERROR, "badge-expiry-or-source", "");
+                    return new Delivery(null,0);
+                }
+            } catch (Exception unavailable) {
+                org.hkrpg.server.GameDiagnostics.outcome(getPlayer().getSession(), "BadgeGrant", item.getItemId(),
+                    emu.lunarcore.server.packet.Retcode.PLAYER_DATA_ERROR, "badge-source-unavailable", "");
+                return new Delivery(null,0);
+            }
+            var existing = getMaterialByItemId(item.getItemId());
+            if (existing != null) {
+                var previous = existing.getBadgeExpireTime();
+                if (existing.getOwnerUid() != getPlayer().getUid() || getPlayer().getUid() <= 0
+                    || existing.getExcel() != item.getExcel() || existing.getCount() != 1
+                    || existing.getInternalUid() <= 0 || getItemByUid(existing.getInternalUid()) != existing
+                    || previous != null && previous >= item.getBadgeExpireTime()) return new Delivery(null,0);
+                existing.setBadgeExpireTime(item.getBadgeExpireTime());
+                try { existing.save(); }
+                catch (RuntimeException failed) { existing.setBadgeExpireTime(previous); throw failed; }
+                org.hkrpg.server.protocol.Badge46.acquired(getPlayer());
+                return new Delivery(existing,1);
+            }
+        }
         boolean stack = stackItem(item);
         int before = stack && getMaterialByItemId(item.getItemId()) != null
             ? getMaterialByItemId(item.getItemId()).getCount() : 0;
         var stored = putItem(item);
-        return new Delivery(stored,stored == null ? 0 : stack ? Math.max(stored.getCount()-before,0) : item.getCount());
+        int amount = stored == null ? 0 : stack ? Math.max(stored.getCount()-before,0) : item.getCount();
+        if (amount > 0 && item.getExcel().getItemSubType() == ItemSubType.Badge)
+            org.hkrpg.server.protocol.Badge46.acquired(getPlayer());
+        return new Delivery(stored,amount);
     }
 
     /**
@@ -359,13 +390,14 @@ public class Inventory extends BasePlayerManager {
                 if (subType != ItemSubType.Food && subType != ItemSubType.Gift
                     && !emu.lunarcore.game.shop.ShopItems.collectible(item.getExcel())
                     && subType != ItemSubType.PlayerOutfit
+                    && subType != ItemSubType.Badge
                     && !org.hkrpg.server.gameplay.BookItems.storable(item.getExcel())
                     && !org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(item.getExcel())
                     && !(subType == ItemSubType.Formula
                         && item.getExcel().getUseMethod() == emu.lunarcore.game.enums.ItemUseMethod.Recipe)) {
                     return null;
                 }
-                if ((subType == ItemSubType.Gift || subType == ItemSubType.PlayerOutfit || subType == ItemSubType.Formula
+                if ((subType == ItemSubType.Gift || subType == ItemSubType.PlayerOutfit || subType == ItemSubType.Formula || subType == ItemSubType.Badge
                     || org.hkrpg.server.gameplay.BookItems.storable(item.getExcel())
                     || org.hkrpg.server.gameplay.KraterOfferings.storableChestFinder(item.getExcel()))
                     && (item.getExcel().getPileLimit() <= 0 || item.getCount() > item.getExcel().getPileLimit())) return null;

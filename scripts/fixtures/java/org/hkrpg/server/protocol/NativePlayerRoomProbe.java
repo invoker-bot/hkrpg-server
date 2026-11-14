@@ -161,7 +161,7 @@ public final class NativePlayerRoomProbe {
             "Missing accepted placement in response");
         checkWall(profile(), true, true, avatarId);
         var auto=builder("TrainPartySetBadgeAutoFillCsReq"); set(auto,"PELJACANAFH",true);
-        callExpected("TrainPartySetBadgeAutoFillCsReq",auto,9);
+        call("TrainPartySetBadgeAutoFillCsReq",auto);
       } else if (mode.equals("restart")) {
         call("TrainPartyBuildSelfDisplayAreaDiyCsReq", replace(0, avatarId));
         checkWall(profile(), true, false, avatarId);

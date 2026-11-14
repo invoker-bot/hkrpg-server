@@ -51,6 +51,7 @@ class PlayerRoomDisplay46Test {
 
   static class Session extends PlayerReturnInitial46Test.Session {
     final Actor actor = new Actor();
+    Session() { actor.setSession(this); }
     @Override public Player getPlayer() { return actor; }
   }
 
@@ -65,7 +66,8 @@ class PlayerRoomDisplay46Test {
       var path = resources.resolve(entry.getKey());
       Files.createDirectories(path.getParent());
       Files.writeString(path, gson.toJson(entry.getValue()));
-      if (entry.getKey().endsWith("ItemConfigPlayerRoomDynamic.json")) {
+      if (entry.getKey().endsWith("ItemConfigPlayerRoomDynamic.json")
+          || entry.getKey().endsWith("ItemConfigBadge.json")) {
         for (var raw : entry.getValue().getAsJsonArray()) {
           var row = gson.fromJson(raw, ItemExcel.class);
           previousItems.put(row.getId(), GameData.getItemExcelMap().get(row.getId()));
@@ -113,6 +115,14 @@ class PlayerRoomDisplay46Test {
     s.actor.getInventory().getTab(InventoryTabType.MATERIAL).onAddItem(item);
   }
 
+  void ownBadge(Session s, int id, long expiry) {
+    var item = new GameItem(GameData.getItemExcelMap().get(id), 1) { @Override public void save() {} };
+    item.setBadgeExpireTime(expiry);
+    item.setOwner(s.actor);
+    s.actor.getInventory().getItems().put(item.getInternalUid(), item);
+    s.actor.getInventory().getTab(InventoryTabType.MATERIAL).onAddItem(item);
+  }
+
   DynamicMessage replace(Session s, int[][] items) throws Exception {
     return replace(s, items, new int[0][0]);
   }
@@ -139,6 +149,41 @@ class PlayerRoomDisplay46Test {
     var packet = s.nativePackets.getLast();
     assertEquals(8047, packet.cmdId());
     return s.bridge.clientSchema().parse("TrainPartyBuildSelfDisplayAreaDiyScRsp", packet.body());
+  }
+
+  DynamicMessage badgeInfo(Session s) throws Exception {
+    s.nativePackets.clear();
+    assertTrue(VersionedPacketHandler.handle(s, 7172, new byte[0]));
+    var packet = s.nativePackets.getLast();
+    assertEquals(7173, packet.cmdId());
+    return s.bridge.clientSchema().parse("GetBadgeInfoScRsp", packet.body());
+  }
+
+  DynamicMessage replaceBadges(Session s, long[][] badges) throws Exception {
+    var display = Gameplay46.builder(s, "OIIPJFDNPAH");
+    for (var badge : badges) {
+      var row = Gameplay46.builder(s, "POFNNGOCEOK");
+      Gameplay46.set(row, "dice_slot_id", (int) badge[0]);
+      Gameplay46.set(row, "EIKLMFPMJJD", (int) badge[1]);
+      Gameplay46.set(row, "expire_time", badge[2]);
+      Gameplay46.add(display, "POLMJFIKNHN", row.build());
+    }
+    var req = Gameplay46.builder(s, "TrainPartyBuildSelfDisplayAreaDiyCsReq");
+    Gameplay46.set(req, "ACLKMFCDMED", display.build());
+    s.nativePackets.clear();
+    assertTrue(VersionedPacketHandler.handle(s, 8096, req.build().toByteArray()));
+    var rsp = s.nativePackets.getLast();
+    assertEquals(8047, rsp.cmdId());
+    return s.bridge.clientSchema().parse("TrainPartyBuildSelfDisplayAreaDiyScRsp", rsp.body());
+  }
+
+  DynamicMessage setBadgeAutoFillClosed(Session s, boolean closed) throws Exception {
+    var req = Gameplay46.builder(s, "TrainPartySetBadgeAutoFillCsReq");
+    Gameplay46.set(req, "PELJACANAFH", closed);
+    s.nativePackets.clear();
+    assertTrue(VersionedPacketHandler.handle(s, 8026, req.build().toByteArray()));
+    var packet = s.nativePackets.stream().filter(p -> p.cmdId() == 8080).findFirst().orElseThrow();
+    return s.bridge.clientSchema().parse("TrainPartySetBadgeAutoFillScRsp", packet.body());
   }
 
   @Test void displaySlotsAppearOnlyAfterTheOriginalLevelGateWithoutFinishingConstruction() throws Exception {
@@ -246,8 +291,215 @@ class PlayerRoomDisplay46Test {
     var packet = s.nativePackets.getLast();
     assertEquals(8080, packet.cmdId());
     var response = s.bridge.clientSchema().parse("TrainPartySetBadgeAutoFillScRsp", packet.body());
-    assertEquals(Retcode.FEATURE_SWITCH_CLOSED.getVal(), field(response, "retcode"));
+    assertEquals(0, field(response, "retcode"));
     assertEquals(saved, gson.toJson(s.actor.getGameplay()));
+  }
+
+  @Test void badgeQueryUsesActualOwnedItemsAndTheNativePermanentExpiry() throws Exception {
+    var s = session();
+    var empty = badgeInfo(s);
+    assertTrue(empty.hasField(empty.getDescriptorForType().findFieldByName("AIANIJCIBGE")));
+    assertTrue(list(child(empty, "AIANIJCIBGE"), "CPMCCCODGAB").isEmpty());
+    ownBadge(s, 230532, 0xffffffffL); ownBadge(s, 230533, 0xffffffffL);
+    var rows = list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB");
+    assertEquals(List.of(295532, 295533), rows.stream()
+        .map(row -> field((DynamicMessage) row, "EIKLMFPMJJD")).toList());
+    assertTrue(rows.stream().allMatch(row -> (Long)field((DynamicMessage)row, "expire_time") == 0xffffffffL));
+  }
+
+  @Test void ownedBadgesCanBePlacedButForgedSlotsIdsAndExpiryCannotReplaceThem() throws Exception {
+    var s = session(); ownBadge(s, 230532, 0xffffffffL); ownBadge(s, 230533, 0xffffffffL);
+    long permanent = 0xffffffffL;
+    assertEquals(0, field(replaceBadges(s, new long[][] {{1600106, 295532, permanent}}), "retcode"));
+    var rows = list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN");
+    assertEquals(1, rows.size());
+    assertEquals(295532, field((DynamicMessage) rows.getFirst(), "EIKLMFPMJJD"));
+    String saved = gson.toJson(s.actor.getGameplay());
+    for (long[][] invalid : List.of(new long[][] {{1600106, 230900, permanent}},
+        new long[][] {{1600101, 295532, permanent}}, new long[][] {{1600106, 295532, 0}},
+        new long[][] {{1600106, 295532, permanent}, {1600107, 295532, permanent}},
+        new long[][] {{1600106, 295532, permanent}, {1600106, 295533, permanent}})) {
+      assertNotEquals(0, field(replaceBadges(s, invalid), "retcode"));
+      assertEquals(saved, gson.toJson(s.actor.getGameplay()));
+    }
+    assertEquals(0, field(replaceBadges(s, new long[0][0]), "retcode"));
+    assertTrue(list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").isEmpty());
+  }
+
+  @Test void enablingAutoFillUsesOnlyOwnedBadgesAndPreservesExistingPositions() throws Exception {
+    var s = session(); ownBadge(s, 230532, 0xffffffffL); ownBadge(s, 230533, 0xffffffffL);
+    long permanent = 0xffffffffL;
+    assertEquals(0, field(replaceBadges(s, new long[][] {{1600110, 295532, permanent}}), "retcode"));
+    var enabled = setBadgeAutoFillClosed(s, false);
+    assertEquals(0, field(enabled, "retcode"));
+    assertEquals(false, field(enabled, "PELJACANAFH"));
+    var rows = list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN");
+    var slots = new TreeMap<Integer,Integer>();
+    for (var raw : rows) {
+      var row=(DynamicMessage)raw;
+      slots.put((Integer)field(row,"dice_slot_id"), (Integer)field(row,"EIKLMFPMJJD"));
+    }
+    assertEquals(Map.of(1600106,295533,1600110,295532), slots);
+    // A deliberate removal stays removed while the same owned badge is already known.
+    assertEquals(0, field(replaceBadges(s, new long[][] {{1600110,295532,permanent}}), "retcode"));
+    assertEquals(1, list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").size());
+    assertEquals(0, field(setBadgeAutoFillClosed(s, true), "retcode"));
+    assertEquals(1, list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").size());
+    assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
+    assertEquals(slots.size(), list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").size());
+  }
+
+  @Test void failedAutoFillSaveDoesNotAlterTheStoredArrangementOrPreference() throws Exception {
+    var s = session(); ownBadge(s, 230532, 0xffffffffL);
+    String before = gson.toJson(s.actor.getGameplay());
+    s.actor.failSave = true;
+    assertEquals(Retcode.SERVER_INTERNAL_ERROR.getVal(), field(setBadgeAutoFillClosed(s, false), "retcode"));
+    assertEquals(before, gson.toJson(s.actor.getGameplay()));
+  }
+
+  @Test void actuallyAwardedBadgeIsStoredAndAutoFilledAfterSuccessfulDelivery() throws Exception {
+    var s = session();
+    var definition = GameData.getItemExcelMap().get(230900);
+    assertEquals("Badge", String.valueOf(definition.getItemSubType()), "Original badge subtype must load");
+    assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
+    var item = new GameItem(definition, 1) { @Override public void save() {} };
+    s.nativePackets.clear();
+    assertTrue(s.actor.getInventory().addItem(item));
+    var notification = s.nativePackets.stream().filter(packet -> packet.cmdId() == 7180).findFirst().orElseThrow();
+    var update = s.bridge.clientSchema().parse("BadgeInfoScNotify", notification.body());
+    assertEquals(1, list(child(update, "AIANIJCIBGE"), "CPMCCCODGAB").size());
+    var badgeRows = list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB");
+    assertEquals(1, badgeRows.size());
+    assertEquals(230900, field((DynamicMessage) badgeRows.getFirst(), "EIKLMFPMJJD"));
+    var placed = list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN");
+    assertEquals(1, placed.size());
+    assertEquals(230900, field((DynamicMessage) placed.getFirst(), "EIKLMFPMJJD"));
+  }
+
+  @Test void originalBadgeRewardRowsTravelThroughTheRealInventoryAndPersistOnce() throws Exception {
+    var server = new de.bwaldvogel.mongo.MongoServer(new de.bwaldvogel.mongo.backend.memory.MemoryBackend());
+    var address = server.bind();
+    var info = new emu.lunarcore.Config.DatabaseInfo();
+    info.uri = "mongodb://" + address.getHostString() + ":" + address.getPort();
+    info.collection = "player_room_badge_reward";
+    info.useInternal = false;
+    var oldDatabase = LunarCore.getGameDatabase();
+    emu.lunarcore.database.DatabaseManager database = null;
+    var databaseField = LunarCore.class.getDeclaredField("gameDatabase");
+    databaseField.setAccessible(true);
+    try {
+      database = new emu.lunarcore.database.DatabaseManager(info, LunarCore.ServerType.GAME);
+      databaseField.set(null, database);
+      var s = session();
+      assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
+      var rows = JsonParser.parseString(Files.readString(resources.resolve("ExcelOutput/RewardData.json")))
+          .getAsJsonArray();
+      assertEquals(2, rows.size());
+      for (var raw : rows) {
+        var reward = gson.fromJson(raw, emu.lunarcore.data.excel.RewardExcel.class);
+        reward.onLoad();
+        var grant = s.actor.getInventory().grantItems(reward.getRewards(), false);
+        assertTrue(grant.complete());
+        assertEquals(1, grant.items().size());
+        int itemId = grant.items().getFirst().getItemId();
+        var persisted = database.getDatastore().find(GameItem.class)
+            .filter(dev.morphia.query.filters.Filters.eq("itemId", itemId)).first();
+        assertNotNull(persisted);
+        assertEquals(10001, persisted.getOwnerUid());
+        assertEquals(1, persisted.getCount());
+        assertEquals(0xffffffffL, persisted.getBadgeExpireTime());
+        assertFalse(s.actor.getInventory().grantItems(reward.getRewards(), false).complete());
+        assertEquals(1, s.actor.getInventory().getMaterialByItemId(itemId).getCount());
+      }
+      assertEquals(2, list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB").size());
+      assertEquals(2, list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").size());
+    } finally {
+      databaseField.set(null, oldDatabase);
+      if (database != null) database.close();
+      server.shutdownNow();
+    }
+  }
+
+  @Test void aLegacyBadgeItemWithNoExpirationEvidenceIsNotMadePermanent() throws Exception {
+    var s = session();
+    own(s, 230532, 1);
+    assertTrue(list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB").isEmpty(),
+        "An item with unknown expiry must not become a permanent badge");
+    var unknown = new GameItem(GameData.getItemExcelMap().get(230533), 1) {
+      @Override public void save() { fail("Unknown expiration must not be stored"); }
+    };
+    assertFalse(s.actor.getInventory().addItem(unknown));
+  }
+
+  @Test void actualExpiryIsRespectedAndRenewalCanAutoFillWithoutInventingTime() throws Exception {
+    var s = session();
+    long now = System.currentTimeMillis() / 1000;
+    ownBadge(s, 230532, now - 1);
+    ownBadge(s, 230533, now + 3600);
+    var rows = list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB");
+    assertEquals(1, rows.size());
+    assertEquals(295533, field((DynamicMessage)rows.getFirst(), "EIKLMFPMJJD"));
+    assertEquals(now + 3600, field((DynamicMessage)rows.getFirst(), "expire_time"));
+    assertNotEquals(0, field(replaceBadges(s, new long[][] {{1600106,295532,0xffffffffL}}), "retcode"));
+    assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
+    var renewed = new GameItem(GameData.getItemExcelMap().get(230532), 1) {
+      @Override public void save() {}
+    };
+    renewed.setBadgeExpireTime(now + 7200);
+    assertTrue(s.actor.getInventory().addItem(renewed));
+    var placed = list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN");
+    assertEquals(2, placed.size());
+    assertTrue(placed.stream().map(DynamicMessage.class::cast).anyMatch(row ->
+        field(row, "EIKLMFPMJJD").equals(295532) && field(row, "expire_time").equals(now + 7200)));
+  }
+
+  @Test void missingOriginalRewardSourceCannotTurnAnActivityBadgeIntoAPermanentGrant() throws Exception {
+    var s = session();
+    Files.writeString(resources.resolve("ExcelOutput/RewardData.json"), "[]");
+    var candidate = new GameItem(GameData.getItemExcelMap().get(230900), 1) {
+      @Override public void save() { fail("An unverified reward cannot be stored"); }
+    };
+    assertFalse(s.actor.getInventory().addItem(candidate));
+    assertTrue(list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB").isEmpty());
+  }
+
+  @Test void failedAutoPlacementNeverRevokesTheAwardAndRetriesWhenTheProfileLoads() throws Exception {
+    var s = session();
+    assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
+    s.actor.failSave = true;
+    var candidate = new GameItem(GameData.getItemExcelMap().get(230900), 1) {
+      @Override public void save() {}
+    };
+    assertTrue(s.actor.getInventory().addItem(candidate));
+    assertEquals(1, list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB").size());
+    assertTrue(list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").isEmpty());
+    s.actor.failSave = false;
+    assertEquals(1, list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").size());
+  }
+
+  @Test void failedBadgeItemSaveCannotCreateOwnershipOrAutomaticPlacement() throws Exception {
+    var s = session();
+    assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
+    String before = gson.toJson(s.actor.getGameplay());
+    var candidate = new GameItem(GameData.getItemExcelMap().get(230900), 1) {
+      @Override public void save() { throw new IllegalStateException("synthetic item save failure"); }
+    };
+    assertThrows(IllegalStateException.class, () -> s.actor.getInventory().addItem(candidate));
+    assertEquals(before, gson.toJson(s.actor.getGameplay()));
+    assertTrue(list(child(badgeInfo(s), "AIANIJCIBGE"), "CPMCCCODGAB").isEmpty());
+    assertTrue(list(child(profile(s), "CMCNNJKJNPK"), "POLMJFIKNHN").isEmpty());
+  }
+
+  @Test void malformedBadgeRequestsCannotChangeTheSavedPreference() throws Exception {
+    var s = session();
+    String before = gson.toJson(s.actor.getGameplay());
+    for (var body : List.of(new byte[] {8, 2}, new byte[] {8, 1, 8, 0}, new byte[] {(byte)0x80})) {
+      s.nativePackets.clear();
+      assertTrue(VersionedPacketHandler.handle(s, 8026, body));
+      var response = s.bridge.clientSchema().parse("TrainPartySetBadgeAutoFillScRsp", s.nativePackets.getFirst().body());
+      assertEquals(Retcode.REQ_PARA_INVALID.getVal(), field(response, "retcode"));
+      assertEquals(before, gson.toJson(s.actor.getGameplay()));
+    }
   }
 
   @Test void unexpectedServerFailureIsNotReportedAsAMalformedClientRequest() throws Exception {
@@ -296,18 +548,24 @@ class PlayerRoomDisplay46Test {
     s.actor.getAvatars().getAvatars().put(1202, avatar);
     assertEquals(0, field(replace(s, new int[][] {{1600101, 295603}},
         new int[][] {{1600301, 1202, 1}}), "retcode"));
+    ownBadge(s, 230532, 0xffffffffL);
+    assertEquals(0, field(setBadgeAutoFillClosed(s, false), "retcode"));
     var server = new de.bwaldvogel.mongo.MongoServer(new de.bwaldvogel.mongo.backend.memory.MemoryBackend());
     var address = server.bind();
     try (var client = com.mongodb.client.MongoClients.create(
         "mongodb://" + address.getHostString() + ":" + address.getPort())) {
       var store = dev.morphia.Morphia.createDatastore(client, "player_room_display");
-      store.getMapper().map(Player.class, QuestState.class);
+      store.getMapper().map(Player.class, QuestState.class, GameItem.class);
       var document = new Player();
       UpdatedArchive46Test.set(document, Player.class, "uid", 10001);
       UpdatedArchive46Test.set(document, Player.class, "name", "Room fixture");
       UpdatedArchive46Test.set(document, Player.class, "signature", "");
       UpdatedArchive46Test.set(document, Player.class, "gameplay", s.actor.getGameplay());
       store.save(document);
+      var badgeItem = new GameItem(GameData.getItemExcelMap().get(230532), 1);
+      badgeItem.setOwner(document);
+      badgeItem.setBadgeExpireTime(0xffffffffL);
+      store.save(badgeItem);
       for (int i = 0; i < 2; i++) {
         var restored = store.find(Player.class)
             .filter(dev.morphia.query.filters.Filters.eq("_id", 10001)).first();
@@ -317,6 +575,13 @@ class PlayerRoomDisplay46Test {
         assertNotNull(photo);
         assertEquals(1202, photo.getId());
         assertEquals(1, photo.getType());
+        assertFalse(restored.getGameplay().getPlayerRoomDisplay().isBadgeAutoFillClosed());
+        assertEquals(295532, restored.getGameplay().getPlayerRoomDisplay().getBadges().get(1600106).getId());
+        assertEquals(0xffffffffL, restored.getGameplay().getPlayerRoomDisplay().getAutoSeenBadges().get(295532));
+        var restoredItem = store.find(GameItem.class)
+            .filter(dev.morphia.query.filters.Filters.eq("ownerUid", 10001)).first();
+        assertNotNull(restoredItem);
+        assertEquals(0xffffffffL, restoredItem.getBadgeExpireTime());
       }
     } finally { server.shutdownNow(); }
   }

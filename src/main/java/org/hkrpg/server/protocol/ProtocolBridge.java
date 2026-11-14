@@ -265,6 +265,8 @@ public final class ProtocolBridge {
 
   /** A reply needs a named pair or an independently verified native pair in this wire version. */
   public int clientResponseCommand(int requestCommand) {
+    // The native badge request is obfuscated as PEMMJHDFOLM; its reply is 7173.
+    if (experimental() && requestCommand == 7172) return 7173;
     // The native reward action has an obfuscated request name, so the named-pair lookup misses it.
     if (experimental() && requestCommand == Universe46.PENDING_ACTION_COMMAND)
       return clientCommand("HandleRogueCommonPendingActionScRsp");

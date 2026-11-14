@@ -30,6 +30,7 @@ public enum ItemSubType {
     PlayerOutfit (518),
     HeadIconFrame (519),
     PlatformBoundGift (520),
+    Badge (521),
     Material (601),
     Eidolon (602),
     MuseumExhibit (603),

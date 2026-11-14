@@ -19,7 +19,7 @@ final class LoginBootstrap46 {
     // Honey fe00bdb Raw command pairs; retcode constants independently checked in the pinned
     // installed client (PLDKENJLKME). Numeric routing also covers missing/conflicting named types.
     int response = switch (command) {
-      case 5697 -> 5653; case 31 -> 91; case 7172 -> 7173; case 8034 -> 8025;
+      case 5697 -> 5653; case 31 -> 91; case 8034 -> 8025;
       case 8110 -> 8116; case 96 -> 47; case 9804 -> 9776; case 8991 -> 8982;
       case 10010 -> 10016; case 9894 -> 9866; case 9490 -> 9496;
       case 9 -> 27; case 522 -> 549; case 2922 -> 2949; case 3405 -> 3475;
@@ -39,7 +39,7 @@ final class LoginBootstrap46 {
       return true;
     }
     int retcodeField = switch (command) {
-      case 5697 -> 15; case 96 -> 8; case 7172 -> 6; case 8034 -> 11;
+      case 5697 -> 15; case 96 -> 8; case 8034 -> 11;
       case 8110 -> 7; case 9804 -> 4; case 8991 -> 14; case 10010 -> 12;
       case 9894 -> 13; case 9490, 9990 -> 9;
       case 522 -> 1; case 2922 -> 6; case 3405, 9504 -> 8;

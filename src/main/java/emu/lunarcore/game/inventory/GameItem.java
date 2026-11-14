@@ -42,6 +42,8 @@ public class GameItem implements Syncable {
 
     private int itemId;
     private int count;
+    // Null on legacy records: an unknown badge expiry is not a permanent entitlement.
+    @Setter private Long badgeExpireTime;
 
     @Setter private int level;
     @Setter private int exp;
