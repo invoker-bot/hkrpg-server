@@ -75,11 +75,14 @@ final class LoginBootstrap46 {
     if (session.getPlayer() != null) {
       var wall = org.hkrpg.server.gameplay.PlayerRoomDisplay.view(session.getPlayer());
       if (wall.available()) {
-        // Personal-room slot references, not paid steps, construction progress or rewards.
+        // The pinned 4.6 client reads area wire field 14 as static IDs and field 7
+        // as completed steps, despite the opposite names in our historical descriptor.
+        // These references create slots; they do not finish construction or grant rewards.
         var displayArea = Gameplay46.builder(session, "TrainPartyArea");
         Gameplay46.set(displayArea, "area_id", 16);
+        var nativeStaticIds = displayArea.getDescriptorForType().findFieldByNumber(14);
         for (int id : new int[] {16001, 16002, 16003})
-          Gameplay46.add(displayArea, "static_prop_id_list", id);
+          displayArea.addRepeatedField(nativeStaticIds, id);
         Gameplay46.add(build, "area_list", displayArea.build());
         Gameplay46.set(build, "CMCNNJKJNPK", PlayerRoomDisplay46.display(session, wall.state()));
         // The native selector builds its catalog from this list, not directly from the bag.

@@ -197,12 +197,41 @@ class PlayerRoomDisplay46Test {
     assertEquals(2, areas.size());
     var exhibit = (DynamicMessage) areas.get(1);
     assertEquals(16, field(exhibit, "area_id"));
-    assertEquals(List.of(16001, 16002, 16003), list(exhibit, "static_prop_id_list"));
+    assertEquals(List.of(16001, 16002, 16003),
+        exhibit.getField(exhibit.getDescriptorForType().findFieldByNumber(14)));
     assertEquals(0, field(exhibit, "progress"));
-    assertTrue(list(exhibit, "step_id_list").isEmpty());
+    assertTrue(((List<?>) exhibit.getField(exhibit.getDescriptorForType().findFieldByNumber(7))).isEmpty());
     assertTrue(info.hasField(info.getDescriptorForType().findFieldByName("CMCNNJKJNPK")));
     assertEquals(before, gson.toJson(s.actor.getGameplay()));
     assertEquals(0, s.actor.saves);
+  }
+
+  @Test void clientAreaParserReceivesStaticReferencesInField14AndNoFinishedStepsInField7() throws Exception {
+    var info = profile(session());
+    var area = list(info, "area_list").stream().map(DynamicMessage.class::cast)
+        .filter(row -> (Integer) field(row, "area_id") == 16).findFirst().orElseThrow();
+    // The pinned client's NDLMAMEGFDM parser maps wire field 14 to +0x10,
+    // which TrainPartyBuildAreaInfo.Sync passes to _SyncStaticIDList. Field 7
+    // goes to +0x20 and is consumed by _SyncFinishedStep. Descriptor names are reversed.
+    var descriptor = area.getDescriptorForType();
+    var staticIds = (List<?>) area.getField(descriptor.findFieldByNumber(14));
+    var finishedSteps = (List<?>) area.getField(descriptor.findFieldByNumber(7));
+    assertEquals(List.of(16001, 16002, 16003), staticIds);
+    assertTrue(finishedSteps.isEmpty(), "Display initialization must not invent finished construction steps");
+
+    var records = JsonParser.parseString(Files.readString(
+        resources.resolve("ExcelOutput/TrainPartyStaticConfig.json"))).getAsJsonArray();
+    var slots = new TreeSet<Integer>();
+    for (var raw : records) {
+      var row = raw.getAsJsonObject();
+      if (!staticIds.contains(row.get("ID").getAsInt())) continue;
+      for (var slot : row.getAsJsonArray("SlotList")) slots.add(slot.getAsInt());
+    }
+    var expected = new TreeSet<Integer>();
+    for (int id = 1600101; id <= 1600114; id++) expected.add(id);
+    for (int id = 1600301; id <= 1600306; id++) expected.add(id);
+    expected.add(1600201);
+    assertEquals(expected, slots, "The native static-ID path must create all 21 display slots");
   }
 
   @Test void ownedFigurineCanBePlacedReplacedAndRemovedAcrossQueries() throws Exception {

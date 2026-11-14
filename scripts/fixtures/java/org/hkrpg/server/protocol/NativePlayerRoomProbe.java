@@ -93,9 +93,11 @@ public final class NativePlayerRoomProbe {
       var area = (DynamicMessage) raw;
       if (number(area, "area_id") != 16) continue;
       found = true;
-      require(new TreeSet<>((List<Integer>)field(area, "static_prop_id_list"))
+      // Client field 14 initializes static IDs; its descriptor name says step_id_list.
+      require(new TreeSet<>((List<Integer>)area.getField(area.getDescriptorForType().findFieldByNumber(14)))
           .equals(new TreeSet<>(Set.of(16001, 16002, 16003))), "Missing cabinet slot references");
-      require(number(area, "progress") == 0 && ((List<?>)field(area, "step_id_list")).isEmpty(),
+      require(number(area, "progress") == 0
+          && ((List<?>)area.getField(area.getDescriptorForType().findFieldByNumber(7))).isEmpty(),
           "Invented construction progress");
     }
     require(found == unlocked, "Wrong level gate for cabinet");
