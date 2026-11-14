@@ -23,6 +23,8 @@ class Memory:
         self.dictionary, self.entries, self.entry = 0x130000, 0x140000, 0x150000
         self.put(self.base + 0x93434a8, 'Q', self.static)
         self.put(self.static + 0x1398, 'Q', self.ui)
+        self.put(self.static + 0x13d0, 'Q', 0)
+        self.put(self.static + 0x14f0, 'Q', 0)
         self.put(self.ui + 0xd0, 'Q', self.block)
         for offset, value in ((0x124, 0), (0x12c, 1), (0x12f, 0)):
             self.put(self.ui + offset, 'B', value)
@@ -118,7 +120,8 @@ class WaitSnapshotTest(unittest.TestCase):
         memory = Memory()
         fixed_dict, fixed_entries, fixed_value = 0x160000, 0x170000, 0x180000
         manager, module, target_dict, target_entries, target = 0x190000, 0x1a0000, 0x1b0000, 0x1c0000, 0x1d0000
-        label, focus, focus_name = 0x1e0000, 0x1f0000, 0x200000
+        label, focus, focus_name, dialogue = 0x1e0000, 0x1f0000, 0x200000, 0x210000
+        controls = 0x220000
         memory.put(memory.block + 0x20, 'Q', fixed_dict)
         memory.put(fixed_dict + 0x18, 'Q', fixed_entries)
         memory.put(fixed_dict + 0x20, 'iiii', 2, 3, 1, 1)
@@ -137,6 +140,11 @@ class WaitSnapshotTest(unittest.TestCase):
         memory.put(label + 0x10, 'i', len(raw_label) // 2)
         memory.data.update({label + 0x14 + i: value for i, value in enumerate(raw_label)})
         memory.put(memory.static + 0x1468, 'Q', manager)
+        memory.put(memory.static + 0x14f0, 'Q', dialogue)
+        memory.put(dialogue + 0xa8, 'i', 42)
+        memory.put(memory.static + 0x13d0, 'Q', controls)
+        memory.put(controls + 0x68, 'i', 0)
+        memory.put(controls + 0x7c, 'i', 43)
         memory.put(manager + 0x500, 'Q', module)
         memory.put(module + 0x20, 'Q', target_dict)
         memory.put(target_dict + 0x18, 'Q', target_entries)
@@ -162,10 +170,48 @@ class WaitSnapshotTest(unittest.TestCase):
                            'originSHA256': hashlib.sha256(raw_label).hexdigest()}], result['fixedBlocks'])
         self.assertEqual({'isLocked': True, 'blockId': 42, 'idPresent': True, 'matchesFixedBlock': True},
                          result['uiLockTarget'])
+        self.assertEqual({'blockId': 42, 'matchesFixedBlock': True}, result['dialogueLock'])
+        self.assertEqual({'actionBlockId': 43, 'actionMatchesFixedBlock': False,
+                          'debugBlockId': None, 'debugMatchesFixedBlock': False}, result['inputLocks'])
         self.assertEqual('TalkDialog', result['focusedController'])
         self.assertNotIn('diagnostic-source', json.dumps(result))
         self.assertNotIn(str(fixed_value), json.dumps(result))
         self.assertNotIn((fixed_entries + 0x48, 8), memory.reads)
+
+        memory.put(dialogue + 0xa8, 'i', 43)
+        self.assertEqual({'blockId': 43, 'matchesFixedBlock': False}, wait.snapshot(memory)['dialogueLock'])
+        memory.put(dialogue + 0xa8, 'i', 0)
+        self.assertEqual({'blockId': None, 'matchesFixedBlock': False}, wait.snapshot(memory)['dialogueLock'])
+        memory.put(dialogue + 0xa8, 'i', -1)
+        with self.assertRaises(wait.NotReady): wait.snapshot(memory)
+        memory.put(dialogue + 0xa8, 'i', 42)
+
+        memory.put(controls + 0x7c, 'i', 42)
+        memory.put(controls + 0x68, 'i', 42)
+        self.assertEqual({'actionBlockId': 42, 'actionMatchesFixedBlock': True,
+                          'debugBlockId': 42, 'debugMatchesFixedBlock': True}, wait.snapshot(memory)['inputLocks'])
+        memory.put(controls + 0x68, 'i', -1)
+        with self.assertRaises(wait.NotReady): wait.snapshot(memory)
+        memory.put(controls + 0x68, 'i', 0)
+        memory.put(controls + 0x7c, 'i', 43)
+
+        original_controls_read = memory.read
+        def changed_controls_lock(address, size):
+            value = original_controls_read(address, size)
+            if address == controls + 0x7c: memory.put(controls + 0x7c, 'i', 44)
+            return value
+        with patch.object(memory, 'read', side_effect=changed_controls_lock):
+            with self.assertRaises(wait.NotReady): wait.snapshot(memory)
+        memory.put(controls + 0x7c, 'i', 43)
+
+        original_read = memory.read
+        def changed_dialogue_lock(address, size):
+            value = original_read(address, size)
+            if address == dialogue + 0xa8: memory.put(dialogue + 0xa8, 'i', 43)
+            return value
+        with patch.object(memory, 'read', side_effect=changed_dialogue_lock):
+            with self.assertRaises(wait.NotReady): wait.snapshot(memory)
+        memory.put(dialogue + 0xa8, 'i', 42)
 
         memory.put(target + 0x28, 'i', 43)
         self.assertFalse(wait.snapshot(memory)['uiLockTarget']['matchesFixedBlock'])

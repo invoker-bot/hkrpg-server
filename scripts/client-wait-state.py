@@ -165,6 +165,40 @@ def snapshot(memory):
     if result.get('fixedBlocks'):
         # 仅对固定输入锁补采焦点和已核对的 UIFullScreenBlock 目标编号。
         # 未列入白名单的窗口名称只标记为 other，避免写入任意游戏文本。
+        # DialogueManager.TryLockInput 保存自身的固定锁编号于 +0xa8，
+        # TryUnlockInput 只释放此编号；0 表示它没有持有编号。
+        dialogue = q(static + 0x14f0)
+        if dialogue:
+            identity = i(dialogue + 0xa8)
+            if identity < 0:
+                raise NotReady()
+            result['dialogueLock'] = {
+                'blockId': identity if identity else None,
+                'matchesFixedBlock': bool(identity) and any(
+                    row['id'] == identity for row in result['fixedBlocks']),
+            }
+            if identity != i(dialogue + 0xa8):
+                raise NotReady()
+        if dialogue != q(static + 0x14f0):
+            raise NotReady()
+        # 应用失焦时 InControlActionsManager 会持有另一把独立的固定锁。
+        # 同时记录调试界面持有的编号，避免把正常切窗产生的锁误认成对话锁。
+        controls = q(static + 0x13d0)
+        if controls:
+            action_id, debug_id = i(controls + 0x7c), i(controls + 0x68)
+            if action_id < 0 or debug_id < 0:
+                raise NotReady()
+            fixed_ids = {row['id'] for row in result['fixedBlocks']}
+            result['inputLocks'] = {
+                'actionBlockId': action_id if action_id else None,
+                'actionMatchesFixedBlock': bool(action_id) and action_id in fixed_ids,
+                'debugBlockId': debug_id if debug_id else None,
+                'debugMatchesFixedBlock': bool(debug_id) and debug_id in fixed_ids,
+            }
+            if action_id != i(controls + 0x7c) or debug_id != i(controls + 0x68):
+                raise NotReady()
+        if controls != q(static + 0x13d0):
+            raise NotReady()
         focus = q(ui + 0xb0)
         if focus:
             label = q(focus + 0x30)
