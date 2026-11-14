@@ -171,6 +171,14 @@ class WaitSnapshotTest(unittest.TestCase):
         self.assertFalse(wait.snapshot(memory)['uiLockTarget']['matchesFixedBlock'])
         memory.put(target + 0x28, 'i', 42)
 
+        # Nullable lock handles can retain an old value when the presence flag is false.
+        memory.put(target + 0x28, 'i', -1)
+        memory.put(target + 0x2c, 'B', 0)
+        self.assertEqual({'isLocked': True, 'blockId': None, 'idPresent': False, 'matchesFixedBlock': False},
+                         wait.snapshot(memory)['uiLockTarget'])
+        memory.put(target + 0x28, 'i', 42)
+        memory.put(target + 0x2c, 'B', 1)
+
         memory.put(fixed_value + 0x2c, 'i', 2)
         with self.assertRaises(wait.NotReady): wait.snapshot(memory)
         memory.put(fixed_value + 0x2c, 'i', 1)

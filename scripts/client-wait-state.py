@@ -204,9 +204,9 @@ def snapshot(memory):
                 raise NotReady()
             if target:
                 locked, identity, present = read(target + 0x24, 1)[0], i(target + 0x28), read(target + 0x2c, 1)[0]
-                if locked not in (0, 1) or present not in (0, 1) or identity < 0:
+                if locked not in (0, 1) or present not in (0, 1) or (present and identity < 0):
                     raise NotReady()
-                result['uiLockTarget'] = {'isLocked': bool(locked), 'blockId': identity,
+                result['uiLockTarget'] = {'isLocked': bool(locked), 'blockId': identity if present else None,
                                           'idPresent': bool(present),
                                           'matchesFixedBlock': bool(present) and any(
                                               row['id'] == identity for row in result['fixedBlocks'])}
