@@ -20,6 +20,10 @@ public final class Offering46 {
       if (command == s.getProtocol().clientCommand(request)) name = request;
     if (name == null) return false;
     if (s.getState() != SessionState.ACTIVE) return true;
+    final String requestName=name;
+    return ActivityReplayScope.in(s.getPlayer().getGameplay(),50022,()->handleCurrent(s,requestName,bytes));
+  }
+  private static boolean handleCurrent(GameSession s,String name,byte[] bytes)throws IOException{
     synchronized (s.getPlayer()) {
       var code = Retcode.REQ_PARA_INVALID;
       DynamicMessage req = null;
@@ -29,6 +33,8 @@ public final class Offering46 {
       }
       int offering = req == null || name.equals("GetOfferingInfoCsReq") ? 12 : number(req, "offering_id");
       if (code == Retcode.SUCC && offering != 5 && offering != 12) code = Retcode.REQ_PARA_INVALID;
+      if(code==Retcode.SUCC&&offering==5&&!s.getActivityReplayLeases().accepts(50022,
+          ActivityReplayScope.identity(s.getPlayer().getGameplay(),50022)))code=Retcode.REQ_PARA_INVALID;
       var catalog = OfferingCatalog.read(offering);
       if (code == Retcode.SUCC && catalog == null) code = Retcode.REWARD_CONFIG_NOT_EXIST;
       if (code == Retcode.SUCC && !Offerings.valid(s.getPlayer(), offering)) code = Retcode.PLAYER_DATA_ERROR;

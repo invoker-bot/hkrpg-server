@@ -66,6 +66,49 @@ class GmItemShortcutsTest {
     assertThrows(java.io.IOException.class,()->GmItemShortcuts.load(directory,catalog));
   }
 
+  @Test void characterClothingShowsTheOriginalOwningAvatar() throws Exception {
+    int id=199868005;var old=GameData.getAvatarSkinExcelMap().get(id);
+    try{
+      item(id,"Usable","AvatarSkin",",\"isVisible\":true");
+      item(1001,"AvatarCard","AvatarCard",",\"isVisible\":true");
+      catalog.set(catalog.size()-1,new CatalogItem(1001,"三月七","avatar",4,80,6));
+      GameData.getAvatarSkinExcelMap().add(new Gson().fromJson("{\"ID\":"+id+",\"AvatarID\":1001}",emu.lunarcore.data.excel.AvatarSkinExcel.class));
+      var rows=GmItemShortcuts.load(directory,catalog);
+      var skin=rows.stream().filter(r->r.item().id()==id).findFirst().orElseThrow();
+      assertEquals("skin",skin.type());assertTrue(skin.grantable());
+      assertTrue(skin.sources().contains("对应角色：三月七 #1001"),skin.sources().toString());
+    }finally{
+      GameData.getAvatarSkinExcelMap().keySet().remove(id);if(old!=null)GameData.getAvatarSkinExcelMap().add(old);
+    }
+  }
+
+  @Test void fixedShopGoodsAreSearchableByShopNameWithoutAcquisitionTextOrNewRarityClaims() throws Exception {
+    int shopId=108;var old=GameData.getShopExcelMap().get(shopId);
+    try{
+      item(199868006,"Usable","PlayerOutfit",",\"isVisible\":true");
+      item(199868007,"Usable","PersonalCard",",\"isVisible\":true");
+      item(199868008,"Material","Material",",\"isVisible\":true");
+      var shop=new Gson().fromJson("{\"ShopID\":108,\"ShopName\":-2}",emu.lunarcore.data.excel.ShopExcel.class);
+      GameData.getShopExcelMap().add(shop);
+      for(int n=0;n<3;n++){
+        var goods=new Gson().fromJson("{\"GoodsID\":"+(108001+n)+",\"ItemID\":"+(199868006+n)
+            +",\"ItemCount\":1,\"ShopID\":108}",emu.lunarcore.data.excel.ShopGoodsExcel.class);
+        goods.onLoad();
+      }
+      source("TextMap/TextMapCHS.json","{\"18446744073709551614\":\"星尘之礼\"}");
+      var rows=GmItemShortcuts.load(directory,catalog);
+      assertEquals(2,rows.size());
+      for(var row:rows){
+        assertEquals(List.of("collectible"),row.tags());
+        assertTrue(row.sources().stream().anyMatch(s->s.contains("星尘之礼")&&s.contains("#108")),row.sources().toString());
+        assertTrue(GmItemShortcuts.matches(row,"星尘之礼"));
+      }
+      assertEquals(rows,GmItemShortcuts.load(directory,catalog));
+    }finally{
+      GameData.getShopExcelMap().keySet().remove(shopId);if(old!=null)GameData.getShopExcelMap().add(old);
+    }
+  }
+
   @Test void anUnknownResourceSubtypeStaysQueryOnlyWithoutBreakingTheCatalog() throws Exception {
     item(199868004,"Usable","FutureUnknownType",",\"isVisible\":false");
     var rows=GmItemShortcuts.load(directory,catalog);

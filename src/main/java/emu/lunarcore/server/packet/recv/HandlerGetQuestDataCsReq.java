@@ -12,6 +12,12 @@ public class HandlerGetQuestDataCsReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] data) throws Exception {
         // The snapshot refreshes unlocks to a fixed point after applying the daily rollover.
-        session.send(new PacketGetQuestDataScRsp(session.getPlayer()));
+        synchronized(session.getPlayer()){
+            org.hkrpg.server.gameplay.ActivityReplayScope.in(session.getPlayer().getGameplay(),50022,()->{
+                var snapshot=new PacketGetQuestDataScRsp(session.getPlayer());
+                session.getActivityReplayLeases().viewed(50022,org.hkrpg.server.gameplay.ActivityReplayScope.identity(session.getPlayer().getGameplay(),50022));
+                session.send(snapshot);return null;
+            });
+        }
     }
 }

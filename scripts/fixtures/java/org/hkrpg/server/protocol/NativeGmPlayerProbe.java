@@ -78,6 +78,7 @@ public final class NativeGmPlayerProbe {
     String response = name.equals("UpdateServerPrefsCsReq") ? "UpdateServerPrefsDataScRsp"
         : name.replace("CsReq", "ScRsp");
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
+    String unmatchedHeader = "";
     while (System.nanoTime() < deadline) {
       if (failure.get() != null) throw new IllegalStateException("KCP failure", failure.get());
       var frame = inbox.poll(1, TimeUnit.SECONDS);
@@ -104,6 +105,12 @@ public final class NativeGmPlayerProbe {
             || !((DynamicMessage) field(sync, "avatar_sync")).getAllFields().isEmpty()) equipmentSyncs.add(project(sync));
       }
       if (frame.command() != protocol.clientCommand(response.replace("UnlockSkillTree", "UnlockSkilltree"))) continue;
+      // Quest progress can also publish snapshots without a request id. Wait for this query's
+      // correlated reply instead of consuming a queued update from an earlier performance.
+      if(header.length>0&&!Arrays.equals(header,frame.header())) {
+        unmatchedHeader = Base64.getEncoder().encodeToString(frame.header());
+        continue;
+      }
       lastReplyHeader = frame.header();
       if (header.length > 0 && !Arrays.equals(header, lastReplyHeader))
         throw new IllegalStateException("Response did not complete the matching async request: " + response);
@@ -115,7 +122,7 @@ public final class NativeGmPlayerProbe {
         throw new IllegalStateException("Unexpected response: " + response + " " + project(result));
       return result;
     }
-    throw new IllegalStateException("Timeout: " + response);
+    throw new IllegalStateException("Timeout: " + response + "; unmatched reply header=" + unmatchedHeader);
   }
 
   private DynamicMessage call(String name) throws Exception {
@@ -186,6 +193,8 @@ public final class NativeGmPlayerProbe {
                 "GetLevelRewardCsReq", "GetLevelRewardTakenListCsReq",
                 "GetActivityScheduleConfigCsReq", "GetTrialActivityDataCsReq", "StartTrialActivityCsReq", "LeaveTrialActivityCsReq",
                 "GetLoginActivityCsReq", "TakeLoginActivityRewardCsReq",
+                "MusicRhythmDataCsReq", "MusicRhythmStartLevelCsReq", "MusicRhythmFinishLevelCsReq", "MusicRhythmSaveSongConfigDataCsReq",
+                "GetOfferingInfoCsReq", "SubmitOfferingItemCsReq", "TakeOfferingRewardCsReq", "GetQuestDataCsReq", "TakeQuestRewardCsReq",
                 "GetMaterialSubmitActivityDataCsReq", "SubmitMaterialSubmitActivityMaterialCsReq", "TakeMaterialSubmitActivityRewardCsReq",
                 "TakeTrialActivityRewardCsReq", "GetCurSceneInfoCsReq", "GetCurLineupDataCsReq",
                 "SceneCastSkillCsReq", "GetCurBattleInfoCsReq", "PVEBattleResultCsReq", "QuitBattleCsReq",

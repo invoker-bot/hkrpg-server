@@ -15,9 +15,19 @@ import org.hkrpg.server.gameplay.QuestCompletionRecords;
 /** Configured quests only. Unsupported unlock/finish rules remain pending. */
 public final class QuestManager extends BasePlayerManager {
   public record Claim(Retcode retcode, List<GameItem> items) {}
+  private int claimBatchDepth;
 
   public QuestManager(Player player) {
     super(player);
+  }
+
+  /** The native handler emits one final snapshot after all independently saved claims. */
+  public <T,E extends Exception>T withClaimBatch(
+      org.hkrpg.server.gameplay.ActivityReplayScope.Action<T,E> action)throws E {
+    synchronized(getPlayer()){
+      claimBatchDepth++;
+      try{return action.run();}finally{claimBatchDepth--;}
+    }
   }
 
   public void refreshUnlocks() {
@@ -56,6 +66,7 @@ public final class QuestManager extends BasePlayerManager {
         observed |= org.hkrpg.server.gameplay.DiceRollQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.BoxingClubResidentQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.BoxingClubActivityQuests.refresh(getPlayer());
+        observed |= org.hkrpg.server.gameplay.MusicActivityQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.TimelineActivityQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityKillQuests.refresh(getPlayer());
         observed |= org.hkrpg.server.gameplay.ActivityFirstTalkQuests.refresh(getPlayer());
@@ -247,13 +258,20 @@ public final class QuestManager extends BasePlayerManager {
   }
 
   public Claim claim(int questId) {
+    return org.hkrpg.server.gameplay.MusicActivityQuests.owns(questId)
+        ?org.hkrpg.server.gameplay.ActivityReplayScope.in(getPlayer().getGameplay(),50022,()->claimCurrent(questId))
+        :claimCurrent(questId);
+  }
+  private Claim claimCurrent(int questId) {
     synchronized (getPlayer()) {
       var definition = GameData.getQuestExcelMap().get(questId);
       if (definition == null) return new Claim(Retcode.REQ_PARA_INVALID, List.of());
       if (definition.getQuestType() == 5) return getPlayer().getDailyManager().claimQuest(questId);
       if (definition.getQuestType() == 3) {
         getPlayer().getDailyManager().ensureDay();
-        refreshUnlocks();
+        if(org.hkrpg.server.gameplay.MusicActivityQuests.belongs(definition))
+          org.hkrpg.server.gameplay.MusicActivityQuests.refresh(getPlayer());
+        else refreshUnlocks();
       }
       var cycle = new org.hkrpg.server.gameplay.DailyCycleQuests(getPlayer())
           .claimState(questId, getPlayer().getDailyManager().currentInstant());
@@ -295,6 +313,9 @@ public final class QuestManager extends BasePlayerManager {
         state = org.hkrpg.server.gameplay.ActivityChestQuests.state(getPlayer(), questId);
       if (org.hkrpg.server.gameplay.ActivityKraterQuests.belongs(definition))
         state = org.hkrpg.server.gameplay.ActivityKraterQuests.state(getPlayer(), questId);
+      // Exact ownership takes precedence over the generic OfferingLevel rejection guard.
+      if (org.hkrpg.server.gameplay.MusicActivityQuests.belongs(definition))
+        state = org.hkrpg.server.gameplay.MusicActivityQuests.state(getPlayer(), questId);
       if (state == null) return new Claim(Retcode.QUEST_NOT_ACCEPT, List.of());
       if (state.getPhase() == QuestState.Phase.CLOSED)
         return new Claim(Retcode.QUEST_REWARD_ALREADY_TAKEN, List.of());
@@ -382,6 +403,7 @@ public final class QuestManager extends BasePlayerManager {
                   .toList());
       states.addAll(new ParkourQuests(getPlayer()).states());
       states.addAll(org.hkrpg.server.gameplay.BoxingClubActivityQuests.states(getPlayer()).values());
+      states.addAll(org.hkrpg.server.gameplay.MusicActivityQuests.states(getPlayer()).values());
       states.addAll(org.hkrpg.server.gameplay.TimelineActivityQuests.states(getPlayer()).values());
       states.addAll(org.hkrpg.server.gameplay.ActivityKillQuests.states(getPlayer()).values());
       states.addAll(org.hkrpg.server.gameplay.ActivityFirstTalkQuests.states(getPlayer()));
@@ -424,8 +446,18 @@ public final class QuestManager extends BasePlayerManager {
     synchronized (getPlayer()) { sync(); }
   }
 
+  public void onMusicProgress() {
+    synchronized (getPlayer()) {
+      if (org.hkrpg.server.gameplay.MusicActivityQuests.refresh(getPlayer())) {
+        getPlayer().save();
+        sync();
+      }
+    }
+  }
+
   public void sync() {
     synchronized (getPlayer()) {
+      if (claimBatchDepth > 0) return;
       var session = getPlayer().getSession();
       if (session == null) return;
       if (!org.hkrpg.server.protocol.QuestSync46.sync(getPlayer()))

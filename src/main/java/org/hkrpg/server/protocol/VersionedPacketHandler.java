@@ -115,12 +115,29 @@ public final class VersionedPacketHandler {
             request.getField(request.getDescriptorForType().findFieldByName("ODJIJFJCHHB"));
     if (requested.isEmpty() || requested.size() > 100)
       throw new ProtocolException("Invalid quest reward batch");
+    return org.hkrpg.server.gameplay.ActivityReplayScope.in(
+        session.getPlayer().getGameplay(),
+        50022,
+        () -> {
+          synchronized (session.getPlayer()) {
+            var quests = session.getPlayer().getQuestManager();
+            var handled = quests.withClaimBatch(() -> takeQuestRewards(session, requested));
+            quests.sync();
+            return handled;
+          }
+        });
+  }
+  private static boolean takeQuestRewards(GameSession session,List<Integer> requested)throws IOException{
+    var protocol=session.getProtocol();
     var ids = new LinkedHashSet<>(requested);
     var successes = new ArrayList<Integer>();
     var items = new ArrayList<GameItem>();
     Retcode firstError = Retcode.SUCC;
     for (int id : ids) {
-      var result = session.getPlayer().getQuestManager().claim(id);
+      var result = org.hkrpg.server.gameplay.MusicActivityQuests.owns(id)
+          &&!session.getActivityReplayLeases().accepts(50022,org.hkrpg.server.gameplay.ActivityReplayScope.identity(session.getPlayer().getGameplay(),50022))
+          ?new emu.lunarcore.game.quest.QuestManager.Claim(Retcode.REQ_PARA_INVALID,List.of())
+          :session.getPlayer().getQuestManager().claim(id);
       if (result.retcode() == Retcode.SUCC) {
         successes.add(id);
         items.addAll(result.items());
@@ -143,7 +160,6 @@ public final class VersionedPacketHandler {
             .clientSchema()
             .parse("ItemList", protocol.translate("ItemList", reward.toByteArray(), true)));
     session.sendClientPacket("TakeQuestRewardScRsp", response.build().toByteArray());
-    session.getPlayer().getQuestManager().sync();
     return true;
   }
 

@@ -78,6 +78,9 @@ public final class MusicManager {
   }
 
   public Retcode start(int id) {
+    return ActivityReplayScope.in(player.getGameplay(),50022,()->startCurrent(id));
+  }
+  private Retcode startCurrent(int id) {
     synchronized (player) {
       if (!GameplayDefinitions.musicLevels.containsKey(id)) return Retcode.MUSIC_NOT_EXIST;
       if (!unlocked(id)
@@ -125,6 +128,9 @@ public final class MusicManager {
   }
 
   public Retcode finish(int reportedStars, boolean combo) {
+    return ActivityReplayScope.in(player.getGameplay(),50022,()->finishCurrent(reportedStars,combo));
+  }
+  private Retcode finishCurrent(int reportedStars, boolean combo) {
     synchronized (player) {
       var run = player.getGameplay().getRhythm();
       int id = run.getActiveLevel();
@@ -149,7 +155,7 @@ public final class MusicManager {
       // Preserve the exact report and transaction if any grant is interrupted or incomplete.
       player.save();
       for (int star = 1; star <= reportedStars; star++) {
-        String key = "music:" + id + ":" + star;
+        String key = ActivityReplayScope.rewardKey(player.getGameplay(),50022,"music:" + id + ":" + star);
         if (player.getRewardLedger().granted(key)) continue;
         var items = new ItemParamMap();
         run.getStarRewards().get(star).forEach((item, count) -> items.put(item, count));
@@ -159,6 +165,7 @@ public final class MusicManager {
       run.finish(reportedStars, combo);
       player.save();
       if (reportedStars > 0) player.getMissionManager().onMusicResult(id, reportedStars);
+      if (reportedStars > 0) player.getQuestManager().onMusicProgress();
       if (!maximumBefore && maxDifficultyUnlocked())
         org.hkrpg.server.protocol.Music46.syncMaximum(player);
       return Retcode.SUCC;
