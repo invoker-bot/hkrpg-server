@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -160,6 +161,303 @@ class DetailGuardTest(unittest.TestCase):
 
 @unittest.skipUnless((CLIENT / data.CLIENT_DIR / (data.SOURCE_CHUNK_MD5 + '.bytes')).is_file(), '没有固定客户端原始分块')
 class LocalClientRecordTest(unittest.TestCase):
+    def original_detail_page(self):
+        directory = CLIENT / ui.lua.LUA
+        indexes = [p for p in directory.glob('LuaV_*.bytes') if ui.lua.sha(p.read_bytes()) == ui.INDEX_SHA]
+        if len(indexes) != 1:
+            self.skipTest('固定原始 Lua 索引不可用')
+        chunks = ui.lua.read_index(indexes[0].read_bytes())
+        first = chunks[0]
+        payload = (directory / (first['digest'] + '.bytes')).read_bytes()
+        entry = first['entries'][0]
+        rows = [json.loads(line) for line in payload[entry['offset']:entry['offset'] + entry['length']].splitlines()]
+        expected = next(row['Md5'] for row in rows if row['Path'] == ui.PAGE)
+        matches = []
+        for chunk in chunks:
+            payload = (directory / chunk['locale'] / (chunk['digest'] + '.bytes')).read_bytes()
+            self.assertEqual(chunk['digest'], hashlib.md5(payload).hexdigest())
+            for entry in chunk['entries']:
+                raw = payload[entry['offset']:entry['offset'] + entry['length']]
+                if hashlib.md5(raw).hexdigest() == expected:
+                    matches.append(raw)
+        self.assertEqual(1, len(matches))
+        return matches[0]
+
+    def test_stellar_skin_has_its_own_background_preview(self):
+        patched = ui.lua.Bytecode(ui.patch_record(self.original_detail_page()))
+        background = next(p for p in patched.protos if p['name'] == '_load_skin_bg_obj')
+        # This is the original special-skin artwork, not the default character portrait.
+        self.assertIn('SpriteOutput/StellarCustomizationMaxFigure/1141501.png', background['constants'])
+        excel = ROOT / 'resources/4.6/ExcelOutput'
+        skins = json.loads((excel / 'AvatarSkin.json').read_text(encoding='utf-8-sig'))
+        skin = next(row for row in skins if row['ID'] == 1141501)
+        self.assertEqual('', skin['ShopBgPath'])
+        self.assertEqual('Stellar', skin['Type'])
+        constants = json.loads((excel / 'ConstValueClient.json').read_text(encoding='utf-8-sig'))
+        figure = next(row for row in constants
+                      if row['ConstValueName'] == 'AvatarCutinFrontImgPath_StellarCustomization_1141501')
+        self.assertEqual(ui.STELLAR_FIGURE, figure['Value']['StringValue'])
+        with self.assertRaises(ValueError):
+            ui.patch_background_record(b'unknown page')
+
+    def test_installed_profile_can_be_prepared_backed_up_and_installed_on_a_copy(self):
+        source = CLIENT / ui.lua.LUA
+        index_name = 'LuaV_c6ba410adafd0d22ad63cc8c503021d0.bytes'
+        index = (source / index_name).read_bytes()
+        self.assertEqual(ui.INSTALLED_INDEX_SHA, ui.lua.sha(index))
+        chunks = ui.lua.read_index(index)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            client = root / 'client'
+            directory = client / ui.lua.LUA
+            directory.mkdir(parents=True)
+            (directory / index_name).write_bytes(index)
+            pointer = bytearray((source / 'M_LuaV.bytes').read_bytes())
+            digest = bytes.fromhex('c6ba410adafd0d22ad63cc8c503021d0')
+            pointer[28:44] = b''.join(digest[i:i + 4][::-1] for i in range(0, 16, 4))
+            (directory / 'M_LuaV.bytes').write_bytes(pointer)
+            for chunk in chunks:
+                name = Path(chunk['locale']) / (chunk['digest'] + '.bytes')
+                (directory / name).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source / name, directory / name)
+            launcher = ui.lua.launcher_module()
+            files = {}
+            for name in launcher.REQUIRED_FILES:
+                path = client / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(name.encode('utf-8'))
+                files[name] = ui.lua.sha(path.read_bytes())
+            old_names = ['29331ada2e56dfe03d4aac7ec4ca0897.bytes',
+                         'dfc26c8f5d4fb3d4db89e28fd51c0199.bytes', index_name, 'M_LuaV.bytes']
+            lua_files = {ui.lua.LUA + name: ui.lua.sha((directory / name).read_bytes()) for name in old_names}
+            document = {'schema': 2, 'clientRoot': str(client), 'clientFiles': files,
+                        'clientLuaFiles': lua_files,
+                        'debugConsole': {'mode': 'external', 'sha256': '0' * 64, 'backupPath': 'console.dll'},
+                        'service': {'readyUrl': 'http://127.0.0.1:18080/health/ready', 'startCommand': 'fixture'}}
+            manifest = root / 'manifest.json'
+            manifest.write_text(json.dumps(document), encoding='utf-8')
+            old_manifest = manifest.read_bytes()
+            prepared = root / 'prepared'
+            report = ui.lua.prepare(client, prepared, build=ui.build_files)
+            self.assertFalse(report['clientModified'])
+            self.assertEqual(ui.INSTALLED_PAGE_SHA, report['originalPageSHA256'])
+            self.assertNotEqual(report['originalPageSHA256'], report['patchedPageSHA256'])
+            with patch.object(launcher, 'client_running', return_value=False), \
+                 patch.object(ui.lua, 'launcher_module', return_value=launcher):
+                backup = root / 'backup'
+                result = ui.lua.install(prepared, manifest, backup, build=ui.build_files)
+                self.assertTrue(result['passed'])
+                self.assertEqual(bytes(pointer), (backup / 'M_LuaV.bytes').read_bytes())
+                self.assertEqual(old_manifest, (backup / 'patch-manifest.json').read_bytes())
+                self.assertEqual(report['files'], json.loads(manifest.read_text('utf-8'))['clientLuaFiles'])
+                self.assertTrue(ui.lua.install(prepared, manifest, root / 'again', build=ui.build_files)['alreadyInstalled'])
+
+            new_pointer = (directory / 'M_LuaV.bytes').read_bytes()
+            new_index = (directory / ('LuaV_' + ui.lua.pointer_digest(new_pointer) + '.bytes')).read_bytes()
+            new_chunks = ui.lua.read_index(new_index)
+            # Only the module manifest and the selected background page may change.
+            changed = []
+            self.assertEqual(len(chunks), len(new_chunks))
+            for old_chunk, new_chunk in zip(chunks, new_chunks):
+                before = (source / old_chunk['locale'] / (old_chunk['digest'] + '.bytes')).read_bytes()
+                after = (directory / new_chunk['locale'] / (new_chunk['digest'] + '.bytes')).read_bytes()
+                self.assertEqual(len(old_chunk['entries']), len(new_chunk['entries']))
+                for old, new in zip(old_chunk['entries'], new_chunk['entries']):
+                    self.assertEqual(old['key'], new['key'])
+                    a = before[old['offset']:old['offset'] + old['length']]
+                    b = after[new['offset']:new['offset'] + new['length']]
+                    if a != b: changed.append((ui.lua.sha(a), ui.lua.sha(b)))
+            self.assertEqual(2, len(changed))
+            self.assertIn((ui.INSTALLED_PAGE_SHA, report['patchedPageSHA256']), changed)
+
+    def test_first_preview_upgrade_requires_and_preserves_the_verified_predecessor(self):
+        source = CLIENT / ui.lua.LUA
+        first_name = 'LuaV_d8cc9ff8f252439fd2901bd5ccab08fa.bytes'
+        first_index = (source / first_name).read_bytes()
+        baseline_index = (source / ui.INSTALLED_INDEX_NAME).read_bytes()
+        self.assertEqual(ui.FIRST_PREVIEW_INDEX_SHA, ui.lua.sha(first_index))
+        with tempfile.TemporaryDirectory() as temp:
+            client = Path(temp) / 'client'
+            directory = client / ui.lua.LUA
+            directory.mkdir(parents=True)
+            for name, index in [(first_name, first_index), (ui.INSTALLED_INDEX_NAME, baseline_index)]:
+                (directory / name).write_bytes(index)
+                for chunk in ui.lua.read_index(index):
+                    relative = Path(chunk['locale']) / (chunk['digest'] + '.bytes')
+                    target = directory / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    if not target.exists(): shutil.copyfile(source / relative, target)
+            pointer = bytearray((source / 'M_LuaV.bytes').read_bytes())
+            digest = bytes.fromhex('d8cc9ff8f252439fd2901bd5ccab08fa')
+            pointer[28:44] = b''.join(digest[i:i + 4][::-1] for i in range(0, 16, 4))
+            (directory / 'M_LuaV.bytes').write_bytes(pointer)
+            report, _, _ = ui.build_files(client)
+            self.assertEqual(ui.FIRST_PREVIEW_PAGE_SHA, report['originalPageSHA256'])
+            self.assertEqual(ui.lua.sha(ui.patch_record(self.original_detail_page())), report['patchedPageSHA256'])
+            (directory / ui.INSTALLED_INDEX_NAME).write_bytes(b'changed predecessor')
+            with self.assertRaisesRegex(ValueError, '既有时装索引不符'):
+                ui.build_files(client)
+            (directory / ui.INSTALLED_INDEX_NAME).write_bytes(baseline_index)
+            prepared = Path(temp) / 'prepared'
+            ui.lua.prepare(client, prepared, build=ui.build_files)
+            launcher = ui.lua.launcher_module()
+            files = {}
+            for name in launcher.REQUIRED_FILES:
+                path = client / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(name.encode('utf-8'))
+                files[name] = ui.lua.sha(path.read_bytes())
+            old_names = ['e3c095f39b5566cddae2cb43006ffa74.bytes',
+                         'c02b019f4e4c52af964e4873e0c0f848.bytes', first_name, 'M_LuaV.bytes']
+            lua_files = {ui.lua.LUA + name: ui.lua.sha((directory / name).read_bytes()) for name in old_names}
+            document = {'schema': 2, 'clientRoot': str(client), 'clientFiles': files, 'clientLuaFiles': lua_files,
+                        'debugConsole': {'mode': 'external', 'sha256': '0' * 64, 'backupPath': 'console.dll'},
+                        'service': {'readyUrl': 'http://127.0.0.1:18080/health/ready', 'startCommand': 'fixture'}}
+            manifest = Path(temp) / 'manifest.json'
+            manifest.write_text(json.dumps(document), encoding='utf-8')
+            with patch.object(launcher, 'client_running', return_value=False), \
+                 patch.object(ui.lua, 'launcher_module', return_value=launcher):
+                backup = Path(temp) / 'backup'
+                self.assertTrue(ui.lua.install(prepared, manifest, backup, build=ui.build_files)['passed'])
+                self.assertEqual(bytes(pointer), (backup / 'M_LuaV.bytes').read_bytes())
+                self.assertTrue(ui.lua.install(prepared, manifest, Path(temp) / 'again',
+                                              build=ui.build_files)['alreadyInstalled'])
+
+    def test_preview_is_created_once_and_hidden_when_switching_goods(self):
+        original = ui.lua.Bytecode(self.original_detail_page())
+        patched = ui.lua.Bytecode(ui.patch_record(self.original_detail_page()))
+        old = next(p for p in original.protos if p['name'] == '_load_skin_bg_obj')
+        background = next(p for p in patched.protos if p['name'] == '_load_skin_bg_obj')
+        self.assertEqual(old['code'], background['code'][-len(old['code']):])
+        code = background['code'][:-len(old['code'])]
+        constants = background['constants']
+
+        class Rect:
+            def __init__(self, game_object=None):
+                self.gameObject = game_object
+                self.children = {}
+            def Find(self, name): return self.children.get(name)
+            def SetParent(self, parent, world_position_stays):
+                self.parent, self.world_position_stays = parent, world_position_stays
+                parent.children[self.gameObject.name] = self
+
+        class Image:
+            pass
+
+        rect_type, image_type = object(), object()
+
+        class GameObject:
+            created = []
+            def __init__(self, name):
+                self.name, self.active, self.destroyed = name, True, False
+                self.transform = Rect(self)
+                self.image = None
+                self.created.append(self)
+            def AddComponent(self, kind):
+                if kind is rect_type: return self.transform
+                if kind is image_type:
+                    self.image = Image()
+                    return self.image
+                raise AssertionError(f'unexpected component {kind!r}')
+            def SetActive(self, active):
+                if self.destroyed: raise RuntimeError('destroyed Unity object')
+                self.active = active
+
+        class Panel:
+            def __init__(self):
+                self._binder = type('Binder', (), {'node_bg': Rect()})()
+                self.loads = []
+            def _async_load_sprite_to(self, image, path): self.loads.append((image, path))
+
+        panel = Panel()
+        imports = {'CS': {'UnityEngine': {'GameObject': GameObject, 'RectTransform': Rect,
+                   'Vector2': {'zero': (0, 0), 'one': (1, 1)}, 'UI': {'Image': Image}}},
+                   'typeof': lambda value: {Rect: rect_type, Image: image_type}[value]}
+
+        def execute(skin_id):
+            panel._skin_id = skin_id
+            registers = [None] * 7
+            registers[0] = panel
+            pc, steps = 0, 0
+            def prop(value, name):
+                return value[name] if isinstance(value, dict) else getattr(value, name)
+            while pc < len(code):
+                steps += 1
+                self.assertLess(steps, 150)
+                word = code[pc]
+                op, a, b, c = word & 255, word >> 8 & 255, word >> 16 & 255, word >> 24 & 255
+                delta = word >> 16
+                if delta >= 0x8000: delta -= 0x10000
+                if op == 3:
+                    registers[a] = bool(b); pc += 1
+                elif op == 5:
+                    registers[a] = constants[delta]; pc += 1
+                elif op == 6:
+                    registers[a] = registers[b]; pc += 1
+                elif op == 12:
+                    encoded = code[pc + 1]
+                    value = imports
+                    for shift in (20, 10, 0)[:encoded >> 30]:
+                        value = prop(value, constants[(encoded >> shift) & 1023])
+                    registers[a] = value; pc += 2
+                elif op == 15:
+                    registers[a] = prop(registers[b], constants[code[pc + 1]]); pc += 2
+                elif op == 16:
+                    setattr(registers[b], constants[code[pc + 1]], registers[a]); pc += 2
+                elif op == 20:
+                    registers[a], registers[a + 1] = (registers[b], constants[code[pc + 1]]), registers[b]
+                    pc += 2
+                elif op == 21:
+                    target, args = registers[a], registers[a + 1:a + b]
+                    if isinstance(target, tuple):
+                        owner, name = target
+                        self.assertIs(args[0], owner)
+                        result = getattr(owner, name)(*args[1:])
+                    else:
+                        result = target(*args)
+                    if c == 2: registers[a] = result
+                    else: self.assertEqual(1, c)
+                    pc += 1
+                elif op == 23:
+                    pc += 1 + delta
+                elif op == 26:
+                    pc = pc + 1 + delta if registers[a] is None or registers[a] is False else pc + 1
+                elif op == 30:
+                    pc = pc + 1 + delta if registers[a] != registers[code[pc + 1]] else pc + 2
+                else:
+                    self.fail(f'unexpected opcode {op} at {pc}')
+            self.assertEqual(len(code), pc)
+
+        execute(1131001)
+        self.assertEqual([], GameObject.created)
+        execute(1141501)
+        preview = panel._binder.node_bg.children['StellarSkinShopPreview'].gameObject
+        self.assertEqual(1, len(GameObject.created))
+        self.assertTrue(preview.active)
+        self.assertIs(panel._binder.node_bg, preview.transform.parent)
+        self.assertFalse(preview.transform.world_position_stays)
+        self.assertEqual(((0, 0), (1, 1), (0, 0), (0, 0)),
+                         (preview.transform.anchorMin, preview.transform.anchorMax,
+                          preview.transform.offsetMin, preview.transform.offsetMax))
+        self.assertTrue(preview.image.preserveAspect)
+        self.assertFalse(preview.image.raycastTarget)
+        self.assertEqual([(preview.image, ui.STELLAR_FIGURE)], panel.loads)
+        execute(1150101)
+        self.assertFalse(preview.active)
+        execute(1141501)
+        self.assertTrue(preview.active)
+        self.assertEqual(1, len(GameObject.created))
+        self.assertEqual(1, len(panel.loads))
+
+        # A panel instance may be reused after its old Unity hierarchy was destroyed.
+        preview.destroyed = True
+        panel._binder = type('Binder', (), {'node_bg': Rect()})()
+        execute(1141501)
+        replacement = panel._binder.node_bg.children['StellarSkinShopPreview'].gameObject
+        self.assertIsNot(preview, replacement)
+        self.assertIs(panel._binder.node_bg, replacement.transform.parent)
+        self.assertEqual(2, len(panel.loads))
+
     def test_all_900_original_rows_remain_identical_after_three_additions(self):
         chunk = (CLIENT / data.CLIENT_DIR / (data.SOURCE_CHUNK_MD5 + '.bytes')).read_bytes()
         self.assertEqual(data.SOURCE_CHUNK_MD5, hashlib.md5(chunk).hexdigest())
@@ -216,6 +514,11 @@ class LocalClientRecordTest(unittest.TestCase):
                   for row in json.loads(path.read_text(encoding='utf-8-sig'))}
         self.assertEqual(server, client)
 
+        goods_chunk = (CLIENT / data.CLIENT_DIR / (data.SOURCE_CHUNK_MD5 + '.bytes')).read_bytes()
+        goods = data.decode_table(data.patch_record(goods_chunk[16547888:16547888 + 26495]))
+        sold_skins = {row['ItemID'] for row, _ in goods if row.get('ShopID') == 107}
+        self.assertEqual(set(client), sold_skins)
+
     def test_pinned_detail_patch_preserves_all_other_prototypes(self):
         directory = CLIENT / ui.lua.LUA
         indexes = [p for p in directory.glob('LuaV_*.bytes') if ui.lua.sha(p.read_bytes()) == ui.INDEX_SHA]
@@ -240,7 +543,10 @@ class LocalClientRecordTest(unittest.TestCase):
         changed = ui.lua.Bytecode(ui.patch_record(matches[0]))
         self.assertEqual(original.main, changed.main)
         for left, right in zip(original.protos, changed.protos):
-            if left['name'] != 'setup_view':
+            if left['name'] == '_load_skin_bg_obj':
+                self.assertEqual(left['code'], right['code'][-len(left['code']):])
+                self.assertEqual(left['constants'], right['constants'][:len(left['constants'])])
+            elif left['name'] != 'setup_view':
                 self.assertEqual(left['code'], right['code'])
                 self.assertEqual(left['constants'], right['constants'])
             else:
