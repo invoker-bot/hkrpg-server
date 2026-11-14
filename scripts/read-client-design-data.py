@@ -32,6 +32,8 @@ INDEX_PROFILES = {
     '7b1fe9daae5364e0fe7d2241314b49ed7b080068e75dbfa6a21e730be73a0a8f': (255, 4, 33, 141295),
     # Research focus candidate: marked research records only; independently pinned by its installer.
     'c61c44d3c63612efdb858f8c2922dd345c532acc961ae85aabc8bc937830920d': (255, 4, 33, 141295),
+    # Research seventh-stage option UI: two graph records, same checked index layout.
+    '15fb9682f950182c3df789d218ac61c1aa2382aa39517d1628b34421f39953d6': (255, 4, 33, 141295),
 }
 
 
