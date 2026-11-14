@@ -469,6 +469,7 @@ public final class GameplayDefinitions {
   }
 
   public static void loadMissions(Path root) {
+    MissionTalkCustomSources.reset(null);
     if (!Files.isDirectory(root)) return;
     GameData.getMissionInfos().clear();
     subs.clear();
@@ -518,6 +519,8 @@ public final class GameplayDefinitions {
     } catch (Exception e) {
       throw new IllegalStateException("Cannot load mission definitions", e);
     }
+    MissionTalkCustomSources.reset(
+        root.toAbsolutePath().normalize().getParent().getParent().getParent());
     LunarCore.getLogger()
         .info(
             "Loaded {} mission definitions / {} sub missions / {} literal story trial tasks",

@@ -472,6 +472,11 @@ public final class MissionManager {
       }
       var customUpdates = new HashMap<String, Integer>();
       var main = GameData.getMissionInfos().get(config.getMainMissionID());
+      if (!values.containsKey(0) && MissionTalkCustomSources.requiresInitialShutupChoice(config, main)) {
+        org.hkrpg.server.GameDiagnostics.outcome(player.getSession(), "MissionTalkCustomValue", id,
+            Retcode.MISSION_CUSTOM_VALUE_NOT_VALID, "missing-initial-value", "index=0");
+        return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+      }
       for (var entry : values.entrySet()) {
         if (main == null
             || main.getMissionCustomValueList() == null
@@ -479,20 +484,28 @@ public final class MissionManager {
             || entry.getValue() < 0) return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
         var definitions =
             Arrays.stream(main.getMissionCustomValueList())
-                .filter(c -> c.getIndex().equals(entry.getKey()))
+                .filter(Objects::nonNull)
+                .filter(c -> Objects.equals(c.getIndex(), entry.getKey()))
                 .toList();
         if (definitions.size() != 1) return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
         var c = definitions.getFirst();
         var allowed = c.getValidValueParamList();
         if (!"Former".equals(c.getType())
-            || !Arrays.asList(config.getCustomValueList()).contains(c.getName())
             || allowed == null
+            || Arrays.asList(allowed).contains(null)
             || (c.isRange()
                 ? allowed.length != 2
                     || entry.getValue() < allowed[0]
                     || entry.getValue() > allowed[1]
                 : !Arrays.asList(allowed).contains(entry.getValue())))
           return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+        boolean declared = config.getCustomValueList() != null
+            && Arrays.asList(config.getCustomValueList()).contains(c.getName());
+        if (!declared && !MissionTalkCustomSources.allows(player, config, main, c, entry.getValue())) {
+          org.hkrpg.server.GameDiagnostics.outcome(player.getSession(), "MissionTalkCustomValue", id,
+              Retcode.MISSION_CUSTOM_VALUE_NOT_VALID, "source-not-declared", "index=" + entry.getKey());
+          return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+        }
         customUpdates.put(
             "mission:" + config.getMainMissionID() + ":" + c.getName(), entry.getValue());
       }

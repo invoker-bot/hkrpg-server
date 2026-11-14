@@ -22,6 +22,7 @@
 | `Anchor trigger skipped` | 实际场景中遇到无法识别或不合法的锚点触发范围，记录楼层、组和实例；启动扫描不逐条打印。 |
 | `Space anchor activated` | 保存后实际激活的锚点、地图编号及场景，配合 `anchor-activate` 保存失败阶段检查缺少 F 提示。 |
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
+| `Gameplay result: command=MissionTalkCustomValue` | 对白变量的 `missing-initial-value`、`source-not-declared` 或 `invalid-source`；记录目标和必要索引，不记录对白正文及账户信息。 |
 | `Gameplay result: command=RobotHuntRecovery` | 寻宝机器人旧记录无法恢复时的箱子、组编号和固定原因；维修或终点保存失败使用 `robot-hunt-finish` / `robot-hunt-recovery` 阶段。 |
 | `Gameplay result: command=OraclePuzzleCompletion` / `ControllerFinishRecovery` | 神谕机关完成或旧控制器记录恢复失败时的宝箱、组编号和固定原因；保存失败分别使用 `oracle-puzzle-finish`、`controller-finish`、`controller-finish-recovery` 阶段。 |
 | `Gameplay result: command=RivetTownGateLink` | 铆钉镇 G12/300010 开关的绑定缺失或来源、目标不符；包含控制台与目标门编号，重复拒绝沿用计数。 |
