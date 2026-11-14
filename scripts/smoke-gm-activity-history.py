@@ -28,8 +28,9 @@ def uint(field,value):
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--browser-pause',action='store_true');args=parser.parse_args()
-    jar=ROOT/'build/libs/hkrpg-server.jar';digest=hashlib.sha256(jar.read_bytes()).hexdigest();java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'))
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--browser-pause',action='store_true');parser.add_argument('--jar',type=Path,default=ROOT/'build/libs/hkrpg-server.jar');args=parser.parse_args()
+    jar=args.jar.resolve();assert jar.is_file() and jar.is_relative_to(ROOT/'build')
+    digest=hashlib.sha256(jar.read_bytes()).hexdigest();java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'))
     runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True);directory=Path(tempfile.mkdtemp(prefix='gm-activity-history-',dir=runs));helpers=directory/'helpers';helpers.mkdir()
     flags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
     subprocess.run([str(java.with_name('javac.exe')),'-encoding','UTF-8','-cp',str(jar),'-d',str(helpers),str(ROOT/'scripts/fixtures/java/org/hkrpg/server/protocol/NativeGmPlayerProbe.java'),
@@ -61,6 +62,7 @@ def main():
         nonlocal probe
         if probe:
             (directory/'quit').touch();probe.wait(timeout=40);assert probe.returncode==0;probe=None
+            gm.wait_for(lambda:request('/status/server')['status']['playerCount']==0,15)
     def login():
         nonlocal probe,uid
         account=request('/hkrpg_cn/mdk/shield/api/login',{'account':account_name,'password':'isolated-history'})['data']['account']
@@ -159,6 +161,7 @@ def main():
                 response=send('GetMaterialSubmitActivityDataCsReq');assert len(response['JJNFLKKAOFI'])==14 and all(r['is_taken_reward'] for r in response['JJNFLKKAOFI'])
                 send('TakeMaterialSubmitActivityRewardCsReq',uint(7,301),False);send('TakeMaterialSubmitActivityRewardCsReq',uint(7,201),False);snapshots.append(snapshot())
             stop()
+        assert all('Exception in thread "hkrpg-shutdown"' not in p.read_text('utf8',errors='replace') for p in directory.glob('server-*.log'))
         assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
         report={'passed':True,'jarSHA256':digest,'runtimeDirectory':str(directory),'events':len(history),'versions':31,
                 'normalStops':normal_stops,'sameUidRestart':True,'nativeRequests':len(native),'materialCyclesCompleted':5,'materialOrdersCompleted':35,'materialWalletChecks':wallet_checks,

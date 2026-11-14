@@ -259,6 +259,16 @@ public final class NativeGmPlayerProbe {
       }
       Thread.sleep(1500);
     }
+    var logout =
+        Unpooled.wrappedBuffer(
+            PacketCodec.encode(
+                protocol.clientCommand("PlayerLogoutCsReq"), new byte[0], new byte[0]));
+    try {
+      channel.write(logout);
+    } finally {
+      logout.release();
+    }
+    Thread.sleep(250);
   }
 
   public static void main(String[] args) {

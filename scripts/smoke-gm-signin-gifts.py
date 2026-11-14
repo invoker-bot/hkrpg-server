@@ -36,12 +36,12 @@ def schema():
 
 
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--browser-pause',action='store_true');parser.add_argument('--story-tokens',action='store_true');args=parser.parse_args()
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--browser-pause',action='store_true');parser.add_argument('--story-tokens',action='store_true');parser.add_argument('--jar',type=Path,default=ROOT/'build/libs/hkrpg-server.jar');args=parser.parse_args()
  types=schema();profile=json.loads((ROOT/'src/main/resources/gameplay'/('story-token-replay-4.6.json' if args.story_tokens else 'signin-gift-replay-4.6.json')).read_text('utf8'))
  records=profile['records'];login_rows=sorted(records['ActivityLoginConfig'],key=lambda r:r['ID']);ids=[r['ID'] for r in login_rows]
  max_days=max(len(r['RewardList']) for r in login_rows);claims_per_round=sum(len(r['RewardList']) for r in login_rows)
  report_name='gm-story-token-replay' if args.story_tokens else 'gm-signin-gifts'
- rewards={r['RewardID']:r for r in records['RewardData']};jar=ROOT/'build/libs/hkrpg-server.jar';digest=hashlib.sha256(jar.read_bytes()).hexdigest()
+ rewards={r['RewardID']:r for r in records['RewardData']};jar=args.jar.resolve();assert jar.is_file() and jar.is_relative_to(ROOT/'build');digest=hashlib.sha256(jar.read_bytes()).hexdigest()
  java=next((ROOT/'.tools').glob('jdk-21*/bin/java.exe'));flags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
  runs=ROOT/'build/smoke';runs.mkdir(exist_ok=True);directory=Path(tempfile.mkdtemp(prefix='gm-signin-gifts-',dir=runs));helpers=directory/'helpers';helpers.mkdir()
  sources=[ROOT/'scripts/fixtures/java'/p for p in ['org/hkrpg/server/protocol/NativeGmPlayerProbe.java',
@@ -94,6 +94,7 @@ def main():
   nonlocal probe
   if probe:
    (directory/'quit').touch();probe.wait(timeout=45);assert probe.returncode==0;probe=None
+   gm.wait_for(lambda:request('/status/server')['status']['playerCount']==0,15)
  def login():
   nonlocal probe,uid
   account=request('/hkrpg_cn/mdk/shield/api/login',{'account':account_name,'password':'isolated-music'})['data']['account']
@@ -194,7 +195,7 @@ def main():
   assert all(data[r['ID']]['MOIAHCMHNEO']==list(range(1,len(r['RewardList'])+1)) for r in login_rows)
   send_steps([claim(r,1,False) for r in login_rows]);restored=inspect('after-same-uid-restart')
   for key in ('hcoin','materials','avatars','legacyDays','legacyRewards','loginRuns'):assert restored[key]==second_done[key],key
-  stop();assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
+  stop();assert all('Exception in thread "hkrpg-shutdown"' not in p.read_text('utf8',errors='replace') for p in directory.glob('server-*.log'));assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
   report={'passed':True,'jarSHA256':digest,'runtimeDirectory':str(directory),'nativeRequests':len(native),'editions':len(events),
    'rewardClaims':claims_per_round*3,'completeRounds':cycles,'replayInstancesCompleted':len(ids)*2,
    'controlledCalendarDays':0 if args.story_tokens else max_days*3,'avatarsRedeemed':9 if args.story_tokens else 0,

@@ -76,6 +76,8 @@ def main():
             try:probe.wait(timeout=40)
             except subprocess.TimeoutExpired:probe.terminate();probe.wait(timeout=15)
             codes.append(probe.returncode==0);probe=None
+            if strict and server and server.poll() is None:
+                gm.wait_for(lambda:request('/status/server')['status']['playerCount']==0,15)
         if server:
             if server.poll() is None:
                 server.stdin.write(b'stop\n');server.stdin.flush()
@@ -182,6 +184,7 @@ def main():
                 print(json.dumps({'browserReady':True,**ready}),flush=True)
                 gm.wait_for(lambda:(directory/'continue').exists(),2400)
             saved=snapshot();snapshots.append(saved);stop()
+        assert all('Exception in thread "hkrpg-shutdown"' not in p.read_text('utf8',errors='replace') for p in directory.glob('server-*.log'))
         assert hashlib.sha256(jar.read_bytes()).hexdigest()==digest
         report={'passed':True,'jarSHA256':digest,'runtimeDirectory':str(directory),'catalogEntries':len(catalog),
                 'grantableEntries':sum(i['grantable'] for i in catalog),'typesTested':list(selected),'normalStops':stops,
