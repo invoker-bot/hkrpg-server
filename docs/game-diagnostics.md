@@ -9,7 +9,7 @@
 | 日志关键词 | 可定位的信息 |
 | --- | --- |
 | `Unhandled` | 协议版本、命令编号、能识别的命令名及连接阶段。 |
-| `Packet rejected` | 失败发生在分帧、请求头、协议转换、处理器或传输阶段。保留异常类型和有限调用栈，已知映射缺失附上原字段名。 |
+| `Packet rejected` | 失败发生在分帧、请求头、协议转换、处理器或传输阶段。保留异常类型和有限调用栈，已知映射缺失附上原字段名或出站命令名。 |
 | `Scene placement skipped` | 缺定义或加载失败的楼层、维度、组、实例和物件、NPC 或怪物资源号。缺失副本的旧入口另记 `reason=missing-raid`、实际楼层、组和副本号。 |
 | `Scene placement skipped: reason=inactive-mission-group` | `inactive-mission-group` 的位面、楼层、维度、剧情线、组及归属任务，定位旧组或错步骤的显式加载。 |
 | `Scene placement skipped: reason=dormant-debug-group` | 位面、楼层、维度及组编号，定位完整来源已核对的未启用测试组；当前覆盖廉价房间、宾馆走廊、花店、列车、金人巷和黑塔办公室六组。 |
@@ -22,6 +22,7 @@
 | `Anchor trigger skipped` | 实际场景中遇到无法识别或不合法的锚点触发范围，记录楼层、组和实例；启动扫描不逐条打印。 |
 | `Space anchor activated` | 保存后实际激活的锚点、地图编号及场景，配合 `anchor-activate` 保存失败阶段检查缺少 F 提示。 |
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
+| `Gameplay result: command=InteractPropCsReq` | 交互执行异常使用 `interaction-exception-prop-组-实例`，另记交互配置、物件编号和状态；配合 `Packet rejected` 排查中断。 |
 | `Gameplay result: command=MissionTalkCustomValue` | 对白变量的 `missing-initial-value`、`source-not-declared` 或 `invalid-source`；记录目标和必要索引，不记录对白正文及账户信息。 |
 | `Gameplay result: command=ShopAutoGift` / `BuyGoodsCsReq` | 固定自动礼包奖励缺失、溢出或不支持嵌套时记录 `invalid-auto-gift-plan` 及商店、商品和物品编号；购买拒绝记录返回码及商店、商品编号。复用限频，不记录账户或请求正文。 |
 | `Gameplay result: command=RobotHuntRecovery` | 寻宝机器人旧记录无法恢复时的箱子、组编号和固定原因；维修或终点保存失败使用 `robot-hunt-finish` / `robot-hunt-recovery` 阶段。 |

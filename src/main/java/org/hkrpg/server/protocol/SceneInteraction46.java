@@ -7,6 +7,7 @@ import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import java.util.HashMap;
 import org.hkrpg.server.gameplay.SceneInteractions;
+import org.hkrpg.server.gameplay.TrainMirror;
 import org.hkrpg.server.gameplay.TrainWorkbench;
 
 /** The native config ID and the opaque UInt64 interaction context are distinct fields. */
@@ -24,33 +25,41 @@ public final class SceneInteraction46 {
       var target = scene != null && scene.getEntityById(entity) instanceof EntityProp candidate
           ? candidate : null;
       boolean workbench = TrainWorkbench.applies(target);
+      boolean mirrorReplay = false;
       var result = Retcode.REQ_PARA_INVALID;
-      if (req.getUnknownFields().asMap().isEmpty()
-          && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id"))
-        result = workbench ? TrainWorkbench.interact(target, config)
-            : SceneInteractions.validateNative(player, config, entity);
       EntityProp prop = null;
-      if (result == Retcode.SUCC) {
-        if (workbench) {
-          prop = target;
-        } else if (org.hkrpg.server.gameplay.BookPickups.applies(target)) {
-          var transition = org.hkrpg.server.gameplay.BookPickups.pickUp(player, config, entity);
-          result = transition.retcode();
-          prop = transition.prop();
-        } else if (org.hkrpg.server.gameplay.WorldChests.applies(target)) {
-          var transition = org.hkrpg.server.gameplay.WorldChests.open(player, config, entity);
-          result = transition.retcode();
-          prop = transition.prop();
-        } else if (org.hkrpg.server.gameplay.GoldenSpears.applies(target)) {
-          var transition = org.hkrpg.server.gameplay.GoldenSpears.interact(player, config, entity);
-          result = transition.retcode();
-          prop = transition.prop();
-        } else if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(target)) {
-          var transition =
-              org.hkrpg.server.gameplay.ScenePropTransitions.interact(player, config, entity);
-          result = transition.retcode();
-          prop = transition.prop();
-        } else prop = player.interactWithProp(config, entity);
+      try {
+        if (req.getUnknownFields().asMap().isEmpty()
+            && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id")) {
+          mirrorReplay = TrainMirror.replaysSavedOpen(player, config, target);
+          result = mirrorReplay ? Retcode.SUCC : workbench ? TrainWorkbench.interact(target, config)
+              : SceneInteractions.validateNative(player, config, entity);
+        }
+        if (result == Retcode.SUCC) {
+          if (workbench || mirrorReplay) {
+            prop = target;
+          } else if (org.hkrpg.server.gameplay.BookPickups.applies(target)) {
+            var transition = org.hkrpg.server.gameplay.BookPickups.pickUp(player, config, entity);
+            result = transition.retcode();
+            prop = transition.prop();
+          } else if (org.hkrpg.server.gameplay.WorldChests.applies(target)) {
+            var transition = org.hkrpg.server.gameplay.WorldChests.open(player, config, entity);
+            result = transition.retcode();
+            prop = transition.prop();
+          } else if (org.hkrpg.server.gameplay.GoldenSpears.applies(target)) {
+            var transition = org.hkrpg.server.gameplay.GoldenSpears.interact(player, config, entity);
+            result = transition.retcode();
+            prop = transition.prop();
+          } else if (org.hkrpg.server.gameplay.ScenePropTransitions.applies(target)) {
+            var transition =
+                org.hkrpg.server.gameplay.ScenePropTransitions.interact(player, config, entity);
+            result = transition.retcode();
+            prop = transition.prop();
+          } else prop = player.interactWithProp(config, entity);
+        }
+      } catch (RuntimeException failed) {
+        SceneActionDiagnostics46.interactionFailed(session, config, entity, target);
+        throw failed;
       }
       if (result == Retcode.SUCC && prop == null) result = Retcode.PLAYER_DATA_ERROR;
       var fields = new HashMap<String, Object>();

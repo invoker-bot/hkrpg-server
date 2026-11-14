@@ -312,6 +312,8 @@ public final class ProtocolBridge {
     if (legacy) return new Packet(id, bytes);
     String name = coreNames.get(id);
     if (name == null) throw new ProtocolException("Unknown core command: " + id);
+    if (!clientCommands.containsKey(name) || clientCommands.get(name) <= 0)
+      throw ProtocolException.diagnostic("unmapped-outgoing-command:" + name);
     int targetId = clientCommand(name);
     // Some core handlers acknowledge by sending a cached empty response without a generated type.
     if (bytes.length == 0) {

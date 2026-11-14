@@ -920,8 +920,9 @@ public class Player implements Tickable, Syncable {
         PropState oldState = prop.getState();
         PropState newState = interactExcel.getTargetState();
 
-        // Set group and prop state
-        this.sendPacket(new PacketGroupStateChangeScNotify(getEntryId(), prop.getGroupId(), newState));
+        // 4.6 has no GroupStateChangeScNotify. The prop refresh below carries its actual state.
+        if (getSession() == null || !getSession().getProtocol().experimental())
+            this.sendPacket(new PacketGroupStateChangeScNotify(getEntryId(), prop.getGroupId(), newState));
         prop.setState(newState);
 
         // Handle any extra interaction actions

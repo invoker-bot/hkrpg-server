@@ -26,6 +26,15 @@ final class SceneActionDiagnostics46 {
             + " propState=" + target.getState()));
   }
 
+  static void interactionFailed(GameSession session, int config, int entity, EntityProp target) {
+    String place = target == null ? "target-missing"
+        : "prop-" + target.getGroupId() + "-" + target.getInstId();
+    GameDiagnostics.outcome(session, "InteractPropCsReq", config, null, "interaction-exception-" + place,
+        "entity=" + entity + (target == null ? "" : " group=" + target.getGroupId()
+            + " instance=" + target.getInstId() + " prop=" + target.getPropId()
+            + " propState=" + target.getState()));
+  }
+
   static void battleRejected(GameSession session, String reason, int battleId, int stageId,
       List<Integer> reportedAvatars) {
     var active = session.getPlayer().getBattle();
