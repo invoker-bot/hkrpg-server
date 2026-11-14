@@ -37,6 +37,8 @@ public final class VersionedPacketHandler {
     if (MemoryChallenge46.handle(session, command, bytes)) return true;
     if (Profile46.handle(session, command, bytes)) return true;
     if (BookCollection46.handle(session, command, bytes)) return true;
+    if (UpdatedArchive46.handle(session, command, bytes)) return true;
+    if (PlayerRoomDisplay46.handle(session, command, bytes)) return true;
     if (PlayerOutfit46.handle(session, command, bytes)) return true;
     if (LineupLeader46.handle(session, command, bytes)) return true;
     if (PresetLineup46.handle(session, command, bytes)) return true;

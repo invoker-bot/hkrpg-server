@@ -1,3 +1,5 @@
+`PlayerRoomCatalog` 校验原始房间门槛、位置与标签，`PlayerRoomDisplay` 保存玩家实际选择，`PlayerRoomDisplay46` 处理完整快照；档案增量按当前持有身份回复。兼容投影、徽章和实机边界见[收藏展柜说明](player-room-display-4.6.md)。
+
 `NpcDialogueSourceAdapter` 读取客户端本地 NPC 对话的原始任务条件，`ClientNpcPublication46` 在场景快照中投影有效任务状态；拳馆排期、诊断及验证边界见[报名入口说明](boxing-club-entrance-4.6.md)。
 
 `DebugGroupConditions` 使用六份完整来源指纹隔离未启用测试组。普通世界的 Mission/Atmosphere 组在 `Scene.loadGroup` 中复用首次加载与刷新准入，阻止任务结束后的迟到重生；延迟卸载、扑满与实例选择边界保留，见[后续场景复查](scene-loading-followup-4.6.md)。

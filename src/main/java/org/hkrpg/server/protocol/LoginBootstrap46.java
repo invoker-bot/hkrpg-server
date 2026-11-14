@@ -72,6 +72,28 @@ final class LoginBootstrap46 {
     Gameplay46.set(room, "area_id", 12);
     var build = Gameplay46.builder(session, "TrainPartyInfo");
     Gameplay46.add(build, "area_list", room.build());
+    if (session.getPlayer() != null) {
+      var wall = org.hkrpg.server.gameplay.PlayerRoomDisplay.view(session.getPlayer());
+      if (wall.available()) {
+        // Personal-room slot references, not paid steps, construction progress or rewards.
+        var displayArea = Gameplay46.builder(session, "TrainPartyArea");
+        Gameplay46.set(displayArea, "area_id", 16);
+        for (int id : new int[] {16001, 16002, 16003})
+          Gameplay46.add(displayArea, "static_prop_id_list", id);
+        Gameplay46.add(build, "area_list", displayArea.build());
+        Gameplay46.set(build, "CMCNNJKJNPK", PlayerRoomDisplay46.display(session, wall.state()));
+        // The native selector builds its catalog from this list, not directly from the bag.
+        // The inherited inventory has no acquisition timestamp, so do not invent one.
+        for (int id : wall.ownedItems()) {
+          var item = Gameplay46.builder(session, "GAGGCODGDLB");
+          Gameplay46.set(item, "prop_id", id);
+          Gameplay46.add(build, "MHABCMLHCGD", item.build());
+        }
+      } else if (wall.damaged()) {
+        org.hkrpg.server.GameDiagnostics.outcome(session, "TrainPartyGetDataCsReq", 16,
+            Retcode.PLAYER_DATA_ERROR, "player-room-source-or-save", "");
+      }
+    }
     var data = Gameplay46.builder(session, "TrainPartyData");
     Gameplay46.set(data, "train_party_info", build.build());
     // Native MKDPFLPICJB.MergeFrom maps wire 6 to +0x30, which Sync passes to

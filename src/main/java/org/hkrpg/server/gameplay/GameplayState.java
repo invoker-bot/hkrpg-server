@@ -9,6 +9,10 @@ import lombok.Getter;
 @Entity(useDiscriminator = false)
 @Getter
 public class GameplayState {
+  // Null in old saves is a genuine empty cabinet, not a completed construction record.
+  private PlayerRoomDisplayState playerRoomDisplay;
+  public PlayerRoomDisplayState getPlayerRoomDisplay() { return playerRoomDisplay; }
+  void playerRoomDisplay(PlayerRoomDisplayState value) { playerRoomDisplay = value; }
   private TrainCakeCatchState trainCakeCatch = new TrainCakeCatchState();
   public TrainCakeCatchState getTrainCakeCatch() { return trainCakeCatch; }
   void trainCakeCatch(TrainCakeCatchState value) { trainCakeCatch = Objects.requireNonNull(value); }

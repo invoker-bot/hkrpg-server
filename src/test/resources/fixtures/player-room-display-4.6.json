@@ -1,0 +1,715 @@
+{
+  "sourceCommit": "724b139d8c9c32d12552eb95745a4fee72bfe48b",
+  "sourceSha256": {
+    "PlayerRoomConstValueCommon": "2881bd0482d7ac512cef69aa1803222a576ee9ae30e0825095b97d47c5fc706e",
+    "FuncUnlockData": "a739caabdef9e4a7952228aea5699c858036b65ef7d3c8c81f0bbd0b275bbded",
+    "TrainPartyAreaConfig": "7e09530292df52541589c66fb0872cca2b4e163e4c94e4c8ac53364163dd978c",
+    "TrainPartyStaticConfig": "edb361a5ef9ea4a8a718bdacf93e9823b460b41c08e22c8b13037190c67ab2bf",
+    "PlayerRoomSlotConfig": "adc4b6cd78ea856f1f811609eb54f82b9076c3009e1e754ce51693db1dd216d8",
+    "PlayerRoomDynamicConfig": "5832afaf5206610739d77c55322f61b5c738747eec8fdbdd08737faee03afd20",
+    "ItemConfigPlayerRoomDynamic": "55f2d501ad5a5de775387846ba22fddf2b268594239c4cfa4f34fdffd89800a9",
+    "PerformanceRecallData": "ffe1e2876ea45f4e605a575b6fcb15b4dc331a9dd3da34938242b7de56b8bf85"
+  },
+  "records": {
+    "ExcelOutput/PlayerRoomConstValueCommon.json": [
+      {
+        "ConstValueName": "Player_Room_Card_Display_Area_ID",
+        "Value": {
+          "IntValue": 16
+        }
+      },
+      {
+        "ConstValueName": "Player_Room_Card_Goto_Unlock_ID",
+        "Value": {
+          "IntValue": 3052
+        }
+      }
+    ],
+    "ExcelOutput/FuncUnlockData.json": [
+      {
+        "UnlockID": 9966,
+        "Conditions": [
+          {
+            "Type": "PlayerLevel",
+            "Param": "21"
+          }
+        ],
+        "ShowCondition": []
+      }
+    ],
+    "ExcelOutput/TrainPartyAreaConfig.json": [
+      {
+        "ID": 12,
+        "Name": {
+          "Hash": 8328983100504856935
+        },
+        "Sort": 1,
+        "ProgressBonusList": [
+          {
+            "Progress": 20,
+            "AddStar": 1
+          },
+          {
+            "Progress": 40,
+            "AddStar": 1
+          },
+          {
+            "Progress": 60,
+            "AddStar": 1
+          },
+          {
+            "Progress": 80,
+            "AddStar": 1
+          },
+          {
+            "Progress": 100,
+            "AddStar": 1
+          }
+        ],
+        "IconPath": "SpriteOutput/Quest/TrainParty/BuildAreaIcon/BuildAreaIcon2.png",
+        "HiddenBlockList": [],
+        "ShowBlockList": [
+          "Bar_2F_Bedroom"
+        ],
+        "FirstStep": 201010,
+        "IsShowInActivity": true
+      },
+      {
+        "ID": 16,
+        "Name": {
+          "Hash": 4917705034335831690
+        },
+        "Sort": 6,
+        "RequireAreaID": 12,
+        "ProgressBonusList": [
+          {
+            "Progress": 20,
+            "AddStar": 1
+          },
+          {
+            "Progress": 40,
+            "AddStar": 1
+          },
+          {
+            "Progress": 60,
+            "AddStar": 1
+          },
+          {
+            "Progress": 80,
+            "AddStar": 1
+          },
+          {
+            "Progress": 100,
+            "AddStar": 1
+          }
+        ],
+        "IconPath": "SpriteOutput/Quest/TrainParty/BuildAreaIcon/BuildAreaIcon5.png",
+        "HiddenBlockList": [],
+        "ShowBlockList": [
+          "Bar_2F_ExhibitRoom"
+        ],
+        "FirstStep": 601010
+      }
+    ],
+    "ExcelOutput/TrainPartyStaticConfig.json": [
+      {
+        "ID": 16001,
+        "AreaID": 16,
+        "SlotList": [
+          1600101,
+          1600102,
+          1600103,
+          1600104,
+          1600105,
+          1600106,
+          1600107,
+          1600108,
+          1600109,
+          1600110,
+          1600111,
+          1600112,
+          1600113,
+          1600114
+        ],
+        "IconPath": "SpriteOutput/Quest/TrainParty/BuildAreaIcon/BuildAreaIcon7.png",
+        "Type": "Normal",
+        "UseLowLight": true
+      },
+      {
+        "ID": 16002,
+        "AreaID": 16,
+        "SlotList": [
+          1600201
+        ],
+        "IconPath": "SpriteOutput/Quest/TrainParty/BuildAreaIcon/BuildAreaIcon7.png",
+        "Type": "Normal",
+        "UseLowLight": true
+      },
+      {
+        "ID": 16003,
+        "AreaID": 16,
+        "SlotList": [
+          1600301,
+          1600302,
+          1600303,
+          1600304,
+          1600305,
+          1600306
+        ],
+        "IconPath": "SpriteOutput/Quest/TrainParty/BuildAreaIcon/BuildAreaIcon7.png",
+        "Type": "Normal",
+        "UseLowLight": true
+      }
+    ],
+    "ExcelOutput/PlayerRoomSlotConfig.json": [
+      {
+        "ID": 1600201,
+        "SortID": 7,
+        "CameraStaticID": 16002,
+        "TagList": [
+          8,
+          13
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600101,
+        "SortID": 8,
+        "CameraStaticID": 16001,
+        "TagList": [
+          9
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 2
+      },
+      {
+        "ID": 1600102,
+        "SortID": 9,
+        "CameraStaticID": 16001,
+        "TagList": [
+          9
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 2
+      },
+      {
+        "ID": 1600103,
+        "SortID": 12,
+        "CameraStaticID": 16001,
+        "TagList": [
+          9,
+          14
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 2
+      },
+      {
+        "ID": 1600104,
+        "SortID": 8,
+        "CameraStaticID": 16001,
+        "TagList": [
+          9
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 2
+      },
+      {
+        "ID": 1600105,
+        "SortID": 9,
+        "CameraStaticID": 16001,
+        "TagList": [
+          9
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 2
+      },
+      {
+        "ID": 1600106,
+        "SortID": 1,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600107,
+        "SortID": 2,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600108,
+        "SortID": 3,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600109,
+        "SortID": 4,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600110,
+        "SortID": 5,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600111,
+        "SortID": 6,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600112,
+        "SortID": 7,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600113,
+        "SortID": 8,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600114,
+        "SortID": 9,
+        "CameraStaticID": 16002,
+        "TagList": [
+          7
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 1
+      },
+      {
+        "ID": 1600301,
+        "SortID": 13,
+        "CameraStaticID": 16003,
+        "TagList": [
+          12
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 3
+      },
+      {
+        "ID": 1600302,
+        "SortID": 14,
+        "CameraStaticID": 16003,
+        "TagList": [
+          12
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 3
+      },
+      {
+        "ID": 1600303,
+        "SortID": 15,
+        "CameraStaticID": 16003,
+        "TagList": [
+          11
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 3
+      },
+      {
+        "ID": 1600304,
+        "SortID": 16,
+        "CameraStaticID": 16003,
+        "TagList": [
+          11
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 3
+      },
+      {
+        "ID": 1600305,
+        "SortID": 17,
+        "CameraStaticID": 16003,
+        "TagList": [
+          10
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 3
+      },
+      {
+        "ID": 1600306,
+        "SortID": 18,
+        "CameraStaticID": 16003,
+        "TagList": [
+          10
+        ],
+        "TypeList": [
+          "Shelf"
+        ],
+        "SubArea": 3
+      }
+    ],
+    "ExcelOutput/PlayerRoomDynamicConfig.json": [
+      {
+        "ID": 294003,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/294003.png",
+        "Taglist": [
+          14
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_SparkleBomb_01_Dynamic_Lod0.prefab",
+        "IsActivity": 1,
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295121,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295121.png",
+        "Taglist": [
+          8
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_Weapon_01_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295122,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295122.png",
+        "Taglist": [
+          8
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_Weapon_02_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295123,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295123.png",
+        "Taglist": [
+          8
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_Caps_01_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295124,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295124.png",
+        "Taglist": [
+          8
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_FeatherPen_01_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295125,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295125.png",
+        "Taglist": [
+          8
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_Weapon_05_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295601,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295601.png",
+        "Taglist": [
+          13
+        ],
+        "PrefabPath": "Stages/OriginalResPos/InteractiveProp/Chapter00/Chap00_GameplayProp_VUTrophy_02/Chap00_GameplayProp_VUTrophy_02_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295602,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295602.png",
+        "Taglist": [
+          13
+        ],
+        "PrefabPath": "Stages/OriginalResPos/InteractiveProp/Chapter00/Chap00_GameplayProp_VUTrophy_01/Chap00_GameplayProp_VUTrophy_01_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295603,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295603.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_Modle_01a_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295604,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295604.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_Ship_01a_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295605,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295605.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_EngineHeadModel_01a_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295606,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295606.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_BD_BarCarriage_Room_Player_WarShip_01a_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295607,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295607.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_Prop_BarCarriage_Room_Player_RubikCube_01a_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295608,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295608.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/Chapter00/Prefab/Chap00_BD_BarCarriage_Room_Player_ClockBoy_02a_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295609,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295609.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/InteractiveProp/Chapter00/Chap00_GameplayProp_RoomFigure_03/Chap00_GameplayProp_RoomFigure_03_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295610,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295610.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/InteractiveProp/Chapter00/Chap00_GameplayProp_RoomFigure_01/Chap00_GameplayProp_RoomFigure_01_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295611,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295611.png",
+        "Taglist": [
+          9
+        ],
+        "PrefabPath": "Stages/OriginalResPos/InteractiveProp/Chapter00/Chap00_GameplayProp_RoomFigure_02/Chap00_GameplayProp_RoomFigure_02_Lod0.prefab",
+        "DisplayTaglist": []
+      },
+      {
+        "ID": 295131,
+        "IconPath": "SpriteOutput/ItemIcon/FurnitureIconNoBox/295131.png",
+        "Taglist": [
+          14
+        ],
+        "PrefabPath": "Characters/InteractiveProp/Chap05/Chap05_GameplayProp_FateRinDoll_01/Chap05_GameplayProp_FateRinDoll_01_Lod0.prefab",
+        "DisplayTaglist": []
+      }
+    ],
+    "ExcelOutput/ItemConfigPlayerRoomDynamic.json": [
+      {
+        "ID": 294003,
+        "ItemMainType": "Material",
+        "ItemSubType": "TrainPartyDiyMaterial",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "ItemName": {
+          "Hash": 12638509170601300171
+        },
+        "ItemDesc": {
+          "Hash": 2471969344314119137
+        },
+        "ItemBGDesc": {
+          "Hash": 4632986893314684147
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/294003.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/FurnitureIcon/294003.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/294003.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 100,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1001
+      },
+      {
+        "ID": 295601,
+        "ItemMainType": "Material",
+        "ItemSubType": "TrainPartyDiyMaterial",
+        "InventoryDisplayTag": 1,
+        "Rarity": "SuperRare",
+        "ItemName": {
+          "Hash": 2348121145855635864
+        },
+        "ItemBGDesc": {
+          "Hash": 6849648662452082830
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/295601.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/FurnitureIcon/295601.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/295601.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 100,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1001
+      },
+      {
+        "ID": 295603,
+        "ItemMainType": "Material",
+        "ItemSubType": "TrainPartyDiyMaterial",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "ItemName": {
+          "Hash": 16378994308326148875
+        },
+        "ItemBGDesc": {
+          "Hash": 7185992371556043337
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/295603.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/FurnitureIcon/295603.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/295603.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 100,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1001
+      },
+      {
+        "ID": 295604,
+        "ItemMainType": "Material",
+        "ItemSubType": "TrainPartyDiyMaterial",
+        "InventoryDisplayTag": 1,
+        "Rarity": "VeryRare",
+        "ItemName": {
+          "Hash": 2701253736051998520
+        },
+        "ItemBGDesc": {
+          "Hash": 6616815628702088587
+        },
+        "ItemIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/295604.png",
+        "ItemFigureIconPath": "SpriteOutput/ItemFigures/FurnitureIcon/295604.png",
+        "ItemCurrencyIconPath": "SpriteOutput/ItemIcon/FurnitureIcon/295604.png",
+        "ItemAvatarIconPath": "",
+        "PileLimit": 100,
+        "CustomDataList": [],
+        "ReturnItemIDList": [],
+        "ItemGroup": 1001
+      }
+    ],
+    "ExcelOutput/PerformanceRecallData.json": [
+      {
+        "ID": 1005,
+        "Name": {
+          "Hash": 560991152786306783
+        },
+        "CategoryID": 1000,
+        "ImgPath": "SpriteOutput/StoryReview/100020101.png",
+        "ImgPath_F": "SpriteOutput/StoryReview/100020101.png",
+        "ImgHeightSize": 180,
+        "UnlockCondition": [
+          {
+            "Type": "FinishMainMission",
+            "Param": "1000401"
+          }
+        ],
+        "PerformanceID": 100020101,
+        "ImgPathWall": "Stages/OriginalResPos/Chapter00/_dependencies/Texture/EffectTexture/DigiitalAlbumTex/CS_Chap00_Act250.png",
+        "ImgPathWall_F": "Stages/OriginalResPos/Chapter00/_dependencies/Texture/EffectTexture/DigiitalAlbumTex/CS_Chap00_Act250.png",
+        "WorldID": 101,
+        "ShowInPlayerRoom": true
+      },
+      {
+        "ID": 5037,
+        "CategoryID": 5000,
+        "ImgPath": "",
+        "ImgPath_F": "",
+        "UnlockCondition": [
+          {
+            "Type": "FinishMainMission",
+            "Param": "1033101"
+          }
+        ],
+        "isVideo": true,
+        "ImgPathWall": "Stages/OriginalResPos/Chapter00/_dependencies/Texture/EffectTexture/DigiitalAlbumTex/CS_Chap03_Act380.png",
+        "ImgPathWall_F": "Stages/OriginalResPos/Chapter00/_dependencies/Texture/EffectTexture/DigiitalAlbumTex/CS_Chap03_Act380.png",
+        "WorldID": 401,
+        "ShowInPlayerRoom": true
+      }
+    ]
+  }
+}

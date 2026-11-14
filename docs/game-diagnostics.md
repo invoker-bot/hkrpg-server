@@ -27,6 +27,7 @@
 | `Gameplay result: command=RivetTownGateLink` | 铆钉镇 G12/300010 开关的绑定缺失或来源、目标不符；包含控制台与目标门编号，重复拒绝沿用计数。 |
 | `Gameplay result: command=FollowupStoryGate` | 机械聚落或铁卫禁区剧情门的来源、绑定或任务脚本不符；记录楼层、组和控制台编号，相同原因按位置限频计数。 |
 | `Gameplay result: command=…BoxingClub…` | 拳馆拒绝的关卡、面板、模块、等级与世界等级；`unlock-condition`/`unlock-mission` 为原剧情门槛，`activity-window-closed`/`activity-window-ambiguous` 为排期，另分缺失来源、非法请求和状态/队伍/选择不符。只记录固定原因和数值编号。 |
+| `Gameplay result: command=TrainPartyGetDataCsReq` / `TrainPartyBuildSelfDisplayAreaDiyCsReq` / `TrainPartySetBadgeAutoFillCsReq` | 展柜来源、保存数据、等级、场景、物品归属、徽章状态及非法请求的固定拒绝原因；保存失败阶段为 `player-room-display`。 |
 | `Player tick error` | 定时更新的场景、异常类型及有限调用栈。 |
 
 例如，客户端出现演出异常而该时段服务端没有对应交互或任务回执时，可以先按客户端演出编号定位本地脚本。两边日志仍需按时间、场景和请求实际出现情况交叉确认。
