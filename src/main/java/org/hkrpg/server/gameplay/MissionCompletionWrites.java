@@ -8,6 +8,26 @@ import org.hkrpg.server.GameDiagnostics;
 
 /** Explicit completion writes start after any independently saved actions or item debits. */
 final class MissionCompletionWrites {
+  /** The reviewed shared talk objectives have no actions, custom values, or sub rewards. */
+  static void completeShared(Player player, List<MissionInfo.SubMissionInfo> sources) {
+    synchronized (player) {
+      var checkpoints = new ArrayList<Runnable>();
+      for (var source : sources)
+        checkpoints.add(player.getGameplay().getSubMissions().get(source.getId()).progressCheckpoint());
+      try {
+        long now = player.getMissionManager().currentInstant().getEpochSecond();
+        for (var source : sources)
+          if (!player.getGameplay().getSubMissions().get(source.getId()).advance(1, 1, now))
+            throw new IllegalStateException("Shared mission is no longer active");
+        player.save();
+      } catch (RuntimeException failed) {
+        checkpoints.forEach(Runnable::run);
+        GameDiagnostics.saveFailed(player, "shared-talk-complete", sources.getFirst().getId(), 0, failed);
+        throw failed;
+      }
+    }
+  }
+
   static void complete(Player player, MissionInfo.SubMissionInfo source, QuestState state) {
     complete(player,source,state,Map.of());
   }

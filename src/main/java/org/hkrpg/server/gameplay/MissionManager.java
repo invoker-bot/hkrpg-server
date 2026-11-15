@@ -437,7 +437,28 @@ public final class MissionManager {
                                 || c.getLevelFloorID() == player.getFloorId()))
                 .toList();
         if (matches.isEmpty()) return Retcode.MISSION_NOT_EXIST;
-        if (matches.size() != 1) return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+        if (matches.size() != 1) {
+          var ordered = matches.stream().sorted(Comparator.comparingInt(MissionInfo.SubMissionInfo::getId)).toList();
+          if (!SharedMissionTalk.matches(player, requestedTalk, ordered)) {
+            org.hkrpg.server.GameDiagnostics.outcome(player.getSession(), "SharedMissionTalk",
+                ordered.getFirst().getId(), Retcode.MISSION_FINISH_WAY_NOT_MATCH,
+                "ambiguous-or-source", "candidates=" + ordered.size());
+            return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+          }
+          if (!values.isEmpty()) return Retcode.MISSION_CUSTOM_VALUE_NOT_VALID;
+          var actions = new StoryActions(player);
+          for (var candidate : ordered) {
+            if (RogueTeachingFlow.automatic(candidate.getId())
+                || !MissionTalkScriptGates.allows(player, candidate.getId()))
+              return Retcode.MISSION_FINISH_WAY_NOT_MATCH;
+            var validation = actions.validate(candidate);
+            if (validation != Retcode.SUCC) return validation;
+          }
+          MissionCompletionWrites.completeShared(player, ordered);
+          refresh();
+          sync();
+          return Retcode.SUCC;
+        }
         id = matches.getFirst().getId();
       }
       var config = GameplayDefinitions.subs.get(id);

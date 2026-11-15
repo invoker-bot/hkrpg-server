@@ -13,6 +13,7 @@ import emu.lunarcore.LunarCore;
 import emu.lunarcore.data.config.FloorInfo;
 import emu.lunarcore.data.config.GroupInfo;
 import emu.lunarcore.data.config.MissionInfo;
+import emu.lunarcore.data.config.MissionTaskInfo;
 import emu.lunarcore.data.config.PropInfo;
 import emu.lunarcore.data.excel.InteractExcel;
 import emu.lunarcore.data.excel.MazePlaneExcel;
@@ -98,6 +99,13 @@ class TrainMirrorInteraction46Test {
       var input = Unpooled.wrappedBuffer(PacketCodec.encode(1405, new byte[] {8, 41}, bytes.toByteArray()));
       try { onMessage(input); } finally { input.release(); }
     }
+    void reportTalk(String key) {
+      var body = com.google.protobuf.DynamicMessage.newBuilder(bridge.clientSchema().message("FinishTalkMissionCsReq"));
+      body.setField(body.getDescriptorForType().findFieldByName("talk_str"), key);
+      var input = Unpooled.wrappedBuffer(PacketCodec.encode(bridge.clientCommand("FinishTalkMissionCsReq"),
+          new byte[] {8, 42}, body.build().toByteArray()));
+      try { onMessage(input); } finally { input.release(); }
+    }
   }
 
   @BeforeEach void prepare() throws Exception {
@@ -160,6 +168,28 @@ class TrainMirrorInteraction46Test {
     player.scene.toProto();
     return player.scene.getEntitiesByGroup(EntityProp.class, 47).stream()
         .filter(prop -> prop.getInstId() == 300001).findFirst().orElseThrow();
+  }
+
+  private void addOriginalHiddenMirrorObjective() throws Exception {
+    try (var reader = new InputStreamReader(getClass().getResourceAsStream(
+        "/fixtures/shared-mission-talk-4.6.json"), StandardCharsets.UTF_8)) {
+      var groups = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("groups");
+      for (var item : groups) {
+        var group = item.getAsJsonObject();
+        if (!"Mission_401010506".equals(group.get("key").getAsString())) continue;
+        var script = group.get("script");
+        var task = ResourceLoader.getGson().fromJson(script, MissionTaskInfo.class);
+        task.retainSourceDefinition(script);
+        GameplayDefinitions.subs.get(401010506).setTask(task);
+        var hidden = ResourceLoader.getGson().fromJson(
+            group.getAsJsonObject("secondary").get("row"), MissionInfo.SubMissionInfo.class);
+        oldSubs.put(hidden.getId(), GameplayDefinitions.subs.put(hidden.getId(), hidden));
+        player.getGameplay().getMainMissions().put(4010134, new QuestState(4010134));
+        player.getGameplay().getSubMissions().put(401013401, new QuestState(401013401));
+        return;
+      }
+      fail("The original shared mirror objective is missing");
+    }
   }
 
   private void assertReply(int expected, int entity) throws Exception {
@@ -238,6 +268,22 @@ class TrainMirrorInteraction46Test {
     assertEquals(QuestState.Phase.FINISHED, player.getGameplay().getSubMissions().get(401010506).getPhase());
     assertEquals(QuestState.Phase.DOING, player.getGameplay().getSubMissions().get(401010507).getPhase());
     assertTrue(player.getGameplay().getRewards().isEmpty());
+  }
+
+  @Test void nativeZeroIdPerformanceReportCompletesBothPreviouslyAcceptedMirrorObjectives() throws Exception {
+    addOriginalHiddenMirrorObjective();
+    var mirror = loadMirror();
+    session.request(mirror.getEntityId(), 1010);
+    assertReply(0, mirror.getEntityId());
+    session.reportTalk("Mission_401010506");
+    var frame = session.sent.stream()
+        .filter(f -> f.cmdId() == session.bridge.clientCommand("FinishTalkMissionScRsp"))
+        .findFirst().orElseThrow();
+    var reply = session.bridge.clientSchema().parse("FinishTalkMissionScRsp", frame.body());
+    assertEquals(0, reply.getField(reply.getDescriptorForType().findFieldByName("retcode")));
+    assertEquals(QuestState.Phase.FINISHED, player.getGameplay().getSubMissions().get(401010506).getPhase());
+    assertEquals(QuestState.Phase.FINISHED, player.getGameplay().getSubMissions().get(401013401).getPhase());
+    assertEquals(QuestState.Phase.DOING, player.getGameplay().getSubMissions().get(401010507).getPhase());
   }
 
   @Test void anotherOrdinaryTrainPropUsesTheSameNativeFallbackWithoutDisconnecting() throws Exception {
