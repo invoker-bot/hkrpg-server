@@ -14,6 +14,7 @@ public final class CnSdkRoutes {
         app.post("/hkrpg_cn/combo/granter/login/v2/login", tracked(new ComboTokenGranterHandler(), "combo"));
         app.post("/hkrpg_cn/account/ma-passport/api/appLoginByPassword", new AppLoginHandler());
         CnPassportRoutes.register(app);
+        SdkShopRoutes.register(app);
         // The managed PC SDK loads these before using its legacy MDK login URL.
         // Keep the bundled CN identity (app 8 / hkrpg_cn), without changing auth.
         app.get("/hkrpg_cn/mdk/shield/api/loadConfig", new HttpJsonResponse("""

@@ -129,3 +129,5 @@ RogueMiracleShop、RogueShopContext与RogueMiracleShop46为本项目独立Java�
 2026-10-02 初始角色选择只对照 March7thHoney-OpenSource AGPL-3.0 固定提交 fe00bdbda3c28ca33d01f171566aa35b5ab95083 的 HandlerSetPlayerInfoCsReq/PacketSetPlayerInfoScRsp 和 hkrpg-go 固定提交 ef47e49a233133c46d70ab5a4deb4bc71ae49571 的 SetPlayerInfoCsReq/CreateCharacterSubMission 事件关联，未导入代码、固定完成ID、Lua或运行时。Java条件/确认存储和合成探针为本项目实现，原生响应使用本机已核对SHA的只读消费与写出证据。
 
 回响菜单恢复与能量字段证据为本项目独立实现，继续使用前述固定 AGPL 协议来源和 LunarCore 的明确项目阈值政策。本机客户端仅作固定 SHA 的静态只读字段核对；十三个方法的完整 PE 字节保留在测试证据中，不作为运行时执行依赖。未加载或执行客户端 DLL，未导入参考仓库二进制、无许可证代码或能力脚本。
+
+本地商品价格响应依据 March7thHoney-OpenSource 的 AGPL-3.0 固定提交 `fe00bdbda3c28ca33d01f171566aa35b5ab95083` 中 `Config/Custom/QueryProductInfoConfig.json` 整理 88 个人民币价格档位，保存在 `src/main/resources/sdk-shop-prices.json`；原档位与新增免费档位分开。SDK 路由及校验由本项目独立实现，不依赖 references/ 目录，参考价格表不代表已验证的实时官方价格。

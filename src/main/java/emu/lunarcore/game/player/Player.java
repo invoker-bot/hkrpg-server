@@ -460,6 +460,14 @@ public class Player implements Tickable, Syncable {
         return true;
     }
 
+    /** Caller persists the wallet and the local order receipt before notifying the client. */
+    public synchronized boolean tryChangeMCoin(int amount) {
+        long next = (long) this.mcoin + amount;
+        if (next < 0 || next > Integer.MAX_VALUE) return false;
+        this.mcoin = (int) next;
+        return true;
+    }
+
     public synchronized void addHCoin(int amount) {
         int newAmount = Utils.safeAdd(this.hcoin, amount);
         if (this.hcoin != newAmount) {

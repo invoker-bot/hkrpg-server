@@ -20,6 +20,7 @@ public final class VersionedPacketHandler {
     if (EquipmentRank46.handle(session, command, bytes)) return true;
     if (AvatarMilestones46.handle(session, command, bytes)) return true;
     if (ShopPurchase46.handle(session, command, bytes)) return true;
+    if (FreeDreamProduct46.handle(session, command, bytes)) return true;
     if (ShopCosmetics46.handle(session, command, bytes)) return true;
     if (ProgressionGates46.handle(session, command, bytes)) return true;
     if (PlayerReturn46.handle(session, command, bytes)) return true;

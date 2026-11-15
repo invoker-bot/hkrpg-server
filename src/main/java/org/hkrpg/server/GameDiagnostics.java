@@ -91,6 +91,12 @@ public final class GameDiagnostics {
     });
   }
 
+  /** SDK requests may contain credentials; record only a fixed rejection category. */
+  public static void sdkShopRejected(String reason) {
+    record(Topic.ACTION, Level.WARN, "sdk-shop:" + reason,
+        () -> "Local SDK shop rejected: reason=" + reason);
+  }
+
   public static void missionScriptUnavailable(Player player, int main, int sub, int performance) {
     record(Topic.PROGRESS,Level.WARN,"unavailable-script:"+main+":"+sub,
         ()->"Mission script skipped: reason=missing-optional-performance main="+main

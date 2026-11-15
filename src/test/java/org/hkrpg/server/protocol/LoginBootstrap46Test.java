@@ -7,6 +7,7 @@ import com.google.protobuf.CodedInputStream;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,6 +15,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class LoginBootstrap46Test {
+  @BeforeAll static void loadShopCatalog() {
+    assertTrue(org.hkrpg.server.gameplay.FreeDreamCatalog.load(java.nio.file.Path.of("resources/4.6")));
+  }
   // Matched Honey fe00bdb Raw command pairs and response retcode field numbers.
   static Stream<Arguments> queries() {
     return Stream.of(
@@ -46,6 +50,16 @@ class LoginBootstrap46Test {
     };
     assertTrue(VersionedPacketHandler.handle(session, request, body),
         "An observed startup query must have an explicit response contract: " + request);
+    if (request == 96) {
+      var data = session.bridge.clientSchema().parse("QueryProductInfoScRsp",
+          session.clientBodies.get("QueryProductInfoScRsp"));
+      assertEquals(0, InitialData46Test.field(data, "retcode"));
+      assertEquals(6, data.getRepeatedFieldCount(data.getDescriptorForType().findFieldByName("product_list")));
+      assertEquals(before, new Gson().toJson(session.player.getGameplay()));
+      assertEquals(0, session.player.getMcoin());
+      assertEquals(SessionState.ACTIVE, session.getState());
+      return;
+    }
     assertEquals(1, session.nativePackets.size());
     var packet = session.nativePackets.getFirst();
     assertEquals(response, packet.cmdId());
@@ -112,6 +126,14 @@ class LoginBootstrap46Test {
     for (byte[] body : new byte[][] {new byte[] {8, 1}, new byte[] {(byte) 0x80}}) {
       var session = new PlayerReturnInitial46Test.Session();
       assertTrue(VersionedPacketHandler.handle(session, request, body));
+      if (request == 96) {
+        var data = session.bridge.clientSchema().parse("QueryProductInfoScRsp",
+            session.clientBodies.get("QueryProductInfoScRsp"));
+        assertEquals(Retcode.REQ_PARA_INVALID.getVal(), InitialData46Test.field(data, "retcode"));
+        assertEquals(0, data.getRepeatedFieldCount(data.getDescriptorForType().findFieldByName("product_list")));
+        assertEquals(0, session.player.getMcoin());
+        continue;
+      }
       assertEquals(response, session.nativePackets.getFirst().cmdId());
       var input = CodedInputStream.newInstance(session.nativePackets.getFirst().body());
       assertEquals(ret << 3, input.readTag());
@@ -142,7 +164,8 @@ class LoginBootstrap46Test {
         session.bridge.clientCommand("ContentPackageGetDataCsReq"), new byte[0], new byte[0]));
     try { session.onMessage(input); } finally { input.release(); }
     assertFalse(session.closed);
-    assertEquals(23, session.nativePackets.size());
+    assertEquals(22, session.nativePackets.size());
+    assertTrue(session.clientBodies.containsKey("QueryProductInfoScRsp"));
     assertTrue(session.clientBodies.containsKey("GetLevelRewardTakenListScRsp"));
     assertTrue(session.clientBodies.containsKey("GetAllServerPrefsDataScRsp"));
     assertTrue(session.clientBodies.containsKey("ContentPackageGetDataScRsp"));

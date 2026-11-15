@@ -129,6 +129,7 @@ public class ResourceLoader {
         if ("4.6.0".equals(LunarCore.getConfig().protocol.wireVersion)) {
             org.hkrpg.server.gameplay.SkinShopCatalog.install();
             org.hkrpg.server.gameplay.FashionShopCatalog.install();
+            org.hkrpg.server.gameplay.FreeDreamCatalog.load(Paths.get(LunarCore.getConfig().getResourceDir()));
         }
     }
 

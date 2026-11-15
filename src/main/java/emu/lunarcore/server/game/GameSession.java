@@ -46,6 +46,8 @@ public class GameSession {
     // Flags
     private SessionState state = SessionState.WAITING_FOR_TOKEN;
     private boolean useSecretKey;
+    private final java.util.Map<String, String> localDreamOfferRequests = new java.util.HashMap<>();
+    private final java.util.ArrayDeque<String> localRechargeNotices = new java.util.ArrayDeque<>();
     private final ProtocolBridge protocol;
     private String rogueFinishSentRun = "";
     @Setter private String composeLimitPeriod = "";
@@ -87,6 +89,31 @@ public class GameSession {
 
     public boolean useSecretKey() {
         return useSecretKey;
+    }
+
+    /** Stable IDs permit safe retries even when the SDK omits its own order identifier. */
+    public synchronized void ensureLocalDreamOffers(java.util.List<String> products) {
+        for (String product : products)
+            localDreamOfferRequests.computeIfAbsent(product, ignored -> "local_" + java.util.UUID.randomUUID());
+    }
+
+    public synchronized String localDreamOfferRequest(String product) { return localDreamOfferRequests.get(product); }
+
+    /** Local recharge reward prompts are scoped to this live session only. */
+    public synchronized void markLocalRechargeNotice(String product) {
+        if (localRechargeNotices.size() < 1024) localRechargeNotices.addLast(product);
+    }
+
+    public synchronized boolean hasLocalRechargeNotice() { return !localRechargeNotices.isEmpty(); }
+
+    public synchronized boolean consumeLocalRechargeNotices(int amount) {
+        if (amount <= 0 || amount > localRechargeNotices.size()) return false;
+        for (int i = 0; i < amount; i++) {
+            var product = localRechargeNotices.removeFirst();
+            if (localDreamOfferRequests.containsKey(product))
+                localDreamOfferRequests.put(product, "local_" + java.util.UUID.randomUUID());
+        }
+        return true;
     }
 
     public void setAccount(Account account) {

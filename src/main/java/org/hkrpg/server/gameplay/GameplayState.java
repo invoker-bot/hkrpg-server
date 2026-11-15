@@ -27,6 +27,11 @@ public class GameplayState {
   // Absent in old saves: the inherited currentBgm remains the initial selection until first save.
   @lombok.Setter private JukeboxState jukebox;
   private ShopPurchaseState shopPurchases = new ShopPurchaseState();
+  private Map<String, String> freeDreamReceipts = new HashMap<>();
+  public Map<String, String> getFreeDreamReceipts() {
+    if (freeDreamReceipts == null) freeDreamReceipts = new HashMap<>();
+    return freeDreamReceipts;
+  }
   public ShopPurchaseState getShopPurchases() {
     if (shopPurchases == null) shopPurchases = new ShopPurchaseState();
     return shopPurchases;
