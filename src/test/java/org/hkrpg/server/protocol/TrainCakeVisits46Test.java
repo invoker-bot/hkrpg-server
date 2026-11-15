@@ -92,7 +92,7 @@ class TrainCakeVisits46Test {
     assertEquals(1, s.actor.saves);
   }
 
-  @Test void nativeProfileReturnsCombinedTotalsAndSeparateRoomRecords() throws Exception {
+  @Test void nativeProfileGroupsEachCakeByTheRoomsWhereItWasActuallyCaught() throws Exception {
     var s = fixture.room(true); long now = TrainCakeCatch.now();
     assertEquals(Retcode.SUCC, TrainCakeCatch.open(s.actor, now).retcode());
     assertEquals(Retcode.SUCC, TrainCakeCatch.search(s.actor, 10, now).retcode());
@@ -108,13 +108,45 @@ class TrainCakeVisits46Test {
           (int) TrainCakeCatch46Test.field(row, "count"));
     }
     assertEquals(Map.of(10, 2, 21, 1), counts);
-    var rooms = new TreeMap<Integer, List<?>>();
+    var roomsByCake = new TreeMap<Integer, List<?>>();
     for (var raw : TrainCakeCatch46Test.list(profile, "CEMFBJPOLNP")) {
       var row = (com.google.protobuf.DynamicMessage) raw;
-      rooms.put((int) TrainCakeCatch46Test.field(row, "PCPDHEIEJFO"),
+      roomsByCake.put((int) TrainCakeCatch46Test.field(row, "PCPDHEIEJFO"),
           TrainCakeCatch46Test.list(row, "LPDFMJPFGJH"));
     }
-    assertEquals(Map.of(10001, List.of(10), 20001, List.of(10), 20002, List.of(21)), rooms);
+    assertEquals(Map.of(10, List.of(10001, 20001), 21, List.of(20002)), roomsByCake);
+  }
+
+  // Native IsCakeCaughtInRoom indexes the record by cat ID, then checks its UID set.
+  private boolean nativeCaught(com.google.protobuf.DynamicMessage data, int cat, int owner) {
+    for (var raw : TrainCakeCatch46Test.list(data, "CEMFBJPOLNP")) {
+      var row = (com.google.protobuf.DynamicMessage) raw;
+      if ((int) TrainCakeCatch46Test.field(row, "PCPDHEIEJFO") == cat
+          && TrainCakeCatch46Test.list(row, "LPDFMJPFGJH").contains(owner)) return true;
+    }
+    return false;
+  }
+
+  @Test void captureReplyAndProfileLetTheNativeClientRecognizeTheExactCaughtRoom()
+      throws Exception {
+    var s = fixture.room(true); fixture.open(s); fixture.search(s, 10);
+    var own = s.actor.getGameplay().getTrainCakeCatch();
+    assertEquals(Retcode.SUCC, TrainCakeVisits.capture(s.actor, room(own, 20001), 10, TrainCakeCatch.now()));
+    assertEquals(Retcode.SUCC, TrainCakeVisits.capture(s.actor, room(own, 20002), 21, TrainCakeCatch.now()));
+    var reply = fixture.search(s, 21);
+    for (var data : List.of(reply,
+        (com.google.protobuf.DynamicMessage) TrainCakeCatch46Test.field(
+            TrainCakeCatch46Test.request(s, "SocialPlayGetDataCsReq", new byte[0], "SocialPlayGetDataScRsp"),
+            "ELDIONMAAHO"))) {
+      assertTrue(nativeCaught(data, 10, 10001), "Own-room capture must remain recognized");
+      assertTrue(nativeCaught(data, 10, 20001), "The same cake can be caught in another room");
+      assertFalse(nativeCaught(data, 10, 20002), "A different cake there is not a capture of this one");
+      assertTrue(nativeCaught(data, 21, 10001));
+      assertTrue(nativeCaught(data, 21, 20002));
+      assertFalse(nativeCaught(data, 21, 20001));
+    }
+    assertEquals(5, TrainCakeCatch.weeklyRemaining(s.actor, TrainCakeCatch.now()));
+    assertEquals(Map.of(10, 2, 21, 2), TrainCakeVisits.totalCounts(s.actor));
   }
 
   @Test void localAndVisitorCapturesShareTheThirteenPerSpeciesLimit() {

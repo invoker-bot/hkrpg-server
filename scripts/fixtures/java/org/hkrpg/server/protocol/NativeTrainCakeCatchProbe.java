@@ -136,12 +136,13 @@ public final class NativeTrainCakeCatchProbe {
     var expected=new TreeMap<Integer,Integer>();for(int id:caught)expected.put(id,1);
     require(counts.equals(expected), "Saved capture inventory changed");
     var records=(List<?>)field(profile,"CEMFBJPOLNP");
-    require(records.size()==(caught.isEmpty()?0:1), "Wrong weekly room record count");
-    if(!caught.isEmpty()) {
-      var row=(DynamicMessage)records.getFirst();
-      require(number(row,"PCPDHEIEJFO")==uid,"Capture record owner changed");
-      require(new TreeSet<>((List<Integer>)field(row,"LPDFMJPFGJH")).equals(new TreeSet<>(caught)),
-          "Capture record lost or invented cats");
+    require(records.size()==caught.size(), "Wrong weekly cat record count");
+    var seen=new TreeSet<Integer>();
+    for(var raw:records) {
+      var row=(DynamicMessage)raw;
+      int cat=number(row,"PCPDHEIEJFO");
+      require(seen.add(cat) && caught.contains(cat), "Capture record lost or invented cats");
+      require(field(row,"LPDFMJPFGJH").equals(List.of(uid)), "Capture record owner changed");
     }
     require(((List<?>)field(profile,"KBEGMPBAJIL")).isEmpty(),"Invented performance completions");
   }
@@ -157,13 +158,17 @@ public final class NativeTrainCakeCatchProbe {
         "Read-only social query invented park areas or pet placements");
     return child(response, "ELDIONMAAHO");
   }
-  private DynamicMessage search(int cat) throws Exception {
+  private DynamicMessage search(int cat, int uid) throws Exception {
     var req=builder("TrainCakeCatchSearchCsReq");set(req,"PCPDHEIEJFO",cat);
     var rsp=call("TrainCakeCatchSearchCsReq",req);
     require(number(rsp,"PCPDHEIEJFO")==cat,"Search identity changed");
     var count=child(rsp,"NIELDCLPOLA");
     require(number(count,"PCPDHEIEJFO")==cat && number(count,"count")==1,
         "Duplicate capture or wrong cat inventory");
+    require(((List<?>)field(rsp,"CEMFBJPOLNP")).stream().anyMatch(raw -> {
+      var row=(DynamicMessage)raw;
+      return number(row,"PCPDHEIEJFO")==cat && ((List<?>)field(row,"LPDFMJPFGJH")).contains(uid);
+    }), "Native lookup cannot find the captured cat in its room");
     return rsp;
   }
   private int textSelection(int id) throws Exception {
@@ -264,7 +269,7 @@ public final class NativeTrainCakeCatchProbe {
       }
       if (!mode.equals("retry") && !mode.equals("finish")) {
         int cat=mode.equals("open")?10:mode.equals("verify")?21:26;
-        var first=search(cat);require(first.equals(search(cat)),"Retry changed capture receipt");
+        var first=search(cat,uid);require(first.equals(search(cat,uid)),"Retry changed capture receipt");
         captured.add(cat);
       }
       checkWeeklyText(captured.size());

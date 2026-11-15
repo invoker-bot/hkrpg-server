@@ -8,6 +8,9 @@ import emu.lunarcore.server.game.GameSession;
 import emu.lunarcore.server.packet.Retcode;
 import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import org.hkrpg.server.gameplay.TrainCakeCatch;
 import org.hkrpg.server.gameplay.TrainCakeCatchState;
 import org.hkrpg.server.gameplay.TrainCakeVisits;
@@ -135,17 +138,19 @@ final class TrainCakeCatch46 {
 
   static void addWeekRecord(GameSession s, DynamicMessage.Builder response, TrainCakeCatchState state) {
     long now = TrainCakeCatch.now();
-    if (state.getRefreshAt() > now && !state.getCaught().isEmpty()) {
-      var row = builder(s, "PJFIMFJPMCN");
-      // Native _RefreshCakeCatchRecordHistory indexes by room owner, then actual caught cat IDs.
-      set(row, "PCPDHEIEJFO", s.getPlayer().getUid());
-      for (int cat : state.getCaught()) add(row, "LPDFMJPFGJH", cat);
-      add(response, "CEMFBJPOLNP", row.build());
-    }
-    for (var entry : TrainCakeVisits.records(s.getPlayer(), now).entrySet()) {
+    // The client indexes the history by cat ID and looks up the room-owner UID
+    // in that cat's set. Storage uses the opposite ordering, so transpose here.
+    var roomsByCat = new TreeMap<Integer, Set<Integer>>();
+    if (state.getRefreshAt() > now)
+      for (int cat : state.getCaught())
+        roomsByCat.computeIfAbsent(cat, ignored -> new TreeSet<>()).add(s.getPlayer().getUid());
+    for (var entry : TrainCakeVisits.records(s.getPlayer(), now).entrySet())
+      for (int cat : entry.getValue())
+        roomsByCat.computeIfAbsent(cat, ignored -> new TreeSet<>()).add(entry.getKey());
+    for (var entry : roomsByCat.entrySet()) {
       var row = builder(s, "PJFIMFJPMCN");
       set(row, "PCPDHEIEJFO", entry.getKey());
-      for (int cat : entry.getValue()) add(row, "LPDFMJPFGJH", cat);
+      for (int owner : entry.getValue()) add(row, "LPDFMJPFGJH", owner);
       add(response, "CEMFBJPOLNP", row.build());
     }
   }

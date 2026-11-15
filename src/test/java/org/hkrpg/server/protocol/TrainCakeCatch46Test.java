@@ -216,8 +216,8 @@ class TrainCakeCatch46Test {
     var count = (DynamicMessage) field(rsp, "NIELDCLPOLA");
     assertEquals(10, field(count, "PCPDHEIEJFO")); assertEquals(1, field(count, "count"));
     var week = (DynamicMessage) list(rsp, "CEMFBJPOLNP").get(0);
-    assertEquals(10001, field(week, "PCPDHEIEJFO"));
-    assertEquals(List.of(10), field(week, "LPDFMJPFGJH"));
+    assertEquals(10, field(week, "PCPDHEIEJFO"));
+    assertEquals(List.of(10001), field(week, "LPDFMJPFGJH"));
     assertEquals(rsp, search(s, 10));
     assertEquals(2, s.actor.saves);
     var reconnected = room(false);
@@ -227,7 +227,9 @@ class TrainCakeCatch46Test {
     var profile = (DynamicMessage) field(query, "ELDIONMAAHO");
     assertEquals(3, list(profile, "BJPHDKEBOBK").size());
     assertEquals(1, list(profile, "NIELDCLPOLA").size());
-    assertEquals(List.of(10), field((DynamicMessage) list(profile, "CEMFBJPOLNP").get(0), "LPDFMJPFGJH"));
+    var restoredWeek = (DynamicMessage) list(profile, "CEMFBJPOLNP").get(0);
+    assertEquals(10, field(restoredWeek, "PCPDHEIEJFO"));
+    assertEquals(List.of(10001), field(restoredWeek, "LPDFMJPFGJH"));
     assertEquals(0, reconnected.actor.saves);
   }
 

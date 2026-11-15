@@ -141,10 +141,14 @@ public final class NativeTrainCakeSocialProbe {
       require((Boolean) value(echoed, "KALACJBAPOA") && (Boolean) value(echoed, "FOKJIPGMKAN")
           && (Boolean) value(echoed, "IBLGOCFBOCO"), "Room permissions were not saved");
     }
-    void search(int cat) throws Exception {
+    void search(int cat, int owner) throws Exception {
       var req = builder("TrainCakeCatchSearchCsReq"); set(req, "PCPDHEIEJFO", cat);
       var result = call("TrainCakeCatchSearchCsReq", req);
       require(number(child(result, "NIELDCLPOLA"), "count") == 1, "Incorrect capture total");
+      require(((List<?>) value(result, "CEMFBJPOLNP")).stream().anyMatch(raw -> {
+        var row = (DynamicMessage) raw;
+        return number(row, "PCPDHEIEJFO") == cat && ((List<?>) value(row, "LPDFMJPFGJH")).contains(owner);
+      }), "Native lookup cannot find the captured cat in its room");
     }
     void verifyProfile(int expectedOwner) throws Exception {
       var profile = child(call("SocialPlayGetDataCsReq"), "ELDIONMAAHO");
@@ -157,8 +161,15 @@ public final class NativeTrainCakeSocialProbe {
       require(actual.equals(uid == expectedOwner ? Map.of(10, 1, 21, 1) : Map.of(10, 1)),
           "Capture was not persisted");
       var records = (List<?>) value(profile, "CEMFBJPOLNP");
-      require(records.size() == 1 && number((DynamicMessage) records.getFirst(), "PCPDHEIEJFO") == expectedOwner,
-          "Wrong persisted room receipt");
+      var history = new TreeMap<Integer, List<?>>();
+      for (var raw : records) {
+        var row = (DynamicMessage) raw;
+        require(history.put(number(row, "PCPDHEIEJFO"), (List<?>) value(row, "LPDFMJPFGJH")) == null,
+            "Duplicate cat record");
+      }
+      var expected = uid == expectedOwner
+          ? Map.of(10, List.of(expectedOwner), 21, List.of(expectedOwner)) : Map.of(10, List.of(expectedOwner));
+      require(history.equals(expected), "Wrong persisted cat and room receipts");
       if (uid == expectedOwner) {
         var layout = child(profile, "NLJBJMDPBGN");
         require(((List<?>) value(layout, "PNHLAAMNGFE")).size() == 1
@@ -200,7 +211,7 @@ public final class NativeTrainCakeSocialProbe {
             "Wrong visitor count");
         var opened = a.call("TrainCakeCatchOpenBoxCsReq");
         require(((List<?>) value(opened, "BJPHDKEBOBK")).size() == 3, "Wrong batch size");
-        a.search(10); b.search(10); a.search(10);
+        a.search(10, ownerUid); b.search(10, ownerUid); a.search(10, ownerUid);
         b.allowRoom(); a.visit(b.uid);
         var switched = child(a.call("SocialPlayGetOnlineRoomDataCsReq"), "DJMHHMMABJL");
         require(number(switched, "room_owner_uid") == b.uid, "Room switch chose the wrong owner");
@@ -213,7 +224,7 @@ public final class NativeTrainCakeSocialProbe {
         require(number(notify, "room_owner_uid") == ownerUid && number(notify, "op_uid") == a.uid,
             "Wrong movement source");
         owner.login(accounts.get(0).getAsJsonObject()); owner.train();
-        owner.call("TrainCakeCatchOpenBoxCsReq"); owner.search(10); owner.search(21);
+        owner.call("TrainCakeCatchOpenBoxCsReq"); owner.search(10, owner.uid); owner.search(21, owner.uid);
         var frame = owner.builder("HJACHMJFEAH"); set(frame, "PCPDHEIEJFO", 10); set(frame, "slot", 1);
         var ground = owner.builder("IIONNFELFEF"); set(ground, "dice_slot_id", 1);
         ground.addRepeatedField(descriptor(ground.buildPartial(), "DMIOBEKLDED"), 21);

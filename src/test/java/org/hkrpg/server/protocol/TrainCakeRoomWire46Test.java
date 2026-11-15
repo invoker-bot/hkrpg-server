@@ -186,6 +186,11 @@ class TrainCakeRoomWire46Test {
       var result = call(session, "TrainCakeCatchSearchCsReq", search, "TrainCakeCatchSearchScRsp");
       assertEquals(0, number(result, "retcode"));
       assertEquals(1, number((DynamicMessage) value(result, "NIELDCLPOLA"), "count"));
+      var records = (List<?>) value(result, "CEMFBJPOLNP");
+      assertEquals(1, records.size());
+      var record = (DynamicMessage) records.getFirst();
+      assertEquals(10, number(record, "PCPDHEIEJFO"));
+      assertEquals(List.of(owner.uid), value(record, "LPDFMJPFGJH"));
       assertEquals(8, TrainCakeCatch.weeklyRemaining(session.actor, TrainCakeCatch.now()));
     }
     assertEquals(Map.of(10, 1), TrainCakeVisits.counts(a));
