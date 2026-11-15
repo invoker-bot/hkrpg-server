@@ -273,14 +273,15 @@ class TrainCakeCatch46Test {
     assertEquals(Retcode.SUCC, TrainCakeCatch.open(s.actor, reset).retcode());
     assertTrue(s.actor.getGameplay().getTrainCakeCatch().getCaught().isEmpty());
     assertEquals(Map.of(10, 1), s.actor.getGameplay().getTrainCakeCatch().getCounts());
-    assertEquals(Retcode.SUCC, TrainCakeCatch.search(s.actor, 10, reset).retcode());
-    assertEquals(Map.of(10, 2), s.actor.getGameplay().getTrainCakeCatch().getCounts());
+    int selected = s.actor.getGameplay().getTrainCakeCatch().getSpots().getFirst().getCat();
+    assertEquals(Retcode.SUCC, TrainCakeCatch.search(s.actor, selected, reset).retcode());
+    assertEquals(selected == 10 ? 2 : 1, s.actor.getGameplay().getTrainCakeCatch().getCounts().get(selected));
     var json = JsonParser.parseString(gson.toJson(s.actor.getGameplay())).getAsJsonObject();
     var box = json.getAsJsonObject("trainCakeCatch");
     box.getAsJsonObject("counts").addProperty("10", 13);
     var saved = Player.class.getDeclaredField("gameplay"); saved.setAccessible(true);
     saved.set(s.actor, gson.fromJson(json, GameplayState.class));
-    assertEquals(Retcode.INTERACT_TYPE_INVALID,
+    assertEquals(Retcode.SUCC,
         TrainCakeCatch.open(s.actor, s.actor.getGameplay().getTrainCakeCatch().getRefreshAt()).retcode());
   }
 

@@ -12,8 +12,10 @@ import java.security.MessageDigest;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.random.RandomGenerator;
 
-/** Limited local box compatibility. Original server-side gacha pools are not in client resources. */
+/** Local box compatibility. Original server-side gacha pools are not in client resources. */
 public final class TrainCakeCatch {
   public record Result(Retcode retcode, TrainCakeCatchState state, int cat) {}
   private record Catalog(String source) {}
@@ -59,6 +61,7 @@ public final class TrainCakeCatch {
     }
     if (constants.get("CatCatch_OpenBox").get("IntValue").getAsInt() != 3
         || constants.get("CatCatch_Week_Max").get("IntValue").getAsInt() != 9
+        || constants.get("HideAndSeek_All").get("IntValue").getAsInt() != 7
         || constants.get("EveryCat_MaxQuantity").get("IntValue").getAsInt() != 13
         || constants.get("SocialPlay_Floor_ID").get("IntValue").getAsInt() != 10000003)
       throw new IllegalArgumentException("Box constants changed");
@@ -134,6 +137,10 @@ public final class TrainCakeCatch {
   }
 
   public static Result open(Player p, long now) {
+    synchronized (p) { return openLocked(p, now); }
+  }
+
+  private static Result openLocked(Player p, long now) {
     var state = p.getGameplay().getTrainCakeCatch();
     var code = admission(p);
     if (code != Retcode.SUCC) return new Result(code, state, 0);
@@ -143,9 +150,10 @@ public final class TrainCakeCatch {
       if (state.getRefreshAt() != 0 && !state.getSource().equals(source.source()))
         return new Result(Retcode.PLAYER_DATA_ERROR, state, 0);
       if (state.getRefreshAt() > now) return new Result(Retcode.SUCC, state, 0);
-      if (INITIAL.stream().anyMatch(s -> state.getCounts().getOrDefault(s.getCat(), 0) >= 13))
-        return new Result(Retcode.INTERACT_TYPE_INVALID, state, 0);
-      var next = new TrainCakeCatchState(source.source(), nextRefresh(now), INITIAL, Set.of(), state.getCounts());
+      // The tutorial's initial placements are retained from the existing compatibility source.
+      // The unpublished normal pool is a local uniform draw across all 27 catalog entries.
+      var spots = state.getRefreshAt() == 0 ? INITIAL : randomBatch(ThreadLocalRandom.current());
+      var next = new TrainCakeCatchState(source.source(), nextRefresh(now), spots, Set.of(), state.getCounts());
       return commit(p, state, next, 0);
     } catch (Exception invalid) {
       return new Result(Retcode.PLAYER_DATA_ERROR, state, 0);
@@ -153,6 +161,10 @@ public final class TrainCakeCatch {
   }
 
   public static Result search(Player p, int cat, long now) {
+    synchronized (p) { return searchLocked(p, cat, now); }
+  }
+
+  private static Result searchLocked(Player p, int cat, long now) {
     var state = p.getGameplay().getTrainCakeCatch();
     var code = admission(p);
     if (code != Retcode.SUCC) return new Result(code, state, cat);
@@ -172,6 +184,22 @@ public final class TrainCakeCatch {
     } catch (Exception invalid) {
       return new Result(Retcode.PLAYER_DATA_ERROR, state, cat);
     }
+  }
+
+  /** Draw unique cats and unique locations without relying on unavailable official weights. */
+  static List<TrainCakeCatchState.Spot> randomBatch(RandomGenerator random) {
+    Objects.requireNonNull(random);
+    var cats = new ArrayList<Integer>();
+    var slots = new ArrayList<Integer>();
+    for (int id = 1; id <= 27; id++) cats.add(id);
+    for (int slot = 0; slot < 7; slot++) slots.add(slot);
+    var result = new ArrayList<TrainCakeCatchState.Spot>();
+    for (int i = 0; i < 3; i++) {
+      int cat = cats.remove(random.nextInt(cats.size()));
+      int slot = slots.remove(random.nextInt(slots.size()));
+      result.add(new TrainCakeCatchState.Spot(cat, slot));
+    }
+    return List.copyOf(result);
   }
 
   private static Result commit(Player p, TrainCakeCatchState previous, TrainCakeCatchState next, int cat) {
