@@ -10,10 +10,13 @@ import emu.lunarcore.server.packet.SessionState;
 import java.io.IOException;
 import org.hkrpg.server.gameplay.TrainCakeCatch;
 import org.hkrpg.server.gameplay.TrainCakeCatchState;
+import org.hkrpg.server.gameplay.TrainCakeVisits;
 
 /** Native box/search replies and the local owner's read-only social profile. */
 final class TrainCakeCatch46 {
   static boolean handle(GameSession session, int command, byte[] bytes) {
+    if (TrainCakeSocial46.handle(session, command, bytes)) return true;
+    if (TrainCakeDiy46.handle(session, command, bytes)) return true;
     String request = switch (command) {
       case 10157 -> "TrainCakeCatchOpenBox";
       case 10144 -> "TrainCakeCatchSearch";
@@ -23,6 +26,7 @@ final class TrainCakeCatch46 {
     if (request == null || !session.getProtocol().experimental()) return false;
     if (session.getState() != SessionState.ACTIVE || session.getPlayer() == null) return true;
     var player = session.getPlayer();
+    boolean notifyRoom = false;
     synchronized (player) {
       var code = Retcode.REQ_PARA_INVALID;
       TrainCakeCatchState state = null;
@@ -34,7 +38,13 @@ final class TrainCakeCatch46 {
       }
       if (valid) {
         if (command == 9641) {
-          try { state = TrainCakeCatch.snapshot(player); code = Retcode.SUCC; }
+          try {
+            state = TrainCakeCatch.snapshot(player);
+            TrainCakeVisits.totalCounts(player);
+            TrainCakeVisits.records(player, TrainCakeCatch.now());
+            org.hkrpg.server.gameplay.TrainCakeDiyState.current(player);
+            code = Retcode.SUCC;
+          }
           catch (RuntimeException invalid) { code = Retcode.PLAYER_DATA_ERROR; }
         } else {
           var result = command == 10157 ? TrainCakeCatch.open(player, TrainCakeCatch.now())
@@ -54,7 +64,7 @@ final class TrainCakeCatch46 {
       if (command == 9641) {
         // SyncTrainRoomGateData dereferences the profile even for an unplayed module.
         set(response, "ELDIONMAAHO", profile(session,
-            code == Retcode.SUCC ? state : new TrainCakeCatchState()));
+            code == Retcode.SUCC ? state : new TrainCakeCatchState(), code == Retcode.SUCC));
         // ParkPetDiyController also consumes this reply: an absent field 14 is null,
         // whereas a present empty HHCNMGNAIBG clears unimplemented area placements.
         var social = builder(session, "HAIFIDAHGJG");
@@ -66,22 +76,26 @@ final class TrainCakeCatch46 {
           addSpots(session, response, state);
         } else {
           set(response, "PCPDHEIEJFO", cat);
-          set(response, "NIELDCLPOLA", count(session, cat, state.getCounts().get(cat)));
+          int total = TrainCakeVisits.totalCounts(player).get(cat);
+          set(response, "NIELDCLPOLA", count(session, cat, total));
           addWeekRecord(session, response, state);
           // Notify only committed captures; never grant inventory/performance progress on open.
           var notify = builder(session, "TrainCakeCatchDataScNotify");
-          add(notify, "NIELDCLPOLA", count(session, cat, state.getCounts().get(cat)));
+          add(notify, "NIELDCLPOLA", count(session, cat, total));
           session.sendClientPacket("TrainCakeCatchDataScNotify", notify.build().toByteArray());
         }
       }
       if (command != 9641) SceneActionDiagnostics46.rejected(session, request + "CsReq",
           "train-cat-box-preconditions", code, 0, 0, 0, 0);
       session.sendClientPacket(request + "ScRsp", response.build().toByteArray());
+      notifyRoom = command == 10157 && code == Retcode.SUCC;
     }
+    // Do not hold the owner's lock while inspecting or notifying other sessions.
+    if (notifyRoom) TrainCakeSocial46.ownerBoxOpened(session);
     return true;
   }
 
-  private static int readCat(byte[] bytes) {
+  static int readCat(byte[] bytes) {
     if (bytes == null || bytes.length == 0 || bytes.length > 16) return 0;
     try {
       var input = CodedInputStream.newInstance(bytes);
@@ -91,16 +105,15 @@ final class TrainCakeCatch46 {
     } catch (IOException invalid) { return 0; }
   }
 
-  private static DynamicMessage profile(GameSession s, TrainCakeCatchState state) {
+  private static DynamicMessage profile(GameSession s, TrainCakeCatchState state, boolean valid) {
     var result = builder(s, "KPBCIIFIAGI");
     set(result, "CMHKFNFKGOI", state.getRefreshAt());
-    set(result, "NLJBJMDPBGN", builder(s, "BFAKMCIJFCB").build());
+    set(result, "NLJBJMDPBGN", valid ? TrainCakeDiy46.toProto(s, s.getPlayer()) : builder(s, "BFAKMCIJFCB").build());
     set(result, "KABGCGENKLK", builder(s, "CGLJLBDFNBK").build());
-    if (state.getRefreshAt() > TrainCakeCatch.now()) {
-      addSpots(s, result, state);
-      addWeekRecord(s, result, state);
-    }
-    for (var entry : state.getCounts().entrySet())
+    if (state.getRefreshAt() > TrainCakeCatch.now()) addSpots(s, result, state);
+    if (valid) addWeekRecord(s, result, state);
+    var counts = valid ? TrainCakeVisits.totalCounts(s.getPlayer()) : state.getCounts();
+    for (var entry : counts.entrySet())
       add(result, "NIELDCLPOLA", count(s, entry.getKey(), entry.getValue()));
     return result.build();
   }
@@ -113,19 +126,27 @@ final class TrainCakeCatch46 {
     }
   }
 
-  private static DynamicMessage count(GameSession s, int cat, int count) {
+  static DynamicMessage count(GameSession s, int cat, int count) {
     var row = builder(s, "JOFHMCJPBCE");
     set(row, "PCPDHEIEJFO", cat); set(row, "count", count);
     return row.build();
   }
 
-  private static void addWeekRecord(GameSession s, DynamicMessage.Builder response, TrainCakeCatchState state) {
-    if (state.getCaught().isEmpty()) return;
-    var row = builder(s, "PJFIMFJPMCN");
-    // Native _RefreshCakeCatchRecordHistory indexes by room owner, then actual caught cat IDs.
-    set(row, "PCPDHEIEJFO", s.getPlayer().getUid());
-    for (int cat : state.getCaught()) add(row, "LPDFMJPFGJH", cat);
-    add(response, "CEMFBJPOLNP", row.build());
+  static void addWeekRecord(GameSession s, DynamicMessage.Builder response, TrainCakeCatchState state) {
+    long now = TrainCakeCatch.now();
+    if (state.getRefreshAt() > now && !state.getCaught().isEmpty()) {
+      var row = builder(s, "PJFIMFJPMCN");
+      // Native _RefreshCakeCatchRecordHistory indexes by room owner, then actual caught cat IDs.
+      set(row, "PCPDHEIEJFO", s.getPlayer().getUid());
+      for (int cat : state.getCaught()) add(row, "LPDFMJPFGJH", cat);
+      add(response, "CEMFBJPOLNP", row.build());
+    }
+    for (var entry : TrainCakeVisits.records(s.getPlayer(), now).entrySet()) {
+      var row = builder(s, "PJFIMFJPMCN");
+      set(row, "PCPDHEIEJFO", entry.getKey());
+      for (int cat : entry.getValue()) add(row, "LPDFMJPFGJH", cat);
+      add(response, "CEMFBJPOLNP", row.build());
+    }
   }
 
   private TrainCakeCatch46() {}

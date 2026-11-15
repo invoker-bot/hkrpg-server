@@ -12,7 +12,6 @@ import java.security.MessageDigest;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.random.RandomGenerator;
 
 /** Local box compatibility. Original server-side gacha pools are not in client resources. */
@@ -25,6 +24,7 @@ public final class TrainCakeCatch {
   private static final List<TrainCakeCatchState.Spot> INITIAL = List.of(
       new TrainCakeCatchState.Spot(10, 4), new TrainCakeCatchState.Spot(21, 6),
       new TrainCakeCatchState.Spot(26, 5));
+  static List<TrainCakeCatchState.Spot> initialBatch() { return INITIAL; }
 
   public static long now() { return Math.floorDiv(LunarCore.currentServerTime(), 1000); }
 
@@ -63,6 +63,11 @@ public final class TrainCakeCatch {
         || constants.get("CatCatch_Week_Max").get("IntValue").getAsInt() != 9
         || constants.get("HideAndSeek_All").get("IntValue").getAsInt() != 7
         || constants.get("EveryCat_MaxQuantity").get("IntValue").getAsInt() != 13
+        || constants.get("EveryCat_UnlockPose_01").get("IntValue").getAsInt() != 3
+        || constants.get("EveryCat_UnlockPose_02").get("IntValue").getAsInt() != 6
+        || constants.get("FreeRange_MaxSlot").get("IntValue").getAsInt() != 3
+        || constants.get("CatTree_MaxSlot").get("IntValue").getAsInt() != 4
+        || constants.get("Cat_MaxSlot").get("IntValue").getAsInt() != 13
         || constants.get("SocialPlay_Floor_ID").get("IntValue").getAsInt() != 10000003)
       throw new IllegalArgumentException("Box constants changed");
     var box = constants.get("CatBox_GroupInstanceID").getAsJsonArray("ArrayValue");
@@ -98,10 +103,15 @@ public final class TrainCakeCatch {
     return new Catalog(HexFormat.of().formatHex(digest.digest()));
   }
 
-  private static Retcode admission(Player p) {
+  static String source() {
+    try { return catalog().source(); }
+    catch (Exception invalid) { throw new IllegalStateException("Cat box source unavailable", invalid); }
+  }
+
+  private static Retcode admission(Player p, boolean socialRoom) {
     var scene = p.getScene();
     if (scene == null || scene.getPlaneId() != 10000 || scene.getFloorId() != 10000003
-        || scene.getDimensionId() != 0 || scene.getStoryLineId() != 0) return Retcode.NOT_IN_SCENE;
+        || scene.getDimensionId() != (socialRoom ? 11001 : 0) || scene.getStoryLineId() != 0) return Retcode.NOT_IN_SCENE;
     if (p.getBattle() != null || p.getInstance() != null) return Retcode.SYSTEM_BUSY;
     if (scene.getEntities().values().stream().noneMatch(e -> e instanceof EntityProp box
         && box.getGroupId() == 240 && box.getInstId() == 300001 && box.getPropId() == 945))
@@ -112,6 +122,10 @@ public final class TrainCakeCatch {
     if (gate == null || gate.getPhase() != QuestState.Phase.FINISHED
         && gate.getPhase() != QuestState.Phase.CLOSED) return Retcode.PLOT_NOT_UNLOCK;
     return Retcode.SUCC;
+  }
+
+  public static Retcode admissionForDiy(Player player, boolean socialRoom) {
+    return admission(player, socialRoom);
   }
 
   public static TrainCakeCatchState snapshot(Player p) {
@@ -130,57 +144,88 @@ public final class TrainCakeCatch {
       if (state == null || !state.valid()
           || state.getRefreshAt() != 0 && !state.getSource().equals(source.source()))
         throw new IllegalStateException("Invalid saved cat box");
-      return 9 - (state.getRefreshAt() > now ? state.getCaught().size() : 0);
+      int own = state.getRefreshAt() > now ? state.getCaught().size() : 0;
+      int remaining = 9 - own - TrainCakeVisits.weeklyCount(p, now, source.source());
+      if (remaining < 0) throw new IllegalStateException("Invalid weekly cat count");
+      return remaining;
     } catch (Exception invalid) {
       throw new IllegalStateException("Cat box week source unavailable", invalid);
     }
   }
 
   public static Result open(Player p, long now) {
-    synchronized (p) { return openLocked(p, now); }
+    synchronized (p) { return openLocked(p, now, false); }
   }
 
-  private static Result openLocked(Player p, long now) {
+  /** Caller must first establish that this player is in their own authenticated room. */
+  public static Result openInOwnRoom(Player p, long now) {
+    synchronized (p) { return openLocked(p, now, true); }
+  }
+
+  private static Result openLocked(Player p, long now, boolean socialRoom) {
     var state = p.getGameplay().getTrainCakeCatch();
-    var code = admission(p);
+    var code = admission(p, socialRoom);
     if (code != Retcode.SUCC) return new Result(code, state, 0);
     try {
       if (state == null || !state.valid()) return new Result(Retcode.PLAYER_DATA_ERROR, state, 0);
       var source = catalog();
       if (state.getRefreshAt() != 0 && !state.getSource().equals(source.source()))
         return new Result(Retcode.PLAYER_DATA_ERROR, state, 0);
-      if (state.getRefreshAt() > now) return new Result(Retcode.SUCC, state, 0);
-      // The tutorial's initial placements are retained from the existing compatibility source.
-      // The unpublished normal pool is a local uniform draw across all 27 catalog entries.
-      var spots = state.getRefreshAt() == 0 ? INITIAL : randomBatch(ThreadLocalRandom.current());
-      var next = new TrainCakeCatchState(source.source(), nextRefresh(now), spots, Set.of(), state.getCounts());
+      // A visitor may already have opened this room, including while the owner was offline.
+      // The durable room batch is authoritative; never redraw or save a stale owner document.
+      var room = TrainCakeRoomStore.forPlayer(p).open(p, now);
+      if (state.getRefreshAt() == room.refreshAt()) return new Result(Retcode.SUCC, state, 0);
+      var next = new TrainCakeCatchState(source.source(), room.refreshAt(), room.spots(), Set.of(), state.getCounts());
       return commit(p, state, next, 0);
+    } catch (com.mongodb.MongoException failed) {
+      org.hkrpg.server.GameDiagnostics.saveFailed(p, "train-cake-room", 0, 0, failed);
+      return new Result(Retcode.SERVER_INTERNAL_ERROR, state, 0);
     } catch (Exception invalid) {
       return new Result(Retcode.PLAYER_DATA_ERROR, state, 0);
     }
   }
 
   public static Result search(Player p, int cat, long now) {
-    synchronized (p) { return searchLocked(p, cat, now); }
+    synchronized (p) { return searchLocked(p, cat, now, false); }
   }
 
-  private static Result searchLocked(Player p, int cat, long now) {
+  /** Caller must first establish that this player is in their own authenticated room. */
+  public static Result searchInOwnRoom(Player p, int cat, long now) {
+    synchronized (p) { return searchLocked(p, cat, now, true); }
+  }
+
+  private static Result searchLocked(Player p, int cat, long now, boolean socialRoom) {
     var state = p.getGameplay().getTrainCakeCatch();
-    var code = admission(p);
+    var code = admission(p, socialRoom);
     if (code != Retcode.SUCC) return new Result(code, state, cat);
     try {
-      if (state == null || !state.valid() || state.getRefreshAt() <= now
-          || !state.getSource().equals(catalog().source())) return new Result(Retcode.PLAYER_DATA_ERROR, state, cat);
+      if (state == null || !state.valid()
+          || state.getRefreshAt() != 0 && !state.getSource().equals(catalog().source()))
+        return new Result(Retcode.PLAYER_DATA_ERROR, state, cat);
+      if (state.getRefreshAt() <= now) {
+        var room = TrainCakeRoomStore.forPlayer(p).peek(p.getUid(), now);
+        if (room == null) return new Result(Retcode.PLAYER_DATA_ERROR, state, cat);
+        if (room.spots().stream().noneMatch(spot -> spot.getCat() == cat))
+          return new Result(Retcode.REQ_PARA_INVALID, state, cat);
+        var adopted = openLocked(p, now, socialRoom);
+        if (adopted.retcode() != Retcode.SUCC) return new Result(adopted.retcode(), state, cat);
+        state = adopted.state();
+      }
       if (state.getSpots().stream().noneMatch(s -> s.getCat() == cat))
         return new Result(Retcode.REQ_PARA_INVALID, state, cat);
       if (state.getCaught().contains(cat)) return new Result(Retcode.SUCC, state, cat);
+      if (weeklyRemaining(p, now) <= 0) return new Result(Retcode.INTERACT_TYPE_INVALID, state, cat);
       var counts = new TreeMap<>(state.getCounts());
       int count = counts.getOrDefault(cat, 0);
-      if (count >= 13) return new Result(Retcode.INTERACT_TYPE_INVALID, state, cat);
+      if (count + TrainCakeVisits.counts(p).getOrDefault(cat, 0) >= 13)
+        return new Result(Retcode.INTERACT_TYPE_INVALID, state, cat);
       counts.put(cat, count + 1);
       var caught = new TreeSet<>(state.getCaught()); caught.add(cat);
       var next = new TrainCakeCatchState(state.getSource(), state.getRefreshAt(), state.getSpots(), caught, counts);
       return commit(p, state, next, cat);
+    } catch (com.mongodb.MongoException failed) {
+      org.hkrpg.server.GameDiagnostics.saveFailed(p, "train-cake-room", cat, 0, failed);
+      return new Result(Retcode.SERVER_INTERNAL_ERROR, state, cat);
     } catch (Exception invalid) {
       return new Result(Retcode.PLAYER_DATA_ERROR, state, cat);
     }

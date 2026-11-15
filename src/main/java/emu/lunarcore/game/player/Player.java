@@ -1139,6 +1139,40 @@ public class Player implements Tickable, Syncable {
         if (this.scene != null) this.scene.setEntryId(snapshot.sceneEntryId);
     }
 
+    /** Restore a previously validated social-room bookmark before login scene loading. */
+    public final void restoreTrainRoomReturn(org.hkrpg.server.gameplay.TrainCakeReturnLocation location) {
+        this.planeId = location.plane();
+        this.floorId = location.floor();
+        this.entryId = location.entry();
+        this.worldId = location.world();
+        this.getPos().set(location.pos());
+        this.getRot().set(location.rot());
+        this.sceneTeleportLocation = location.teleport();
+    }
+
+    /** Load a social scene without publishing it until its return bookmark is committed. */
+    public final boolean loadTrainRoomScene(int plane, int floor, int entry, Position pos, Position rot,
+            int dimension) {
+        if (!org.hkrpg.server.gameplay.TrainCakeRoomTravel.hasPending(this)
+                || dimension != 0 && dimension != 11001) return false;
+        return loadSceneInternal(plane, floor, entry, pos, rot, false, dimension, true);
+    }
+
+    /** A different owner's room must not reuse the previous room's transient entities or props. */
+    public final boolean loadFreshTrainRoomScene(int plane, int floor, int entry, Position pos, Position rot,
+            int dimension) {
+        var previous = this.scene;
+        this.scene = null;
+        try {
+            boolean loaded = loadTrainRoomScene(plane, floor, entry, pos, rot, dimension);
+            if (!loaded) this.scene = previous;
+            return loaded;
+        } catch (RuntimeException failed) {
+            this.scene = previous;
+            throw failed;
+        }
+    }
+
     public boolean loadScene(int planeId, int floorId, int entryId, Position pos, Position rot, boolean sendPacket) {
         int dimension = 0;
         if (getGameplay().getStoryLines().getCurrentId() != 0) {
@@ -1154,6 +1188,11 @@ public class Player implements Tickable, Syncable {
 
     public boolean loadScene(int planeId, int floorId, int entryId, Position pos, Position rot,
             boolean sendPacket, int dimensionId) {
+        return loadSceneInternal(planeId, floorId, entryId, pos, rot, sendPacket, dimensionId, false);
+    }
+
+    private boolean loadSceneInternal(int planeId, int floorId, int entryId, Position pos, Position rot,
+            boolean sendPacket, int dimensionId, boolean temporaryRoom) {
         int oldPlaneId = this.planeId, oldFloorId = this.floorId, oldEntryId = this.entryId;
         // Get maze plane excel
         MazePlaneExcel planeExcel = GameData.getMazePlaneExcelMap().get(planeId);
@@ -1177,7 +1216,7 @@ public class Player implements Tickable, Syncable {
                 break;
         }
 
-        var outgoingFloorObjectives = org.hkrpg.server.gameplay.MissionFloorChanges.capture(
+        var outgoingFloorObjectives = temporaryRoom ? null : org.hkrpg.server.gameplay.MissionFloorChanges.capture(
                 this, planeId, floorId, entryId, dimensionId);
 
         // Get scene that we want to enter
@@ -1198,7 +1237,7 @@ public class Player implements Tickable, Syncable {
         Integer previousVisit = getGameplay().getStoryValues().get(visitKey);
         // Keep confirmed ordinary-world visits with the location in the same player document.
         boolean trainWorldRecorded = false;
-        if (planeExcel.getPlaneType() == PlaneType.Town || planeExcel.getPlaneType() == PlaneType.Maze) {
+        if (!temporaryRoom && (planeExcel.getPlaneType() == PlaneType.Town || planeExcel.getPlaneType() == PlaneType.Maze)) {
             this.worldId = planeExcel.getWorldID();
             trainWorldRecorded = org.hkrpg.server.gameplay.TrainWorlds.remember(this, this.worldId);
         }
@@ -1232,14 +1271,18 @@ public class Player implements Tickable, Syncable {
         // Set player scene
         this.scene = nextScene;
         this.scene.setEntryId(entryId);
-        org.hkrpg.server.gameplay.RobotHunts.recover(this);
-        org.hkrpg.server.gameplay.ControllerFinishRewards.recover(this);
-        org.hkrpg.server.gameplay.OraclePuzzleRewards.recover(this);
+        if (!temporaryRoom) {
+            org.hkrpg.server.gameplay.RobotHunts.recover(this);
+            org.hkrpg.server.gameplay.ControllerFinishRewards.recover(this);
+            org.hkrpg.server.gameplay.OraclePuzzleRewards.recover(this);
+        }
         this.scene.getTeleportMapLayer(); // Bind a restored layer before the first ordinary movement.
-        getMissionTrialManager().reconcile();
-        getStoryLineManager().onSceneLoaded();
-        this.getMissionManager().onFloorChanged(outgoingFloorObjectives);
-        this.getMissionManager().onSceneTransition(oldPlaneId, oldFloorId, oldEntryId, planeId, floorId, entryId);
+        if (!temporaryRoom) {
+            getMissionTrialManager().reconcile();
+            getStoryLineManager().onSceneLoaded();
+            this.getMissionManager().onFloorChanged(outgoingFloorObjectives);
+            this.getMissionManager().onSceneTransition(oldPlaneId, oldFloorId, oldEntryId, planeId, floorId, entryId);
+        }
 
         // Send packet
         if (sendPacket) {
@@ -1331,6 +1374,7 @@ public class Player implements Tickable, Syncable {
     }
 
     public void onLogin() {
+        org.hkrpg.server.gameplay.TrainCakeRoomTravel.recoverOnLogin(this);
         var pendingTravel = org.hkrpg.server.gameplay.MissionSceneEntrances.captureLogin(this);
         // Set up lineup manager
         this.getLineupManager().setPlayer(this);

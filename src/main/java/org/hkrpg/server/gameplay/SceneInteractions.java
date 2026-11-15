@@ -63,6 +63,9 @@ public final class SceneInteractions {
   }
 
   private static boolean persistent(EntityProp prop) {
+    var scene = prop.getScene();
+    if (scene.getPlaneId() == 10000 && scene.getFloorId() == 10000003 && scene.getDimensionId() == 11001)
+      return false;
     return switch (prop.getScene().getPlaneType()) {
       case Town, Maze, Train -> true;
       default -> false;

@@ -145,6 +145,11 @@ public class GameSession {
             LunarCore.getLogger().info("Client disconnected from " + address.getHostString());
         }
 
+        try {
+            org.hkrpg.server.protocol.TrainCakeSocial46.disconnect(this);
+        } catch (RuntimeException failed) {
+            GameDiagnostics.packetFailure(this, -1, false, "train-room-disconnect", failed);
+        }
         this.state = SessionState.INACTIVE;
 
         if (player != null) {

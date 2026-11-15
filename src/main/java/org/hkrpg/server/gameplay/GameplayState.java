@@ -16,6 +16,19 @@ public class GameplayState {
   private TrainCakeCatchState trainCakeCatch = new TrainCakeCatchState();
   public TrainCakeCatchState getTrainCakeCatch() { return trainCakeCatch; }
   void trainCakeCatch(TrainCakeCatchState value) { trainCakeCatch = Objects.requireNonNull(value); }
+  // Absent in old saves: room access remains closed until the player sets a preference.
+  private TrainCakeSocialSettings trainCakeSocialSettings;
+  public TrainCakeSocialSettings getTrainCakeSocialSettings() { return trainCakeSocialSettings; }
+  void trainCakeSocialSettings(TrainCakeSocialSettings value) { trainCakeSocialSettings = value; }
+  private TrainCakeVisitState trainCakeVisits;
+  public TrainCakeVisitState getTrainCakeVisits() { return trainCakeVisits; }
+  void trainCakeVisits(TrainCakeVisitState value) { trainCakeVisits = value; }
+  private TrainCakeDiyState trainCakeDiy;
+  public TrainCakeDiyState getTrainCakeDiy() { return trainCakeDiy; }
+  void trainCakeDiy(TrainCakeDiyState value) { trainCakeDiy = value; }
+  private TrainCakeReturnLocation trainCakeReturnLocation;
+  public TrainCakeReturnLocation getTrainCakeReturnLocation() { return trainCakeReturnLocation; }
+  void trainCakeReturnLocation(TrainCakeReturnLocation value) { trainCakeReturnLocation = value; }
   // Client text selections are display state only; they are never mission or reward evidence.
   private Map<Integer, Integer> textJoinSelections = new TreeMap<>();
   public Map<Integer, Integer> getTextJoinSelections() { return textJoinSelections; }

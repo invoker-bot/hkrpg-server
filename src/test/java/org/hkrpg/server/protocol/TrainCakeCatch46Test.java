@@ -30,9 +30,16 @@ class TrainCakeCatch46Test {
   PropExcel previousProp;
   FloorInfo previousFloor;
   FloorInfo floor;
+  de.bwaldvogel.mongo.MongoServer roomMongo;
+  com.mongodb.client.MongoClient roomClient;
+  TrainCakeRoomStore roomStore;
 
   @BeforeEach
   void resources() throws Exception {
+    roomMongo = new de.bwaldvogel.mongo.MongoServer(new de.bwaldvogel.mongo.backend.memory.MemoryBackend());
+    var roomAddress = roomMongo.bind();
+    roomClient = com.mongodb.client.MongoClients.create("mongodb://127.0.0.1:" + roomAddress.getPort());
+    roomStore = new TrainCakeRoomStore(roomClient.getDatabase("train-cake-fixture"));
     previousRoot = LunarCore.getConfig().resourceDir;
     previousProp = GameData.getPropExcelMap().get(945);
     previousFloor = GameData.getFloorInfos().get("P10000_F10000003");
@@ -61,6 +68,7 @@ class TrainCakeCatch46Test {
 
   @AfterEach
   void restoreResources() {
+    roomClient.close(); roomMongo.shutdownNow();
     LunarCore.getConfig().resourceDir = previousRoot;
     if (previousProp == null) GameData.getPropExcelMap().keySet().remove(945);
     else GameData.getPropExcelMap().add(previousProp);
@@ -68,11 +76,13 @@ class TrainCakeCatch46Test {
     else GameData.getFloorInfos().put("P10000_F10000003", previousFloor);
   }
 
-  static class Actor extends Player {
+  static class Actor extends Player implements TrainCakeRoomStore.Provider {
     int saves;
     int level = 21;
     boolean failSave;
     Scene scene;
+    TrainCakeRoomStore roomStore;
+    public TrainCakeRoomStore trainCakeRoomStore() { return roomStore; }
     final LineupManager teams = new LineupManager(this);
     Actor() { teams.getCurrentLineup().getAvatars().add(0); }
     public LineupManager getLineupManager() { return teams; }
@@ -107,6 +117,7 @@ class TrainCakeCatch46Test {
 
   Session room(boolean unlocked) {
     var s = new Session();
+    s.actor.roomStore = roomStore;
     var plane = gson.fromJson("{\"PlaneID\":10000,\"PlaneType\":\"Train\"}", MazePlaneExcel.class);
     s.actor.scene = new Scene(s.actor, plane, 10000003);
     if (unlocked) {

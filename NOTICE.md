@@ -26,6 +26,8 @@ HKRPG Server 主工程派生自 Melledy 和 LunarCore contributors 的 LunarCore
 - Java 的 4.6 登录序列、角色/命途、装备、玩家外观及场景语义映射参考同一提交的 `Recv/Player/HandlerPlayerLoginCsReq.cs`、`HandlerPlayerLoginFinishCsReq.cs`、`Common/Database/Avatar/AvatarData.cs`、`Inventory/InventoryData.cs`、`Player/PlayerData.cs`、`GameServer/Game/Scene/SceneInstance.Serialization.cs`、`Scene/Entity/EntityProp.cs` 及对应收发包。Java 使用独立描述符重新实现；没有继承参考项目将全部内容包标记 Finished 的占位行为。
 - 重新生成与校验方法见 [protocols/README.md](protocols/README.md)。保留来源与许可证，不把结构转换结果宣称为已通过客户端验收。
 
+猫猫糕多人房间的请求、成员加入、移动和布设消息结构参考上述固定 Honey AGPL 提交的 `GameServer/Game/TrainCakeCatch/TrainCakeCatchManager.cs`、相应收发包和 4.6 协议；返回位置、权限、并发房间批次、独立玩家领取、布设验证及持久化由本项目独立 Java 实现。客户端只按固定 SHA 静态核对，没有运行参考仓库程序或引入其运行时依赖。正式抽取概率与实际客户端联机仍须独立验收。
+
 本轮战斗字段别名及动作输入参考同一 Honey 提交的 `GameServer/Game/Battle/BattleInstance.cs`、`MazeBuff.cs`、`SceneSkillManager.cs`、关卡请求处理器，以及 `Common/Database/Avatar/AvatarData.cs`。任务接取条件参考其主任务配置和 `GameServer/Game/Mission/MissionManager.cs`；Java 的任务、日常、登录活动和奖励账本重新实现，不沿用上游固定任务完成/满活跃的响应。
 
 经典宇宙的地图编号公式、站点与房间池关联参考 Melledy/LunarCore 的 `development` 分支，固定提交 `ec315bb1cf5cf86ae0f6ee52824e07f1fef9a5c4`，AGPL-3.0：`data/excel/RogueAreaExcel.java`、`game/rogue/RogueRoomData.java` 和 `RogueInstance.java`。没有导入其 2.5 协议类或运行时依赖；基础 4.6 生命周期已经依据本机字段重新实现，完整游戏 UI 尚未验收，边界见 [玩法说明](docs/gameplay-4.6.md)。

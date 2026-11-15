@@ -62,12 +62,18 @@ public final class Profile46 {
         var response = builder(session, "UpdatePlayerSettingScRsp");
         var setting = builder(session, "UpdatePlayerSetting");
         Boolean enabled = readQuickStaminaSetting(bytes);
-        var result = enabled == null ? Retcode.REQ_PARA_INVALID
-            : player.setQuickStaminaRecovery(enabled);
+        var social = enabled == null ? TrainCakeSocialSettings46.read(bytes) : null;
+        var result = enabled != null ? player.setQuickStaminaRecovery(enabled)
+            : social != null ? org.hkrpg.server.gameplay.TrainCakeSocialSettings.update(player, social)
+            : Retcode.REQ_PARA_INVALID;
         // False is a selected oneof value. On save failure echo the actual rolled-back state.
         if (enabled != null) set(setting, "HGPFFGKNPFB", player.isQuickStaminaRecovery());
+        if (social != null) set(setting, "CMFCOOEEECB", TrainCakeSocialSettings46.toProto(session,
+            org.hkrpg.server.gameplay.TrainCakeSocialSettings.current(player)));
         set(response, "player_setting", setting.build());
         set(response, "retcode", result.getVal());
+        if (result != Retcode.SUCC) org.hkrpg.server.GameDiagnostics.outcome(session,
+            "UpdatePlayerSettingCsReq", 0, result, "player-setting-rejected", "");
         session.sendClientPacket("UpdatePlayerSettingScRsp", response.build().toByteArray());
         return true;
       }
@@ -90,6 +96,9 @@ public final class Profile46 {
           settings.setField(nested, DynamicMessage.getDefaultInstance(nested.getMessageType()));
           // Native IsFarmStageAutoAddStamina: update oneof380, login PlayerSettingInfo field711.
           set(settings, "HGPFFGKNPFB", player.isQuickStaminaRecovery());
+          var social = player.getGameplay().getTrainCakeSocialSettings();
+          if (social != null)
+            set(settings, "CMFCOOEEECB", TrainCakeSocialSettings46.toProto(session, social));
           response.setField(settingsField, settings.build());
           set(response, "exchange_times", player.getTodayStaminaPurchases());
           set(response, "is_gender_set", player.hasCreatedCharacter());

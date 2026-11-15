@@ -29,13 +29,19 @@ public final class SceneInteraction46 {
       var result = Retcode.REQ_PARA_INVALID;
       EntityProp prop = null;
       try {
-        if (req.getUnknownFields().asMap().isEmpty()
+        if (TrainCakeSocial46.inSocialScene(player)) {
+          if (req.getUnknownFields().asMap().isEmpty()
+              && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id")) {
+            result = TrainCakeSocial46.interact(session, config, entity);
+            if (result == Retcode.SUCC) prop = target;
+          }
+        } else if (req.getUnknownFields().asMap().isEmpty()
             && Gameplay46.only(req, "prop_entity_id", "interact_id2", "interact_id")) {
           mirrorReplay = TrainMirror.replaysSavedOpen(player, config, target);
           result = mirrorReplay ? Retcode.SUCC : workbench ? TrainWorkbench.interact(target, config)
               : SceneInteractions.validateNative(player, config, entity);
         }
-        if (result == Retcode.SUCC) {
+        if (result == Retcode.SUCC && !TrainCakeSocial46.inSocialScene(player)) {
           if (workbench || mirrorReplay) {
             prop = target;
           } else if (org.hkrpg.server.gameplay.BookPickups.applies(target)) {

@@ -40,7 +40,7 @@ final class TrainCakeGoals {
     try {
       // Cumulative counts survive the weekly rollover; a capture is genuine only when
       // the complete saved state still matches the resources used to create it.
-      return !TrainCakeCatch.snapshot(p).getCounts().isEmpty();
+      return !TrainCakeVisits.totalCounts(p).isEmpty();
     } catch (RuntimeException invalid) {
       org.hkrpg.server.GameDiagnostics.outcome(p.getSession(), "TrainCakeGoal", 402080009,
           emu.lunarcore.server.packet.Retcode.PLAYER_DATA_ERROR, "capture-source-invalid", "");

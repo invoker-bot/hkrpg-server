@@ -224,6 +224,7 @@ public final class ProtocolBridge {
   }
 
   public String inboundName(int id) {
+    if (experimental() && id == 9761) return "JGAMELLGLGE";
     return clientNames.getOrDefault(id, "UNKNOWN");
   }
 
@@ -255,6 +256,9 @@ public final class ProtocolBridge {
   }
 
   public int clientCommand(String name) {
+    // Native room-motion request and reply retain their obfuscated 4.6 names.
+    if (experimental() && name.equals("JGAMELLGLGE")) return 9761;
+    if (experimental() && name.equals("JKILAALMFIB")) return 9696;
     // The upstream command enum collides ordinary promotion with EquipmentQuickUp.
     // Raw/StarRail.proto and the pinned CN4.6 client bind the ordinary 10/13 fields to 505.
     if (experimental() && name.equals("PromoteEquipmentCsReq")) return 505;
@@ -265,6 +269,7 @@ public final class ProtocolBridge {
 
   /** A reply needs a named pair or an independently verified native pair in this wire version. */
   public int clientResponseCommand(int requestCommand) {
+    if (experimental() && requestCommand == 9761) return 9696;
     // The native badge request is obfuscated as PEMMJHDFOLM; its reply is 7173.
     if (experimental() && requestCommand == 7172) return 7173;
     // The native reward action has an obfuscated request name, so the named-pair lookup misses it.
