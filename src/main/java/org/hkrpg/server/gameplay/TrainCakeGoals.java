@@ -35,6 +35,17 @@ final class TrainCakeGoals {
     return shape(c, open) && place(p) && MissionStateRecords.subCompleted(p, prerequisite);
   }
 
+  /** A query can expose a retry, but can never serve as evidence of the required open. */
+  static boolean offerOpenRetry(Player p, TrainCakeCatchState state, long now) {
+    int id = 402080008;
+    return state.getRefreshAt() > now && state.getRefreshAt() == TrainCakeCatch.nextRefresh(now)
+        && p.getLevel() >= 21
+        && shape(GameplayDefinitions.subs.get(id), true)
+        && MissionStateRecords.doing(p.getGameplay().getSubMissions().get(id), id, 1)
+        && p.getMissionManager().canFinishFromAction(id)
+        && MissionStateRecords.subCompleted(p, 402080005);
+  }
+
   static boolean searchSatisfied(Player p, MissionInfo.SubMissionInfo c) {
     if (!matches(p, c, false)) return false;
     try {

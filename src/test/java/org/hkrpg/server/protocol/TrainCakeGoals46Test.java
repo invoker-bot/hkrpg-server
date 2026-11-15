@@ -197,6 +197,78 @@ class TrainCakeGoals46Test {
     assertTrue(s.actor.getGameplay().getTrainCakeCatch().getCounts().isEmpty());
   }
 
+  private DynamicMessage boxProfile(TrainCakeCatch46Test.Session s) throws Exception {
+    var response = TrainCakeCatch46Test.request(s, "SocialPlayGetDataCsReq", new byte[0],
+        "SocialPlayGetDataScRsp");
+    assertEquals(0, TrainCakeCatch46Test.field(response, "retcode"));
+    return (DynamicMessage) TrainCakeCatch46Test.field(response, "ELDIONMAAHO");
+  }
+
+  @Test void pendingOpenGoalAllowsClientToReopenAnExistingWeeklyBatchWithoutGrantingProgress()
+      throws Exception {
+    var s = f.room(true); f.open(s); f.search(s, 26);
+    main(s); s.actor.getGameplay().getSubMissions().put(402080008, new QuestState(402080008));
+    var batch = s.actor.getGameplay().getTrainCakeCatch();
+    long originalExpiry = batch.getRefreshAt();
+    var before = f.gson.toJson(s.actor.getGameplay());
+    int saves = s.actor.saves;
+
+    var profile = boxProfile(s);
+    assertEquals(0L, TrainCakeCatch46Test.field(profile, "CMHKFNFKGOI"),
+        "The native client hides its open interaction while this timestamp is in the future");
+    assertEquals(3, ((List<?>) TrainCakeCatch46Test.field(profile, "BJPHDKEBOBK")).size());
+    assertEquals(before, f.gson.toJson(s.actor.getGameplay()), "Projection must not edit the saved batch");
+    assertEquals(saves, s.actor.saves, "A query must never save or complete the objective");
+    assertEquals(QuestState.Phase.DOING, s.actor.getMissionManager().sub(402080008).getPhase());
+    assertEquals(2568, item(query(s, 256)), "The captured cat still counts for this week");
+
+    var scene = s.actor.scene;
+    s.actor.scene = null;
+    assertEquals(0L, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"),
+        "The login query may arrive before the player reaches the train");
+    assertEquals(Retcode.NOT_IN_SCENE.getVal(), TrainCakeCatch46Test.field(f.open(s), "retcode"));
+    assertEquals(QuestState.Phase.DOING, s.actor.getMissionManager().sub(402080008).getPhase());
+    s.actor.scene = scene;
+
+    var response = f.open(s);
+    assertEquals(0, TrainCakeCatch46Test.field(response, "retcode"));
+    assertEquals(originalExpiry, TrainCakeCatch46Test.field(response, "CMHKFNFKGOI"));
+    assertEquals(QuestState.Phase.FINISHED, s.actor.getMissionManager().sub(402080008).getPhase());
+    assertEquals(QuestState.Phase.DOING, s.actor.getMissionManager().sub(402080006).getPhase());
+    assertEquals(Map.of(26, 1), s.actor.getGameplay().getTrainCakeCatch().getCounts());
+    assertEquals(originalExpiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"),
+        "The ordinary box cooldown resumes after the actual open action");
+  }
+
+  @Test void unrelatedOrCancelledMissionsDoNotAlterTheClientBoxCooldown() throws Exception {
+    var s = f.room(true); f.open(s);
+    long expiry = s.actor.getGameplay().getTrainCakeCatch().getRefreshAt();
+    assertEquals(expiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
+    main(s); s.actor.getGameplay().getSubMissions().put(402080008, new QuestState(402080008));
+    s.actor.getGameplay().getCancelledSubs().add(402080008);
+    assertEquals(expiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
+    s.actor.getGameplay().getCancelledSubs().clear();
+    s.actor.getGameplay().getCancelledMissions().add(4020800);
+    assertEquals(expiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
+    s.actor.getGameplay().getCancelledMissions().clear();
+    s.actor.level = 20;
+    assertEquals(expiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
+    s.actor.level = 21;
+    var gate = s.actor.getGameplay().getSubMissions().remove(402080005);
+    assertEquals(expiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
+    s.actor.getGameplay().getSubMissions().put(402080005, gate);
+    GameplayDefinitions.subs.get(402080008).setParamType("Equal");
+    assertEquals(expiry, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
+    assertEquals(QuestState.Phase.DOING, s.actor.getMissionManager().sub(402080008).getPhase());
+    GameplayDefinitions.subs.get(402080008).setParamType("NoPara");
+    var future = JsonParser.parseString(f.gson.toJson(s.actor.getGameplay())).getAsJsonObject();
+    future.getAsJsonObject("trainCakeCatch").addProperty("refreshAt", expiry + 604800);
+    var gameplay = Player.class.getDeclaredField("gameplay"); gameplay.setAccessible(true);
+    gameplay.set(s.actor, f.gson.fromJson(future, GameplayState.class));
+    assertEquals(expiry + 604800, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"),
+        "An invalid future week must not be presented as a valid retry");
+  }
+
   @Test void explicitlyBacktrackingSearchGoalUsesARealEarlierCaptureAndKeepsLaterTalk() throws Exception {
     var s = f.room(true); f.open(s); f.search(s, 10);
     main(s); completed(s, 402080008); completed(s, 402080006);
@@ -240,10 +312,12 @@ class TrainCakeGoals46Test {
     var s = f.room(true); f.open(s);
     main(s); s.actor.getGameplay().getSubMissions().put(402080008, new QuestState(402080008));
     var batch = s.actor.getGameplay().getTrainCakeCatch();
+    assertEquals(0L, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
     s.actor.failSave = true;
     assertEquals(Retcode.SERVER_INTERNAL_ERROR.getVal(), TrainCakeCatch46Test.field(f.open(s), "retcode"));
     assertSame(batch, s.actor.getGameplay().getTrainCakeCatch());
     assertEquals(QuestState.Phase.DOING, s.actor.getMissionManager().sub(402080008).getPhase());
+    assertEquals(0L, TrainCakeCatch46Test.field(boxProfile(s), "CMHKFNFKGOI"));
     s.actor.failSave = false;
     assertEquals(0, TrainCakeCatch46Test.field(f.open(s), "retcode"));
     assertEquals(QuestState.Phase.FINISHED, s.actor.getMissionManager().sub(402080008).getPhase());

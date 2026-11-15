@@ -137,6 +137,18 @@ public final class TrainCakeCatch {
     return state;
   }
 
+  /** Present an already drawn box as openable only while the original tutorial needs a real retry. */
+  public static long clientRefreshAt(Player p, TrainCakeCatchState state, long now) {
+    synchronized (p) {
+      if (TrainCakeGoals.offerOpenRetry(p, state, now)) {
+        org.hkrpg.server.GameDiagnostics.outcome(p.getSession(), "SocialPlayGetDataCsReq",
+            402080008, Retcode.SUCC, "train-cat-open-retry-offered", "");
+        return 0;
+      }
+      return state.getRefreshAt();
+    }
+  }
+
   public static int weeklyRemaining(Player p, long now) {
     try {
       var source = catalog();

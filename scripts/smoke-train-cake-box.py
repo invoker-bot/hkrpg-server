@@ -123,7 +123,7 @@ def run(jar, output, legacy_database=None):
                     cwd=directory, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
                 try:
                     wait_for(server, lambda: request('/health/ready')['ready'])
-                    for mode in (['locked', 'open', 'verify'] if iteration == 0 else ['restart']):
+                    for mode in (['locked', 'open', 'verify', 'retry'] if iteration == 0 else ['restart', 'finish']):
                         index = len(report['snapshots'])
                         login = request('/hkrpg_cn/mdk/shield/api/login',
                             {'account': 'synthetic-train-cat-box', 'password': 'isolated-' + str(index)})
@@ -153,15 +153,19 @@ def run(jar, output, legacy_database=None):
                         report['snapshots'].append(snapshot)
                         wait_for(server, lambda: request('/status/server')['status']['playerCount'] == 0)
                         snapshot['normalLogoutConfirmed'] = True
-                        mode_inspect = 'unlock' if mode == 'locked' else 'read'
+                        mode_inspect = ('unlock' if mode == 'locked' else
+                                        'reopen-fixture' if mode == 'verify' else 'read')
                         saved = inspect(snapshot['playerUid'], mode_inspect, 'player-' + str(index))
                         report['independentPlayerReads'].append(saved)
                         if saved['level'] != 21 or saved['introGatePhase'] != 'FINISHED':
                             raise RuntimeError('隔离门槛记录未保留')
-                        if saved['boxGoalPhase'] != ('DOING' if mode == 'locked' else 'FINISHED'):
+                        if saved['boxGoalPhase'] != ('DOING' if mode in ('locked', 'verify') else 'FINISHED'):
                             raise RuntimeError('开盒目标未按原生操作推进或提前完成')
-                        if mode != 'locked' and saved['nextDialoguePhase'] != 'DOING':
+                        if mode not in ('locked', 'verify', 'finish') and saved['nextDialoguePhase'] != 'DOING':
                             raise RuntimeError('后续原始对话没有保持进行中')
+                        if mode == 'finish' and (saved['mainPhase'] not in ('FINISHED', 'CLOSED')
+                                                 or saved['lastDialoguePhase'] != 'FINISHED'):
+                            raise RuntimeError('原始尾段对话未按顺序完成主任务')
                         expected = {str(cat): 1 for cat in snapshot['capturedCats']}
                         if ((saved.get('catBox') or {}).get('counts') or {}) != expected:
                             raise RuntimeError('真实 Player 文档的领取数与原生回包不同')
@@ -182,7 +186,7 @@ def run(jar, output, legacy_database=None):
                         if server.poll() is None:
                             server.terminate(); server.wait(timeout=15)
                         server.stdin.close()
-        if report['normalStops'] != 2 or len(report['snapshots']) != 4 or len(set(accounts)) != 1:
+        if report['normalStops'] != 2 or len(report['snapshots']) != 6 or len(set(accounts)) != 1:
             raise RuntimeError('隔离重连/重启链路不完整')
         if len({s['playerUid'] for s in report['snapshots']}) != 1:
             raise RuntimeError('隔离玩家身份变化')

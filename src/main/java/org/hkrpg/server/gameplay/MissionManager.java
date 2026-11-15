@@ -1219,7 +1219,12 @@ public final class MissionManager {
       int id = open ? 402080008 : 402080009;
       var state = sub(id);
       var config = GameplayDefinitions.subs.get(id);
-      if (!MissionStateRecords.doing(state, id, 1) || !canFinishFromAction(id)) return;
+      if (!MissionStateRecords.doing(state, id, 1)) return;
+      if (!canFinishFromAction(id)) {
+        org.hkrpg.server.GameDiagnostics.outcome(player.getSession(), "TrainCakeGoal", id,
+            Retcode.MISSION_NOT_DOING, "inactive-parent-or-cancelled", "");
+        return;
+      }
       boolean matches = open ? TrainCakeGoals.matches(player, config, true)
           : TrainCakeGoals.searchSatisfied(player, config);
       if (!matches) {
@@ -1232,6 +1237,8 @@ public final class MissionManager {
       MissionCompletionWrites.complete(player, config, state);
       refresh();
       sync();
+      org.hkrpg.server.GameDiagnostics.outcome(player.getSession(), "TrainCakeGoal", id,
+          Retcode.SUCC, open ? "open-action-completed" : "capture-action-completed", "");
     }
   }
 

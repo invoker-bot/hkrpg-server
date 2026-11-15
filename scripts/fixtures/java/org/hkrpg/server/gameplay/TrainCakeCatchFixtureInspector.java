@@ -27,7 +27,8 @@ public final class TrainCakeCatchFixtureInspector {
       throw new IllegalArgumentException("Refusing an operator service");
     int uid = input.get("uid").getAsInt();
     String mode = input.get("mode").getAsString();
-    if (!Set.of("unlock", "read").contains(mode) || uid <= 0) throw new IllegalArgumentException("Fixture mode");
+    if (!Set.of("unlock", "read", "reopen-fixture").contains(mode) || uid <= 0)
+      throw new IllegalArgumentException("Fixture mode");
     try (var client = MongoClients.create("mongodb://127.0.0.1:" + port + "/?directConnection=true")) {
       var players = client.getDatabase("hkrpg").getCollection("players");
       var selector = new Document("_id", uid);
@@ -46,18 +47,33 @@ public final class TrainCakeCatchFixtureInspector {
         if (players.updateOne(selector, new Document("$set", update)).getMatchedCount() != 1)
           throw new IllegalStateException("Fixture player changed");
       }
+      if (mode.equals("reopen-fixture")) {
+        // Model an old interrupted introduction only in this runner's isolated synthetic account.
+        var doing = new Document("questId", 402080008).append("progress", 0)
+            .append("finishTime", 0L).append("phase", "DOING");
+        var update = new Document("$set", new Document("gameplay.subMissions.402080008", doing))
+            .append("$unset", new Document("gameplay.subMissions.402080006", ""));
+        if (players.updateOne(selector, update).getMatchedCount() != 1)
+          throw new IllegalStateException("Fixture player changed");
+      }
       var player = players.find(selector).first();
       var gameplay = player.get("gameplay", Document.class);
       var subs = gameplay.get("subMissions", Document.class);
       var gate = subs == null ? null : subs.get("402080005", Document.class);
       var open = subs == null ? null : subs.get("402080008", Document.class);
       var dialogue = subs == null ? null : subs.get("402080006", Document.class);
+      var mains = gameplay.get("mainMissions", Document.class);
+      var main = mains == null ? null : mains.get("4020800", Document.class);
+      var last = subs == null ? null : subs.get("402080010", Document.class);
       var result = new Document("passed", true).append("mode", mode).append("level", player.get("level"))
           .append("introGatePhase", gate == null ? null : gate.get("phase"))
           .append("boxGoalPhase", open == null ? null : open.get("phase"))
           .append("nextDialoguePhase", dialogue == null ? null : dialogue.get("phase"))
+          .append("mainPhase", main == null ? null : main.get("phase"))
+          .append("lastDialoguePhase", last == null ? null : last.get("phase"))
           .append("catBox", gameplay.get("trainCakeCatch"))
-          .append("syntheticGatePreparation", mode.equals("unlock"));
+          .append("syntheticGatePreparation", mode.equals("unlock"))
+          .append("syntheticInterruptedGoalPreparation", mode.equals("reopen-fixture"));
       System.out.println(result.toJson());
     }
   }

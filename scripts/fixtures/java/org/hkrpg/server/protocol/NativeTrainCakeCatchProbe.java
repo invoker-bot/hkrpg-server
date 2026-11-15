@@ -21,6 +21,7 @@ public final class NativeTrainCakeCatchProbe {
   private final AtomicReference<Throwable> failure = new AtomicReference<>();
   private final CompletableFuture<Ukcp> connected = new CompletableFuture<>();
   private final List<Integer> checkedGroups = new ArrayList<>();
+  private final List<DynamicMessage> missionUpdates = new ArrayList<>();
   private Ukcp channel;
   private volatile boolean closing;
   private boolean loggedIn;
@@ -66,6 +67,11 @@ public final class NativeTrainCakeCatchProbe {
       require(failure.get() == null, "KCP transport failed");
       var frame = inbox.poll(250, TimeUnit.MILLISECONDS);
       if (frame == null) continue;
+      if (frame.command == protocol.clientCommand("PlayerSyncScNotify")) {
+        var notify = protocol.clientSchema().parse("PlayerSyncScNotify", frame.body);
+        var mission = notify.getDescriptorForType().findFieldByName("mission_sync");
+        if (notify.hasField(mission)) missionUpdates.add((DynamicMessage) notify.getField(mission));
+      }
       if (frame.command == protocol.clientCommand("EnterSceneByServerScNotify")) {
         var scene = child(protocol.clientSchema().parse("EnterSceneByServerScNotify", frame.body), "scene");
         if (number(scene, "floor_id") == 10000003) checkScene(scene);
@@ -108,18 +114,20 @@ public final class NativeTrainCakeCatchProbe {
     checkedScenes++;
   }
 
-  private void checkBox(DynamicMessage data) {
+  private void checkBox(DynamicMessage data, boolean retryOffered) {
     var spots = new TreeMap<Integer, Integer>();
     for (var raw : (List<?>) field(data, "BJPHDKEBOBK")) {
       var spot = (DynamicMessage) raw;
       spots.put(number(spot,"PCPDHEIEJFO"),number(spot,"slot"));
     }
     require(spots.equals(Map.of(10,4,21,6,26,5)), "Wrong committed cat positions");
-    require((Long) field(data,"CMHKFNFKGOI") > System.currentTimeMillis()/1000,
-        "Missing future box validity time");
+    long expiry = (Long) field(data,"CMHKFNFKGOI");
+    require(retryOffered ? expiry == 0 : expiry > System.currentTimeMillis()/1000,
+        "Unexpected client box validity time");
   }
-  private void checkProfile(DynamicMessage profile, int uid, Set<Integer> caught) {
-    checkBox(profile);
+  private void checkBox(DynamicMessage data) { checkBox(data, false); }
+  private void checkProfile(DynamicMessage profile, int uid, Set<Integer> caught, boolean retryOffered) {
+    checkBox(profile, retryOffered);
     var counts = new TreeMap<Integer,Integer>();
     for (var raw : (List<?>) field(profile,"NIELDCLPOLA")) {
       var row=(DynamicMessage)raw;
@@ -136,6 +144,9 @@ public final class NativeTrainCakeCatchProbe {
           "Capture record lost or invented cats");
     }
     require(((List<?>)field(profile,"KBEGMPBAJIL")).isEmpty(),"Invented performance completions");
+  }
+  private void checkProfile(DynamicMessage profile, int uid, Set<Integer> caught) {
+    checkProfile(profile, uid, caught, false);
   }
   private DynamicMessage socialProfile() throws Exception {
     var response = call("SocialPlayGetDataCsReq");
@@ -180,7 +191,28 @@ public final class NativeTrainCakeCatchProbe {
     require(textSelection(256) == expected, "Weekly text did not reflect actual captures");
     require(saveTextSelection(256, 2560) == expected, "Stale client text overwrote weekly count");
   }
+  private void expectActiveMission(int id) throws Exception {
+    var snapshot = call("GetMissionDataCsReq");
+    boolean found = ((List<?>) field(snapshot, "mission_list")).stream()
+        .map(DynamicMessage.class::cast).anyMatch(row -> number(row, "id") == id
+            && field(row, "status").toString().equals("MissionStatus_MissionDoing"));
+    require(found, "Missing current introduction step " + id);
+  }
+  private void expectMissionUpdate(int id, String status) {
+    boolean found = missionUpdates.stream()
+        .flatMap(update -> ((List<?>) field(update, "mission_list")).stream())
+        .map(DynamicMessage.class::cast).anyMatch(row -> number(row, "id") == id
+            && field(row, "status").toString().equals(status));
+    require(found, "Missing native mission update " + id + " " + status);
+  }
+  private void finishTalk(int id) throws Exception {
+    var req = builder("FinishTalkMissionCsReq");
+    set(req, "sub_mission_id", id); set(req, "talk_str", "Mission_" + id);
+    var response = call("FinishTalkMissionCsReq", req);
+    require(number(response, "sub_mission_id") == id, "Wrong introduction dialogue response");
+  }
   private Map<String, Object> execute(JsonObject control) throws Exception {
+    String mode=control.get("mode").getAsString();
     var token=builder("PlayerGetTokenCsReq");
     set(token,"account_uid",control.get("accountUid").getAsString());
     set(token,"token",control.get("comboToken").getAsString());set(token,"platform",1);
@@ -188,7 +220,7 @@ public final class NativeTrainCakeCatchProbe {
     call("PlayerLoginCsReq");loggedIn=true;call("PlayerLoginFinishCsReq");
     var enter=builder("EnterSceneCsReq");set(enter,"entry_id",100000302);
     call("EnterSceneCsReq",enter);checkScene(child(call("GetCurSceneInfoCsReq"),"scene"));
-    String mode=control.get("mode").getAsString();
+    if (!mode.equals("locked")) require(checkedGroups.contains(240), "Unlocked box group missing from scene");
     var captured=new TreeSet<Integer>();
     if(mode.equals("locked")) {
       callExpected("TrainCakeCatchOpenBoxCsReq",builder("TrainCakeCatchOpenBoxCsReq"),1215);
@@ -204,14 +236,37 @@ public final class NativeTrainCakeCatchProbe {
         var first=call("TrainCakeCatchOpenBoxCsReq");checkBox(first);
         require(first.equals(call("TrainCakeCatchOpenBoxCsReq")),"Repeated open rerolled batch");
         checkProfile(socialProfile(),uid,Set.of());
+      } else if (mode.equals("retry")) {
+        captured.add(10); captured.add(21);
+        checkProfile(socialProfile(), uid, captured, true);
+        checkWeeklyText(captured.size());
+        missionUpdates.clear();
+        checkBox(call("TrainCakeCatchOpenBoxCsReq"));
+        expectMissionUpdate(402080008, "MissionStatus_MissionFinish");
+        expectMissionUpdate(402080006, "MissionStatus_MissionDoing");
+        checkProfile(socialProfile(), uid, captured);
+        expectActiveMission(402080006);
+      } else if (mode.equals("finish")) {
+        captured.addAll(Set.of(10, 21, 26));
+        checkProfile(socialProfile(), uid, captured);
+        expectActiveMission(402080006);
+        finishTalk(402080006);
+        expectActiveMission(402080012);
+        finishTalk(402080012);
+        expectActiveMission(402080011);
+        finishTalk(402080011);
+        expectActiveMission(402080010);
+        finishTalk(402080010);
       } else {
         captured.add(10);if(mode.equals("restart"))captured.add(21);
         checkProfile(socialProfile(),uid,captured);
         checkBox(call("TrainCakeCatchOpenBoxCsReq"));
       }
-      int cat=mode.equals("open")?10:mode.equals("verify")?21:26;
-      var first=search(cat);require(first.equals(search(cat)),"Retry changed capture receipt");
-      captured.add(cat);
+      if (!mode.equals("retry") && !mode.equals("finish")) {
+        int cat=mode.equals("open")?10:mode.equals("verify")?21:26;
+        var first=search(cat);require(first.equals(search(cat)),"Retry changed capture receipt");
+        captured.add(cat);
+      }
       checkWeeklyText(captured.size());
       var invalid=builder("TrainCakeCatchSearchCsReq");set(invalid,"PCPDHEIEJFO",4);
       callExpected("TrainCakeCatchSearchCsReq",invalid,5);

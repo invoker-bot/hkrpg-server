@@ -107,7 +107,8 @@ final class TrainCakeCatch46 {
 
   private static DynamicMessage profile(GameSession s, TrainCakeCatchState state, boolean valid) {
     var result = builder(s, "KPBCIIFIAGI");
-    set(result, "CMHKFNFKGOI", state.getRefreshAt());
+    set(result, "CMHKFNFKGOI", valid
+        ? TrainCakeCatch.clientRefreshAt(s.getPlayer(), state, TrainCakeCatch.now()) : state.getRefreshAt());
     set(result, "NLJBJMDPBGN", valid ? TrainCakeDiy46.toProto(s, s.getPlayer()) : builder(s, "BFAKMCIJFCB").build());
     set(result, "KABGCGENKLK", builder(s, "CGLJLBDFNBK").build());
     if (state.getRefreshAt() > TrainCakeCatch.now()) addSpots(s, result, state);
