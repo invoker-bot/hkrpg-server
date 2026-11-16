@@ -18,6 +18,7 @@ public final class ClientInvestigationGroups {
       20003001, new Source(106, "5d871fa3181281bba26342edcc19be88f0764434f83f4f05578caf5c45fe818e"));
 
   static void markSource(GroupInfo group, JsonObject raw) {
+    ClientWantedPosterGroups.markSource(group, raw);
     if (!"Investigative".equalsIgnoreCase(group.getGroupName())) return;
     String fingerprint = TimelineActivityRules.fingerprint(raw);
     for (var candidate : SOURCES.entrySet()) {

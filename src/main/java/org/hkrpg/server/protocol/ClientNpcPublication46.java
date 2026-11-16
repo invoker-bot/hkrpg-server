@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import org.hkrpg.server.gameplay.ClientInvestigationGroups;
+import org.hkrpg.server.gameplay.ClientWantedPosterGroups;
 import org.hkrpg.server.gameplay.ClientNpcGroups;
 import org.hkrpg.server.gameplay.ClientVisualGroups;
 import org.hkrpg.server.gameplay.GreatMineEntrances;
@@ -47,9 +48,11 @@ final class ClientNpcPublication46 {
     for (var source : scene.getResourceGroups().values()) {
       boolean mine = GreatMineEntrances.clientGroup(scene, source.getId());
       boolean visual=ClientVisualGroups.clientGroup(scene,source.getId());
+      boolean poster=ClientWantedPosterGroups.clientGroup(scene,source.getId());
       if (!source.isClientOwnedNpcSource()
           && !mine
           && !visual
+          && !poster
           && !ClientInvestigationGroups.clientGroup(scene, source.getId())) continue;
       if (mine) mains.add(source.getOwnerMainMissionID());
       if (visual) {
@@ -57,6 +60,8 @@ final class ClientNpcPublication46 {
           mains.add(source.getOwnerMainMissionID());
         NativeMissionGroups.addSavedBindings(scene,source,subs);
       }
+      if (poster && MissionSnapshotRecords.main(player,source.getOwnerMainMissionID()))
+        mains.add(source.getOwnerMainMissionID());
       if (PeppyMissionScene.clientGroup(scene, source.getId())) {
         mains.add(source.getOwnerMainMissionID());
         subs.addAll(PeppyMissionScene.SCENE_GRAPH_OBJECTIVES);
@@ -161,6 +166,7 @@ final class ClientNpcPublication46 {
   private static boolean clientGroup(Scene scene, int groupId) {
     return PeppyMissionScene.clientGroup(scene, groupId)
         || ClientInvestigationGroups.clientGroup(scene, groupId)
+        || ClientWantedPosterGroups.clientGroup(scene, groupId)
         || ClientVisualGroups.clientGroup(scene,groupId)
         || GreatMineEntrances.clientGroup(scene, groupId);
   }
