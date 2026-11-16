@@ -130,12 +130,16 @@ def main():
             assert uid == initial['uid']
             response = send('QueryProductInfoCsReq')
             products = response['product_list']
-            assert len(products) == 6 and all(p['price_tier'] == 'Local_Free' for p in products), products
+            tiers = {p['product_id']: p['price_tier'] for p in products}
+            assert len(products) == 10 and sum(t == 'Local_Free' for t in tiers.values()) == 6, products
+            assert {k: v for k, v in tiers.items() if v != 'Local_Free'} == {
+                'rpgchnyear3tier1': 'Tier_1', 'rpgchnyear3tier5': 'Tier_5',
+                'rpgchnticket3tier15': 'Tier_15', 'rpgchnyear4tiercny100': 'Alternate_Tier_A'}
             gift_status = send('GetRechargeGiftInfoCsReq')
             assert gift_status.get('retcode', 0) == 0, gift_status
             price = http('/hkrpg_cn/mdk/shopwindow/shopwindow/listPriceTierV2')['data']['tiers']
             prices = {row['tier_id']: row['t_price'][0]['price'] for row in price}
-            assert prices['Local_Free'] == '0' and prices['Tier_5'] == '3000' and prices['Tier_15'] == '9800'
+            assert prices['Local_Free'] == '0' and prices['Tier_1'] == '600' and prices['Tier_5'] == '3000' and prices['Tier_15'] == '9800' and prices['Alternate_Tier_A'] == '100'
             order = {'open_id': account['uid'], 'combo_token': combo, 'role_id': str(uid),
                      'request_id': 'isolated-order-one', 'product_id': 'rpgchncoin300tier5'}
             path = '/hkrpg_cn/mdk/luckycat/luckycat/createOrder'
@@ -168,13 +172,32 @@ def main():
                 assert http(path, without_id)['retcode'] == 0
                 assert snapshot()['basic'].get('mcoin', 0) == 510
                 send('CancelAutoConversionCacheCsReq', b'\x0a\x0aLocal_Free\x10\x02')
+                # Four original-price gifts are fulfilled locally; retries never duplicate the grant.
+                for product_id, tier, count in [
+                        ('rpgchnyear3tier1', 'Tier_1', 1), ('rpgchnyear3tier5', 'Tier_5', 1),
+                        ('rpgchnticket3tier15', 'Tier_15', 2), ('rpgchnyear4tiercny100', 'Alternate_Tier_A', 1)]:
+                    product = product_id.encode(); claim = b'\x0a' + bytes([len(product)]) + product + b'\x10\x02'
+                    acknowledgement = b'\x0a' + bytes([len(tier)]) + tier.encode() + b'\x10\x02'
+                    for _ in range(count):
+                        send('CancelAutoConversionCacheCsReq', claim)
+                        send('CancelAutoConversionCacheCsReq', claim)  # retry with same session order
+                        send('CancelAutoConversionCacheCsReq', acknowledgement)
+                    send('CancelAutoConversionCacheCsReq', claim, success=False)
+                gm.wait_for(lambda: snapshot()['basic'].get('mcoin', 0) == 830, 30)
+                gift_status = send('GetRechargeGiftInfoCsReq')
+                assert len(gift_status.get('OFIHOCCHNCN', [])) == 1, gift_status
+                purchased = {p['product_id']: p.get('buy_times', 0) for p in send('QueryProductInfoCsReq')['product_list']}
+                assert [purchased[k] for k in ('rpgchnyear3tier1','rpgchnyear3tier5','rpgchnticket3tier15','rpgchnyear4tiercny100')] == [1,1,2,1]
             else:
-                assert initial['basic'].get('mcoin', 0) == 510
+                assert initial['basic'].get('mcoin', 0) == 830
+                purchased = {p['product_id']: p.get('buy_times', 0) for p in products}
+                assert [purchased[k] for k in ('rpgchnyear3tier1','rpgchnyear3tier5','rpgchnticket3tier15','rpgchnyear4tiercny100')] == [1,1,2,1]
+                assert len(gift_status.get('OFIHOCCHNCN', [])) == 1
                 assert http(path, order)['retcode'] == 0
-                assert snapshot()['basic'].get('mcoin', 0) == 510
+                assert snapshot()['basic'].get('mcoin', 0) == 830
                 assert http(path, {**order, 'request_id': 'isolated-order-two',
                                    'product_id': 'rpgchncoin60tier1'})['retcode'] == 0
-                gm.wait_for(lambda: snapshot()['basic'].get('mcoin', 0) == 570, 30)
+                gm.wait_for(lambda: snapshot()['basic'].get('mcoin', 0) == 890, 30)
                 send('CancelAutoConversionCacheCsReq', b'\x0a\x0aLocal_Free\x10\x02')
             stop()
         assert hashlib.sha256(jar.read_bytes()).hexdigest() == digest

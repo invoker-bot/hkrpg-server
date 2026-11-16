@@ -7,6 +7,8 @@ import emu.lunarcore.server.packet.SessionState;
 import org.hkrpg.server.GameDiagnostics;
 import org.hkrpg.server.gameplay.FreeDreamCatalog;
 import org.hkrpg.server.gameplay.FreeDreamOrders;
+import org.hkrpg.server.gameplay.RecommendGiftCatalog;
+import org.hkrpg.server.gameplay.RecommendGifts;
 
 /** Native product query; only locally configured free coin offers are synthesized. */
 public final class FreeDreamProduct46 {
@@ -21,7 +23,10 @@ public final class FreeDreamProduct46 {
       GameDiagnostics.outcome(session, "QueryProductInfoCsReq", 0, Retcode.REQ_PARA_INVALID,
           "free-dream-query-rejected", bytes == null || bytes.length != 0 ? "invalid-wire" : "missing-catalog");
     } else {
-      session.ensureLocalDreamOffers(FreeDreamCatalog.offers().stream().map(FreeDreamCatalog.Offer::productId).toList());
+      var productIds = new java.util.ArrayList<String>();
+      FreeDreamCatalog.offers().forEach(o -> productIds.add(o.productId()));
+      RecommendGiftCatalog.offers().forEach(o -> productIds.add(o.productId()));
+      session.ensureLocalDreamOffers(productIds);
       var field = response.getDescriptorForType().findFieldByName("product_list");
       var product = field.getMessageType();
       for (var offer : FreeDreamCatalog.offers()) {
@@ -33,6 +38,22 @@ public final class FreeDreamProduct46 {
         Gameplay46.set(row, "begin_time", 1577854800L);
         Gameplay46.set(row, "end_time", 4070926800L);
         response.addRepeatedField(field, row.build());
+      }
+      var player = session.getPlayer();
+      if (player != null && player.getSession() == session) {
+        for (var offer : RecommendGiftCatalog.offers()) {
+          var row = DynamicMessage.newBuilder(product);
+          Gameplay46.set(row, "product_id", offer.productId());
+          Gameplay46.set(row, "price_tier", offer.tier());
+          var kind = product.findFieldByName("gift_type");
+          row.setField(kind, kind.getEnumType().findValueByNumber(offer.type()));
+          Gameplay46.set(row, "gift_version", offer.version());
+          Gameplay46.set(row, "max_buy_times", offer.max());
+          Gameplay46.set(row, "buy_times", RecommendGifts.bought(player, offer));
+          Gameplay46.set(row, "begin_time", 1577854800L);
+          Gameplay46.set(row, "end_time", 4070926800L);
+          response.addRepeatedField(field, row.build());
+        }
       }
     }
     session.sendClientPacket("QueryProductInfoScRsp", response.build().toByteArray());
@@ -63,9 +84,10 @@ public final class FreeDreamProduct46 {
     }
     if (valid && count == 1 && FreeDreamCatalog.find(productIds.getFirst()) != null)
       return claimFromSession(session, productIds.getFirst());
+    if (valid && count == 1 && RecommendGiftCatalog.find(productIds.getFirst()) != null)
+      return RecommendGift46.claimFromSession(session, productIds.getFirst());
     if (!session.hasLocalRechargeNotice()) return false;
-    valid = valid && productIds.stream().allMatch(FreeDreamCatalog.FREE_TIER::equals)
-        && session.consumeLocalRechargeNotices(count);
+    valid = valid && session.consumeLocalRechargeNotices(productIds);
     var response = Gameplay46.builder(session, "CancelAutoConversionCacheScRsp");
     if (!valid) {
       Gameplay46.set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());

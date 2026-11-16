@@ -106,6 +106,20 @@ public class GameSession {
 
     public synchronized boolean hasLocalRechargeNotice() { return !localRechargeNotices.isEmpty(); }
 
+    public synchronized boolean consumeLocalRechargeNotices(java.util.List<String> tiers) {
+        if (tiers == null || tiers.isEmpty() || tiers.size() > localRechargeNotices.size()) return false;
+        var products = localRechargeNotices.iterator();
+        for (String tier : tiers) {
+            String product = products.next();
+            var gift = org.hkrpg.server.gameplay.RecommendGiftCatalog.find(product);
+            String expected = gift != null ? gift.tier()
+                : org.hkrpg.server.gameplay.FreeDreamCatalog.find(product) != null
+                    ? org.hkrpg.server.gameplay.FreeDreamCatalog.FREE_TIER : "";
+            if (!expected.equals(tier)) return false;
+        }
+        return consumeLocalRechargeNotices(tiers.size());
+    }
+
     public synchronized boolean consumeLocalRechargeNotices(int amount) {
         if (amount <= 0 || amount > localRechargeNotices.size()) return false;
         for (int i = 0; i < amount; i++) {

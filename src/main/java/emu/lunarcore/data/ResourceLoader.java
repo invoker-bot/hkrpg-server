@@ -130,6 +130,7 @@ public class ResourceLoader {
             org.hkrpg.server.gameplay.SkinShopCatalog.install();
             org.hkrpg.server.gameplay.FashionShopCatalog.install();
             org.hkrpg.server.gameplay.FreeDreamCatalog.load(Paths.get(LunarCore.getConfig().getResourceDir()));
+            org.hkrpg.server.gameplay.RecommendGiftCatalog.load(Paths.get(LunarCore.getConfig().getResourceDir()));
         }
     }
 
