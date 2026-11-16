@@ -125,7 +125,7 @@ final class TrainCakeCatch46 {
   private static void addSpots(GameSession s, DynamicMessage.Builder response, TrainCakeCatchState state) {
     for (var spot : state.getSpots()) {
       var row = builder(s, "IKAHKMNCFDN");
-      set(row, "PCPDHEIEJFO", spot.getCat()); set(row, "slot", spot.getSlot());
+      set(row, "PCPDHEIEJFO", spot.getCat()); set(row, "slot", TrainCakeCatch.clientSlot(spot.getSlot()));
       add(response, "BJPHDKEBOBK", row.build());
     }
   }

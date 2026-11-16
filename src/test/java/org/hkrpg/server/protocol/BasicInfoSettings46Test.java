@@ -25,6 +25,13 @@ class BasicInfoSettings46Test {
     return session.response;
   }
 
+  @Test void basicInfoUsesTheServerResetDayRatherThanAConstant() throws Exception {
+    var now = java.time.Instant.ofEpochMilli(emu.lunarcore.LunarCore.currentServerTime());
+    int expected = Math.toIntExact(now.atZone(java.time.ZoneId.of("Asia/Shanghai"))
+        .minusHours(4).toLocalDate().toEpochDay());
+    assertEquals(expected, Gameplay46.number(query(new ProfileCreation46Test.Session()), "cur_day"));
+  }
+
   @Test
   void successfulBasicInfoIncludesTheSettingsContainerRequiredByTheActualCallback()
       throws Exception {

@@ -166,6 +166,41 @@ class TrainCakeRoomWire46Test {
     assertFalse(TrainCakeRoomTravel.hasPending(guest));
   }
 
+  @Test void aVisitorSeesAndCanCatchTheOwnersLegacyZeroSlotAtARealTail() throws Exception {
+    var owner = actor(20001); var guest = actor(10001); var session = new Session(guest);
+    assertEquals(Retcode.SUCC, TrainCakeSocialSettings.update(owner, new TrainCakeSocialSettings(true, true, true)));
+    assertEquals(Retcode.SUCC, TrainCakeCatch.open(owner, TrainCakeCatch.now()).retcode());
+    var json = JsonParser.parseString(fixture.gson.toJson(owner.getGameplay())).getAsJsonObject();
+    json.getAsJsonObject("trainCakeCatch").getAsJsonArray("spots").get(0).getAsJsonObject().addProperty("slot", 0);
+    field(owner, "gameplay", fixture.gson.fromJson(json, GameplayState.class));
+    var rooms = fixture.roomClient.getDatabase("train-cake-fixture").getCollection("train_cake_rooms");
+    var savedRoom = rooms.find(com.mongodb.client.model.Filters.eq("_id", owner.uid)).first();
+    savedRoom.getList("spots", org.bson.Document.class).getFirst().put("slot", 0);
+    rooms.replaceOne(com.mongodb.client.model.Filters.eq("_id", owner.uid), savedRoom);
+    String oldOwner = fixture.gson.toJson(owner.getGameplay()), oldRoom = savedRoom.toJson();
+    enter(session, owner.uid);
+    var response = call(session, "SocialPlayGetOnlineRoomDataCsReq", builder(session, "SocialPlayGetOnlineRoomDataCsReq"),
+        "SocialPlayGetOnlineRoomDataScRsp");
+    var snapshot = (DynamicMessage) value(response, "DJMHHMMABJL");
+    var outer = (DynamicMessage) value(snapshot, "LNMGOFCOMED");
+    var box = (DynamicMessage) value(outer, "PKHFMJDNKOE");
+    var opened = call(session, "TrainCakeCatchOpenBoxCsReq", builder(session, "TrainCakeCatchOpenBoxCsReq"),
+        "TrainCakeCatchOpenBoxScRsp");
+    for (var data : List.of(box, opened)) {
+      var spots = new TreeMap<Integer, Integer>();
+      for (var raw : (List<?>) value(data, "BJPHDKEBOBK")) {
+        var row = (DynamicMessage) raw;
+        spots.put(number(row, "PCPDHEIEJFO"), number(row, "slot"));
+      }
+      assertEquals(Map.of(10, 7, 21, 6, 26, 5), spots);
+    }
+    assertEquals(oldOwner, fixture.gson.toJson(owner.getGameplay()));
+    assertEquals(oldRoom, rooms.find(com.mongodb.client.model.Filters.eq("_id", owner.uid)).first().toJson());
+    var search = builder(session, "TrainCakeCatchSearchCsReq"); set(search, "PCPDHEIEJFO", 10);
+    assertEquals(0, number(call(session, "TrainCakeCatchSearchCsReq", search, "TrainCakeCatchSearchScRsp"), "retcode"));
+    assertEquals(Map.of(10, 1), TrainCakeVisits.counts(guest));
+  }
+
   @Test void twoVisitorsCanCaptureTheSameCatAndSeeOneAnotherJoinAndDisconnect() throws Exception {
     var owner = actor(20001); var a = actor(10001); var b = actor(10002);
     var first = new Session(a); var second = new Session(b);

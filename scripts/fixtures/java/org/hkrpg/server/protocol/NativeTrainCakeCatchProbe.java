@@ -216,6 +216,32 @@ public final class NativeTrainCakeCatchProbe {
     var response = call("FinishTalkMissionCsReq", req);
     require(number(response, "sub_mission_id") == id, "Wrong introduction dialogue response");
   }
+  private void waitForDailyRefresh(int expectedDay) throws Exception {
+    long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(135);
+    long nextHeartbeat = 0;
+    while (System.nanoTime() < deadline) {
+      require(failure.get() == null, "KCP transport failed while waiting for rollover");
+      if (System.nanoTime() >= nextHeartbeat) {
+        send("PlayerHeartBeatCsReq", builder("PlayerHeartBeatCsReq"));
+        nextHeartbeat = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+      }
+      var frame = inbox.poll(250, TimeUnit.MILLISECONDS);
+      if (frame == null || frame.command != protocol.clientCommand("DailyRefreshNotify")) continue;
+      var notify = protocol.clientSchema().parse("DailyRefreshNotify", frame.body);
+      require(number(notify, "MDIIJKBHBBI") == expectedDay, "Wrong reset day in native notification");
+      return;
+    }
+    throw new IllegalStateException("Missing daily refresh notification at the weekly boundary");
+  }
+  private void checkRealTailSlots(DynamicMessage data) {
+    var cats = new TreeSet<Integer>(); var slots = new TreeSet<Integer>();
+    for (var raw : (List<?>) field(data, "BJPHDKEBOBK")) {
+      var spot = (DynamicMessage) raw; int slot = number(spot, "slot");
+      require(slot >= 1 && slot <= 7 && slots.add(slot), "Box referenced a missing or duplicate tail");
+      require(cats.add(number(spot, "PCPDHEIEJFO")), "Box repeated a cat");
+    }
+    require(cats.size() == 3 && slots.size() == 3, "Wrong new-week batch size");
+  }
   private Map<String, Object> execute(JsonObject control) throws Exception {
     String mode=control.get("mode").getAsString();
     var token=builder("PlayerGetTokenCsReq");
@@ -235,6 +261,27 @@ public final class NativeTrainCakeCatchProbe {
       require((Long)field(empty,"CMHKFNFKGOI")==0L,"Locked profile changed refresh time");
       checkWeeklyText(0);
       require(saveTextSelection(18, 181) == 181, "Ordinary selection did not save");
+    } else if (mode.equals("rollover")) {
+      int nextDay = control.get("nextDay").getAsInt();
+      require(number(call("GetBasicInfoCsReq"), "cur_day") == nextDay - 1, "Wrong initial reset day");
+      var opened = call("TrainCakeCatchOpenBoxCsReq");
+      checkRealTailSlots(opened);
+      require(((List<?>) field(opened, "BJPHDKEBOBK")).stream().map(raw -> (DynamicMessage) raw)
+          .anyMatch(row -> number(row, "PCPDHEIEJFO") == 10), "Initial batch omitted cat 10");
+      search(10, uid); captured.add(10);
+      waitForDailyRefresh(nextDay);
+      require(number(call("GetBasicInfoCsReq"), "cur_day") == nextDay, "Basic day did not roll over");
+      // The native OnlinePlayRoomModule issues this request after its daily-refresh event.
+      var expired = socialProfile();
+      require(((List<?>) field(expired, "BJPHDKEBOBK")).isEmpty(), "Expired tails were sent again");
+      require(((List<?>) field(expired, "CEMFBJPOLNP")).isEmpty(), "Expired weekly records survived");
+      var counts = (List<?>) field(expired, "NIELDCLPOLA");
+      require(counts.size() == 1 && number((DynamicMessage) counts.getFirst(), "PCPDHEIEJFO") == 10
+          && number((DynamicMessage) counts.getFirst(), "count") == 1, "Rollover changed saved cats");
+      checkWeeklyText(0);
+      var next = call("TrainCakeCatchOpenBoxCsReq"); checkRealTailSlots(next);
+      require(next.equals(call("TrainCakeCatchOpenBoxCsReq")), "The new batch was redrawn on retry");
+      checkRealTailSlots(socialProfile());
     } else {
       require(textSelection(18) == 181, "Ordinary selection was not restored");
       if(mode.equals("open")) {

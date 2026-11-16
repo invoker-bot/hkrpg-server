@@ -26,6 +26,12 @@ public final class TrainCakeCatch {
       new TrainCakeCatchState.Spot(26, 5));
   static List<TrainCakeCatchState.Spot> initialBatch() { return INITIAL; }
 
+  /** Legacy boxes store the seven positions as 0..6; the scene props use 1..7. */
+  public static int clientSlot(int storedSlot) {
+    if (storedSlot < 0 || storedSlot > 6) throw new IllegalArgumentException("Invalid stored cat slot");
+    return storedSlot == 0 ? 7 : storedSlot;
+  }
+
   public static long now() { return Math.floorDiv(LunarCore.currentServerTime(), 1000); }
 
   public static long nextRefresh(long now) {

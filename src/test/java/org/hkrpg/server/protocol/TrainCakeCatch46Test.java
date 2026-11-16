@@ -234,6 +234,36 @@ class TrainCakeCatch46Test {
   }
 
   @Test
+  void oldZeroSlotProjectsToARealTailWithoutRedrawingOrRewritingTheSavedBatch() throws Exception {
+    var s = room(true); open(s); search(s, 21);
+    var json = JsonParser.parseString(gson.toJson(s.actor.getGameplay())).getAsJsonObject();
+    json.getAsJsonObject("trainCakeCatch").getAsJsonArray("spots").get(0).getAsJsonObject().addProperty("slot", 0);
+    var gameplay = Player.class.getDeclaredField("gameplay"); gameplay.setAccessible(true);
+    gameplay.set(s.actor, gson.fromJson(json, GameplayState.class));
+    var rooms = roomClient.getDatabase("train-cake-fixture").getCollection("train_cake_rooms");
+    var savedRoom = rooms.find(com.mongodb.client.model.Filters.eq("_id", 10001)).first();
+    savedRoom.getList("spots", org.bson.Document.class).getFirst().put("slot", 0);
+    rooms.replaceOne(com.mongodb.client.model.Filters.eq("_id", 10001), savedRoom);
+    String savedPlayer = gson.toJson(s.actor.getGameplay()), savedBatch = savedRoom.toJson();
+    int saves = s.actor.saves;
+    var profile = (DynamicMessage) field(request(s, "SocialPlayGetDataCsReq", new byte[0],
+        "SocialPlayGetDataScRsp"), "ELDIONMAAHO");
+    for (var data : List.of(profile, open(s))) {
+      var spots = new TreeMap<Integer, Integer>();
+      for (var raw : list(data, "BJPHDKEBOBK")) {
+        var row = (DynamicMessage) raw;
+        spots.put((int) field(row, "PCPDHEIEJFO"), (int) field(row, "slot"));
+      }
+      assertEquals(Map.of(10, 7, 21, 6, 26, 5), spots);
+    }
+    assertEquals(savedPlayer, gson.toJson(s.actor.getGameplay()));
+    assertEquals(savedBatch, rooms.find(com.mongodb.client.model.Filters.eq("_id", 10001)).first().toJson());
+    assertEquals(saves, s.actor.saves, "Projection must not save or reroll the existing box");
+    assertEquals(0, field(search(s, 10), "retcode"));
+    assertEquals(Map.of(10, 1, 21, 1), s.actor.getGameplay().getTrainCakeCatch().getCounts());
+  }
+
+  @Test
   void failedSavesRestoreThePreviousBatchAndInventoryAndCanBeRetried() throws Exception {
     var s = room(true); var before = s.actor.getGameplay().getTrainCakeCatch();
     s.actor.failSave = true;

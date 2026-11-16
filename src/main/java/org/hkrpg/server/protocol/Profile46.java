@@ -100,6 +100,7 @@ public final class Profile46 {
           if (social != null)
             set(settings, "CMFCOOEEECB", TrainCakeSocialSettings46.toProto(session, social));
           response.setField(settingsField, settings.build());
+          set(response, "cur_day", DailyRefresh46.day(java.time.Instant.ofEpochMilli(emu.lunarcore.LunarCore.currentServerTime())));
           set(response, "exchange_times", player.getTodayStaminaPurchases());
           set(response, "is_gender_set", player.hasCreatedCharacter());
         } else set(response, "retcode", Retcode.REQ_PARA_INVALID.getVal());

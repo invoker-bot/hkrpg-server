@@ -247,7 +247,7 @@ public final class TrainCakeSocial46 {
       List<org.hkrpg.server.gameplay.TrainCakeCatchState.Spot> spots) {
     for (var spot : spots) {
       var row = builder(session, "IKAHKMNCFDN");
-      set(row, "PCPDHEIEJFO", spot.getCat()); set(row, "slot", spot.getSlot());
+      set(row, "PCPDHEIEJFO", spot.getCat()); set(row, "slot", TrainCakeCatch.clientSlot(spot.getSlot()));
       add(target, "BJPHDKEBOBK", row.build());
     }
   }
@@ -486,7 +486,7 @@ public final class TrainCakeSocial46 {
     long refresh = batch != null ? batch.refreshAt() : legacy.getRefreshAt() > now ? legacy.getRefreshAt() : 0;
     set(box, "CMHKFNFKGOI", refresh);
     for (var spot : spots) {
-      var row = builder(session, "IKAHKMNCFDN"); set(row, "PCPDHEIEJFO", spot.getCat()); set(row, "slot", spot.getSlot());
+      var row = builder(session, "IKAHKMNCFDN"); set(row, "PCPDHEIEJFO", spot.getCat()); set(row, "slot", TrainCakeCatch.clientSlot(spot.getSlot()));
       add(box, "BJPHDKEBOBK", row.build());
     }
     set(outer, "PKHFMJDNKOE", box.build()); set(room, "LNMGOFCOMED", outer.build());
