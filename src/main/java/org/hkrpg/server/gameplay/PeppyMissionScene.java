@@ -41,7 +41,7 @@ public final class PeppyMissionScene {
         || source.getTask() != null || source.getFinishActionList().length != 0
         || !MissionStateRecords.subCompleted(player, BATTLE)) return false;
     var battle = GameplayDefinitions.subs.get(BATTLE);
-    return battle != null && StoryBattleEvents.companionRequest(battle) == 20003214;
+    return StoryBattleEvents.worldWin(BATTLE).matches(battle);
   }
 
   private PeppyMissionScene() {}

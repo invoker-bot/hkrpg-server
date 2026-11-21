@@ -6,13 +6,15 @@ import emu.lunarcore.game.battle.Battle;
 import emu.lunarcore.game.battle.BattleStage;
 import emu.lunarcore.game.player.Player;
 import emu.lunarcore.game.quest.QuestState;
+import emu.lunarcore.game.scene.Scene;
+import emu.lunarcore.server.packet.Retcode;
 import java.util.*;
 
 /** Story event mappings and legacy stage-family prefixes, frozen at accepted battle start. */
 public final class MissionStageWins {
   private record Clause(
       int main, int stageOrEvent, int progress, int plane, int floor,
-      boolean eventMapped, int scriptEvent, String script) {}
+      boolean eventMapped, StoryBattleEvents.Objective worldBattle, String script) {}
 
   private record Target(
       MissionInfo.SubMissionInfo definition,
@@ -26,6 +28,7 @@ public final class MissionStageWins {
   public static final class Context {
     private final Player owner;
     private final BattleStage stage;
+    private final Scene scene;
     private final int stageId;
     private final int world, plane, floor, entry;
     private final Map<Integer, Target> targets;
@@ -38,6 +41,7 @@ public final class MissionStageWins {
         MissionRaidBattleScope raid) {
       this.owner = owner;
       this.stage = stage;
+      this.scene = owner.getScene();
       this.stageId = stage == null ? 0 : stage.getId();
       this.world = owner.getWorldLevel();
       this.plane = owner.getPlaneId();
@@ -66,12 +70,17 @@ public final class MissionStageWins {
               : !raid.matches(player))
           || target.definition() != definition
           || !target.clause().equals(clause(definition))
-          || (target.clause().scriptEvent() != 0
-              && battle.getEventId() != target.clause().scriptEvent()
-              && battle.getEventId() != target.clause().stageOrEvent())
           || !condition(target.clause(), stage.getId(), world, plane, floor)) return false;
+      var worldBattle = target.clause().worldBattle();
+      if (worldBattle != null && !worldBattle.matchesEvent(battle.getEventId(), world)) return false;
+      if (worldBattle != null && (player.getScene() != scene || !worldBattle.inOriginalWorld(player)
+          || !worldBattle.prerequisiteCompleted(player))) {
+        worldBattle.report(player, "MissionStageWin", definition.getId(), Retcode.MISSION_NOT_DOING,
+            "story-battle-context-changed", stageId);
+        return false;
+      }
       var g = player.getGameplay();
-      return g.getMainMissions().get(definition.getMainMissionID()) == target.main()
+      boolean matched = g.getMainMissions().get(definition.getMainMissionID()) == target.main()
           && MissionStateRecords.mainDoing(player, definition.getMainMissionID())
           && g.getSubMissions().get(definition.getId()) == target.sub()
           && MissionStateRecords.doing(
@@ -83,6 +92,10 @@ public final class MissionStageWins {
               || target.raidAcceptance() != null
                   && target.raidAcceptance().matches(player, definition))
           && player.getMissionManager().canFinishFromAction(definition.getId());
+      if (matched && worldBattle != null)
+        worldBattle.report(player, "MissionStageWin", definition.getId(), Retcode.SUCC,
+            "story-battle-matched", stageId);
+      return matched;
     }
   }
 
@@ -103,7 +116,7 @@ public final class MissionStageWins {
           var c = state == null ? null : GameplayDefinitions.subs.get(state.getQuestId());
           if (c == null || !MissionStateRecords.doing(state, c.getId(), Math.max(1, c.getProgress())))
             continue;
-          var clause = clause(c);
+          var clause = captureClause(player, c, stage);
           if (condition(
                   clause,
                   stage.getId(),
@@ -128,6 +141,20 @@ public final class MissionStageWins {
     }
   }
 
+  private static Clause captureClause(Player player, MissionInfo.SubMissionInfo c, BattleStage stage) {
+    var authored = StoryBattleEvents.worldWin(c.getId());
+    var clause = clause(c);
+    if (authored == null || SceneEventBattles.resolve(authored.event(), player.getWorldLevel()) != stage)
+      return clause;
+    if (clause == null) {
+      authored.report(player, "MissionStageWin", c.getId(), Retcode.MISSION_FINISH_WAY_NOT_MATCH,
+          "story-battle-source", stage.getId());
+      return null;
+    }
+    if (!authored.inOriginalWorld(player) || !authored.prerequisiteCompleted(player)) return null;
+    return clause;
+  }
+
   private static boolean available(Player player) {
     var run = player.getGameplay().getRogue();
     return player.getGameplay().getStoryLines().getCurrentId() == 0
@@ -139,8 +166,9 @@ public final class MissionStageWins {
 
   private static Clause clause(MissionInfo.SubMissionInfo c) {
     if (!supported(c)) return null;
-    int scriptEvent = StoryBattleEvents.companionRequest(c);
-    boolean eventMapped = mainline(c) || scriptEvent != 0;
+    var worldBattle = StoryBattleEvents.worldWin(c.getId());
+    if (worldBattle != null && !worldBattle.matches(c)) return null;
+    boolean eventMapped = mainline(c) || worldBattle != null;
     String script = script(c, eventMapped);
     if (script == null) return null;
     return new Clause(
@@ -150,7 +178,7 @@ public final class MissionStageWins {
         c.getLevelPlaneID(),
         c.getLevelFloorID(),
         eventMapped,
-        scriptEvent,
+        worldBattle,
         script);
   }
 

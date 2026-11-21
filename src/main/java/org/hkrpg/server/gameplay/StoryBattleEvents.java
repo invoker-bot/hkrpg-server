@@ -3,12 +3,14 @@ package org.hkrpg.server.gameplay;
 import emu.lunarcore.data.GameData;
 import emu.lunarcore.data.config.MissionInfo;
 import emu.lunarcore.game.player.Player;
+import emu.lunarcore.server.packet.Retcode;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import org.hkrpg.server.GameDiagnostics;
 
-/** Source-bound battle entry for original space station story objectives. */
+/** Authored world encounters. Only the guarded requests can resolve a missing reference event. */
 public final class StoryBattleEvents {
   // Hashes cover the complete Mission graphs as retained by the resource loader.
   private static final Objective STATION_BOSS = new Objective(
@@ -21,15 +23,25 @@ public final class StoryBattleEvents {
   private static final Objective RESCUE_ARLAN = new Objective(
       20003216, 20003215, 2000211, 200021123, 200021122, 20003, 20003001, "Companion",
       "763fbdedd2b37fcd5406872a4094be5f6e699b40134030dac51adab0597f1fa6");
+  private static final Objective GRAFFITI = new Objective(
+      20003224, 20003225, 2000701, 200070107, 200070106, 20001, 20001001, "Companion",
+      "6a4a19e1fc23cc80c6be37741246d6efee3727acf1f64a81b870cc04963b5b20");
+  private static final Objective CONTROL_ROOM = new Objective(
+      20003226, 20003226, 2000701, 200070119, 200070118, 20002, 20002001, "Companion",
+      "b7508db2c7e4da1d6836c9a5ac41056602f17763d2bbe4daa9b856e4d457f16b");
   private static final Map<Integer, Objective> BY_REQUEST = Map.of(
       STATION_BOSS.request(), STATION_BOSS,
       FOLLOW_PEPPY.request(), FOLLOW_PEPPY,
       RESCUE_ARLAN.request(), RESCUE_ARLAN,
-      RESCUE_ARLAN.event(), RESCUE_ARLAN);
-  private static final Map<Integer, Objective> COMPANION_OBJECTIVES =
-      Map.of(FOLLOW_PEPPY.sub(), FOLLOW_PEPPY, RESCUE_ARLAN.sub(), RESCUE_ARLAN);
+      RESCUE_ARLAN.event(), RESCUE_ARLAN,
+      GRAFFITI.request(), GRAFFITI,
+      GRAFFITI.event(), GRAFFITI,
+      CONTROL_ROOM.event(), CONTROL_ROOM);
+  private static final Map<Integer, Objective> GUARDED_WORLD_WINS = Map.of(
+      FOLLOW_PEPPY.sub(), FOLLOW_PEPPY, RESCUE_ARLAN.sub(), RESCUE_ARLAN,
+      GRAFFITI.sub(), GRAFFITI, CONTROL_ROOM.sub(), CONTROL_ROOM);
 
-  private record Objective(
+  record Objective(
       int request, int event, int main, int sub, int prerequisite, int plane, int floor,
       String missionType, String scriptHash) {
     boolean matches(MissionInfo.SubMissionInfo definition) {
@@ -49,6 +61,33 @@ public final class StoryBattleEvents {
           && definition.getTask() != null && definition.getTask().declaresBattle(request)
           && scriptHash.equals(digest(definition.getTask().getSourceDefinition()));
     }
+
+    boolean inOriginalWorld(Player player) {
+      var scene = player.getScene();
+      var gameplay = player.getGameplay();
+      int world = player.getWorldLevel();
+      return world >= 0 && world <= 6 && StoryDoors.world(scene) && scene.getPlayer() == player
+          && scene.getPlaneId() == plane && scene.getFloorId() == floor
+          && player.getPlaneId() == plane && player.getFloorId() == floor
+          && player.getInstance() == null && gameplay.getCurrentMissionRaid() == 0
+          && gameplay.getTrialRun() == null && !gameplay.getRogue().isInside()
+          && !gameplay.getParkourVenue().inside() && gameplay.getStoryLines().getCurrentId() == 0;
+    }
+
+    boolean prerequisiteCompleted(Player player) {
+      return MissionStateRecords.subCompleted(player, prerequisite);
+    }
+
+    boolean matchesEvent(int enteredEvent, int world) {
+      return enteredEvent == event
+          || (enteredEvent == request && BY_REQUEST.get(request) == this
+              && GameData.getPlaneEventExcelMap().get(request, world) == null);
+    }
+
+    void report(Player player, String command, int subject, Retcode result, String reason, int stage) {
+      GameDiagnostics.outcome(player.getSession(), command, subject, result, reason,
+          "objective=" + sub + " event=" + event + " stage=" + stage + " world=" + player.getWorldLevel());
+    }
   }
 
   public static int canonicalEvent(Player player, int requested) {
@@ -58,26 +97,27 @@ public final class StoryBattleEvents {
     // A future real event row takes precedence; never replace an existing battle by its neighbour.
     if (requested != objective.event()
         && GameData.getPlaneEventExcelMap().get(requested, world) != null) return requested;
-    var scene = player.getScene();
-    var g = player.getGameplay();
-    if (world < 0 || world > 6 || player.isInBattle() || !StoryDoors.world(scene)
-        || scene.getPlayer() != player
-        || scene.getPlaneId() != objective.plane() || scene.getFloorId() != objective.floor()
-        || player.getPlaneId() != objective.plane() || player.getFloorId() != objective.floor()
-        || player.getInstance() != null || g.getCurrentMissionRaid() != 0 || g.getTrialRun() != null
-        || g.getRogue().isInside() || g.getParkourVenue().inside() || g.getStoryLines().getCurrentId() != 0
-        || !MissionStateRecords.doing(g.getSubMissions().get(objective.sub()), objective.sub(), 1)
-        || !MissionStateRecords.subCompleted(player, objective.prerequisite())
-        || !player.getMissionManager().canFinishFromAction(objective.sub())
-        || !objective.matches(GameplayDefinitions.subs.get(objective.sub()))
-        || SceneEventBattles.resolveClientEvent(objective.event(), world) == null) return 0;
+    var state = player.getGameplay().getSubMissions().get(objective.sub());
+    if (player.isInBattle() || !objective.inOriginalWorld(player)
+        || !MissionStateRecords.doing(state, objective.sub(), 1)
+        || !objective.prerequisiteCompleted(player)
+        || !player.getMissionManager().canFinishFromAction(objective.sub()))
+      return reject(player, requested, objective, "story-battle-inactive");
+    if (!objective.matches(GameplayDefinitions.subs.get(objective.sub())))
+      return reject(player, requested, objective, "story-battle-source");
+    if (SceneEventBattles.resolveClientEvent(objective.event(), world) == null)
+      return reject(player, requested, objective, "story-battle-stage");
     return objective.event();
   }
 
-  /** Returns the reference graph's event when the companion objective is verified. */
-  static int companionRequest(MissionInfo.SubMissionInfo definition) {
-    var objective = COMPANION_OBJECTIVES.get(definition.getId());
-    return objective != null && objective.matches(definition) ? objective.request() : 0;
+  private static int reject(Player player, int requested, Objective objective, String reason) {
+    objective.report(player, "SceneEnterStageCsReq", requested, Retcode.REQ_PARA_INVALID, reason, 0);
+    return 0;
+  }
+
+  static Objective worldWin(int sub) {
+    var guarded = GUARDED_WORLD_WINS.get(sub);
+    return guarded != null ? guarded : WorldStageWinSources.OBJECTIVES.get(sub);
   }
 
   private static String digest(String text) {

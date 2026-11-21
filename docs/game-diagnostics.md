@@ -24,6 +24,7 @@
 | `Gameplay result` | F 交互、任务对白和提交、演出请求、切图、副本和战斗拒绝的命令、对象、返回码及原因。`subject` 随命令表示任务、关卡、入口或交互配置，物件交互另记组和实例。 |
 | `Gameplay result: command=InteractPropCsReq` | 交互执行异常使用 `interaction-exception-prop-组-实例`，另记交互配置、物件编号和状态；配合 `Packet rejected` 排查中断。 |
 | `Gameplay result: command=MissionTalkCustomValue` | 对白变量的 `missing-initial-value`、`source-not-declared` 或 `invalid-source`；记录目标和必要索引，不记录对白正文及账户信息。 |
+| `Gameplay result: command=SceneEnterStageCsReq` / `MissionStageWin` | 原始剧情战的任务、实际楼层、事件和世界等级。`story-battle-inactive` 表示步骤或场景不符，`story-battle-source` 表示原图或目标条件不符，`story-battle-stage` 表示缺少本世界等级的关卡，`story-battle-context-changed` 表示入战后场景或前置变化。`story-battle-matched` 表示胜利符合目标条件，可与任务通知一起核对。 |
 | `Gameplay result: command=ShopAutoGift` / `BuyGoodsCsReq` | 固定自动礼包奖励缺失、溢出或不支持嵌套时记录 `invalid-auto-gift-plan` 及商店、商品和物品编号；购买拒绝记录返回码及商店、商品编号。复用限频，不记录账户或请求正文。 |
 | `Gameplay result: command=RobotHuntRecovery` | 寻宝机器人旧记录无法恢复时的箱子、组编号和固定原因；维修或终点保存失败使用 `robot-hunt-finish` / `robot-hunt-recovery` 阶段。 |
 | `Gameplay result: command=OraclePuzzleCompletion` / `ControllerFinishRecovery` | 神谕机关完成或旧控制器记录恢复失败时的宝箱、组编号和固定原因；保存失败分别使用 `oracle-puzzle-finish`、`controller-finish`、`controller-finish-recovery` 阶段。 |
